@@ -216,7 +216,27 @@ describe( 'CKBoxCommand', () => {
 						serviceOrigin: 'https://service.ckeditor.com',
 						tokenUrl: 'token-url',
 						forceDemoLabel: true,
-						unsupportedOption: 'bar'
+						unsupportedOption: 'bar',
+						choosableFileExtensions: [ 'jpg' ],
+						dialog: {
+							width: 500,
+							height: 500
+						},
+						categories: {
+							icons: {
+								key: 'svg'
+							}
+						},
+						view: {
+							openLastView: true,
+							startupFolderId: 'id',
+							startupCategoryId: 'id2',
+							hideMaximizeButton: false
+						},
+						upload: {
+							componentsHideTimeout: 3000,
+							dialogMinimizeTimeout: 5000
+						}
 					}
 				} );
 
@@ -234,6 +254,16 @@ describe( 'CKBoxCommand', () => {
 				expect( options ).to.have.property( 'serviceOrigin', 'https://service.ckeditor.com' );
 				expect( options ).to.have.property( 'tokenUrl', 'token-url' );
 				expect( options ).to.have.property( 'forceDemoLabel', true );
+				expect( options.dialog ).to.have.property( 'width', 500 );
+				expect( options.dialog ).to.have.property( 'height', 500 );
+				expect( options.categories.icons ).to.have.property( 'key', 'svg' );
+				expect( options.view ).to.have.property( 'openLastView', true );
+				expect( options.view ).to.have.property( 'startupFolderId', 'id' );
+				expect( options.view ).to.have.property( 'startupCategoryId', 'id2' );
+				expect( options.view ).to.have.property( 'hideMaximizeButton', false );
+				expect( options.upload ).to.have.property( 'componentsHideTimeout', 3000 );
+				expect( options.upload ).to.have.property( 'dialogMinimizeTimeout', 5000 );
+				expect( options ).to.have.deep.property( 'choosableFileExtensions', [ 'jpg' ] );
 				expect( options ).to.not.have.property( 'defaultUploadCategories' );
 				expect( options ).to.not.have.property( 'ignoreDataId' );
 				expect( options ).to.not.have.property( 'unsupportedOption' );

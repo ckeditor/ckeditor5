@@ -148,14 +148,17 @@ export default class FileRepository extends Plugin {
 			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
 			 * without {@link module:upload/filerepository~FileRepository#createUploadAdapter defining an upload adapter}.
 			 *
-			 * **If you see this warning when using one of the {@glink installation/getting-started/predefined-builds
+			 * **If you see this warning when using one of the {@glink getting-started/legacy/installation-methods/predefined-builds
 			 * CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
+			 *
+			 * Predefined builds are a deprecated solution and we strongly advise
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
 			 *
 			 * See the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload
 			 * adapters are available in the builds and how to configure them.
 			 *
-			 * **If you see this warning when using a custom build** there is a chance that you enabled
+			 * Otherwise, if you see this warning, there is a chance that you enabled
 			 * a feature like {@link module:image/imageupload~ImageUpload},
 			 * or {@link module:image/imageupload/imageuploadui~ImageUploadUI} but you did not enable any upload adapter.
 			 * You can choose one of the existing upload adapters listed in the

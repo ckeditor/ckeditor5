@@ -273,7 +273,7 @@ describe( 'GFMDataProcessor', () => {
 				'<p><code>code `` code ```</code></p>',
 
 				// When converting back ````` will be normalized to ``.
-				'`code `` code ``` `'
+				'` code `` code ``` `'
 			);
 		} );
 

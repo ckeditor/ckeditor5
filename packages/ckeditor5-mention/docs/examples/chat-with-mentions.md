@@ -16,28 +16,38 @@ Learn how to {@link features/mentions#configuration configure mention feeds} in 
 
 ## Editor example configuration
 
-The following code will let you run the editor inside a chat application like in the example above. See the {@link installation/plugins/installing-plugins installing plugins guide} to learn more.
+The following code will let you run the editor inside a chat application like in the example above.
 
 <details>
 <summary>View editor configuration script</summary>
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Strikethrough,
+	Underline,
+	Essentials,
+	Link,
+	Mention,
+	Paragraph
+} from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '.chat__editor' ), {
 		extraPlugins: [ Essentials, Paragraph, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'heading',
-				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'undo', 'redo',
+				'|',
+				'heading',
+				'|',
+				'bold', 'italic', 'underline', 'strikethrough',
+				'|',
+				'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|',
+				'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		mention: {

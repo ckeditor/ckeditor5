@@ -24,24 +24,20 @@ In the demo below, click the table caption to edit it. Once you click the captio
 
 ## Installation
 
-<info-box>
-	By default, the table caption feature is not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table`, `TableToolbar`, and **`TableCaption`** plugins to your plugin list and configure the table toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Table, TableCaption, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableCaption, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableCaption, Bold, /* ... */ ],
+		plugins: [ Table, TableToolbar, TableCaption, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
 			contentToolbar: [
@@ -53,11 +49,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
-
-By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link installation/advanced/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
+By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link getting-started/advanced/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
 
 ## Common API
 

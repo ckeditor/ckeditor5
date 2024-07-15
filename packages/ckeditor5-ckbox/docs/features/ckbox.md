@@ -56,7 +56,9 @@ You can also upload images by dragging them into your content. After you drag an
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
 To use this feature in your application, you must first load the CKBox library and then enable CKBox integration in your rich-text editor instance.
@@ -64,14 +66,10 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
 ```
 
-Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-ckbox
-```
+Please note, that while using the `latest` call instead of a version number is available, it is not advised. The latest version may bring breaking changes that will stall your CKBox integration.
 
 The CKBox feature requires one of the following plugins to be loaded to work correctly:
 
@@ -79,25 +77,23 @@ The CKBox feature requires one of the following plugins to be loaded to work cor
 * {@link module:image/imageinline~ImageInline The `ImageInline` feature}
 * {@link module:image/image~Image The `Image` feature} (a glue plugin that loads both the `ImageBlock` and `ImageInline` features)
 
-These plugins are, by default, loaded with predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
+If you do not have any of these plugins in your editor, install one and add it to your plugin list.
 
-Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
+Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `PictureEditing`, `ImageUpload`, and `CloudServices`.
 
 You must include the `CKBoxImageEdit` plugin if you want to use CKBox image editing capabilities from within CKEditor&nbsp;5.
 
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
-import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CKBox, CKBoxImageEdit } from "@ckeditor/ckeditor5-ckbox";
+import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
+		plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
 		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
 		ckbox: {
-			// Feature configuration.
+			// Feature configuration including license key.
 			// ...
 		}
 	} )
@@ -122,6 +118,8 @@ ClassicEditor
 			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
 		}
 	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -145,7 +143,7 @@ After you purchase a license, log into the CKEditor Ecosystem customer dashboard
 By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckboxconfig~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -180,7 +178,7 @@ The [CKBox workspaces](https://ckeditor.com/docs/ckbox/latest/features/file-mana
 If the user is assigned to more than one workspace, by default all the files uploaded directly from CKEditor are located in the first workspace in the list of workspaces allowed in the user's JWT token. This corresponds to uploads through drag and drop into the editor area, pasting images from the clipboard, or images uploaded using the Image {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} feature. If you would like to define a specific workspace for files uploaded this way, you can define its ID in the `defaultUploadWorkspaceId` option. After that, all the files uploaded directly from CKEditor will be placed in the specified workspace.
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -203,7 +201,7 @@ You can obtain the list of available workspaces using the [Workspaces REST API](
 After choosing an asset from the CKBox dialog, it is inserted into the editor content with a unique `data-ckbox-resource-id` attribute. If you want to disable it and do not want to add this attribute, set the {@link module:ckbox/ckboxconfig~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option to `true`:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -222,7 +220,7 @@ ClassicEditor
 By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckboxconfig~CKBoxConfig#language `config.ckbox.language`} option:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -239,8 +237,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/CKBox/1.2.1/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.4.0/translations/es.js"></script>
 ```
 
 ### Providing the token URL
@@ -248,7 +246,7 @@ Also, make sure to include the translation file after loading the CKBox library:
 The CKBox feature requires the token endpoint URL configured in the {@link module:ckbox/ckboxconfig~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} key. If not explicitly provided, the token URL from {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`} is used instead. If both are provided, the token URL defined in `config.ckbox.tokenUrl` takes precedence over the `config.cloudServices.tokenUrl`.
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -267,7 +265,7 @@ ClassicEditor
 If you host the cloud service in your environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -286,7 +284,7 @@ ClassicEditor
 If you want to allow CKBox to edit external images, not hosted by the file manager (for example, pasted via URL) you need to whitelist the URLs of the images. You can do this using the {@link module:ckbox/ckboxconfig~CKBoxConfig#allowExternalImagesEditing `config.ckbox.allowExternalImagesEditing`} option:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

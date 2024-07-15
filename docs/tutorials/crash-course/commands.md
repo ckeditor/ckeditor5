@@ -17,7 +17,7 @@ Now that we have the data conversion sorted out, let's register a `highlight` co
 Let's create a new `HighlightCommand` class below the `Highlight` function and add the necessary import in `src/plugin.js`:
 
 ```js
-import { Command } from 'ckeditor5/src/core';
+import { Command } from 'ckeditor5';
 
 class HighlightCommand extends Command {
 	refresh() {

@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Development environment | CKEditor 5 Framework Documentation
-order: 10
+order: 20
 modified_at: 2022-09-29
 ---
 
@@ -79,13 +79,13 @@ To create a server for manual tests use the `manual` task:
 yarn run manual
 ```
 
-To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios, you do not need to change it. The latter brings more languages to manual tests, which is helpful e.g. when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
+To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios, you do not need to change it. The latter brings more languages to manual tests, which is helpful for example,when working with {@link getting-started/setup/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
 You can read more about the {@link framework/contributing/testing-environment Testing environment}.
 
 ## Building DLLs
 
-Some manual tests require DLL builds. To learn more about DLL builds, read the {@link installation/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+Some manual tests require DLL builds. To learn more about DLL builds, read the {@link getting-started/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
 
 ```
 yarn run dll:build
@@ -118,7 +118,7 @@ This task accepts the following arguments:
 	--snippets=classic-editor,build-classic-source
 	```
 
-	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (e.g. `--files=features/default-headings,build-classic-source`).
+	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (for example,`--files=features/default-headings,build-classic-source`).
 * `--skip-validation` &ndash; Skips the final link validation.
 * `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allows navigating over the partially built documentation.
 * `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:
@@ -161,7 +161,7 @@ The crawler collects and opens all links from the documentation, except the API 
 
 The crawler accepts the following arguments:
 
-* `--url` (alias `-u`) &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify e.g. a deployed documentation.
+* `--url` (alias `-u`) &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify for example,a deployed documentation.
 * `--depth` (alias `-d`) &ndash; A number that defines how many nested page levels should be examined. Infinity by default.
 * `--exclude` (alias `-e`) &ndash; A string with URL exclusion &ndash; links that match the excluded part are skipped. You can define multiple exclusions by providing multiple `--exclude` (or `-e`) arguments. Not specifying a value removes default exclusions, if any. Nothing is excluded by default, but the `docs:verify` script has some predefined ones.
 * `--concurrency` (alias `-c`) &ndash; Number of concurrent pages (browser tabs) to be used during the scan. By default all links are opened one by one, sequentially (concurrency is 1).
@@ -189,7 +189,7 @@ The following error types are supported: `uncaught-exception`, `request-failure`
 * `response-failure` &ndash; Each HTTP response with a status code equal to or greater than 400 is treated as a failed one.
 * `console-error` &ndash; All `console.error()` calls are treated as an error.
 * `navigation-error` &ndash; The navigation error may happen, when:
-	* There is an SSL error (e.g. in the case of a self-signed certificate or an expired one).
+	* There is an SSL error (for example,in the case of a self-signed certificate or an expired one).
 	* The target URL is invalid.
 	* The timeout is exceeded during navigation to a page, so the `load` event is not emitted (for example, due to an infinite loop in the JavaScript code).
 * `page-crash` &ndash; The general page malfunction, that does not fit other categories (like running out of RAM).
@@ -207,9 +207,9 @@ These patterns are simply added as keys and values in a JSON object to the `<met
 
 ```html
 <meta name="x-cke-crawler-ignore-patterns" content='{
-    "page-crash": "Error: Page crashed!",
-    "uncaught-exception": "ckeditor-duplicated-modules",
-    "console-error": "Example error message"
+	"page-crash": "Error: Page crashed!",
+	"uncaught-exception": "ckeditor-duplicated-modules",
+	"console-error": "Example error message"
 }'>
 ```
 
@@ -217,7 +217,7 @@ The pattern (regardless of the type of error) does not have to be a string, but 
 
 ```html
 <meta name="x-cke-crawler-ignore-patterns" content='{
-    "console-error": [ "Error 1", "Error 2", "Error 3" ]
+	"console-error": [ "Error 1", "Error 2", "Error 3" ]
 }'>
 ```
 
@@ -225,7 +225,7 @@ To ignore all errors, use the special wildcard value `*`:
 
 ```html
 <meta name="x-cke-crawler-ignore-patterns" content='{
-    "console-error": "*"
+	"console-error": "*"
 }'>
 ```
 
@@ -245,7 +245,7 @@ yarn docs:content-styles
 
 The style sheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link installation/advanced/content-styles Content styles} guide.
+To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 

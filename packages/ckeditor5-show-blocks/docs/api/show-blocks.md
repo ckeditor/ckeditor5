@@ -18,8 +18,10 @@ See the {@link features/show-blocks show blocks} feature guide and the {@link mo
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-show-blocks
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

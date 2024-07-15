@@ -27,6 +27,39 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
 
 Please remember that Markdown syntax is really simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+
+```js
+import { ClassicEditor, Bold, Italic, Essentials, Markdown } from 'ckeditor5';
+// More imports.
+// ...
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-markdown' ), {
+		plugins: [
+			Markdown,
+			Essentials,
+			Bold,
+			Italic,
+			// More plugins.
+			// ...
+		],
+		// More of editor's configuration.
+		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+
+```
+
 ## Extending formatting support
 If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.
 
@@ -48,52 +81,6 @@ When converting the output produced by this data processor, make sure to use a c
 	While the CKEditor&nbsp;5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
 
 	And please do remember &ndash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
-</info-box>
-
-## Installation
-
-<info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
-
-```
-npm install --save @ckeditor/ckeditor5-markdown-gfm
-```
-
-Then add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration, which will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
-
-```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-// More imports.
-// ...
-
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
-
-ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [
-			Markdown,
-			Essentials,
-			Bold,
-			Italic,
-			// More plugins.
-			// ...
-		],
-		// More of editor's configuration.
-		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Known issues

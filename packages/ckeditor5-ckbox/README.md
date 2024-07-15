@@ -13,6 +13,12 @@ See the [CKBox integration guide](https://ckeditor.com/docs/ckeditor5/latest/fea
 
 Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

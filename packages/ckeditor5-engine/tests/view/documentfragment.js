@@ -371,4 +371,10 @@ describe( 'DocumentFragment', () => {
 			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
 		} );
 	} );
+
+	it( 'name should return undefined', () => {
+		const fragment = new DocumentFragment( document );
+
+		expect( fragment.name ).to.be.undefined;
+	} );
 } );

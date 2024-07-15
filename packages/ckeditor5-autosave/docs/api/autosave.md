@@ -14,8 +14,10 @@ See the {@link features/autosave Autosave feature guide} and the {@link module:a
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-autosave
+npm install ckeditor5
 ```
 
 ## Contribute

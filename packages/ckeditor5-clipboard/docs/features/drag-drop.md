@@ -31,7 +31,7 @@ When the {@link features/ckbox CKBox file manager} is enabled in your CKEditor&n
 
 ## Drag and drop of content blocks
 
-Since v40.0.0, the drag and drop plugin fully supports dragging content blocks such as paragraphs, tables, or lists inside the editor by default. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
+The drag and drop plugin fully supports dragging content blocks such as paragraphs, tables, or lists inside the editor by default. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
 
 The drag and drop functions include:
 
@@ -54,23 +54,20 @@ In the balloon block editor, you can also drag content blocks using the drag han
 ## Installation
 
 <info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. These installation instructions are for developers interested in building their own custom rich-text editor.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
-
-```
-npm install --save @ckeditor/ckeditor5-clipboard
-```
-
-Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { ClassicEditor, Clipboard } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Clipboard, Bold, /* ... */ ],
-})
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Clipboard, Bold, /* ... */ ],
+	})
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```

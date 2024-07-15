@@ -40,13 +40,54 @@ By using this feature, the users of your application will be able to create temp
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
+
+### Running the standard editing mode
+
+To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
+
+```js
+import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ StandardEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditingException', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Running the restricted editing mode
+
+To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
+
+```js
+import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ RestrictedEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditing', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Configuration
 
 You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
-import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -67,7 +108,7 @@ ClassicEditor
 The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
 
 ```js
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor, Plugin } from 'ckeditor5';
 
 class MyPlugin extends Plugin {
 	afterInit() {
@@ -75,54 +116,6 @@ class MyPlugin extends Plugin {
 	}
 }
 ```
-
-## Installation
-
-<info-box info>
-	The restricted editing feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-restricted-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-restricted-editing
-```
-
-### Running the standard editing mode
-
-To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
-
-```js
-import { StandardEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ StandardEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditingException', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-### Running the restricted editing mode
-
-To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
-
-```js
-import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditing', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

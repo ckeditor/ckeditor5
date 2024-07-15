@@ -31,21 +31,19 @@ How to understand this demo:
 
 ## Installation
 
-<info-box>
-	This plugin is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}, so you need to {@link installation/plugins/installing-plugins install it} by hand.
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add the autosave feature to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
-
-```
-npm install --save @ckeditor/ckeditor5-autosave
-```
-
-And add the plugin to your plugin list.
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list.
 
 Assuming that you have implemented some form of the `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
 
 ```js
+import { ClassicEditor, Autosave } from 'ckeditor5';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -61,7 +59,9 @@ ClassicEditor
 		},
 
 		// ... other configuration options.
-	} );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The autosave feature listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event, throttles it, and executes the {@link module:autosave/autosave~AutosaveConfig#save `config.autosave.save()`} function.
@@ -88,7 +88,9 @@ ClassicEditor
 		},
 
 		// ... other configuration options.
-	} );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Demo code
@@ -147,7 +149,7 @@ function displayStatus( editor ) {
 
 ## Related features
 
-You can read more about {@link installation/getting-started/getting-and-setting-data getting and setting data} in the Getting started section.
+You can read more about {@link getting-started/setup/getting-and-setting-data getting and setting data} in the Getting started section.
 
 ## Common API
 

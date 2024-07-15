@@ -22,6 +22,27 @@ Use the editor below to create a document with distinct title and body sections.
 
 The title plugin lets you move from the title to the body element using the <kbd>Tab</kbd> key, providing form-like experience. When the selection is at the beginning of the first body element, you can go back to the title element using <kbd>Shift</kbd>+<kbd>Tab</kbd>. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move the caret between the title and the body.
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Title } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Title, /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Placeholder integration
 
 The title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, the placeholder text will be used for the body element.
@@ -30,45 +51,16 @@ To change the title placeholder, use the {@link module:heading/title~TitleConfig
 
 ```js
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Title, /* ... */ ],
-        title: {
-            placeholder: 'My custom placeholder for the title'
-        },
-        placeholder: 'My custom placeholder for the body'
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Title, /* ... */ ],
+		title: {
+			placeholder: 'My custom placeholder for the title'
+		},
+		placeholder: 'My custom placeholder for the body'
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
-
-## Installation
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-heading
-```
-
-Then add the `Title` plugin to your plugin list:
-
-```js
-import { Title } from '@ckeditor/ckeditor5-heading';
-
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Title, /* ... */ ]
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## HTML structure
 

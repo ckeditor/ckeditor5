@@ -1,6 +1,6 @@
 ---
 category: examples-builds
-meta-title: Classic editor build example | CKEditor 5 Documentation
+meta-title: Classic editor example | CKEditor 5 Documentation
 order: 10
 toc: false
 classes: main__content--no-toc
@@ -10,60 +10,10 @@ classes: main__content--no-toc
 
 {@snippet build-classic-source}
 
-{@link installation/getting-started/predefined-builds#classic-editor Classic editor} shows a boxed editing area with a toolbar, placed in a specific position on the page.
+The classic editor type shows a boxed editing area with a toolbar, placed in a specific position on the page.
 
 {@snippet examples/classic-editor}
 
-## Editor example configuration
-
-Check out the {@link installation/getting-started/predefined-builds#installation-example Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
-
-<details>
-<summary>View editor configuration script</summary>
-
-```js
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ), {
-		toolbar: {
-			items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote'
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-			]
-		},
-		cloudServices: {
-			// All predefined builds include the Easy Image feature.
-			// Provide correct configuration values to use it.
-			tokenUrl: 'https://example.com/cs-token-endpoint',
-			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
-			// Read more about Easy Image - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html.
-			// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err );
-	} );
-
-```
-
-</details>
-
-<details>
-<summary>View editor content listing</summary>
-
-```html
-<div id="snippet-classic-editor">
-	Editor content is inserted here.
-</div>
-
-```
-
-</details>
+<info-box hint>
+	If you are interested in effortlessly building similar editor presets, check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select the editor type, the features you need, the preferred framework (React, Angular, Vue or Vanilla JS) and the preferred distribution method. In the end, you get ready-to-use code tailored to your needs!
+</info-box>
