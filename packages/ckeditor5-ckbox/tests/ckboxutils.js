@@ -562,6 +562,24 @@ describe( 'CKBoxUtils', () => {
 			sinonXHR.restore();
 		} );
 
+		// See: https://github.com/ckeditor/ckeditor5/issues/16040
+		it( 'should not use `Number#toString()` method due to minification issues on some bundlers', async () => {
+			const categories = createCategories( 10 );
+			const toStringSpy = sinon.spy( Number.prototype, 'toString' );
+
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: categories, offset: 0, limit: 50, totalCount: 10
+				} )
+			] );
+
+			await ckboxUtils._getAvailableCategories( options );
+
+			expect( toStringSpy ).not.to.be.called;
+		} );
+
 		it( 'should return categories in one call', async () => {
 			const categories = createCategories( 10 );
 
