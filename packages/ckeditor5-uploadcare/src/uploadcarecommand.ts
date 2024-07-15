@@ -10,7 +10,7 @@
  */
 
 import type { Writer } from 'ckeditor5/src/engine.js';
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 
 import type * as LR from '@uploadcare/blocks';
@@ -51,15 +51,6 @@ export default class UploadcareCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this._initListeners();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
@@ -69,9 +60,16 @@ export default class UploadcareCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override execute( type: string ): void {
+		if ( !this.isEnabled || this.value ) {
+			return;
+		}
+
 		this._type = type;
 
-		this.fire<UploadcareEvent<'open'>>( 'uploadcare:open' );
+		this._initConfig();
+		this._initCtx();
+
+		this._initListeners();
 	}
 
 	/**
@@ -113,96 +111,97 @@ export default class UploadcareCommand extends Command {
 		this._ctxElement.initFlow();
 	}
 
+	private _close() {
+		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
+
+		if ( dialogPlugin ) {
+			dialogPlugin.hide();
+		}
+
+		if ( !this.value ) {
+			return;
+		}
+
+		this._ctxElement!.doneFlow();
+
+		this._configElement!.remove();
+		this._configElement = null;
+
+		this._ctxElement!.remove();
+		this._ctxElement = null;
+
+		this._chosenAssets.clear();
+
+		this.editor.editing.view.focus();
+	}
+
 	/**
 	 * Initializes various event listeners for the `uploadcare:*` events, because all functionality
 	 * of the `uploadcare` command is event-based.
 	 */
 	private _initListeners() {
 		const editor = this.editor;
+		const dialogPlugin = editor.plugins.get( 'Dialog' );
 
-		// Refresh the command after firing the `uploadcare:*` event.
-		this.on<UploadcareEvent>( 'uploadcare', () => {
-			this.refresh();
-		}, { priority: 'low' } );
-
-		// Handle opening of the CKBox dialog.
-		this.on<UploadcareEvent<'open'>>( 'uploadcare:open', evt => {
-			if ( !this.isEnabled || this.value ) {
-				return;
-			}
-
-			this._initConfig();
-			this._initCtx();
-
-			this._ctxElement!.addEventListener( 'done-click', () => {
-				console.log( 'change' );
+		if ( dialogPlugin ) {
+			dialogPlugin.on( 'hide:uploadCare', () => {
+				this._close();
 			} );
+		}
+
+		this._ctxElement!.addEventListener( 'done-click', () => {
+			const model = this.editor.model;
+
+			// All assets are inserted in one undo step.
+			model.change( writer => {
+				const assetsToProcess = Array.from( this._chosenAssets );
+				const assetsCount = assetsToProcess.length;
+
+				for ( const asset of assetsToProcess ) {
+					const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
+					const isSingleAsset = assetsCount === 1;
+
+					this._insertAsset( asset, isLastAsset, writer, isSingleAsset );
+				}
+			} );
+
+			this._close();
 		} );
 
-		this.on<UploadcareEvent<'close'>>( 'uploadcare:close', () => {
-			if ( !this.value ) {
+		// Refresh the command after every change.
+		this._ctxElement!.addEventListener( 'change', () => {
+			this.refresh();
+		} );
+
+		// Handle choosing the assets.
+		this._ctxElement!.addEventListener( 'file-upload-success', ( evt: CustomEvent<LR.OutputFileEntry> ) => {
+			const { fileInfo } = evt.detail;
+
+			if ( !this.isEnabled || !fileInfo || !!Array.from( this._chosenAssets ).find( e => e.id === fileInfo.uuid ) ) {
 				return;
 			}
 
-			this._ctxElement!.doneFlow();
+			const assetsToProcess = [ {
+				id: fileInfo.uuid,
+				type: 'image',
+				attributes: {
+					imageFallbackUrl: fileInfo.cdnUrl,
+					imageTextAlternative: '',
+					imageWidth: fileInfo.imageInfo!.width,
+					imageHeight: fileInfo.imageInfo!.height
+				}
+			} ];
 
-			this._configElement!.remove();
-			this._configElement = null;
-
-			this._ctxElement!.remove();
-			this._ctxElement = null;
+			for ( const asset of assetsToProcess ) {
+				this._chosenAssets.add( asset );
+			}
 
 			editor.editing.view.focus();
 		} );
 
-		// Handle choosing the assets.
-		this.on<UploadcareEvent<'choose'>>( 'uploadcare:choose', ( evt, assets ) => {
-			if ( !this.isEnabled ) {
-				return;
-			}
-
-			console.log( 'uploadcare:choose' );
-
-			// const imageCommand = editor.commands.get( 'insertImage' )!;
-			// const linkCommand = editor.commands.get( 'link' )!;
-			//
-			// const assetsToProcess = prepareAssets( {
-			// 	assets,
-			// 	isImageAllowed: imageCommand.isEnabled,
-			// 	isLinkAllowed: linkCommand.isEnabled
-			// } );
-			//
-			// const assetsCount = assetsToProcess.length;
-			//
-			// if ( assetsCount === 0 ) {
-			// 	return;
-			// }
-			//
-			// // All assets are inserted in one undo step.
-			// model.change( writer => {
-			// 	for ( const asset of assetsToProcess ) {
-			// 		const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
-			// 		const isSingleAsset = assetsCount === 1;
-			//
-			// 		this._insertAsset( asset, isLastAsset, writer, isSingleAsset );
-			//
-			// 		// If asset ID must be set for the inserted model element, store the asset temporarily and remove it automatically
-			// 		// after the timeout.
-			// 		if ( shouldInsertDataId ) {
-			// 			setTimeout( () => this._chosenAssets.delete( asset ), ASSET_INSERTION_WAIT_TIMEOUT );
-			//
-			// 			this._chosenAssets.add( asset );
-			// 		}
-			// 	}
-			// } );
-			//
-			// editor.editing.view.focus();
-		} );
-
 		// Clean up after the editor is destroyed.
 		this.listenTo( editor, 'destroy', () => {
-			this.fire<UploadcareEvent<'close'>>( 'uploadcare:close' );
-			this._chosenAssets.clear();
+			this._close();
 		} );
 	}
 
@@ -265,7 +264,7 @@ export default class UploadcareCommand extends Command {
 				height: imageHeight,
 				...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 			}
-		} );
+		} as any );
 	}
 }
 
