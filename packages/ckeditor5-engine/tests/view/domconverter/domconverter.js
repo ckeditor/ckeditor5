@@ -640,7 +640,7 @@ describe( 'DomConverter', () => {
 							'foo' +
 							'<span ' +
 								'class="foo-class" ' +
-								'style="border:1px solid blue" ' +
+								'style="border: 1px solid blue;" ' +
 								'data-foo="bar" ' +
 								'data-ck-unsafe-attribute-onclick="foobar">bar' +
 							'</span>' +
@@ -657,7 +657,7 @@ describe( 'DomConverter', () => {
 							'foo' +
 							'<span ' +
 								'class="foo-class" ' +
-								'style="border:1px solid blue" ' +
+								'style="border: 1px solid blue;" ' +
 								'data-foo="bar" ' +
 								'data-ck-unsafe-attribute-value="javascript:baz">bar' +
 							'</span>' +
@@ -674,7 +674,7 @@ describe( 'DomConverter', () => {
 							'foo' +
 							'<span ' +
 								'class="foo-class" ' +
-								'style="border:1px solid blue" ' +
+								'style="border: 1px solid blue;" ' +
 								'data-foo="bar" ' +
 								'data-ck-unsafe-attribute-value="data:text/html">bar' +
 							'</span>' +
@@ -691,7 +691,7 @@ describe( 'DomConverter', () => {
 							'foo' +
 							'<iframe ' +
 								'class="foo-class" ' +
-								'style="border:1px solid blue" ' +
+								'style="border: 1px solid blue;" ' +
 								'data-foo="bar" ' +
 								'data-ck-unsafe-attribute-srcdoc="<script>baz</script>">bar' +
 							'</iframe>' +
@@ -700,13 +700,13 @@ describe( 'DomConverter', () => {
 					{
 						html: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
+							'<span class="foo-class" style="border: 1px solid blue" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
+							'<span class="foo-class" style="border: 1px solid blue;" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>'
@@ -745,7 +745,7 @@ describe( 'DomConverter', () => {
 				converter.setContentOf( element, html );
 
 				expect( element.innerHTML ).to.equal(
-					'<div>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+					'<div>foo<span data-ck-unsafe-element="script" class="foo-class" style="" data-foo="bar">bar</span></div>'
 				);
 			} );
 
@@ -1004,42 +1004,42 @@ describe( 'DomConverter', () => {
 			converter.setContentOf( domElement, html );
 
 			expect( domElement.outerHTML ).to.equal(
-				'<p>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+				'<p>foo<span data-ck-unsafe-element="script" class="foo-class" style="" data-foo="bar">bar</span></p>'
 			);
 
 			converter.removeDomElementAttribute( domElement.lastChild, 'data-ck-unsafe-element' );
 
 			expect( domElement.outerHTML ).to.equal(
-				'<p>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+				'<p>foo<span data-ck-unsafe-element="script" class="foo-class" style="" data-foo="bar">bar</span></p>'
 			);
 
 			converter.removeDomElementAttribute( domElement.lastChild, 'class' );
 
 			expect( domElement.outerHTML ).to.equal(
-				'<p>foo<span data-ck-unsafe-element="script" style="foo-style" data-foo="bar">bar</span></p>'
+				'<p>foo<span data-ck-unsafe-element="script" style="" data-foo="bar">bar</span></p>'
 			);
 		} );
 
 		it( 'should skip removing the (replacement) attribute representing the unsafe <style> tag', () => {
 			const domElement = document.createElement( 'p' );
-			const html = 'foo<style class="foo-class" style="foo-style" data-foo="bar">bar</style>';
+			const html = 'foo<style class="foo-class" style="" data-foo="bar">bar</style>';
 
 			converter.setContentOf( domElement, html );
 
 			expect( domElement.outerHTML ).to.equal(
-				'<p>foo<span data-ck-unsafe-element="style" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+				'<p>foo<span data-ck-unsafe-element="style" class="foo-class" style="" data-foo="bar">bar</span></p>'
 			);
 
 			converter.removeDomElementAttribute( domElement.lastChild, 'data-ck-unsafe-element' );
 
 			expect( domElement.outerHTML ).to.equal(
-				'<p>foo<span data-ck-unsafe-element="style" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+				'<p>foo<span data-ck-unsafe-element="style" class="foo-class" style="" data-foo="bar">bar</span></p>'
 			);
 
 			converter.removeDomElementAttribute( domElement.lastChild, 'class' );
 
 			expect( domElement.outerHTML ).to.equal(
-				'<p>foo<span data-ck-unsafe-element="style" style="foo-style" data-foo="bar">bar</span></p>'
+				'<p>foo<span data-ck-unsafe-element="style" style="" data-foo="bar">bar</span></p>'
 			);
 		} );
 	} );

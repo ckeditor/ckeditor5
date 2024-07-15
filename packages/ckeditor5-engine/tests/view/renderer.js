@@ -3420,10 +3420,12 @@ describe( 'Renderer', () => {
 			it( 'should handle styles change in replaced elements', () => {
 				const view = '' +
 					'<container:ol>' +
-						'<container:li style="color:#000;font-weight:bold;">Foo</container:li>' +
+						'<container:li style="color:rgb(0, 0, 0);font-weight:bold;">Foo</container:li>' +
 						'<container:li>Bar ' +
 							'<attribute:i>' +
-								'<attribute:b style="color:#00F;background-color:#000;font-size:12px;">Baz</attribute:b>' +
+								'<attribute:b style="color:rgb(0, 0, 255);background-color:rgb(0, 0, 0);font-size:12px;">' +
+									'Baz' +
+								'</attribute:b>' +
 							' Bax</attribute:i>' +
 						'</container:li>' +
 					'</container:ol>';
@@ -3434,8 +3436,9 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
-					'<ol><li style="color:#000;font-weight:bold;">Foo</li>' +
-					'<li>Bar <i><b style="color:#00F;background-color:#000;font-size:12px;">Baz</b> Bax</i></li></ol>' ) );
+					'<ol><li style="color:rgb(0, 0, 0);font-weight:bold;">Foo</li>' +
+					'<li>Bar <i>' +
+					'<b style="color:rgb(0, 0, 255);background-color:rgb(0, 0, 0);font-size:12px;">Baz</b> Bax</i></li></ol>' ) );
 
 				const viewOL = viewRoot.getChild( 0 );
 				const viewLI1 = viewOL.getChild( 0 );
@@ -3456,8 +3459,8 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
-					'<ol><li style="color:#FFF;">Foo</li>' +
-					'<li style="font-weight:bold;">Ba1 <i style="color:#000;border-width:1px;">Ba3 ' +
+					'<ol><li style="color:rgb(255, 255, 255);">Foo</li>' +
+					'<li style="font-weight:bold;">Ba1 <i style="color:rgb(0, 0, 0);border-width:1px;">Ba3 ' +
 					'<b style="font-size:15px;">Ba2</b></i></li></ol>' ) );
 			} );
 
