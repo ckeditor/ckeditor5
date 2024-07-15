@@ -640,7 +640,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 					}
 
 					return viewElement;
-				}
+				};
 			}
 
 			editor.conversion.for( 'editingDowncast' ).elementToElement( {
