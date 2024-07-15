@@ -512,9 +512,15 @@ export default class DomConverter {
 			domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
 		}
 
-		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
-		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
-		domElement.setAttribute( shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
+		if ( shouldRenderAttribute && key === 'style' ) {
+			// The `style` attribute is a special case. It should be set as a property of the element, not as an attribute.
+			// This is because setting it as an attribute would not work if CSP is enabled with `style-src: 'self';` set.
+			domElement.style.cssText = value;
+		} else {
+			// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
+			// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
+			domElement.setAttribute( shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
+		}
 	}
 
 	/**
