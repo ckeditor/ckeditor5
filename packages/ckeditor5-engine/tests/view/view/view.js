@@ -1029,6 +1029,42 @@ describe( 'view', () => {
 				expect( document.getSelection().focusOffset ).to.equal( 3 );
 			} );
 		} );
+
+		it( 'should revert unexpected DOM changes', () => {
+			const domDiv = document.createElement( 'div' );
+
+			const view = new View( new StylesProcessor() );
+			const viewDocument = view.document;
+			createViewRoot( viewDocument, 'div', 'main' );
+			view.attachDomRoot( domDiv );
+
+			const viewP = new ViewElement( viewDocument, 'p' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+
+			viewDocument.getRoot()._appendChild( viewP );
+			viewP._appendChild( viewText );
+			view.forceRender();
+
+			expect( domDiv.childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
+			expect( domDiv.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			domDiv.childNodes[ 0 ].childNodes[ 0 ].data = 'bar';
+			domDiv.appendChild( document.createElement( 'h1' ) );
+
+			expect( domDiv.childNodes.length ).to.equal( 2 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
+
+			view.getObserver( MutationObserver ).flush();
+
+			expect( domDiv.childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
+			expect( domDiv.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			view.destroy();
+		} );
 	} );
 
 	describe( 'change()', () => {

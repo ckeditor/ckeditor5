@@ -324,6 +324,7 @@ First, if you maintain any CKEditor&nbsp;5 custom plugins as separate packages, 
 Second, proceed with migrating your project, depending on the old installation method you are using.
 
 * {@link updating/nim-migration/predefined-builds Migrating from predefined builds}.
+* {@link updating/nim-migration/online-builder Migrating from legacy Online Builder}.
 * {@link updating/nim-migration/customized-builds Migrating from customized builds}.
 * {@link updating/nim-migration/dll-builds Migrating from DLL builds}.
 

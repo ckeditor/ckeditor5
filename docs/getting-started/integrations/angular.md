@@ -28,7 +28,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
 <table>
   <thead>
 	<tr>
-	 <th>CKEditor&nbsp;5&nbsp;version</th>
+	 <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
 	 <th>Angular&nbsp;version</th>
 	 <th>Details</th>
 	</tr>
@@ -38,12 +38,22 @@ Because of the breaking changes in the Angular library output format, the `@cked
 	 <td colspan="3">Actively supported versions</td>
 	</tr>
 	<tr>
-	 <td><code>^6</code></td>
+	 <td><code>^8</code></td>
 	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td colspan="3">Past releases (no longer maintained)</td>
+	</tr>
+	<tr>
+	 <td><code>^7</code></td>
+	 <td><code>13+</code></td>
+	 <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^6</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td><code>^5</code></td>
@@ -73,7 +83,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
 	<tr>
 	 <td><code>^1</code></td>
 	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-	 <td>Angular versions are no longer maintained.</td>
+	 <td>Angular versions no longer maintained.</td>
 	</tr>
   </tbody>
 </table>
@@ -85,6 +95,7 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor 5 in your Angular application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -115,6 +126,52 @@ npm install @ckeditor/ckeditor5-angular
 ```
 
 The following setup differs depending on the type of component you use.
+
+#### Standalone components
+
+Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
+
+Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`.
+
+```ts
+import { Component } from '@angular/core';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { SlashCommand } from 'ckeditor5-premium-features';
+
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	imports: [ CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	title = 'angular';
+
+	public Editor = ClassicEditor;
+	public config = {
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
+			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+		],
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		mention: {
+			// Mention configuration
+		}
+	}
+}
+```
+
+Then, use the `<ckeditor>` tag in the template to run the rich text editor:
+
+```html
+<!-- app.component.html -->
+
+<ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
+```
 
 #### NGModule components
 
@@ -178,52 +235,6 @@ export class AppComponent {
 ```
 
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
-
-```html
-<!-- app.component.html -->
-
-<ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
-```
-
-#### Standalone components
-
-Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
-
-Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`.
-
-```ts
-import { Component } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-@Component( {
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	imports: [ CKEditorModule ],
-	standalone: true
-} )
-export class AppComponent {
-	title = 'angular';
-
-	public Editor = ClassicEditor;
-	public config = {
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: {
-			// Mention configuration
-		}
-	}
-}
-```
-
-Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 ```html
 <!-- app.component.html -->

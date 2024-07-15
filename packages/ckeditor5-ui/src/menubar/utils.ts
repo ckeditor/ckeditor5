@@ -21,7 +21,8 @@ import type {
 	MenuBarConfigAddedGroup,
 	MenuBarConfigAddedMenu,
 	MenuBarConfigAddedPosition,
-	NormalizedMenuBarConfigObject
+	NormalizedMenuBarConfigObject,
+	MenuBarConfigAddedItem
 } from './menubarview.js';
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
@@ -1007,16 +1008,19 @@ export function normalizeMenuBarConfig( config: Readonly<MenuBarConfig> ): Norma
 export function processMenuBarConfig( {
 	normalizedConfig,
 	locale,
-	componentFactory
+	componentFactory,
+	extraItems
 }: {
 	normalizedConfig: NormalizedMenuBarConfigObject;
 	locale: Locale;
 	componentFactory: ComponentFactory;
+	extraItems: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>;
 } ): NormalizedMenuBarConfigObject {
 	const configClone = cloneDeep( normalizedConfig ) as NormalizedMenuBarConfigObject;
 
+	handleAdditions( normalizedConfig, configClone, extraItems );
 	handleRemovals( normalizedConfig, configClone );
-	handleAdditions( normalizedConfig, configClone );
+	handleAdditions( normalizedConfig, configClone, configClone.addItems );
 	purgeUnavailableComponents( normalizedConfig, configClone, componentFactory );
 	purgeEmptyMenus( normalizedConfig, configClone );
 	localizeMenuLabels( configClone, locale );
@@ -1095,17 +1099,21 @@ function handleRemovals(
 }
 
 /**
- * Handles the `config.menuBar.addItems` configuration. It allows for adding menus, groups, and items at arbitrary
+ * Adds provided items to config. It allows for adding menus, groups, and items at arbitrary
  * positions in the menu bar. If the position does not exist, a warning is logged.
  */
 function handleAdditions(
 	originalConfig: NormalizedMenuBarConfigObject,
-	config: NormalizedMenuBarConfigObject
+	config: NormalizedMenuBarConfigObject,
+	items: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>
 ) {
-	const itemsToBeAdded = config.addItems;
-	const successFullyAddedItems: typeof itemsToBeAdded = [];
+	const successFullyAddedItems: typeof items = [];
 
-	for ( const itemToAdd of itemsToBeAdded ) {
+	if ( items.length == 0 ) {
+		return;
+	}
+
+	for ( const itemToAdd of items ) {
 		const relation = getRelationFromPosition( itemToAdd.position );
 		const relativeId = getRelativeIdFromPosition( itemToAdd.position );
 
@@ -1187,7 +1195,7 @@ function handleAdditions(
 		}
 	}
 
-	for ( const addedItemConfig of itemsToBeAdded ) {
+	for ( const addedItemConfig of items ) {
 		if ( !successFullyAddedItems.includes( addedItemConfig ) ) {
 			/**
 			 * There was a problem processing the configuration of the menu bar. The configured item could not be added
@@ -1520,35 +1528,3 @@ function getIdFromGroupItem( item: string | MenuBarMenuDefinition ): string {
 function isMenuDefinition( definition: any ): definition is MenuBarMenuDefinition {
 	return typeof definition === 'object' && 'menuId' in definition;
 }
-
-/**
- * Initializes menu bar for given editor.
- *
- * @internal
- */
-export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
-	const menuBarViewElement = menuBarView.element!;
-
-	editor.ui.focusTracker.add( menuBarViewElement );
-	editor.keystrokes.listenTo( menuBarViewElement );
-
-	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
-
-	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui.componentFactory );
-
-	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-		if ( menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
-			editor.editing.view.focus();
-			cancel();
-		}
-	} );
-
-	editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-		if ( !menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
-			menuBarView.isFocusBorderEnabled = true;
-			menuBarView!.focus();
-			cancel();
-		}
-	} );
-}
-

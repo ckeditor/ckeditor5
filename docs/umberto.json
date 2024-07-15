@@ -361,7 +361,7 @@
 		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
 		"support/reporting-issues.html": "support/index.html#reporting-issues",
 		"examples/experiments/mermaid.html": "features/mermaid.html",
-		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar.html",
 		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
 		"features/toolbar/menubar.html": "getting-started/setup/menubar.html",
 		"examples/builds-custom/bottom-toolbar-editor.html": "examples/framework/bottom-toolbar-editor.html",
