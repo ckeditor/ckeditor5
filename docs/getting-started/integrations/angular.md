@@ -127,6 +127,52 @@ npm install @ckeditor/ckeditor5-angular
 
 The following setup differs depending on the type of component you use.
 
+#### Standalone components
+
+Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
+
+Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`.
+
+```ts
+import { Component } from '@angular/core';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { SlashCommand } from 'ckeditor5-premium-features';
+
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	imports: [ CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	title = 'angular';
+
+	public Editor = ClassicEditor;
+	public config = {
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
+			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+		],
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		mention: {
+			// Mention configuration
+		}
+	}
+}
+```
+
+Then, use the `<ckeditor>` tag in the template to run the rich text editor:
+
+```html
+<!-- app.component.html -->
+
+<ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
+```
+
 #### NGModule components
 
 If you want to use NGModule components, add the `CKEditorModule` to the `imports` array. It will make the CKEditor&nbsp;5 component available in your Angular application.
@@ -189,52 +235,6 @@ export class AppComponent {
 ```
 
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
-
-```html
-<!-- app.component.html -->
-
-<ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
-```
-
-#### Standalone components
-
-Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
-
-Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`.
-
-```ts
-import { Component } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-@Component( {
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	imports: [ CKEditorModule ],
-	standalone: true
-} )
-export class AppComponent {
-	title = 'angular';
-
-	public Editor = ClassicEditor;
-	public config = {
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: {
-			// Mention configuration
-		}
-	}
-}
-```
-
-Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 ```html
 <!-- app.component.html -->

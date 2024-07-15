@@ -135,6 +135,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	private _extraMenuBarElements: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
 
 	/**
+	 * The last focused element to which focus should return on `Esc` press.
+	 */
+	private _lastFocusedForeignElement: HTMLElement | null = null;
+
+	/**
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param editor The editor instance.
@@ -393,18 +398,35 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarElements );
 
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
-				this.editor.editing.view.focus();
-				cancel();
+			if ( !menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				return;
 			}
+
+			// Bring focus back to where it came from before focusing the toolbar:
+			// If it came from outside the engine view (e.g. source editing), move it there.
+			if ( this._lastFocusedForeignElement ) {
+				this._lastFocusedForeignElement.focus();
+				this._lastFocusedForeignElement = null;
+			}
+			// Else just focus the view editing.
+			else {
+				this.editor.editing.view.focus();
+			}
+
+			cancel();
 		} );
 
 		this.editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-			if ( !menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
-				menuBarView.isFocusBorderEnabled = true;
-				menuBarView!.focus();
-				cancel();
+			// If menu bar is already focused do nothing.
+			if ( menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				return;
 			}
+
+			this._saveLastFocusedForeignElement();
+
+			menuBarView.isFocusBorderEnabled = true;
+			menuBarView.focus();
+			cancel();
 		} );
 	}
 
@@ -464,22 +486,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		let lastFocusedForeignElement: HTMLElement | null;
 		let candidateDefinitions: Array<FocusableToolbarDefinition>;
 
 		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-			const focusedElement = this.focusTracker.focusedElement as HTMLElement;
-
-			// Focus moved out of a DOM element that
-			// * is not a toolbar,
-			// * does not belong to the editing view (e.g. source editing).
-			if (
-				Array.from( this._editableElementsMap.values() ).includes( focusedElement ) &&
-				!Array.from( editingView.domRoots.values() ).includes( focusedElement )
-			) {
-				lastFocusedForeignElement = focusedElement;
-			}
+			this._saveLastFocusedForeignElement();
 
 			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition();
 
@@ -529,9 +540,9 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 			// Bring focus back to where it came from before focusing the toolbar:
 			// 1. If it came from outside the engine view (e.g. source editing), move it there.
-			if ( lastFocusedForeignElement ) {
-				lastFocusedForeignElement.focus();
-				lastFocusedForeignElement = null;
+			if ( this._lastFocusedForeignElement ) {
+				this._lastFocusedForeignElement.focus();
+				this._lastFocusedForeignElement = null;
 			}
 			// 2. There are two possibilities left:
 			//   2.1. It could be that the focus went from an editable element in the view (root or nested).
@@ -548,6 +559,23 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 			cancel();
 		} );
+	}
+
+	/**
+	 * Saves last focused element that doen not belong to editing view to restore focus on `Esc`.
+	 */
+	private _saveLastFocusedForeignElement() {
+		const focusedElement = this.focusTracker.focusedElement as HTMLElement;
+
+		// Focus moved out of a DOM element that
+		// * is not a toolbar,
+		// * does not belong to the editing view (e.g. source editing).
+		if (
+			Array.from( this._editableElementsMap.values() ).includes( focusedElement ) &&
+			!Array.from( this.editor.editing.view.domRoots.values() ).includes( focusedElement )
+		) {
+			this._lastFocusedForeignElement = focusedElement;
+		}
 	}
 
 	/**
