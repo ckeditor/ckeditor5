@@ -150,6 +150,23 @@ describe( 'PastePlainText', () => {
 		expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
 	} );
 
+	it( 'should inherit selection attributes if only one block element was in the clipboard', () => {
+		setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+		const dataTransferMock = createDataTransfer( {
+			'text/html': '<p>foo</p>',
+			'text/plain': 'foo'
+		} );
+
+		viewDocument.fire( 'paste', {
+			dataTransfer: dataTransferMock,
+			stopPropagation() {},
+			preventDefault() {}
+		} );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+	} );
+
 	it( 'should inherit selection attributes if shift key was pressed while pasting', () => {
 		setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
 
