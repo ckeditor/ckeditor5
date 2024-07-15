@@ -122,13 +122,13 @@ export default class UploadcareCommand extends Command {
 			return;
 		}
 
-		this._ctxElement!.doneFlow();
-
 		this._configElement!.remove();
 		this._configElement = null;
 
 		this._ctxElement!.remove();
 		this._ctxElement = null;
+
+		this.refresh();
 
 		this._chosenAssets.clear();
 
@@ -267,13 +267,3 @@ export default class UploadcareCommand extends Command {
 		} as any );
 	}
 }
-
-/**
- * Fired when the command is executed, the dialog is closed or the assets are chosen.
- *
- * @eventName ~UploadcareCommand#uploadcare
- */
-type UploadcareEvent<Name extends '' | 'choose' | 'open' | 'close' = ''> = {
-	name: Name extends '' ? 'uploadcare' : `uploadcare:${ Name }`;
-	args: Name extends 'choose' ? [ assets: Array<any> ] : [];
-};

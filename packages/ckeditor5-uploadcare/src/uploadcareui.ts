@@ -92,9 +92,6 @@ export default class UploadcareUI extends Plugin {
 					content: form,
 					onShow: () => {
 						uploadcareCommand.execute( _type );
-					},
-					onHide: () => {
-						uploadcareCommand.fire( 'uploadcare:close' );
 					}
 				} );
 			} );
