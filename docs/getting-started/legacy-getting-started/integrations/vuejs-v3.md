@@ -35,6 +35,10 @@ Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-5-
 
 ## Quick start
 
+<info-box warning>
+	⚠️  This guide is only valid for version 6.0.0 of the `@ckeditor/ckeditor5-vue` package, because of the API changes introduced in version 7.0.0. If you are looking for current CKEditor 5 Vue integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 integration} guide.
+</info-box>
+
 Install the [CKEditor&nbsp;5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):

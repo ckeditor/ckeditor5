@@ -116,7 +116,7 @@ export default {
 </script>
 ```
 
-#### Using the `<ckeditor>` component globally
+#### Using the `<ckeditor>` component locally
 
 If you do not want to enable the CKEditor&nbsp;5 component globally, you can import the `Ckeditor` component from the `@ckeditor/ckeditor5-vue` package directly into the Vue component where you want to use it, and add it to the `components` object.
 
