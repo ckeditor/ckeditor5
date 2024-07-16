@@ -34,25 +34,25 @@ You get ready-to-use code tailored to your needs!
 
 ### Setting up the project
 
-This guide assumes that you already have a Vue project. If you don't have any, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create one.
+This guide assumes that you already have a Vue project. If you do not have any, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create one.
 
 ### Installation
 
 Start by installing the following packages:
 
-* `ckeditor5` - contains all open-source plugins and features for CKEditor&nbsp;5.
+* `ckeditor5` &ndash; contains all open-source plugins and features for CKEditor&nbsp;5.
 
 	```bash
 	npm install ckeditor5
 	```
 
-* `ckeditor5-premium-features` - contains premium plugins and features for CKEditor&nbsp;5. Depending on your configuration and chosen plugins, you might not need it.
+* `ckeditor5-premium-features` &ndash; contains premium plugins and features for CKEditor&nbsp;5. Depending on your configuration and chosen plugins, you might not need it.
 
 	```bash
 	npm install ckeditor5-premium-features
 	```
 
-* `@ckeditor/ckeditor5-vue` - [CKEditor 5 WYSIWYG editor component for Vue](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue).
+* `@ckeditor/ckeditor5-vue` &ndash; the [CKEditor&nbsp;5 WYSIWYG editor component for Vue](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue).
 
 	```bash
 	npm install @ckeditor/ckeditor5-vue
@@ -62,7 +62,7 @@ With these packages installed, you now need to choose whether to install the `<c
 
 #### Installing the `<ckeditor>` component globally
 
-To register the `<ckeditor>` component globally, you must install the CKEditor plugin for Vue.
+To register the `<ckeditor>` component globally, you must install the CKEditor&nbsp;5 plugin for Vue.
 
 If you are using a plain Vue project, you should find the file where the `createApp` function is called and register the `CkeditorPlugin` plugin with the [`use()` method](https://vuejs.org/api/application.html#app-use).
 
