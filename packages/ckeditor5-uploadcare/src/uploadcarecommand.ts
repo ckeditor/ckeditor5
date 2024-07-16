@@ -137,7 +137,7 @@ export default class UploadcareCommand extends Command {
 
 	/**
 	 * Initializes various event listeners for the `uploadcare:*` events, because all functionality
-	 * of the `uploadcare` command is event-based.
+	 * of the `uploadcare` is event-based.
 	 */
 	private _initListeners() {
 		const editor = this.editor;
@@ -168,9 +168,18 @@ export default class UploadcareCommand extends Command {
 			this._close();
 		} );
 
+		// TODO: check if it is necessary.
 		// Refresh the command after every change.
 		this._ctxElement!.addEventListener( 'change', () => {
 			this.refresh();
+		} );
+
+		// Whenever the `clear` button is triggered we need to re-init the flow.
+		this._ctxElement!.addEventListener( 'activity-change', ( event: CustomEvent<{ activity: string }> ) => {
+			if ( event.detail.activity === 'start-from' ) {
+				this._chosenAssets.clear();
+				this._ctxElement!.initFlow();
+			}
 		} );
 
 		// Handle choosing the assets.
