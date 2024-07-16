@@ -1060,6 +1060,212 @@ describe( 'DataController utils', () => {
 					);
 				} );
 			} );
+
+			describe( 'merging edge auto-paragraphs', () => {
+				describe( 'with text auto-paragraphing', () => {
+					it( 'inserts text + paragraph + text in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts text + paragraph + text in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc</paragraph>]'
+						);
+					} );
+
+					it( 'inserts text + paragraph + text in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]1234</paragraph>'
+						);
+					} );
+				} );
+
+				describe( 'with inline-object auto-paragraphing', () => {
+					it( 'inserts inlineObject + paragraph + inlineObject in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper(
+							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
+						);
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>[]34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + paragraph + inlineObject in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper(
+							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
+						);
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>[]</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234[<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget></paragraph>]'
+						);
+					} );
+
+					it( 'inserts inlineObject + paragraph + inlineObject in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper(
+							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
+						);
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph><inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>[]1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>[<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>]1234</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]1234</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject between paragraphs', () => {
+						setData( model, '<paragraph>12</paragraph>[]<paragraph>34</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>', null, [ 1 ] );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12[]</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[]</paragraph>' +
+							'[<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>]' +
+							'<paragraph>34</paragraph>'
+						);
+					} );
+				} );
+
+				describe( 'with text between block widgets auto-paragraphing', () => {
+					it( 'inserts blockObject + text + blockObject in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'[<blockWidget></blockWidget>]' +
+							'<paragraph>34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts blockObject + text + blockObject in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'[<blockWidget></blockWidget>]'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234</paragraph>' +
+							'[<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'<blockWidget></blockWidget>]'
+						);
+					} );
+
+					it( 'inserts blockObject + text + blockObject in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'[<blockWidget></blockWidget>]' +
+							'<paragraph>1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'[<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'<blockWidget></blockWidget>]' +
+							'<paragraph>1234</paragraph>'
+						);
+					} );
+				} );
+			} );
 		} );
 
 		describe( 'filtering out', () => {
