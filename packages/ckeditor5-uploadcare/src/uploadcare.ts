@@ -36,7 +36,6 @@ export default class Uploadcare extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		// TODO: Config operations.
-		console.log( 'Uploadcare' );
+		editor.config.define( 'uploadcare.sourceList', [ 'local', 'camera', 'url' ] );
 	}
 }

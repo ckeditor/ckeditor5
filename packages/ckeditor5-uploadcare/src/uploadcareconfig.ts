@@ -55,10 +55,10 @@ export interface UploadcareConfig {
 	/**
 	 * The theme for CKBox dialog.
 	 */
-	sourceList?: UploadcareSourceList;
+	sourceList?: Array<UploadcareSource>;
 }
 
-export enum UploadcareSourceList {
+export enum UploadcareSource {
 	Local = 'local',
 	URL = 'url',
 	Camera = 'camera',

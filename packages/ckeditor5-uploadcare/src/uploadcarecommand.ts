@@ -159,9 +159,8 @@ export default class UploadcareCommand extends Command {
 
 				for ( const asset of assetsToProcess ) {
 					const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
-					const isSingleAsset = assetsCount === 1;
 
-					this._insertAsset( asset, isLastAsset, writer, isSingleAsset );
+					this._insertAsset( asset, isLastAsset, writer );
 				}
 			} );
 
@@ -225,8 +224,7 @@ export default class UploadcareCommand extends Command {
 	private _insertAsset(
 		asset: any,
 		isLastAsset: boolean,
-		writer: Writer,
-		isSingleAsset: boolean
+		writer: Writer
 	) {
 		const editor = this.editor;
 		const model = editor.model;

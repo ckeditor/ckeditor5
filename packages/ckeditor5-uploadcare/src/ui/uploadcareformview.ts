@@ -22,6 +22,7 @@ export default class UploadcareFormView extends View {
 	constructor( locale: Locale ) {
 		super( locale );
 
+		// TODO: move it to the command.
 		LR.registerBlocks( LR );
 
 		this.setTemplate( {

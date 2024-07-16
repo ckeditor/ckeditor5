@@ -41,6 +41,13 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		uploadcare: {
+			sourceList: [
+				'url',
+				'camera',
+				'gdrive'
+			]
 		}
 	} )
 	.then( editor => {
