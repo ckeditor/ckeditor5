@@ -1040,6 +1040,32 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
+		it( 'should properly split large table in two parts with odd amount of rows', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 7, contents: '01[]' } ],
+				[ '10' ],
+				[ '20' ],
+				[ '30' ],
+				[ '40' ],
+				[ '50' ],
+				[ '60' ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableUtils.splitCellHorizontally( tableCell, 2 );
+
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
+				[ '00', { rowspan: 4, contents: '01[]' } ],
+				[ '10' ],
+				[ '20' ],
+				[ '30' ],
+				[ '40', { rowspan: 3, contents: '' } ],
+				[ '50' ],
+				[ '60' ]
+			] ) );
+		} );
+
 		it( 'should evenly distribute rowspan attribute', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 7, contents: '01[]' } ],
