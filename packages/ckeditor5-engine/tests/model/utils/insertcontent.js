@@ -426,6 +426,90 @@ describe( 'DataController utils', () => {
 				expect( stringify( root, affectedRange ) ).to.equal( '<heading1>fo[xyz]ar</heading1>' );
 			} );
 
+			it( 'should split and auto-paragraph if needed', () => {
+				model.schema.register( 'widgetContainer', {
+					allowWhere: '$block'
+				} );
+				model.schema.extend( 'blockWidget', {
+					allowIn: 'widgetContainer'
+				} );
+
+				setData( model, '<widgetContainer><blockWidget></blockWidget>[<blockWidget></blockWidget>]</widgetContainer>' );
+
+				const affectedRange = insertHelper( 'abc', null, [ 0, 1 ] );
+
+				expect( getData( model ) ).to.equal(
+					'<widgetContainer><blockWidget></blockWidget></widgetContainer>' +
+					'<paragraph>abc</paragraph>' +
+					'<widgetContainer>[<blockWidget></blockWidget>]</widgetContainer>'
+				);
+				expect( stringify( root, affectedRange ) ).to.equal(
+					'<widgetContainer><blockWidget></blockWidget>[</widgetContainer>' +
+					'<paragraph>abc</paragraph>' +
+					'<widgetContainer>]<blockWidget></blockWidget></widgetContainer>'
+				);
+			} );
+
+			it( 'should split and auto-paragraph multiple levels if needed', () => {
+				model.schema.register( 'blockContainer', {
+					allowIn: '$root',
+					allowChildren: '$block'
+				} );
+				model.schema.register( 'outerContainer', {
+					allowWhere: '$block'
+				} );
+				model.schema.register( 'widgetContainer', {
+					allowIn: 'outerContainer'
+				} );
+				model.schema.extend( 'blockWidget', {
+					allowIn: 'widgetContainer'
+				} );
+
+				setData( model,
+					'<blockContainer>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'<blockWidget></blockWidget>' +
+								'[<blockWidget></blockWidget>]' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+					'</blockContainer>'
+				);
+
+				const affectedRange = insertHelper( 'abc', null, [ 0, 0, 0, 1 ] );
+
+				expect( getData( model ) ).to.equal(
+					'<blockContainer>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'<blockWidget></blockWidget>' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+						'<paragraph>abc</paragraph>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'[<blockWidget></blockWidget>]' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+					'</blockContainer>'
+				);
+				expect( stringify( root, affectedRange ) ).to.equal(
+					'<blockContainer>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'<blockWidget></blockWidget>' +
+							'[</widgetContainer>' +
+						'</outerContainer>' +
+						'<paragraph>abc</paragraph>' +
+						'<outerContainer>' +
+							'<widgetContainer>]' +
+								'<blockWidget></blockWidget>' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+					'</blockContainer>'
+				);
+			} );
+
 			it( 'not insert autoparagraph when paragraph is disallowed at the current position', () => {
 				// Disallow paragraph in $root.
 				model.schema.addChildCheck( ( ctx, childDef ) => {

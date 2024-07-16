@@ -437,10 +437,6 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param elementToMerge The element to merge. Required if `positionOrBaseElement` is an element.
 	 */
 	public checkMerge( positionOrBaseElement: Position | Element, elementToMerge?: Element ): boolean {
-		if ( elementToMerge && this.isLimit( elementToMerge ) ) {
-			return false;
-		}
-
 		if ( positionOrBaseElement instanceof Position ) {
 			const nodeBefore = positionOrBaseElement.nodeBefore;
 			const nodeAfter = positionOrBaseElement.nodeAfter;
@@ -472,7 +468,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 			return this.checkMerge( nodeBefore, nodeAfter );
 		}
 
-		if ( this.isLimit( positionOrBaseElement ) ) {
+		if ( this.isLimit( positionOrBaseElement ) || this.isLimit( elementToMerge! ) ) {
 			return false;
 		}
 
