@@ -1699,23 +1699,27 @@ export default class DomConverter {
 			direction: getNext ? 'forward' : 'backward'
 		} );
 
-		for ( const value of treeWalker ) {
+		for ( const { item } of treeWalker ) {
+			// Found a text node in the same container element.
+			if ( item.is( '$textProxy' ) ) {
+				return item;
+			}
+			// Found a transparent element, skip it and continue inside it.
+			else if ( item.is( 'element' ) && item.getCustomProperty( 'dataPipeline:transparentRendering' ) ) {
+				continue;
+			}
 			// <br> found – it works like a block boundary, so do not scan further.
-			if ( value.item.is( 'element', 'br' ) ) {
+			else if ( item.is( 'element', 'br' ) ) {
 				return null;
 			}
 			// Found an inline object (for example an image).
-			else if ( this._isInlineObjectElement( value.item ) ) {
-				return value.item;
+			else if ( this._isInlineObjectElement( item ) ) {
+				return item;
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
-			else if ( value.item.is( 'containerElement' ) ) {
+			else if ( item.is( 'containerElement' ) ) {
 				return null;
-			}
-			// Found a text node in the same container element.
-			else if ( value.item.is( '$textProxy' ) ) {
-				return value.item;
 			}
 		}
 

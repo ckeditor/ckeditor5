@@ -552,6 +552,21 @@ describe( 'model test utils', () => {
 			}
 		} );
 
+		it( 'should correctly parse whitespaces around custom inline object elements', () => {
+			model.schema.register( 'inlineObj', {
+				inheritAllFrom: '$inlineObject'
+			} );
+
+			const parsed = parse(
+				'<paragraph>Foo <inlineObj></inlineObj> bar</paragraph>',
+				model.schema,
+				{ inlineObjectElements: [ 'inlineObj' ] }
+			);
+
+			expect( parsed.getChild( 0 ).data ).to.equal( 'Foo ' );
+			expect( parsed.getChild( 2 ).data ).to.equal( ' bar' );
+		} );
+
 		it( 'throws when invalid XML', () => {
 			expect( () => {
 				parse( '<a><b></a></b>', model.schema );

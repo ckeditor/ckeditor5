@@ -627,6 +627,43 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			} );
 		} );
 
+		it( 'around dataPipeline:transparentRendering objects', () => {
+			editor.model.schema.register( 'inlineObject', { inheritAllFrom: '$inlineObject' } );
+
+			function converter( isData ) {
+				return ( modelElement, { writer } ) => {
+					const viewElement = writer.createContainerElement( 'span' );
+
+					if ( isData ) {
+						writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createText( 'XXX' ) );
+					}
+
+					return viewElement;
+				};
+			}
+
+			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+				model: 'inlineObject',
+				view: converter( false )
+			} );
+
+			editor.conversion.for( 'dataDowncast' ).elementToElement( {
+				model: 'inlineObject',
+				view: converter( true )
+			} );
+
+			editor.model.change( writer => {
+				const p = editor.model.document.getRoot().getChild( 0 );
+
+				writer.insertText( 'Foo ', p, 'end' );
+				writer.insertElement( 'inlineObject', p, 'end' );
+				writer.insertText( ' bar', p, 'end' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>Foo XXX bar</p>' );
+		} );
+
 		it( 'in preformatted blocks', () => {
 			editor.model.schema.register( 'pre', { inheritAllFrom: '$block' } );
 			editor.conversion.elementToElement( { model: 'pre', view: 'pre' } );
