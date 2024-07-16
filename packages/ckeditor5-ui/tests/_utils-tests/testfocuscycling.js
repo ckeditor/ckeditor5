@@ -6,6 +6,7 @@
 /* global document, KeyboardEvent */
 
 import { parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
+import { View } from '../../src/index.js';
 
 export default function testFocusCycling( {
 	getView,
@@ -67,7 +68,7 @@ export default function testFocusCycling( {
 			if ( modifyFocusables ) {
 				const focusablesCountBeforeModify = focusables.length;
 
-				modifyFocusables();
+				await modifyFocusables();
 
 				if ( focusablesCountBeforeModify === focusables.length ) {
 					throw new Error(
@@ -135,6 +136,28 @@ export function getDomKeyboardEvent( keyCode, options = { bubbles: true } ) {
 	sinon.spy( event, 'stopPropagation' );
 
 	return event;
+}
+
+export class FocusableTestView extends View {
+	constructor( text ) {
+		super();
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				tabindex: -1
+			},
+			children: [
+				{
+					text
+				}
+			]
+		} );
+	}
+
+	focus() {
+		this.element.focus();
+	}
 }
 
 function defaultDispatchDomKeyboardEvent( {
