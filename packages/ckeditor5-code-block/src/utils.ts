@@ -294,3 +294,54 @@ export function getCodeBlockAriaAnnouncement(
 
 	return t( 'Leaving code snippet' );
 }
+
+/**
+ * For given position, finds the closest position that is at the beginning of a line of code and returns a text node that is at the
+ * beginning of the line (or `null` if there's no text node at the beginning of a given line).
+ *
+ * Line beings at the start of a code block element and after each `softBreak` element.
+ *
+ * Note: even though code block doesn't allow inline elements other than `<softBreak>` by default, some features may overwrite this rule,
+ * so such inline elements are taken into account.
+ *
+ * Some examples of expected results:
+ *
+ * ```
+ * <codeBlock>^</codeBlock>                                ->   null
+ * <codeBlock>^foobar</codeBlock>                          ->   <codeBlock>[foobar]</codeBlock>
+ * <codeBlock>foobar^</codeBlock>                          ->   <codeBlock>[foobar]</codeBlock>
+ * <codeBlock>foo^bar</codeBlock>                          ->   <codeBlock>[foobar]</codeBlock>
+ * <codeBlock>foo^<softBreak />bar</codeBlock>             ->   <codeBlock>[foo]<softBreak />bar</codeBlock>
+ * <codeBlock>foo<softBreak />bar^</codeBlock>             ->   <codeBlock>foo<softBreak />[bar]</codeBlock>
+ * <codeBlock>foo<softBreak />b^ar</codeBlock>             ->   <codeBlock>foo<softBreak />[bar]</codeBlock>
+ * <codeBlock>foo<softBreak />^bar</codeBlock>             ->   <codeBlock>foo<softBreak />[bar]</codeBlock>
+ * <codeBlock>^<element /></codeBlock>                     ->   null
+ * <codeBlock><element />^</codeBlock>                     ->   null
+ * <codeBlock>foo^<element /></codeBlock>                  ->   <codeBlock>[foo]<element /></codeBlock>
+ * <codeBlock>foo<element />^</codeBlock>                  ->   <codeBlock>[foo]<element /></codeBlock>
+ * <codeBlock>foo<element />bar^</codeBlock>               ->   <codeBlock>[foo]<element />bar</codeBlock>
+ * <codeBlock><element />bar^</codeBlock>                  ->   null
+ * <codeBlock>foo<softBreak />^<softBreak /></codeBlock>   ->   null
+ * <codeBlock>foo<softBreak />^<element /></codeBlock>     ->   null
+ * <codeBlock>foo<softBreak /><element />^</codeBlock>     ->   null
+ * <codeBlock>foo<softBreak />bar<element />^</codeBlock>  ->   <codeBlock>foo<softBreak />[bar]<element /></codeBlock>
+ * <codeBlock>foo<softBreak /><element />ba^r</codeBlock>  ->   null
+ * ```
+ */
+export function getTextNodeAtLineStart( position: Position, model: Model ): Text | null {
+	// First, move position before a text node, if it is inside a text node.
+	if ( position.textNode ) {
+		position = model.createPositionBefore( position.textNode );
+	}
+
+	// Then, jump-back the position until it is before a `softBreak` or at the beginning of the `codeBlock`.
+	while ( position.nodeBefore && !position.nodeBefore.is( 'element', 'softBreak' ) ) {
+		position = model.createPositionBefore( position.nodeBefore );
+	}
+
+	// Now, the position is at the beginning of a line.
+	// Return a text node after the position, if there is one.
+	const nodeAtStart = position.nodeAfter;
+
+	return nodeAtStart && nodeAtStart.is( '$text' ) ? nodeAtStart : null;
+}

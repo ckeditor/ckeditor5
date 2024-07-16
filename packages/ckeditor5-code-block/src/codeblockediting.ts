@@ -7,8 +7,6 @@
  * @module code-block/codeblockediting
  */
 
-import { lowerFirst, upperFirst } from 'lodash-es';
-
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
@@ -35,7 +33,8 @@ import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
 	rawSnippetTextToViewDocumentFragment,
-	getCodeBlockAriaAnnouncement
+	getCodeBlockAriaAnnouncement,
+	getTextNodeAtLineStart
 } from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
@@ -351,9 +350,11 @@ export default class CodeBlockEditing extends Plugin {
 function breakLineOnEnter( editor: Editor ): void {
 	const model = editor.model;
 	const modelDoc = model.document;
+	// Use last position as other mechanisms (e.g. condition deciding whether this function should be called) also check that.
 	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
-	const node = lastSelectionPosition.nodeBefore || lastSelectionPosition.textNode;
 	let leadingWhiteSpaces: string | undefined;
+
+	const node = getTextNodeAtLineStart( lastSelectionPosition, model );
 
 	// Figure out the indentation (white space chars) at the beginning of the line.
 	if ( node && node.is( '$text' ) ) {

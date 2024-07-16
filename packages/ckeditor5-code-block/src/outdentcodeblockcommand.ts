@@ -7,13 +7,14 @@
  * @module code-block/outdentcodeblockcommand
  */
 
-import type { Model, Position, Range, Text } from 'ckeditor5/src/engine.js';
+import type { Model, Position, Range } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	getLeadingWhiteSpaces,
 	getIndentOutdentPositions,
-	isModelSelectionInCodeBlock
+	isModelSelectionInCodeBlock,
+	getTextNodeAtLineStart
 } from './utils.js';
 
 /**
@@ -129,7 +130,7 @@ export default class OutdentCodeBlockCommand extends Command {
 // @returns {<module:engine/model/range~Range>|null}
 function getLastOutdentableSequenceRange( model: Model, position: Position, sequence: string ): Range | null {
 	// Positions start before each text node (code line). Get the node corresponding to the position.
-	const nodeAtPosition = getCodeLineTextNodeAtPosition( position );
+	const nodeAtPosition = getTextNodeAtLineStart( position, model );
 
 	if ( !nodeAtPosition ) {
 		return null;
@@ -167,48 +168,4 @@ function getLastOutdentableSequenceRange( model: Model, position: Position, sequ
 		model.createPositionAt( parent!, startOffset! + lastIndexOfSequence ),
 		model.createPositionAt( parent!, startOffset! + lastIndexOfSequence + sequence.length )
 	);
-}
-
-// For given position, find the closest position that is at the beginning of a line.
-// Beginning of a line is after a `softBreak` element or at the beginning of a code block.
-// Then, return a text node that is at the beginning of the line.
-// Even though code block doesn't allow other elements than `<softBreak>`, some features may overwrite this rule,
-// so they are taken into account.
-//
-// <codeBlock>foobar^</codeBlock>                         ->   <codeBlock>^[foobar]</codeBlock>
-// <codeBlock>foo<softBreak />bar^</codeBlock>            ->   <codeBlock>foo<softBreak />^[bar]</codeBlock>
-// <codeBlock>foo^<softBreak />bar</codeBlock>            ->   <codeBlock>^[foo]<softBreak />bar</codeBlock>
-// <codeBlock><element />^</codeBlock>                    ->   null
-// <codeBlock>^<element /></codeBlock>                    ->   null
-// <codeBlock>^</codeBlock>                               ->   null
-// <codeBlock>foo<softBreak />^<element /></codeBlock>    ->   null
-// <codeBlock>foo^<element /></codeBlock>                 ->   <codeBlock>^[foo]<element /></codeBlock>
-// <codeBlock>foo<element />^</codeBlock>                 ->   <codeBlock>^[foo]<element /></codeBlock>
-// <codeBlock>foo<element />bar^</codeBlock>              ->   <codeBlock>^[foo]<element />bar</codeBlock>
-// <codeBlock>foo<element />bar<element />^</codeBlock>   ->   <codeBlock>^[foo]<element />bar<element /></codeBlock>
-// <codeBlock>foo<element />bar<element /><softBreak />baz^</codeBlock>
-//                                                        -> <codeBlock>foo<element />bar<element /><softBreak />^[baz]</codeBlock>
-function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
-	let nodeAtPosition = position.parent.getChild( position.index );
-
-	// If position is at the end of the line, there is no node, so get the previous one.
-	if ( !nodeAtPosition ) {
-		nodeAtPosition = position.nodeBefore;
-	}
-
-	// If there is a node at the position, find the first node at the beginning of the line.
-	if ( nodeAtPosition && !nodeAtPosition.is( 'element', 'softBreak' ) ) {
-		while ( nodeAtPosition.previousSibling && !nodeAtPosition.previousSibling.is( 'element', 'softBreak' ) ) {
-			nodeAtPosition = nodeAtPosition.previousSibling;
-		}
-	}
-
-	// If a line is empty or there's an element at the beginning of the line, return null.
-	// Even though code block doesn't allow other elements than `<softBreak>`, some features may overwrite this rule,
-	// so we need to check for any element, not only `<softBreak>`.
-	if ( !nodeAtPosition || nodeAtPosition.is( 'element' ) ) {
-		return null;
-	}
-
-	return nodeAtPosition as Text;
 }
