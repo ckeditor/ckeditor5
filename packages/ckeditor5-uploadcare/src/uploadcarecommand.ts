@@ -10,10 +10,14 @@
  */
 
 import type { Writer } from 'ckeditor5/src/engine.js';
-import { Command } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
+import { Dialog } from 'ckeditor5/src/ui.js';
 
-import type * as LR from '@uploadcare/blocks';
+import * as LR from '@uploadcare/blocks';
+
+import UploadcareFormView from './ui/uploadcareformview.js';
+import imageUploadIcon from '../theme/icons/image-upload.svg';
 
 /**
  * The Uploadcare command. It is used by the {@link module:uploadcare/uploadcareediting~UploadcareEditing Uploadcare editing feature}
@@ -25,6 +29,13 @@ import type * as LR from '@uploadcare/blocks';
  */
 export default class UploadcareCommand extends Command {
 	declare public value: boolean;
+
+	/**
+	 * The dialog plugin instance.
+	 *
+	 * @internal
+	 */
+	private _dialog!: Dialog;
 
 	/**
 	 * The choosen source type.
@@ -51,6 +62,22 @@ export default class UploadcareCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	public static get requires() {
+		return [ Dialog ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this._dialog = editor.plugins.get( Dialog );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
@@ -66,10 +93,16 @@ export default class UploadcareCommand extends Command {
 
 		this._type = type;
 
+		LR.registerBlocks( LR );
+
 		this._initConfig();
 		this._initCtx();
+		this._initDialog();
 
 		this._initListeners();
+
+		// It should be called after initializing all elements.
+		this._ctxElement!.initFlow();
 	}
 
 	/**
@@ -107,16 +140,27 @@ export default class UploadcareCommand extends Command {
 		} ) as LR.UploaderBlock;
 
 		document.body.appendChild( this._ctxElement );
+	}
 
-		this._ctxElement.initFlow();
+	private _initDialog() {
+		const { editor: { locale } } = this;
+		const { t } = locale;
+
+		const form = new UploadcareFormView( locale );
+
+		this._dialog.show( {
+			id: 'uploadCare',
+			icon: imageUploadIcon,
+			title: t( 'Uploadcare' ),
+			content: form,
+			onHide: () => {
+				this._close();
+			}
+		} );
 	}
 
 	private _close() {
-		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
-
-		if ( dialogPlugin ) {
-			dialogPlugin.hide();
-		}
+		this._dialog.hide();
 
 		if ( !this.value ) {
 			return;
@@ -141,13 +185,6 @@ export default class UploadcareCommand extends Command {
 	 */
 	private _initListeners() {
 		const editor = this.editor;
-		const dialogPlugin = editor.plugins.get( 'Dialog' );
-
-		if ( dialogPlugin ) {
-			dialogPlugin.on( 'hide:uploadCare', () => {
-				this._close();
-			} );
-		}
 
 		this._ctxElement!.addEventListener( 'done-click', () => {
 			const model = this.editor.model;

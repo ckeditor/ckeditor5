@@ -33,10 +33,7 @@ import localIcon from '../theme/icons/local.svg';
 import oneDriveIcon from '../theme/icons/onedrive.svg';
 
 import { Collection } from 'ckeditor5/src/utils.js';
-import UploadcareFormView from './ui/uploadcareformview.js';
 
-import '../theme/uploadcare-form.css';
-import '@uploadcare/blocks/web/lr-file-uploader-inline.min.css';
 import { UploadcareSource } from './uploadcareconfig.js';
 
 type SourceDefinition = {
@@ -50,24 +47,10 @@ type SourceDefinition = {
  */
 export default class UploadcareUI extends Plugin {
 	/**
-	 * The dialog plugin instance.
-	 *
-	 * @internal
-	 */
-	private _dialog!: Dialog;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
 		return 'UploadcareUI' as const;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get requires() {
-		return [ Dialog ] as const;
 	}
 
 	/**
@@ -84,8 +67,6 @@ export default class UploadcareUI extends Plugin {
 
 		const uploadSources = this._normalizeConfigSourceList( editor.config.get( 'uploadcare.sourceList' ) as Array<UploadcareSource> );
 
-		this._dialog = editor.plugins.get( Dialog );
-
 		editor.ui.componentFactory.add( 'uploadcare', locale => {
 			const dropdown = createDropdown( locale );
 			const listItems = new Collection<ListDropdownItemDefinition>(
@@ -96,20 +77,10 @@ export default class UploadcareUI extends Plugin {
 				role: 'menu'
 			} );
 
-			// TODO: move this dialog to the command.
 			this.listenTo<ButtonExecuteEvent>( dropdown, 'execute', evt => {
 				const { _type } = evt.source;
-				const form = new UploadcareFormView( locale );
 
-				this._dialog.show( {
-					id: 'uploadCare',
-					icon: imageUploadIcon,
-					title: t( 'Uploadcare' ),
-					content: form,
-					onShow: () => {
-						uploadcareCommand.execute( _type );
-					}
-				} );
+				uploadcareCommand.execute( _type );
 			} );
 
 			dropdown.buttonView.set( {

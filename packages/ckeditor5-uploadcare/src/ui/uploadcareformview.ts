@@ -10,8 +10,6 @@
 import { type Locale } from 'ckeditor5/src/utils.js';
 import { View } from 'ckeditor5/src/ui.js';
 
-import * as LR from '@uploadcare/blocks';
-
 /**
  * A class representing the form view of the Uploadcare feature.
  */
@@ -21,9 +19,6 @@ export default class UploadcareFormView extends View {
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
-
-		// TODO: move it to the command.
-		LR.registerBlocks( LR );
 
 		this.setTemplate( {
 			tag: 'div',

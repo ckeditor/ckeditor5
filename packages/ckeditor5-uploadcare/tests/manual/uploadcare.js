@@ -44,9 +44,18 @@ ClassicEditor
 		},
 		uploadcare: {
 			sourceList: [
+				'local',
 				'url',
 				'camera',
-				'gdrive'
+				'dropbox',
+				'gdrive',
+				'facebook',
+				'gphotos',
+				'instagram',
+				'flickr',
+				'evernote',
+				'box',
+				'onedrive'
 			]
 		}
 	} )

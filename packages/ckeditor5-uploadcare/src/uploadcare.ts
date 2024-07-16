@@ -12,6 +12,9 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import UploadcareUI from './uploadcareui.js';
 import UploadcareEditing from './uploadcareediting.js';
 
+import '@uploadcare/blocks/web/lr-file-uploader-inline.min.css';
+import '../theme/uploadcare-form.css';
+
 /**
  * Uploadcare plugin that allows you to use the Uploadcare features.
  */
