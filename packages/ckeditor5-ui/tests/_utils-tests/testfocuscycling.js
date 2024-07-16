@@ -139,7 +139,7 @@ export function getDomKeyboardEvent( keyCode, options = { bubbles: true } ) {
 }
 
 export class FocusableTestView extends View {
-	constructor( text ) {
+	constructor( text = 'test' ) {
 		super();
 
 		this.setTemplate( {
