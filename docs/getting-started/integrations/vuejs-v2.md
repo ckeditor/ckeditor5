@@ -104,7 +104,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
@@ -142,7 +142,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
@@ -171,7 +171,7 @@ This directive specifies the editor to be used by the component. It must directl
 				// ...
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -218,7 +218,7 @@ A [standard directive](https://vuejs.org/v2/api/#v-model) for form inputs in Vue
 				this.editorData = '';
 			}
 		}
-	}
+	};
 </script>
 ```
 
@@ -248,7 +248,7 @@ Allows a one–way data binding that sets the content of the editor. Unlike [`v-
 				editorData: '<p>Content of the editor.</p>'
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -278,7 +278,7 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 				}
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -307,7 +307,7 @@ It sets the initial read–only state of the editor and changes it during its li
 				editorDisabled: true
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -372,7 +372,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-	import 'ckeditor5/ckeditor5.css'
+	import 'ckeditor5/ckeditor5.css';
 
 	export default {
 		name: 'app',
@@ -391,7 +391,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 				);
 			}
 		}
-	}
+	};
 </script>
 ```
 
@@ -440,7 +440,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
