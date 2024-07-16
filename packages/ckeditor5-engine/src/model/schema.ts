@@ -424,7 +424,8 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
 	 *
-	 * In other words &ndash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
+	 * In other words &ndash; both elements are not a limit elements and whether `elementToMerge`'s children
+	 * {@link #checkChild are allowed} in the `positionOrBaseElement`.
 	 *
 	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
 	 * will be valid.

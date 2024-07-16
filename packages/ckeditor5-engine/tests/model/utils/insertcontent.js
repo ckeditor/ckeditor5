@@ -1201,7 +1201,7 @@ describe( 'DataController utils', () => {
 							'<paragraph>34</paragraph>'
 						);
 						expect( stringify( root, affectedRange ) ).to.equal(
-							'<paragraph>12[]</paragraph>' +
+							'<paragraph>12</paragraph>' +
 							'[<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>]' +
 							'<paragraph>34</paragraph>'
 						);

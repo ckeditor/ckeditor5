@@ -928,6 +928,17 @@ describe( 'Schema', () => {
 				allowWhere: '$block',
 				allowContentOf: '$root'
 			} );
+			schema.register( 'blockObject', {
+				allowWhere: '$block',
+				isBlock: true,
+				isObject: true
+			} );
+			schema.register( 'inlineObject', {
+				allowWhere: '$text',
+				allowAttributesOf: '$text',
+				isInline: true,
+				isObject: true
+			} );
 		} );
 
 		it( 'returns false if a block cannot be merged with other block (disallowed element is the first child)', () => {
@@ -978,6 +989,34 @@ describe( 'Schema', () => {
 			const position = Position._createAfter( listItem );
 
 			expect( schema.checkMerge( position ) ).to.be.true;
+		} );
+
+		it( 'return false if elements on the left is a block object', () => {
+			const left = new Element( 'blockObject' );
+			const right = new Element( 'paragraph' );
+
+			expect( schema.checkMerge( left, right ) ).to.be.false;
+		} );
+
+		it( 'return false if elements on the right is a block object', () => {
+			const left = new Element( 'paragraph' );
+			const right = new Element( 'blockObject' );
+
+			expect( schema.checkMerge( left, right ) ).to.be.false;
+		} );
+
+		it( 'return false if both elements are block objects', () => {
+			const left = new Element( 'blockObject' );
+			const right = new Element( 'blockObject' );
+
+			expect( schema.checkMerge( left, right ) ).to.be.false;
+		} );
+
+		it( 'return false if both elements are inline objects', () => {
+			const left = new Element( 'inlineObject' );
+			const right = new Element( 'inlineObject' );
+
+			expect( schema.checkMerge( left, right ) ).to.be.false;
 		} );
 
 		it( 'throws an error if there is no element before the position', () => {

@@ -408,33 +408,27 @@ class Insertion {
 	 * Handles insertion of a single node.
 	 */
 	private _handleNode( node: Node ): void {
-		// Let's handle object in a special way.
-		// * They should never be merged with other elements.
-		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
-		if ( this.schema.isObject( node ) ) {
-			this._handleObject( node as Element );
-		} else {
-			// Try to find a place for the given node.
+		// Check if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
+		// Inserts the auto paragraph if it would allow for insertion.
+		let isAllowed = this._checkAndAutoParagraphToAllowedPosition( node );
 
-			// Check if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
-			// Inserts the auto paragraph if it would allow for insertion.
-			let isAllowed = this._checkAndAutoParagraphToAllowedPosition( node );
+		if ( !isAllowed ) {
+			// Split the position.parent's branch up to a point where the node can be inserted.
+			// If it isn't allowed in the whole branch, then of course don't split anything.
+			isAllowed = this._checkAndSplitToAllowedPosition( node );
 
 			if ( !isAllowed ) {
-				// Split the position.parent's branch up to a point where the node can be inserted.
-				// If it isn't allowed in the whole branch, then of course don't split anything.
-				isAllowed = this._checkAndSplitToAllowedPosition( node );
-
-				if ( !isAllowed ) {
+				// Handle element children if it's not an object (strip container).
+				if ( !this.schema.isObject( node ) ) {
 					this._handleDisallowedNode( node );
-
-					return;
 				}
-			}
 
-			// Add node to the current temporary DocumentFragment.
-			this._appendToFragment( node );
+				return;
+			}
 		}
+
+		// Add node to the current temporary DocumentFragment.
+		this._appendToFragment( node );
 
 		// Store the first and last nodes for easy access for merging with sibling nodes.
 		if ( !this._firstNode ) {
@@ -481,30 +475,12 @@ class Insertion {
 	}
 
 	/**
-	 * @param node The object element.
-	 */
-	private _handleObject( node: Element ): void {
-		// Try finding it a place in the tree.
-		if ( this._checkAndSplitToAllowedPosition( node ) ) {
-			this._appendToFragment( node );
-		}
-		// Try autoparagraphing.
-		else {
-			this._tryAutoparagraphing( node );
-		}
-	}
-
-	/**
 	 * @param node The disallowed node which needs to be handled.
 	 */
 	private _handleDisallowedNode( node: Node ): void {
 		// If the node is an element, try inserting its children (strip the parent).
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren() );
-		}
-		// If text is not allowed, try autoparagraphing it.
-		else {
-			this._tryAutoparagraphing( node );
 		}
 	}
 
@@ -760,23 +736,6 @@ class Insertion {
 		return ( nextSibling instanceof Element ) &&
 			this.canMergeWith.has( nextSibling ) &&
 			this.model.schema.checkMerge( node, nextSibling );
-	}
-
-	/**
-	 * Tries wrapping the node in a new paragraph and inserting it this way.
-	 *
-	 * @param node The node which needs to be autoparagraphed.
-	 */
-	private _tryAutoparagraphing( node: Node ): void {
-		const paragraph = this.writer.createElement( 'paragraph' );
-
-		// Do not autoparagraph if the paragraph won't be allowed there,
-		// cause that would lead to an infinite loop. The paragraph would be rejected in
-		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( this.position.parent as any, paragraph ) && this.schema.checkChild( paragraph, node ) ) {
-			paragraph._appendChild( node );
-			this._handleNode( paragraph );
-		}
 	}
 
 	/**
