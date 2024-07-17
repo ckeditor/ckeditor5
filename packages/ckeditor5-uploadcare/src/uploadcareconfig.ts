@@ -58,6 +58,9 @@ export interface UploadcareConfig {
 	sourceList?: Array<UploadcareSource>;
 }
 
+/**
+ * Definition of all available upload sources.
+ */
 export enum UploadcareSource {
 	Local = 'local',
 	URL = 'url',
@@ -71,4 +74,51 @@ export enum UploadcareSource {
 	Evernote = 'evernote',
 	Box = 'box',
 	OneDrive = 'onedrive'
+}
+
+/**
+ * Image asset definition.
+ *
+ * The definition contains the unique `id`, asset `type` and an `attributes` definition.
+ */
+export interface UploadcareAssetImageDefinition {
+
+	/**
+	 * An unique asset id.
+	 */
+	id: string;
+
+	/**
+	 * Asset type.
+	 */
+	type: 'image';
+
+	/**
+	 * Asset attributes.
+	 */
+	attributes: UploadcareAssetImageAttributesDefinition;
+}
+
+/**
+ * Asset attributes definition for an image.
+ *
+ * The definition contains the `imageFallbackUrl`, an `imageSources` array with one image source definition object and the
+ * `imageTextAlternative`.
+ */
+export interface UploadcareAssetImageAttributesDefinition {
+
+	/**
+	 * A fallback URL for browsers that do not support the "webp" format.
+	 */
+	imageFallbackUrl: string;
+
+	/**
+	 * Image width.
+	 */
+	imageWidth?: number;
+
+	/**
+	 * Image height.
+	 */
+	imageHeight?: number;
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, window, setTimeout, URL */
+/* global document */
 
 /**
  * @module uploadcare/uploadcarecommand
@@ -18,6 +18,7 @@ import * as LR from '@uploadcare/blocks';
 
 import UploadcareFormView from './ui/uploadcareformview.js';
 import imageUploadIcon from '../theme/icons/image-upload.svg';
+import { type UploadcareAssetImageDefinition } from './uploadcareconfig.js';
 
 /**
  * The Uploadcare command. It is used by the {@link module:uploadcare/uploadcareediting~UploadcareEditing Uploadcare editing feature}
@@ -28,8 +29,6 @@ import imageUploadIcon from '../theme/icons/image-upload.svg';
  * ```
  */
 export default class UploadcareCommand extends Command {
-	declare public value: boolean;
-
 	/**
 	 * The dialog plugin instance.
 	 *
@@ -57,7 +56,7 @@ export default class UploadcareCommand extends Command {
 	/**
 	 * @internal
 	 */
-	public readonly _chosenAssets = new Set<any>();
+	public readonly _chosenAssets = new Set<UploadcareAssetImageDefinition>();
 
 	/**
 	 * @inheritDoc
@@ -79,7 +78,6 @@ export default class UploadcareCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
 
@@ -93,30 +91,14 @@ export default class UploadcareCommand extends Command {
 
 		this._type = type;
 
-		if ( !this._ctxElement || !this._configElement ) {
-			LR.registerBlocks( LR );
-
-			this._initConfig();
-			this._initCtx();
-			this._initDialog();
-			this._initListeners();
+		if ( !this._ctxElement ) {
+			this._initComponents();
 		} else {
-			this._ctxElement.doneFlow();
-			this._configElement.setAttribute( 'source-list', this._type );
+			this._reinitFlow();
 		}
 
 		// It should be called after initializing all elements.
 		this._ctxElement!.initFlow();
-	}
-
-	/**
-	 * Indicates if the Uploadcare dialog is already opened.
-	 *
-	 * @protected
-	 * @returns {Boolean}
-	 */
-	private _getValue(): boolean {
-		return this._ctxElement !== null;
 	}
 
 	/**
@@ -126,6 +108,28 @@ export default class UploadcareCommand extends Command {
 		const imageCommand = this.editor.commands.get( 'insertImage' )!;
 
 		return imageCommand.isEnabled;
+	}
+
+	/**
+	 * Initializes the necessary components.
+	 * Registers blocks, initializes configuration, context, dialog, and listeners.
+	 */
+	private _initComponents() {
+		LR.registerBlocks( LR );
+
+		this._initConfig();
+		this._initCtx();
+		this._initDialog();
+		this._initListeners();
+	}
+
+	/**
+	 * Finishes the current flow and updates the components if they are already initialized.
+	 * It is used when the dialog is already open and the command is executed with another type.
+	 */
+	private _reinitFlow() {
+		this._ctxElement!.doneFlow();
+		this._configElement!.setAttribute( 'source-list', this._type );
 	}
 
 	private _initConfig() {
@@ -163,10 +167,14 @@ export default class UploadcareCommand extends Command {
 		} );
 	}
 
+	/**
+	 * Clears the current state and removes the created elements.
+	 */
 	private _close() {
 		this._dialog.hide();
 
 		this._type = null;
+		this._chosenAssets.clear();
 
 		this._configElement!.remove();
 		this._configElement = null;
@@ -174,15 +182,11 @@ export default class UploadcareCommand extends Command {
 		this._ctxElement!.remove();
 		this._ctxElement = null;
 
-		this.refresh();
-
-		this._chosenAssets.clear();
-
 		this.editor.editing.view.focus();
 	}
 
 	/**
-	 * Initializes various event listeners for the `uploadcare:*` events, because all functionality
+	 * Initializes various event listeners for the events, because all functionality
 	 * of the `uploadcare` is event-based.
 	 */
 	private _initListeners() {
@@ -222,12 +226,11 @@ export default class UploadcareCommand extends Command {
 				return;
 			}
 
-			const asset = {
+			const asset: UploadcareAssetImageDefinition = {
 				id: fileInfo.uuid,
 				type: 'image',
 				attributes: {
 					imageFallbackUrl: fileInfo.cdnUrl,
-					imageTextAlternative: '',
 					imageWidth: fileInfo.imageInfo!.width,
 					imageHeight: fileInfo.imageInfo!.height
 				}
@@ -250,7 +253,6 @@ export default class UploadcareCommand extends Command {
 	 * @param asset The asset to be inserted.
 	 * @param isLastAsset Indicates if the current asset is the last one from the chosen set.
 	 * @param writer An instance of the model writer.
-	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
 	private _insertAsset(
 		asset: any,
@@ -282,26 +284,20 @@ export default class UploadcareCommand extends Command {
 	 *
 	 * @param asset The asset to be inserted.
 	 */
-	private _insertImage( asset: any ) {
+	private _insertImage( asset: UploadcareAssetImageDefinition ) {
 		const editor = this.editor;
 		const {
 			imageFallbackUrl,
-			imageSources,
-			imageTextAlternative,
 			imageWidth,
-			imageHeight,
-			imagePlaceholder
+			imageHeight
 		} = asset.attributes;
 
 		editor.execute( 'insertImage', {
 			source: {
 				src: imageFallbackUrl,
-				sources: imageSources,
-				alt: imageTextAlternative,
 				width: imageWidth,
-				height: imageHeight,
-				...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
+				height: imageHeight
 			}
-		} as any );
+		} );
 	}
 }
