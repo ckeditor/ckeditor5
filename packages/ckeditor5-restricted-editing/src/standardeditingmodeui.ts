@@ -50,7 +50,7 @@ export default class StandardEditingModeUI extends Plugin {
 	/**
 	 * Creates a button for restricted editing exception command to use either in toolbar or in menu bar.
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command = this.editor.commands.get( 'restrictedEditingException' )!;

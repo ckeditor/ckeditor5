@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-heading_heading1 {
+.ck.ck-heading_heading1 .ck-button__label {
 	font-size: 20px;
 }
 
-.ck.ck-heading_heading2 {
+.ck.ck-heading_heading2 .ck-button__label {
 	font-size: 17px;
 }
 
-.ck.ck-heading_heading3 {
+.ck.ck-heading_heading3 .ck-button__label {
 	font-size: 14px;
 }
 

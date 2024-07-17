@@ -5,39 +5,135 @@
 
 /* globals setTimeout, window, console, document */
 
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import EditorWatchdog from '../src/editorwatchdog.js';
 import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { Comments } from '@ckeditor/ckeditor5-comments';
-import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
-import Suggestion from '@ckeditor/ckeditor5-track-changes/src/suggestion.js';
 
-class UsersInit {
-	static get requires() {
-		return [ 'Users' ];
+class CommentsRepository extends Plugin {
+	static get pluginName() {
+		return 'CommentsRepository';
 	}
 
 	constructor( editor ) {
+		super( editor );
+
+		this.editor = editor;
+		this._threads = [];
+	}
+
+	getCommentThread( id ) {
+		const thread = this._threads.find( thread => thread.threadId === id );
+
+		if ( !thread ) {
+			return null;
+		}
+
+		return {
+			...thread,
+			remove: () => {
+				this._threads.filter( thread => thread.threadId === id );
+			},
+			setAttribute: ( key, value ) => {
+				const idx = this._threads.findIndex( thread => thread.threadId === id );
+
+				this._threads[ idx ].attributes = { [ key ]: value };
+			}
+		};
+	}
+
+	getCommentThreads() {
+		return this._threads;
+	}
+
+	hasCommentThread( id ) {
+		return !!this.getCommentThread( id );
+	}
+
+	addCommentThread( data ) {
+		const id = data.threadId;
+
+		if ( this.hasCommentThread( id ) ) {
+			const idx = this._threads.findIndex( thread => thread.threadId === id );
+
+			this._threads[ idx ] = data;
+		} else {
+			this._threads.push( data );
+		}
+	}
+}
+
+class TrackChanges extends Plugin {
+	static get pluginName() {
+		return 'TrackChanges';
+	}
+
+	static get requires() {
+		return [ TrackChangesEditing ];
+	}
+
+	constructor( editor ) {
+		super( editor );
+
 		this.editor = editor;
 	}
 
-	init() {
-		const users = this.editor.plugins.get( 'Users' );
+	getSuggestions() {
+		const trackChangesEditing = this.editor.plugins.get( 'TrackChangesEditing' );
 
-		users.addUser( {
-			id: 'u1',
-			name: 'John Smith'
-		} );
+		if ( !trackChangesEditing ) {
+			return [];
+		}
 
-		users.addUser( {
-			id: 'u2',
-			name: 'Kate Jones'
-		} );
+		return trackChangesEditing._suggestions;
+	}
+}
 
-		users.defineMe( 'u1' );
+class TrackChangesEditing extends Plugin {
+	static get pluginName() {
+		return 'TrackChangesEditing';
+	}
+
+	constructor( editor ) {
+		super( editor );
+
+		this.editor = editor;
+		this._suggestions = [];
+	}
+
+	getSuggestion( id ) {
+		const suggestion = this._suggestions.find( suggestion => suggestion.id === id );
+
+		if ( !suggestion ) {
+			return null;
+		}
+
+		suggestion.setAttribute = ( key, value ) => {
+			const idx = this._suggestions.findIndex( suggestion => suggestion.id === id );
+
+			this._suggestions[ idx ].attributes = { [ key ]: value };
+		};
+
+		return suggestion;
+	}
+
+	hasSuggestion( id ) {
+		return !!this.getSuggestion( id );
+	}
+
+	addSuggestionData( data ) {
+		const id = data.id;
+
+		if ( this.hasSuggestion( id ) ) {
+			const idx = this._suggestions.findIndex( suggestion => suggestion.id === id );
+
+			this._suggestions[ idx ] = data;
+		} else {
+			this._suggestions.push( data );
+		}
 	}
 }
 
@@ -295,8 +391,7 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should support comment threads', async () => {
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, Clipboard ],
-				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				plugins: [ Paragraph, Clipboard, CommentsRepository ],
 				comments: {
 					editorConfig: {}
 				}
@@ -310,39 +405,30 @@ describe( 'EditorWatchdog', () => {
 
 			commentsRepository.addCommentThread( { threadId: 't1', target: () => null } );
 
-			watchdog.editor.setData(
-				'<p>' +
-				'Fo' +
-				'<comment id="t1" type="start"></comment>' +
-				'o b' +
-				'<comment id="t1" type="end"></comment>' +
-				'ar' +
-				'</p>'
-			);
+			expect( commentsRepository.getCommentThreads().length ).to.be.equal( 1 );
+			expect( commentsRepository.getCommentThreads()[ 0 ].threadId ).to.be.equal( 't1' );
 
-			expect( watchdog.editor.getData() ).to.equal(
-				'<p>Fo<comment-start name="t1"></comment-start>o b<comment-end name="t1"></comment-end>ar</p>'
-			);
+			watchdog._save();
 
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				watchdog.on( 'restart', () => {
 					window.onerror = originalErrorHandler;
+
 					res();
 				} );
 			} );
 
-			expect( watchdog.editor.getData() ).to.equal(
-				'<p>Fo<comment-start name="t1"></comment-start>o b<comment-end name="t1"></comment-end>ar</p>'
-			);
-			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ) ).to.be.not.null;
+			const restoredCommentThreads = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
+
+			expect( restoredCommentThreads.length ).to.be.equal( 1 );
+			expect( restoredCommentThreads[ 0 ].threadId ).to.be.equal( 't1' );
 		} );
 
 		it( 'should support suggestions', async () => {
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, Clipboard ],
-				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				plugins: [ Paragraph, TrackChanges, Clipboard ],
 				comments: {
 					editorConfig: {}
 				}
@@ -352,36 +438,23 @@ describe( 'EditorWatchdog', () => {
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
 
-			sinon.stub( Suggestion, 'getMultiRangeId' ).callsFake( () => 'test' );
+			const suggestionData = {
+				id: '1',
+				type: 'insertion:subType',
+				authorId: 'u1',
+				data: null,
+				attributes: {}
+			};
 
+			const trackChanges = watchdog.editor.plugins.get( 'TrackChanges' );
 			const trackChangesEditing = watchdog.editor.plugins.get( 'TrackChangesEditing' );
 
-			watchdog.editor.model.change( writer => {
-				const suggestion = trackChangesEditing.addSuggestionData( {
-					id: '1',
-					type: 'insertion:subType',
-					authorId: 'u1',
-					data: null,
-					createdAt: new Date(),
-					attributes: {}
-				} );
+			trackChangesEditing.addSuggestionData( suggestionData );
 
-				const root = watchdog.editor.model.document.getRoot();
+			watchdog._save();
 
-				const startPos = writer.createPositionFromPath( root, [ 0, 0 ] );
-				const endPos = writer.createPositionFromPath( root, [ 0, 3 ] );
-				const range = writer.createRange( startPos, endPos );
-
-				suggestion.addRange( range );
-			} );
-
-			expect( watchdog.editor.getData() ).to.equal(
-				'<p>' +
-				'<suggestion-start name="insertion:subType:1:u1:test"></suggestion-start' +
-				'>Foo<' +
-				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
-				'bar</p>'
-			);
+			expect( trackChanges.getSuggestions().length ).to.equal( 1 );
+			expect( trackChanges.getSuggestions()[ 0 ] ).to.deep.equal( suggestionData );
 
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -392,13 +465,10 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			expect( watchdog.editor.getData() ).to.equal(
-				'<p>' +
-				'<suggestion-start name="insertion:subType:1:u1:test"></suggestion-start' +
-				'>Foo<' +
-				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
-				'bar</p>'
-			);
+			const restoredSuggestions = watchdog.editor.plugins.get( 'TrackChanges' ).getSuggestions();
+
+			expect( restoredSuggestions.length ).to.equal( 1 );
+			expect( restoredSuggestions[ 0 ] ).to.deep.equal( suggestionData );
 		} );
 
 		it( 'should support comment data created by another plugins', async () => {
@@ -416,8 +486,7 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, Clipboard, TrackChanges, InitPlugin ],
-				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				plugins: [ Paragraph, CommentsRepository, Clipboard, InitPlugin ],
 				comments: {
 					editorConfig: {}
 				}
@@ -426,16 +495,6 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
-
-			watchdog.editor.setData(
-				'<p>' +
-				'Fo' +
-				'<comment id="t1" type="start"></comment>' +
-				'o b' +
-				'<comment id="t1" type="end"></comment>' +
-				'ar' +
-				'</p>'
-			);
 
 			// Set comment thread attributes to test if it will be restored after restart.
 			const commentThread = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' );
@@ -459,8 +518,6 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		it( 'should support suggestion data created by another plugins', async () => {
-			sinon.stub( Suggestion, 'getMultiRangeId' ).callsFake( () => 'test' );
-
 			// Plugin that creates suggestion on init.
 			class InitPlugin {
 				constructor( editor ) {
@@ -482,8 +539,7 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, Clipboard, TrackChanges, InitPlugin ],
-				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				plugins: [ Paragraph, Clipboard, TrackChanges, InitPlugin ],
 				comments: {
 					editorConfig: {}
 				}
@@ -495,16 +551,6 @@ describe( 'EditorWatchdog', () => {
 
 			// Set comment thread attributes to test if it will be restored after restart.
 			const suggestion = watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' );
-
-			watchdog.editor.model.change( writer => {
-				const root = watchdog.editor.model.document.getRoot();
-
-				const startPos = writer.createPositionFromPath( root, [ 0, 0 ] );
-				const endPos = writer.createPositionFromPath( root, [ 0, 3 ] );
-				const range = writer.createRange( startPos, endPos );
-
-				suggestion.addRange( range );
-			} );
 
 			// Set suggestion attributes to test if it will be restored after restart.
 			suggestion.setAttribute( 'test', 'value' );
@@ -519,14 +565,6 @@ describe( 'EditorWatchdog', () => {
 					res();
 				} );
 			} );
-
-			expect( watchdog.editor.getData() ).to.equal(
-				'<p>' +
-				'<suggestion-start name="insertion:subType:1:u1:test"></suggestion-start' +
-				'>Foo<' +
-				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
-				'bar</p>'
-			);
 
 			// Should keep the suggestion attributes up to date even if the InitPlugin creates the new instance.
 			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ).attributes ).to.deep.equal( {

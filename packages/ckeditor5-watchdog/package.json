@@ -16,12 +16,10 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "42.0.1",
-    "@ckeditor/ckeditor5-comments": "42.0.1",
     "@ckeditor/ckeditor5-editor-classic": "42.0.1",
     "@ckeditor/ckeditor5-editor-multi-root": "42.0.1",
     "@ckeditor/ckeditor5-paragraph": "42.0.1",
     "@ckeditor/ckeditor5-utils": "42.0.1",
-    "@ckeditor/ckeditor5-track-changes": "42.0.1",
     "@ckeditor/ckeditor5-clipboard": "42.0.1",
     "ckeditor5": "42.0.1",
     "typescript": "5.0.4"

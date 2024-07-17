@@ -7,8 +7,6 @@
  * @module code-block/codeblockediting
  */
 
-import { lowerFirst, upperFirst } from 'lodash-es';
-
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
@@ -24,6 +22,7 @@ import {
 	type Element,
 	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
 import type { ListEditing } from '@ckeditor/ckeditor5-list';
 
@@ -34,7 +33,8 @@ import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
 	rawSnippetTextToViewDocumentFragment,
-	getCodeBlockAriaAnnouncement
+	getCodeBlockAriaAnnouncement,
+	getTextNodeAtLineStart
 } from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
@@ -189,6 +189,31 @@ export default class CodeBlockEditing extends Plugin {
 			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
 		} );
 
+		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
+			// Elements may have a plain textual representation (hence be present in the 'text/plain' data transfer),
+			// but not be allowed in the code block.
+			// Filter them out before inserting the content to the model.
+			editor.plugins.get( ClipboardPipeline ).on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+				const model = editor.model;
+				const selection = model.document.selection;
+
+				if ( !selection.anchor!.parent.is( 'element', 'codeBlock' ) ) {
+					return;
+				}
+
+				model.change( writer => {
+					const contentRange = writer.createRangeIn( data.content );
+
+					for ( const item of [ ...contentRange.getItems() ] ) {
+						// Remove all nodes disallowed in the code block.
+						if ( item.is( 'node' ) && !schema.checkChild( selection.anchor!, item ) ) {
+							writer.remove( item );
+						}
+					}
+				} );
+			} );
+		}
+
 		// Make sure multi–line selection is always wrapped in a code block when `getSelectedContent()`
 		// is used (e.g. clipboard copy). Otherwise, only the raw text will be copied to the clipboard and,
 		// upon next paste, this bare text will not be inserted as a code block, which is not the best UX.
@@ -325,9 +350,11 @@ export default class CodeBlockEditing extends Plugin {
 function breakLineOnEnter( editor: Editor ): void {
 	const model = editor.model;
 	const modelDoc = model.document;
+	// Use last position as other mechanisms (e.g. condition deciding whether this function should be called) also check that.
 	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
-	const node = lastSelectionPosition.nodeBefore || lastSelectionPosition.textNode;
 	let leadingWhiteSpaces: string | undefined;
+
+	const node = getTextNodeAtLineStart( lastSelectionPosition, model );
 
 	// Figure out the indentation (white space chars) at the beginning of the line.
 	if ( node && node.is( '$text' ) ) {
