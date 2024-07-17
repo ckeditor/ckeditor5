@@ -3,6 +3,7 @@ category: examples-builds
 meta-title: Document editor example | CKEditor 5 Documentation
 order: 50
 toc: false
+contributeUrl: false
 classes: 'main__content-wide main__content--no-toc'
 ---
 

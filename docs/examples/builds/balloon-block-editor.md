@@ -3,6 +3,7 @@ category: examples-builds
 meta-title: Balloon block editor example | CKEditor 5 Documentation
 order: 40
 toc: false
+contributeUrl: false
 classes: main__content--no-toc
 ---
 

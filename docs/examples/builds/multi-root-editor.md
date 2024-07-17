@@ -3,6 +3,7 @@ category: examples-builds
 meta-title: Multi-root editor example | CKEditor 5 Documentation
 order: 60
 toc: false
+contributeUrl: false
 classes: main__content--no-toc
 ---
 
