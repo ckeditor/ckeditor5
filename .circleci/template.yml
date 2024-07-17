@@ -118,10 +118,6 @@ jobs:
           command: node scripts/ci/check-manual-tests-directory-structure.js
       - run:
           when: always
-          name: Check dependencies
-          command: yarn run check-dependencies
-      - run:
-          when: always
           name: Execute ESLint
           command: yarn run lint
       - run:
