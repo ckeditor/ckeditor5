@@ -961,8 +961,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
+		const headers = new Headers( { 'Content-Type': 'application/json' } );
 		const response = await fetch( new URL( endpoint ), {
 			method: 'POST',
+			headers,
 			body: JSON.stringify( request )
 		} );
 
