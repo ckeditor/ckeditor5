@@ -14,13 +14,15 @@
   "main": "src/index.ts",
   "dependencies": {
     "ckeditor5": "42.0.1",
-    "@uploadcare/blocks": "0.39.0"
+    "@uploadcare/blocks": "0.39.0",
+    "@uploadcare/upload-client": "6.14.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-cloud-services": "42.0.1",
     "@ckeditor/ckeditor5-core": "42.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "42.0.1",
+    "@ckeditor/ckeditor5-image": "42.0.1",
     "@ckeditor/ckeditor5-theme-lark": "42.0.1",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",

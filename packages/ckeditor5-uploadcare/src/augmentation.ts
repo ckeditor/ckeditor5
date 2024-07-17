@@ -4,45 +4,29 @@
  */
 
 import type {
-	Uplo,
-	CKBoxCommand,
-	CKBoxConfig,
-	CKBoxEditing,
-	CKBoxImageEdit,
-	CKBoxImageEditEditing,
-	CKBoxImageEditCommand,
-	CKBoxImageEditUI
+	Uploadcare,
+	UploadcareEditing,
+	UploadcareCommand,
+	UploadcareConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
 
 		/**
-		 * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.
+		 * The configuration of the {@link module:uploadcare/uploadcare~Uploadcare Uploadcare feature}.
 		 *
-		 * Read more in {@link module:ckbox/ckboxconfig~CKBoxConfig}.
+		 * Read more in {@link module:uploadcare/uploadcareconfig~UploadcareConfig}.
 		 */
-		ckbox?: CKBoxConfig;
+		ckbox?: UploadcareConfig;
 	}
 
 	interface PluginsMap {
-		[ CKBox.pluginName ]: CKBox;
-		[ CKBoxEditing.pluginName ]: CKBoxEditing;
-		[ CKBoxImageEdit.pluginName ]: CKBoxImageEdit;
-		[ CKBoxImageEditEditing.pluginName ]: CKBoxImageEditEditing;
-		[ CKBoxImageEditUI.pluginName ]: CKBoxImageEditUI;
+		[ Uploadcare.pluginName ]: Uploadcare;
+		[ UploadcareEditing.pluginName ]: UploadcareEditing;
 	}
 
 	interface CommandsMap {
-		ckbox: CKBoxCommand;
-		ckboxImageEdit: CKBoxImageEditCommand;
+		uploadcare: UploadcareCommand;
 	}
-}
-
-declare global {
-	// eslint-disable-next-line no-var
-	var CKBox: {
-		mount( wrapper: Element, options: Record<string, unknown> ): void;
-		mountImageEditor( wrapper: Element, options: Record<string, unknown> ): void;
-	};
 }

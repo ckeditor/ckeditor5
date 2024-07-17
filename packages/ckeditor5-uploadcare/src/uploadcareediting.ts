@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import UploadcareCommand from './uploadcarecommand.js';
+import UploadcareUploadAdapter from './uploadcareuploadadapter.js';
 
 /**
  * The Uploadcare editing feature. It introduces the {@link module:uploadcare/uploadcarecommand~UploadcareCommand command}.
@@ -20,6 +21,13 @@ export default class UploadcareEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'UploadcareEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ UploadcareUploadAdapter ] as const;
 	}
 
 	/**

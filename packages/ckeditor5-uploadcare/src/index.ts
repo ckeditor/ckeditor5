@@ -12,6 +12,6 @@ export { default as UploadcareEditing } from './uploadcareediting.js';
 export { default as UploadcareUI } from './uploadcareui.js';
 
 export type { default as UploadcareCommand } from './uploadcarecommand.js';
-export type { UploadcareConfig, UploadcareSourceList } from './uploadcareconfig.js';
+export type { UploadcareConfig, UploadcareSource, UploadcareAssetImageDefinition } from './uploadcareconfig.js';
 
 import './augmentation.js';
