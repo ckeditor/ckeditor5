@@ -26,6 +26,7 @@ Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your Vue application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -112,7 +113,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
@@ -156,7 +157,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
@@ -185,7 +186,7 @@ This directive specifies the editor to be used by the component. It must directl
 				// ...
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -232,7 +233,7 @@ A [standard directive](https://v3.vuejs.org/guide/component-basics.html#using-v-
 				this.editorData = '';
 			}
 		}
-	}
+	};
 </script>
 ```
 
@@ -262,7 +263,7 @@ Allows a one–way data binding that sets the content of the editor. Unlike [`v-
 				editorData: '<p>Content of the editor.</p>'
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -292,7 +293,7 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 				}
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -321,7 +322,7 @@ It sets the initial read–only state of the editor and changes it during its li
 				editorDisabled: true
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -398,8 +399,9 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-	import CKEditor from '@ckeditor/ckeditor5-vue'
-	import 'ckeditor5/ckeditor5.css'
+	import CKEditor from '@ckeditor/ckeditor5-vue';
+	
+	import 'ckeditor5/ckeditor5.css';
 
 	export default {
 		name: 'app',
@@ -418,7 +420,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 				);
 			}
 		}
-	}
+	};
 </script>
 ```
 
@@ -467,7 +469,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
