@@ -373,7 +373,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		function verifyLicenseKey( editor: Editor ) {
 			const licenseKey = editor.config.get( 'licenseKey' )!;
-			const distributionChannel = ( window as any )[ 'CKE_DISTRIBUTION ' ] || 'sh';
+			const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ] || 'sh';
 
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {

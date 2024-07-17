@@ -111,7 +111,7 @@ describe( 'Editor - license check', () => {
 
 		describe( 'distribution channel check', () => {
 			afterEach( () => {
-				delete window[ 'CKE_DISTRIBUTION ' ];
+				delete window[ Symbol.for( 'cke distribution' ) ];
 			} );
 
 			it( 'should not block if distribution channel match', () => {
@@ -210,7 +210,7 @@ describe( 'Editor - license check', () => {
 			} );
 
 			function setChannel( channel ) {
-				window[ 'CKE_DISTRIBUTION ' ] = channel;
+				window[ Symbol.for( 'cke distribution' ) ] = channel;
 			}
 		} );
 
