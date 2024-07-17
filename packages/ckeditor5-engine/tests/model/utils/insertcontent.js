@@ -426,6 +426,90 @@ describe( 'DataController utils', () => {
 				expect( stringify( root, affectedRange ) ).to.equal( '<heading1>fo[xyz]ar</heading1>' );
 			} );
 
+			it( 'should split and auto-paragraph if needed', () => {
+				model.schema.register( 'widgetContainer', {
+					allowWhere: '$block'
+				} );
+				model.schema.extend( 'blockWidget', {
+					allowIn: 'widgetContainer'
+				} );
+
+				setData( model, '<widgetContainer><blockWidget></blockWidget>[<blockWidget></blockWidget>]</widgetContainer>' );
+
+				const affectedRange = insertHelper( 'abc', null, [ 0, 1 ] );
+
+				expect( getData( model ) ).to.equal(
+					'<widgetContainer><blockWidget></blockWidget></widgetContainer>' +
+					'<paragraph>abc</paragraph>' +
+					'<widgetContainer>[<blockWidget></blockWidget>]</widgetContainer>'
+				);
+				expect( stringify( root, affectedRange ) ).to.equal(
+					'<widgetContainer><blockWidget></blockWidget>[</widgetContainer>' +
+					'<paragraph>abc</paragraph>' +
+					'<widgetContainer>]<blockWidget></blockWidget></widgetContainer>'
+				);
+			} );
+
+			it( 'should split and auto-paragraph multiple levels if needed', () => {
+				model.schema.register( 'blockContainer', {
+					allowIn: '$root',
+					allowChildren: '$block'
+				} );
+				model.schema.register( 'outerContainer', {
+					allowWhere: '$block'
+				} );
+				model.schema.register( 'widgetContainer', {
+					allowIn: 'outerContainer'
+				} );
+				model.schema.extend( 'blockWidget', {
+					allowIn: 'widgetContainer'
+				} );
+
+				setData( model,
+					'<blockContainer>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'<blockWidget></blockWidget>' +
+								'[<blockWidget></blockWidget>]' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+					'</blockContainer>'
+				);
+
+				const affectedRange = insertHelper( 'abc', null, [ 0, 0, 0, 1 ] );
+
+				expect( getData( model ) ).to.equal(
+					'<blockContainer>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'<blockWidget></blockWidget>' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+						'<paragraph>abc</paragraph>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'[<blockWidget></blockWidget>]' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+					'</blockContainer>'
+				);
+				expect( stringify( root, affectedRange ) ).to.equal(
+					'<blockContainer>' +
+						'<outerContainer>' +
+							'<widgetContainer>' +
+								'<blockWidget></blockWidget>' +
+							'[</widgetContainer>' +
+						'</outerContainer>' +
+						'<paragraph>abc</paragraph>' +
+						'<outerContainer>' +
+							'<widgetContainer>]' +
+								'<blockWidget></blockWidget>' +
+							'</widgetContainer>' +
+						'</outerContainer>' +
+					'</blockContainer>'
+				);
+			} );
+
 			it( 'not insert autoparagraph when paragraph is disallowed at the current position', () => {
 				// Disallow paragraph in $root.
 				model.schema.addChildCheck( ( ctx, childDef ) => {
@@ -882,6 +966,20 @@ describe( 'DataController utils', () => {
 					);
 				} );
 
+				it( 'inserts object + text + object', () => {
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					const affectedRange = insertHelper( '<blockWidget></blockWidget>foo<blockWidget></blockWidget>' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>foo</paragraph>[<blockWidget></blockWidget>]'
+					);
+
+					expect( stringify( root, affectedRange ) ).to.equal(
+						'<paragraph>foo</paragraph>[<blockWidget></blockWidget><paragraph>foo</paragraph><blockWidget></blockWidget>]'
+					);
+				} );
+
 				it( 'inserts text + object (at the end)', () => {
 					setData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<blockWidget></blockWidget>' );
@@ -1044,6 +1142,212 @@ describe( 'DataController utils', () => {
 					expect( stringify( root, affectedRange ) ).to.equal(
 						'<paragraph>foo[</paragraph><blockWidget></blockWidget><paragraph>]bar</paragraph>'
 					);
+				} );
+			} );
+
+			describe( 'merging edge auto-paragraphs', () => {
+				describe( 'with text auto-paragraphing', () => {
+					it( 'inserts text + paragraph + text in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts text + paragraph + text in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc</paragraph>]'
+						);
+					} );
+
+					it( 'inserts text + paragraph + text in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]1234</paragraph>'
+						);
+					} );
+				} );
+
+				describe( 'with inline-object auto-paragraphing', () => {
+					it( 'inserts inlineObject + paragraph + inlineObject in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper(
+							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
+						);
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>[]34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + paragraph + inlineObject in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper(
+							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
+						);
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>[]</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234[<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget></paragraph>]'
+						);
+					} );
+
+					it( 'inserts inlineObject + paragraph + inlineObject in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper(
+							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
+						);
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph><inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>[]1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>[<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>bbb</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>]1234</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]1234</paragraph>'
+						);
+					} );
+
+					it( 'inserts inlineObject + text + inlineObject between paragraphs', () => {
+						setData( model, '<paragraph>12</paragraph>[]<paragraph>34</paragraph>' );
+						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>', null, [ 1 ] );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12[]</paragraph>' +
+							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>' +
+							'<paragraph>34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12</paragraph>' +
+							'[<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>]' +
+							'<paragraph>34</paragraph>'
+						);
+					} );
+				} );
+
+				describe( 'with text between block widgets auto-paragraphing', () => {
+					it( 'inserts blockObject + text + blockObject in the middle of a paragraph text', () => {
+						setData( model, '<paragraph>12[]34</paragraph>' );
+						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>12</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'[<blockWidget></blockWidget>]' +
+							'<paragraph>34</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>12[</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>]34</paragraph>'
+						);
+					} );
+
+					it( 'inserts blockObject + text + blockObject in the end of a paragraph text', () => {
+						setData( model, '<paragraph>1234[]</paragraph>' );
+						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>1234</paragraph>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'[<blockWidget></blockWidget>]'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'<paragraph>1234</paragraph>' +
+							'[<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'<blockWidget></blockWidget>]'
+						);
+					} );
+
+					it( 'inserts blockObject + text + blockObject in the start of a paragraph text', () => {
+						setData( model, '<paragraph>[]1234</paragraph>' );
+						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
+
+						expect( getData( model ) ).to.equal(
+							'<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'[<blockWidget></blockWidget>]' +
+							'<paragraph>1234</paragraph>'
+						);
+						expect( stringify( root, affectedRange ) ).to.equal(
+							'[<blockWidget></blockWidget>' +
+							'<paragraph>bbb</paragraph>' +
+							'<blockWidget></blockWidget>]' +
+							'<paragraph>1234</paragraph>'
+						);
+					} );
 				} );
 			} );
 		} );
@@ -1740,15 +2044,15 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
 			} );
 
-			it( 'should create marker after inserting imageInline and paragraph inside existing paragraph', () => {
+			it( 'should create marker after inserting paragraph with imageInline and text inside existing paragraph', () => {
 				// <paragraph>F[]oo</paragraph>
-				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				// {<paragraph><imageInline></imageInline>ba}r</paragraph>
 				//
 				// <paragraph>F{<imageInline></imageInline>ba}roo</paragraph>
 				setData( model, '<paragraph>F[]oo</paragraph>' );
 
-				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
-					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				insertHelper( '<paragraph><imageInline></imageInline>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 0, 3 ] }
 				} );
 
 				const expectedMarker = model.markers.get( 'marker-a' );
@@ -1757,6 +2061,44 @@ describe( 'DataController utils', () => {
 
 				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+			} );
+
+			it( 'should create marker after inserting paragraph with imageInline and another paragraph inside existing paragraph', () => {
+				// <paragraph>F[]oo</paragraph>
+				// {<paragraph><imageInline></imageInline></paragraph><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>F{<imageInline></imageInline></paragraph><paragraph>ba}roo</paragraph>
+				setData( model, '<paragraph>F[]oo</paragraph>' );
+
+				insertHelper( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>F<imageInline></imageInline></paragraph><paragraph>bar[]oo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it( 'should create marker after inserting imageInline and paragraph inside existing paragraph', () => {
+				// <paragraph>F[]oo</paragraph>
+				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>F{<imageInline></imageInline></paragraph><paragraph>ba}roo</paragraph>
+				setData( model, '<paragraph>F[]oo</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>F<imageInline></imageInline></paragraph><paragraph>bar[]oo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker which starts in paragraph and ends inside the beginning of next paragraph', () => {
@@ -1782,7 +2124,7 @@ describe( 'DataController utils', () => {
 				// <paragraph>Foo[]</paragraph>
 				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
 				//
-				// <paragraph>Foo{<imageInline></imageInline>ba}r</paragraph>
+				// <paragraph>Foo{<imageInline></imageInline></paragraph><paragraph>ba}r</paragraph>
 				setData( model, '<paragraph>Foo[]</paragraph>' );
 
 				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
@@ -1791,10 +2133,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( getData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline>bar[]</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline></paragraph><paragraph>bar[]</paragraph>' );
 
 				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker from imageInline and part of text from the next paragraph after inserting at he beginning',
@@ -1802,7 +2144,7 @@ describe( 'DataController utils', () => {
 					// <paragraph>[]Foo</paragraph>
 					// {<imageInline></imageInline><paragraph>ba}r</paragraph>
 					//
-					// <paragraph>{<imageInline></imageInline>ba}rFoo</paragraph>
+					// <paragraph>{<imageInline></imageInline></paragraph><paragraph>ba}rFoo</paragraph>
 					setData( model, '<paragraph>[]Foo</paragraph>' );
 
 					insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
@@ -1812,10 +2154,10 @@ describe( 'DataController utils', () => {
 					const expectedMarker = model.markers.get( 'marker-a' );
 
 					expect( getData( model ) )
-						.to.equal( '<paragraph><imageInline></imageInline>bar[]Foo</paragraph>' );
+						.to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar[]Foo</paragraph>' );
 
 					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 				} );
 
 			it.skip( 'should create marker on imageInline and part of paragraph text after inserting next to paragraph', () => {
