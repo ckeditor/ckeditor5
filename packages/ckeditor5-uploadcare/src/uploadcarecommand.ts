@@ -40,7 +40,7 @@ export default class UploadcareCommand extends Command {
 	/**
 	 * The choosen source type.
 	 */
-	private _type: string;
+	private _type: null | string;
 
 	/**
 	 * The DOM element that represents the Uploadcare config web component.
@@ -87,19 +87,23 @@ export default class UploadcareCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override execute( type: string ): void {
-		if ( !this.isEnabled || this.value ) {
+		if ( !this.isEnabled ) {
 			return;
 		}
 
 		this._type = type;
 
-		LR.registerBlocks( LR );
+		if ( !this._ctxElement || !this._configElement ) {
+			LR.registerBlocks( LR );
 
-		this._initConfig();
-		this._initCtx();
-		this._initDialog();
-
-		this._initListeners();
+			this._initConfig();
+			this._initCtx();
+			this._initDialog();
+			this._initListeners();
+		} else {
+			this._ctxElement.doneFlow();
+			this._configElement.setAttribute( 'source-list', this._type );
+		}
 
 		// It should be called after initializing all elements.
 		this._ctxElement!.initFlow();
@@ -162,9 +166,7 @@ export default class UploadcareCommand extends Command {
 	private _close() {
 		this._dialog.hide();
 
-		if ( !this.value ) {
-			return;
-		}
+		this._type = null;
 
 		this._configElement!.remove();
 		this._configElement = null;
@@ -204,15 +206,9 @@ export default class UploadcareCommand extends Command {
 			this._close();
 		} );
 
-		// TODO: check if it is necessary.
-		// Refresh the command after every change.
-		this._ctxElement!.addEventListener( 'change', () => {
-			this.refresh();
-		} );
-
-		// Whenever the `clear` button is triggered we need to re-init the flow.
-		this._ctxElement!.addEventListener( 'activity-change', ( event: CustomEvent<{ activity: string }> ) => {
-			if ( event.detail.activity === 'start-from' ) {
+		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
+			// Whenever the `clear` button is triggered we need to re-init the flow.
+			if ( evt.detail.status === 'success' && !evt.detail.allEntries.length ) {
 				this._chosenAssets.clear();
 				this._ctxElement!.initFlow();
 			}
@@ -222,11 +218,11 @@ export default class UploadcareCommand extends Command {
 		this._ctxElement!.addEventListener( 'file-upload-success', ( evt: CustomEvent<LR.OutputFileEntry> ) => {
 			const { fileInfo } = evt.detail;
 
-			if ( !this.isEnabled || !fileInfo || !!Array.from( this._chosenAssets ).find( e => e.id === fileInfo.uuid ) ) {
+			if ( !this.isEnabled || !fileInfo ) {
 				return;
 			}
 
-			const assetsToProcess = [ {
+			const asset = {
 				id: fileInfo.uuid,
 				type: 'image',
 				attributes: {
@@ -235,11 +231,9 @@ export default class UploadcareCommand extends Command {
 					imageWidth: fileInfo.imageInfo!.width,
 					imageHeight: fileInfo.imageInfo!.height
 				}
-			} ];
+			};
 
-			for ( const asset of assetsToProcess ) {
-				this._chosenAssets.add( asset );
-			}
+			this._chosenAssets.add( asset );
 
 			editor.editing.view.focus();
 		} );
