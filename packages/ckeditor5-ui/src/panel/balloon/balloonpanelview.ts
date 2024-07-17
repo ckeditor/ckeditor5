@@ -15,12 +15,13 @@ import {
 	global,
 	isRange,
 	toUnit,
+	ResizeObserver,
 	type Locale,
 	type ObservableChangeEvent,
 	type DomPoint,
 	type PositionOptions,
-	type PositioningFunction,
-	type Rect
+	type Rect,
+	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
@@ -155,6 +156,11 @@ export default class BalloonPanelView extends View {
 	private _pinWhenIsVisibleCallback: ( () => void ) | null;
 
 	/**
+	 * A ResizeObserver instance used to watch if target element is still visible.
+	 */
+	private _resizeObserver: ResizeObserver | null;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -170,6 +176,8 @@ export default class BalloonPanelView extends View {
 		this.set( 'class', undefined );
 
 		this._pinWhenIsVisibleCallback = null;
+		this._resizeObserver = null;
+
 		this.content = this.createCollection();
 
 		this.setTemplate( {
@@ -387,6 +395,18 @@ export default class BalloonPanelView extends View {
 		this.listenTo( global.window, 'resize', () => {
 			this.attachTo( options );
 		} );
+
+		// Hide the panel if the target element is no longer visible.
+		if ( targetElement && !this._resizeObserver ) {
+			const checkVisibility = () => {
+				if ( !targetElement.checkVisibility( { checkVisibilityCSS: false } ) ) {
+					this.isVisible = false;
+				}
+			};
+
+			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
+			checkVisibility();
+		}
 	}
 
 	/**
@@ -395,6 +415,11 @@ export default class BalloonPanelView extends View {
 	private _stopPinning(): void {
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+			this._resizeObserver = null;
+		}
 	}
 
 	/**
