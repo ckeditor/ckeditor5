@@ -30,7 +30,7 @@ export default function clickOutsideHandler(
 	{ emitter, activator, callback, contextElements, listenerOptions }: {
 		emitter: DomEmitter;
 		activator: () => boolean;
-		contextElements: Array<HTMLElement> | ( () => Array<HTMLElement> );
+		contextElements: Array<Element> | ( () => Array<Element> );
 		callback: () => void;
 		listenerOptions?: CallbackOptions;
 	}

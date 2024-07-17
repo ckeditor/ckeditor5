@@ -65,6 +65,10 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		this.set( 'focusedElement', null );
 	}
 
+	public get elements(): Array<Element> {
+		return Array.from( this._elements.values() );
+	}
+
 	/**
 	 * Starts tracking the specified element.
 	 */

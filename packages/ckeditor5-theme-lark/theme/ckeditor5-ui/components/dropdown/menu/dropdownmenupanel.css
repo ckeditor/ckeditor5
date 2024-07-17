@@ -11,7 +11,6 @@
 }
 
 .ck.ck-dropdown-menu__menu__panel {
-	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 
 	background: var(--ck-color-dropdown-panel-background);

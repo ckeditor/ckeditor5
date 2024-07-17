@@ -7,235 +7,216 @@
  * @module ui/dropdown/menu/dropdownmenurootlistview
  */
 
-import { compact } from 'lodash-es';
-
-import type { CollectionAddEvent } from '@ckeditor/ckeditor5-utils';
-import type DropdownMenuListItemView from './dropdownmenulistitemview.js';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type {
-	DropdownMenuExecuteItemEvent,
-	DropdownMenuChangeIsOpenEvent,
-	DropdownMenuSubmenuChangeEvent
-} from './events.js';
-
-import { DropdownMenuFactory, type DropdownMenuDefinition } from './dropdownmenufactory.js';
-import { DropdownRootMenuBehaviors } from './utils/dropdownmenubehaviors.js';
-import DropdownMenuView from './dropdownmenuview.js';
+import DropdownMenuListItemButtonView from './dropdownmenulistitembuttonview.js';
+import DropdownNestedMenuView from './dropdownnestedmenuview.js';
 import DropdownMenuListView from './dropdownmenulistview.js';
+import DropdownMenuListItemView from './dropdownmenulistitemview.js';
+import { DropdownRootMenuBehaviors } from './dropdownmenubehaviors.js';
 
-import { walkOverDropdownMenuTreeItems } from './tree/dropdownmenutreewalker.js';
+import type BodyCollection from '../../editorui/bodycollection.js';
+import type { DropdownMenuChildDefinition } from './utils.js';
+
+import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Represents the root list view of a dropdown menu.
+ * Creates and manages a multi-level menu UI structure, suitable to be used inside dropdown components.
  *
- * ```ts
- * const view = new DropdownMenuRootListView( editor, [
+ * This class creates a menu structure based on {@link module:ui/dropdown/menu/utils~DropdownMenuChildDefinition declarative definition}
+ * passed in the constructor.
+ *
+ * Below is an example of a simple definition, that describes a menu with two sub-menus (Menu 1, Menu 2) and four buttons in total (Item A,
+ * Item B, Item C, Item D):
+ *
+ * ```js
+ * [
  * 	{
+ * 		id: 'menu_1',
  * 		menu: 'Menu 1',
  * 		children: [
- * 			{
- * 				label: 'Menu item defined object definition',
- * 				icon: 'your-icon',
- * 				onExecute: () => { ... }
- * 			},
- * 			new DropdownMenuListItemButtonView( locale, 'Item' ),
- * 			new ListSeparatorView( locale ),
- * 			{
- * 				menu: 'Menu 1.1',
- * 				children: [
- * 					new DropdownMenuListItemButtonView( locale, 'Nested Item' ),
- * 				]
- * 			}
+ * 			{ id: 'menu_1_a', label: 'Item A' },
+ * 			{ id: 'menu_1_b', label: 'Item B' }
  * 		]
- * 	}
- * ] );
- *
- * view.render();
+ * 	},
+ * 	{
+ * 		id: 'menu_2',
+ * 		menu: 'Menu 2',
+ * 		children: [
+ * 			{ id: 'menu_2_c', label: 'Item C' },
+ * 		]
+ * 	},
+ * 	{ id: 'item_d', label: 'Item D' }
+ * ]
  * ```
+ *
+ * The menu is build using multiple view classes. The most important are:
+ *
+ * * {@link module:ui/dropdown/menu/dropdownnestedmenuview~DropdownNestedMenuView `DropdownNestedMenuView`} - "menu" - provides a panel
+ * with a nested menu, and a button which opens the panel,
+ * * {@link module:ui/dropdown/menu/dropdownmenulistitembuttonview~DropdownMenuListItemButtonView `DropdownMenuListItemButtonView`} -
+ * "button" or "leaf button" (as opposed to buttons provided by `DropdownNestedMenuView`) - should trigger some action when pressed.
+ *
+ * Instances of these two classes are created based on the data provided in definitions. They are assigned proper IDs and labels.
+ * Other view classes build a proper DOM structure around menus and buttons.
+ *
+ * The `DropdownNestedMenuView` instances provides panels, which may include further menus or buttons. These panels are added to
+ * a `BodyCollection` view, which means they are appended outside the DOM editor and UI structure.
+ *
+ * When "leaf button" is pressed, it fires `execute` event which is delegated to `DropdownMenuRootListView` as `menu:execute` event. You
+ * can listen to this event to perform an action:
+ *
+ * ```js
+ * rootListView.on( 'menu:execute', evt => {
+ *     console.log( evt.source.id ); // E.g. will print 'menu_1_a' when 'Item A' is pressed.
+ * } );
+ * ```
+ *
+ * All menus and "leaf" buttons created from the definition can be easily accessed through {@link ~DropdownMenuRootListView#menus `menus`}
+ * and {@link ~DropdownMenuRootListView#buttons `buttons`} properties.
+ *
+ * For performance reasons, the whole menu structure is created only when `DropdownMenuRootListView` is rendered for the first time.
+ *
+ * It is recommended to use this class together with {@link module:ui/dropdown/utils~addMenuToDropdown `addMenuToDropdown()` helper}.
  */
 export default class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
-	 * Indicates whether any of the top-level menus are open in the dropdown menu. To close
-	 * the dropdown menu, use the `close` method.
+	 * The CSS class to be applied to nested menu panels in this dropdown menu.
 	 *
-	 * @observable
+	 * It is necessary, as the panels are created in body collection, outside editor and UI structure.
 	 */
-	declare public isOpen: boolean;
+	declare public menuPanelClass: string | undefined;
 
 	/**
-	 * The editor instance associated with the dropdown menu root list view.
+	 * The definitions object used to create the whole menu structure.
 	 */
-	public readonly editor: Editor;
+	private readonly _definitions: Array<DropdownMenuChildDefinition>;
 
 	/**
-	 * The factory used to create the dropdown menu list based on definition.
+	 * Cached array of all menus in the dropdown menu (including nested menus).
 	 */
-	public readonly factory: DropdownMenuFactory;
+	private _cachedMenus: Array<DropdownNestedMenuView> = [];
 
 	/**
-	 * The CSS class to be applied to the menu panel.
-	 *
-	 * @observable
+	 * Cached array of all buttons in the dropdown menu (including buttons in nested menus).
 	 */
-	private readonly _menuPanelClass: string | undefined;
+	private _cachedButtons: Array<DropdownMenuListItemButtonView> = [];
 
 	/**
-	 * The cached array of all menus in the dropdown menu.
+	 * Editor body collection into which nested menus panels will be appended.
 	 */
-	private _cachedMenus: Array<DropdownMenuView> | null = null;
+	private _bodyCollection: BodyCollection;
 
 	/**
 	 * Creates an instance of the DropdownMenuRootListView class.
 	 *
-	 * @param locale - The locale object.
-	 * @param definition The definition object for the dropdown menu root factory.
-	 * @param options The options for the dropdown menu root list view.
+	 * @param locale
+	 * @param bodyCollection
+	 * @param definitions The definitions object used to create the whole menu structure.
 	 */
 	constructor(
-		editor: Editor,
-		definitions?: Array<DropdownMenuDefinition>,
-		options: DropdownMenuRootListViewAttributes = {}
+		locale: Locale,
+		bodyCollection: BodyCollection,
+		definitions: Array<DropdownMenuChildDefinition>
 	) {
-		super( editor.locale );
+		super( locale );
 
-		this.set( {
-			isOpen: false
-		} );
+		this._bodyCollection = bodyCollection;
+		this._definitions = definitions;
 
-		this.editor = editor;
-		this.factory = new DropdownMenuFactory( {
-			createMenuViewInstance: ( ...args ) => new DropdownMenuView( editor, ...args ),
-			listView: this,
-			lazyInitializeSubMenus: options.lazyInitializeSubMenus
-		} );
+		this.set( 'menuPanelClass', undefined );
+	}
 
-		this._menuPanelClass = options.menuPanelClass;
-		this._setupIsOpenUpdater();
-		this._watchRootMenuEvents();
+	/**
+	 * Returns the array of all menus in the dropdown menu (including nested menus).
+	 */
+	public get menus(): Array<DropdownNestedMenuView> {
+		return Array.from( this._cachedMenus.values() );
+	}
 
-		if ( definitions && definitions.length ) {
-			this.factory.appendChildren( definitions );
-		}
+	/**
+	 * Returns the array of all buttons in the dropdown menu (including buttons in nested menus).
+	 *
+	 * Note, that this includes only "leaf" buttons, as specified in the definition passed in constructor. Buttons created as a part of
+	 * the nested menus, that open nested menus when hovered or pressed, are not included.
+	 */
+	public get buttons(): Array<DropdownMenuListItemButtonView> {
+		return Array.from( this._cachedButtons.values() );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public override render(): void {
+		this._createStructure( this._definitions, null );
+
 		super.render();
 
 		DropdownRootMenuBehaviors.toggleMenusAndFocusItemsOnHover( this );
 		DropdownRootMenuBehaviors.closeMenuWhenAnotherOnTheSameLevelOpens( this );
-		DropdownRootMenuBehaviors.closeOnClickOutside( this );
-		DropdownRootMenuBehaviors.closeWhenOutsideElementFocused( this );
 	}
 
 	/**
-	 * Returns an array of currently visible menus elements. In other words it returns the elements of the menus that are
-	 * currently attached to the DOM. Menus are attached to the dom only when they are open.
+	 * Closes all nested menus.
 	 */
-	public getCurrentlyVisibleMenusElements(): Array<HTMLElement> {
-		const allMenusElements = this.menus.flatMap( menu => [
-			menu.element,
-			menu.panelView.element
-		] );
-
-		return compact( allMenusElements ).filter(
-			( element: HTMLElement ) => document.body.contains( element )
-		);
+	public closeMenus(): void {
+		this.menus.forEach( menu => {
+			menu.isOpen = false;
+		} );
 	}
 
 	/**
-	 * Gets the array of all menus in the dropdown menu.
+	 * Recursively creates the whole view tree structure for the dropdown menu, according to the passed `definitions`.
 	 *
-	 * @returns The array of all menus.
+	 * @private
 	 */
-	public get menus(): Array<DropdownMenuView> {
-		const { tree, _cachedMenus } = this;
+	private _createStructure( definitions: Array<DropdownMenuChildDefinition>, parentMenuView: DropdownNestedMenuView | null ): void {
+		const items: Array<DropdownMenuListItemView> = [];
 
-		if ( !_cachedMenus ) {
-			this._cachedMenus = [];
+		for ( const def of definitions ) {
+			let createdView: DropdownNestedMenuView | DropdownMenuListItemButtonView;
 
-			walkOverDropdownMenuTreeItems( node => {
-				if ( node.type === 'Menu' ) {
-					this._cachedMenus!.push( node.menu );
+			if ( 'menu' in def ) {
+				createdView = new DropdownNestedMenuView( this.locale!, this._bodyCollection, def.id, def.menu, parentMenuView );
+				createdView.panelView.bind( 'class' ).to( this, 'menuPanelClass' );
+
+				if ( !parentMenuView ) {
+					createdView.delegate( ...DropdownNestedMenuView.DELEGATED_EVENTS ).to( this, ( name: string ) => `menu:${ name }` );
 				}
-			}, tree );
+
+				this._cachedMenus.push( createdView );
+				this._createStructure( def.children, createdView );
+			} else {
+				createdView = new DropdownMenuListItemButtonView( this.locale!, def.id, def.label );
+
+				if ( !parentMenuView ) {
+					createdView.delegate( 'execute' ).to( this, 'menu:execute' );
+				}
+
+				this._cachedButtons.push( createdView );
+			}
+
+			const listItemView = new DropdownMenuListItemView( this.locale!, parentMenuView, createdView );
+
+			if ( !parentMenuView ) {
+				listItemView.delegate( 'mouseenter' ).to( this, 'menu:mouseenter' );
+			}
+
+			items.push( listItemView );
 		}
 
-		return this._cachedMenus!;
-	}
+		const targetListView = parentMenuView ? parentMenuView.listView : this;
 
-	/**
-	 * Closes all menus.
-	 */
-	public close(): void {
-		this.menus.forEach( menuView => {
-			menuView.isOpen = false;
-		} );
-	}
-
-	/**
-	 * Watches the root menu events.
-	 */
-	private _watchRootMenuEvents(): void {
-		this.on<DropdownMenuExecuteItemEvent>( 'menu:item:execute', this.close.bind( this ) );
-		this.on<DropdownMenuSubmenuChangeEvent>( 'menu:submenu:change', () => {
-			this._cachedMenus = null;
-		} );
-
-		this.items.on( 'change', () => {
-			this.fire<DropdownMenuSubmenuChangeEvent>( 'menu:submenu:change' );
-		} );
-
-		this.items.on<CollectionAddEvent<DropdownMenuListItemView>>( 'add', ( evt, item ) => {
-			const { childView } = item;
-
-			// Add additional CSS class to the panel view if it's a dropdown menu.
-			if ( childView instanceof DropdownMenuView ) {
-				childView.panelView.class = this._menuPanelClass;
-			}
-
-			childView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this, name => `menu:${ name }` );
-		} );
-	}
-
-	/**
-	 * Manages the state of the `isOpen` property of the dropdown menu. Because the state is a sum of individual
-	 * top-level menus' states, it's necessary to listen to their changes and update the state accordingly.
-	 *
-	 * Additionally, it prevents unnecessary changes of `isOpen` when one top-level menu opens and another closes
-	 * (regardless of the order), maintaining a stable `isOpen === true` in that situation.
-	 */
-	private _setupIsOpenUpdater() {
-		let closeTimeout: ReturnType<typeof setTimeout>;
-
-		this.on<DropdownMenuChangeIsOpenEvent>( 'menu:change:isOpen', ( evt, name, isOpen ) => {
-			clearTimeout( closeTimeout );
-
-			if ( isOpen ) {
-				this.isOpen = true;
-			} else {
-				closeTimeout = setTimeout( () => {
-					this.isOpen = this.menus.some( ( { isOpen } ) => isOpen );
-				}, 0 );
-			}
-		} );
+		targetListView.items.addMany( items );
 	}
 }
 
 /**
- * Represents the attributes for the DropdownMenuRootListView.
+ * Fired when one of the menu buttons is executed (through mouse click or keyboard).
+ *
+ * This event is a delegated `execute` event fired by the pressed button. The `event.source` is the button which was executed.
+ *
+ * @eventName ~DropdownMenuRootListView#menu:execute
  */
-export type DropdownMenuRootListViewAttributes = {
-
-	/**
-	 * Specifies whether to lazily initialize submenus.
-	 */
-	lazyInitializeSubMenus?: boolean;
-
-	/**
-	 * Specifies the CSS class for the menu panel.
-	 */
-	menuPanelClass?: string;
-};
+export interface DropdownMenuRootListViewExecuteEvent extends BaseEvent {
+	name: 'menu:execute';
+	args: [];
+}

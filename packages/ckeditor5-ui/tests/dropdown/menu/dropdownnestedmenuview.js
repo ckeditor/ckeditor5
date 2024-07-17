@@ -15,14 +15,11 @@ import {
 
 import DropdownMenuButtonView from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
 import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenupanelview.js';
-import { DropdownMenuView } from '../../../src/index.js';
-import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/utils/dropdownmenubehaviors.js';
-import { DropdownMenuViewPanelPositioningFunctions } from '../../../src/dropdown/menu/utils/dropdownmenupositioningfunctions.js';
-import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
-import { createMockMenuDefinition } from './_utils/dropdowntreemock.js';
+import { DropdownNestedMenuView, DropdownNestedMenuViewPanelPositioningFunctions } from '../../../src/index.js';
+import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/dropdownmenubehaviors.js';
 
-describe( 'DropdownMenuView', () => {
-	let menuView, element, editor, parentMenuView;
+describe( 'DropdownNestedMenuView', () => {
+	let menuView, element, editor, parentMenuView, locale, body;
 
 	testUtils.createSinonSandbox();
 
@@ -31,9 +28,13 @@ describe( 'DropdownMenuView', () => {
 		document.body.appendChild( element );
 		editor = await ClassicTestEditor.create( element );
 
-		parentMenuView = new DropdownMenuView( editor );
-		menuView = new DropdownMenuView( editor, 'Hello' );
-		menuView.parentMenuView = parentMenuView;
+		locale = editor.locale;
+		body = editor.ui.view.body;
+
+		parentMenuView = new DropdownNestedMenuView( locale, body, 'parent', 'Parent' );
+		parentMenuView.panelView.class = 'parentCSSClass';
+
+		menuView = new DropdownNestedMenuView( locale, body, 'menu', 'Menu', parentMenuView );
 	} );
 
 	afterEach( async () => {
@@ -115,16 +116,6 @@ describe( 'DropdownMenuView', () => {
 			} );
 		} );
 
-		describe( '#panelView', () => {
-			it( 'should bind its #isVisible to menu\'s #isOpen', () => {
-				expect( menuView.panelView.isVisible ).to.be.false;
-
-				menuView.isOpen = true;
-
-				expect( menuView.panelView.isVisible ).to.be.true;
-			} );
-		} );
-
 		describe( 'template and DOM element', () => {
 			beforeEach( () => {
 				menuView.render();
@@ -147,20 +138,6 @@ describe( 'DropdownMenuView', () => {
 				menuView.isEnabled = true;
 				expect( menuView.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );
-
-			it( 'should bind #parentMenuView to a CSS class', () => {
-				const menuView = new DropdownMenuView( editor );
-				const parentMenuView = new DropdownMenuView( editor );
-
-				menuView.parentMenuView = parentMenuView;
-				menuView.render();
-				parentMenuView.render();
-
-				expect( menuView.element.classList.contains( 'ck-dropdown-menu__menu_top-level' ) ).to.be.false;
-
-				menuView.destroy();
-				parentMenuView.destroy();
-			} );
 		} );
 	} );
 
@@ -181,77 +158,61 @@ describe( 'DropdownMenuView', () => {
 
 			sinon.assert.calledOnceWithExactly( keystrokeHandlerAddSpy, menuView.element );
 		} );
+	} );
 
-		describe( 'panel repositioning upon open', () => {
-			it( 'should update the position whenever the menu gets open (but not when it closes)', () => {
-				menuView.render();
-				menuView.panelView.position = null;
-				menuView.isOpen = true;
+	describe( 'panel repositioning upon open', () => {
+		it( 'should update the position whenever the menu gets open (but not when it closes)', () => {
+			menuView.render();
+			menuView.panelView.position = null;
+			menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.not.be.null;
+			expect( menuView.panelView.position ).to.not.be.null;
 
-				const newPositionName = menuView.panelView.position;
-				menuView.isOpen = false;
-				expect( menuView.panelView.position ).to.equal( newPositionName );
-			} );
+			const newPositionName = menuView.panelView.position;
+			menuView.isOpen = false;
+			expect( menuView.panelView.position ).to.equal( newPositionName );
+		} );
 
-			describe( 'when the UI language is LTR', () => {
-				it( 'should use a specific set of positioning functions in a specific priority order', () => {
-					const locale = new Locale( { uiLanguage: 'pl' } );
+		it( 'should use a specific set of positioning functions in a specific priority order (LTR)', () => {
+			const spy = sinon.spy( menuView.panelView, 'pin' );
 
-					createSubMenuWithLocale( locale );
+			menuView.render();
+			document.body.appendChild( menuView.element );
 
-					const spy = sinon.spy( menuView.panelView, 'pin' );
+			menuView.isOpen = true;
 
-					menuView.isOpen = true;
+			expect( spy ).to.be.calledOnce;
+			expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+				DropdownNestedMenuViewPanelPositioningFunctions.eastSouth,
+				DropdownNestedMenuViewPanelPositioningFunctions.eastNorth,
+				DropdownNestedMenuViewPanelPositioningFunctions.westSouth,
+				DropdownNestedMenuViewPanelPositioningFunctions.westNorth
+			] );
+		} );
 
-					expect( spy ).to.be.calledOnce;
-					expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
-						DropdownMenuViewPanelPositioningFunctions.eastSouth,
-						DropdownMenuViewPanelPositioningFunctions.eastNorth,
-						DropdownMenuViewPanelPositioningFunctions.westSouth,
-						DropdownMenuViewPanelPositioningFunctions.westNorth
-					] );
-				} );
-			} );
+		it( 'should use a specific set of positioning functions in a specific priority order (RTL)', () => {
+			const rtlParentMenuView = new DropdownNestedMenuView( new Locale( { uiLanguage: 'ar' } ), body, 'parent', 'Parent' );
+			rtlParentMenuView.panelView.class = 'parentCSSClass';
 
-			describe( 'when the UI language is RTL', () => {
-				it( 'should use a specific set of positioning functions in a specific priority order', () => {
-					const locale = new Locale( { uiLanguage: 'ar' } );
+			const rtlMenuView = new DropdownNestedMenuView( new Locale( { uiLanguage: 'ar' } ), body, 'menu', 'Menu', rtlParentMenuView );
 
-					createSubMenuWithLocale( locale );
+			const spy = sinon.spy( rtlMenuView.panelView, 'pin' );
 
-					const spy = sinon.spy( menuView.panelView, 'pin' );
+			rtlMenuView.render();
+			document.body.appendChild( rtlMenuView.element );
 
-					menuView.isOpen = true;
+			rtlMenuView.isOpen = true;
 
-					expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
-						DropdownMenuViewPanelPositioningFunctions.westSouth,
-						DropdownMenuViewPanelPositioningFunctions.westNorth,
-						DropdownMenuViewPanelPositioningFunctions.eastSouth,
-						DropdownMenuViewPanelPositioningFunctions.eastNorth
-					] );
-				} );
-			} );
+			expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+				DropdownNestedMenuViewPanelPositioningFunctions.westSouth,
+				DropdownNestedMenuViewPanelPositioningFunctions.westNorth,
+				DropdownNestedMenuViewPanelPositioningFunctions.eastSouth,
+				DropdownNestedMenuViewPanelPositioningFunctions.eastNorth
+			] );
 
-			function createSubMenuWithLocale( locale ) {
-				if ( parentMenuView ) {
-					parentMenuView.destroy();
-				}
-
-				if ( menuView ) {
-					menuView.destroy();
-				}
-
-				editor.locale = locale;
-
-				menuView = new DropdownMenuView( editor );
-				parentMenuView = new DropdownMenuView( editor );
-
-				menuView.parentMenuView = parentMenuView;
-				menuView.render();
-				document.body.appendChild( menuView.element );
-			}
+			rtlMenuView.element.remove();
+			rtlMenuView.destroy();
+			rtlParentMenuView.destroy();
 		} );
 	} );
 
@@ -266,30 +227,7 @@ describe( 'DropdownMenuView', () => {
 		} );
 	} );
 
-	describe( 'factory', () => {
-		it( 'returns instance of DropdownMenuFactory', () => {
-			expect( menuView.factory ).to.be.instanceOf( DropdownMenuFactory );
-		} );
-
-		it( 'should be possible to append menu items using factory', () => {
-			menuView.factory.appendChildren( [ createMockMenuDefinition() ] );
-			expect( menuView.listView.items.length ).to.be.equal( 1 );
-		} );
-	} );
-
 	describe( '_attachBehaviors', () => {
-		let parentMenuView;
-
-		beforeEach( () => {
-			parentMenuView = new DropdownMenuView( editor );
-
-			menuView.parentMenuView = parentMenuView;
-		} );
-
-		afterEach( () => {
-			parentMenuView.destroy();
-		} );
-
 		it( 'should enable a behavior that shows the menu upon clicking', () => {
 			const spy = sinon.spy( DropdownMenuBehaviors, 'openOnButtonClick' );
 

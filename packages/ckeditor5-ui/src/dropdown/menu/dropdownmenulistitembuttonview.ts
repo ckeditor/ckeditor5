@@ -17,30 +17,25 @@ import '../../../theme/components/dropdown/menu/dropdownmenulistitembutton.css';
  * Represents a view for a button in a dropdown menu list item.
  */
 export default class DropdownMenuListItemButtonView extends ButtonView {
-	/**
-	 * Determines whether space should be allocated for an icon if it is missing.
-	 */
-	declare public addIconSpace: boolean;
+	public readonly id: string;
 
-	constructor( locale: Locale, label?: string ) {
+	constructor( locale: Locale, id: string, label: string ) {
 		super( locale );
 
-		const bind = this.bindTemplate;
+		this.id = id;
 
 		this.set( {
 			withText: true,
 			withKeystroke: true,
 			tooltip: false,
 			role: 'menuitem',
-			addIconSpace: false,
 			label
 		} );
 
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-dropdown-menu__menu__item__button',
-					bind.if( 'addIconSpace', 'ck-icon-spacing' )
+					'ck-dropdown-menu__menu__item__button'
 				]
 			}
 		} );

@@ -5,7 +5,7 @@
 
 .ck.ck-dropdown-menu__menu__panel {
 	position: absolute;
-	max-height: 60vh;
+	max-height: 314px; /* With the default settings, this is equal to 10 menu items. */
 	overflow-y: auto;
 	z-index: calc(var(--ck-z-panel) + 1);
 }

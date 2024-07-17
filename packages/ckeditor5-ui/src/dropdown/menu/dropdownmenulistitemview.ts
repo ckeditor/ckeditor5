@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type DropdownMenuView from './dropdownmenuview.js';
+import type DropdownNestedMenuView from './dropdownnestedmenuview.js';
 
 import ListItemView from '../../list/listitemview.js';
 import DropdownMenuListItemButtonView from './dropdownmenulistitembuttonview.js';
@@ -22,12 +22,12 @@ export default class DropdownMenuListItemView extends ListItemView {
 	/**
 	 * The view representing either a flat item or a nested menu in a dropdown menu list item.
 	 */
-	public readonly childView: DropdownMenuView | DropdownMenuListItemButtonView;
+	public readonly childView: DropdownNestedMenuView | DropdownMenuListItemButtonView;
 
 	constructor(
 		locale: Locale,
-		parentMenuView: DropdownMenuView | null,
-		childView: DropdownMenuView | DropdownMenuListItemButtonView
+		parentMenuView: DropdownNestedMenuView | null,
+		childView: DropdownNestedMenuView | DropdownMenuListItemButtonView
 	) {
 		super( locale );
 
@@ -51,7 +51,7 @@ export default class DropdownMenuListItemView extends ListItemView {
 			this.delegate( 'mouseenter' ).to( parentMenuView );
 
 			if ( childView instanceof DropdownMenuListItemButtonView ) {
-				childView.delegate( 'execute' ).to( parentMenuView, 'item:execute' );
+				childView.delegate( 'execute' ).to( parentMenuView );
 			}
 		}
 	}

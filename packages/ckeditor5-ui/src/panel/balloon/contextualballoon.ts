@@ -357,7 +357,6 @@ export default class ContextualBalloon extends Plugin {
 		this._view = new BalloonPanelView( this.editor.locale );
 
 		this.editor.ui.view.body.add( this._view );
-		this.editor.ui.focusTracker.add( this._view.element! );
 
 		this._rotatorView = this._createRotatorView();
 		this._fakePanelsView = this._createFakePanelsView();

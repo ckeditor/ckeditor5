@@ -8,10 +8,7 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { DropdownMenuViewsRootTree } from './tree/dropdownmenutreetypings.js';
-
 import ListView from '../../list/listview.js';
-import { createTreeFromDropdownMenuView } from './tree/dropdownmenutreecreateutils.js';
 
 /**
  * Represents a dropdown menu list view.
@@ -42,17 +39,6 @@ export default class DropdownMenuListView extends ListView {
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				]
 			}
-		} );
-	}
-
-	/**
-	 * Gets the tree representation of the dropdown menu views.
-	 *
-	 * @returns The tree representation of the dropdown menu views.
-	 */
-	public get tree(): DropdownMenuViewsRootTree {
-		return createTreeFromDropdownMenuView( {
-			menuItems: [ ...this.items ]
 		} );
 	}
 }

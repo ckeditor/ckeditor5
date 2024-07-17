@@ -287,7 +287,6 @@ export default class Dialog extends Plugin {
 		} );
 
 		editor.ui.view.body.add( view );
-		editor.ui.focusTracker.add( view.element! );
 		editor.keystrokes.listenTo( view.element! );
 
 		// Unless the user specified a position, modals should always be centered on the screen.
