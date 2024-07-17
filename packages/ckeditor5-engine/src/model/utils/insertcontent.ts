@@ -799,6 +799,9 @@ class Insertion {
 			}
 		}
 
+		// At this point, we split elements up to the parent in which `node` is allowed.
+		// Note that `_getAllowedIn()` checks if the `node` is allowed either directly, or when auto-paragraphed.
+		// So, let's check if the `node` is allowed directly. If not, we need to auto-paragraph it.
 		if ( !this.schema.checkChild( this.position.parent, node ) ) {
 			this._insertAutoParagraph();
 		}
