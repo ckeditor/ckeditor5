@@ -70,6 +70,51 @@ describe( 'CKBoxUtils', () => {
 		} );
 	} );
 
+	describe( 'init()', () => {
+		it( 'should not block initialization of plugin while fetching token', async () => {
+			const defer = createDefer();
+			const slowToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
+
+			await editor.destroy();
+
+			class SlowCloudServices extends CloudServices {
+				async registerTokenUrl() {
+					await defer.promise;
+					return slowToken;
+				}
+			}
+
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ImageBlockEditing,
+					ImageInlineEditing,
+					ImageCaptionEditing,
+					LinkEditing,
+					LinkImageEditing,
+					PictureEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					SlowCloudServices,
+					CKBoxUploadAdapter,
+					CKBoxEditing
+				],
+				substitutePlugins: [
+					CloudServicesCoreMock
+				],
+				ckbox: {
+					tokenUrl: 'http://cs.example.com',
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			ckboxUtils = editor.plugins.get( CKBoxUtils );
+			expect( ckboxUtils.getToken() ).to.be.instanceOf( Promise );
+
+			defer.resolve();
+			expect( await ckboxUtils.getToken() ).to.be.equal( slowToken );
+		} );
+	} );
+
 	describe( 'fetching token', () => {
 		it( 'should create an instance of Token class which is ready to use (specified ckbox.tokenUrl)', async () => {
 			const resolvedToken = await ckboxUtils.getToken();
@@ -728,4 +773,17 @@ function createToken( tokenClaims ) {
 		// Signature.
 		'signature'
 	].join( '.' );
+}
+
+function createDefer() {
+	const deferred = {
+		resolve: ( ) => {},
+		promise: Promise.resolve( null )
+	};
+
+	deferred.promise = new Promise( resolve => {
+		deferred.resolve = resolve;
+	} );
+
+	return deferred;
 }
