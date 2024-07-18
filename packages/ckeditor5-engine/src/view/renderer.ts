@@ -733,7 +733,9 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			}
 			// Update the existing text node data.
 			else if ( action === 'update' ) {
-				this._updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				if ( !this.isComposing ) {
+					this._updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				}
 				i++;
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
