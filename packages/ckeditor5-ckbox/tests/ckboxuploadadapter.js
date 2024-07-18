@@ -1137,9 +1137,9 @@ describe( 'CKBoxUploadAdapter', () => {
 						.then( () => {
 							throw new Error( 'Expected to be rejected.' );
 						}, err => {
-							expect( console.error.callCount ).to.equal( 2 );
+							expect( console.error.callCount ).to.equal( 1 );
 							expect( console.error.firstCall.args[ 0 ] ).to.match( /^ckbox-access-default-workspace-error/ );
-							expect( err ).to.equal( 'Cannot determine a category for the uploaded file.' );
+							expect( err ).to.equal( 'Cannot access default workspace.' );
 						} );
 				} );
 			} );

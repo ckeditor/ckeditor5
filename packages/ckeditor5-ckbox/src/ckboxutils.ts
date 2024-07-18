@@ -192,7 +192,7 @@ export default class CKBoxUtils extends Plugin {
 		const token = this._token;
 		const { signal } = options;
 		const serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' )!;
-		const workspaceId = this.getWorkspaceId();
+		const workspaceId = await this.getWorkspaceId();
 
 		try {
 			const result: Array<AvailableCategory> = [];
@@ -227,7 +227,7 @@ export default class CKBoxUtils extends Plugin {
 
 			categoryUrl.searchParams.set( 'limit', String( ITEMS_PER_REQUEST ) );
 			categoryUrl.searchParams.set( 'offset', String( offset ) );
-			categoryUrl.searchParams.set( 'workspaceId', await workspaceId );
+			categoryUrl.searchParams.set( 'workspaceId', workspaceId );
 
 			return sendHttpRequest( {
 				url: categoryUrl,
