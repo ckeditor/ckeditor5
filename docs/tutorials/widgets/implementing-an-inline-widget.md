@@ -9,9 +9,9 @@ meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 In this tutorial, you will learn how to implement an inline widget. You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document.
 
 <info-box warning>
-	**Please be advised that we are currently working on the official implementation of this feature!**
+	**We have an official implementation of this feature!**
 
-	The official feature will be much more robust than the solution presented here, and will offer many configuration options. If you plan to implement a custom placeholder feature based on this tutorial, we strongly advise waiting for the official solution. In case of any questions, feel free to [contact us](https://ckeditor.com/contact/).
+	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options. 
 </info-box>
 
 First, you will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
