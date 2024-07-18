@@ -405,8 +405,8 @@ export default class BalloonPanelView extends View {
 				}
 			};
 
-			// Element is being resize to 0x0 after being hidden, so we need to
-			// check size in order to determine if it's visible or not.
+			// Element is being resized to 0x0 after it's parent became hidden,
+			// so we need to check size in order to determine if it's visible or not.
 			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
 
 			// Check the visibility of the target element immediately, as the target element might be
