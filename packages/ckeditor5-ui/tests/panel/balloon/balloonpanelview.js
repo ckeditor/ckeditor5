@@ -1065,9 +1065,12 @@ describe( 'BalloonPanelView', () => {
 
 					expect( view._resizeObserver ).not.to.be.null;
 
+					const destroyObserverSpy = sinon.spy( view._resizeObserver, 'destroy' );
+
 					view.unpin();
 					clock.tick( 100 );
 
+					expect( destroyObserverSpy ).to.be.calledOnce;
 					expect( view._resizeObserver ).to.be.null;
 				} );
 
