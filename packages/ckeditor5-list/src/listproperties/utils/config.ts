@@ -3,13 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { type ArrayOrItem, toArray } from 'ckeditor5/src/utils.js';
-import type { ListPropertiesStyleConfig, ListPropertiesConfig } from '../../listconfig.js';
-import { type ListType } from '../../list/listediting.js';
-
 /**
-* @module list/listproperties/utils/config
-*/
+ * @module list/listproperties/utils/config
+ */
+
+import { toArray } from 'ckeditor5/src/utils.js';
+import type { ListPropertiesConfig, ListPropertiesStyleListType } from '../../listconfig.js';
 
 /**
  * Normalizes {@link module:list/listconfig~ListPropertiesConfig} in the configuration of the list properties feature.
@@ -50,19 +49,20 @@ export function getNormalizedConfig( config: ListPropertiesConfig ): NormalizedL
  * }
  * ```
  *
- * @param config The list properties styles.
+ * @param styles The list properties styles.
  * @returns An object with normalized list properties styles.
  */
-function getNormalizedStylesConfig( styles: ListPropertiesStyles ): NormalizedListPropertiesStyles {
+function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): NormalizedListPropertiesConfig[ 'styles' ] {
 	const normalizedConfig = {
-		listTypes: [ 'bulleted', 'numbered' ] as Array<ListType>,
+		listTypes: [ 'bulleted', 'numbered' ] as Array<ListPropertiesStyleListType>,
 		useAttribute: false
 	};
 
 	if ( styles === true ) {
 		return normalizedConfig;
 	}
-	else if ( !styles ) {
+
+	if ( !styles ) {
 		normalizedConfig.listTypes = [];
 	}
 	else if ( Array.isArray( styles ) || typeof styles == 'string' ) {
@@ -79,25 +79,14 @@ function getNormalizedStylesConfig( styles: ListPropertiesStyles ): NormalizedLi
 	return normalizedConfig;
 }
 
-type ListPropertiesStyles = boolean | ListPropertiesStyleConfig | ArrayOrItem<ListType> | undefined;
-
 /**
 * Normalized list properties config.
 */
 export type NormalizedListPropertiesConfig = {
 	styles: {
-		listTypes: Array<ListType>;
+		listTypes: Array<ListPropertiesStyleListType>;
 		useAttribute: boolean;
 	};
 	startIndex: boolean;
 	reversed: boolean;
 };
-
-/**
-* Normalized list properties config.
-*/
-export type NormalizedListPropertiesStyles = {
-	listTypes: Array<ListType>;
-	useAttribute: boolean;
-};
-
