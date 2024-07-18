@@ -427,7 +427,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
 
-			if ( licensedHosts ) {
+			if ( licensedHosts && licensedHosts.length > 0 ) {
 				const hostname = window.location.hostname;
 				const willcards = licensedHosts
 					.filter( val => val.startsWith( '*' ) )
