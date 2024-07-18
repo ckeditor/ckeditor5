@@ -156,7 +156,7 @@ export default class BalloonPanelView extends View {
 	private _pinWhenIsVisibleCallback: ( () => void ) | null;
 
 	/**
-	 * A ResizeObserver instance used to watch if target element is still visible.
+	 * An instance of resize observer used to detect if target element is still visible.
 	 */
 	private _resizeObserver: ResizeObserver | null;
 
@@ -410,7 +410,7 @@ export default class BalloonPanelView extends View {
 			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
 
 			// Check the visibility of the target element immediately, as the target element might be
-			// already hidden when the panel is being pinned. It's wrapped in requestAnimationFrame because the
+			// already hidden when the panel is being pinned. It's wrapped in `requestAnimationFrame` because the
 			// `_startPinning` method is called during `pin()` and the panel is not yet visible, and not every listener
 			// has been attached yet. This way, we wait until rest of the listeners are attached in caller methods
 			// and then check the visibility.
