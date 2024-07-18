@@ -165,7 +165,7 @@ createEditor( 'style', {
 	reversed: false
 } );
 
-createEditor( 'numbered-false', {
+createEditor( 'style-bulleted-only', {
 	styles: {
 		listTypes: 'bulleted'
 	},
@@ -173,12 +173,28 @@ createEditor( 'numbered-false', {
 	reversed: true
 } );
 
-createEditor( 'bulleted-false', {
+createEditor( 'style-bulleted-only-styles', {
+	styles: {
+		listTypes: 'bulleted'
+	},
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-numbered-only', {
 	styles: {
 		listTypes: 'numbered'
 	},
 	startIndex: true,
 	reversed: true
+} );
+
+createEditor( 'style-numbered-only-styles', {
+	styles: {
+		listTypes: 'numbered'
+	},
+	startIndex: false,
+	reversed: false
 } );
 
 createEditor( 'style-attribute', {
