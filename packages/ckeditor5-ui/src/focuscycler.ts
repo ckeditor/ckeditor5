@@ -279,8 +279,8 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Allows for creating continuous focus cycling across multiple focus cyclers and their collections of {@link #focusables}.
 	 *
-	 * It starts listening to the {@link module:ui/focuscycler~FocusCycler#forwardCycle} and
-	 * {@link module:ui/focuscycler~FocusCycler#backwardCycle} events of the chained focus cycler and engages,
+	 * It starts listening to the {@link module:ui/focuscycler~FocusCyclerForwardCycleEvent} and
+	 * {@link module:ui/focuscycler~FocusCyclerBackwardCycleEvent} events of the chained focus cycler and engages,
 	 * whenever the user reaches the last (forwards navigation) or first (backwards navigation) focusable view
 	 * and would normally start over. Instead, the navigation continues on the higher level (flattens).
 	 *
