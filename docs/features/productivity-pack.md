@@ -29,6 +29,10 @@ The productivity pack is a set of exclusive premium features for the CKEditor&nb
 
 	The {@link features/format-painter format painter feature} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
 
+* Merge fields
+
+	The {@link features/merge-fields merge fields feature} allows for inserting placeholder elements into the document. They can be used to mark what kind of value should be placed at given position in text, rather than using the value itself. They can be used to prepare templates for e-mails or documents and later export them as Word or PDF files holding the actual content.
+
 * Paste from Office enhanced
 
 	The {@link features/paste-from-office-enhanced Paste from Office Enhanced feature} lets you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. It will retain the basic text styling, heading levels, links, lists, tables, and images.
