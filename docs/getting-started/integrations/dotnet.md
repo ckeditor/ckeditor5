@@ -216,14 +216,6 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `Index.cshtml` file i
                     console.error( error );
                 } );
         </script>
-        <!-- A friendly reminder to run on a server, remove this during the integration. -->
-        <script>
-		        window.onload = function() {
-		            if ( window.location.protocol === "file:" ) {
-		                alert( "This sample requires an HTTP server. Please serve this file with a web server." );
-		            }
-		        };
-		</script>
     </body>
 </html>
 ```

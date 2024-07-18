@@ -401,6 +401,11 @@
 			}
 		]
 	},
+	"vwo": {
+		"config": {
+			"trackingId": "854367"
+		}
+	},
 	"googleanalytics": {
 		"domains": [
 			"ckeditor5.github.io"

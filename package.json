@@ -109,6 +109,7 @@
     "@ckeditor/ckeditor5-import-word": "42.0.1",
     "@ckeditor/ckeditor5-inspector": "^4.0.0",
     "@ckeditor/ckeditor5-list-multi-level": "42.0.1",
+    "@ckeditor/ckeditor5-merge-fields": "0.0.1",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.3",
     "@ckeditor/ckeditor5-pagination": "42.0.1",
     "@ckeditor/ckeditor5-paste-from-office-enhanced": "42.0.1",
@@ -158,7 +159,7 @@
     "table": "^6.8.1",
     "terser-webpack-plugin": "^4.2.3",
     "typescript": "5.0.4",
-    "umberto": "^4.2.3",
+    "umberto": "^4.2.4",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.58.1"

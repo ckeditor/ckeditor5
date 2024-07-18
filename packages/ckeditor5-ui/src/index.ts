@@ -88,6 +88,7 @@ export { default as ListItemGroupView } from './list/listitemgroupview.js';
 export { default as ListItemView } from './list/listitemview.js';
 export { default as ListSeparatorView } from './list/listseparatorview.js';
 export { default as ListView } from './list/listview.js';
+export { default as filterGroupAndItemNames } from './search/filtergroupanditemnames.js';
 
 export { default as Notification } from './notification/notification.js';
 
@@ -101,6 +102,8 @@ export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchT
 export { default as SearchInfoView } from './search/searchinfoview.js';
 export type { default as FilteredView, FilteredViewExecuteEvent } from './search/filteredview.js';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview.js';
+export { default as ButtonLabelWithHighlightView } from './highlightedtext/buttonlabelwithhighlightview.js';
+export { default as LabelWithHighlightView } from './highlightedtext/labelwithhighlightview.js';
 
 export { default as TooltipManager } from './tooltipmanager.js';
 export { default as Template, type TemplateDefinition } from './template.js';
