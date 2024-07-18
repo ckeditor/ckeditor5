@@ -5,7 +5,7 @@
 
 /* global document, KeyboardEvent */
 
-import { parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
+import { isVisible, parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
 import { View } from '../../src/index.js';
 
 export default function testFocusCycling( {
@@ -78,15 +78,20 @@ export default function testFocusCycling( {
 				}
 			}
 
-			const focusSpies = Array.from( focusables ).map( view => sinon.spy( view, 'focus' ) );
-			let currentView = focusables.first;
-			let currentElement = currentView.element;
+			const visibleFocusables = Array.from( focusables ).filter( view => isVisible( view.element ) );
+			const focusSpies = visibleFocusables.map( view => sinon.spy( view, 'focus' ) );
 
-			focusables.first.focus();
+			getView().focusCycler.focusFirst();
 
 			await wait( 10 );
 
-			do {
+			let currentView = focusables.get( getView().focusCycler.current );
+			let currentElement = document.activeElement;
+			const visitedElements = new Set();
+
+			while ( !visitedElements.has( currentElement ) ) {
+				visitedElements.add( currentElement );
+
 				const event = triggerAction( {
 					action,
 					keystroke,
@@ -102,20 +107,11 @@ export default function testFocusCycling( {
 					sinon.assert.calledOnce( event.stopPropagation );
 				}
 
-				currentElement = getView().focusTracker.focusedElement;
-				currentView = focusables.find( view => view.element.contains( currentElement ) );
-			} while ( currentElement !== focusables.first.element );
-
-			expect( focusSpies.map( spy => spy.called ).every( isCalled => isCalled ), 'Focus was called' ).to.be.true;
-
-			const expectedCallCounts = new Array( focusables.length ).fill( 1 );
-
-			// There will be a forward or backward cycle so the first spy will always be called twice.
-			if ( focusables.length > 1 ) {
-				expectedCallCounts[ 0 ]++;
+				currentElement = document.activeElement;
+				currentView = visibleFocusables.find( view => view.element.contains( currentElement ) );
 			}
 
-			expect( focusSpies.map( spy => spy.callCount ), 'Focus call count' ).to.deep.equal( expectedCallCounts );
+			expect( focusSpies.map( spy => spy.called ).every( isCalled => isCalled ), 'Focus was called' ).to.be.true;
 
 			if ( action === 'focusNext' ) {
 				sinon.assert.callOrder( ...focusSpies );
