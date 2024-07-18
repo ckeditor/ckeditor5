@@ -29,6 +29,9 @@ import type ListStartCommand from '../listproperties/liststartcommand.js';
 import type LegacyListReversedCommand from '../legacylistproperties/legacylistreversedcommand.js';
 import type ListReversedCommand from '../listproperties/listreversedcommand.js';
 
+import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
+import { type ListPropertiesStyleListType } from '../listconfig.js';
+
 import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
 import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
 import listStyleSquareIcon from '../../theme/icons/liststylesquare.svg';
@@ -40,8 +43,6 @@ import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
-import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
-import { type ListPropertiesStyleListType } from '../listconfig.js';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
@@ -63,12 +64,12 @@ export default class ListPropertiesUI extends Plugin {
 		const t = editor.locale.t;
 		const propertiesConfig = editor.config.get( 'list.properties' )!;
 		const normalizedConfig = getNormalizedConfig( propertiesConfig );
-		const listTypes = normalizedConfig.styles.listTypes;
+		const stylesListTypes = normalizedConfig.styles.listTypes;
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( listTypes.includes( 'bulleted' ) ) {
+		if ( stylesListTypes.includes( 'bulleted' ) ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the disc list style' ),
@@ -95,7 +96,7 @@ export default class ListPropertiesUI extends Plugin {
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,
-				propertiesConfig: normalizedConfig,
+				normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				buttonIcon: icons.bulletedList,
@@ -106,7 +107,7 @@ export default class ListPropertiesUI extends Plugin {
 			// Add the menu bar item for bulleted list.
 			editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
 				editor,
-				propertiesConfig: normalizedConfig,
+				normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				styleGridAriaLabel,
@@ -117,7 +118,7 @@ export default class ListPropertiesUI extends Plugin {
 		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( listTypes.includes( 'numbered' ) || propertiesConfig.startIndex || propertiesConfig.reversed ) {
+		if ( stylesListTypes.includes( 'numbered' ) || propertiesConfig.startIndex || propertiesConfig.reversed ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -162,7 +163,7 @@ export default class ListPropertiesUI extends Plugin {
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,
-				propertiesConfig: normalizedConfig,
+				normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				buttonIcon: icons.numberedList,
@@ -172,10 +173,10 @@ export default class ListPropertiesUI extends Plugin {
 
 			// Menu bar menu does not display list start index or reverse UI. If there are no styles enabled,
 			// the menu makes no sense and should be omitted.
-			if ( listTypes.includes( 'numbered' ) ) {
+			if ( stylesListTypes.includes( 'numbered' ) ) {
 				editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
 					editor,
-					propertiesConfig: normalizedConfig,
+					normalizedConfig,
 					parentCommandName: commandName,
 					buttonLabel,
 					styleGridAriaLabel,
@@ -191,7 +192,7 @@ export default class ListPropertiesUI extends Plugin {
  * which in turn contains buttons allowing users to change list styles in the context of the current selection.
  *
  * @param options.editor
- * @param options.propertiesConfig List properties configuration.
+ * @param options.normalizedConfig List properties configuration.
  * @param options.parentCommandName The name of the higher-order editor command associated with
  * the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
  * @param options.buttonLabel Label of the main part of the split button.
@@ -202,7 +203,7 @@ export default class ListPropertiesUI extends Plugin {
  */
 function getDropdownViewCreator( {
 	editor,
-	propertiesConfig,
+	normalizedConfig,
 	parentCommandName,
 	buttonLabel,
 	buttonIcon,
@@ -210,7 +211,7 @@ function getDropdownViewCreator( {
 	styleDefinitions
 }: {
 	editor: Editor;
-	propertiesConfig: NormalizedListPropertiesConfig;
+	normalizedConfig: Readonly<NormalizedListPropertiesConfig>;
 	parentCommandName: string;
 	buttonLabel: string;
 	buttonIcon: string;
@@ -244,7 +245,7 @@ function getDropdownViewCreator( {
 		dropdownView.once( 'change:isOpen', () => {
 			const listPropertiesView = createListPropertiesView( {
 				editor,
-				propertiesConfig,
+				normalizedConfig,
 				dropdownView,
 				parentCommandName,
 				styleGridAriaLabel,
@@ -324,7 +325,7 @@ function getStyleButtonCreator( {
  * A helper that creates the properties view for the individual style dropdown.
  *
  * @param options.editor Editor instance.
- * @param options.propertiesConfig List properties configuration.
+ * @param options.normalizedConfig List properties configuration.
  * @param options.dropdownView Styles dropdown view that hosts the properties view.
  * @param options.parentCommandName The name of the higher-order editor command associated with
  * the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
@@ -333,14 +334,14 @@ function getStyleButtonCreator( {
  */
 function createListPropertiesView( {
 	editor,
-	propertiesConfig,
+	normalizedConfig,
 	dropdownView,
 	parentCommandName,
 	styleDefinitions,
 	styleGridAriaLabel
 }: {
 	editor: Editor;
-	propertiesConfig: NormalizedListPropertiesConfig;
+	normalizedConfig: Readonly<NormalizedListPropertiesConfig>;
 	dropdownView: DropdownView;
 	parentCommandName: string;
 	styleDefinitions: Array<StyleDefinition>;
@@ -348,18 +349,18 @@ function createListPropertiesView( {
 } ) {
 	const locale = editor.locale;
 	const enabledProperties = {
-		...propertiesConfig
+		...normalizedConfig,
+
+		...( parentCommandName != 'numberedList' ? {
+			startIndex: false,
+			reversed: false
+		} : null )
 	};
 	const listType = parentCommandName.replace( 'List', '' ) as ListPropertiesStyleListType;
 
-	if ( parentCommandName != 'numberedList' ) {
-		enabledProperties.startIndex = false;
-		enabledProperties.reversed = false;
-	}
-
 	let styleButtonViews = null;
 
-	if ( propertiesConfig.styles.listTypes.includes( listType ) ) {
+	if ( normalizedConfig.styles.listTypes.includes( listType ) ) {
 		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
@@ -380,7 +381,7 @@ function createListPropertiesView( {
 		styleButtonViews
 	} );
 
-	if ( propertiesConfig.styles.listTypes.includes( listType ) ) {
+	if ( normalizedConfig.styles.listTypes.includes( listType ) ) {
 		// Accessibility: focus the first active style when opening the dropdown.
 		focusChildOnDropdownOpen( dropdownView, () => {
 			return listPropertiesView.stylesView!.children.find( ( child: any ) => child.isOn );
@@ -417,7 +418,7 @@ function createListPropertiesView( {
  * A helper that creates the list style submenu for menu bar.
  *
  * @param editor Editor instance.
- * @param propertiesConfig List properties configuration.
+ * @param normalizedConfig List properties configuration.
  * @param parentCommandName Name of the list command.
  * @param buttonLabel Label of the menu button.
  * @param styleGridAriaLabel ARIA label of the styles grid.
@@ -425,14 +426,14 @@ function createListPropertiesView( {
 function getMenuBarStylesMenuCreator(
 	{
 		editor,
-		propertiesConfig,
+		normalizedConfig,
 		parentCommandName,
 		buttonLabel,
 		styleGridAriaLabel,
 		styleDefinitions
 	}: {
 		editor: Editor;
-		propertiesConfig: NormalizedListPropertiesConfig;
+		normalizedConfig: Readonly<NormalizedListPropertiesConfig>;
 		parentCommandName: 'bulletedList' | 'numberedList';
 		buttonLabel: string;
 		styleGridAriaLabel: string;
@@ -453,7 +454,7 @@ function getMenuBarStylesMenuCreator(
 		const listPropertiesView = new ListPropertiesView( locale, {
 			styleGridAriaLabel,
 			enabledProperties: {
-				...propertiesConfig,
+				...normalizedConfig,
 
 				// Disable list start index and reversed in the menu bar.
 				startIndex: false,
