@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { type ArrayOrItem } from 'ckeditor5/src/utils.js';
-
 /**
  * @module list/listconfig
  */
+
+import { type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
  * The configuration of the {@link module:list/list~List list} feature
