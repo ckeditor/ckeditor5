@@ -1066,6 +1066,42 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
+		it( 'should not insert or modify rest of cells when splitting larger table rowspan with 7 cells ', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00' }, { colspan: 2, contents: '01' }, { colspan: 2, contents: '02' } ],
+				[ '10', '11', '12', '13' ],
+				[ { rowspan: 9, contents: '20[]' }, '21', '22', '23', '24' ],
+				[ '30', '31', '32', '33' ],
+				[ '40', '41', '42', '43' ],
+				[ '50', '51', '52', '53' ],
+				[ '60', '61', '62', '63' ],
+				[ '70', '71', '72', '73' ],
+				[ '80', '81', '82', '83' ],
+				[ '90', '91', '92', '93' ],
+				[ 'A0', 'A1', 'A2', 'A3' ],
+				[ { colspan: 5, contents: 'B0' } ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 2, 0 ] );
+
+			tableUtils.splitCellHorizontally( tableCell, 2 );
+
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
+				[ { rowspan: 2, contents: '00' }, { colspan: 2, contents: '01' }, { colspan: 2, contents: '02' } ],
+				[ '10', '11', '12', '13' ],
+				[ { rowspan: 5, contents: '20[]' }, '21', '22', '23', '24' ],
+				[ '30', '31', '32', '33' ],
+				[ '40', '41', '42', '43' ],
+				[ '50', '51', '52', '53' ],
+				[ '60', '61', '62', '63' ],
+				[ { rowspan: 4, contents: '' }, '70', '71', '72', '73' ],
+				[ '80', '81', '82', '83' ],
+				[ '90', '91', '92', '93' ],
+				[ 'A0', 'A1', 'A2', 'A3' ],
+				[ { colspan: 5, contents: 'B0' } ]
+			] ) );
+		} );
+
 		it( 'should evenly distribute rowspan attribute', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 7, contents: '01[]' } ],
