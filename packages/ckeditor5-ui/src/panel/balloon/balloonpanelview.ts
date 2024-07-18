@@ -399,13 +399,22 @@ export default class BalloonPanelView extends View {
 		// Hide the panel if the target element is no longer visible.
 		if ( targetElement && !this._resizeObserver ) {
 			const checkVisibility = () => {
-				if ( !targetElement.checkVisibility( { checkVisibilityCSS: false } ) ) {
-					this.isVisible = false;
+				// If the target element is no longer visible, hide the panel.
+				if ( !targetElement.checkVisibility() ) {
+					this.hide();
 				}
 			};
 
+			// Element is being resize to 0x0 after being hidden, so we need to
+			// check size in order to determine if it's visible or not.
 			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
-			checkVisibility();
+
+			// Check the visibility of the target element immediately, as the target element might be
+			// already hidden when the panel is being pinned. It's wrapped in requestAnimationFrame because the
+			// `_startPinning` method is called during `pin()` and the panel is not yet visible, and not every listener
+			// has been attached yet. This way, we wait until rest of the listeners are attached in caller methods
+			// and then check the visibility.
+			window.requestAnimationFrame( checkVisibility );
 		}
 	}
 
