@@ -14,6 +14,7 @@ export default function testFocusCycling( {
 	actions,
 	addFocusables,
 	removeFocusables,
+	expectedFocusedElements,
 	triggerAction = defaultDispatchDomKeyboardEvent
 } ) {
 	for ( const action in actions ) {
@@ -23,7 +24,8 @@ export default function testFocusCycling( {
 		test( {
 			action,
 			keystroke,
-			keystrokeCode
+			keystrokeCode,
+			expectedFocusedElements
 		} );
 
 		if ( addFocusables ) {
@@ -47,7 +49,7 @@ export default function testFocusCycling( {
 		}
 	}
 
-	function test( { action, keystroke, keystrokeCode, modifyFocusables, description = '' } ) {
+	function test( { action, keystroke, keystrokeCode, modifyFocusables, expectedFocusedElements, description = '' } ) {
 		it( `should execute the "${ action }" action upon pressing "${ keystroke }" ${ description }`, async () => {
 			if ( !getView().element ) {
 				throw new Error( 'testFocusCycling() helper: Render the view before testing.' );
@@ -87,10 +89,10 @@ export default function testFocusCycling( {
 
 			let currentView = focusables.get( getView().focusCycler.current );
 			let currentElement = document.activeElement;
-			const visitedElements = new Set();
+			const visitedElements = [];
 
-			while ( !visitedElements.has( currentElement ) ) {
-				visitedElements.add( currentElement );
+			while ( !visitedElements.includes( currentElement ) ) {
+				visitedElements.push( currentElement );
 
 				const event = triggerAction( {
 					action,
@@ -109,6 +111,12 @@ export default function testFocusCycling( {
 
 				currentElement = document.activeElement;
 				currentView = visibleFocusables.find( view => view.element.contains( currentElement ) );
+			}
+
+			if ( expectedFocusedElements ) {
+				const expectedElements = expectedFocusedElements[ action ]( getView() );
+
+				expect( visitedElements, 'Elements visited by focus' ).to.have.ordered.members( expectedElements );
 			}
 
 			expect( focusSpies.map( spy => spy.called ).every( isCalled => isCalled ), 'Focus was called' ).to.be.true;
