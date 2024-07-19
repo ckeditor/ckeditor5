@@ -51,7 +51,7 @@ The productivity pack is a set of exclusive premium features for the CKEditor&nb
 
 ## Free trial
 
-Before committing, you may try out the productivity pack, just like all CKEditor&nbsp;5 premium features. To do it, start your non-commitment [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+Before committing, you may try out the productivity pack, just like all CKEditor&nbsp;5 premium features. To do it, start your non-commitment [14-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
 Refer to the {@link @trial guides/standalone/productivity-pack productivity pack trial} guide for information on how to start using these features in your CKEditor&nbsp;5 WYSIWYG editor now.
 
