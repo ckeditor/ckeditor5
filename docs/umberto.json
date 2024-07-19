@@ -282,8 +282,8 @@
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/legacy-getting-started/extending-features.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
-		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
-		"builds/guides/support/license-and-legal.html": "support/license-and-legal.html",
+		"builds/guides/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
+		"builds/guides/getting-started/licensing/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
 		"support/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
 		"support/faq.html": "examples/how-tos.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
@@ -356,10 +356,12 @@
 		"tutorials/widgets/implementing-an-inline-widget.html": "framework/tutorials/widgets/implementing-an-inline-widget.html",
 		"tutorials/widgets/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
 		"tutorials/widgets/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
-		"support/licensing/license-and-legal.html": "support/license-and-legal.html",
-		"support/licensing/license-key-and-activation.html": "getting-started/setup/license-key-and-activation.html",
+		"support/licensing/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
+		"support/licensing/license-key-and-activation.html": "getting-started/licensing/license-key-and-activation.html",
+		"getting-started/setup/license-key-and-activation.html": "getting-started/licensing/license-key-and-activation.html",
 		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
 		"support/reporting-issues.html": "support/index.html#reporting-issues",
+		"support/license-and-legal": "getting-started/licensing/license-and-legal",
 		"examples/experiments/mermaid.html": "features/mermaid.html",
 		"features/toolbar/toolbar.html": "getting-started/setup/toolbar.html",
 		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
@@ -415,7 +417,7 @@
 		}
 	},
 	"og": {
-		"description": "Learn how to install, integrate, configure, and develop CKEditor 5. Get to know the CKEditor 5 Framework. Browse through the API documentation and online samples."
+		"description": "Learn how to install, integrate and configure CKEditor 5 Builds and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
 	},
 	"groups": [
 		{
@@ -443,6 +445,12 @@
 					"id": "setup",
 					"slug": "setup",
 					"order": 40
+				},
+				{
+					"name": "Licensing",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 50
 				},
 				{
 					"name": "Legacy installation methods",
@@ -783,15 +791,7 @@
 			"name": "Support",
 			"id": "support",
 			"navigationIncludeIndex": true,
-			"slug": "support",
-			"categories": [
-				{
-					"name": "Licensing and activation",
-					"id": "licensing",
-					"slug": "licensing",
-					"order": 20
-				}
-			]
+			"slug": "support"
 		}
 	]
 }

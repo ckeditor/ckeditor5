@@ -38,7 +38,7 @@ Note that some features may require more than one plugin to run, as shown above.
 
 ### Adding premium features
 
-CKEditor&nbsp;5 premium features are imported in the same way. However, they have their own package, named `ckeditor5-premium-features`, to import from. These also {@link getting-started/setup/license-key-and-activation require a license}. Please see an example below, adding the PDF export feature and configuring it.
+CKEditor&nbsp;5 premium features are imported in the same way. However, they have their own package, named `ckeditor5-premium-features`, to import from. These also {@link getting-started/licensing/license-key-and-activation require a license}. Please see an example below, adding the PDF export feature and configuring it.
 
 ```js
 import { ClassicEditor } from 'ckeditor5';

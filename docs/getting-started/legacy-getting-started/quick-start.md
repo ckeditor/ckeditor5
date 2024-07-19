@@ -95,7 +95,7 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 
 In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link getting-started/legacy-getting-started/predefined-builds#available-builds available builds documentation}.
 
-Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the `removePlugins` configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link getting-started/setup/license-key-and-activation License key and activation} guide. Observe the configuration below to see this implemented.
+Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the `removePlugins` configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link getting-started/licensing/license-key-and-activation License key and activation} guide. Observe the configuration below to see this implemented.
 
 ### Sample implementation
 
