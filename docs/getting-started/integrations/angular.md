@@ -131,7 +131,7 @@ The following setup differs depending on the type of components you use.
 
 Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
 
-Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The below example shows how to use the component with open-source and premium plugins.
+Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The example below shows how to use the component with open-source and premium plugins.
 
 ```ts
 // app.component.ts
@@ -142,31 +142,31 @@ import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } fro
 import { SlashCommand } from 'ckeditor5-premium-features';
 
 @Component( {
-    selector: 'app-root',
-    templateUrl: './app.component.html',
+	selector: 'app-root',
+	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	encapsulation: ViewEncapsulation.None,
-    imports: [ CKEditorModule ],
-    standalone: true
+	imports: [ CKEditorModule ],
+	standalone: true
 } )
 export class AppComponent {
-    title = 'angular';
+	title = 'angular';
 
-    public Editor = ClassicEditor;
-    public config = {
-        toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        plugins: [
-            Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-        ],
-        licenseKey: '<YOUR_LICENSE_KEY>',
-        // mention: {
-        //     // Mention configuration
-        // }
-    }
+	public Editor = ClassicEditor;
+	public config = {
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
+			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+		],
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		// mention: {
+		//     // Mention configuration
+		// }
+	}
 }
 ```
 
-Depending on the plugins you used, you may need to import the first or both CSS files. Angular, by default, scope styles to a particular component. Because of that, the editor may not detect attached styles. You must set the encapsulation option to `ViewEncapsulation.None` to turn this scoping off.
+Depending on the plugins used (open source only or premium too), you may need to import the first or both CSS files. Angular, by default, scopes styles to a particular component. Because of that, the editor may not detect attached styles. You must set the encapsulation option to `ViewEncapsulation.None` to turn this scoping off.
 
 ```css
 /* app.component.css */
@@ -220,25 +220,25 @@ import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } fro
 import { SlashCommand } from 'ckeditor5-premium-features';
 
 @Component( {
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: [ './app.component.css' ],
-    encapsulation: ViewEncapsulation.None
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: [ './app.component.css' ],
+	encapsulation: ViewEncapsulation.None
 } )
 export class AppComponent {
-    title = 'angular';
+	title = 'angular';
 
-    public Editor = ClassicEditor;
-    public config = {
-        toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        plugins: [
-            Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-        ],
-        licenseKey: '<YOUR_LICENSE_KEY>',
-        // mention: {
-        //     // Mention configuration
-        // }
-    }
+	public Editor = ClassicEditor;
+	public config = {
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
+			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+		],
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		// mention: {
+		//     // Mention configuration
+		// }
+	}
 }
 ```
 
@@ -604,7 +604,7 @@ import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'cked
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: [ './app.component.css' ],
-    encapsulation: ViewEncapsulation.None
+	encapsulation: ViewEncapsulation.None
 	imports: [ CKEditorModule ],
 	standalone: true
 } )
@@ -674,7 +674,7 @@ import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: [ './app.component.css' ],
-    encapsulation: ViewEncapsulation.None
+	encapsulation: ViewEncapsulation.None
 	imports: [ CKEditorModule ],
 	standalone: true
 } )
