@@ -55,6 +55,45 @@ describe( 'BalloonPanelView', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should hide the panel if it is pinned', () => {
+			view.isVisible = false;
+
+			view.show();
+
+			expect( view.isVisible ).to.true;
+
+			view.destroy();
+
+			expect( view.isVisible ).to.false;
+		} );
+
+		it( 'should destroy the _resizeObserver if present', () => {
+			const target = document.createElement( 'div' );
+			const limiter = document.createElement( 'div' );
+
+			document.body.appendChild( target );
+			document.body.appendChild( limiter );
+
+			view.show();
+			view.pin( {
+				target,
+				limiter
+			} );
+
+			const spy = sinon.spy( view._resizeObserver, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( spy );
+
+			target.remove();
+			limiter.remove();
+		} );
+	} );
+
 	describe( 'DOM bindings', () => {
 		describe( 'arrow', () => {
 			it( 'should react on view#position', () => {

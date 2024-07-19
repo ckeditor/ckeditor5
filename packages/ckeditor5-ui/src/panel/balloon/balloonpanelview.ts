@@ -15,6 +15,7 @@ import {
 	global,
 	isRange,
 	toUnit,
+	isVisible,
 	ResizeObserver,
 	type Locale,
 	type ObservableChangeEvent,
@@ -200,6 +201,14 @@ export default class BalloonPanelView extends View {
 
 			children: this.content
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this.hide();
+		super.destroy();
 	}
 
 	/**
@@ -400,8 +409,8 @@ export default class BalloonPanelView extends View {
 		if ( targetElement && !this._resizeObserver ) {
 			const checkVisibility = () => {
 				// If the target element is no longer visible, hide the panel.
-				if ( !targetElement.checkVisibility() ) {
-					this.hide();
+				if ( !isVisible( targetElement ) ) {
+					this.unpin();
 				}
 			};
 
