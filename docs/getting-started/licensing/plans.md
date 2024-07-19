@@ -1,13 +1,13 @@
 ---
 category: licensing
-menu-title: Available plans
-meta-title: Configuring editor features | CKEditor 5 documentation
+menu-title: License plans
+meta-title: Available license plans | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5.
 order: 20
 modified_at: 2024-06-25
 ---
 
-# Available commercial CKEditor&nbsp;5 license plans
+# Available CKEditor&nbsp;5 license plans
 
 There are several licensing plans you can choose from for greater flexibility and value.
 

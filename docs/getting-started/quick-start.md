@@ -214,7 +214,7 @@ The easiest way to see the editor in action is to serve the `index.html` file vi
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
 
-All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
+All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. It means, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ## Installing premium features
 
@@ -416,7 +416,7 @@ The easiest way to see the editor in action is to serve the `index.html` file vi
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
 
-All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
+All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. It means, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ### Obtaining a license key
 
