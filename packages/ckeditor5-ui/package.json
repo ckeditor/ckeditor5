@@ -14,6 +14,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "42.0.2",
     "@ckeditor/ckeditor5-utils": "42.0.2",
+    "@ckeditor/ckeditor5-engine": "42.0.2",
     "color-convert": "2.0.1",
     "color-parse": "1.4.2",
     "lodash-es": "4.17.21",
@@ -29,7 +30,6 @@
     "@ckeditor/ckeditor5-editor-decoupled": "42.0.2",
     "@ckeditor/ckeditor5-editor-inline": "42.0.2",
     "@ckeditor/ckeditor5-editor-multi-root": "42.0.2",
-    "@ckeditor/ckeditor5-engine": "42.0.2",
     "@ckeditor/ckeditor5-enter": "42.0.2",
     "@ckeditor/ckeditor5-essentials": "42.0.2",
     "@ckeditor/ckeditor5-find-and-replace": "42.0.2",
