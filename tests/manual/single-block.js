@@ -162,6 +162,10 @@ function SingleBlock( editor ) {
 			disallowIn: [ '$root', '$container' ]
 		} );
 
+		schema.addAttributeCheck( context => {
+			return !context.endsWith( 'paragraph' );
+		} );
+
 		schema.extend( 'paragraph', {
 			allowIn: '$root',
 			isLimit: true,
