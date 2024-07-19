@@ -7,5 +7,8 @@ order: 20
 modified_at: 2024-06-25
 ---
 
-# Configuring CKEditor&nbsp;5 features
+# Available commercial CKEditor&nbsp;5 license plans
 
+Currently available plans:
+
+* list

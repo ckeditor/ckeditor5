@@ -29,6 +29,8 @@ Other premium features such as {@link features/real-time-collaboration real-time
 
 <info-box>
 	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link getting-started/licensing/license-and-legal open source software under the GPL license}. It will then {@link getting-started/setup/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
+
+	For commercial purposes, there are {@link getting-started/licensing/license-and-legal trial, development and production license keys} are available.
 </info-box>
 
 ## Obtaining a license
