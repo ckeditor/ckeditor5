@@ -13,8 +13,7 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "42.0.1",
-    "lodash-es": "4.17.21"
+    "ckeditor5": "42.0.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "42.0.1",
