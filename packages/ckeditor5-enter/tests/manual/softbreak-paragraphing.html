@@ -1,0 +1,239 @@
+<table class="test">
+    <tr>
+        <td colspan="2">
+            <h1>Styles description</h1>
+            <div style="border:4px solid black;">
+                Text outside paragraph
+                <p>A paragraph</p>
+                <blockquote>
+                    <p>This is a paragraph in a block-quote</p>
+                    <h3>Heading block</h3>
+                    <p>Second paragraph of bq</p>
+                </blockquote>
+                <p>Another paragraph</p>
+                Text outside paragraph
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h1>Plain HTML</h1>
+            <div style="border:4px solid black;">
+                <br>
+                <blockquote>
+                    <br>
+                    <h2>Outside paragraph</h2>
+
+                    <h3><code>&lt;br&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                    <br>
+                    <h3><code>1</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+                    1
+                    <h3><code>&lt;br&gt;2</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+                    <br>2
+                    <h3><code>3&lt;br&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
+                    3<br>
+                    <h3><code>4&lt;br&gt;5</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+                    4<br>5
+                    <h3><code>6&lt;br&gt;&amp;nbsp;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
+                    6<br>&nbsp;
+                    <h3><code>7&lt;br&gt;&blank;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
+                    7<br>
+                    <h3>END</h3>
+
+                    <h2>In paragraph</h2>
+
+                    <h3><code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                    <p><br></p>
+                    <h3><code>&lt;p&gt;1&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+                    <p>1</p>
+                    <h3><code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+                    <p><br>2</p>
+                    <h3><code>&lt;p&gt;3&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
+                    <p>3<br></p>
+                    <h3><code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+                    <p>4<br>5</p>
+                    <h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
+                    <p>6<br>&nbsp;</p>
+                    <h3><code>&lt;p&gt;7&lt;br&gt;&blank;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
+                    <p>7<br> </p>
+                    <h3>END</h3>
+                    <br>
+                </blockquote>
+                <h2>In inline element</h2>
+                <blockquote>
+                    <b><br></b>
+                    <h2>Outside paragraph</h2>
+
+                    <h3><code>&lt;b&gt;&lt;br&gt;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                    <b><br></b>
+                    <h3><code>&lt;b&gt;1&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;1&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <b>1</b>
+                    <h3><code>&lt;b&gt;&lt;br&gt;2&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;&lt;br&gt;2&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <b><br>2</b>
+                    <h3><code>&lt;b&gt;3&lt;br&gt;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;3&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <b>3<br></b>
+                    <h3><code>&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <b>4<br>5</b>
+                    <h3><code>&lt;b&gt;6&lt;br&gt;&amp;nbsp;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;6&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <b>6<br>&nbsp;</b>
+                    <h3><code>&lt;b&gt;7&lt;br&gt;&blank;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;7&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <b>7<br> </b>
+                    <h3>END</h3>
+
+                    <h2>In paragraph</h2>
+
+                    <h3><code>&lt;p&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                    <p><b><br></b></p>
+                    <h3><code>&lt;p&gt;&lt;b&gt;1&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;1&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <p><b>1</b></p>
+                    <h3><code>&lt;p&gt;&lt;b&gt;&lt;br&gt;2&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;&lt;br&gt;2&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <p><b><br>2</b></p>
+                    <h3><code>&lt;p&gt;&lt;b&gt;3&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;3&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <p><b>3<br></b></p>
+                    <h3><code>&lt;p&gt;&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <p><b>4<br>5</b></p>
+                    <h3><code>&lt;p&gt;&lt;b&gt;6&lt;br&gt;&amp;nbsp;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;6&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <p><b>6<br>&nbsp;</b></p>
+                    <h3><code>&lt;p&gt;&lt;b&gt;7&lt;br&gt;&blank;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;7&lt;/b&gt;&lt;/p&gt;</code></h3>
+                    <p><b>7<br> </b></p>
+                    <h3>END</h3>
+                    <b><br></b>
+                </blockquote>
+                <br>
+            </div>
+        </td><td>
+        <h1>In editor</h1>
+        <div id="editor">
+            <br>
+            <blockquote>
+                <br>
+                <h2>Outside paragraph</h2>
+
+                <h3><code>&lt;br&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                <br>
+                <h3><code>1</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+                1
+                <h3><code>&lt;br&gt;2</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+                <br>2
+                <h3><code>3&lt;br&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
+                3<br>
+                <h3><code>4&lt;br&gt;5</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+                4<br>5
+                <h3><code>6&lt;br&gt;&amp;nbsp;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
+                6<br>&nbsp;
+                <h3><code>7&lt;br&gt;&blank;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
+                7<br>
+                <h3>END</h3>
+
+                <h2>In paragraph</h2>
+
+                <h3><code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                <p><br></p>
+                <h3><code>&lt;p&gt;1&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+                <p>1</p>
+                <h3><code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+                <p><br>2</p>
+                <h3><code>&lt;p&gt;3&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
+                <p>3<br></p>
+                <h3><code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+                <p>4<br>5</p>
+                <h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
+                <p>6<br>&nbsp;</p>
+                <h3><code>&lt;p&gt;7&lt;br&gt;&blank;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
+                <p>7<br> </p>
+                <h3>END</h3>
+                <br>
+            </blockquote>
+            <h2>In inline element</h2>
+            <blockquote>
+                <b><br></b>
+                <h2>Outside paragraph</h2>
+
+                <h3><code>&lt;b&gt;&lt;br&gt;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                <b><br></b>
+                <h3><code>&lt;b&gt;1&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;1&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <b>1</b>
+                <h3><code>&lt;b&gt;&lt;br&gt;2&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;&lt;br&gt;2&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <b><br>2</b>
+                <h3><code>&lt;b&gt;3&lt;br&gt;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;3&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <b>3<br></b>
+                <h3><code>&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <b>4<br>5</b>
+                <h3><code>&lt;b&gt;6&lt;br&gt;&amp;nbsp;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;6&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <b>6<br>&nbsp;</b>
+                <h3><code>&lt;b&gt;7&lt;br&gt;&blank;&lt;/b&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;7&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <b>7<br> </b>
+                <h3>END</h3>
+
+                <h2>In paragraph</h2>
+
+                <h3><code>&lt;p&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+                <p><b><br></b></p>
+                <h3><code>&lt;p&gt;&lt;b&gt;1&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;1&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <p><b>1</b></p>
+                <h3><code>&lt;p&gt;&lt;b&gt;&lt;br&gt;2&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;&lt;br&gt;2&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <p><b><br>2</b></p>
+                <h3><code>&lt;p&gt;&lt;b&gt;3&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;3&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <p><b>3<br></b></p>
+                <h3><code>&lt;p&gt;&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;4&lt;br&gt;5&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <p><b>4<br>5</b></p>
+                <h3><code>&lt;p&gt;&lt;b&gt;6&lt;br&gt;&amp;nbsp;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;6&lt;br&gt;&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <p><b>6<br>&nbsp;</b></p>
+                <h3><code>&lt;p&gt;&lt;b&gt;7&lt;br&gt;&blank;&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;b&gt;7&lt;/b&gt;&lt;/p&gt;</code></h3>
+                <p><b>7<br> </b></p>
+                <h3>END</h3>
+                <b><br></b>
+            </blockquote>
+            <br>
+        </div>
+
+    </td>
+    </tr>
+</table>
+
+<style>
+	table.test {
+		border-collapse: collapse;
+		table-layout: fixed;
+		width: 100%;
+	}
+	table.test .ck.ck-editor__editable_inline {
+		padding: 0;
+		border: 4px solid black !important;
+	}
+	table.test .ck.ck-editor__top {
+		display: none;
+	}
+	table.test td {
+		font-family: sans-serif;
+		line-height: 1.7em;
+		vertical-align: top;
+	}
+	table.test h2 {
+		margin: 0 !important;
+		padding: 10px 10px 4px 10px;
+		border-bottom: 4px solid black;
+		border-top: 4px solid black;
+	}
+	table.test h3 {
+		margin: 0 !important; padding: 0 10px;
+		background: #02529f;
+		color: white;
+		font-size: 1em;
+		font-weight: normal;
+	}
+	table.test p {
+		margin: 0 !important;
+		padding: 0 10px;
+		background: #00b0f0;
+		box-shadow: inset 2px 2px yellow, inset -2px -2px yellow;
+	}
+	table.test blockquote {
+		margin: 0 !important;
+		padding: 0 !important;
+		border: 4px solid red !important;
+	}
+	table.test code {
+		background: none;
+	}
+</style>

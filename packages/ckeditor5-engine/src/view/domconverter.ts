@@ -739,13 +739,11 @@ export default class DomConverter {
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
 		// Get child nodes from content document fragment if element is template
-		let childNodes: Array<ChildNode> = [];
-
-		if ( domElement instanceof HTMLTemplateElement ) {
-			childNodes = [ ...domElement.content.childNodes ];
-		} else {
-			childNodes = [ ...domElement.childNodes ];
-		}
+		const childNodes = Array.from(
+			domElement instanceof HTMLTemplateElement ?
+				domElement.content.childNodes :
+				domElement.childNodes
+		);
 
 		for ( let i = 0; i < childNodes.length; i++ ) {
 			const domChild = childNodes[ i ];
@@ -1515,7 +1513,7 @@ export default class DomConverter {
 				// see https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249) to a single space character.
 				// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
 				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
-				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
+				data = node.data.replace( /[ \n\t\r]+/g, ' ' );
 				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
 
 				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
@@ -1578,6 +1576,18 @@ export default class DomConverter {
 			} else {
 				node._data = data;
 				prevNodeEndsWithSpace = nodeEndsWithSpace;
+			}
+		}
+
+		if ( this.renderingMode == 'data' && inlineNodes.length ) {
+			const lastNode = inlineNodes[ inlineNodes.length - 1 ];
+
+			if ( lastNode.parent && lastNode.is( 'element', 'br' ) ) {
+				if ( inlineNodes.length == 1 ) {
+					lastNode.parent._insertChild( lastNode.index!, new ViewElement( this.document, 'p' ) );
+				}
+
+				lastNode._remove();
 			}
 		}
 
