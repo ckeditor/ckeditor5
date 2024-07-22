@@ -201,9 +201,12 @@ jobs:
       - run:
           name: Check if packages are ready to be released
           command: yarn run release:prepare-packages --compile-only --verbose
-      - run:
-          name: Lint generated packages
-          command: yarn run release:lint-packages
+
+      # Commented out due to a limitation of publint: https://github.com/bluwy/publint/issues/105
+      # - run:
+      #     name: Lint generated packages
+      #     command: yarn run release:lint-packages
+
       - run:
           name: Check dependencies
           command: yarn run check-dependencies

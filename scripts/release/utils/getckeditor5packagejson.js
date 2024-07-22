@@ -34,11 +34,8 @@ module.exports = function getCKEditor5PackageJson() {
 				'types': './dist/index.d.ts',
 				'import': './dist/ckeditor5.js'
 			},
-			'./translations/*.js': {
-				'types': './dist/translations/*.d.ts',
-				'import': './dist/translations/*.js'
-			},
-			'./*.css': './dist/*.css',
+			'./*': './dist/*',
+			'./browser/*': null,
 			'./build/*': './build/*',
 			'./src/*': './src/*',
 			'./package.json': './package.json'
