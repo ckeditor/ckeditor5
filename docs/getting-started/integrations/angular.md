@@ -160,7 +160,7 @@ export class AppComponent {
 		],
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		// mention: {
-		//     // Mention configuration
+		//     Mention configuration
 		// }
 	}
 }
@@ -236,7 +236,7 @@ export class AppComponent {
 		],
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		// mention: {
-		//     // Mention configuration
+		//     Mention configuration
 		// }
 	}
 }
