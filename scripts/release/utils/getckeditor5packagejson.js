@@ -28,10 +28,10 @@ module.exports = function getCKEditor5PackageJson() {
 		type: 'module',
 		main: 'dist/ckeditor5.js',
 		module: 'dist/ckeditor5.js',
-		types: 'dist/types/index.d.ts',
+		types: 'dist/index.d.ts',
 		exports: {
 			'.': {
-				'types': './dist/types/index.d.ts',
+				'types': './dist/index.d.ts',
 				'import': './dist/ckeditor5.js'
 			},
 			'./*': './dist/*',
