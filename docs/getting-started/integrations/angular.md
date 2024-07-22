@@ -662,6 +662,8 @@ CKEditor 5 supports multiple UI languages, and so does the official Angular comp
 Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
 
 ```ts
+// app.component.ts
+
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor } from 'ckeditor5';
