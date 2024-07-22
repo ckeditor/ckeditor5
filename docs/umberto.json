@@ -401,6 +401,11 @@
 			}
 		]
 	},
+	"vwo": {
+		"config": {
+			"trackingId": "854367"
+		}
+	},
 	"googleanalytics": {
 		"domains": [
 			"ckeditor5.github.io"
@@ -410,7 +415,7 @@
 		}
 	},
 	"og": {
-		"description": "Learn how to install, integrate and configure CKEditor 5 Builds and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
+		"description": "Learn how to install, integrate, configure, and develop CKEditor 5. Get to know the CKEditor 5 Framework. Browse through the API documentation and online samples."
 	},
 	"groups": [
 		{
