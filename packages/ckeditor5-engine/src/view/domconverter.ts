@@ -964,7 +964,7 @@ export default class DomConverter {
 
 		// Try to use previous sibling to find the corresponding text node.
 		if ( previousSibling ) {
-			if ( !( this.isElement( previousSibling ) ) ) {
+			if ( !isElement( previousSibling ) ) {
 				// The previous is text or comment.
 				return null;
 			}
@@ -1138,7 +1138,7 @@ export default class DomConverter {
 	 * @param node Node to check.
 	 */
 	public isElement( node: DomNode ): node is DomElement {
-		return node && node.nodeType == Node.ELEMENT_NODE;
+		return isElement( node );
 	}
 
 	/**
@@ -1173,11 +1173,7 @@ export default class DomConverter {
 		}
 
 		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		if (
-			( domNode as DomElement ).tagName === 'BR' &&
-			hasBlockParent( domNode, this.blockElements ) &&
-			( domNode as DomElement ).parentNode!.childNodes.length === 1
-		) {
+		if ( isElement( domNode ) && isBrBlockFiller( domNode, this.blockElements ) ) {
 			return true;
 		}
 
@@ -1326,7 +1322,7 @@ export default class DomConverter {
 			return false;
 		}
 
-		if ( this.isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
+		if ( isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
 			// Selection in an element node, before filler text node.
 			return false;
 		}
@@ -1579,14 +1575,10 @@ export default class DomConverter {
 			}
 		}
 
-		if ( this.renderingMode == 'data' && inlineNodes.length ) {
+		if ( inlineNodes.length > 1 ) {
 			const lastNode = inlineNodes[ inlineNodes.length - 1 ];
 
 			if ( lastNode.parent && lastNode.is( 'element', 'br' ) ) {
-				if ( inlineNodes.length == 1 ) {
-					lastNode.parent._insertChild( lastNode.index!, new ViewElement( this.document, 'p' ) );
-				}
-
 				lastNode._remove();
 			}
 		}
@@ -1740,7 +1732,7 @@ export default class DomConverter {
 	 * Returns `true` if a DOM node belongs to {@link #blockElements}. `false` otherwise.
 	 */
 	private _isBlockDomElement( node: DomNode ): boolean {
-		return this.isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
+		return isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
 	}
 
 	/**
@@ -1866,6 +1858,44 @@ function isNbspBlockFiller( domNode: DomNode, blockElements: ReadonlyArray<strin
 }
 
 /**
+ * TODO
+ * Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
+ */
+function isBrBlockFiller( domElement: DomElement, blockElements: Array<string> ): boolean {
+	// TODO this must find block ancestor and check if all children inside can be truncated to '<br>'.
+	//  It should ignore inline non-object elements.
+	if ( domElement.tagName != 'BR' || !hasBlockParent( domElement, blockElements ) ) {
+		return false;
+	}
+
+	const childNodes = Array.from( domElement.parentNode!.childNodes );
+
+	for ( let i = 0; i < childNodes.length; i++ ) {
+		const node = childNodes[ i ];
+
+		if ( isText( node ) ) {
+			if ( node.data.replace( /[ \n\t\r]/g, '' ).length == 0 ) {
+				childNodes.splice( i, 1 );
+				i--;
+			}
+		}
+		else if ( isElement( node ) ) {
+			const name = node.tagName.toLowerCase();
+
+			if (
+				name != 'br' &&
+				!blockElements.includes( name )
+			) {
+				childNodes.splice( i, 1, ...node.childNodes );
+				i--;
+			}
+		}
+	}
+
+	return childNodes.length == 1;
+}
+
+/**
  * Checks if domNode has block parent.
  *
  * @param domNode DOM node.
@@ -1915,6 +1945,15 @@ function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
 	}
 
 	return false;
+}
+
+/**
+ * Returns `true` when `node.nodeType` equals `Node.ELEMENT_NODE`.
+ *
+ * @param node Node to check.
+ */
+function isElement( node: DomNode ): node is DomElement {
+	return node && node.nodeType == Node.ELEMENT_NODE;
 }
 
 /**
