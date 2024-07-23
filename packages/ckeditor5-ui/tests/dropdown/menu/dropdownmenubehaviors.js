@@ -164,12 +164,30 @@ describe( 'Menu Behaviors', () => {
 			} );
 		}
 
-		describe( 'closeOnParentClose', () => {
+		describe( 'closeOnEscKey', () => {
 			beforeEach( () => {
 				rootListView = createRootListView();
+				menuView = menuViewById( 'menu_2_1' );
 			} );
 
+			it( 'should not toggle menu on esc key when menu is already closed', () => {
+				menuView.isOpen = false;
+				menuView.focusTracker._focus( menuView.buttonView.element );
+				menuView.keystrokes.press( getEscKeyData() );
+				expect( menuView.isOpen ).to.be.false;
+			} );
+
+			it( 'should close menu on esc key', () => {
+				menuView.isOpen = true;
+				menuView.keystrokes.press( getEscKeyData() );
+				expect( menuView.isOpen ).to.be.false;
+			} );
+		} );
+
+		describe( 'closeOnParentClose', () => {
 			it( 'should close nested menu when parent menu is closed', () => {
+				rootListView = createRootListView();
+
 				const grandParentMenuView = menuViewById( 'menu_2' );
 				const nestedMenuView = menuViewById( 'menu_2_1' );
 
@@ -244,6 +262,14 @@ describe( 'Menu Behaviors', () => {
 	function getArrowKeyData( arrow ) {
 		return {
 			keyCode: keyCodes[ arrow ],
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+	}
+
+	function getEscKeyData() {
+		return {
+			keyCode: keyCodes.esc,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		};

@@ -107,6 +107,16 @@ export const DropdownMenuBehaviors = {
 		} );
 	},
 
+	closeOnEscKey( menuView: DropdownNestedMenuView ): void {
+		menuView.keystrokes.set( 'esc', ( data, cancel ) => {
+			if ( menuView.isOpen ) {
+				menuView.isOpen = false;
+				menuView.focus();
+				cancel();
+			}
+		} );
+	},
+
 	/**
 	 * Closes the menu when its parent menu closes. This prevents from leaving orphaned open menus.
 	 */
