@@ -266,7 +266,7 @@ export default class BalloonPanelView extends View {
 	public attachTo( options: Partial<PositionOptions> ): boolean {
 		const target = getDomElement( options.target );
 
-		if ( target instanceof HTMLElement && !isVisible( target ) ) {
+		if ( target && !isVisible( target ) ) {
 			console.warn( 'TEST: ATTACHING TO INVISIBLE TARGET', target );
 
 			return false;
