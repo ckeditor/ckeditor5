@@ -131,7 +131,8 @@ export default class ImageInsertUI extends Plugin {
 		buttonViewCreator,
 		formViewCreator,
 		menuBarButtonViewCreator,
-		requiresForm = false
+		requiresForm = false,
+		override = false
 	}: {
 		name: string;
 		observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
@@ -139,8 +140,9 @@ export default class ImageInsertUI extends Plugin {
 		formViewCreator: ( isOnlyOne: boolean ) => FocusableView | Array<FocusableView>;
 		menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView | Array<MenuBarMenuListItemButtonView>;
 		requiresForm?: boolean;
+		override?: boolean;
 	} ): void {
-		if ( this._integrations.has( name ) ) {
+		if ( this._integrations.has( name ) && !override ) {
 			/**
 			 * There are two insert-image integrations registered with the same name.
 			 *
