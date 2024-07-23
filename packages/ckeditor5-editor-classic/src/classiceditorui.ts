@@ -14,7 +14,8 @@ import {
 	normalizeToolbarConfig,
 	type DialogViewMoveToEvent,
 	type Dialog,
-	type EditorUIReadyEvent
+	type EditorUIReadyEvent,
+	type ContextualBalloonGetPositionEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -121,6 +122,8 @@ export default class ClassicEditorUI extends EditorUI {
 		}
 
 		this._initDialogPluginIntegration();
+		this._initContextualBalloonIntegration();
+
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -185,6 +188,42 @@ export default class ClassicEditorUI extends EditorUI {
 			isDirectHost: false,
 			keepOnFocus: true
 		} );
+	}
+
+	/**
+	 * Provides an integration between the sticky toolbar and {@link module:ui/panel/balloon/contextualballoon contextual balloon plugin}.
+	 * It allows the contextual balloon to consider the height of the
+	 * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel} that pins to the edge of the viewport and
+	 * overlaps the balloon. The balloon will be moved down to ensure that it is not obscured by the sticky panel.
+	 */
+	private _initContextualBalloonIntegration(): void {
+		if ( !this.editor.plugins.has( 'ContextualBalloon' ) ) {
+			return;
+		}
+
+		const stickyPanel = this.view.stickyPanel;
+		const contextualBalloon = this.editor.plugins.get( 'ContextualBalloon' );
+
+		contextualBalloon.on<ContextualBalloonGetPositionEvent>( 'getPosition', evt => {
+			const position = evt.return;
+
+			if ( !position || !stickyPanel.element ) {
+				return;
+			}
+
+			const stickyPanelHeight = new Rect( stickyPanel.element ).height;
+
+			const viewportOffsetConfig = position.viewportOffsetConfig || {};
+			const newTopViewportOffset = Math.max( stickyPanelHeight, viewportOffsetConfig.top || 0 );
+
+			evt.return = {
+				...position,
+				viewportOffsetConfig: {
+					...viewportOffsetConfig,
+					top: newTopViewportOffset
+				}
+			};
+		}, { priority: 'low' } );
 	}
 
 	/**
