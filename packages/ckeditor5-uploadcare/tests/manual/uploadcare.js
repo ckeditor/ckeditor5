@@ -18,8 +18,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, ImageUpload, ImageInsert, Uploadcare ],
+		menuBar: { isVisible: true },
 		toolbar: [
 			'uploadcare',
+			'|',
+			'imageInsert',
 			'|',
 			'heading',
 			'|',

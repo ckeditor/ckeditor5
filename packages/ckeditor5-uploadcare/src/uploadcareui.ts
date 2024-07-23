@@ -9,16 +9,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import {
-	addListToDropdown,
-	type ButtonExecuteEvent,
-	createDropdown,
-	Dialog,
-	type ListDropdownItemDefinition,
-	ViewModel
-} from 'ckeditor5/src/ui.js';
-
-import imageUploadIcon from '../theme/icons/image-upload.svg';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import boxIcon from '../theme/icons/box.svg';
 import cameraIcon from '../theme/icons/camera.svg';
 import dropboxIcon from '../theme/icons/dropbox.svg';
@@ -31,8 +22,6 @@ import instagramIcon from '../theme/icons/instagram.svg';
 import linkIcon from '../theme/icons/link.svg';
 import localIcon from '../theme/icons/local.svg';
 import oneDriveIcon from '../theme/icons/onedrive.svg';
-
-import { Collection } from 'ckeditor5/src/utils.js';
 
 import { UploadcareSource } from './uploadcareconfig.js';
 
@@ -56,9 +45,8 @@ export default class UploadcareUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		const { editor } = this;
-		const { t } = editor;
 		const uploadcareCommand = editor.commands.get( 'uploadcare' );
 
 		if ( !uploadcareCommand ) {
@@ -67,34 +55,30 @@ export default class UploadcareUI extends Plugin {
 
 		const uploadSources = this._normalizeConfigSourceList( editor.config.get( 'uploadcare.sourceList' ) as Array<UploadcareSource> );
 
-		editor.ui.componentFactory.add( 'uploadcare', locale => {
-			const dropdown = createDropdown( locale );
-			const listItems = new Collection<ListDropdownItemDefinition>(
-				uploadSources.map( definition => this._getButtonDefinition( definition.type, definition.text, definition.icon ) )
-			);
+		const groupedSources: Record<string, Array<SourceDefinition>> = uploadSources.reduce( ( acc, source ) => {
+			const key = this._getIntegrationKey( source.type );
 
-			addListToDropdown( dropdown, listItems, {
-				role: 'menu'
+			if ( !acc[ key ] ) {
+				acc[ key ] = [];
+			}
+
+			acc[ key ].push( source );
+
+			return acc;
+		}, {} );
+
+		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
+			Object.entries( groupedSources ).forEach( ( [ type, sources ] ) => {
+				editor.plugins.get( 'ImageInsertUI' ).registerIntegration( {
+					name: type,
+					observable: () => uploadcareCommand,
+					buttonViewCreator: () => this._createToolbarButton( sources ),
+					formViewCreator: () => this._createDropdownButtons( sources ),
+					menuBarButtonViewCreator: isOnly => this._createMenuBarButtons( sources ),
+					override: type !== 'assetManager'
+				} );
 			} );
-
-			this.listenTo<ButtonExecuteEvent>( dropdown, 'execute', evt => {
-				const { _type } = evt.source;
-
-				uploadcareCommand.execute( _type );
-			} );
-
-			dropdown.buttonView.set( {
-				label: t( 'Uploadcare' ),
-				icon: imageUploadIcon,
-				tooltip: true
-			} );
-
-			dropdown.on( 'change:isOpen', ( evt, name, isOpen ) => {
-				console.log( isOpen );
-			} );
-
-			return dropdown;
-		} );
+		}
 	}
 
 	/**
@@ -132,19 +116,81 @@ export default class UploadcareUI extends Plugin {
 	}
 
 	/**
-	 * Returns a definition of the upload button to be used in the dropdown.
+	 * Returns a key that is used to register integration.
 	 */
-	private _getButtonDefinition( type: string, label: string, icon: string ): ListDropdownItemDefinition {
-		return {
-			type: 'button' as const,
-			model: new ViewModel( {
-				label,
-				icon,
-				withText: true,
-				withKeystroke: true,
-				role: 'menuitem',
-				_type: type
-			} )
-		};
+	private _getIntegrationKey( type: UploadcareSource ): string {
+		switch ( type ) {
+			case UploadcareSource.Local:
+				return 'upload';
+			case UploadcareSource.URL:
+				return 'url';
+			default:
+				return 'assetManager';
+		}
+	}
+
+	/**
+	 * Creates the base for various kinds of the button component provided by this feature.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
+		ButtonClass: T,
+		type: string
+	): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const view = new ButtonClass( locale ) as InstanceType<T>;
+		const command = editor.commands.get( 'uploadcare' )!;
+
+		view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+		view.on( 'execute', () => {
+			command.execute( type );
+		} );
+
+		return view;
+	}
+
+	/**
+	 * Creates a simple toolbar button for images management, with an icon and a tooltip.
+	 */
+	private _createToolbarButton( btnSources: Array<SourceDefinition> ): ButtonView {
+		const source = btnSources[ 0 ];
+		const button = this._createButton( ButtonView, source.type );
+
+		button.icon = source.icon;
+		button.label = source.text;
+		button.tooltip = true;
+
+		return button;
+	}
+
+	/**
+	 * Creates buttons for the dropdown view, with an icon, text and no tooltip.
+	 */
+	private _createDropdownButtons( btnSources: Array<SourceDefinition> ): Array<ButtonView> {
+		return btnSources.map( source => {
+			const button = this._createButton( ButtonView, source.type );
+
+			button.withText = true;
+			button.icon = source.icon;
+			button.label = source.text;
+
+			return button;
+		} );
+	}
+
+	/**
+	 * Creates buttons for the menu bar.
+	 */
+	private _createMenuBarButtons( btnSources: Array<SourceDefinition> ): Array<MenuBarMenuListItemButtonView> {
+		return btnSources.map( source => {
+			const button = this._createButton( MenuBarMenuListItemButtonView, source.type );
+
+			button.withText = true;
+			button.icon = source.icon;
+			button.label = source.text;
+
+			return button;
+		} );
 	}
 }
