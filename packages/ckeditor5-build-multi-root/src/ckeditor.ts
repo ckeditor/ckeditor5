@@ -12,6 +12,7 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold, Italic, Strikethrough, Underline, Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { List, ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -104,6 +105,8 @@ class Editor extends MultiRootEditorBase {
 		IndentBlock,
 		Italic,
 		Link,
+		List,
+		ListProperties,
 		MediaEmbed,
 		Mention,
 		MentionCustomization,
@@ -126,6 +129,7 @@ class Editor extends MultiRootEditorBase {
 		TableProperties,
 		TableToolbar,
 		TextTransformation,
+		TodoList,
 		TrackChanges,
 		TrackChangesData,
 		Underline,
@@ -158,6 +162,8 @@ class Editor extends MultiRootEditorBase {
 		'fontBackgroundColor',
 		'|',
 		'alignment',
+		'bulletedList',
+		'numberedList',
 		'outdent',
 		'indent',
 		'pageBreak',
@@ -184,6 +190,11 @@ class Editor extends MultiRootEditorBase {
 		fontSize: NumericFontSizeConfig,
 		language: 'en',
 		codeBlock: CodeBlockConfiguration,
+		list: {
+			properties: {
+				startIndex: true
+			}
+		},
 		link: {
 			defaultProtocol: 'https://'
 		},
@@ -198,6 +209,7 @@ class Editor extends MultiRootEditorBase {
 				extraPlugins: [
 					Autoformat,
 					Bold,
+					List,
 					Italic
 				]
 			}
