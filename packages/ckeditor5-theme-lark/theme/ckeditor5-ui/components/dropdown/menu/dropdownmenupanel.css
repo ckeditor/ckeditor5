@@ -26,23 +26,23 @@
 	}
 
 	/* Corner border radius consistent with the button. */
-	&.ck-dropdown-menu__nested-menu__panel_position_es,
-	&.ck-dropdown-menu__nested-menu__panel_position_se {
+	&.ck-balloon-panel_es,
+	&.ck-balloon-panel_se {
 		border-top-left-radius: 0;
 	}
 
-	&.ck-dropdown-menu__nested-menu__panel_position_ws,
-	&.ck-dropdown-menu__nested-menu__panel_position_sw {
+	&.ck-balloon-panel_ws,
+	&.ck-balloon-panel_sw {
 		border-top-right-radius: 0;
 	}
 
-	&.ck-dropdown-menu__nested-menu__panel_position_en,
-	&.ck-dropdown-menu__nested-menu__panel_position_ne {
+	&.ck-balloon-panel_en,
+	&.ck-balloon-panel_ne {
 		border-bottom-left-radius: 0;
 	}
 
-	&.ck-dropdown-menu__nested-menu__panel_position_wn,
-	&.ck-dropdown-menu__nested-menu__panel_position_nw {
+	&.ck-balloon-panel_wn,
+	&.ck-balloon-panel_nw {
 		border-bottom-right-radius: 0;
 	}
 
