@@ -39,7 +39,7 @@ export default class DropdownMenuListItemView extends ListItemView {
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-dropdown-menu__menu__item'
+					'ck-dropdown-menu-list__nested-menu__item'
 				]
 			},
 			on: {

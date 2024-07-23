@@ -43,9 +43,9 @@ export default class DropdownMenuNestedMenuPanelView extends BalloonPanelView im
 				class: [
 					'ck',
 					'ck-reset',
-					'ck-dropdown-menu__menu__panel',
+					'ck-dropdown-menu__nested-menu__panel',
 					bind.to( 'class' ),
-					bind.to( 'position', value => `ck-dropdown-menu__menu__panel_position_${ value }` ),
+					bind.to( 'position', value => `ck-dropdown-menu__nested-menu__panel_position_${ value }` ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
 				tabindex: '-1'

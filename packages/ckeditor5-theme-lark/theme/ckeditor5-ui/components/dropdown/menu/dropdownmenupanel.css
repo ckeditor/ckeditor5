@@ -10,7 +10,7 @@
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
 }
 
-.ck.ck-dropdown-menu__menu__panel {
+.ck.ck-dropdown-menu__nested-menu__panel {
 	@mixin ck-drop-shadow;
 
 	background: var(--ck-color-dropdown-panel-background);
@@ -26,23 +26,23 @@
 	}
 
 	/* Corner border radius consistent with the button. */
-	&.ck-dropdown-menu__menu__panel_position_es,
-	&.ck-dropdown-menu__menu__panel_position_se {
+	&.ck-dropdown-menu__nested-menu__panel_position_es,
+	&.ck-dropdown-menu__nested-menu__panel_position_se {
 		border-top-left-radius: 0;
 	}
 
-	&.ck-dropdown-menu__menu__panel_position_ws,
-	&.ck-dropdown-menu__menu__panel_position_sw {
+	&.ck-dropdown-menu__nested-menu__panel_position_ws,
+	&.ck-dropdown-menu__nested-menu__panel_position_sw {
 		border-top-right-radius: 0;
 	}
 
-	&.ck-dropdown-menu__menu__panel_position_en,
-	&.ck-dropdown-menu__menu__panel_position_ne {
+	&.ck-dropdown-menu__nested-menu__panel_position_en,
+	&.ck-dropdown-menu__nested-menu__panel_position_ne {
 		border-bottom-left-radius: 0;
 	}
 
-	&.ck-dropdown-menu__menu__panel_position_wn,
-	&.ck-dropdown-menu__menu__panel_position_nw {
+	&.ck-dropdown-menu__nested-menu__panel_position_wn,
+	&.ck-dropdown-menu__nested-menu__panel_position_nw {
 		border-bottom-right-radius: 0;
 	}
 

@@ -10,7 +10,7 @@
 /*
 * All menu buttons.
 */
-.ck.ck-dropdown-menu__menu__button {
+.ck.ck-dropdown-menu-list__nested-menu__button {
 	width: 100%;
 	padding: var(--ck-list-button-padding);
 	border-radius: 0;
@@ -39,7 +39,7 @@
 		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
 	}
 
-	& > .ck-dropdown-menu__menu__button__arrow {
+	& > .ck-dropdown-menu-list__nested-menu__button__arrow {
 		width: var(--ck-dropdown-arrow-size);
 
 		@mixin ck-dir ltr {
@@ -51,7 +51,7 @@
 		}
 	}
 
-	&.ck-disabled > .ck-dropdown-menu__menu__button__arrow {
+	&.ck-disabled > .ck-dropdown-menu-list__nested-menu__button__arrow {
 		@mixin ck-disabled;
 	}
 
@@ -60,7 +60,7 @@
 			padding-left: var(--ck-spacing-small);
 		}
 
-		& > .ck-dropdown-menu__menu__button__arrow {
+		& > .ck-dropdown-menu-list__nested-menu__button__arrow {
 			right: var(--ck-spacing-standard);
 
 			/* A space to accommodate the triangle. */
@@ -73,7 +73,7 @@
 			padding-right: var(--ck-spacing-small);
 		}
 
-		& > .ck-dropdown-menu__menu__button__arrow {
+		& > .ck-dropdown-menu-list__nested-menu__button__arrow {
 			left: var(--ck-spacing-standard);
 
 			/* A space to accommodate the triangle. */

@@ -6,7 +6,7 @@
 /*
  * List item buttons.
  */
-.ck-button.ck-dropdown-menu__menu__item__button {
+.ck-button.ck-dropdown-menu-list__nested-menu__item__button {
 	border-radius: 0;
 
 	& > .ck-spinner-container,

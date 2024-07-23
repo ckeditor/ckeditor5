@@ -35,7 +35,7 @@ export default class DropdownMenuListView extends ListView {
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-dropdown-menu',
+					'ck-dropdown-menu-list',
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				]
 			}

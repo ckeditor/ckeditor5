@@ -44,7 +44,7 @@ export default class DropdownMenuButtonView extends ButtonView {
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-dropdown-menu__menu__button'
+					'ck-dropdown-menu-list__nested-menu__button'
 				],
 				'aria-haspopup': true,
 				'aria-expanded': this.bindTemplate.to( 'isOn', value => String( value ) ),
@@ -76,7 +76,7 @@ export default class DropdownMenuButtonView extends ButtonView {
 		arrowView.content = dropdownArrowIcon;
 		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-dropdown-menu__menu__button__arrow'
+				class: 'ck-dropdown-menu-list__nested-menu__button__arrow'
 			}
 		} );
 
