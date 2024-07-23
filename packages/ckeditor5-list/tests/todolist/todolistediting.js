@@ -203,6 +203,18 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
+		it( 'should convert li with a checkbox and a paragraph ( when checked )', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox" checked="checked">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
 		it( 'should convert li with a checkbox and two paragraphs', () => {
 			testUpcast(
 				'<ul>' +
