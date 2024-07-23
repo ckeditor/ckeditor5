@@ -260,8 +260,16 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
 	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 * @returns {Boolean} Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	public attachTo( options: Partial<PositionOptions> ): void {
+	public attachTo( options: Partial<PositionOptions> ): boolean {
+		const target = getDomElement( options.target );
+
+		if ( target && !isVisible( target ) ) {
+			return false;
+		}
+
 		this.show();
 
 		const defaultPositions = BalloonPanelView.defaultPositions;
@@ -299,6 +307,8 @@ export default class BalloonPanelView extends View {
 		this.left = left;
 		this.position = position;
 		this.withArrow = withArrow;
+
+		return true;
 	}
 
 	/**
@@ -338,6 +348,10 @@ export default class BalloonPanelView extends View {
 	public pin( options: Partial<PositionOptions> ): void {
 		this.unpin();
 
+		if ( !this._startPinning( options ) ) {
+			return;
+		}
+
 		this._pinWhenIsVisibleCallback = () => {
 			if ( this.isVisible ) {
 				this._startPinning( options );
@@ -345,8 +359,6 @@ export default class BalloonPanelView extends View {
 				this._stopPinning();
 			}
 		};
-
-		this._startPinning( options );
 
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
@@ -376,9 +388,13 @@ export default class BalloonPanelView extends View {
 	 * Starts managing the pinned state of the panel. See {@link #pin}.
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
+	 * @returns {Boolean} Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	private _startPinning( options: Partial<PositionOptions> ) {
-		this.attachTo( options );
+	private _startPinning( options: Partial<PositionOptions> ): boolean {
+		if ( !this.attachTo( options ) ) {
+			return false;
+		}
 
 		const targetElement = getDomElement( options.target );
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
@@ -417,14 +433,9 @@ export default class BalloonPanelView extends View {
 			// Element is being resized to 0x0 after it's parent became hidden,
 			// so we need to check size in order to determine if it's visible or not.
 			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
-
-			// Check the visibility of the target element immediately, as the target element might be
-			// already hidden when the panel is being pinned. It's wrapped in `requestAnimationFrame` because the
-			// `_startPinning` method is called during `pin()` and the panel is not yet visible, and not every listener
-			// has been attached yet. This way, we wait until rest of the listeners are attached in caller methods
-			// and then check the visibility.
-			window.requestAnimationFrame( checkVisibility );
 		}
+
+		return true;
 	}
 
 	/**

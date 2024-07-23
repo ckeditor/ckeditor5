@@ -1027,31 +1027,25 @@ describe( 'BalloonPanelView', () => {
 				} );
 
 				it( 'should hide if the target is not visible (display: none)', () => {
-					const spy = sinon.spy( view, 'hide' );
+					const showSpy = sinon.spy( view, 'show' );
+					const hideSpy = sinon.spy( view, 'hide' );
 
 					target.style.display = 'none';
 					view.pin( { target, limiter } );
 
-					// Expect that hide is being called asynchronously.
-					sinon.assert.notCalled( spy );
-					clock.tick( 100 );
-
-					sinon.assert.calledOnce( spy );
-					expect( view.isVisible ).to.be.false;
+					sinon.assert.notCalled( hideSpy );
+					sinon.assert.notCalled( showSpy );
 				} );
 
 				it( 'should not hide if the target is not visible (visibility: hidden)', () => {
-					const spy = sinon.spy( view, 'hide' );
+					const showSpy = sinon.spy( view, 'show' );
+					const hideSpy = sinon.spy( view, 'hide' );
 
 					target.style.visibility = 'hidden';
 					view.pin( { target, limiter } );
 
-					// Expect that hide is being called asynchronously.
-					sinon.assert.notCalled( spy );
-					clock.tick( 100 );
-
-					sinon.assert.notCalled( spy );
-					expect( view.isVisible ).to.be.true;
+					sinon.assert.notCalled( hideSpy );
+					sinon.assert.calledOnce( showSpy );
 				} );
 
 				it( 'should hide if the target is being hidden (display: none)', () => {
