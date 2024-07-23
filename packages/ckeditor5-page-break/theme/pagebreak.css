@@ -57,7 +57,7 @@
 	 *
 	 * Keep this in sync with the pagination plugins.
 	 *
-	 * See more: https://github.com/cksource/ckeditor5-commercial/issues/6289#top
+	 * See more: https://github.com/cksource/ckeditor5-commercial/issues/6289.
 	 */
 	.ck-content *:has(+ .page-break) {
 		margin-bottom: 0;
