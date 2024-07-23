@@ -201,19 +201,20 @@ export default class ClassicEditorUI extends EditorUI {
 			return;
 		}
 
-		const stickyPanel = this.view.stickyPanel;
+		const { stickyPanel } = this.view;
 		const contextualBalloon = this.editor.plugins.get( 'ContextualBalloon' );
 
 		contextualBalloon.on<ContextualBalloonGetPositionEvent>( 'getPosition', evt => {
 			const position = evt.return;
 
-			if ( !position || !stickyPanel.element ) {
+			if ( !position || !stickyPanel.isSticky || !stickyPanel.element ) {
 				return;
 			}
 
 			const stickyPanelHeight = new Rect( stickyPanel.element ).height;
 
-			const viewportOffsetConfig = position.viewportOffsetConfig || {};
+			// Ensure that viewport offset is present, it can be undefined according to the typing.
+			const viewportOffsetConfig = { ...position.viewportOffsetConfig };
 			const newTopViewportOffset = Math.max( stickyPanelHeight, viewportOffsetConfig.top || 0 );
 
 			evt.return = {
@@ -224,6 +225,12 @@ export default class ClassicEditorUI extends EditorUI {
 				}
 			};
 		}, { priority: 'low' } );
+
+		this.listenTo( stickyPanel, 'change:isSticky', () => {
+			if ( contextualBalloon.visibleView ) {
+				contextualBalloon.updatePosition();
+			}
+		} );
 	}
 
 	/**
