@@ -14,7 +14,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import DropdownMenuButtonView from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
-import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
+import DropdownMenuNestedMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
 import { DropdownMenuNestedMenuView, DropdownMenuPanelPositioningFunctions } from '../../../src/index.js';
 import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/dropdownmenubehaviors.js';
 
@@ -58,7 +58,7 @@ describe( 'DropdownMenuNestedMenuView', () => {
 		} );
 
 		it( 'should have a panel view', () => {
-			expect( menuView.panelView ).to.be.instanceOf( DropdownMenuPanelView );
+			expect( menuView.panelView ).to.be.instanceOf( DropdownMenuNestedMenuPanelView );
 		} );
 
 		it( 'should have a focus tracker instance', () => {
@@ -122,21 +122,7 @@ describe( 'DropdownMenuNestedMenuView', () => {
 			} );
 
 			it( 'should have CSS classes', () => {
-				expect( menuView.template.attributes.class ).to.include.members( [ 'ck', 'ck-dropdown-menu__menu' ] );
-			} );
-
-			it( 'should have CSS classes bound to #class', () => {
-				menuView.class = 'my-class';
-
-				expect( menuView.element.classList.contains( 'my-class' ) ).to.be.true;
-			} );
-
-			it( 'should bind #isEnabled to a CSS class', () => {
-				menuView.isEnabled = false;
-				expect( menuView.element.classList.contains( 'ck-disabled' ) ).to.be.true;
-
-				menuView.isEnabled = true;
-				expect( menuView.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( menuView.template.attributes.class ).to.include.members( [ 'ck', 'ck-dropdown-menu-list__nested-menu' ] );
 			} );
 		} );
 	} );

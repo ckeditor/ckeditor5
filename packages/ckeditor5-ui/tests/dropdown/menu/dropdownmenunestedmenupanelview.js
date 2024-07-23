@@ -7,7 +7,7 @@
 
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
-import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
+import DropdownMenuNestedMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
 import ViewCollection from '../../../src/viewcollection.js';
 import View from '../../../src/view.js';
 import {
@@ -15,12 +15,12 @@ import {
 	createLabeledInputText
 } from '../../../src/index.js';
 
-describe( 'DropdownMenuPanelView', () => {
+describe( 'DropdownMenuNestedMenuPanelView', () => {
 	let panelView, locale;
 
 	beforeEach( () => {
 		locale = createMockLocale();
-		panelView = new DropdownMenuPanelView( locale );
+		panelView = new DropdownMenuNestedMenuPanelView( locale );
 	} );
 
 	afterEach( () => {
@@ -59,27 +59,7 @@ describe( 'DropdownMenuPanelView', () => {
 
 		describe( 'template and DOM element', () => {
 			it( 'should have CSS classes', () => {
-				expect( panelView.template.attributes.class ).to.include.members( [ 'ck', 'ck-reset', 'ck-dropdown-menu__menu__panel' ] );
-			} );
-
-			it( 'should have #position bound to a CSS class', () => {
-				panelView.render();
-
-				panelView.position = 'sw';
-				expect( panelView.element.classList.contains( 'ck-dropdown-menu__menu__panel_position_sw' ) ).to.be.true;
-
-				panelView.position = 'se';
-				expect( panelView.element.classList.contains( 'ck-dropdown-menu__menu__panel_position_se' ) ).to.be.true;
-			} );
-
-			it( 'should have #isVisible bound to a CSS class', () => {
-				panelView.render();
-
-				panelView.isVisible = false;
-				expect( panelView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
-
-				panelView.isVisible = true;
-				expect( panelView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+				expect( panelView.template.attributes.class ).to.include.members( [ 'ck-reset', 'ck-dropdown-menu__nested-menu__panel' ] );
 			} );
 
 			it( 'should have tabindex attribute value set', () => {

@@ -38,7 +38,7 @@ describe( 'DropdownMenuListItemView', () => {
 
 		describe( 'template and DOM element', () => {
 			it( 'should have a specific CSS class', () => {
-				expect( listItemView.template.attributes.class ).to.include.members( [ 'ck-dropdown-menu__menu__item' ] );
+				expect( listItemView.template.attributes.class ).to.include.members( [ 'ck-dropdown-menu-list__nested-menu__item' ] );
 			} );
 
 			it( 'should fire #mousenter upon DOM mousenter', () => {

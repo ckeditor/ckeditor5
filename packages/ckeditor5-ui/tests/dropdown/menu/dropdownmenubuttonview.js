@@ -42,7 +42,9 @@ describe( 'DropdownMenuButtonView', () => {
 			} );
 
 			it( 'should have a specific CSS class', () => {
-				expect( buttonView.arrowView.template.attributes.class ).to.include.members( [ 'ck-dropdown-menu__menu__button__arrow' ] );
+				expect( buttonView.arrowView.template.attributes.class ).to.include.members(
+					[ 'ck-dropdown-menu-list__nested-menu__button__arrow' ]
+				);
 			} );
 
 			it( 'should use a specific SVG icon', () => {
@@ -52,7 +54,7 @@ describe( 'DropdownMenuButtonView', () => {
 
 		describe( 'DOM element and template', () => {
 			it( 'should have a specific CSS class ', () => {
-				expect( buttonView.template.attributes.class ).to.include.members( [ 'ck-dropdown-menu__menu__button' ] );
+				expect( buttonView.template.attributes.class ).to.include.members( [ 'ck-dropdown-menu-list__nested-menu__button' ] );
 			} );
 
 			it( 'should have aria-haspopup attribute set', () => {
