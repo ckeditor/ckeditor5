@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/dropdown/menu/dropdownmenupanelview
+ * @module ui/dropdown/menu/dropdownmenunestedmenupanelview
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
@@ -17,7 +17,7 @@ import '../../../theme/components/dropdown/menu/dropdownmenupanel.css';
 /**
  * Represents the view for the dropdown menu panel.
  */
-export default class DropdownMenuPanelView extends BalloonPanelView implements FocusableView {
+export default class DropdownMenuNestedMenuPanelView extends BalloonPanelView implements FocusableView {
 	/**
 	 * Creates an instance of the menu panel view.
 	 *
@@ -84,8 +84,8 @@ export default class DropdownMenuPanelView extends BalloonPanelView implements F
 }
 
 /**
- * The names of the positions of the {@link module:ui/dropdown/menu/dropdownmenupanelview~DropdownMenuPanelView}.
+ * The names of the positions of the {@link module:ui/dropdown/menu/dropdownmenunestedmenupanelview~DropdownMenuNestedMenuPanelView}.
  *
  * They are reflected as CSS class suffixes on the panel view element.
  */
-export type DropdownMenuPanelPosition = 'es' | 'ws' | 'en' | 'wn' | 'w' | 'e';
+export type DropdownMenuNestedMenuPanelPosition = 'es' | 'ws' | 'en' | 'wn' | 'w' | 'e';

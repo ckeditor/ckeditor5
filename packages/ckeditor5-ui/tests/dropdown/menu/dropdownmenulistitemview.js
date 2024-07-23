@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import {
 	ListItemView,
 	DropdownMenuListItemView,
-	DropdownNestedMenuView
+	DropdownMenuNestedMenuView
 } from '../../../src/index.js';
 
 describe( 'DropdownMenuListItemView', () => {
@@ -20,8 +20,8 @@ describe( 'DropdownMenuListItemView', () => {
 		document.body.appendChild( element );
 		editor = await ClassicTestEditor.create( element );
 
-		parentMenuView = new DropdownNestedMenuView( editor.locale, editor.ui.view.body, 'parent', 'Parent' );
-		childMenu = new DropdownNestedMenuView( editor.locale, editor.ui.view.body, 'child', 'Child', parentMenuView );
+		parentMenuView = new DropdownMenuNestedMenuView( editor.locale, editor.ui.view.body, 'parent', 'Parent' );
+		childMenu = new DropdownMenuNestedMenuView( editor.locale, editor.ui.view.body, 'child', 'Child', parentMenuView );
 		listItemView = new DropdownMenuListItemView( editor.locale, parentMenuView, childMenu );
 	} );
 

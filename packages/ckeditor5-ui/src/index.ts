@@ -56,7 +56,7 @@ export { default as SplitButtonView } from './dropdown/button/splitbuttonview.js
 export * from './dropdown/utils.js';
 
 export * from './dropdown/menu/utils.js';
-export { default as DropdownNestedMenuView } from './dropdown/menu/dropdownnestedmenuview.js';
+export { default as DropdownMenuNestedMenuView } from './dropdown/menu/dropdownmenunestedmenuview.js';
 export { default as DropdownMenuRootListView } from './dropdown/menu/dropdownmenurootlistview.js';
 export { default as DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
 export { default as DropdownMenuListItemView } from './dropdown/menu/dropdownmenulistitemview.js';

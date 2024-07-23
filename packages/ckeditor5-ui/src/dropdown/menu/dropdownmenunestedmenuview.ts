@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/dropdown/menu/dropdownnestedmenuview
+ * @module ui/dropdown/menu/dropdownmenunestedmenuview
  */
 
 import {
@@ -21,18 +21,18 @@ import type BodyCollection from '../../editorui/bodycollection.js';
 
 import DropdownMenuButtonView from './dropdownmenubuttonview.js';
 import DropdownMenuListView from './dropdownmenulistview.js';
-import { DropdownNestedMenuViewPanelPositioningFunctions } from './utils.js';
+import { DropdownMenuPanelPositioningFunctions } from './utils.js';
 import { DropdownMenuBehaviors } from './dropdownmenubehaviors.js';
 
 import View from '../../view.js';
-import DropdownMenuPanelView, { type DropdownMenuPanelPosition } from './dropdownmenupanelview.js';
+import DropdownMenuNestedMenuPanelView, { type DropdownMenuNestedMenuPanelPosition } from './dropdownmenunestedmenupanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
 
 /**
  * Represents a nested menu view.
  */
-export default class DropdownNestedMenuView extends View implements FocusableView {
+export default class DropdownMenuNestedMenuView extends View implements FocusableView {
 	/**
 	 * An array of delegated events for the dropdown menu definition controller.
 	 * These events are delegated to the dropdown menu element.
@@ -52,7 +52,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 	/**
 	 * Panel of the menu. It hosts children of the menu.
 	 */
-	public readonly panelView: DropdownMenuPanelView;
+	public readonly panelView: DropdownMenuNestedMenuPanelView;
 
 	/**
 	 * List of nested menu entries.
@@ -99,7 +99,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 	 * @observable
 	 * @default 'w'
 	 */
-	declare public panelPosition: DropdownMenuPanelPosition;
+	declare public panelPosition: DropdownMenuNestedMenuPanelPosition;
 
 	/**
 	 * The parent menu view of the menu. It is `null` for top-level menus.
@@ -107,7 +107,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 	 * @observable
 	 * @default null
 	 */
-	declare public readonly parentMenuView: DropdownNestedMenuView | null;
+	declare public readonly parentMenuView: DropdownMenuNestedMenuView | null;
 
 	private _bodyCollection: BodyCollection;
 
@@ -121,7 +121,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 	 * @param parentMenuView The parent dropdown menu view, if any.
 	 */
 	constructor(
-		locale: Locale, bodyCollection: BodyCollection, id: string, label: string, parentMenuView: DropdownNestedMenuView | null
+		locale: Locale, bodyCollection: BodyCollection, id: string, label: string, parentMenuView: DropdownMenuNestedMenuView | null
 	) {
 		super( locale );
 
@@ -144,7 +144,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 		this.buttonView.bind( 'isOn', 'isEnabled' ).to( this, 'isOpen', 'isEnabled' );
 		this.buttonView.label = label;
 
-		this.panelView = new DropdownMenuPanelView( locale );
+		this.panelView = new DropdownMenuNestedMenuPanelView( locale );
 		this.panelView.isVisible = true;
 
 		this.listView = new DropdownMenuListView( locale );
@@ -189,7 +189,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 	 * @internal
 	 */
 	public get _panelPositions(): Array<PositioningFunction> {
-		const { westSouth, eastSouth, westNorth, eastNorth } = DropdownNestedMenuViewPanelPositioningFunctions;
+		const { westSouth, eastSouth, westNorth, eastNorth } = DropdownMenuPanelPositioningFunctions;
 
 		if ( this.locale!.uiLanguageDirection === 'ltr' ) {
 			return [ eastSouth, eastNorth, westSouth, westNorth ];
@@ -233,7 +233,7 @@ export default class DropdownNestedMenuView extends View implements FocusableVie
 
 	private _handleParentMenuView(): void {
 		// Propagate events from this component to parent-menu.
-		this.delegate( ...DropdownNestedMenuView.DELEGATED_EVENTS ).to( this.parentMenuView! );
+		this.delegate( ...DropdownMenuNestedMenuView.DELEGATED_EVENTS ).to( this.parentMenuView! );
 
 		// Close this menu if its parent closes.
 		DropdownMenuBehaviors.closeOnParentClose( this, this.parentMenuView! );

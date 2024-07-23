@@ -12,8 +12,8 @@ import type { PositioningFunction } from '@ckeditor/ckeditor5-utils';
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
- * Contains every positioning function used by {@link module:ui/dropdown/menu/dropdownnestedmenuview~DropdownNestedMenuView} that
- * decides where the {@link module:ui/dropdown/menu/dropdownnestedmenuview~DropdownNestedMenuView#panelView} should be placed.
+ * Contains every positioning function used by {@link module:ui/dropdown/menu/dropdownmenunestedmenuview~DropdownMenuNestedMenuView} that
+ * decides where the {@link module:ui/dropdown/menu/dropdownmenunestedmenuview~DropdownMenuNestedMenuView#panelView} should be placed.
  *
  * Positioning functions:
  *
@@ -45,7 +45,7 @@ const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
  *	│               │      │
  *	└───────────────┴──────┘
  */
-export const DropdownNestedMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
+export const DropdownMenuPanelPositioningFunctions: Record<string, PositioningFunction> = {
 	eastSouth: buttonRect => ( {
 		top: buttonRect.top,
 		left: buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET,

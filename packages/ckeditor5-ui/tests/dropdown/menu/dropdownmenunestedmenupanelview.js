@@ -7,7 +7,7 @@
 
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
-import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenupanelview.js';
+import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
 import ViewCollection from '../../../src/viewcollection.js';
 import View from '../../../src/view.js';
 import {

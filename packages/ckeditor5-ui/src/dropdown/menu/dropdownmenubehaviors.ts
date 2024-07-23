@@ -8,7 +8,7 @@
  */
 
 import type { BaseEvent, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import type DropdownNestedMenuView from './dropdownnestedmenuview.js';
+import type DropdownMenuNestedMenuView from './dropdownmenunestedmenuview.js';
 import type { FocusableView } from '../../focuscycler.js';
 
 import type { ButtonExecuteEvent } from '../../button/button.js';
@@ -48,7 +48,7 @@ export const DropdownRootMenuBehaviors = {
 				return;
 			}
 
-			const evtMenu = evt.source as DropdownNestedMenuView;
+			const evtMenu = evt.source as DropdownMenuNestedMenuView;
 
 			for ( const menuView of rootList.menus ) {
 				if ( evtMenu.parentMenuView === menuView.parentMenuView && evtMenu !== menuView ) {
@@ -63,7 +63,7 @@ export const DropdownMenuBehaviors = {
 	/**
 	 * Open the menu on the right arrow key press (left, in RTL mode). This allows for navigating to sub-menus using the keyboard.
 	 */
-	openOnArrowRightKey( menuView: DropdownNestedMenuView ): void {
+	openOnArrowRightKey( menuView: DropdownMenuNestedMenuView ): void {
 		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowleft' : 'arrowright';
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
@@ -83,7 +83,7 @@ export const DropdownMenuBehaviors = {
 	/**
 	 * Opens the menu on its button click as well as enter and space keys press (if the button is focused).
 	 */
-	openOnButtonClick( menuView: DropdownNestedMenuView ): void {
+	openOnButtonClick( menuView: DropdownMenuNestedMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			if ( menuView.isEnabled ) {
 				menuView.isOpen = true;
@@ -95,7 +95,7 @@ export const DropdownMenuBehaviors = {
 	/**
 	 * Closes the menu on the left key press (right, in RTL mode). This allows for navigating to sub-menus using the keyboard.
 	 */
-	closeOnArrowLeftKey( menuView: DropdownNestedMenuView ): void {
+	closeOnArrowLeftKey( menuView: DropdownMenuNestedMenuView ): void {
 		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowright' : 'arrowleft';
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
@@ -107,7 +107,7 @@ export const DropdownMenuBehaviors = {
 		} );
 	},
 
-	closeOnEscKey( menuView: DropdownNestedMenuView ): void {
+	closeOnEscKey( menuView: DropdownMenuNestedMenuView ): void {
 		menuView.keystrokes.set( 'esc', ( data, cancel ) => {
 			if ( menuView.isOpen ) {
 				menuView.isOpen = false;
@@ -120,7 +120,7 @@ export const DropdownMenuBehaviors = {
 	/**
 	 * Closes the menu when its parent menu closes. This prevents from leaving orphaned open menus.
 	 */
-	closeOnParentClose( menuView: DropdownNestedMenuView, parentMenuView: DropdownNestedMenuView ): void {
+	closeOnParentClose( menuView: DropdownMenuNestedMenuView, parentMenuView: DropdownMenuNestedMenuView ): void {
 		parentMenuView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 			// TODO: Remove checking `evt.source` if `change:isOpen` is no longer delegated.
 			if ( !isOpen && evt.source === parentMenuView ) {

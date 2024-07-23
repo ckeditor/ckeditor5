@@ -24,7 +24,6 @@ import {
 	addListToDropdown,
 	addMenuToDropdown
 } from '../../../src/dropdown/utils.js';
-import { DropdownMenuRootListView } from '../../../src/index.js';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',

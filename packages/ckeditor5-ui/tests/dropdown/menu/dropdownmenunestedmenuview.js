@@ -14,11 +14,11 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import DropdownMenuButtonView from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
-import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenupanelview.js';
-import { DropdownNestedMenuView, DropdownNestedMenuViewPanelPositioningFunctions } from '../../../src/index.js';
+import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
+import { DropdownMenuNestedMenuView, DropdownMenuPanelPositioningFunctions } from '../../../src/index.js';
 import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/dropdownmenubehaviors.js';
 
-describe( 'DropdownNestedMenuView', () => {
+describe( 'DropdownMenuNestedMenuView', () => {
 	let menuView, element, editor, parentMenuView, locale, body;
 
 	testUtils.createSinonSandbox();
@@ -31,10 +31,10 @@ describe( 'DropdownNestedMenuView', () => {
 		locale = editor.locale;
 		body = editor.ui.view.body;
 
-		parentMenuView = new DropdownNestedMenuView( locale, body, 'parent', 'Parent' );
+		parentMenuView = new DropdownMenuNestedMenuView( locale, body, 'parent', 'Parent' );
 		parentMenuView.panelView.class = 'parentCSSClass';
 
-		menuView = new DropdownNestedMenuView( locale, body, 'menu', 'Menu', parentMenuView );
+		menuView = new DropdownMenuNestedMenuView( locale, body, 'menu', 'Menu', parentMenuView );
 	} );
 
 	afterEach( async () => {
@@ -183,18 +183,20 @@ describe( 'DropdownNestedMenuView', () => {
 
 			expect( spy ).to.be.calledOnce;
 			expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
-				DropdownNestedMenuViewPanelPositioningFunctions.eastSouth,
-				DropdownNestedMenuViewPanelPositioningFunctions.eastNorth,
-				DropdownNestedMenuViewPanelPositioningFunctions.westSouth,
-				DropdownNestedMenuViewPanelPositioningFunctions.westNorth
+				DropdownMenuPanelPositioningFunctions.eastSouth,
+				DropdownMenuPanelPositioningFunctions.eastNorth,
+				DropdownMenuPanelPositioningFunctions.westSouth,
+				DropdownMenuPanelPositioningFunctions.westNorth
 			] );
 		} );
 
 		it( 'should use a specific set of positioning functions in a specific priority order (RTL)', () => {
-			const rtlParentMenuView = new DropdownNestedMenuView( new Locale( { uiLanguage: 'ar' } ), body, 'parent', 'Parent' );
+			const rtlParentMenuView = new DropdownMenuNestedMenuView( new Locale( { uiLanguage: 'ar' } ), body, 'parent', 'Parent' );
 			rtlParentMenuView.panelView.class = 'parentCSSClass';
 
-			const rtlMenuView = new DropdownNestedMenuView( new Locale( { uiLanguage: 'ar' } ), body, 'menu', 'Menu', rtlParentMenuView );
+			const rtlMenuView = new DropdownMenuNestedMenuView(
+				new Locale( { uiLanguage: 'ar' } ), body, 'menu', 'Menu', rtlParentMenuView
+			);
 
 			const spy = sinon.spy( rtlMenuView.panelView, 'pin' );
 
@@ -204,10 +206,10 @@ describe( 'DropdownNestedMenuView', () => {
 			rtlMenuView.isOpen = true;
 
 			expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
-				DropdownNestedMenuViewPanelPositioningFunctions.westSouth,
-				DropdownNestedMenuViewPanelPositioningFunctions.westNorth,
-				DropdownNestedMenuViewPanelPositioningFunctions.eastSouth,
-				DropdownNestedMenuViewPanelPositioningFunctions.eastNorth
+				DropdownMenuPanelPositioningFunctions.westSouth,
+				DropdownMenuPanelPositioningFunctions.westNorth,
+				DropdownMenuPanelPositioningFunctions.eastSouth,
+				DropdownMenuPanelPositioningFunctions.eastNorth
 			] );
 
 			rtlMenuView.element.remove();

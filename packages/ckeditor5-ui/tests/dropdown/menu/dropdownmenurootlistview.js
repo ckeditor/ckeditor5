@@ -12,7 +12,7 @@ import { DropdownRootMenuBehaviors } from '../../../src/dropdown/menu/dropdownme
 import {
 	DropdownMenuListItemButtonView,
 	DropdownMenuListItemView,
-	DropdownNestedMenuView
+	DropdownMenuNestedMenuView
 } from '../../../src/index.js';
 
 describe( 'DropdownMenuRootListView', () => {
@@ -100,7 +100,7 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const menu1View = itemMenu1View.childView;
 
-			expect( menu1View ).to.be.instanceof( DropdownNestedMenuView );
+			expect( menu1View ).to.be.instanceof( DropdownMenuNestedMenuView );
 			expect( menu1View.id ).to.equal( 'menu_1' );
 			expect( menu1View.buttonView.label ).to.equal( 'Menu 1' );
 			expect( menu1View.listView.items.length ).to.equal( 2 );
@@ -131,7 +131,7 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const menu2View = itemMenu2View.childView;
 
-			expect( menu2View ).to.be.instanceof( DropdownNestedMenuView );
+			expect( menu2View ).to.be.instanceof( DropdownMenuNestedMenuView );
 			expect( menu2View.id ).to.equal( 'menu_2' );
 			expect( menu2View.buttonView.label ).to.equal( 'Menu 2' );
 			expect( menu2View.listView.items.length ).to.equal( 1 );
@@ -142,7 +142,7 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const menu21View = itemMenu21View.childView;
 
-			expect( menu21View ).to.be.instanceof( DropdownNestedMenuView );
+			expect( menu21View ).to.be.instanceof( DropdownMenuNestedMenuView );
 			expect( menu21View.id ).to.equal( 'menu_2_1' );
 			expect( menu21View.buttonView.label ).to.equal( 'Menu 2 1' );
 			expect( menu21View.listView.items.length ).to.equal( 1 );
@@ -211,19 +211,19 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const menu1View = menus[ 0 ];
 
-			expect( menu1View ).to.be.instanceof( DropdownNestedMenuView );
+			expect( menu1View ).to.be.instanceof( DropdownMenuNestedMenuView );
 			expect( menu1View.id ).to.equal( 'menu_1' );
 			expect( menu1View.buttonView.label ).to.equal( 'Menu 1' );
 
 			const menu2View = menus[ 1 ];
 
-			expect( menu2View ).to.be.instanceof( DropdownNestedMenuView );
+			expect( menu2View ).to.be.instanceof( DropdownMenuNestedMenuView );
 			expect( menu2View.id ).to.equal( 'menu_2' );
 			expect( menu2View.buttonView.label ).to.equal( 'Menu 2' );
 
 			const menu21View = menus[ 2 ];
 
-			expect( menu21View ).to.be.instanceof( DropdownNestedMenuView );
+			expect( menu21View ).to.be.instanceof( DropdownMenuNestedMenuView );
 			expect( menu21View.id ).to.equal( 'menu_2_1' );
 			expect( menu21View.buttonView.label ).to.equal( 'Menu 2 1' );
 		} );

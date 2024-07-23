@@ -8,7 +8,7 @@
  */
 
 import DropdownMenuListItemButtonView from './dropdownmenulistitembuttonview.js';
-import DropdownNestedMenuView from './dropdownnestedmenuview.js';
+import DropdownMenuNestedMenuView from './dropdownmenunestedmenuview.js';
 import DropdownMenuListView from './dropdownmenulistview.js';
 import DropdownMenuListItemView from './dropdownmenulistitemview.js';
 import { DropdownRootMenuBehaviors } from './dropdownmenubehaviors.js';
@@ -50,15 +50,15 @@ import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
  *
  * The menu is build using multiple view classes. The most important are:
  *
- * * {@link module:ui/dropdown/menu/dropdownnestedmenuview~DropdownNestedMenuView `DropdownNestedMenuView`} - "menu" - provides a panel
- * with a nested menu, and a button which opens the panel,
+ * * {@link module:ui/dropdown/menu/dropdownmenunestedmenuview~DropdownMenuNestedMenuView `DropdownMenuNestedMenuView`} - "menu" - provides
+ * a panel with a nested menu, and a button which opens the panel,
  * * {@link module:ui/dropdown/menu/dropdownmenulistitembuttonview~DropdownMenuListItemButtonView `DropdownMenuListItemButtonView`} -
- * "button" or "leaf button" (as opposed to buttons provided by `DropdownNestedMenuView`) - should trigger some action when pressed.
+ * "button" or "leaf button" (as opposed to buttons provided by `DropdownMenuNestedMenuView`) - should trigger some action when pressed.
  *
  * Instances of these two classes are created based on the data provided in definitions. They are assigned proper IDs and labels.
  * Other view classes build a proper DOM structure around menus and buttons.
  *
- * The `DropdownNestedMenuView` instances provides panels, which may include further menus or buttons. These panels are added to
+ * The `DropdownMenuNestedMenuView` instances provides panels, which may include further menus or buttons. These panels are added to
  * a `BodyCollection` view, which means they are appended outside the DOM editor and UI structure.
  *
  * When "leaf button" is pressed, it fires `execute` event which is delegated to `DropdownMenuRootListView` as `menu:execute` event. You
@@ -93,7 +93,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
 	 * Cached array of all menus in the dropdown menu (including nested menus).
 	 */
-	private _cachedMenus: Array<DropdownNestedMenuView> = [];
+	private _cachedMenus: Array<DropdownMenuNestedMenuView> = [];
 
 	/**
 	 * Cached array of all buttons in the dropdown menu (including buttons in nested menus).
@@ -128,7 +128,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
 	 * Returns the array of all menus in the dropdown menu (including nested menus).
 	 */
-	public get menus(): Array<DropdownNestedMenuView> {
+	public get menus(): Array<DropdownMenuNestedMenuView> {
 		return Array.from( this._cachedMenus.values() );
 	}
 
@@ -168,18 +168,18 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 *
 	 * @private
 	 */
-	private _createStructure( definitions: DropdownMenuDefinition, parentMenuView: DropdownNestedMenuView | null ): void {
+	private _createStructure( definitions: DropdownMenuDefinition, parentMenuView: DropdownMenuNestedMenuView | null ): void {
 		const items: Array<DropdownMenuListItemView> = [];
 
 		for ( const def of definitions ) {
-			let createdView: DropdownNestedMenuView | DropdownMenuListItemButtonView;
+			let createdView: DropdownMenuNestedMenuView | DropdownMenuListItemButtonView;
 
 			if ( 'menu' in def ) {
-				createdView = new DropdownNestedMenuView( this.locale!, this._bodyCollection, def.id, def.menu, parentMenuView );
+				createdView = new DropdownMenuNestedMenuView( this.locale!, this._bodyCollection, def.id, def.menu, parentMenuView );
 				createdView.panelView.bind( 'class' ).to( this, 'menuPanelClass' );
 
 				if ( !parentMenuView ) {
-					createdView.delegate( ...DropdownNestedMenuView.DELEGATED_EVENTS ).to( this, ( name: string ) => `menu:${ name }` );
+					createdView.delegate( ...DropdownMenuNestedMenuView.DELEGATED_EVENTS ).to( this, ( name: string ) => `menu:${ name }` );
 				}
 
 				this._cachedMenus.push( createdView );
