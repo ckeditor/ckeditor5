@@ -30,7 +30,7 @@ import ListItemView from '../../src/list/listitemview.js';
 import ListSeparatorView from '../../src/list/listseparatorview.js';
 import ListView from '../../src/list/listview.js';
 import ViewCollection from '../../src/viewcollection.js';
-import { BodyCollection, ListItemGroupView } from '../../src/index.js';
+import { BodyCollection, DropdownMenuRootListView, ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {
 	let locale, dropdownView;
@@ -1331,6 +1331,12 @@ describe( 'utils', () => {
 
 		afterEach( () => {
 			body.destroy();
+		} );
+
+		it( 'should set DropdownView#menuView', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			expect( dropdownView.menuView ).to.be.instanceof( DropdownMenuRootListView );
 		} );
 
 		it( 'should not do anything before the dropdown is opened for the first time', () => {
