@@ -681,11 +681,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		body.on<CollectionAddEvent<View>>( 'add', ( evt, view ) => {
 			this.focusTracker.add( view.element! );
-		}, { priority: 'low' } );
+		} );
 
 		body.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
 			this.focusTracker.remove( view.element! );
-		}, { priority: 'low' } );
+		} );
 	}
 }
 

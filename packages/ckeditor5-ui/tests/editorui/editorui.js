@@ -10,7 +10,7 @@ import ToolbarView from '../../src/toolbar/toolbarview.js';
 import TooltipManager from '../../src/tooltipmanager.js';
 import PoweredBy from '../../src/editorui/poweredby.js';
 import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
-import { EditorUIView, InlineEditableUIView, MenuBarView } from '../../src/index.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src/index.js';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -1266,5 +1266,40 @@ describe( 'EditorUI', () => {
 				stopPropagation: sinon.spy()
 			} );
 		}
+	} );
+
+	describe( 'bind body collection with editor focus tracker', () => {
+		it( 'on ready event add views elements inside body collection to focus tracker', () => {
+			const view = new View();
+			view.setTemplate( { tag: 'div' } );
+
+			ui.view.body.add( view );
+
+			sinon.spy( ui.focusTracker, 'add' );
+
+			ui.fire( 'ready' );
+
+			expect( view.element ).not.to.be.undefined;
+			expect( ui.focusTracker.add.calledWithExactly( view.element ) ).to.be.true;
+		} );
+
+		it( 'after body event, add and remove views elements as they are added', () => {
+			const view = new View();
+			view.setTemplate( { tag: 'div' } );
+
+			ui.fire( 'ready' );
+
+			sinon.spy( ui.focusTracker, 'add' );
+			sinon.spy( ui.focusTracker, 'remove' );
+
+			ui.view.body.add( view );
+
+			expect( view.element ).not.to.be.undefined;
+			expect( ui.focusTracker.add.calledWithExactly( view.element ) ).to.be.true;
+
+			ui.view.body.remove( view );
+
+			expect( ui.focusTracker.remove.calledWithExactly( view.element ) ).to.be.true;
+		} );
 	} );
 } );
