@@ -260,7 +260,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
 	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
-	 * @returns {Boolean} Whether the balloon was shown and attached or not. Attaching can fail if the target
+	 * @returns {Boolean} Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
 	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
 	public attachTo( options: Partial<PositionOptions> ): boolean {
@@ -388,6 +388,8 @@ export default class BalloonPanelView extends View {
 	 * Starts managing the pinned state of the panel. See {@link #pin}.
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
+	 * @returns {Boolean} Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
 	private _startPinning( options: Partial<PositionOptions> ): boolean {
 		if ( !this.attachTo( options ) ) {
