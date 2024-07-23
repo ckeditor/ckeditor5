@@ -193,8 +193,8 @@ export default class ClassicEditorUI extends EditorUI {
 	/**
 	 * Provides an integration between the sticky toolbar and {@link module:ui/panel/balloon/contextualballoon contextual balloon plugin}.
 	 * It allows the contextual balloon to consider the height of the
-	 * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel} that pins to the edge of the viewport and
-	 * overlaps the balloon. The balloon will be moved down to ensure that it is not obscured by the sticky panel.
+	 * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel}. It prevents the balloon from overlapping
+	 * the sticky toolbar by adjusting the balloon's position using viewport offset configuration.
 	 */
 	private _initContextualBalloonIntegration(): void {
 		if ( !this.editor.plugins.has( 'ContextualBalloon' ) ) {
