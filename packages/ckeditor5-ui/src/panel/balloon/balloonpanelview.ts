@@ -267,8 +267,6 @@ export default class BalloonPanelView extends View {
 		const target = getDomElement( options.target );
 
 		if ( target && !isVisible( target ) ) {
-			console.warn( 'TEST: ATTACHING TO INVISIBLE TARGET', target );
-
 			return false;
 		}
 
