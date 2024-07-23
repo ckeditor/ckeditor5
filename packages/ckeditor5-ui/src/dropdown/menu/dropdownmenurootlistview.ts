@@ -14,14 +14,14 @@ import DropdownMenuListItemView from './dropdownmenulistitemview.js';
 import { DropdownRootMenuBehaviors } from './dropdownmenubehaviors.js';
 
 import type BodyCollection from '../../editorui/bodycollection.js';
-import type { DropdownMenuChildDefinition } from './utils.js';
+import type { DropdownMenuDefinition } from './utils.js';
 
 import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Creates and manages a multi-level menu UI structure, suitable to be used inside dropdown components.
  *
- * This class creates a menu structure based on {@link module:ui/dropdown/menu/utils~DropdownMenuChildDefinition declarative definition}
+ * This class creates a menu structure based on {@link module:ui/dropdown/menu/utils~DropdownMenuDefinition declarative definition}
  * passed in the constructor.
  *
  * Below is an example of a simple definition, that describes a menu with two sub-menus (Menu 1, Menu 2) and four buttons in total (Item A,
@@ -88,7 +88,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
 	 * The definitions object used to create the whole menu structure.
 	 */
-	private readonly _definitions: Array<DropdownMenuChildDefinition>;
+	private readonly _definition: DropdownMenuDefinition;
 
 	/**
 	 * Cached array of all menus in the dropdown menu (including nested menus).
@@ -110,17 +110,17 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 *
 	 * @param locale
 	 * @param bodyCollection
-	 * @param definitions The definitions object used to create the whole menu structure.
+	 * @param definition The definition object used to create the menu structure.
 	 */
 	constructor(
 		locale: Locale,
 		bodyCollection: BodyCollection,
-		definitions: Array<DropdownMenuChildDefinition>
+		definition: DropdownMenuDefinition
 	) {
 		super( locale );
 
 		this._bodyCollection = bodyCollection;
-		this._definitions = definitions;
+		this._definition = definition;
 
 		this.set( 'menuPanelClass', undefined );
 	}
@@ -146,7 +146,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 * @inheritDoc
 	 */
 	public override render(): void {
-		this._createStructure( this._definitions, null );
+		this._createStructure( this._definition, null );
 
 		super.render();
 
@@ -168,7 +168,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 *
 	 * @private
 	 */
-	private _createStructure( definitions: Array<DropdownMenuChildDefinition>, parentMenuView: DropdownNestedMenuView | null ): void {
+	private _createStructure( definitions: DropdownMenuDefinition, parentMenuView: DropdownNestedMenuView | null ): void {
 		const items: Array<DropdownMenuListItemView> = [];
 
 		for ( const def of definitions ) {

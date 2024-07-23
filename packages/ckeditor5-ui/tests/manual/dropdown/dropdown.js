@@ -360,10 +360,9 @@ function testMenu() {
 		}
 	];
 
-	const dropdownRootListView = new DropdownMenuRootListView( locale, bodyCollection, definitions );
 	const dropdownView = createDropdown( locale );
 
-	addMenuToDropdown( dropdownView, dropdownRootListView );
+	addMenuToDropdown( dropdownView, bodyCollection, definitions );
 
 	dropdownView.buttonView.set( {
 		label: 'Menu dropdown',

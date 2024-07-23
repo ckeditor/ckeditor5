@@ -454,16 +454,16 @@ dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled',
 
 #### Adding a menu to a dropdown
 
-The {@link module:ui/dropdown/menu/dropdownmenurootlistview~DropdownMenuRootListView} can be added to a dropdown using the {@link module:ui/dropdown/utils~addMenuToDropdown} helper.
+A multi-level menu can be added to a dropdown using the {@link module:ui/dropdown/utils~addMenuToDropdown} helper.
 
 ```js
-import { addMenuToDropdown, createDropdown, DropdownMenuRootListView } from 'ckeditor5';
+import { addMenuToDropdown, createDropdown } from 'ckeditor5';
 
 // The default dropdown.
 const dropdownView = createDropdown( editor.locale );
 
 // The menu items definitions.
-const definitions = [
+const definition = [
 	{
 	    id: 'menu_1',
 	    menu: 'Menu 1',
@@ -488,10 +488,7 @@ const definitions = [
 	}
 ];
 
-const dropdownMenuRootListView = new DropdownMenuRootListView( editor.locale, editor.ui.view.body, definitions );
-
-// Integrate the menu with the dropdown.
-addMenuToDropdown( dropdownView, dropdownMenuRootListView );
+addMenuToDropdown( dropdownView, editor.body.ui.view, definition );
 ```
 
 Most probably you will want to perform some action when one of the defined buttons is pressed:

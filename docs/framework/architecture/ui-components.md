@@ -394,8 +394,7 @@ Finally, you can add a multi-level menu to a dropdown. Use the {@link module:ui/
 ```js
 import {
 	addMenuToDropdown,
-    createDropdown,
-    DropdownMenuRootListView
+    createDropdown
 } from 'ckeditor5';
 
 const locale = new Locale(); // Can be `editor.locale`.
@@ -404,7 +403,7 @@ const body = new BodyCollection(); // Can be `editor.ui.view.body`.
 const menuDropdown = createDropdown( locale );
 
 // The menu items definitions.
-const definitions = [
+const definition = [
 	{
 		id: 'menu_1',
 		menu: 'Menu 1',
@@ -429,10 +428,7 @@ const definitions = [
 	}
 ];
 
-const dropdownMenuRootListView = new DropdownMenuRootListView( locale, body, definitions );
-
-// Integrate the menu with the dropdown.
-addMenuToDropdown( menuDropdown, dropdownMenuRootListView );
+addMenuToDropdown( menuDropdown, body, definition );
 
 menuDropdown.render();
 

@@ -10,6 +10,7 @@
 import DropdownPanelView from './dropdownpanelview.js';
 import DropdownView from './dropdownview.js';
 import DropdownButtonView from './button/dropdownbuttonview.js';
+import DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
 import ToolbarView from '../toolbar/toolbarview.js';
 import ListView from '../list/listview.js';
 import ListItemView from '../list/listitemview.js';
@@ -20,13 +21,14 @@ import ViewCollection from '../viewcollection.js';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 
-import type { default as View, UIViewRenderEvent } from '../view.js';
+import type { default as View } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type Model from '../model.js';
 import type DropdownButton from './button/dropdownbutton.js';
 import type ButtonView from '../button/buttonview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { FalsyValue } from '../template.js';
+import type BodyCollection from '../editorui/bodycollection.js';
 
 import {
 	global,
@@ -42,7 +44,7 @@ import '../../theme/components/dropdown/listdropdown.css';
 
 import ListItemGroupView from '../list/listitemgroupview.js';
 import ListItemButtonView from '../button/listitembuttonview.js';
-import type DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
+import type { DropdownMenuDefinition } from './menu/utils.js';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -138,10 +140,13 @@ export function createDropdown(
 }
 
 /**
- * Adds an instance of {@link module:ui/dropdown/menu/dropdownmenurootlistview~DropdownMenuRootListView} to a dropdown and sets all
- * common behaviors and interactions between the dropdown and the menu component.
+ * Adds a menu UI component to a dropdown and sets all common behaviors and interactions between the dropdown and the menu.
  *
- * Use this helper to create dropdown nested menus that can be added to a toolbar.
+ * Use this helper to create multi-level dropdown menus that are displayed in a toolbar.
+ *
+ * Internally, it creates an instance of {@link module:ui/dropdown/menu/dropdownmenurootlistview~DropdownMenuRootListView}.
+ *
+ * Example:
  *
  * ```ts
  * const definitions = [
@@ -170,9 +175,8 @@ export function createDropdown(
  * ];
  *
  * const dropdownView = createDropdown( editor.locale );
- * const dropdownMenuRootListView = new DropdownMenuRootListView( editor.locale, editor.ui.view.body, definitions );
  *
- * addMenuToDropdown( dropdownView, dropdownMenuRootListView );
+ * addMenuToDropdown( dropdownView, editor.ui.view.body, definitions );
  * ```
  *
  * After using this helper, the `dropdown` will fire {@link module:ui/dropdown/dropdownview~DropdownViewEvent `execute`} event when
@@ -182,9 +186,14 @@ export function createDropdown(
  * and rendered only after the `dropdown` is opened for the first time.
  *
  * @param dropdownView A dropdown instance to which the menu component will be added.
- * @param dropdownMenuRootListView A menu component to be added to the dropdown.
+ * @param body Body collection to which floating menu panels will be added.
+ * @param definition The menu component definition.
  */
-export function addMenuToDropdown( dropdownView: DropdownView, dropdownMenuRootListView: DropdownMenuRootListView ): void {
+export function addMenuToDropdown( dropdownView: DropdownView, body: BodyCollection, definition: DropdownMenuDefinition ): void {
+	const dropdownMenuRootListView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+
+	dropdownView.menuView = dropdownMenuRootListView;
+
 	// Load the UI elements only after the dropdown is opened for the first time.
 	dropdownView.once( 'change:isOpen', () => {
 		dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );

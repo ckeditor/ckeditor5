@@ -74,7 +74,7 @@ export const DropdownNestedMenuViewPanelPositioningFunctions: Record<string, Pos
 /**
  * Represents the definition of a dropdown menu.
  */
-export type DropdownMenuDefinition = {
+export type DropdownNestedMenuDefinition = {
 
 	/**
 	 * Unique ID for the menu.
@@ -89,7 +89,7 @@ export type DropdownMenuDefinition = {
 	/**
 	 * The children of the dropdown menu.
 	 */
-	children: Array<DropdownMenuChildDefinition>;
+	children: DropdownMenuDefinition;
 };
 
 /**
@@ -109,6 +109,53 @@ export type DropdownMenuButtonDefinition = {
 };
 
 /**
- * Represents a definition of a child of a dropdown menu.
+ * A definition for a nestable menu component.
+ *
+ * The menu can be flat and include only top-level items, or it can include multiple levels of nested sub-menus.
+ *
+ * Example:
+ *
+ * ```ts
+ * [
+ * 	{
+ * 	    id: 'menu_1',
+ * 	    menu: 'Menu 1',
+ * 	    children: [
+ * 	        {
+ * 	            id: 'menu_1_1',
+ * 	            menu: 'Nested menu 1',
+ * 	            children: [
+ * 	                {
+ * 	                    id: 'item_x',
+ * 	                    label: 'Item X'
+ * 	                }
+ * 	            ]
+ * 	        },
+ * 	        {
+ * 	            id: 'menu_1_2',
+ * 	            menu: 'Nested menu 2',
+ * 	            children: [
+ * 	                {
+ * 	                    id: 'item_y',
+ * 	                    label: 'Item Y'
+ * 	                },
+ * 	                {
+ * 	                    id: 'item_z',
+ * 	                    label: 'Item Z'
+ * 	                }
+ * 	            ]
+ * 	        }
+ * 	    ]
+ * 	},
+ * 	{
+ * 	    id: 'top_a',
+ * 	    label: 'Top Item A'
+ * 	},
+ * 	{
+ * 	    id: 'top_b',
+ * 	    label: 'Top Item B'
+ * 	}
+ * ];
+ * ```
  */
-export type DropdownMenuChildDefinition = DropdownMenuDefinition | DropdownMenuButtonDefinition;
+export type DropdownMenuDefinition = Array<DropdownNestedMenuDefinition | DropdownMenuButtonDefinition>;

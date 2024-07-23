@@ -14,6 +14,7 @@ import type { default as DropdownPanelView, PanelPosition } from './dropdownpane
 import type { FocusableView } from '../focuscycler.js';
 import type ListView from '../list/listview.js';
 import type ToolbarView from '../toolbar/toolbarview.js';
+import type DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
 
 import {
 	KeystrokeHandler,
@@ -128,6 +129,12 @@ export default class DropdownView extends View<HTMLDivElement> {
 	 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addToolbarToDropdown}.
 	 */
 	public toolbarView?: ToolbarView;
+
+	/**
+	 * A child menu component of the dropdown located
+	 * in its {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+	 */
+	public menuView?: DropdownMenuRootListView;
 
 	/**
 	 * Controls whether the dropdown view is open, i.e. shows or hides the {@link #panelView panel}.
