@@ -62,6 +62,25 @@ describe( 'InlineEditableUIView', () => {
 				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
 			} );
 
+			it( 'should use the existing aria-label value of the editable element (no configured value)', () => {
+				const editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
+				editingViewRoot.rootName = 'custom-name';
+				editingView.document.roots.add( editingViewRoot );
+				const editableElement = document.createElement( 'div' );
+
+				editableElement.setAttribute( 'aria-label', 'Existing label' );
+
+				const view = new InlineEditableUIView( locale, editingView, editableElement );
+
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( editableElement.getAttribute( 'aria-label' ) ).to.equal( 'Existing label' );
+
+				view.destroy();
+			} );
+
 			it( 'should be set via options.label passed into constructor (callback)', () => {
 				const editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
 				editingViewRoot.rootName = 'custom-name';
@@ -87,6 +106,26 @@ describe( 'InlineEditableUIView', () => {
 
 				const view = new InlineEditableUIView( locale, editingView, null, {
 					label: 'Custom label'
+				} );
+
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+
+				view.destroy();
+			} );
+
+			it( 'should be set via options.label passed into constructor (object)', () => {
+				const editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
+				editingViewRoot.rootName = 'custom-name';
+				editingView.document.roots.add( editingViewRoot );
+
+				const view = new InlineEditableUIView( locale, editingView, null, {
+					label: {
+						'custom-name': 'Custom label'
+					}
 				} );
 
 				view.name = editingViewRoot.rootName;
