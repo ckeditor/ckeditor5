@@ -57,7 +57,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	 * @param options.shouldToolbarGroupWhenFull When set to `true` enables automatic items grouping
 	 * in the main {@link module:editor-multi-root/multirooteditoruiview~MultiRootEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
-	 * @param options.title When set, this value will be used as an accessible `aria-label` of the
+	 * @param options.label When set, this value will be used as an accessible `aria-label` of the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view} elements.
 	 */
 	constructor(
@@ -67,7 +67,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		options: {
 			editableElements?: Record<string, HTMLElement>;
 			shouldToolbarGroupWhenFull?: boolean;
-			title?: string | Record<string, string>;
+			label?: string | Record<string, string>;
 		} = {}
 	) {
 		super( locale );
@@ -85,15 +85,15 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		// Create `InlineEditableUIView` instance for each editable.
 		for ( const editableName of editableNames ) {
 			const editableElement = options.editableElements ? options.editableElements[ editableName ] : undefined;
-			let editableTitle;
+			let editableLabel;
 
-			if ( typeof options.title === 'string' ) {
-				editableTitle = options.title;
-			} else if ( options.title ) {
-				editableTitle = options.title[ editableName ];
+			if ( typeof options.label === 'string' ) {
+				editableLabel = options.label;
+			} else if ( options.label ) {
+				editableLabel = options.label[ editableName ];
 			}
 
-			this.createEditable( editableName, editableElement, editableTitle );
+			this.createEditable( editableName, editableElement, editableLabel );
 		}
 
 		this.editable = Object.values( this.editables )[ 0 ];
@@ -131,12 +131,12 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	 *
 	 * @param editableName The name for the editable.
 	 * @param editableElement DOM element for which the editable should be created.
-	 * @param title The accessible editable title used by assistive technologies.
+	 * @param label The accessible editable label used by assistive technologies.
 	 * @returns The created editable instance.
 	 */
-	public createEditable( editableName: string, editableElement?: HTMLElement, title?: string ): InlineEditableUIView {
+	public createEditable( editableName: string, editableElement?: HTMLElement, label?: string ): InlineEditableUIView {
 		const editable = new InlineEditableUIView( this.locale, this._editingView, editableElement, {
-			label: title
+			label
 		} );
 
 		this.editables[ editableName ] = editable;

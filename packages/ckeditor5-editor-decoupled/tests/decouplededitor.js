@@ -89,7 +89,7 @@ describe( 'DecoupledEditor', () => {
 				} );
 			} );
 
-			describe( 'configurable editor title (aria-label)', () => {
+			describe( 'configurable editor label (aria-label)', () => {
 				let editorElement;
 
 				beforeEach( () => {
@@ -117,11 +117,11 @@ describe( 'DecoupledEditor', () => {
 				it( 'should support the string format', async () => {
 					const editor = await DecoupledEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
-						title: 'Custom title'
+						label: 'Custom label'
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 
 					await editor.destroy();
@@ -130,13 +130,13 @@ describe( 'DecoupledEditor', () => {
 				it( 'should support object format', async () => {
 					const editor = await DecoupledEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
-						title: {
-							main: 'Custom title'
+						label: {
+							main: 'Custom label'
 						}
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 
 					await editor.destroy();
@@ -161,11 +161,11 @@ describe( 'DecoupledEditor', () => {
 					editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
 					const editor = await DecoupledEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
-						title: 'Custom title'
+						label: 'Custom label'
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 
 					await editor.destroy();
@@ -173,7 +173,7 @@ describe( 'DecoupledEditor', () => {
 					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
 				} );
 
-				it( 'should use default title when creating an editor from initial data rather than a DOM element', async () => {
+				it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
 					const editor = await DecoupledEditor.create( '<p>Initial data</p>', {
 						plugins: [ Paragraph, Bold ]
 					} );
@@ -185,14 +185,14 @@ describe( 'DecoupledEditor', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should set custom title when creating an editor from initial data rather than a DOM element', async () => {
+				it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
 					const editor = await DecoupledEditor.create( '<p>Initial data</p>', {
 						plugins: [ Paragraph, Bold ],
-						title: 'Custom title'
+						label: 'Custom label'
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 
 					await editor.destroy();

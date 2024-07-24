@@ -270,7 +270,7 @@ describe( 'ClassicEditor', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
 			} );
 
-			describe( 'configurable editor title (aria-label)', () => {
+			describe( 'configurable editor label (aria-label)', () => {
 				it( 'should be set to the defaut value if not configured', () => {
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
 						'Rich Text Editor. Editing area: main'
@@ -282,11 +282,11 @@ describe( 'ClassicEditor', () => {
 
 					editor = await ClassicEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
-						title: 'Custom title'
+						label: 'Custom label'
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 				} );
 
@@ -295,17 +295,17 @@ describe( 'ClassicEditor', () => {
 
 					editor = await ClassicEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
-						title: {
-							main: 'Custom title'
+						label: {
+							main: 'Custom label'
 						}
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 				} );
 
-				it( 'should use default title when creating an editor from initial data rather than a DOM element', async () => {
+				it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
 					await editor.destroy();
 
 					editor = await ClassicEditor.create( '<p>Initial data</p>', {
@@ -319,16 +319,16 @@ describe( 'ClassicEditor', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should set custom title when creating an editor from initial data rather than a DOM element', async () => {
+				it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
 					await editor.destroy();
 
 					editor = await ClassicEditor.create( '<p>Initial data</p>', {
 						plugins: [ Paragraph, Bold ],
-						title: 'Custom title'
+						label: 'Custom label'
 					} );
 
 					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
-						'Custom title'
+						'Custom label'
 					);
 
 					await editor.destroy();

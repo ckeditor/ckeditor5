@@ -76,7 +76,7 @@ export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Edito
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
-			title: this.config.get( 'title' )
+			label: this.config.get( 'label' )
 		} );
 		this.ui = new InlineEditorUI( this, view );
 

@@ -120,7 +120,7 @@ describe( 'InlineEditorUIView', () => {
 				const editingView = new EditingView();
 				const editingViewRoot = createRoot( editingView.document );
 				const view = new InlineEditorUIView( locale, editingView, undefined, {
-					title: 'Foo'
+					label: 'Foo'
 				} );
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
@@ -134,7 +134,7 @@ describe( 'InlineEditorUIView', () => {
 				const editingView = new EditingView();
 				const editingViewRoot = createRoot( editingView.document );
 				const view = new InlineEditorUIView( locale, editingView, undefined, {
-					title: {
+					label: {
 						main: 'Foo'
 					}
 				} );

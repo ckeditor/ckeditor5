@@ -133,7 +133,7 @@ describe( 'MultiRootEditorUIView', () => {
 				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
 				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
 				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], {
-					title: 'Foo'
+					label: 'Foo'
 				} );
 
 				view.editables.foo.name = 'foo';
@@ -151,7 +151,7 @@ describe( 'MultiRootEditorUIView', () => {
 				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
 				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
 				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], 	{
-					title: {
+					label: {
 						foo: 'Foo',
 						bar: 'Bar'
 					}
@@ -219,12 +219,12 @@ describe( 'MultiRootEditorUIView', () => {
 		it( 'new editable is given an accessible aria label (custom)', () => {
 			const newViewRoot = createRoot( editingView.document, 'div', 'new' );
 
-			view.createEditable( 'new', undefined, 'Custom title' );
+			view.createEditable( 'new', undefined, 'Custom label' );
 			view.editables.new.name = 'new';
 
 			view.render();
 
-			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom title' );
+			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
 
 			view.destroy();
 		} );

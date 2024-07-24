@@ -325,7 +325,7 @@ describe( 'MultiRootEditor', () => {
 				} );
 		} );
 
-		describe( 'configurable editor title (aria-label)', () => {
+		describe( 'configurable editor label (aria-label)', () => {
 			it( 'should be set to the defaut value if not configured', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: document.createElement( 'div' ),
@@ -351,15 +351,15 @@ describe( 'MultiRootEditor', () => {
 					bar: document.createElement( 'div' )
 				}, {
 					plugins: [ Paragraph, Bold ],
-					title: 'Custom title'
+					label: 'Custom label'
 				} );
 
 				expect( editor.editing.view.getDomRoot( 'foo' ).getAttribute( 'aria-label' ) ).to.equal(
-					'Custom title'
+					'Custom label'
 				);
 
 				expect( editor.editing.view.getDomRoot( 'bar' ).getAttribute( 'aria-label' ) ).to.equal(
-					'Custom title'
+					'Custom label'
 				);
 
 				await editor.destroy();
@@ -371,31 +371,31 @@ describe( 'MultiRootEditor', () => {
 					bar: document.createElement( 'div' )
 				}, {
 					plugins: [ Paragraph, Bold ],
-					title: {
-						foo: 'Foo custom title',
-						bar: 'Bar custom title'
+					label: {
+						foo: 'Foo custom label',
+						bar: 'Bar custom label'
 					}
 				} );
 
 				expect( editor.editing.view.getDomRoot( 'foo' ).getAttribute( 'aria-label' ) ).to.equal(
-					'Foo custom title'
+					'Foo custom label'
 				);
 
 				expect( editor.editing.view.getDomRoot( 'bar' ).getAttribute( 'aria-label' ) ).to.equal(
-					'Bar custom title'
+					'Bar custom label'
 				);
 
 				await editor.destroy();
 			} );
 
-			it( 'should support object format (mix default and custom title)', async () => {
+			it( 'should support object format (mix default and custom label)', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: document.createElement( 'div' ),
 					bar: document.createElement( 'div' )
 				}, {
 					plugins: [ Paragraph, Bold ],
-					title: {
-						bar: 'Bar custom title'
+					label: {
+						bar: 'Bar custom label'
 					}
 				} );
 
@@ -404,7 +404,7 @@ describe( 'MultiRootEditor', () => {
 				);
 
 				expect( editor.editing.view.getDomRoot( 'bar' ).getAttribute( 'aria-label' ) ).to.equal(
-					'Bar custom title'
+					'Bar custom label'
 				);
 
 				await editor.destroy();
@@ -447,7 +447,7 @@ describe( 'MultiRootEditor', () => {
 					bar: barElement
 				}, {
 					plugins: [ Paragraph, Bold ],
-					title: {
+					label: {
 						foo: 'Foo override',
 						bar: 'Bar override'
 					}
@@ -464,7 +464,7 @@ describe( 'MultiRootEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should use default title when creating an editor from initial data rather than a DOM element', async () => {
+			it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: 'Foo content',
 					bar: 'Bar content'
@@ -483,13 +483,13 @@ describe( 'MultiRootEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should set custom title when creating an editor from initial data rather than a DOM element', async () => {
+			it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: 'Foo content',
 					bar: 'Bar content'
 				}, {
 					plugins: [ Paragraph, Bold ],
-					title: {
+					label: {
 						foo: 'Foo override',
 						bar: 'Bar override'
 					}
@@ -1118,14 +1118,14 @@ describe( 'MultiRootEditor', () => {
 			expect( editableElement.children[ 0 ].dataset.placeholder ).to.equal( 'new' );
 		} );
 
-		it( 'should alow for setting a custom title to the editable', () => {
+		it( 'should alow for setting a custom label to the editable', () => {
 			editor.addRoot( 'new' );
 
-			editor.createEditable( editor.model.document.getRoot( 'new' ), undefined, 'Custom title' );
+			editor.createEditable( editor.model.document.getRoot( 'new' ), undefined, 'Custom label' );
 
 			const editableElement = editor.ui.view.editables.new.element;
 
-			expect( editableElement.getAttribute( 'aria-label' ) ).to.equal( 'Custom title' );
+			expect( editableElement.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
 		} );
 	} );
 

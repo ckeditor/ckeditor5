@@ -123,7 +123,7 @@ describe( 'DecoupledEditorUIView', () => {
 				const editingView = new EditingView();
 				const editingViewRoot = createRoot( editingView.document );
 				const view = new DecoupledEditorUIView( locale, editingView, {
-					title: 'Foo'
+					label: 'Foo'
 				} );
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
@@ -137,7 +137,7 @@ describe( 'DecoupledEditorUIView', () => {
 				const editingView = new EditingView();
 				const editingViewRoot = createRoot( editingView.document );
 				const view = new DecoupledEditorUIView( locale, editingView, {
-					title: {
+					label: {
 						main: 'Foo'
 					}
 				} );

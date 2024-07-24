@@ -32,24 +32,24 @@ export default class BalloonEditorUIView extends EditorUIView {
 	 * @param editingView The editing view instance this view is related to.
 	 * @param editableElement The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
-	 * @param title When set, this value will be used as an accessible `aria-label` of the
+	 * @param label When set, this value will be used as an accessible `aria-label` of the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view}.
 	 */
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
 		editableElement?: HTMLElement,
-		title?: string | Record<string, string>
+		label?: string | Record<string, string>
 	) {
 		super( locale );
 
 		let editableLabel;
 
-		if ( title ) {
-			if ( typeof title == 'string' ) {
-				editableLabel = title;
+		if ( label ) {
+			if ( typeof label == 'string' ) {
+				editableLabel = label;
 			} else {
-				editableLabel = title[ editingView.document.getRoot()!.rootName ];
+				editableLabel = label[ editingView.document.getRoot()!.rootName ];
 			}
 		}
 

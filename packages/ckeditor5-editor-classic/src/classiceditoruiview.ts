@@ -43,7 +43,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * @param options.shouldToolbarGroupWhenFull When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
-	 * @param options.title When set, this value will be used as an accessible `aria-label` of the
+	 * @param options.label When set, this value will be used as an accessible `aria-label` of the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view}.
 	 */
 	constructor(
@@ -52,7 +52,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
 			useMenuBar?: boolean;
-			title?: string | Record<string, string>;
+			label?: string | Record<string, string>;
 		} = {}
 	) {
 		super( locale );
@@ -69,11 +69,11 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			this.menuBarView = new MenuBarView( locale );
 		}
 
-		if ( options.title ) {
-			if ( typeof options.title == 'string' ) {
-				editableLabel = options.title;
+		if ( options.label ) {
+			if ( typeof options.label == 'string' ) {
+				editableLabel = options.label;
 			} else {
-				editableLabel = options.title[ editingView.document.getRoot()!.rootName ];
+				editableLabel = options.label[ editingView.document.getRoot()!.rootName ];
 			}
 		}
 

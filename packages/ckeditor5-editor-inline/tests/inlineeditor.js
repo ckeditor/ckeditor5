@@ -287,7 +287,7 @@ describe( 'InlineEditor', () => {
 				.catch( done );
 		} );
 
-		describe( 'configurable editor title (aria-label)', () => {
+		describe( 'configurable editor label (aria-label)', () => {
 			it( 'should be set to the defaut value if not configured', () => {
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
 					'Rich Text Editor. Editing area: main'
@@ -299,11 +299,11 @@ describe( 'InlineEditor', () => {
 
 				editor = await InlineEditor.create( editorElement, {
 					plugins: [ Paragraph, Bold ],
-					title: 'Custom title'
+					label: 'Custom label'
 				} );
 
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
-					'Custom title'
+					'Custom label'
 				);
 			} );
 
@@ -312,13 +312,13 @@ describe( 'InlineEditor', () => {
 
 				editor = await InlineEditor.create( editorElement, {
 					plugins: [ Paragraph, Bold ],
-					title: {
-						main: 'Custom title'
+					label: {
+						main: 'Custom label'
 					}
 				} );
 
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
-					'Custom title'
+					'Custom label'
 				);
 			} );
 
@@ -345,11 +345,11 @@ describe( 'InlineEditor', () => {
 				editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
 				editor = await InlineEditor.create( editorElement, {
 					plugins: [ Paragraph, Bold ],
-					title: 'Custom title'
+					label: 'Custom label'
 				} );
 
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
-					'Custom title'
+					'Custom label'
 				);
 
 				await editor.destroy();
@@ -357,7 +357,7 @@ describe( 'InlineEditor', () => {
 				expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
 			} );
 
-			it( 'should use default title when creating an editor from initial data rather than a DOM element', async () => {
+			it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
 				await editor.destroy();
 
 				editor = await InlineEditor.create( '<p>Initial data</p>', {
@@ -371,16 +371,16 @@ describe( 'InlineEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should set custom title when creating an editor from initial data rather than a DOM element', async () => {
+			it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
 				await editor.destroy();
 
 				editor = await InlineEditor.create( '<p>Initial data</p>', {
 					plugins: [ Paragraph, Bold ],
-					title: 'Custom title'
+					label: 'Custom label'
 				} );
 
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
-					'Custom title'
+					'Custom label'
 				);
 
 				await editor.destroy();

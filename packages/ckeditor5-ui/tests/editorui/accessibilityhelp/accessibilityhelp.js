@@ -140,7 +140,7 @@ describe( 'AccessibilityHelp', () => {
 					plugins: [
 						AccessibilityHelp
 					],
-					title: ''
+					label: ''
 				} );
 
 				const viewRoot = editor.editing.view.document.getRoot( 'main' );

@@ -91,7 +91,7 @@ describe( 'ClassicEditorUIView', () => {
 				const editingView = new EditingView();
 				const editingViewRoot = createRoot( editingView.document );
 				const view = new ClassicEditorUIView( locale, editingView, {
-					title: 'Foo'
+					label: 'Foo'
 				} );
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
@@ -105,7 +105,7 @@ describe( 'ClassicEditorUIView', () => {
 				const editingView = new EditingView();
 				const editingViewRoot = createRoot( editingView.document );
 				const view = new ClassicEditorUIView( locale, editingView, {
-					title: {
+					label: {
 						main: 'Foo'
 					}
 				} );

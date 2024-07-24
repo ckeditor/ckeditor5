@@ -825,7 +825,7 @@ export interface EditorConfig {
 	/**
 	 * TODO
 	 */
-	title?: string | Record<string, string>;
+	label?: string | Record<string, string>;
 }
 
 /**

@@ -82,7 +82,7 @@ export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Ed
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, {
 			editableElement: this.sourceElement,
 			shouldToolbarGroupWhenFull,
-			title: this.config.get( 'title' )
+			label: this.config.get( 'label' )
 		} );
 
 		this.ui = new DecoupledEditorUI( this, view );

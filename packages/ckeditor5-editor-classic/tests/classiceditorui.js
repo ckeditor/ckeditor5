@@ -325,7 +325,7 @@ describe( 'ClassicEditorUI', () => {
 				editorWithUi.ui.view.stickyPanel.isSticky = true;
 
 				dialogPlugin.show( {
-					title: 'Foo',
+					label: 'Foo',
 					content: dialogContentView,
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
@@ -350,7 +350,7 @@ describe( 'ClassicEditorUI', () => {
 				editorWithUi.ui.view.stickyPanel.isSticky = false;
 
 				dialogPlugin.show( {
-					title: 'Foo',
+					label: 'Foo',
 					content: dialogContentView,
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
@@ -375,7 +375,7 @@ describe( 'ClassicEditorUI', () => {
 				editorWithUi.ui.view.stickyPanel.isSticky = true;
 
 				dialogPlugin.show( {
-					title: 'Foo',
+					label: 'Foo',
 					content: dialogContentView,
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
