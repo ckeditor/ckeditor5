@@ -51,15 +51,11 @@ ClassicEditor
 			sourceList: [
 				'local',
 				'url',
-				'camera',
 				'dropbox',
 				'gdrive',
 				'facebook',
 				'gphotos',
 				'instagram',
-				'flickr',
-				'evernote',
-				'box',
 				'onedrive'
 			]
 		}

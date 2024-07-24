@@ -64,15 +64,11 @@ export interface UploadcareConfig {
 export enum UploadcareSource {
 	Local = 'local',
 	URL = 'url',
-	Camera = 'camera',
 	Dropbox = 'dropbox',
 	GDrive = 'gdrive',
 	Facebook = 'facebook',
 	GPhotos = 'gphotos',
 	Instagram = 'instagram',
-	Flickr = 'flickr',
-	Evernote = 'evernote',
-	Box = 'box',
 	OneDrive = 'onedrive'
 }
 

@@ -10,12 +10,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import boxIcon from '../theme/icons/box.svg';
-import cameraIcon from '../theme/icons/camera.svg';
 import dropboxIcon from '../theme/icons/dropbox.svg';
-import evernoteIcon from '../theme/icons/evernote.svg';
 import facebookIcon from '../theme/icons/facebook.svg';
-import flickrIcon from '../theme/icons/flickr.svg';
 import googleDriveIcon from '../theme/icons/google-drive.svg';
 import googlePhotosIcon from '../theme/icons/google-photos.svg';
 import instagramIcon from '../theme/icons/instagram.svg';
@@ -104,20 +100,6 @@ export default class UploadcareUI extends Plugin {
 						text: t( 'Insert via URL' ),
 						shortText: t( 'Via URL' )
 					};
-				case UploadcareSource.Camera:
-					return {
-						icon: cameraIcon,
-						type: UploadcareSource.Camera,
-						text: t( 'Insert with camera' ),
-						shortText: t( 'With camera' )
-					};
-				case UploadcareSource.Box:
-					return {
-						icon: boxIcon,
-						type: UploadcareSource.Box,
-						text: t( 'Insert with Box' ),
-						shortText: t( 'With Box' )
-					};
 				case UploadcareSource.Dropbox:
 					return {
 						icon: dropboxIcon,
@@ -125,25 +107,11 @@ export default class UploadcareUI extends Plugin {
 						text: t( 'Insert with Dropbox' ),
 						shortText: t( 'With Dropbox' )
 					};
-				case UploadcareSource.Evernote:
-					return {
-						icon: evernoteIcon,
-						type: UploadcareSource.Evernote,
-						text: t( 'Insert with Evernote' ),
-						shortText: t( 'With Evernote' )
-					};
 				case UploadcareSource.Facebook:
 					return {
 						icon: facebookIcon,
 						type: UploadcareSource.Facebook,
 						text: t( 'Insert with Facebook' ),
-						shortText: t( 'With Facebook' )
-					};
-				case UploadcareSource.Flickr:
-					return {
-						icon: flickrIcon,
-						type: UploadcareSource.Flickr,
-						text: 'Insert using Flickr',
 						shortText: t( 'With Facebook' )
 					};
 				case UploadcareSource.GDrive:
