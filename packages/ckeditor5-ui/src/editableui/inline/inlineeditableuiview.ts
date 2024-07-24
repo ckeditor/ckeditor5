@@ -17,9 +17,9 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  */
 export default class InlineEditableUIView extends EditableUIView {
 	/**
-	 * The callback that is used during rendering for setting the `aria-label` attribute value.
+	 * The cached options object passed to the constructor.
 	 */
-	private readonly _getAriaLabelValue: InlineEditableAriaLabelCallback;
+	private readonly _options: InlineEditableUIViewOptions;
 
 	/**
 	 * Creates an instance of the InlineEditableUIView class.
@@ -37,13 +37,11 @@ export default class InlineEditableUIView extends EditableUIView {
 		locale: Locale,
 		editingView: EditingView,
 		editableElement?: HTMLElement,
-		options: {
-			label?: InlineEditableAriaLabelCallback | string;
-		} = {}
+		options: InlineEditableUIViewOptions = {}
 	) {
 		super( locale, editingView, editableElement );
 
-		const t = this.locale!.t;
+		this._options = options;
 
 		this.extendTemplate( {
 			attributes: {
@@ -51,25 +49,6 @@ export default class InlineEditableUIView extends EditableUIView {
 				class: 'ck-editor__editable_inline'
 			}
 		} );
-
-		this._getAriaLabelValue = () => t( 'Rich Text Editor. Editing area: %0', this.name! );
-
-		// String format.
-		if ( typeof options.label === 'string' ) {
-			this._getAriaLabelValue = () => options.label as string;
-		}
-		// Object format.
-		else if ( options.label ) {
-			this._getAriaLabelValue = options.label;
-		}
-		// No configuration. Attempting to preserve an existing DOM element value.
-		else if ( editableElement ) {
-			const preExistingLabelValue = editableElement.getAttribute( 'aria-label' );
-
-			if ( preExistingLabelValue ) {
-				this._getAriaLabelValue = () => preExistingLabelValue;
-			}
-		}
 	}
 
 	/**
@@ -83,9 +62,44 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name! );
 
-			writer.setAttribute( 'aria-label', this._getAriaLabelValue( this ), viewRoot! );
+			writer.setAttribute( 'aria-label', this.getEditableAriaLabel(), viewRoot! );
 		} );
+	}
+
+	/**
+	 * Returns a normalized label for the editable view based on the configuration.
+	 *
+	 * @param options Configuration options
+	 * @param options.editableName The {@link module:ui/editableui/editableuiview~EditableUIView#name} of the editable view.
+	 * @returns A normalized label string.
+	 * @param options.editableElement The DOM element of the editable view. Used to read the existing `aria-label` if passed
+	 * but no `options.label` was provided.
+	 * @param options.label Label as configured in {@link module:core/editor/editorconfig~EditorConfig#label}.
+	 */
+	public getEditableAriaLabel(): string {
+		const t = this.locale!.t;
+		const label = this._options.label;
+		const editableElement = this._editableElement;
+		const editableName = this.name!;
+
+		if ( typeof label == 'string' ) {
+			return label;
+		} else if ( typeof label === 'object' ) {
+			return label[ editableName ];
+		} else if ( typeof label === 'function' ) {
+			return label( this );
+		} else if ( editableElement ) {
+			const existingLabel = editableElement.getAttribute( 'aria-label' );
+
+			if ( existingLabel ) {
+				return existingLabel;
+			}
+		}
+
+		return t( 'Rich Text Editor. Editing area: %0', editableName );
 	}
 }
 
-type InlineEditableAriaLabelCallback = ( view: InlineEditableUIView ) => string;
+type InlineEditableUIViewOptions = {
+	label?: ( ( view: InlineEditableUIView ) => string ) | string | Record<string, string>;
+};

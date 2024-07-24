@@ -62,23 +62,15 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	) {
 		super( locale );
 
-		let editableLabel;
-
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
 		this.menuBarView = new MenuBarView( locale );
 
-		if ( options.label ) {
-			if ( typeof options.label == 'string' ) {
-				editableLabel = options.label;
-			} else {
-				editableLabel = options.label[ editingView.document.getRoot()!.rootName ];
-			}
-		}
-
-		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, { label: editableLabel } );
+		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
+			label: options.label
+		} );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
 		// Because of the above, make sure the toolbar supports rounded corners.

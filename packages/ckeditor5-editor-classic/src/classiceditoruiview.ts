@@ -57,8 +57,6 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	) {
 		super( locale );
 
-		let editableLabel;
-
 		this.stickyPanel = new StickyPanelView( locale );
 
 		this.toolbar = new ToolbarView( locale, {
@@ -69,15 +67,9 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			this.menuBarView = new MenuBarView( locale );
 		}
 
-		if ( options.label ) {
-			if ( typeof options.label == 'string' ) {
-				editableLabel = options.label;
-			} else {
-				editableLabel = options.label[ editingView.document.getRoot()!.rootName ];
-			}
-		}
-
-		this.editable = new InlineEditableUIView( locale, editingView, undefined, { label: editableLabel } );
+		this.editable = new InlineEditableUIView( locale, editingView, undefined, {
+			label: options.label
+		} );
 	}
 
 	/**

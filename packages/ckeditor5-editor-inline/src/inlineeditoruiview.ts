@@ -149,8 +149,6 @@ export default class InlineEditorUIView extends EditorUIView {
 	) {
 		super( locale );
 
-		let editableLabel;
-
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull,
 			isFloating: true
@@ -171,15 +169,9 @@ export default class InlineEditorUIView extends EditorUIView {
 			}
 		} );
 
-		if ( options.label ) {
-			if ( typeof options.label == 'string' ) {
-				editableLabel = options.label;
-			} else {
-				editableLabel = options.label[ editingView.document.getRoot()!.rootName ];
-			}
-		}
-
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement, { label: editableLabel } );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
+			label: options.label
+		} );
 
 		this._resizeObserver = null;
 	}

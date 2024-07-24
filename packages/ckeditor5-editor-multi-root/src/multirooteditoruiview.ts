@@ -85,15 +85,13 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		// Create `InlineEditableUIView` instance for each editable.
 		for ( const editableName of editableNames ) {
 			const editableElement = options.editableElements ? options.editableElements[ editableName ] : undefined;
-			let editableLabel;
+			let { label } = options;
 
-			if ( typeof options.label === 'string' ) {
-				editableLabel = options.label;
-			} else if ( options.label ) {
-				editableLabel = options.label[ editableName ];
+			if ( typeof label === 'object' ) {
+				label = label[ editableName ];
 			}
 
-			this.createEditable( editableName, editableElement, editableLabel );
+			this.createEditable( editableName, editableElement, label );
 		}
 
 		this.editable = Object.values( this.editables )[ 0 ];

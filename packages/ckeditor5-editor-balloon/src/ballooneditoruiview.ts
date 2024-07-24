@@ -43,17 +43,9 @@ export default class BalloonEditorUIView extends EditorUIView {
 	) {
 		super( locale );
 
-		let editableLabel;
-
-		if ( label ) {
-			if ( typeof label == 'string' ) {
-				editableLabel = label;
-			} else {
-				editableLabel = label[ editingView.document.getRoot()!.rootName ];
-			}
-		}
-
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement, { label: editableLabel } );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
+			label
+		} );
 
 		this.menuBarView = new MenuBarView( locale );
 

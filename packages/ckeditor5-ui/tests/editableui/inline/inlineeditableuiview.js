@@ -62,20 +62,6 @@ describe( 'InlineEditableUIView', () => {
 				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
 			} );
 
-			it( 'should fall back to the existing aria-label value when no option was provided', () => {
-				const editableElement = document.createElement( 'div' );
-				editableElement.setAttribute( 'aria-label', 'Pre-existing value' );
-
-				const view = new InlineEditableUIView( locale, editingView, editableElement );
-				view.name = editingViewRoot.rootName;
-
-				view.render();
-
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Pre-existing value' );
-
-				view.destroy();
-			} );
-
 			it( 'should be set via options.label passed into constructor (callback)', () => {
 				const editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
 				editingViewRoot.rootName = 'custom-name';

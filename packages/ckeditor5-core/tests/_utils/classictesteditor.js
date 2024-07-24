@@ -53,7 +53,7 @@ export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
 
 		// Expose properties normally exposed by the ClassicEditorUI.
 		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale, this.editing.view, undefined, {
-			label: this.config.get( 'title' )
+			label: this.config.get( 'label' )
 		} );
 	}
 
