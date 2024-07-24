@@ -29,6 +29,7 @@ type SourceDefinition = {
 	icon: any;
 	type: UploadcareSource;
 	text: string;
+	shortText: string;
 };
 
 /**
@@ -85,32 +86,94 @@ export default class UploadcareUI extends Plugin {
 	 * Returns a definitions of the upload source containing icons and translations.
 	 */
 	private _normalizeConfigSourceList( sourceList: Array<UploadcareSource> ): Array<SourceDefinition> {
+		const { t } = this.editor;
+
 		return sourceList.map( el => {
 			switch ( el ) {
 				case UploadcareSource.Local:
-					return { icon: localIcon, type: UploadcareSource.Local, text: 'Insert from device' };
+					return {
+						icon: localIcon,
+						type: UploadcareSource.Local,
+						text: t( 'Upload from computer' ),
+						shortText: t( 'From computer' )
+					};
 				case UploadcareSource.URL:
-					return 	{ icon: linkIcon, type: UploadcareSource.URL, text: 'Insert using URL' };
+					return {
+						icon: linkIcon,
+						type: UploadcareSource.URL,
+						text: t( 'Insert via URL' ),
+						shortText: t( 'Via URL' )
+					};
 				case UploadcareSource.Camera:
-					return 	{ icon: cameraIcon, type: UploadcareSource.Camera, text: 'Insert using camera' };
+					return {
+						icon: cameraIcon,
+						type: UploadcareSource.Camera,
+						text: t( 'Insert with camera' ),
+						shortText: t( 'With camera' )
+					};
 				case UploadcareSource.Box:
-					return 	{ icon: boxIcon, type: UploadcareSource.Box, text: 'Insert using Box' };
+					return {
+						icon: boxIcon,
+						type: UploadcareSource.Box,
+						text: t( 'Insert with Box' ),
+						shortText: t( 'With Box' )
+					};
 				case UploadcareSource.Dropbox:
-					return 	{ icon: dropboxIcon, type: UploadcareSource.Dropbox, text: 'Insert using Dropbox' };
+					return {
+						icon: dropboxIcon,
+						type: UploadcareSource.Dropbox,
+						text: t( 'Insert with Dropbox' ),
+						shortText: t( 'With Dropbox' )
+					};
 				case UploadcareSource.Evernote:
-					return 	{ icon: evernoteIcon, type: UploadcareSource.Evernote, text: 'Insert using Evernote' };
+					return {
+						icon: evernoteIcon,
+						type: UploadcareSource.Evernote,
+						text: t( 'Insert with Evernote' ),
+						shortText: t( 'With Evernote' )
+					};
 				case UploadcareSource.Facebook:
-					return 	{ icon: facebookIcon, type: UploadcareSource.Facebook, text: 'Insert using Facebook' };
+					return {
+						icon: facebookIcon,
+						type: UploadcareSource.Facebook,
+						text: t( 'Insert with Facebook' ),
+						shortText: t( 'With Facebook' )
+					};
 				case UploadcareSource.Flickr:
-					return 	{ icon: flickrIcon, type: UploadcareSource.Flickr, text: 'Insert using Flickr' };
+					return {
+						icon: flickrIcon,
+						type: UploadcareSource.Flickr,
+						text: 'Insert using Flickr',
+						shortText: t( 'With Facebook' )
+					};
 				case UploadcareSource.GDrive:
-					return 	{ icon: googleDriveIcon, type: UploadcareSource.GDrive, text: 'Insert using Google Drive' };
+					return {
+						icon: googleDriveIcon,
+						type: UploadcareSource.GDrive,
+						text: t( 'Insert with Google Drive' ),
+						shortText: t( 'With Google Drive' )
+					};
 				case UploadcareSource.GPhotos:
-					return 	{ icon: googlePhotosIcon, type: UploadcareSource.GPhotos, text: 'Insert using Google Photos' };
+					return {
+						icon: googlePhotosIcon,
+						type: UploadcareSource.GPhotos,
+						text: t( 'Insert with Google Photos' ),
+						shortText: t( 'With Google Photos' )
+					};
 				case UploadcareSource.Instagram:
-					return { icon: instagramIcon, type: UploadcareSource.Instagram, text: 'Insert using Instagram' };
+					return {
+						icon: instagramIcon,
+						type: UploadcareSource.Instagram,
+						text: t( 'Insert with Instagram' ),
+						shortText: t( 'With Instagram' )
+					};
 				case UploadcareSource.OneDrive:
-					return { icon: oneDriveIcon, type: UploadcareSource.OneDrive, text: 'Insert using OneDrive' };
+					return {
+						icon: oneDriveIcon,
+						type: UploadcareSource.OneDrive,
+						text: t( 'Insert with OneDrive' ),
+						shortText: t( 'With OneDrive' )
+					};
 			}
 		} );
 	}
@@ -188,7 +251,7 @@ export default class UploadcareUI extends Plugin {
 
 			button.withText = true;
 			button.icon = source.icon;
-			button.label = source.text;
+			button.label = source.shortText;
 
 			return button;
 		} );
