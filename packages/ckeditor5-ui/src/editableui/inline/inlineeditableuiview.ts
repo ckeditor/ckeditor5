@@ -67,14 +67,7 @@ export default class InlineEditableUIView extends EditableUIView {
 	}
 
 	/**
-	 * Returns a normalized label for the editable view based on the configuration.
-	 *
-	 * @param options Configuration options
-	 * @param options.editableName The {@link module:ui/editableui/editableuiview~EditableUIView#name} of the editable view.
-	 * @returns A normalized label string.
-	 * @param options.editableElement The DOM element of the editable view. Used to read the existing `aria-label` if passed
-	 * but no `options.label` was provided.
-	 * @param options.label Label as configured in {@link module:core/editor/editorconfig~EditorConfig#label}.
+	 * Returns a normalized label for the editable view based on the environment.
 	 */
 	public getEditableAriaLabel(): string {
 		const t = this.locale!.t;
