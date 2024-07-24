@@ -81,10 +81,10 @@ export default function upcastTable() {
 				return;
 			}
 
-			const { rows, headingRows, headingColumns } = scanTable( viewTable );
+			const { rows, headingRows, headingColumns, footerRows } = scanTable( viewTable );
 
 			// Only set attributes if values is greater then 0.
-			const attributes: { headingColumns?: number; headingRows?: number } = {};
+			const attributes: { headingColumns?: number; headingRows?: number; footerRows?: number } = {};
 
 			if ( headingColumns ) {
 				attributes.headingColumns = headingColumns;
@@ -92,6 +92,10 @@ export default function upcastTable() {
 
 			if ( headingRows ) {
 				attributes.headingRows = headingRows;
+			}
+
+			if ( footerRows ) {
+				attributes.footerRows = footerRows;
 			}
 
 			const table = conversionApi.writer.createElement( 'table', attributes );
@@ -198,14 +202,16 @@ function getViewTableFromFigure( figureView: ViewElement ) {
  *
  * headingRows    - The number of rows that go as table headers.
  * headingColumns - The maximum number of row headings.
+ * footerRows     - The number of rows that go as table footers.
  * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
  */
 function scanTable( viewTable: ViewElement ) {
 	let headingRows = 0;
 	let headingColumns: number | undefined = undefined;
+	let footerRows = 0;
 
 	// The `<tbody>` and `<thead>` sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more than one
-	// of them.
+	// of them. The same principles apply to `<tfoot>` sections.
 	// As the model does not have these sections, rows from different sections must be sorted.
 	// For example, below is a valid HTML table:
 	//
@@ -218,10 +224,12 @@ function scanTable( viewTable: ViewElement ) {
 	// But browsers will render rows in order as: 1 as the heading and 2 and 3 as the body.
 	const headRows = [];
 	const bodyRows = [];
+	const footRows = [];
 
 	// Currently the editor does not support more then one <thead> section.
 	// Only the first <thead> from the view will be used as a heading row and the others will be converted to body rows.
 	let firstTheadElement;
+	let firstTfootElement;
 
 	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<ViewElement> ) ) {
 		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
@@ -233,6 +241,11 @@ function scanTable( viewTable: ViewElement ) {
 		// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
 		if ( tableChild.name === 'thead' && !firstTheadElement ) {
 			firstTheadElement = tableChild;
+		}
+
+		// Save the first `<tfoot>` in the table as table footer - all other ones will be converted to table body rows.
+		if ( tableChild.name === 'tfoot' && !firstTfootElement ) {
+			firstTfootElement = tableChild;
 		}
 
 		// There might be some extra empty text nodes between the `<tr>`s.
@@ -253,10 +266,15 @@ function scanTable( viewTable: ViewElement ) {
 			) {
 				headingRows++;
 				headRows.push( tr );
-			} else {
+			}
+			// This <tr> is a child of a first <tfoot> element.
+			else if ( firstTfootElement && tableChild === firstTfootElement ) {
+				footerRows++;
+				footRows.push( tr );
+			}
+			// For other rows check how many column headings this row has.
+			else {
 				bodyRows.push( tr );
-				// For other rows check how many column headings this row has.
-
 				const headingCols = scanRowForHeadingColumns( tr );
 
 				if ( !headingColumns || headingCols < headingColumns ) {
@@ -269,7 +287,8 @@ function scanTable( viewTable: ViewElement ) {
 	return {
 		headingRows,
 		headingColumns: headingColumns || 0,
-		rows: [ ...headRows, ...bodyRows ]
+		footerRows,
+		rows: [ ...headRows, ...bodyRows, ...footRows ]
 	};
 }
 

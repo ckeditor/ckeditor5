@@ -321,6 +321,28 @@ describe( 'TableKeyboard', () => {
 				], { headingRows: 1 } ) );
 			} );
 
+			it( 'should handle tab press when in table footer and create a new row', () => {
+				setModelData( model,
+					modelTable(
+						[
+							[ '11', '12[]' ]
+						],
+						{
+							footerRows: 1
+						}
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '11', '12' ],
+					[ '[]', '' ]
+				], { footerRows: 2 } ) );
+			} );
+
 			it( 'should not handle tab if it was handled by a listener with higher priority', () => {
 				setModelData( model,
 					modelTable(
