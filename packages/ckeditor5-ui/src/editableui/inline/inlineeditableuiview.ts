@@ -17,10 +17,9 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  */
 export default class InlineEditableUIView extends EditableUIView {
 	/**
-	 * A function that gets called with the instance of this view as an argument and should return a string that
-	 * represents the label of the editable for assistive technologies.
+	 * The callback that is used during rendering for setting the `aria-label` attribute value.
 	 */
-	private readonly _generateLabel: ( view: InlineEditableUIView ) => string;
+	private readonly _getAriaLabelValue: InlineEditableAriaLabelCallback;
 
 	/**
 	 * Creates an instance of the InlineEditableUIView class.
@@ -31,19 +30,20 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
 	 * @param options Additional configuration of the view.
-	 * @param options.label A function that gets called with the instance of this view as an argument
-	 * and should return a string that represents the label of the editable for assistive technologies. If not provided,
-	 * a default label generator is used.
+	 * @param options.label The label of the editable for assistive technologies. If not provided, a default label is used or,
+	 * the existing `aria-label` attribute value from the specified `editableElement` is preserved.
 	 */
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
 		editableElement?: HTMLElement,
-		options: { label?: ( view: InlineEditableUIView ) => string } = {}
+		options: {
+			label?: InlineEditableAriaLabelCallback | string;
+		} = {}
 	) {
 		super( locale, editingView, editableElement );
 
-		const t = locale.t;
+		const t = this.locale!.t;
 
 		this.extendTemplate( {
 			attributes: {
@@ -52,7 +52,24 @@ export default class InlineEditableUIView extends EditableUIView {
 			}
 		} );
 
-		this._generateLabel = options.label || ( () => t( 'Editor editing area: %0', this.name! ) );
+		this._getAriaLabelValue = () => t( 'Rich Text Editor. Editing area: %0', this.name! );
+
+		// String format.
+		if ( typeof options.label === 'string' ) {
+			this._getAriaLabelValue = () => options.label as string;
+		}
+		// Object format.
+		else if ( options.label ) {
+			this._getAriaLabelValue = options.label;
+		}
+		// No configuration. Attempting to preserve an existing DOM element value.
+		else if ( editableElement ) {
+			const preExistingLabelValue = editableElement.getAttribute( 'aria-label' );
+
+			if ( preExistingLabelValue ) {
+				this._getAriaLabelValue = () => preExistingLabelValue;
+			}
+		}
 	}
 
 	/**
@@ -66,7 +83,9 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name! );
 
-			writer.setAttribute( 'aria-label', this._generateLabel( this ), viewRoot! );
+			writer.setAttribute( 'aria-label', this._getAriaLabelValue( this ), viewRoot! );
 		} );
 	}
 }
+
+type InlineEditableAriaLabelCallback = ( view: InlineEditableUIView ) => string;

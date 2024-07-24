@@ -821,6 +821,11 @@ export interface EditorConfig {
 	 * Translations to be used in the editor.
 	 */
 	translations?: ArrayOrItem<Translations>;
+
+	/**
+	 * TODO
+	 */
+	title?: string | Record<string, string>;
 }
 
 /**
