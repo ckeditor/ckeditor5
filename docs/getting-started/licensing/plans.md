@@ -79,7 +79,7 @@ Add-ons available in this plan: AI Assistant, CKBox
 
 ## Custom plan
 
-If you nee more flexibility to suit your specific needs, let us tailor a solution for you.
+If you need more flexibility to suit your specific needs, let us tailor a solution for you.
 
 * Alternative licensing metrics
 * Commercial license
