@@ -400,7 +400,7 @@ describe( 'ShiftEnter integration', () => {
 			editor.setData( '<p>foo<br>&nbsp;</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph>foo<softBreak></softBreak> </paragraph>'
+				'<paragraph>foo<softBreak></softBreak></paragraph>'
 			);
 			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
 				'<p>foo<br>&nbsp;</p>'
