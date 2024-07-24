@@ -35,7 +35,7 @@ You get ready-to-use code tailored to your needs!
 
 ### Setting up the project
 
-This guide assumes that you already have a Vue project. If you do not have any, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create one.
+This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
 ### Installation
 

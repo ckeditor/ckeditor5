@@ -1,5 +1,5 @@
 ---
-menu-title: Vue.js 3+
+menu-title: (Legacy) Vue.js 3+
 meta-title: Vue.js 3+ rich text editor component | Legacy CKEditor 5 documentation
 category: legacy-integrations
 order: 50
