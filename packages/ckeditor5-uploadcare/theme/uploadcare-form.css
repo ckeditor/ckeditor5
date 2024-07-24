@@ -15,6 +15,10 @@
 	}
 
 	/* stylelint-disable selector-type-no-unknown */
+	lr-activity-header > button {
+		display: none;
+	}
+
 	lr-source-list {
 		display: none;
 	}

@@ -71,7 +71,7 @@ export default class UploadcareUI extends Plugin {
 					observable: () => uploadcareCommand,
 					buttonViewCreator: () => this._createToolbarButton( sources ),
 					formViewCreator: () => this._createDropdownButtons( sources ),
-					menuBarButtonViewCreator: isOnly => this._createMenuBarButtons( sources ),
+					menuBarButtonViewCreator: () => this._createMenuBarButtons( sources ),
 					override: type !== 'assetManager'
 				} );
 			} );

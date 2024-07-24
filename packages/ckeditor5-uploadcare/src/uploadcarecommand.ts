@@ -49,7 +49,7 @@ export default class UploadcareCommand extends Command {
 
 	/**
 	 * Represents the DOM element associated with the Uploadcare context web components.
-	 * It delivers the Uploadcare API.
+	 * It delivers the Uploadcare API and emits the file events.
 	 */
 	private _ctxElement: LR.UploaderBlock | null = null;
 
@@ -177,8 +177,6 @@ export default class UploadcareCommand extends Command {
 	 * Clears the current state and removes the created elements.
 	 */
 	private _close() {
-		this._dialog.hide();
-
 		this._type = null;
 		this._chosenAssets.clear();
 
@@ -213,15 +211,7 @@ export default class UploadcareCommand extends Command {
 				}
 			} );
 
-			this._close();
-		} );
-
-		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
-			// Whenever the `clear` button is triggered we need to re-init the flow.
-			if ( evt.detail.status === 'success' && !evt.detail.allEntries.length ) {
-				this._chosenAssets.clear();
-				this._ctxElement!.initFlow();
-			}
+			this._dialog.hide();
 		} );
 
 		// Handle choosing the assets.
@@ -236,7 +226,7 @@ export default class UploadcareCommand extends Command {
 				id: fileInfo.uuid,
 				type: 'image',
 				attributes: {
-					imageFallbackUrl: fileInfo.cdnUrl,
+					imageFallbackUrl: fileInfo.cdnUrl!,
 					imageWidth: fileInfo.imageInfo!.width,
 					imageHeight: fileInfo.imageInfo!.height
 				}
@@ -245,6 +235,24 @@ export default class UploadcareCommand extends Command {
 			this._chosenAssets.add( asset );
 
 			editor.editing.view.focus();
+		} );
+
+		// Handle removing the asset from list.
+		this._ctxElement!.addEventListener( 'file-removed', ( evt: CustomEvent<LR.OutputFileEntry> ) => {
+			const { fileInfo } = evt.detail;
+
+			const assetToRemove = Array.from( this._chosenAssets ).find( asset => asset.id === fileInfo!.uuid );
+
+			this._chosenAssets.delete( assetToRemove );
+		} );
+
+		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
+			console.log( evt );
+			// Whenever the `clear` button is triggered we need to re-init the flow.
+			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length ) {
+				this._chosenAssets.clear();
+				this._api!.initFlow();
+			}
 		} );
 
 		// Clean up after the editor is destroyed.

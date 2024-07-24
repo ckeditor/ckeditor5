@@ -14,6 +14,7 @@ import UploadcareEditing from './uploadcareediting.js';
 
 import '@uploadcare/blocks/web/lr-file-uploader-inline.min.css';
 import '../theme/uploadcare-form.css';
+import '../theme/uploadcare-theme.css';
 
 /**
  * Uploadcare plugin that allows you to use the Uploadcare features.
