@@ -7,22 +7,22 @@ We are happy to announce the release of CKEditor 5 v42.0.2.
 
 ### Release highlights
 
-This is a patch release that includes the following bugfixes for new installation methods introduced in v42.0.0:
+This is a patch release that includes the following bug fixes for new installation methods introduced in v42.0.0:
 
-* Fix typings for the imports used in the [optimized build](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/optimizing-build-size.html) (see [#16684](https://github.com/ckeditor/ckeditor5/issues/16684)).
-* Fix minor issues with the `ckeditor5-editor.css`, `ckeditor5-content.css`, and other [optimized stylesheets](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/css.html#optimizing-the-size-of-style-sheets) (see [#16703](https://github.com/ckeditor/ckeditor5/issues/16703)).
-* Fix issues with installing and loading the CKEditor 5 packages using Yarn PnP (see [#16646](https://github.com/ckeditor/ckeditor5/issues/16646)).
-* Fix issues with loading CSS and translation files with older bundlers, such as Vite 2 and Vite 3 (see [#16638](https://github.com/ckeditor/ckeditor5/issues/16638)).
+* Fixed type definitions for the imports used in the [optimized build](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/optimizing-build-size.html) (see [#16684](https://github.com/ckeditor/ckeditor5/issues/16684)).
+* Fixed minor issues with the `ckeditor5-editor.css`, `ckeditor5-content.css`, and other [optimized style sheets](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/css.html#optimizing-the-size-of-style-sheets) (see [#16703](https://github.com/ckeditor/ckeditor5/issues/16703)).
+* Fixed issues with installing and loading the CKEditor 5 packages using Yarn PnP (see [#16646](https://github.com/ckeditor/ckeditor5/issues/16646)).
+* Fixed issues with loading CSS and translation files with older bundlers, such as Vite 2 and Vite 3 (see [#16638](https://github.com/ckeditor/ckeditor5/issues/16638)).
 
-Additionally, we fixed some performance issues in the track changes plugin. The editing experience was heavily affected if there were many (hundreds) suggestions in the document. This was a regression introduced in v41.0.0.
+Additionally, we fixed some performance issues in the track changes plugin. The editing experience was heavily affected if there were many (hundreds or more) suggestions in the document. This was a regression introduced in v41.0.0.
 
 ### Bug fixes
 
-* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Change the path to the types in the `package.json`. See [#16684](https://github.com/ckeditor/ckeditor5/issues/16684). ([commit](https://github.com/ckeditor/ckeditor5/commit/9993a2edb5b614be0471970cf7ba034fc52682a0))
-* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Update the `exports` field in `package.json` to fix issues with loading CSS and translations in older bundlers. See [#16638](https://github.com/ckeditor/ckeditor5/issues/16638). ([commit](https://github.com/ckeditor/ckeditor5/commit/84660803ae3273d75afea09ffe57237d2612c3f9))
-* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Change the path to the types in the `package.json`.
-* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Update the `exports` field in `package.json` to fix issues with loading CSS and translations in older bundlers.
-* Add dependencies used in the new `dist` folder as production `dependencies` instead of `devDependencies`. Related to [#16646](https://github.com/ckeditor/ckeditor5/issues/16646). ([commit](https://github.com/ckeditor/ckeditor5/commit/9993a2edb5b614be0471970cf7ba034fc52682a0))
+* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Changed the path to the types in the `package.json`. See [#16684](https://github.com/ckeditor/ckeditor5/issues/16684). ([commit](https://github.com/ckeditor/ckeditor5/commit/9993a2edb5b614be0471970cf7ba034fc52682a0))
+* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Updated the `exports` field in `package.json` to fix issues with loading CSS and translations in older bundlers. See [#16638](https://github.com/ckeditor/ckeditor5/issues/16638). ([commit](https://github.com/ckeditor/ckeditor5/commit/84660803ae3273d75afea09ffe57237d2612c3f9))
+* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Changed the path to the types in the `package.json`.
+* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Updated the `exports` field in `package.json` to fix issues with loading CSS and translations in older bundlers.
+* Added dependencies used in the new `dist` folder as production `dependencies` instead of `devDependencies`. Related to [#16646](https://github.com/ckeditor/ckeditor5/issues/16646). ([commit](https://github.com/ckeditor/ckeditor5/commit/9993a2edb5b614be0471970cf7ba034fc52682a0))
 
 ### Other changes
 
