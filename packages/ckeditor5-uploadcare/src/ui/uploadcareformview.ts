@@ -33,6 +33,7 @@ export default class UploadcareFormView extends View {
 				{
 					tag: 'lr-file-uploader-inline',
 					attributes: {
+						class: 'uc-light',
 						'ctx-name': 'uploader'
 					}
 				}

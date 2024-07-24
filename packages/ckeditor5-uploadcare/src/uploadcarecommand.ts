@@ -49,9 +49,14 @@ export default class UploadcareCommand extends Command {
 
 	/**
 	 * Represents the DOM element associated with the Uploadcare context web components.
-	 * It is utilized to process operations through the Uploadcare API.
+	 * It delivers the Uploadcare API.
 	 */
 	private _ctxElement: LR.UploaderBlock | null = null;
+
+	/**
+	 * Represents the Uploadcare API object.
+	 */
+	private _api: LR.UploaderPublicApi | null = null;
 
 	/**
 	 * @internal
@@ -97,8 +102,9 @@ export default class UploadcareCommand extends Command {
 			this._reinitFlow();
 		}
 
+		this._api = this._ctxElement!.getAPI();
 		// It should be called after initializing all elements.
-		this._ctxElement!.initFlow();
+		this._api.initFlow();
 	}
 
 	/**
@@ -128,7 +134,7 @@ export default class UploadcareCommand extends Command {
 	 * It is used when the dialog is already open and the command is executed with another type.
 	 */
 	private _reinitFlow() {
-		this._ctxElement!.doneFlow();
+		this._api!.doneFlow();
 		this._configElement!.setAttribute( 'source-list', this._type );
 	}
 
