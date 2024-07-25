@@ -172,15 +172,17 @@ class Editor extends MultiRootEditorBase {
 		'imageUpload',
 		'insertTable',
 		'|',
-		'comment',
-		'commentsArchive',
-		'trackChanges',
-		'|',
 		'findAndReplace',
 		'removeFormat',
 		'wproofreader',
 		'blockQuote',
-		'horizontalLine'
+		'horizontalLine',
+		'|',
+		'comment',
+		'trackChanges',
+		'|',
+		'commentsArchive'
+
 	];
 
 	public static override defaultConfig: MultirootEditorConfig = {
