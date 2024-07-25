@@ -35,6 +35,7 @@ import {
 	env
 } from '@ckeditor/ckeditor5-utils';
 
+import type ViewItem from './item.js';
 import type ViewNode from './node.js';
 import type Document from './document.js';
 import type DocumentSelection from './documentselection.js';
@@ -754,7 +755,7 @@ export default class DomConverter {
 
 			if ( viewChild !== null ) {
 				// Whitespace cleaning before entering a block element (between block elements).
-				if ( this._isBlockViewElement( viewChild ) ) {
+				if ( this.isBlockViewElement( viewChild ) ) {
 					this._processDomInlineNodes( domElement, inlineNodes, options );
 				}
 
@@ -1282,6 +1283,26 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
+	 */
+	public isBlockViewElement( node: ViewItem | null ): boolean {
+		return !!node && node.is( 'element' ) && this.blockElements.includes( node.name );
+	}
+
+	/**
+	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
+	 */
+	public isInlineObjectElement( node: ViewItem | ViewDocumentFragment | null ): node is ViewElement {
+		if ( !node || !node.is( 'element' ) ) {
+			return false;
+		}
+
+		return node.name == 'br' ||
+			this.inlineObjectElements.includes( node.name ) ||
+			!!this._inlineObjectElementMatcher.match( node );
+	}
+
+	/**
 	 * Clear temporary custom properties.
 	 *
 	 * @internal
@@ -1396,7 +1417,7 @@ export default class DomConverter {
 			let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
 
 			if ( viewElement ) {
-				if ( this._isInlineObjectElement( viewElement ) ) {
+				if ( this.isInlineObjectElement( viewElement ) ) {
 					inlineNodes.push( viewElement );
 				}
 
@@ -1431,7 +1452,7 @@ export default class DomConverter {
 				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
 					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
 
-					if ( !this._isBlockViewElement( viewElement ) ) {
+					if ( !this.isBlockViewElement( viewElement ) ) {
 						inlineNodes.push( viewElement );
 					}
 
@@ -1459,7 +1480,7 @@ export default class DomConverter {
 
 			// Check if this is an inline object after processing child nodes so matcher
 			// for inline objects can verify if the element is empty.
-			if ( this._isInlineObjectElement( viewElement ) ) {
+			if ( this.isInlineObjectElement( viewElement ) ) {
 				inlineNodes.push( viewElement );
 			} else {
 				// It's an inline element that is not an object (like <b>, <i>) or a block element.
@@ -1582,7 +1603,7 @@ export default class DomConverter {
 		if ( inlineNodes.length > 1 ) {
 			const lastNode = inlineNodes[ inlineNodes.length - 1 ];
 
-			if ( lastNode.parent && lastNode.is( 'element', 'br' ) ) {
+			if ( lastNode.parent && lastNode.is( 'element', 'br' ) && !first( lastNode.getAttributeKeys() ) ) {
 				lastNode._remove();
 			}
 		}
@@ -1719,7 +1740,7 @@ export default class DomConverter {
 				return null;
 			}
 			// Found an inline object (for example an image).
-			else if ( this._isInlineObjectElement( item ) ) {
+			else if ( this.isInlineObjectElement( item ) ) {
 				return item;
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
@@ -1737,26 +1758,6 @@ export default class DomConverter {
 	 */
 	private _isBlockDomElement( node: DomNode ): boolean {
 		return isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
-	}
-
-	/**
-	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
-	 */
-	private _isBlockViewElement( node: ViewNode ): boolean {
-		return node.is( 'element' ) && this.blockElements.includes( node.name );
-	}
-
-	/**
-	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
-	 */
-	private _isInlineObjectElement( node: ViewNode | ViewTextProxy | ViewDocumentFragment ): node is ViewElement {
-		if ( !node.is( 'element' ) ) {
-			return false;
-		}
-
-		return node.name == 'br' ||
-			this.inlineObjectElements.includes( node.name ) ||
-			!!this._inlineObjectElementMatcher.match( node );
 	}
 
 	/**
