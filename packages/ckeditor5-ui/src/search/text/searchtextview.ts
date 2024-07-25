@@ -244,6 +244,7 @@ export default class SearchTextView<
 	public reset(): void {
 		this.queryView.reset();
 		this.search( '' );
+		this.filteredView.element!.scrollTo( 0, 0 );
 	}
 
 	/**

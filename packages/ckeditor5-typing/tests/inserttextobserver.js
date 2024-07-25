@@ -186,7 +186,7 @@ describe( 'InsertTextObserver', () => {
 		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
 
 		expect( firstCallArgs.text ).to.equal( 'bar' );
-		expect( firstCallArgs.selection.isEqual( view.document.selection ) ).to.be.true;
+		expect( firstCallArgs.selection ).to.be.undefined;
 	} );
 
 	it( 'should ignore the empty compositionend event (without any data)', () => {

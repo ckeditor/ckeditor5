@@ -12,6 +12,7 @@
 import DomEventObserver from './domeventobserver.js';
 import type DomEventData from './domeventdata.js';
 import type View from '../view.js';
+import type { ViewDocumentInputEvent } from './inputobserver.js';
 
 /**
  * {@link module:engine/view/document~Document#event:focus Focus}
@@ -25,7 +26,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * Identifier of the timeout currently used by focus listener to delay rendering execution.
 	 */
-	private _renderTimeoutId!: ReturnType<typeof setTimeout>;
+	private _renderTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 	/**
 	 * Set to `true` if the document is in the process of setting the focus.
@@ -48,35 +49,18 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		this.useCapture = true;
 		const document = this.document;
 
-		document.on<ViewDocumentFocusEvent>( 'focus', () => {
-			this._isFocusChanging = true;
+		document.on<ViewDocumentFocusEvent>( 'focus', () => this._handleFocus() );
+		document.on<ViewDocumentBlurEvent>( 'blur', ( evt, data ) => this._handleBlur( data ) );
 
-			// Unfortunately native `selectionchange` event is fired asynchronously.
-			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
-			// overwrite new DOM selection with selection from the view.
-			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
-			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
-			//
-			// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
-			// in a situation where `selectionchange` already caused selection change.
-			this._renderTimeoutId = setTimeout( () => {
-				this.flush();
-				view.change( () => {} );
-			}, 50 );
-		} );
-
-		document.on<ViewDocumentBlurEvent>( 'blur', ( evt, data ) => {
-			const selectedEditable = document.selection.editableElement;
-
-			if ( selectedEditable === null || selectedEditable === data.target ) {
-				document.isFocused = false;
-				this._isFocusChanging = false;
-
-				// Re-render the document to update view elements
-				// (changing document.isFocused already marked view as changed since last rendering).
-				view.change( () => {} );
+		// Focus the editor in cases where browser dispatches `beforeinput` event to a not-focused editable element.
+		// This is flushed by the beforeinput listener in the `InsertTextObserver`.
+		// Note that focus is set only if the document is not focused yet.
+		// See https://github.com/ckeditor/ckeditor5/issues/14702.
+		document.on<ViewDocumentInputEvent>( 'beforeinput', () => {
+			if ( !document.isFocused ) {
+				this._handleFocus();
 			}
-		} );
+		}, { priority: 'highest' } );
 	}
 
 	/**
@@ -100,11 +84,56 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
+		this._clearTimeout();
+		super.destroy();
+	}
+
+	/**
+	 * The `focus` event handler.
+	 */
+	private _handleFocus(): void {
+		this._clearTimeout();
+		this._isFocusChanging = true;
+
+		// Unfortunately native `selectionchange` event is fired asynchronously.
+		// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
+		// overwrite new DOM selection with selection from the view.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
+		// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
+		//
+		// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
+		// in a situation where `selectionchange` already caused selection change.
+		this._renderTimeoutId = setTimeout( () => {
+			this._renderTimeoutId = null;
+			this.flush();
+			this.view.change( () => {} );
+		}, 50 );
+	}
+
+	/**
+	 * The `blur` event handler.
+	 */
+	private _handleBlur( data: DomEventData<FocusEvent> ): void {
+		const selectedEditable = this.document.selection.editableElement;
+
+		if ( selectedEditable === null || selectedEditable === data.target ) {
+			this.document.isFocused = false;
+			this._isFocusChanging = false;
+
+			// Re-render the document to update view elements
+			// (changing document.isFocused already marked view as changed since last rendering).
+			this.view.change( () => {} );
+		}
+	}
+
+	/**
+	 * Clears timeout.
+	 */
+	private _clearTimeout(): void {
 		if ( this._renderTimeoutId ) {
 			clearTimeout( this._renderTimeoutId );
+			this._renderTimeoutId = null;
 		}
-
-		super.destroy();
 	}
 }
 

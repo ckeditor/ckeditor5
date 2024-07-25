@@ -150,7 +150,7 @@ Let's see how the build size changes after applying the above optimizations to a
 <summary>Code before optimization</summary>
 
 ```js
-	import {
+import {
 	ClassicEditor,
 	Essentials,
 	CKFinderUploadAdapter,

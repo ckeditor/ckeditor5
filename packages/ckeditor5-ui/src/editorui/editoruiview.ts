@@ -14,6 +14,7 @@ import type EditableUIView from '../editableui/editableuiview.js';
 import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/editorui/editorui.css';
+import type MenuBarView from '../menubar/menubarview.js';
 
 /**
  * The editor UI view class. Base class for the editor main views.
@@ -29,6 +30,11 @@ export default abstract class EditorUIView extends View {
 	declare public t: LocaleTranslate;
 
 	public abstract get editable(): EditableUIView;
+
+	/**
+	 * Menu bar view instance. May not be initialized in some editor types.
+	 */
+	public menuBarView?: MenuBarView;
 
 	/**
 	 * Creates an instance of the editor UI view class.

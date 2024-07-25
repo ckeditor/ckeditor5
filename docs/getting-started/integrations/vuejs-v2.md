@@ -30,6 +30,7 @@ Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor 5 in your Vue application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -91,11 +92,11 @@ export default {
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
 				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				 },
 				plugins: [
-                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-                ],
+					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				mention: { 
 					// Mention configuration
@@ -103,7 +104,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
@@ -141,7 +142,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 
@@ -170,7 +171,7 @@ This directive specifies the editor to be used by the component. It must directl
 				// ...
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -217,7 +218,7 @@ A [standard directive](https://vuejs.org/v2/api/#v-model) for form inputs in Vue
 				this.editorData = '';
 			}
 		}
-	}
+	};
 </script>
 ```
 
@@ -247,7 +248,7 @@ Allows a one–way data binding that sets the content of the editor. Unlike [`v-
 				editorData: '<p>Content of the editor.</p>'
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -277,7 +278,7 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 				}
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -306,7 +307,7 @@ It sets the initial read–only state of the editor and changes it during its li
 				editorDisabled: true
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -371,6 +372,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
+
 	import 'ckeditor5/ckeditor5.css'
 
 	export default {
@@ -390,7 +392,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 				);
 			}
 		}
-	}
+	};
 </script>
 ```
 
@@ -439,7 +441,7 @@ export default {
 			}
 		};
 	}
-}
+};
 </script>
 ```
 

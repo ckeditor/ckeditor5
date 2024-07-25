@@ -31,7 +31,6 @@ export default class ItalicUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( ITALIC )!;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
@@ -43,20 +42,7 @@ export default class ItalicUI extends Plugin {
 		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( ITALIC, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
-
-		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => {
-			return createButton( MenuBarMenuListItemButtonView );
-		} );
+		editor.ui.componentFactory.add( ITALIC, () => createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

@@ -86,6 +86,7 @@ export default class BalloonEditorUI extends EditorUI {
 		editingView.attachDomRoot( editableElement );
 
 		this._initPlaceholder();
+		this._initMenuBar( this.view.menuBarView! );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

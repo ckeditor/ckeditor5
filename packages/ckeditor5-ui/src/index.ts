@@ -25,7 +25,8 @@ export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
 export { default as SwitchButtonView } from './button/switchbuttonview.js';
-export { default as FileDialogButtonView } from './button/filedialogbuttonview.js';
+export { default as ListItemButtonView } from './button/listitembuttonview.js';
+export { default as FileDialogButtonView, FileDialogListItemButtonView } from './button/filedialogbuttonview.js';
 
 export { default as CollapsibleView } from './collapsible/collapsibleview.js';
 
@@ -87,6 +88,7 @@ export { default as ListItemGroupView } from './list/listitemgroupview.js';
 export { default as ListItemView } from './list/listitemview.js';
 export { default as ListSeparatorView } from './list/listseparatorview.js';
 export { default as ListView } from './list/listview.js';
+export { default as filterGroupAndItemNames } from './search/filtergroupanditemnames.js';
 
 export { default as Notification } from './notification/notification.js';
 
@@ -100,6 +102,8 @@ export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchT
 export { default as SearchInfoView } from './search/searchinfoview.js';
 export type { default as FilteredView, FilteredViewExecuteEvent } from './search/filteredview.js';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview.js';
+export { default as ButtonLabelWithHighlightView } from './highlightedtext/buttonlabelwithhighlightview.js';
+export { default as LabelWithHighlightView } from './highlightedtext/labelwithhighlightview.js';
 
 export { default as TooltipManager } from './tooltipmanager.js';
 export { default as Template, type TemplateDefinition } from './template.js';
@@ -121,6 +125,6 @@ export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembuttonview.js';
 export { default as MenuBarMenuListItemFileDialogButtonView } from './menubar/menubarmenulistitemfiledialogbuttonview.js';
-export { normalizeMenuBarConfig, DefaultMenuBarItems, _initMenuBar } from './menubar/utils.js';
+export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js';
 
 import './augmentation.js';

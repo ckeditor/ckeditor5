@@ -132,6 +132,143 @@ describe( 'OutdentCodeBlockCommand', () => {
 			expect( outdentCommand.isEnabled ).to.be.false;
 		} );
 
+		describe( 'if an element is allowed and present in the code block', () => {
+			beforeEach( () => {
+				model.schema.register( 'inlineElement', {
+					allowWhere: '$text'
+				} );
+			} );
+
+			it( 'should be true when any line in the selection contains the indent sequence and an inline element ' +
+				'(caret before element)', () => {
+				setModelData( model, '<codeBlock language="foo">f[]oo<inlineElement></inlineElement></codeBlock>' );
+
+				// <codeBlock language="foo">	f[]oo<inlineElement></inlineElement></codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when any line in the selection contains the indent sequence and an inline element ' +
+				'(caret after element)', () => {
+				setModelData( model, '<codeBlock language="foo">foo<inlineElement></inlineElement>b[]ar</codeBlock>' );
+
+				// <codeBlock language="foo">	foo<inlineElement></inlineElement>b[]ar</codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when the selection is in a line containing only the indent sequence and an inline element ' +
+				'(caret before element)', () => {
+				setModelData( model, '<codeBlock language="foo">[]<inlineElement></inlineElement></codeBlock>' );
+
+				// <codeBlock language="foo">	[]<inlineElement></inlineElement></codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when the selection is in a line containing only the indent sequence and an inline element ' +
+				'(caret after element)', () => {
+				setModelData( model, '<codeBlock language="foo"><inlineElement></inlineElement>[]</codeBlock>' );
+
+				// <codeBlock language="foo">	<inlineElement></inlineElement>[]</codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when the selection is in a line containing the indent sequence, an inline element ' +
+				'and text after it (caret before element)', () => {
+				setModelData( model, '<codeBlock language="foo">[]<inlineElement></inlineElement>foo</codeBlock>' );
+
+				// <codeBlock language="foo">	[]<inlineElement></inlineElement>foo</codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when the selection is in a line containing the indent sequence, an inline element ' +
+				'and text after it (caret after element)', () => {
+				setModelData( model, '<codeBlock language="foo"><inlineElement></inlineElement>foo[]</codeBlock>' );
+
+				// <codeBlock language="foo">	<inlineElement></inlineElement>foo[]</codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false when the sequence is not in leading characters of the line (before the inline element)', () => {
+				setModelData( model, '<codeBlock language="foo">barfoo[]<inlineElement></inlineElement></codeBlock>' );
+
+				// <codeBlock language="foo">bar	foo[]<inlineElement></inlineElement></codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 3 );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when the sequence is not in leading characters of the line (after the inline element)', () => {
+				setModelData( model, '<codeBlock language="foo">barfoo<inlineElement></inlineElement>f[]oo</codeBlock>' );
+
+				// <codeBlock language="foo">barfoo<inlineElement></inlineElement>f	[]oo</codeBlock>
+				model.change( writer => {
+					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 8 );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when there is no corrent sequence in the line with the inline element', () => {
+				setModelData( model, '<codeBlock language="foo">foo[]<inlineElement></inlineElement></codeBlock>' );
+
+				// <codeBlock language="foo">    foo[]<inlineElement></inlineElement></codeBlock>
+				model.change( writer => {
+					writer.insertText( '    ', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when there is no indent sequence in the line (caret before inline element)', () => {
+				setModelData( model, '<codeBlock language="foo">foo[]<inlineElement></inlineElement></codeBlock>' );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when there is no indent sequence in the line (caret after inline element)', () => {
+				setModelData( model, '<codeBlock language="foo">foo<inlineElement></inlineElement>[]</codeBlock>' );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when the line contains only inline element (caret before inline element)', () => {
+				setModelData( model, '<codeBlock language="foo">[]<inlineElement></inlineElement></codeBlock>' );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when the line contains only inline element (caret after inline element)', () => {
+				setModelData( model, '<codeBlock language="foo"><inlineElement></inlineElement>[]</codeBlock>' );
+
+				expect( outdentCommand.isEnabled ).to.be.false;
+			} );
+		} );
+
 		describe( 'config.codeBlock.indentSequence', () => {
 			it( 'should be respected (#1)', () => {
 				return ModelTestEditor

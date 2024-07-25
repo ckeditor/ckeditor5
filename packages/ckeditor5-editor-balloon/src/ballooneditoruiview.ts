@@ -7,7 +7,7 @@
  * @module editor-balloon/ballooneditoruiview
  */
 
-import { EditorUIView, InlineEditableUIView } from 'ckeditor5/src/ui.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type { EditingView } from 'ckeditor5/src/engine.js';
 
@@ -19,6 +19,11 @@ export default class BalloonEditorUIView extends EditorUIView {
 	 * Editable UI view.
 	 */
 	public readonly editable: InlineEditableUIView;
+
+	/**
+	 * Menu bar view instance.
+	 */
+	public override menuBarView: MenuBarView;
 
 	/**
 	 * Creates an instance of the balloon editor UI view.
@@ -42,6 +47,18 @@ export default class BalloonEditorUIView extends EditorUIView {
 				return t( 'Rich Text Editor. Editing area: %0', editableView.name! );
 			}
 		} );
+
+		this.menuBarView = new MenuBarView( locale );
+
+		this.menuBarView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-reset_all',
+					'ck-rounded-corners'
+				],
+				dir: locale.uiLanguageDirection
+			}
+		} );
 	}
 
 	/**
@@ -51,5 +68,6 @@ export default class BalloonEditorUIView extends EditorUIView {
 		super.render();
 
 		this.registerChild( this.editable );
+		this.registerChild( this.menuBarView );
 	}
 }
