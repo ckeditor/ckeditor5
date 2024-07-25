@@ -698,6 +698,7 @@ export default class DomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
+			trimEndBrs?: boolean;
 		} = {}
 	): ViewNode | ViewDocumentFragment | null {
 		const inlineNodes: Array<ViewNode> = [];
@@ -1375,6 +1376,7 @@ export default class DomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
+			trimEndBrs?: boolean;
 		},
 		inlineNodes: Array<ViewNode>
 	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
@@ -1502,7 +1504,10 @@ export default class DomConverter {
 	private _processDomInlineNodes(
 		domParent: DomElement | null,
 		inlineNodes: Array<ViewNode>,
-		options: { withChildren?: boolean }
+		options: {
+			withChildren?: boolean;
+			trimEndBrs?: boolean;
+		}
 	): void {
 		if ( !inlineNodes.length ) {
 			return;
@@ -1600,7 +1605,7 @@ export default class DomConverter {
 			}
 		}
 
-		if ( inlineNodes.length > 1 ) {
+		if ( inlineNodes.length > 1 && options.trimEndBrs !== false ) {
 			const lastNode = inlineNodes[ inlineNodes.length - 1 ];
 
 			if ( lastNode.parent && lastNode.is( 'element', 'br' ) && !first( lastNode.getAttributeKeys() ) ) {
