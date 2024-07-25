@@ -1291,7 +1291,7 @@ describe( 'ListElementSupport', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
-					'<htmlCustomElement htmlContent="" htmlElementName="br"></htmlCustomElement> ' +
+					'<htmlCustomElement htmlContent="" htmlElementName="br"></htmlCustomElement>' +
 				'</paragraph>' +
 				'<table htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
 					'<tableRow>' +
@@ -1308,7 +1308,7 @@ describe( 'ListElementSupport', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
-					'<htmlCustomElement htmlContent="" htmlElementName="br"></htmlCustomElement> ' +
+					'<htmlCustomElement htmlContent="" htmlElementName="br"></htmlCustomElement>' +
 				'</paragraph>' +
 				'<table htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
 					'<tableRow>' +
