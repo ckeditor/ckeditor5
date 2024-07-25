@@ -102,6 +102,8 @@ export default class UploadcareCommand extends Command {
 			this._reinitFlow();
 		}
 
+		console.log( this._ctxElement );
+
 		this._api = this._ctxElement!.getAPI();
 		// It should be called after initializing all elements.
 		this._api.initFlow();
@@ -179,6 +181,7 @@ export default class UploadcareCommand extends Command {
 	private _close() {
 		this._type = null;
 		this._chosenAssets.clear();
+		this._api!.removeAllFiles();
 
 		this._configElement!.remove();
 		this._configElement = null;
@@ -247,11 +250,10 @@ export default class UploadcareCommand extends Command {
 		} );
 
 		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
-			console.log( evt );
 			// Whenever the `clear` button is triggered we need to re-init the flow.
 			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length ) {
 				this._chosenAssets.clear();
-				this._api!.initFlow();
+				this._api!.setCurrentActivity( 'start-from' );
 			}
 		} );
 
