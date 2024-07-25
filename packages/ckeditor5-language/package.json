@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-language",
-  "version": "42.0.1",
+  "version": "42.0.2",
   "description": "Text part language feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,16 +13,17 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "42.0.1"
+    "@ckeditor/ckeditor5-core": "42.0.2",
+    "@ckeditor/ckeditor5-ui": "42.0.2",
+    "@ckeditor/ckeditor5-utils": "42.0.2",
+    "ckeditor5": "42.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "42.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "42.0.1",
-    "@ckeditor/ckeditor5-engine": "42.0.1",
-    "@ckeditor/ckeditor5-paragraph": "42.0.1",
-    "@ckeditor/ckeditor5-theme-lark": "42.0.1",
-    "@ckeditor/ckeditor5-ui": "42.0.1",
+    "@ckeditor/ckeditor5-dev-utils": "^41.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "42.0.2",
+    "@ckeditor/ckeditor5-engine": "42.0.2",
+    "@ckeditor/ckeditor5-paragraph": "42.0.2",
+    "@ckeditor/ckeditor5-theme-lark": "42.0.2",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
