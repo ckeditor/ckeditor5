@@ -442,6 +442,7 @@
 									"name": "React",
 									"id": "react-cdn",
 									"slug": "react",
+									"folded": true,
 									"order": 30
 								}
 							]
@@ -456,6 +457,7 @@
 									"name": "React",
 									"id": "react-npm",
 									"slug": "react",
+									"folded": true,
 									"order": 30
 								}
 							]
@@ -472,6 +474,7 @@
 							"name": "Integrations",
 							"id": "integrations",
 							"slug": "integrations",
+							"folded": true,
 							"order": 130
 						}
 					]
