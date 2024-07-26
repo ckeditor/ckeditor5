@@ -1,7 +1,7 @@
 ---
 menu-title: Multi-root integration
 meta-title: React rich text editor component | CKEditor 5 documentation
-category: react-npm
+category: react-cdn
 order: 20
 modified_at: 2024-04-25
 ---

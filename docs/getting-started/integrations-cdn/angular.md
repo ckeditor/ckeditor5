@@ -1,7 +1,7 @@
 ---
 menu-title: Angular
 meta-title: Angular rich text editor component | CKEditor 5 documentation
-category: self-hosted
+category: cloud
 order: 30
 ---
 

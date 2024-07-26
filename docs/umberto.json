@@ -433,10 +433,32 @@
 					"order": 30,
 					"categories": [
 						{
-							"name": "React",
-							"id": "react",
-							"slug": "react",
-							"order": 30
+							"name": "Cloud (CDN)",
+							"id": "cloud",
+							"slug": "cloud",
+							"order": 30,
+							"categories": [
+								{
+									"name": "React",
+									"id": "react-cdn",
+									"slug": "react",
+									"order": 30
+								}
+							]
+						},
+						{
+							"name": "Self-hosted (npm/ZIP)",
+							"id": "self-hosted",
+							"slug": "self-hosted",
+							"order": 40,
+							"categories": [
+								{
+									"name": "React",
+									"id": "react-npm",
+									"slug": "react",
+									"order": 30
+								}
+							]
 						}
 					]
 				},
@@ -444,7 +466,15 @@
 					"name": "Setup",
 					"id": "setup",
 					"slug": "setup",
-					"order": 40
+					"order": 40,
+					"categories": [
+						{
+							"name": "Integrations",
+							"id": "integrations",
+							"slug": "integrations",
+							"order": 130
+						}
+					]
 				},
 				{
 					"name": "Licensing",

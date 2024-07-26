@@ -1,5 +1,5 @@
 ---
-category: self-hosted
+category: cloud
 meta-title: Compatibility with .NET | CKEditor 5 documentation
 order: 80
 menu-title: .NET

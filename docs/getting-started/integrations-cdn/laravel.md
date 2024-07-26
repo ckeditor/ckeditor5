@@ -1,5 +1,5 @@
 ---
-category: self-hosted
+category: cloud
 meta-title: Compatibility with Laravel | CKEditor 5 documentation
 order: 70
 menu-title: Laravel
