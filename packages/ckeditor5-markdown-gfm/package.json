@@ -26,7 +26,7 @@
     "@ckeditor/ckeditor5-basic-styles": "42.0.2",
     "@ckeditor/ckeditor5-block-quote": "42.0.2",
     "@ckeditor/ckeditor5-code-block": "42.0.2",
-    "@ckeditor/ckeditor5-dev-utils": "^41.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
     "@ckeditor/ckeditor5-editor-classic": "42.0.2",
     "@ckeditor/ckeditor5-essentials": "42.0.2",
     "@ckeditor/ckeditor5-font": "42.0.2",
