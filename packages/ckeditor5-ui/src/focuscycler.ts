@@ -293,12 +293,11 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 	 *	   │            │   │    ┌─────┐  ┌─────┐  ┌─────┐     │   │            │
 	 *	   │            │   │ ┌──► ABA ├──► ABB ├──► ABC ├───┐ │   │            │
 	 *	   │            ├───► │  └─────┘  └─────┘  └─────┘   │ │   │            │
-	 *	   │            │   │ │                              │ │   │            │  
-	 *	   │            │   │ │                              │ │   │            │  
-	 *	   │            │   │ └──────────────────────────────┘ │   │            │  
-	 *	   │            │   │                                  │   │            │  
-	 *	   └────────────┘   └──────────────────────────────────┘   └────────────┘  
-	 *	                                                                           
+	 *	   │            │   │ │                              │ │   │            │
+	 *	   │            │   │ │                              │ │   │            │
+	 *	   │            │   │ └──────────────────────────────┘ │   │            │
+	 *	   │            │   │                                  │   │            │
+	 *	   └────────────┘   └──────────────────────────────────┘   └────────────┘
 	 *
 	 * Chaining a focus tracker that manages AA, AB, and AC with the focus tracker that manages ABA, ABB, and ABC
 	 * creates a seamless navigation experience instead:
