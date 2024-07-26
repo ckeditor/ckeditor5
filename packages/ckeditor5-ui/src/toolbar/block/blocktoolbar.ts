@@ -15,6 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import {
+	global,
 	Rect,
 	ResizeObserver,
 	toUnit,
@@ -29,6 +30,7 @@ import ToolbarView, { NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
 import clickOutsideHandler from '../../bindings/clickoutsidehandler.js';
 import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
+import type ButtonView from '../../button/buttonview.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
 import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
@@ -183,6 +185,9 @@ export default class BlockToolbar extends Plugin {
 				this._hidePanel();
 			}
 		} );
+
+		// Reposition button on scroll.
+		this._repositionButtonOnScroll();
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		editor.ui.addToolbar( this.toolbarView, {
@@ -426,20 +431,58 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
+	 * Repositions the button on scroll.
+	 */
+	private _repositionButtonOnScroll() {
+		const { buttonView } = this;
+
+		let pendingAnimationFrame = false;
+
+		// Reposition the button on scroll, but do it only once per animation frame to avoid performance issues.
+		const repositionOnScroll = () => {
+			if ( pendingAnimationFrame ) {
+				return;
+			}
+
+			pendingAnimationFrame = true;
+			global.window.requestAnimationFrame( () => {
+				this._updateButton();
+				pendingAnimationFrame = false;
+			} );
+		};
+
+		// Watch scroll event only when the button is visible, it prevents attaching the scroll event listener
+		// to the document when the button is not visible.
+		buttonView.on<ObservableChangeEvent<boolean>>( 'change:isVisible', ( evt, name, isVisible ) => {
+			if ( isVisible ) {
+				buttonView.listenTo( global.document, 'scroll', repositionOnScroll, {
+					useCapture: true,
+					usePassive: true
+				} );
+			} else {
+				buttonView.stopListening( global.document, 'scroll', repositionOnScroll );
+			}
+		} );
+	}
+
+	/**
 	 * Attaches the {@link #buttonView} to the target block of content.
 	 *
 	 * @param targetElement Target element.
 	 */
 	private _attachButtonToElement( targetElement: HTMLElement ) {
+		const buttonElement = this.buttonView.element!;
+		const editableElement = this._getSelectedEditableElement();
+
 		const contentStyles = window.getComputedStyle( targetElement );
 
-		const editableRect = new Rect( this._getSelectedEditableElement() );
+		const editableRect = new Rect( editableElement );
 		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
 		// When line height is not an integer then treat it as "normal".
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
-		const buttonRect = new Rect( this.buttonView.element! );
+		const buttonRect = new Rect( buttonElement );
 		const contentRect = new Rect( targetElement );
 
 		let positionLeft;
@@ -458,6 +501,75 @@ export default class BlockToolbar extends Plugin {
 
 		this.buttonView.top = absoluteButtonRect.top;
 		this.buttonView.left = absoluteButtonRect.left;
+
+		this._clipButtonToViewport( this.buttonView, editableElement );
+	}
+
+	/**
+	 * Clips the button element to the viewport of the editable element.
+	 *
+	 * 	* If the button overflows the editable viewport, it is clipped to make it look like it's cut off by the editable scrollable region.
+	 * 	* If the button is fully hidden by the top of the editable, it is not clickable but still visible in the DOM.
+	 *
+	 * @param buttonView The button view to clip.
+	 * @param editableElement The editable element whose viewport is used for clipping.
+	 */
+	private _clipButtonToViewport(
+		buttonView: ButtonView,
+		editableElement: HTMLElement
+	) {
+		const absoluteButtonRect = new Rect( buttonView.element! );
+		const scrollViewportRect = new Rect( editableElement ).getVisible();
+
+		// Sets polygon clip path for the button element, if there is no argument provided, the clip path is removed.
+		const setButtonClipping = ( ...paths: Array<string> ) => {
+			buttonView.element!.style.clipPath = paths.length ? `polygon(${ paths.join( ',' ) })` : '';
+		};
+
+		// Hide the button if it's fully hidden by the top of the editable.
+		// Note that the button is still visible in the DOM, but it's not clickable. It's because we don't
+		// want to hide the button completely, as there are plenty of `isVisible` watchers which toggles
+		// the button scroll listeners.
+		const markAsHidden = ( isHidden: boolean ) => {
+			buttonView.isEnabled = !isHidden;
+			buttonView.element!.style.pointerEvents = isHidden ? 'none' : '';
+		};
+
+		if ( scrollViewportRect && scrollViewportRect.bottom < absoluteButtonRect.bottom ) {
+			// Calculate the delta between the button bottom and the editable bottom, and clip the button
+			// to make it look like it's cut off by the editable scrollable region.
+			const delta = Math.min(
+				absoluteButtonRect.height,
+				absoluteButtonRect.bottom - scrollViewportRect.bottom
+			);
+
+			markAsHidden( delta >= absoluteButtonRect.height );
+			setButtonClipping(
+				'0 0',
+				'100% 0',
+				`100% calc(100% - ${ toPx( delta ) })`,
+				`0 calc(100% - ${ toPx( delta ) }`
+			);
+		} else if ( scrollViewportRect && scrollViewportRect.top > absoluteButtonRect.top ) {
+			// Calculate the delta between the button top and the editable top, and clip the button
+			// to make it look like it's cut off by the editable scrollable region.
+			const delta = Math.min(
+				absoluteButtonRect.height,
+				scrollViewportRect.top - absoluteButtonRect.top
+			);
+
+			markAsHidden( delta >= absoluteButtonRect.height );
+			setButtonClipping(
+				`0 ${ toPx( delta ) }`,
+				`100% ${ toPx( delta ) }`,
+				'100% 100%',
+				'0 100%'
+			);
+		} else {
+			// Reset the clip path if button is fully visible.
+			markAsHidden( false );
+			setButtonClipping();
+		}
 	}
 
 	/**

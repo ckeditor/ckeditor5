@@ -15,12 +15,14 @@ import {
 	global,
 	isRange,
 	toUnit,
+	isVisible,
+	ResizeObserver,
 	type Locale,
 	type ObservableChangeEvent,
 	type DomPoint,
 	type PositionOptions,
-	type PositioningFunction,
-	type Rect
+	type Rect,
+	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
@@ -155,6 +157,11 @@ export default class BalloonPanelView extends View {
 	private _pinWhenIsVisibleCallback: ( () => void ) | null;
 
 	/**
+	 * An instance of resize observer used to detect if target element is still visible.
+	 */
+	private _resizeObserver: ResizeObserver | null;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -170,6 +177,8 @@ export default class BalloonPanelView extends View {
 		this.set( 'class', undefined );
 
 		this._pinWhenIsVisibleCallback = null;
+		this._resizeObserver = null;
+
 		this.content = this.createCollection();
 
 		this.setTemplate( {
@@ -192,6 +201,14 @@ export default class BalloonPanelView extends View {
 
 			children: this.content
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this.hide();
+		super.destroy();
 	}
 
 	/**
@@ -243,8 +260,16 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
 	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 * @returns Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	public attachTo( options: Partial<PositionOptions> ): void {
+	public attachTo( options: Partial<PositionOptions> ): boolean {
+		const target = getDomElement( options.target );
+
+		if ( target && !isVisible( target ) ) {
+			return false;
+		}
+
 		this.show();
 
 		const defaultPositions = BalloonPanelView.defaultPositions;
@@ -282,6 +307,8 @@ export default class BalloonPanelView extends View {
 		this.left = left;
 		this.position = position;
 		this.withArrow = withArrow;
+
+		return true;
 	}
 
 	/**
@@ -321,6 +348,10 @@ export default class BalloonPanelView extends View {
 	public pin( options: Partial<PositionOptions> ): void {
 		this.unpin();
 
+		if ( !this._startPinning( options ) ) {
+			return;
+		}
+
 		this._pinWhenIsVisibleCallback = () => {
 			if ( this.isVisible ) {
 				this._startPinning( options );
@@ -328,8 +359,6 @@ export default class BalloonPanelView extends View {
 				this._stopPinning();
 			}
 		};
-
-		this._startPinning( options );
 
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
@@ -359,9 +388,13 @@ export default class BalloonPanelView extends View {
 	 * Starts managing the pinned state of the panel. See {@link #pin}.
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
+	 * @returns Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	private _startPinning( options: Partial<PositionOptions> ) {
-		this.attachTo( options );
+	private _startPinning( options: Partial<PositionOptions> ): boolean {
+		if ( !this.attachTo( options ) ) {
+			return false;
+		}
 
 		const targetElement = getDomElement( options.target );
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
@@ -387,6 +420,22 @@ export default class BalloonPanelView extends View {
 		this.listenTo( global.window, 'resize', () => {
 			this.attachTo( options );
 		} );
+
+		// Hide the panel if the target element is no longer visible.
+		if ( targetElement && !this._resizeObserver ) {
+			const checkVisibility = () => {
+				// If the target element is no longer visible, hide the panel.
+				if ( !isVisible( targetElement ) ) {
+					this.unpin();
+				}
+			};
+
+			// Element is being resized to 0x0 after it's parent became hidden,
+			// so we need to check size in order to determine if it's visible or not.
+			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
+		}
+
+		return true;
 	}
 
 	/**
@@ -395,6 +444,11 @@ export default class BalloonPanelView extends View {
 	private _stopPinning(): void {
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+			this._resizeObserver = null;
+		}
 	}
 
 	/**
