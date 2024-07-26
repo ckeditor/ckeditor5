@@ -13,7 +13,9 @@ import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginIn
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  */
-export default class PluginCollection<TContext extends object> extends EmitterMixin() implements Iterable<PluginEntry<TContext>> {
+export default class PluginCollection<TContext extends object>
+	extends /* #__PURE__ */ EmitterMixin()
+	implements Iterable<PluginEntry<TContext>> {
 	private _context: TContext;
 
 	private _plugins = new Map<PluginConstructor<TContext> | string, PluginInterface>();
@@ -119,8 +121,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 *
 			 * Plugin classes (constructors) need to be provided to the editor and must be loaded before they can be obtained from
 			 * the plugin collection.
-			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
-			 * property.
 			 *
 			 * **Note**: You can use `{@link module:core/plugincollection~PluginCollection#has editor.plugins.has()}`
 			 * to check if a plugin was loaded.
@@ -360,17 +360,18 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
 			 *
-			 * **If you see this warning when using one of the {@glink installation/getting-started/predefined-builds
-			 * CKEditor 5 Builds}**,
+			 * **If you see this warning when using one of the CKEditor 5 Builds},
 			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
-			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
-			 * read more about {@glink installation/getting-started/quick-start custom builds}.
+			 * in the plugin name or simply because that plugin is not a part of this build.
+			 *
+			 * Predefined builds are a deprecated solution and we strongly advise
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
-			 * provide each plugin through a reference (as a constructor function). Check out the examples in
-			 * {@glink installation/advanced/alternative-setups/integrating-from-source-webpack "Building from source"}.
+			 * provide each plugin through a reference (as a constructor function). Check out the examples in the
+			 * {@glink getting-started/installation/quick-start Quick start} guide.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param plugin The name of the plugin which could not be loaded.
@@ -590,6 +591,9 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * {@link module:core/editor/editor~Editor.create `Editor.create()`}
 			 * or specified in {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
 			 *
+			 * Predefined builds are a deprecated solution and we strongly advise
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
+			 *
 			 * The second option is that your `node_modules/` directory contains duplicated versions of the same
 			 * CKEditor 5 packages. Normally, on clean installations, npm deduplicates packages in `node_modules/`, so
 			 * it may be enough to call `rm -rf node_modules && npm i`. However, if you installed conflicting versions
@@ -600,8 +604,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * the dependencies of this plugin are being duplicated.
 			 * They are already built into that editor build and now get added for the second time as dependencies
 			 * of the plugin you are installing.
-			 *
-			 * Read more about {@glink installation/plugins/installing-plugins Installing plugins}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
 			 * @param pluginName The duplicated plugin name.

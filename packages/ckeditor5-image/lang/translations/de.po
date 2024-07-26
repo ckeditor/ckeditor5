@@ -85,6 +85,14 @@ msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
 msgstr "Bild vom Computer hochladen"
 
+msgctxt "The label for the upload image from computer menu bar button (standalone button)."
+msgid "Image from computer"
+msgstr "Bild vom Computer"
+
+msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
+msgid "From computer"
+msgstr "Vom Computer"
+
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
 msgstr "Bild vom Computer ersetzen"
@@ -109,25 +117,41 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "Bild in Originalgröße ändern"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr "Bildgröße ändern (in %0)"
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "Original"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr "Benutzerdefinierte Bildgröße"
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr "Benutzerdefiniert"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
 msgstr "Bildgrößen-Liste"
 
-msgctxt "The label of the form submit button if the image source URL input has no value."
-msgid "Insert"
-msgstr "Einfügen"
-
-msgctxt "The label of the form submit button if the image source URL input has a value."
-msgid "Update"
-msgstr "Aktualisieren"
-
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
 msgstr "Bild von URL einfügen"
+
+msgctxt "The label for the insert image via url dropdown button."
+msgid "Insert via URL"
+msgstr "Per URL einfügen"
+
+msgctxt "The label for the insert image via url menu bar button (standalone button)."
+msgid "Image via URL"
+msgstr "Bild per URL"
+
+msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
+msgid "Via URL"
+msgstr "Per URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -140,3 +164,27 @@ msgstr "Bildunterschrift"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "Bildunterschrift: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr "Der Wert darf nicht leer sein."
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr "Der Wert sollte eine einfache Zahl sein."
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr "Bild hochladen"
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr "Bild erfolgreich hochgeladen"
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr "Fehler beim Hochladen des Bildes"
+
+msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
+msgid "Image"
+msgstr "Bild"

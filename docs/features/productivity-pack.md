@@ -12,7 +12,7 @@ badges: [ premium ]
 The productivity pack is a set of exclusive premium features for the CKEditor&nbsp;5 WYSIWYG editor. They make editing faster, easier, and more efficient.
 
 <info-box>
-These are only available to holders of a [CKEditor&nbsp;5 commercial license](https://ckeditor.com/pricing/). Feel free to [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
+	The Productivity Pack is included in our commercial license. If you have an active CKEditor&nbsp;5 license, please contact your Account Manager to check your eligibility. Some legacy licenses are not eligible for the exclusive Productivity Pack even if they are active. Feel free to [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 </info-box>
 
 ## Features included in the productivity pack
@@ -28,6 +28,10 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 * Format painter
 
 	The {@link features/format-painter format painter feature} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
+
+* Merge fields
+
+	The {@link features/merge-fields merge fields feature} allows for inserting placeholder elements into the document. They can be used to mark what kind of value should be placed at given position in text, rather than using the value itself. They can be used to prepare templates for e-mails or documents and later export them as Word or PDF files holding the actual content.
 
 * Paste from Office enhanced
 

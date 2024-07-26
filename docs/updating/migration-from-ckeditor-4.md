@@ -169,15 +169,15 @@ CKEditor 4 and CKEditor&nbsp;5 are two different products. Here are the most imp
 
 Perform extensive analysis, data verification, and tests on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. You can use the {@link features/general-html-support General HTML Support} feature to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor&nbsp;5 features.
 
-The {@link installation/plugins/features-html-output-overview Plugins and HTML output} article lists all official CKEditor&nbsp;5 plugins and the HTML output they produce. You can use it to check the compatibility of legacy data with what is supported in CKEditor&nbsp;5.
+The {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} article lists all official CKEditor&nbsp;5 plugins and the HTML output they produce. You can use it to check the compatibility of legacy data with what is supported in CKEditor&nbsp;5.
 
 A simple yet efficient strategy for adopting CKEditor&nbsp;5 into existing systems might be using CKEditor&nbsp;5 for creating new content and the old editor for editing legacy content.
 
 ### Installation and integration
 
-The first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation and integration options.
+The first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link getting-started/index Getting started} section to explore all available installation and integration options.
 
-The API for integrating CKEditor with your pages changed, too. Check the {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
+The API for integrating CKEditor with your pages changed, too. Check the {@link getting-started/setup/editor-lifecycle Editor lifecycle} and {@link getting-started/setup/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
 
 ### Custom plugins
 
@@ -185,7 +185,7 @@ Any custom plugins you have developed for CKEditor 4 will not be compatible with
 
 The same may apply to third-party plugins. They may not have been ported to CKEditor&nbsp;5 yet.
 
-Check the {@link installation/plugins/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
+Check the {@link framework/architecture/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
 ### Custom themes (skins)
 
@@ -212,16 +212,16 @@ CKEditor&nbsp;5 is licensed under GPL2+ Open Source license only. If you are run
 You can approach moving from CKEditor 4 to CKEditor&nbsp;5 as follows:
 
 1. **Back up all your data.**
-2. Learn about CKEditor&nbsp;5. Check the [demos](https://ckeditor.com/ckeditor-5/demo/), read about its {@link framework/architecture/intro architecture}, and review the {@link features/index available features} and {@link installation/index integration methods}.
-3. Create a custom build containing all the plugins you need {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder using online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
+2. Learn about CKEditor&nbsp;5. Check the [demos](https://ckeditor.com/ckeditor-5/demo/), read about its {@link framework/architecture/intro architecture}, and review the {@link features/index available features} and {@link getting-started/index integration methods}.
+3. Create a custom preset containing all the plugins you need the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 4. Test loading pre-existing content created in CKEditor 4 into CKEditor&nbsp;5. Adjust the editor configuration and plugin set. If needed, enable the missing elements, classes, or attributes via the {@link features/general-html-support General HTML Support} feature.
-5. When you are sure no data loss will occur, you can focus on customizing your CKEditor&nbsp;5 build even more by changing the integration method, creating custom plugins, adjusting the theme, and enabling new features.
+5. When you are sure no data loss will occur, you can focus on customizing your CKEditor&nbsp;5 preset even more by changing the integration method, creating custom plugins, adjusting the theme, and enabling new features.
 
 CKEditor&nbsp;5 is a great, modern editing framework so migrating is a fantastic opportunity to level your content editing experience up. {@link features/collaboration Collaboration} with real-time collaborative editing, comments and track changes, {@link features/revision-history revision history}, {@link features/autoformat autoformatting}, {@link features/import-word import from Word}, export to {@link features/export-pdf PDF} and {@link features/export-word Word}, {@link features/word-count word and character count}, and {@link features/ckbox CKBox} file manager are just a few examples of new features that were not available in CKEditor 4. Try them out!
 
 ## Support
 
-If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first. The feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Be as precise as possible, explaining the exact use case, the context where you use the editor, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/index#reporting-issues report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first. The feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Be as precise as possible, explaining the exact use case, the context where you use the editor, and the expected behavior.
 
 The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
 

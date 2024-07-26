@@ -21,19 +21,15 @@ Toggle the block elements visibility with the show block {@icon @ckeditor/ckedit
 ## Installation
 
 <info-box info>
-	The show blocks feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-show-blocks`](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks) package:
-
-```
-npm install --save @ckeditor/ckeditor5-show-blocks
-```
-
-Then add the `ShowBlocks` plugin to your plugin list and to the toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
+import { ClassicEditor, ShowBlocks } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -48,12 +44,12 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
+	Read more about {@link getting-started/setup/configuration installing plugins} and {@link getting-started/setup/toolbar toolbar configuration}.
 </info-box>
 
 ## Known issues
 
-* The show blocks feature does not support widgets yet. It means it will currently not show block outlines, for example, for images or tables.
+* The show blocks feature does not support widgets, yet. It means it will currently not show block outlines for example for images or tables. Feel free to upvote 👍&nbsp; [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14869) if it is important for you.
 * At present, the show blocks feature is not yet fully compatible with the {@link features/pagination pagination} feature. Using these two together may result in errors.
 
 ## Related features

@@ -30,9 +30,31 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of link
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, AutoLink, Link } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Link, AutoLink, /* ... */ ],
+		toolbar: [ 'link', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Custom link attributes (decorators)
 
-By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
+By default, all links created in the editor have the `href="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
 
 There are two types of link decorators you can use:
 
@@ -102,7 +124,7 @@ ClassicEditor
 			addTargetToExternalLinks: true
 		}
 		// More of the editor's configuration.
- 		// ...
+			// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -126,7 +148,7 @@ ClassicEditor
 			}
 		}
 		// More of the editor's configuration.
- 		// ...
+			// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -150,7 +172,7 @@ ClassicEditor
 			}
 		}
 		// More of the editor's configuration.
- 		// ...
+			// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -171,7 +193,7 @@ ClassicEditor
 			defaultProtocol: 'http://'
 		}
 		// More of the editor's configuration.
- 		// ...
+			// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -197,7 +219,7 @@ ClassicEditor
 			allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
 		}
 		// More of the editor's configuration.
- 		// ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -228,7 +250,7 @@ ClassicEditor
 			}
 		}
 		// More of the editor's configuration.
- 		// ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -268,7 +290,7 @@ ClassicEditor
 			}
 		}
 		// More of the editor's configuration.
- 		// ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -276,7 +298,7 @@ ClassicEditor
 
 ## Autolink feature
 
-Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or email addresses into working links.
+The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or email addresses into working links.
 
 To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
@@ -285,36 +307,6 @@ To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>
 </info-box>
 
 {@snippet features/autolink}
-
-## Installation
-
-<info-box info>
-	Both the base link feature and the autolink feature are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-link
-```
-
-Then add the `Link` and `AutoLink` plugins to your plugin list:
-
-```js
-import { AutoLink, Link } from '@ckeditor/ckeditor5-link';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, AutoLink, /* ... */ ],
-		toolbar: [ 'link', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Common API
 

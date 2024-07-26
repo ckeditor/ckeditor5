@@ -140,3 +140,11 @@ msgstr "Αύξηση εσοχής στοιχείου λίστας"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Μείωση εσοχής στοιχείου λίστας"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Κάνοντας εισαγωγή μιας λίστας υποχρεώσεων"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Φεύγοντας από μια λίστα υποχρεώσεων"

@@ -13,7 +13,7 @@ modified_at: 2023-08-16
 
 For the purposes of this tutorial, we have created a repository with the minimal setup required to use the editor. To follow along:
 
-1. Clone [this repository](https://github.com/ckeditor/tutorial-setup).
+1. Clone [this repository](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/crash-course).
 2. Run the `npm install` command to install the dependencies.
 3. Run the `npm run dev` command to start the project.
 4. Open the URL displayed in your terminal.
@@ -29,8 +29,11 @@ The test environment you set up displays the "Hello world!" on the page. Let's l
 Open the `src/main.js` file and add the following code:
 
 ```js
-// Import the editor
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+// Import the editor.
+import { ClassicEditor } from 'ckeditor5';
+
+// Import the styles.
+import 'ckeditor5/ckeditor5.css';
 
 // Get the HTML element with the ID of 'app'.
 const element = document.querySelector( '#app' );
@@ -48,9 +51,8 @@ However, you may have noticed that the "Hello world!" text does not appear in th
 The editor itself does not do much - it is just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We will talk more about plugins in the next chapter, but for now, let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
-// Add these two imports.
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+// Import plugins.
+import { Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.
 const editor = await ClassicEditor.create( element, {

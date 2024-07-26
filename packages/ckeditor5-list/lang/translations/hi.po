@@ -140,3 +140,11 @@ msgstr "लिस्ट आइटम इंडेंट को बढ़ाएँ"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "लिस्ट आइटम इंडेंट को घटाएँ"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "एक कार्य सूची में प्रवेश कर रहे हैं"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "एक कार्य सूची छोड़ी जा रही है"

@@ -28,8 +28,6 @@ describe( 'CodeUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				codeView = editor.ui.componentFactory.create( 'code' );
 			} );
 	} );
 
@@ -39,33 +37,72 @@ describe( 'CodeUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register code feature component', () => {
-		expect( codeView ).to.be.instanceOf( ButtonView );
-		expect( codeView.isOn ).to.be.false;
-		expect( codeView.label ).to.equal( 'Code' );
-		expect( codeView.icon ).to.match( /<svg / );
-		expect( codeView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			codeView = editor.ui.componentFactory.create( 'code' );
+		} );
+
+		testButton();
 	} );
 
-	it( 'should execute code command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			codeView = editor.ui.componentFactory.create( 'menuBar:code' );
+		} );
 
-		codeView.fire( 'execute' );
+		testButton();
 
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'code' );
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( codeView.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			codeView.render();
+
+			codeView.isOn = true;
+			expect( codeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			codeView.isOn = false;
+			expect( codeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
-	it( 'should bind model to code command', () => {
-		const command = editor.commands.get( 'code' );
+	function testButton() {
+		it( 'should register code feature component', () => {
+			expect( codeView ).to.be.instanceOf( ButtonView );
+			expect( codeView.isOn ).to.be.false;
+			expect( codeView.label ).to.equal( 'Code' );
+			expect( codeView.icon ).to.match( /<svg / );
+			expect( codeView.isToggleable ).to.be.true;
+		} );
 
-		expect( codeView.isOn ).to.be.false;
-		expect( codeView.isEnabled ).to.be.true;
+		it( 'should execute code command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( codeView.isOn ).to.be.true;
+			codeView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( codeView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'code' );
+		} );
+
+		it( 'should bind `isEnabled` to code command', () => {
+			const command = editor.commands.get( 'code' );
+			expect( codeView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( codeView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'code' );
+
+			command.value = true;
+
+			expect( codeView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( codeView.isOn ).to.be.false;
+		} );
+	}
 } );

@@ -9,9 +9,12 @@
 
 /**
  * @param {String} packagePath
+ * @param {Object} options
+ * @param {String} options.RELEASE_CDN_DIRECTORY
  * @returns {Promise}
  */
-module.exports = function prepareDllBuildsCallback( packagePath ) {
+module.exports = async function prepareDllBuildsCallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
+	const fs = require( 'fs-extra' );
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 	const upath = require( 'upath' );
 
@@ -22,11 +25,18 @@ module.exports = function prepareDllBuildsCallback( packagePath ) {
 		return Promise.resolve();
 	}
 
-	return tools.shExec( 'yarn run dll:build', {
+	await tools.shExec( 'yarn run dll:build', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true
 	} );
+
+	const dllPackageName = packageJson.name.replace( '@ckeditor/ckeditor5-', '' );
+	const dllReleasePath = `./${ RELEASE_CDN_DIRECTORY }/dll/` + dllPackageName;
+
+	await fs.ensureDir( dllReleasePath );
+
+	return fs.copy( packagePath + '/build', dllReleasePath );
 
 	function isDllPackage() {
 		return 'dll:build' in ( packageJson.scripts || {} );

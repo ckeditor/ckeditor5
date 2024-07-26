@@ -725,6 +725,12 @@ export default class TableUtils extends Plugin {
 					newCellsAttributes.colspan = colspan;
 				}
 
+				// Accumulator that stores distance from the last inserted cell span.
+				// It helps with evenly splitting larger cell spans (for example 10 cells collapsing into 3 cells).
+				// We split these cells into 3, 3, 4 cells and we have to call `createCells` only when distance between
+				// these cells is equal or greater than the new cells span size.
+				let distanceFromLastCellSpan = 0;
+
 				for ( const tableSlot of tableMap ) {
 					const { column, row } = tableSlot;
 
@@ -733,13 +739,23 @@ export default class TableUtils extends Plugin {
 					//
 					// 1. It's a row after split cell + it's height.
 					const isAfterSplitCell = row >= splitCellRow + updatedSpan;
+
 					// 2. Is on the same column.
 					const isOnSameColumn = column === cellColumn;
-					// 3. And it's row index is after previous cell height.
-					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
-					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
-						createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes );
+					// Reset distance from the last cell span if we are on the same column and we exceeded the new cells span size.
+					if ( distanceFromLastCellSpan >= newCellsSpan && isOnSameColumn ) {
+						distanceFromLastCellSpan = 0;
+					}
+
+					if ( isAfterSplitCell && isOnSameColumn ) {
+						// Create new cells only if the distance from the last cell span is equal or greater than the new cells span.
+						if ( !distanceFromLastCellSpan ) {
+							createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes );
+						}
+
+						// Increase the distance from the last cell span.
+						distanceFromLastCellSpan++;
 					}
 				}
 			}

@@ -7,20 +7,26 @@
 
 .ck.ck-editor__top {
 	& .ck-sticky-panel {
-		& .ck-toolbar {
+		& .ck-sticky-panel__content {
 			@mixin ck-rounded-corners {
 				border-bottom-left-radius: 0;
 				border-bottom-right-radius: 0;
 			}
 
+			border: 1px solid var(--ck-color-base-border);
 			border-bottom-width: 0;
-		}
 
-		& .ck-sticky-panel__content_sticky .ck-toolbar {
-			border-bottom-width: 1px;
+			&.ck-sticky-panel__content_sticky {
+				border-bottom-width: 1px;
+			}
 
-			@mixin ck-rounded-corners {
-				border-radius: 0;
+			& .ck-menu-bar {
+				border: 0;
+				border-bottom: 1px solid var(--ck-color-base-border);
+			}
+
+			& .ck-toolbar {
+				border: 0;
 			}
 		}
 	}

@@ -55,6 +55,7 @@ commands:
       - run:
           name: Install dependencies
           command: yarn install
+      - prepare_environment_variables_commands
 
   checkout_command:
     description: "Clone the CKEditor 5 repository with limited depth and branches"
@@ -78,6 +79,18 @@ commands:
             then
               circleci-agent step halt
             fi
+
+  prepare_environment_variables_commands:
+    description: "Prepare non-secret environment variables"
+    steps:
+      - run:
+          name: Prepare environment variables
+          command: |
+            #!/bin/bash
+
+            echo export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG="ckeditor/ckeditor5" >> $BASH_ENV
+            echo export CKE5_GITHUB_REPOSITORY_SLUG="$INTEGRATION_CI_ORGANIZATION/$INTEGRATION_CI_REPOSITORY" >> $BASH_ENV
+            echo export CKE5_COMMIT_SHA1=$CIRCLE_SHA1 >> $BASH_ENV
 
 jobs:
   cke5_manual:
@@ -118,16 +131,20 @@ jobs:
           command: node scripts/ci/check-manual-tests-directory-structure.js
       - run:
           when: always
-          name: Check dependencies
-          command: yarn run check-dependencies
-      - run:
-          when: always
           name: Execute ESLint
           command: yarn run lint
       - run:
           when: always
           name: Execute Stylelint
           command: yarn run stylelint
+      - run:
+          when: always
+          name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
+          command: yarn run check-theme-lark-imports
+      - run:
+          when: always
+          name: Check if all packages are exported in the "ckeditor5" package
+          command: yarn run check-exports
 
   cke5_coverage:
     machine: true
@@ -174,8 +191,10 @@ jobs:
               circleci-agent step halt
             fi
       - run:
-          name: Trigger the Uber CI
-          command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1 -b $CIRCLE_BRANCH
+          name: Trigger CKEditor 5 release job
+          environment:
+            CKE5_GITHUB_RELEASE_BRANCH: release
+          command: yarn ckeditor5-dev-ci-trigger-circle-build
 
   cke5_trigger_uber_ci:
     machine: true
@@ -185,7 +204,7 @@ jobs:
       - bootstrap_repository_command
       - run:
           name: Trigger the Uber CI
-          command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1
+          command: yarn ckeditor5-dev-ci-trigger-circle-build
 
   release_prepare:
     machine: true
@@ -196,12 +215,16 @@ jobs:
       - prepare_environment_command
       - run:
           name: Check if packages are ready to be released
-          command:
-            yarn run release:prepare-packages --compile-only --verbose
+          command: npm run release:prepare-packages -- --compile-only --verbose
+
+      # Commented out due to a limitation of publint: https://github.com/bluwy/publint/issues/105
+      # - run:
+      #     name: Lint generated packages
+      #     command: yarn run release:lint-packages
+
       - run:
-          name: Lint generated packages
-          command:
-            yarn run release:lint-packages
+          name: Check dependencies
+          command: yarn run check-dependencies
 
   notify_ci_failure:
     machine: true
@@ -299,6 +322,7 @@ workflows:
               only:
                 - master
                 - stable
+                - release
 
   nightly:
     when: << pipeline.parameters.isNightly >>

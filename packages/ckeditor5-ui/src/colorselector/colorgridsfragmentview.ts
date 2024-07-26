@@ -23,8 +23,6 @@ import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
 import { icons } from '@ckeditor/ckeditor5-core';
 
-const { eraser: removeButtonIcon, colorPalette: colorPaletteIcon } = icons;
-
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
  *
@@ -261,16 +259,21 @@ export default class ColorGridsFragmentView extends View {
 		if ( this.documentColorsCount ) {
 			// Create a label for document colors.
 			const bind = Template.bind( this.documentColors, this.documentColors );
-			const label = new LabelView( this.locale );
-			label.text = this._documentColorsLabel;
-			label.extendTemplate( {
+			const label = new View( this.locale );
+			label.setTemplate( {
+				tag: 'span',
 				attributes: {
 					class: [
 						'ck',
 						'ck-color-grid__label',
 						bind.if( 'isEmpty', 'ck-hidden' )
 					]
-				}
+				},
+				children: [
+					{
+						text: this._documentColorsLabel
+					}
+				]
 			} );
 			this.items.add( label );
 			this.documentColorsGrid = this._createDocumentColorsGrid();
@@ -334,7 +337,7 @@ export default class ColorGridsFragmentView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: colorPaletteIcon,
+			icon: icons.colorPalette,
 			class: 'ck-color-selector__color-picker'
 		} );
 
@@ -351,7 +354,7 @@ export default class ColorGridsFragmentView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: removeButtonIcon,
+			icon: icons.eraser,
 			label: this._removeButtonLabel
 		} );
 

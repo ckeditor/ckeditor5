@@ -11,13 +11,6 @@ import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core.js
 import { logWarning } from 'ckeditor5/src/utils.js';
 import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
 
-const {
-	objectFullWidth,
-	objectInline,
-	objectLeft,	objectRight, objectCenter,
-	objectBlockLeft, objectBlockRight
-} = icons;
-
 /**
  * Default image style options provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
  * configuration.
@@ -42,7 +35,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'inline',
 			title: 'In line',
-			icon: objectInline,
+			icon: icons.objectInline,
 			modelElements: [ 'imageInline' ],
 			isDefault: true
 		};
@@ -53,7 +46,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignLeft',
 			title: 'Left aligned image',
-			icon: objectLeft,
+			icon: icons.objectLeft,
 			modelElements: [ 'imageBlock', 'imageInline' ],
 			className: 'image-style-align-left'
 		};
@@ -64,7 +57,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignBlockLeft',
 			title: 'Left aligned image',
-			icon: objectBlockLeft,
+			icon: icons.objectBlockLeft,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-block-align-left'
 		};
@@ -75,7 +68,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignCenter',
 			title: 'Centered image',
-			icon: objectCenter,
+			icon: icons.objectCenter,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-align-center'
 		};
@@ -86,7 +79,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignRight',
 			title: 'Right aligned image',
-			icon: objectRight,
+			icon: icons.objectRight,
 			modelElements: [ 'imageBlock', 'imageInline' ],
 			className: 'image-style-align-right'
 		};
@@ -97,7 +90,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignBlockRight',
 			title: 'Right aligned image',
-			icon: objectBlockRight,
+			icon: icons.objectBlockRight,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-block-align-right'
 		};
@@ -108,7 +101,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'block',
 			title: 'Centered image',
-			icon: objectCenter,
+			icon: icons.objectCenter,
 			modelElements: [ 'imageBlock' ],
 			isDefault: true
 		};
@@ -119,7 +112,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'side',
 			title: 'Side image',
-			icon: objectRight,
+			icon: icons.objectRight,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-side'
 		};
@@ -134,15 +127,15 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  */
-export const DEFAULT_ICONS: Record<string, string> = {
-	full: objectFullWidth,
-	left: objectBlockLeft,
-	right: objectBlockRight,
-	center: objectCenter,
-	inlineLeft: objectLeft,
-	inlineRight: objectRight,
-	inline: objectInline
-};
+export const DEFAULT_ICONS: Record<string, string> = /* #__PURE__ */ ( () => ( {
+	full: icons.objectFullWidth,
+	left: icons.objectBlockLeft,
+	right: icons.objectBlockRight,
+	center: icons.objectCenter,
+	inlineLeft: icons.objectLeft,
+	inlineRight: icons.objectRight,
+	inline: icons.objectInline
+} ) )();
 
 /**
  * Default drop-downs provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#toolbar}

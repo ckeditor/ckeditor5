@@ -35,7 +35,7 @@ import type PluginCollection from './plugincollection.js';
  * * An {@link module:core/plugin~Plugin editor plugin} can require a context plugin.
  * * A context plugin MUST NOT require an {@link module:core/plugin~Plugin editor plugin}.
  */
-export default class ContextPlugin extends ObservableMixin() implements PluginInterface {
+export default class ContextPlugin extends /* #__PURE__ */ ObservableMixin() implements PluginInterface {
 	/**
 	 * The context or editor instance.
 	 */

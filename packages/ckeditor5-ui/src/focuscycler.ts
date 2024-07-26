@@ -70,7 +70,7 @@ import type ViewCollection from './viewcollection.js';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export default class FocusCycler extends EmitterMixin() {
+export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * A {@link module:ui/focuscycler~FocusableView focusable views} collection that the cycler operates on.
 	 */

@@ -32,6 +32,42 @@ The plugin enables the following features in the rich-text editor:
 	You can remove all font formatting with the {@link features/remove-format remove format} feature.
 </info-box>
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Font } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Font, /* ... */ ],
+		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
+
+```js
+import { ClassicEditor, FontFamily } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ FontFamily, /* ... */ ],
+		toolbar: [ 'fontFamily', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Configuring the font family feature
 
 You can configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.
@@ -75,7 +111,7 @@ ClassicEditor
 			supportAllValues: true
 		},
 		// More of editor's configuration.
-        // ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -199,7 +235,7 @@ ClassicEditor
 			supportAllValues: true
 		},
 		// More of editor's configuration.
-        // ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -384,50 +420,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-## Installation
-
-<info-box info>
-	The font styles feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-font
-```
-
-Then add it to your plugin list and the toolbar configuration:
-
-```js
-import { Font } from '@ckeditor/ckeditor5-font';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Font, /* ... */ ],
-		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
-
-```js
-import { FontFamily } from '@ckeditor/ckeditor5-font';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FontFamily, /* ... */ ],
-		toolbar: [ 'fontFamily', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

@@ -9,7 +9,7 @@
 
 import ContextualBalloon from '../../panel/balloon/contextualballoon.js';
 import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview.js';
-import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
+import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
 import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
@@ -38,7 +38,7 @@ import type {
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The contextual toolbar.
@@ -246,7 +246,7 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Don not show the toolbar when all components inside are disabled
+		// Do not show the toolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
 		if ( Array.from( this.toolbarView.items ).every( ( item: any ) => item.isEnabled !== undefined && !item.isEnabled ) ) {
 			return;
@@ -348,7 +348,7 @@ export default class BalloonToolbar extends Plugin {
 		const isSafariIniOS = env.isSafari && env.isiOS;
 
 		// https://github.com/ckeditor/ckeditor5/issues/7707
-		const positions = isSafariIniOS ? generatePositions( {
+		const positions = isSafariIniOS ? BalloonPanelView.generatePositions( {
 			// 20px when zoomed out. Less then 20px when zoomed in; the "radius" of the native selection handle gets
 			// smaller as the user zooms in. No less than the default v-offset, though.
 			heightOffset: Math.max(

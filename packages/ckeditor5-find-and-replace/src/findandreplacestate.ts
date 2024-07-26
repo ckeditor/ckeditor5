@@ -14,7 +14,7 @@ import type { ResultType } from './findandreplace.js';
 /**
  * The object storing find and replace plugin state for a given editor instance.
  */
-export default class FindAndReplaceState extends ObservableMixin() {
+export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A collection of find matches.
 	 *
@@ -166,4 +166,23 @@ export default class FindAndReplaceState extends ObservableMixin() {
 /**
  * The callback function used to find matches in the document.
  */
-export type FindCallback = ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> );
+export type FindCallback = ( { item, text }: { item: Item; text: string } ) => FindCallbackResultObject | FindCallbackResult;
+
+/**
+ * Represents the result of a find callback.
+ *
+ * The `searchText` attribute in the result object is used to determine if the search text has changed.
+ * If returned `searchText` is different than the last search text, the search results will be invalidated
+ * while searching for next item and the search will start from the beginning of the document.
+ */
+export type FindCallbackResultObject = {
+	results: Array<ResultType>;
+	searchText: string;
+};
+
+/**
+ * Represents the result of a find callback.
+ *
+ * @deprecated Use `FindCallbackResultObject` instead.
+ */
+export type FindCallbackResult = Array<ResultType>;

@@ -21,6 +21,28 @@ Use the code block toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/co
 
 Each code block has a [specific programming language assigned](#configuring-code-block-languages) (like "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, CodeBlock } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CodeBlock, /* ... */ ],
+		toolbar: [ 'codeBlock', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Configuring code block languages
 
 Each code block can be assigned a programming language. The language of the code block is represented as a CSS class of the `<code>` element, both when editing and in the editor data:
@@ -119,36 +141,6 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).
 
 {@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indentation inside code blocks in CKEditor&nbsp;5 rich text editor.}
-
-## Installation
-
-<info-box info>
-	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add the code blocks feature to your rich-text editor, install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
-
-```
-npm install --save @ckeditor/ckeditor5-code-block
-```
-
-Then add it to your plugin list and the toolbar configuration:
-
-```js
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CodeBlock, /* ... */ ],
-		toolbar: [ 'codeBlock', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

@@ -6,69 +6,15 @@ order: 10
 
 # Theme customization
 
-The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) package contains the default theme of CKEditor&nbsp;5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built using [PostCSS](http://postcss.org/).
-
-Although it was designed with versatility and the most common editor use cases in mind, some integrations may require adjustments to make it match the style guidelines of the ecosystem. This kind of customization can be done by importing an extra `.css` file and overriding the [native CSS variables](https://www.w3.org/TR/css-variables/).
-
 Below you can see a demo of an editor with the dark theme as a result of customizations described later in this guide:
 
 {@snippet examples/theme-lark}
 
-## Styles processing and bundling
-
-CKEditor&nbsp;5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). You can find its configuration in the `webpack.config.js` file.
-
-<info-box info>
-	To learn more about building CKEditor, check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.
-</info-box>
-
-The entire process of building and managing the styles consists of three steps:
-
-1. **Collecting**: Each JavaScript file in the project can import many `.css` files using the ES6 [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) directive. Imported files are handled by [PostCSS Loader](https://www.npmjs.com/package/postcss-loader).
-
-	```js
-	import '../theme/styles.css';
-
-	class AnyEditorClass {
-		// Example editor class definition.
-		// ...
-	}
-	```
-
-	```css
-	/* Contents of styles.css. */
-	:root {
-		--color: red;
-	}
-
-	.ck-editor {
-		color: var(--color);
-	}
-	```
-
-2. **Processing**: PostCSS Loader processes `.css` files to the output CSS. Each file is compiled asynchronously, in a separate processor thread using pre–defined plugins.
-
-3. **Loading**: Finally the [style loader](https://www.npmjs.com/package/style-loader) loads the output CSS along with the `ckeditor.js` file into a `<style>` element in the `<head>` section of the web page.
-
-	```html
-	<head>
-		<style type="text/css">
-			.ck-editor {
-				color: var(--color);
-			}
-		</style>
-	</head>
-	```
-
 ## Customization with CSS variables
 
-Having {@link installation/getting-started/quick-start-other#building-the-editor-from-source#forking-an-existing-build cloned} an existing build of CKEditor for a quick start, let's use the full potential of CSS variables (custom properties). The customization explained in this guide will make the theme dark, with slightly bigger text and more rounded corners.
+Assuming you finished our {@link getting-started/quick-start quick start} guide, and you have a running CKEditor&nbsp;5 instance, let's use the full potential of CSS variables (custom properties). The customization explained in this guide will make the theme dark, with slightly bigger text and more rounded corners.
 
-<info-box hint>
-	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.
-</info-box>
-
-The file containing custom variables will be named `custom.css` and it will look as below:
+The file containing custom variables can be named `custom.css` and it will look as below:
 
 ```css
 :root {
@@ -184,22 +130,15 @@ The file containing custom variables will be named `custom.css` and it will look
 }
 ```
 
-This file can be referenced directly in HTML **after the `<link>` tag injected by the editor** and its content will simply override the default CSS variables. CSS variables are natively [supported](https://caniuse.com/#feat=css-variables) in all major web browsers and just like any other CSS rule, they are prioritized in the order of precedence.
+Depending on your setup method, you can either import a style sheet into your `js` file:
 
-```html
-<link rel="stylesheet" href="custom.css" type="text/css">
-```
-
-Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#styles-processing-and-bundling), becoming a part of the build, like an entry point of the application.
-
-<info-box info>
-	Learn more about {@link framework/quick-start building the editor using webpack}.
-</info-box>
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ClassicEditor } from 'ckeditor5';
 
-// To override the default styles, this file must be imported after ClassicEditor.
+import 'ckeditor5/ckeditor5.css';
+
+// Override the default styles.
 import 'custom.css';
 
 ClassicEditor
@@ -210,7 +149,10 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
 ```
 
-It is time to build the editor using `yarn run build-ckeditor` and see the results. From now on, the editor's theme is using customized styles, which are a part of the build.
+Or import it via the `link` in `html` in the CDN setup:
+
+```html
+<link rel="stylesheet" href="path/to/custom.css" type="text/css">
+```

@@ -654,6 +654,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		editor = await ClassicEditor.create( editorElement, {
 			plugins: [ Paragraph, Image, ImageToolbar, ImageCaption ],
 			toolbar: [ 'imageTextAlternative' ],
+			menuBar: { isVisible: true },
 			image: {
 				toolbar: [ 'toggleImageCaption' ]
 			}
@@ -685,7 +686,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
 
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -697,11 +698,11 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
 			// Try Alt+F10 again.
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( toolbarFocusSpy );
 			sinon.assert.notCalled( domRootFocusSpy );
@@ -721,7 +722,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			);
 
 			// Focus the image balloon toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = imageToolbar.element;
 
 			sinon.assert.calledOnce( imageToolbarSpy );
@@ -742,10 +743,10 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
 		} );
@@ -756,30 +757,30 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.notCalled( domRootFocusSpy );
 			sinon.assert.notCalled( toolbarFocusSpy );
 		} );
 	} );
-
-	function pressAltF10() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.f10,
-			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
-
-	function pressEsc() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
 } );
+
+function pressAltF10( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.f10,
+		altKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
+
+function pressEsc( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.esc,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
 
 function viewCreator( name ) {
 	return locale => {

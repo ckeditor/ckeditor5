@@ -29,6 +29,11 @@ ClassicEditor
 					value: null
 				},
 				{
+					name: 'resizeImage:custom',
+					label: 'Custom',
+					value: 'custom'
+				},
+				{
 					name: 'resizeImage:100',
 					label: '100px',
 					value: '100'

@@ -11,6 +11,7 @@ import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
 import type Context from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import type Editor from './editor.js';
+import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
 
 /**
  * CKEditor configuration options.
@@ -30,16 +31,13 @@ import type Editor from './editor.js';
  * 	.then( ... )
  * 	.catch( ... );
  * ```
- *
- * Check the {@glink installation/getting-started/predefined-builds Configuration} guide for more information
- * about setting configuration options.
  */
 export interface EditorConfig {
 	context?: Context;
 
 	/**
 	 * The list of additional plugins to load along those already available in the
-	 * {@glink installation/getting-started/predefined-builds editor build}. It extends the {@link #plugins `plugins`} configuration.
+	 * editor. It extends the {@link #plugins `plugins`} configuration.
 	 *
 	 * ```ts
 	 * function MyPlugin( editor ) {
@@ -53,11 +51,10 @@ export interface EditorConfig {
 	 *
 	 * **Note:** This configuration works only for simple plugins which utilize the
 	 * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
-	 * build with complex features, create a
-	 * {@glink installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build}.
+	 * build with complex features, try [CKEditr 5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 	 *
 	 * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
-	 * about the {@glink features/toolbar/toolbar toolbar setup}.
+	 * about the {@glink getting-started/setup/toolbar toolbar setup}.
 	 */
 	extraPlugins?: Array<PluginConstructor<Editor>>;
 
@@ -117,10 +114,6 @@ export interface EditorConfig {
 	/**
 	 * The language of the editor UI and its content.
 	 *
-	 * Note: You do not have to specify this option if your build is optimized for one UI language or if it is
-	 * the default language (English is the default language for CDN builds), unless you want to change
-	 * the language of your content.
-	 *
 	 * Simple usage (change the language of the UI and the content):
 	 *
 	 * ```ts
@@ -166,18 +159,324 @@ export interface EditorConfig {
 	 * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 	 *
 	 * You need to add the corresponding translation file for the new UI language to work.
-	 * Translation files are available on CDN for predefined builds:
+	 * Translation files are available on CDN:
 	 *
 	 * ```html
-	 * `<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
+	 * <script type="importmap">
+	 * {
+	 *   "imports": {
+	 *     "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/<VERSION>/ckeditor5.js",
+	 *     "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/<VERSION>/"
+	 *   }
+	 * }
+	 * </script>
+	 * <script type="module">
+	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+	 * import translations from 'ckeditor5/dist/translations/pl.js';
+	 *
+	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 *   plugins: [
+	 *     Essentials,
+	 *     Paragraph,
+	 *   ],
+	 *   toolbar: {
+	 *     items: [ 'undo', 'redo' ]
+	 *   },
+	 *   translations
+	 * } );
+	 * </script>
 	 * ```
 	 *
-	 * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
+	 * You can add translation using NPM as well.
 	 *
-	 * Check the {@glink features/ui-language UI language} guide for more information about the localization options and translation
-	 * process.
+	 * ```html
+	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+	 * import translations from 'ckeditor5/dist/translations/pl.js';
+	 *
+	 * import 'ckeditor5/dist/styles.css';
+	 *
+	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 *   plugins: [
+	 *     Essentials,
+	 *     Paragraph,
+	 *   ],
+	 *   toolbar: {
+	 *     items: [ 'undo', 'redo' ]
+	 *   },
+	 *   translations
+	 * } );
+	 * ```
+	 *
+	 * Check the {@glink getting-started/setup/ui-language UI language} guide for more information about
+	 * the localization options and translation process.
 	 */
 	language?: string | LanguageConfig;
+
+	/**
+	 * The editor menu bar configuration.
+	 *
+	 * **Note**: The menu bar is not available in all editor types. Currently, only the
+	 * {@link module:editor-classic/classiceditor~ClassicEditor Classic editor} and
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}
+	 * support this feature. Setting the `config.menuBar` configuration for other editor types will have no effect.
+	 *
+	 * In Classic editor, the menu bar is hidden by default. Set the `isVisible` configuration flag to `true` in order to show it:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			isVisible: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. For example:
+	 *
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
+	 * 	} )
+	 *  .then( editor => {
+	 * 		document.getElementById( '#menuBarContainer' ).appendChild( editor.ui.view.menuBarView.element );
+	 * 	} );
+	 * ```
+	 *
+	 * **Note**: You do not have to set the `items` property in this configuration in order to use the menu bar.
+	 * By default, a {@link module:ui/menubar/utils#DefaultMenuBarItems default set of items} is used that already includes
+	 * **all core editor features**. For your convenience, there are `config.menuBar.addItems` and
+	 * `config.menuBar.removeItems` options available that will help you adjust the default configuration without setting the
+	 * entire menu bar structure from scratch (see below).
+	 *
+	 * **Removing items from the menu bar**
+	 *
+	 * You can use the `config.menuBar.removeItems` option to remove items from the default menu bar configuration. You can
+	 * remove individual buttons (e.g. "Bold" or "Block quote"), item groups (e.g. the basic styles section that
+	 * includes multiple buttons such as "Bold", "Italic", "Underline", etc.), or whole menus (e.g. the "Insert" menu). Please
+	 * refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to see default buttons/groups/menus
+	 * and their structure.
+	 *
+	 * To remove individual buttons from the menu bar:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			// Removes "Bold" and "Block quote" buttons from their respective menus.
+	 * 			removeItems: [ 'menuBar:bold', 'menuBar:blockQuote' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * To remove a group of buttons from the menu bar:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			// Removes the entire basic styles group ("Bold", "Italic", "Underline", etc.) from the "Format" menu.
+	 * 			removeItems: [ 'basicStyles' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * To remove a menu from the menu bar:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			// Removes the whole top-level "Insert" menu from the menu bar.
+	 * 			removeItems: [ 'insert' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * **Adding items to the menu bar**
+	 *
+	 * Using the `config.menuBar.addItems` option you can add individual buttons, button groups or entire menus to the structure
+	 * of the menu bar. You can add existing components that you removed from their original position, or add your own components.
+	 *
+	 * **Note**: When adding items please make sure that features (editor plugins) that bring specific menu bar items are loaded.
+	 * For instance, the "Bold" button will not show up in the menu bar unless the {@glink features/basic-styles basic styles} feature is
+	 * loaded. {@link module:core/editor/editorconfig~EditorConfig#plugins Learn more} about loading plugins.
+	 *
+	 * Each entry in the `config.menuBar.addItems` is an object with one of the following properties:
+	 *
+	 * * `item` &ndash; A name of the button to be added to a specific button group (e.g. `'menuBar:bold'` or `'myButton'`),
+	 * * `menu` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuDefinition definition of a menu} that should be added to
+	 * the menu bar,
+	 * * `group` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuGroupDefinition definition of a button group} that should be
+	 * added to a specific menu.
+	 *
+	 * Additionally, each entry must define the `position` property that accepts the following values:
+	 * * `'start'` &ndash; Adds a top-level menu (e.g. "Format", "Insert", etc.) at the beginning of the menu bar,
+	 * * `'start:GROUP_OR_MENU'` &ndash; Adds a button/group at the beginning of the specific group/menu,
+	 * * `'end'` &ndash; Adds a top-level menu (e.g. "Format", "Insert", etc.) at the end of the menu bar,
+	 * * `'end:GROUP_OR_MENU'` &ndash; Adds a button/group at the end of the specific group/menu,
+	 * * `'after:BUTTON_OR_GROUP_OR_MENU'` &ndash; Adds a button/group/menu right after the specific button/group/menu,
+	 * * `'before:BUTTON_OR_GROUP_OR_MENU'` &ndash; Adds a button/group/menu right after the specific button/group/menu.
+	 *
+	 * Please refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to learn about the
+	 * names of buttons and positions they can be added at.
+	 *
+	 * To add a new top-level menu with specific buttons at the end of the menu bar:
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					menu: {
+	 * 						menuId: 'my-menu',
+	 * 						label: 'My menu',
+	 * 						groups: [
+	 * 							{
+	 * 								groupId: 'my-buttons',
+	 * 								items: [
+	 * 									'menuBar:bold',
+	 * 									'menuBar:italic',
+	 * 									'menuBar:underline'
+	 * 								]
+	 * 							}
+	 * 						]
+	 * 					},
+	 * 					position: 'end'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * To add a new group of buttons to the "Format" menu after basic styles buttons ("Bold", "Italic", "Underline", etc.):
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					group: {
+	 * 						groupId: 'my-buttons',
+	 * 						items: [
+	 * 							'myButton1',
+	 * 							'myButton2',
+	 * 						]
+	 * 					},
+	 * 					position: 'after:basicStyles'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * To add a new button to the basic styles group ("Bold", "Italic", "Underline", etc.) in the "Format" menu:
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					item: 'myButton',
+	 * 					position: 'end:basicStyles'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * To add a new sub-menu in the "Format" menu:
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					menu: {
+	 * 						menuId: 'my-sub-menu',
+	 * 						label: 'My sub-menu',
+	 * 						groups: [
+	 * 							{
+	 * 								groupId: 'my-buttons',
+	 * 								items: [
+	 * 									'myButton1',
+	 * 									'myButton2',
+	 * 								]
+	 * 							}
+	 * 						]
+	 * 					},
+	 * 					position: 'after:basicStyles'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 *
+	 * **Defining menu bar from scratch**
+	 *
+	 * If the `config.menuBar.addItems` and `config.menuBar.removeItems` options are not enough to adjust the
+	 * {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration}, you can set the menu bar structure from scratch.
+	 *
+	 * For instance, to create a minimalistic menu bar configuration with just two main categories (menus), use the following code snippet:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			items: [
+	 * 				{
+	 * 					menuId: 'formatting',
+	 * 					label: 'Formatting',
+	 * 					groups: [
+	 * 						{
+	 * 							groupId: 'basicStyles',
+	 * 							items: [
+	 * 								'menuBar:bold',
+	 * 								'menuBar:italic',
+	 * 							]
+	 * 						},
+	 * 						{
+	 * 							groupId: 'misc',
+	 * 							items: [
+	 * 								'menuBar:heading',
+	 * 								'menuBar:bulletedList',
+	 * 								'menuBar:numberedList'
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				},
+	 * 				{
+	 * 					menuId: 'myButtons',
+	 * 					label: 'My actions',
+	 * 					groups: [
+	 * 						{
+	 * 							groupId: 'undo',
+	 * 							items: [
+	 * 								'myButton1',
+	 * 								'myButton2'
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... );
+	 * ```
+	 */
+	menuBar?: MenuBarConfig;
 
 	/**
 	 * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
@@ -243,30 +542,13 @@ export interface EditorConfig {
 	/**
 	 * The list of plugins to load.
 	 *
-	 * If you use an {@glink installation/getting-started/predefined-builds editor build} you can define the list of plugins to load
-	 * using the names of plugins that are available:
-	 *
 	 * ```ts
-	 * const config = {
-	 * 	plugins: [ 'Bold', 'Italic', 'Typing', 'Enter', ... ]
-	 * };
-	 * ```
-	 *
-	 * You can check the list of plugins available in a build using this snippet:
-	 *
-	 * ```ts
-	 * ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
-	 * ```
-	 *
-	 * If you use an editor creator directly (imported from a package like `@ckeditor/ckeditor5-editor-classic`) or you
-	 * want to load additional plugins which were not included in a build you use, then you need to specify
-	 * the plugins using their constructors:
-	 *
-	 * ```ts
+	 * import {
 	 * // A preset of plugins is a plugin as well.
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 * 	Essentials,
 	 * // The bold plugin.
-	 * import Bold from '@ckeditor/ckeditor5-editor-basic-styles/src/bold';
+	 * 	Bold
+	 * } from 'ckeditor5';
 	 *
 	 * const config = {
 	 * 	plugins: [ Essentials, Bold ]
@@ -279,8 +561,8 @@ export interface EditorConfig {
 	plugins?: Array<PluginConstructor<Editor> | string>;
 
 	/**
-	 * The list of plugins which should not be loaded despite being available in an {@glink installation/getting-started/predefined-builds
- * editor build}.
+	 * The list of plugins which should not be loaded despite being available in
+	 * the editor.
 	 *
 	 * ```ts
 	 * const config = {
@@ -288,7 +570,7 @@ export interface EditorConfig {
 	 * };
 	 * ```
 	 *
-	 * **Note:** Be careful when removing plugins using `config.removePlugins` from CKEditor builds.
+	 * **Note:** Be careful when removing plugins using `config.removePlugins`.
 	 * If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build
 	 * will become invalid. In such case you need to provide the updated
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.

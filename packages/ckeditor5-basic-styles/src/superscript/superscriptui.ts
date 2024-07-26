@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
-import type AttributeCommand from '../attributecommand.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { getButtonCreator } from '../utils.js';
 
 import superscriptIcon from '../../theme/icons/superscript.svg';
 
@@ -31,29 +31,17 @@ export default class SuperscriptUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const t = editor.locale.t;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: SUPERSCRIPT,
+			plugin: this,
+			icon: superscriptIcon,
+			label: t( 'Superscript' )
+		} );
 
 		// Add superscript button to feature components.
-		editor.ui.componentFactory.add( SUPERSCRIPT, locale => {
-			const command: AttributeCommand = editor.commands.get( SUPERSCRIPT )!;
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: t( 'Superscript' ),
-				icon: superscriptIcon,
-				tooltip: true,
-				isToggleable: true
-			} );
-
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( SUPERSCRIPT );
-				editor.editing.view.focus();
-			} );
-
-			return view;
-		} );
+		editor.ui.componentFactory.add( SUPERSCRIPT, () => createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:' + SUPERSCRIPT, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

@@ -63,6 +63,11 @@ describe( 'ImageResizeEditing', () => {
 				icon: 'original'
 			},
 			{
+				name: 'resizeImage:custom',
+				value: 'custom',
+				icon: 'custom'
+			},
+			{
 				name: 'resizeImage:25',
 				value: '25',
 				icon: 'small'
@@ -488,6 +493,30 @@ describe( 'ImageResizeEditing', () => {
 
 		it( 'allows the resizedHeight attribute when ImageInline plugin is enabled', async () => {
 			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageInlineEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedWidth attribute when ImageBlock plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageBlockEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageBlock plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageBlockEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedWidth attribute when ImageInline plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageInlineEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageInline plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageInlineEditing ] } );
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
 			await newEditor.destroy();
 		} );

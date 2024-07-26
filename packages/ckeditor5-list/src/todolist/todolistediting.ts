@@ -17,7 +17,9 @@ import {
 	type ViewDocumentKeyDownEvent,
 	type ViewDocumentArrowKeyEvent,
 	type MapperViewToModelPositionEvent,
-	type ViewDocumentFragment
+	type ViewDocumentFragment,
+	type SelectionChangeRangeEvent,
+	type DocumentFragment
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -39,7 +41,7 @@ import ListCommand from '../list/listcommand.js';
 import CheckTodoListCommand from './checktodolistcommand.js';
 import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver.js';
 
-const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
+const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -146,7 +148,7 @@ export default class TodoListEditing extends Plugin {
 					return null;
 				}
 
-				const viewElement = writer.createEmptyElement( 'input', {
+				const viewElement = writer.createUIElement( 'input', {
 					type: 'checkbox',
 					...( modelElement.getAttribute( 'todoListChecked' ) ?
 						{ checked: 'checked' } :
@@ -162,7 +164,11 @@ export default class TodoListEditing extends Plugin {
 					return viewElement;
 				}
 
-				return writer.createContainerElement( 'span', { contenteditable: 'false' }, viewElement );
+				const wrapper = writer.createContainerElement( 'span', { contenteditable: 'false' }, viewElement );
+
+				wrapper.getFillerOffset = () => null;
+
+				return wrapper;
 			},
 
 			canWrapElement( modelElement ) {
@@ -180,20 +186,6 @@ export default class TodoListEditing extends Plugin {
 					class: classes.join( ' ' )
 				} );
 			}
-		} );
-
-		// We need to register the model length callback for the view checkbox input because it has no mapped model element.
-		// The to-do list item checkbox does not use the UIElement because it would be trimmed by ViewRange#getTrimmed()
-		// and removing the default remove converter would not include checkbox in the range to remove.
-		editing.mapper.registerViewToModelLength( 'input', viewElement => {
-			if (
-				viewElement.getAttribute( 'type' ) == 'checkbox' &&
-				viewElement.findAncestor( { classes: 'todo-list__label' } )
-			) {
-				return 0;
-			}
-
-			return editing.mapper.toModelElement( viewElement ) ? 1 : 0;
 		} );
 
 		// Verifies if a to-do list block requires reconversion of a first item downcasted as an item description.
@@ -346,6 +338,8 @@ export default class TodoListEditing extends Plugin {
 				data.modelPosition = model.createPositionAt( nodeAfter, 0 );
 			}
 		}, { priority: 'low' } );
+
+		this._initAriaAnnouncements();
 	}
 
 	/**
@@ -365,6 +359,35 @@ export default class TodoListEditing extends Plugin {
 			writer.setSelection( listItem, 'end' );
 			editor.execute( 'checkTodoList' );
 			writer.setSelection( previousSelectionRanges );
+		} );
+	}
+
+	/**
+	 * Observe when user enters or leaves todo list and set proper aria value in global live announcer.
+	 * This allows screen readers to indicate when the user has entered and left the specified todo list.
+	 *
+	 * @internal
+	 */
+	private _initAriaAnnouncements( ) {
+		const { model, ui, t } = this.editor;
+		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
+
+		if ( !ui ) {
+			return;
+		}
+
+		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+			const focusParent = model.document.selection.focus!.parent;
+			const lastElementIsTodoList = isTodoListItemElement( lastFocusedCodeBlock );
+			const currentElementIsTodoList = isTodoListItemElement( focusParent );
+
+			if ( lastElementIsTodoList && !currentElementIsTodoList ) {
+				ui.ariaLiveAnnouncer.announce( t( 'Leaving a to-do list' ) );
+			} else if ( !lastElementIsTodoList && currentElementIsTodoList ) {
+				ui.ariaLiveAnnouncer.announce( t( 'Entering a to-do list' ) );
+			}
+
+			lastFocusedCodeBlock = focusParent;
 		} );
 	}
 }
@@ -526,4 +549,19 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
  */
 function isLabelElement( viewElement: ViewElement | ViewDocumentFragment | null ): boolean {
 	return !!viewElement && viewElement.is( 'attributeElement' ) && viewElement.hasClass( 'todo-list__label' );
+}
+
+/**
+ * Returns true if the given element is a list item model element of a to-do list.
+ */
+function isTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
+	if ( !element ) {
+		return false;
+	}
+
+	if ( !element.is( 'element', 'paragraph' ) && !element.is( 'element', 'listItem' ) ) {
+		return false;
+	}
+
+	return element.getAttribute( 'listType' ) == 'todo';
 }

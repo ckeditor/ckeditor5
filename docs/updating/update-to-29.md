@@ -107,17 +107,17 @@ To get to know the new editor UI for the image features, visit the {@link featur
 
 ### Inline images
 
-Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins: {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}. Both of them are included in all the {@link installation/getting-started/predefined-builds#available-builds predefined editor builds} by default.
-* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting the inline `<img>` tag nested in text (for example, inside a paragraph).
-* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the earlier {@link module:image/image~Image} plugin before v29.0.0. In the model, it uses the `imageBlock` element (known as `image` before v29.0.0).
+Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins: {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds predefined editor builds} by default.
+* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting the inline `<img>` tag nested in text (for example inside a paragraph).
+* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it uses the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
-	**Note:** You can load just one of these plugins, but only when {@link installation/advanced/integrating-from-source-webpack building the editor from source}.
+	**Note:** It is possible to load only one of these plugins, but only when {@link getting-started/advanced/integrating-from-source-webpack building the editor from source}.
 </info-box>
 
 ### Image caption
 
-An image caption is no longer automatically shown when selecting the image widget. You can now toggle its visibility with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all the {@link installation/getting-started/predefined-builds#available-builds predefined editor builds}.
+An image caption is no longer automatically shown when selecting the image widget. You can now toggle its visibility with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all the {@link getting-started/legacy-getting-started/predefined-builds#available-builds predefined editor builds}.
 
 <info-box>
 	To provide a valid data output, you can only add captions to block images. Adding a caption to an inline image will automatically convert it to a block image (which can be undone by the user).
@@ -133,7 +133,7 @@ Since the appearance of the image in the document depends on the image type (blo
 	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default dropdowns} are provided.
 	* In the editor configuration, you can declare a {@link module:image/imageconfig~ImageStyleDropdownDefinition custom dropdown}.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`). The default {@link installation/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customize the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link getting-started/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
 
 * The format of the `config.image.styles` has changed. You must wrap the list of the styles with the `options` array. Read more about the {@link module:image/imageconfig~ImageConfig#styles `image.styles` configuration}.
 
@@ -207,12 +207,12 @@ Since v29.0.0, {@link features/images-styles image styles} and {@link features/i
 The user experience will degrade if either of these features is missing and this makes the {@link module:image/imageconfig~ImageConfig#toolbar image toolbar} configuration essential.
 
 <info-box>
-	{@link installation/getting-started/predefined-builds Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link installation/getting-started/quick-start-other#customizing-builds custom editor builds} in their integrations.
+	{@link getting-started/legacy-getting-started/predefined-builds Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link getting-started/legacy-getting-started/quick-start-other custom editor builds} in their integrations.
 </info-box>
 
 We recommend one of the following configurations as the minimum setup for the image toolbar:
 
-* For structured content editing (implemented by default in the classic, balloon, balloon block, and inline {@link installation/getting-started/predefined-builds editor builds}):
+* For structured content editing (implemented by default in the classic, balloon, balloon block, and inline {@link getting-started/legacy-getting-started/predefined-builds editor builds}):
 
 	```js
 	Editor.create( document.querySelector( '#editor' ), {
@@ -230,7 +230,7 @@ We recommend one of the following configurations as the minimum setup for the im
 	} );
 	```
 
-* For document-like editing (implemented by default in the {@link installation/getting-started/predefined-builds#document-editor decoupled document build}).
+* For document-like editing (implemented by default in the {@link getting-started/legacy-getting-started/predefined-builds#document-editor decoupled document build}).
 
 	```js
 	Editor.create( document.querySelector( '#editor' ), {
@@ -318,9 +318,9 @@ We removed the following helpers from the public API:
 
 The {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link getting-started/legacy-getting-started/predefined-builds predefined builds} or using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 
-However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -342,9 +342,9 @@ Check out the comprehensive {@link features/images-installation installation gui
 
 The {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link getting-started/legacy-getting-started/predefined-builds predefined builds} or using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 
-However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
+However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfider';

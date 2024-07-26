@@ -85,6 +85,14 @@ msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
 msgstr "컴퓨터에서 이미지 업로드"
 
+msgctxt "The label for the upload image from computer menu bar button (standalone button)."
+msgid "Image from computer"
+msgstr "컴퓨터에서 이미지 가져오기"
+
+msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
+msgid "From computer"
+msgstr "컴퓨터에서"
+
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
 msgstr "컴퓨터에서 이미지 교체"
@@ -109,25 +117,41 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "사진을 원래 크기로 돌려놓기"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr "이미지 크기 조정하기(%0 이내)"
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "원본"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr "사용자 지정 이미지 크기"
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr "사용자 지정"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
 msgstr "사진 크기 목록"
 
-msgctxt "The label of the form submit button if the image source URL input has no value."
-msgid "Insert"
-msgstr "삽입"
-
-msgctxt "The label of the form submit button if the image source URL input has a value."
-msgid "Update"
-msgstr "업데이트"
-
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
 msgstr "URL로 이미지 삽입"
+
+msgctxt "The label for the insert image via url dropdown button."
+msgid "Insert via URL"
+msgstr "URL 버튼으로 이미지 삽입"
+
+msgctxt "The label for the insert image via url menu bar button (standalone button)."
+msgid "Image via URL"
+msgstr "URL 메뉴를 통한 이미지 삽입"
+
+msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
+msgid "Via URL"
+msgstr "이미지 메뉴에서 URL을 통한 이미지 삽입"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -140,3 +164,27 @@ msgstr "이미지용 캡션"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "이미지용 캡션: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr "값은 비워둘 수 없습니다."
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr "일반 숫자로 된 값을 입력해야 합니다."
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr "이미지 업로드 중"
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr "이미지 업로드 완료"
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr "이미지 업로드 중에 오류 발생"
+
+msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
+msgid "Image"
+msgstr "이미지 삽입 기능으로 삽입된 위젯"

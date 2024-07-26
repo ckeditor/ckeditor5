@@ -68,8 +68,4 @@ Regardless of the original file format, the responsive versions will be served a
 
 ## Installation
 
-<info-box>
-	The CKBox file manager is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
 For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.

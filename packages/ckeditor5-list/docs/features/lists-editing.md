@@ -2,8 +2,8 @@
 menu-title: Lists editing behavior
 meta-title: Lists editing behavior | CKEditor 5 Documentation
 category: features-lists
-order: 30
-modified_at: 2024-01-02
+order: 40
+modified_at: 2024-04-01
 ---
 
 # Lists editing behavior
@@ -18,19 +18,25 @@ To edit a block inside a list item, press <kbd>Enter</kbd> to create a new line 
 
 {@img assets/img/adding-list-items.gif 860 Editing a block list item.}
 
+## Managing lists with keyboard
+
+Press <kbd>Enter</kbd> to create a new list item. Press <kbd>Tab</kbd> to nest the item (in multi-level lists) or indent it (in regular lists). Press <kbd>Enter</kbd> to turn an item into a higher level in the list or to remove it completely.
+
+{@img assets/img/adding-multi-list-items.gif 836 Editing a multi-level list item.}
+
 ## Simple lists
 
 When working with simple content or in small editing areas, you might not need the support for multi-block lists. You can use the {@link module:list/listconfig~ListConfig#multiBlock `config.list.multiBlock`} configuration setting to turn off the block list functionality. When you set this option to `false`, users can only insert text into list items. They will not be able to nest content blocks &ndash; like paragraphs or tables &ndash; inside a list item. We sometimes refer to this setup as "simple lists."
 
 ```js
-import { List } from '@ckeditor/ckeditor5-list';
+import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
-		    multiBlock: false // Turn off the multi-block support (enabled by default).
+			multiBlock: false // Turn off the multi-block support (enabled by default).
 		}
 	} )
 	.then( /* ... */ )
@@ -41,19 +47,16 @@ ClassicEditor
 
 By default, the editor merges two ordered and unordered lists of the same type that are next to each other. This happens to preserve the user intention. Lists that visually appear to be one continuous list should constitute one list even if the user has accidentally created several of them.
 
-Sometimes this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
+Sometimes this can be an undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
 
 To prevent this behavior, enable the {@link module:list/list/adjacentlistssupport~AdjacentListsSupport `AdjacentListsSupport`} plugin.
 
 ```js
-import { AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
+import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			AdjacentListsSupport,
-			/* Other plugins. */
-		],
+		plugins: [ List, AdjacentListsSupport, /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

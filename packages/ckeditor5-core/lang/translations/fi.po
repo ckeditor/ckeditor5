@@ -69,6 +69,14 @@ msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "Korvaa kuva tiedostonhallinnalla"
 
+msgctxt "The label for a button that opens a file manager in order to insert a file."
+msgid "File"
+msgstr "Tiedosto"
+
+msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
+msgid "With file manager"
+msgstr "Tiedostonhallinnasta"
+
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
 msgstr "Poista taulukon kuvaus"
@@ -105,14 +113,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Siirrä tarkennusta eri kaavakekenttien (syötteet, painikkeet yms.) välillä"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Kohdenna valikkopalkkiin ja siirry palkista toiseen"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Siirrä tarkennus työkalupalkkiin, siirry työkalupalkista toiseen"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Liiku työkalupalkissa"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Siirry työkalupalkkien tai valikkopalkkien välillä"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Käytä tällä hetkellä kohteena olevaa painiketta"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Suorita tällä hetkellä kohdennettuna olevan painikkeen toiminto. Muokkaustyökalun sisältöön vaikuttavien painikkeiden käyttö palauttaa kohdennuksen kyseiseen sisältöön."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Hyväksy"

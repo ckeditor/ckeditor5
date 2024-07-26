@@ -140,3 +140,11 @@ msgstr "목록 항목 들여쓰기 늘리기"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "목록 항목 들여쓰기 줄이기"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "할 일 목록 입력하는 중"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "할 일 목록 남기는 중"

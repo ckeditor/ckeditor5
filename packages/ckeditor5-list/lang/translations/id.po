@@ -140,3 +140,11 @@ msgstr "Tambah indentasi item daftar"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Kurangi indentasi item daftar"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "memasukkan daftar kerja"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "meninggalkan daftar kerja"

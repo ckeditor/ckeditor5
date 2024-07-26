@@ -12,12 +12,14 @@ The multi-root editor implementation for CKEditor&nbsp;5. See the {@link example
 
 This package contains the {@link module:editor-multi-root/multirooteditor~MultiRootEditor} class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the multi-root editor. Read more about {@link installation/index CKEditor&nbsp;5 builds}.
+This package contains the source version of the multi-root editor. Read more about {@link getting-started/setup/editor-types CKEditor&nbsp;5 editor types}.
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-editor-multi-root
+npm install ckeditor5
 ```
 
 ## Contribute

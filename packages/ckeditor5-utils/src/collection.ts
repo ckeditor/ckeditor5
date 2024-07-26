@@ -24,7 +24,7 @@ import isIterable from './isiterable.js';
  *
  * @typeParam T The type of the collection element.
  */
-export default class Collection<T extends Record<string, any>> extends EmitterMixin() implements Iterable<T> {
+export default class Collection<T extends Record<string, any>> extends /* #__PURE__ */ EmitterMixin() implements Iterable<T> {
 	/**
 	 * The internal list of items in the collection.
 	 */

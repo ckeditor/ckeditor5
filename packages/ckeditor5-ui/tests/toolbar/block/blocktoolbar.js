@@ -850,6 +850,136 @@ describe( 'BlockToolbar', () => {
 		} );
 	} );
 
+	describe( '_repositionButtonOnScroll()', () => {
+		let buttonView, clock;
+
+		beforeEach( () => {
+			clock = sinon.useFakeTimers();
+			buttonView = blockToolbar.buttonView;
+		} );
+
+		afterEach( () => {
+			clock.restore();
+		} );
+
+		it( 'should bind scroll listener when button is visible', () => {
+			const spy = sinon.spy( blockToolbar, '_updateButton' );
+
+			buttonView.isVisible = false;
+			document.dispatchEvent( new Event( 'scroll' ) );
+			clock.tick( 100 );
+			expect( spy ).not.to.be.called;
+
+			buttonView.isVisible = true;
+			document.dispatchEvent( new Event( 'scroll' ) );
+			clock.tick( 100 );
+			expect( spy ).to.be.calledOnce;
+
+			spy.resetHistory();
+
+			buttonView.isVisible = false;
+			document.dispatchEvent( new Event( 'scroll' ) );
+			clock.tick( 100 );
+			expect( spy ).not.to.be.called;
+		} );
+
+		it( 'should batch update button events on scroll to increase performance', () => {
+			const spy = sinon.spy( blockToolbar, '_updateButton' );
+
+			buttonView.isVisible = true;
+			document.dispatchEvent( new Event( 'scroll' ) );
+			document.dispatchEvent( new Event( 'scroll' ) );
+			document.dispatchEvent( new Event( 'scroll' ) );
+			clock.tick( 100 );
+
+			expect( spy ).to.be.calledOnce;
+		} );
+
+		it( 'should call _clipButtonToViewport on scroll', () => {
+			const spy = sinon.spy( blockToolbar, '_clipButtonToViewport' );
+
+			buttonView.isVisible = true;
+			document.dispatchEvent( new Event( 'scroll' ) );
+			clock.tick( 100 );
+
+			expect( spy ).to.be.calledOnce;
+		} );
+	} );
+
+	describe( '_clipButtonToViewport()', () => {
+		let buttonView, editableElement, editableRectStub, buttonRectStub, clock;
+
+		beforeEach( () => {
+			clock = sinon.useFakeTimers();
+			buttonView = blockToolbar.buttonView;
+			editableElement = editor.ui.getEditableElement();
+
+			editableRectStub = sinon.stub( editableElement, 'getBoundingClientRect' );
+			buttonRectStub = sinon.stub( buttonView.element, 'getBoundingClientRect' );
+		} );
+
+		afterEach( () => {
+			clock.restore();
+		} );
+
+		it( 'should clip the button to the viewport when it is out of the viewport (after end of editable)', () => {
+			editableRectStub.returns( { bottom: 450 } );
+			buttonRectStub.returns( { bottom: 462, height: 32 } );
+			blockToolbar._clipButtonToViewport( buttonView, editableElement );
+
+			expect( buttonView.isEnabled ).to.be.true;
+			expect( buttonView.element.style.pointerEvents ).to.be.equal( '' );
+			expect( buttonView.element.style.clipPath ).to.be.equal(
+				'polygon(0px 0px, 100% 0px, 100% calc(100% - 12px), 0px calc(100% - 12px))'
+			);
+
+			buttonRectStub.returns( { bottom: 662, height: 32 } );
+			blockToolbar._clipButtonToViewport( buttonView, editableElement );
+
+			expect( buttonView.isEnabled ).to.be.false;
+			expect( buttonView.element.style.pointerEvents ).to.be.equal( 'none' );
+			expect( buttonView.element.style.clipPath ).to.be.equal(
+				'polygon(0px 0px, 100% 0px, 100% calc(100% - 32px), 0px calc(100% - 32px))'
+			);
+		} );
+
+		it( 'should clip the button to the viewport when it is out of the viewport (before start of editable)', () => {
+			editableRectStub.returns( { top: 50 } );
+			buttonRectStub.returns( { top: 38, height: 32 } );
+			blockToolbar._clipButtonToViewport( buttonView, editableElement );
+
+			expect( buttonView.isEnabled ).to.be.true;
+			expect( buttonView.element.style.pointerEvents ).to.be.equal( '' );
+			expect( buttonView.element.style.clipPath ).to.be.equal(
+				'polygon(0px 12px, 100% 12px, 100% 100%, 0px 100%)'
+			);
+
+			buttonRectStub.returns( { top: 0, height: 32 } );
+			blockToolbar._clipButtonToViewport( buttonView, editableElement );
+
+			expect( buttonView.isEnabled ).to.be.false;
+			expect( buttonView.element.style.pointerEvents ).to.be.equal( 'none' );
+			expect( buttonView.element.style.clipPath ).to.be.equal(
+				'polygon(0px 32px, 100% 32px, 100% 100%, 0px 100%)'
+			);
+		} );
+
+		it( 'should reset pointer events and clip path when the button is in the viewport', () => {
+			editableRectStub.returns( { top: 50 } );
+			buttonRectStub.returns( { top: 38, height: 32 } );
+
+			blockToolbar._clipButtonToViewport( buttonView, editableElement );
+
+			editableRectStub.returns( { top: 20, bottom: 600 } );
+			buttonRectStub.returns( { top: 38, bottom: 50, height: 32 } );
+			blockToolbar._clipButtonToViewport( buttonView, editableElement );
+
+			expect( buttonView.isEnabled ).to.be.true;
+			expect( buttonView.element.style.pointerEvents ).to.be.equal( '' );
+			expect( buttonView.element.style.clipPath ).to.be.equal( '' );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should destroy #resizeObserver if is available', () => {
 			const editable = editor.ui.getEditableElement();

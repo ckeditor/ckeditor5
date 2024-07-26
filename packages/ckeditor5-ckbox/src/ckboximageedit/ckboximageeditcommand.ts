@@ -10,7 +10,14 @@
  */
 
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core.js';
-import { CKEditorError, abortableDebounce, createElement, retry, type AbortableFunc } from 'ckeditor5/src/utils.js';
+import {
+	CKEditorError,
+	abortableDebounce,
+	createElement,
+	retry,
+	delay,
+	type AbortableFunc
+} from 'ckeditor5/src/utils.js';
 import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import { isEqual } from 'lodash-es';
@@ -53,6 +60,15 @@ export default class CKBoxImageEditCommand extends Command {
 	 * A wrapper function to prepare mount options. Ensures that at most one preparation is in-flight.
 	 */
 	private _prepareOptions: AbortableFunc<[ ProcessingState ], Promise<Record<string, unknown>>>;
+
+	/**
+	* CKBox's onClose function runs before the final cleanup, potentially causing
+	* page layout changes after it finishes. To address this, we use a setTimeout hack
+	* to ensure that floating elements on the page maintain their correct position.
+	*
+	* See: https://github.com/ckeditor/ckeditor5/issues/16153.
+	*/
+	private _updateUiDelayed = delay( () => this.editor.ui.update(), 0 );
 
 	/**
 	 * @inheritDoc
@@ -129,6 +145,8 @@ export default class CKBoxImageEditCommand extends Command {
 		this._handleImageEditorClose();
 
 		this._prepareOptions.abort();
+
+		this._updateUiDelayed.cancel();
 
 		for ( const state of this._processInProgress.values() ) {
 			state.controller.abort();
@@ -234,6 +252,8 @@ export default class CKBoxImageEditCommand extends Command {
 
 		this.editor.editing.view.focus();
 
+		this._updateUiDelayed();
+
 		this.refresh();
 	}
 
@@ -290,7 +310,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
-			authorization: ckboxUtils.getToken().value
+			authorization: ( await ckboxUtils.getToken() ).value
 		} );
 		const status = response.metadata!.metadataProcessingStatus;
 

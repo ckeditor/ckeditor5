@@ -1,5 +1,5 @@
 ---
-category: examples-builds-custom
+category: examples-framework
 order: 70
 classes: main__content--no-toc
 toc: false
@@ -12,7 +12,7 @@ modified_at: 2021-12-09
 
 The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, this example uses the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/document-editor decoupled UI in CKEditor&nbsp;5} to find out the details of this process.
 
-Additionally, thanks to the flexibility offered by the {@link framework/architecture/ui-library CKEditor&nbsp;5 UI framework}, the main toolbar was uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips were tuned to open upward for the best user experience. You can also achieve a similar effect by using the {@link features/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars built-in toolbar grouping option}.
+Additionally, thanks to the flexibility offered by the {@link framework/architecture/ui-library CKEditor&nbsp;5 UI framework}, the main toolbar has been uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips have been tuned to open upward for the best user experience. Similar effect can also be achieved by using the {@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars built-in toolbar grouping option}.
 
 The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally. Some examples are email applications, (forum) post editors, chats, or instant messaging. You can probably recognize this UI setup from popular applications such as Gmail, Slack, or Zendesk.
 
@@ -25,42 +25,56 @@ The presented combination of the UI and editor's features works best for integra
 
 ```js
 
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import { Plugin } from '@ckeditor/ckeditor5-core';
-
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
-import { Indent } from '@ckeditor/ckeditor5-indent';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { DropdownButtonView, DropdownPanelView, DropdownView, ToolbarView } from '@ckeditor/ckeditor5-ui';
-
+import {
+	DecoupledEditor,
+	Plugin,
+	Alignment,
+	Autoformat,
+	Bold,
+	Italic,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	Underline,
+	BlockQuote,
+	clickOutsideHandler,
+	Essentials,
+	Font,
+	Heading,
+	HorizontalLine,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Indent,
+	Link,
+	List,
+	MediaEmbed,
+	Paragraph,
+	RemoveFormat,
+	Table,
+	TableToolbar,
+	DropdownButtonView,
+	DropdownPanelView,
+	DropdownView,
+	ToolbarView
+} from 'ckeditor5';
+import { EasyImage } from 'ckeditor5-premium-features';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
-import { clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 
 class FormattingOptions extends Plugin {
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	static get pluginName() {
 		return 'FormattingOptions';
 	}
 
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	constructor( editor ) {
 		super( editor );
 

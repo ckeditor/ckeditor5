@@ -5,11 +5,13 @@
 
 /* globals window */
 
-// Display a warning banner when browsing nightly documentation build. Source parameter for maintenance of 404 redirs.
+// Display a warning banner when browsing nightly documentation build or legacy guides. Source parameter for maintenance of 404 redirs.
 if ( window.location.host === 'ckeditor5.github.io' ) {
 	const stableUrl = window.location.href.replace( 'https://ckeditor5.github.io/docs/nightly', 'https://ckeditor.com/docs' );
 
 	window.umberto.showWarningBanner(
 		`Nightly documentation ahead. Switch to the <a href="${ stableUrl }?source=nightly">stable editor documentation</a>.`
 	);
+} else if ( window.location.href.includes( '/legacy/' ) ) {
+	window.umberto.showWarningBanner( 'You are reading the legacy documentation.' );
 }

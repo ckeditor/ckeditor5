@@ -8,7 +8,10 @@
 			"path": "src/easyimage.js",
 			"requires": [
 				"CloudServices",
-				"Image",
+				[
+					"ImageBlock",
+					"ImageInline"
+				],
 				"ImageUpload"
 			]
 		}

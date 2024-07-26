@@ -28,8 +28,6 @@ describe( 'SubscriptUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				subView = editor.ui.componentFactory.create( 'subscript' );
 			} );
 	} );
 
@@ -39,33 +37,73 @@ describe( 'SubscriptUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register subscript feature component', () => {
-		expect( subView ).to.be.instanceOf( ButtonView );
-		expect( subView.isOn ).to.be.false;
-		expect( subView.label ).to.equal( 'Subscript' );
-		expect( subView.icon ).to.match( /<svg / );
-		expect( subView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			subView = editor.ui.componentFactory.create( 'subscript' );
+		} );
+
+		testButton();
 	} );
 
-	it( 'should execute subscript command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			subView = editor.ui.componentFactory.create( 'menuBar:subscript' );
+		} );
 
-		subView.fire( 'execute' );
+		testButton();
 
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'subscript' );
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( subView.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			subView.render();
+
+			subView.isOn = true;
+			expect( subView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			subView.isOn = false;
+			expect( subView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
-	it( 'should bind model to subscript command', () => {
-		const command = editor.commands.get( 'subscript' );
+	function testButton() {
+		it( 'should register subscript feature component', () => {
+			expect( subView ).to.be.instanceOf( ButtonView );
+			expect( subView.isOn ).to.be.false;
+			expect( subView.label ).to.equal( 'Subscript' );
+			expect( subView.icon ).to.match( /<svg / );
+			expect( subView.isToggleable ).to.be.true;
+		} );
 
-		expect( subView.isOn ).to.be.false;
-		expect( subView.isEnabled ).to.be.true;
+		it( 'should execute subscript command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( subView.isOn ).to.be.true;
+			subView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( subView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'subscript' );
+		} );
+
+		it( 'should bind model to subscript command', () => {
+			const command = editor.commands.get( 'subscript' );
+
+			expect( subView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( subView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'subscript' );
+
+			command.value = true;
+
+			expect( subView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( subView.isOn ).to.be.false;
+		} );
+	}
 } );

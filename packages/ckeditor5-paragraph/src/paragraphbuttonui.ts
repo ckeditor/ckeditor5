@@ -13,8 +13,6 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import Paragraph from './paragraph.js';
 import type ParagraphCommand from './paragraphcommand.js';
 
-const icon = icons.paragraph;
-
 /**
  * This plugin defines the `'paragraph'` button. It can be used together with
  * {@link module:heading/headingbuttonsui~HeadingButtonsUI} to replace the standard heading dropdown.
@@ -52,7 +50,7 @@ export default class ParagraphButtonUI extends Plugin {
 			const command: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 
 			view.label = t( 'Paragraph' );
-			view.icon = icon;
+			view.icon = icons.paragraph;
 			view.tooltip = true;
 			view.isToggleable = true;
 			view.bind( 'isEnabled' ).to( command );

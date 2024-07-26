@@ -112,7 +112,7 @@
 		{
 			"name": "Image resize",
 			"className": "ImageResize",
-			"description": "Allows for resizing images using handles.",
+			"description": "Allows for resizing images using handles and offers the UI to fine tune the sizes.",
 			"docs": "features/images/images-resizing.html",
 			"path": "src/imageresize.js",
 			"requires": [
@@ -230,7 +230,7 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "imageUpload",
+					"name": "uploadImage",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
 				}
 			]
@@ -238,8 +238,8 @@
 		{
 			"name": "Image insert",
 			"className": "ImageInsert",
-			"description": "Allows for inserting images via source URL",
-			"docs": "features/images/images-inserting.html#inserting-images-via-a-source-url",
+			"description": "Allows for inserting images via source URL.",
+			"docs": "features/images/images-inserting.html",
 			"path": "src/imageinsert.js",
 			"requires": [
 				"ImageUpload"
@@ -247,8 +247,22 @@
 			"uiComponents": [
 				{
 					"type": "SplitButton",
-					"name": "imageInsert",
+					"name": "insertImage",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+				}
+			]
+		},
+		{
+			"name": "Image insert via URL",
+			"className": "ImageInsertViaUrl",
+			"description": "The image insert via URL plugin. This plugin does not do anything directly, but it loads a set of specific plugins to enable image inserting via URL.",
+			"docs": "features/images/images-inserting.html#inserting-images-via-a-source-url",
+			"path": "src/imageinsertviaurl.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "insertImageViaUrl",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image-url.svg"
 				}
 			]
 		}

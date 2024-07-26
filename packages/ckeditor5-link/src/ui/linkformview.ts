@@ -79,6 +79,11 @@ export default class LinkFormView extends View {
 	public readonly children: ViewCollection;
 
 	/**
+	 * An array of form validators used by {@link #isValid}.
+	 */
+	private readonly _validators: Array<LinkFormValidatorCallback>;
+
+	/**
 	 * A collection of views that can be focused in the form.
 	 */
 	private readonly _focusables = new ViewCollection<FocusableView>();
@@ -95,12 +100,14 @@ export default class LinkFormView extends View {
 	 *
 	 * @param locale The localization services instance.
 	 * @param linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
+	 * @param validators  Form validators used by {@link #isValid}.
 	 */
-	constructor( locale: Locale, linkCommand: LinkCommand ) {
+	constructor( locale: Locale, linkCommand: LinkCommand, validators: Array<LinkFormValidatorCallback> ) {
 		super( locale );
 
 		const t = locale.t;
 
+		this._validators = validators;
 		this.urlInputView = this._createUrlInput();
 		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
@@ -204,6 +211,37 @@ export default class LinkFormView extends View {
 	}
 
 	/**
+	 * Validates the form and returns `false` when some fields are invalid.
+	 */
+	public isValid(): boolean {
+		this.resetFormStatus();
+
+		for ( const validator of this._validators ) {
+			const errorText = validator( this );
+
+			// One error per field is enough.
+			if ( errorText ) {
+				// Apply updated error.
+				this.urlInputView.errorText = errorText;
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * bringing them back to the state when the form has been displayed for the first time.
+	 *
+	 * See {@link #isValid}.
+	 */
+	public resetFormStatus(): void {
+		this.urlInputView.errorText = null;
+	}
+
+	/**
 	 * Creates a labeled input view.
 	 *
 	 * @returns Labeled field view instance.
@@ -212,6 +250,7 @@ export default class LinkFormView extends View {
 		const t = this.locale!.t;
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
+		labeledInput.fieldView.inputMode = 'url';
 		labeledInput.label = t( 'Link URL' );
 
 		return labeledInput;
@@ -328,7 +367,31 @@ export default class LinkFormView extends View {
 
 		return children;
 	}
+
+	/**
+	 * The native DOM `value` of the {@link #urlInputView} element.
+	 *
+	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
+	 * which works one way only and may not represent the actual state of the component in the DOM.
+	 */
+	public get url(): string | null {
+		const { element } = this.urlInputView.fieldView;
+
+		if ( !element ) {
+			return null;
+		}
+
+		return element.value.trim();
+	}
 }
+
+/**
+ * Callback used by {@link ~LinkFormView} to check if passed form value is valid.
+ *
+ * 	* If `undefined` is returned, it is assumed that the form value is correct and there is no error.
+ * 	* If string is returned, it is assumed that the form value is incorrect and the returned string is displayed in the error label
+ */
+export type LinkFormValidatorCallback = ( form: LinkFormView ) => string | undefined;
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),

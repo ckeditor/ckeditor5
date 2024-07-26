@@ -58,6 +58,7 @@ export type { Consumables, default as ViewConsumable } from './conversion/viewco
 // DataProcessor.
 export type { default as DataProcessor } from './dataprocessor/dataprocessor.js';
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor.js';
+export { default as XmlDataProcessor } from './dataprocessor/xmldataprocessor.js';
 
 // Model / Operation.
 export type { default as Operation } from './model/operation/operation.js';
@@ -159,7 +160,12 @@ export { default as ClickObserver } from './view/observer/clickobserver.js';
 export { default as DomEventObserver } from './view/observer/domeventobserver.js';
 export { default as MouseObserver } from './view/observer/mouseobserver.js';
 export { default as TabObserver } from './view/observer/tabobserver.js';
-export { default as FocusObserver } from './view/observer/focusobserver.js';
+
+export {
+	default as FocusObserver,
+	type ViewDocumentBlurEvent,
+	type ViewDocumentFocusEvent
+} from './view/observer/focusobserver.js';
 
 export { default as DowncastWriter } from './view/downcastwriter.js';
 export { default as UpcastWriter } from './view/upcastwriter.js';
@@ -177,6 +183,7 @@ export type {
 	ViewDocumentCompositionEndEvent
 } from './view/observer/compositionobserver.js';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver.js';
+export type { ViewDocumentMutationsEvent, MutationData } from './view/observer/mutationobserver.js';
 export type { ViewDocumentKeyDownEvent, ViewDocumentKeyUpEvent, KeyEventData } from './view/observer/keyobserver.js';
 export type { ViewDocumentLayoutChangedEvent } from './view/document.js';
 export type {
@@ -197,3 +204,18 @@ export * from './view/styles/border.js';
 export * from './view/styles/margin.js';
 export * from './view/styles/padding.js';
 export * from './view/styles/utils.js';
+
+// Development / testing utils.
+export {
+	getData as _getModelData,
+	setData as _setModelData,
+	parse as _parseModel,
+	stringify as _stringifyModel
+} from './dev-utils/model.js';
+
+export {
+	getData as _getViewData,
+	setData as _setViewData,
+	parse as _parseView,
+	stringify as _stringifyView
+} from './dev-utils/view.js';

@@ -81,7 +81,7 @@ describe( 'ListElementSupport', () => {
 		expect( editor.getData() ).to.equal( '<p data-foo="bar-p">1.</p>' );
 	} );
 
-	it( 'removes list attributes when list type changed', () => {
+	it( 'removes list attributes when list type changed (numbered -> bulleted)', () => {
 		dataFilter.allowElement( /^.*$/ );
 		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
 		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
@@ -102,6 +102,138 @@ describe( 'ListElementSupport', () => {
 					'<p data-foo="bar-p">1.</p>' +
 				'</li>' +
 			'</ul>'
+		);
+	} );
+
+	it( 'removes list attributes when list type changed (bulleted -> numbered)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		editor.commands.get( 'numberedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ol>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+	} );
+
+	it( 'does not remove list attributes when list type changed (numbered -> customNumbered)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customNumbered', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+	} );
+
+	it( 'does not remove list attributes when list type changed (bulleted -> customBulleted)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customBulleted', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'removes list attributes when list type changed (customNumbered -> bulleted)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customNumbered', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		editor.commands.get( 'bulletedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ul>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'removes list attributes when list type changed (customBulleted -> numbered)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customBulleted', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		editor.commands.get( 'numberedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ol>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
 		);
 	} );
 
@@ -510,6 +642,44 @@ describe( 'ListElementSupport', () => {
 					2: {},
 					3: {},
 					4: {}
+				}
+			} );
+		} );
+
+		it( 'should not apply the attributes from ancestor list', () => {
+			dataFilter.allowElement( /^(ul|ol)$/ );
+			dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: { 'data-foo': true } } );
+			dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: { 'data-bar': true } } );
+
+			editor.setData( '<ul data-foo="myUl"><li>Foo<ol data-bar="myOl"><li>Bar</li></ol></li></ul>' );
+
+			// The attributes from the `ul` list should not be applied to the `ol` list.
+			// In that case, the postfixer should not create an additional operation to clean those attributes.
+			for ( const operation of editor.model.document.history.getOperations() ) {
+				expect( operation.type ).to.be.not.equal( 'removeAttribute' );
+			}
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'Foo' +
+					'</paragraph>' +
+					'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="1" listItemId="a00" listType="numbered">' +
+					'Bar' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						attributes: {
+							'data-foo': 'myUl'
+						}
+					},
+					3: {},
+					4: {
+						attributes: {
+							'data-bar': 'myOl'
+						}
+					}
 				}
 			} );
 		} );

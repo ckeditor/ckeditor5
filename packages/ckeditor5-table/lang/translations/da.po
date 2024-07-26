@@ -272,3 +272,7 @@ msgstr "Indsæt en ny tabelrække (når du er i den sidste celle i en tabel)"
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "Naviger gennem tabellen"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Tabel"

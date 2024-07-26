@@ -13,7 +13,7 @@ import { extend } from 'lodash-es';
 /**
  * The base MVC model class.
  */
-export default class Model extends ObservableMixin() {
+export default class Model extends /* #__PURE__ */ ObservableMixin() {
 	[ x: string ]: unknown;
 
 	/**

@@ -7,7 +7,7 @@
  * @module editor-classic/classiceditoruiview
  */
 
-import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui.js';
+import { BoxedEditorUIView, InlineEditableUIView, MenuBarView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type { EditingView } from 'ckeditor5/src/engine.js';
 
@@ -49,6 +49,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		editingView: EditingView,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
+			useMenuBar?: boolean;
 		} = {}
 	) {
 		super( locale );
@@ -59,6 +60,10 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
+		if ( options.useMenuBar ) {
+			this.menuBarView = new MenuBarView( locale );
+		}
+
 		this.editable = new InlineEditableUIView( locale, editingView );
 	}
 
@@ -68,8 +73,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public override render(): void {
 		super.render();
 
-		// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
-		this.stickyPanel.content.add( this.toolbar );
+		if ( this.menuBarView ) {
+			// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
+			this.stickyPanel.content.addMany( [ this.menuBarView, this.toolbar ] );
+		} else {
+			this.stickyPanel.content.add( this.toolbar );
+		}
 
 		this.top.add( this.stickyPanel );
 		this.main.add( this.editable );

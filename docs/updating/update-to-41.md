@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 41.x | CKEditor 5 Documentation
 menu-title: Update to v41.x
 order: 83
-modified_at: 2024-01-10
+modified_at: 2024-04-03
 ---
 
 # Update to CKEditor&nbsp;5 v41.x
@@ -13,6 +13,19 @@ modified_at: 2024-01-10
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v41.3.0
+
+_Released on April 10, 2024._
+
+For the entire list of changes introduced in version 41.3.0, see the [release notes for CKEditor&nbsp;5 v41.3.0](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v41.3.0.
+
+### Legacy lists compatibility
+
+As of this release, due to a bug that needed fixing, the {@link module:list/legacylist~LegacyList legacy lists plugin} (lists v1 ) is no longer compatible with the {@link features/paste-from-office paste from Office} feature. List items will be added as paragraphs instead. Please consider {@link updating/update-to-41#breaking-changes-to-the-list-plugin upgrading to the modern list plugin} to avoid it.
+
 
 ## Update to CKEditor&nbsp;5 v41.0.0
 
@@ -40,7 +53,7 @@ Unless you need to specifically use the old plugin in your integration, there is
 If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
 
 <info-box>
-	We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+	We have replaced the old list plugins with the current ones.
 </info-box>
 
 #### Renaming of the plugins

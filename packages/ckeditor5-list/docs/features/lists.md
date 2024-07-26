@@ -34,12 +34,6 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 
 Besides the basic functionality of creating ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. You can enable features such as more styles for list markers, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build}.
-
-	See the {@link features/lists-installation#list-properties list properties} installation section to learn how to enable these in your editor.
-</info-box>
-
 ### List styles
 
 The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.
@@ -78,11 +72,67 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-core/t
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Feature-rich editor} and {@link examples/builds/document-editor Document editor} examples.
 </info-box>
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+The `List` plugin provides the {@link features/lists ordered (numbered) and unordered (bulleted) features} for CKEditor&nbsp;5. {@link features/lists#list-properties Additional list properties}, such as list marker styles, start index, or reversed list order, are provided by the `ListProperties` plugin.
+
+### List feature
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { List } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ List, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### List properties
+
+After {@link getting-started/quick-start installing the editor}, add `ListProperties` to your plugin list and toolbar configuration:
+
+To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
+
+```js
+import { ListProperties } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ListProperties, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box warning>
+	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
+</info-box>
+
 ## Related features
 
 These CKEditor&nbsp;5 features provide similar functionality:
 
 * {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/multi-level-lists Multi-level lists} &ndash; Multi-level lists allow the user to set different markers (symbols, text or numbers) to display at each level of the list.
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
@@ -100,24 +150,24 @@ The {@link module:list/list~List} plugin registers:
 The {@link module:list/listproperties~ListProperties} plugin registers:
 
 * The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command. It accepts the `type` of the list style to set. If not set, it uses the default marker (usually decimal).
-    ```js
-    editor.execute( 'listStyle', { type: 'lower-roman' } );
-    ```
-    The available types are:
+	```js
+	editor.execute( 'listStyle', { type: 'lower-roman' } );
+	```
+	The available types are:
 
-    * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
-    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
+	* For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
+	* For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
 * The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command. It is a number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
-    editor.execute( 'listStart', { startIndex: 3 } );
-    ```
+	editor.execute( 'listStart', { startIndex: 3 } );
+	```
 
 * The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command. It is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'listReversed', { reversed: true } );
-    ```
+	editor.execute( 'listReversed', { reversed: true } );
+	```
 
 * The `numberedList` UI split button. It overrides the UI button registered by the `List` plugin.
 * The `bulletedList` UI split button. It overrides the UI button registered by the `List` plugin.

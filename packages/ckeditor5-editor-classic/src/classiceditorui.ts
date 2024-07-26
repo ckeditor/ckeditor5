@@ -10,11 +10,11 @@
 import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
 import {
 	EditorUI,
-	normalizeToolbarConfig,
 	DialogView,
-	type EditorUIReadyEvent,
+	normalizeToolbarConfig,
 	type DialogViewMoveToEvent,
-	type Dialog
+	type Dialog,
+	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -53,6 +53,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this.view = view;
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
 		this._elementReplacer = new ElementReplacer();
 
 		this.listenTo<ViewScrollToTheSelectionEvent>(
@@ -114,6 +115,11 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
+
+		if ( view.menuBarView ) {
+			this._initMenuBar( view.menuBarView );
+		}
+
 		this._initDialogPluginIntegration();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}

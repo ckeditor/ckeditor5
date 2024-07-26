@@ -16,6 +16,7 @@ import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview.js';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'TableUI', () => {
 	let editor, element;
@@ -69,7 +70,7 @@ describe( 'TableUI', () => {
 		it( 'should register insertTable button', () => {
 			expect( insertTable ).to.be.instanceOf( DropdownView );
 			expect( insertTable.buttonView.label ).to.equal( 'Insert table' );
-			expect( insertTable.buttonView.icon ).to.match( /<svg / );
+			expect( insertTable.buttonView.icon ).to.equal( icons.table );
 		} );
 
 		it( 'should bind to insertTable command', () => {
@@ -130,6 +131,87 @@ describe( 'TableUI', () => {
 
 				sinon.assert.calledOnce( spy );
 			} );
+		} );
+	} );
+
+	describe( 'menuBar:insertTable menu bar menu', () => {
+		let menuView;
+
+		beforeEach( () => {
+			menuView = editor.ui.componentFactory.create( 'menuBar:insertTable' );
+			menuView.render();
+
+			document.body.appendChild( menuView.element );
+
+			menuView.isOpen = true;
+		} );
+
+		afterEach( () => {
+			menuView.element.remove();
+		} );
+
+		it( 'should set properties on a button', () => {
+			expect( menuView.buttonView.label ).to.equal( 'Table' );
+			expect( menuView.buttonView.icon ).to.equal( icons.table );
+		} );
+
+		it( 'should bind #isEnabled to the InsertTableCommand', () => {
+			const command = editor.commands.get( 'insertTable' );
+
+			expect( menuView.isEnabled ).to.be.true;
+
+			command.forceDisabled( 'foo' );
+			expect( menuView.isEnabled ).to.be.false;
+
+			command.clearForceDisabled( 'foo' );
+			expect( menuView.isEnabled ).to.be.true;
+		} );
+
+		it( 'should render InsertTableView', () => {
+			expect( menuView.panelView.children.first ).to.be.instanceOf( InsertTableView );
+		} );
+
+		it( 'should delegate #execute from InsertTableView to the MenuBarMenuView', () => {
+			const spy = sinon.spy();
+
+			menuView.on( 'execute', spy );
+
+			menuView.panelView.children.first.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should execute the insertTable command upon the #execute event and focus editing', () => {
+			const command = editor.commands.get( 'insertTable' );
+			const commandSpy = sinon.spy( command, 'execute' );
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+			const insertView = menuView.panelView.children.first;
+
+			insertView.rows = 3;
+			insertView.columns = 5;
+
+			insertView.fire( 'execute' );
+
+			sinon.assert.calledOnceWithExactly( commandSpy, { rows: 3, columns: 5 } );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( commandSpy, focusSpy );
+		} );
+
+		it( 'should reset column and rows selection on reopen', () => {
+			const insertView = menuView.panelView.children.first;
+
+			insertView.rows = 3;
+			insertView.columns = 5;
+
+			menuView.isOpen = false;
+
+			expect( insertView.rows ).to.equal( 1 );
+			expect( insertView.columns ).to.equal( 1 );
+
+			menuView.isOpen = true;
+
+			expect( insertView.rows ).to.equal( 1 );
+			expect( insertView.columns ).to.equal( 1 );
 		} );
 	} );
 

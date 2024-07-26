@@ -42,26 +42,33 @@ export default class ImageResizeEditing extends Plugin {
 
 		editor.config.define( 'image', {
 			resizeUnit: '%',
-			resizeOptions: [ {
-				name: 'resizeImage:original',
-				value: null,
-				icon: 'original'
-			},
-			{
-				name: 'resizeImage:25',
-				value: '25',
-				icon: 'small'
-			},
-			{
-				name: 'resizeImage:50',
-				value: '50',
-				icon: 'medium'
-			},
-			{
-				name: 'resizeImage:75',
-				value: '75',
-				icon: 'large'
-			} ]
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					icon: 'original'
+				},
+				{
+					name: 'resizeImage:custom',
+					value: 'custom',
+					icon: 'custom'
+				},
+				{
+					name: 'resizeImage:25',
+					value: '25',
+					icon: 'small'
+				},
+				{
+					name: 'resizeImage:50',
+					value: '50',
+					icon: 'medium'
+				},
+				{
+					name: 'resizeImage:75',
+					value: '75',
+					icon: 'large'
+				}
+			]
 		} );
 	}
 
@@ -72,13 +79,19 @@ export default class ImageResizeEditing extends Plugin {
 		const editor = this.editor;
 		const resizeImageCommand = new ResizeImageCommand( editor );
 
-		this._registerSchema();
 		this._registerConverters( 'imageBlock' );
 		this._registerConverters( 'imageInline' );
 
 		// Register `resizeImage` command and add `imageResize` command as an alias for backward compatibility.
 		editor.commands.add( 'resizeImage', resizeImageCommand );
 		editor.commands.add( 'imageResize', resizeImageCommand );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		this._registerSchema();
 	}
 
 	private _registerSchema(): void {

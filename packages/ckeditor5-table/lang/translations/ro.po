@@ -272,3 +272,7 @@ msgstr "Inserează un nou rând de tabel (când poziția activă este în ultima
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "Navigare în tabel"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Tabel"

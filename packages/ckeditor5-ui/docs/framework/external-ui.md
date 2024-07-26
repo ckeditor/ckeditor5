@@ -14,36 +14,38 @@ In this guide, a [classic–like](https://www.npmjs.com/package/@ckeditor/ckedit
 
 ## Readying the editor side
 
-The ready–to–use builds of CKEditor like {@link examples/builds/classic-editor Classic} or {@link examples/builds/inline-editor Inline} come with a dedicated default user interface and a theme. However, to create an editor instance bound to a Bootstrap UI, only a limited subset of features is required. You need to import them first:
+The editor types, such as the {@link getting-started/setup/editor-types#classic-editor classic} or {@link getting-started/setup/editor-types#inline-editor inline editor}, have a dedicated default user interface and a theme. However, only a limited subset of features is required to create an editor instance bound to a Bootstrap UI. You need to import them first:
 
 ```js
 // Basic classes to create an editor.
-import { Editor } from '@ckeditor/ckeditor5-core';
-import { ComponentFactory, EditorUI, EditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
-import { ElementReplacer, FocusTracker } from '@ckeditor/ckeditor5-utils';
-
-// Interfaces to extend the basic Editor API.
-import { ElementApiMixin } from '@ckeditor/ckeditor5-core';
-
-// Helper function for adding interfaces to the Editor class.
-import { mix } from '@ckeditor/ckeditor5-utils';
-
-// Helper function that gets the data from an HTML element that the Editor is attached to.
-import { getDataFromElement } from '@ckeditor/ckeditor5-utils';
-
-// Helper function that binds the editor with an HTMLForm element.
-import { attachToForm } from '@ckeditor/ckeditor5-core';
-
-// Basic features that every editor should enable.
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Typing } from '@ckeditor/ckeditor5-typing';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-
-// Basic features associated with the edited content.
-import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import {
+	Editor,
+	ComponentFactory,
+	EditorUI,
+	EditorUIView,
+	InlineEditableUIView,
+	ElementReplacer,
+	FocusTracker,
+	// Interfaces to extend the basic Editor API.
+	ElementApiMixin,
+	// Helper function for adding interfaces to the Editor class.
+	mix,
+	// Helper function that gets the data from an HTML element that the Editor is attached to.
+	getDataFromElement,
+	// Helper function that binds the editor with an HTMLForm element.
+	attachToForm,
+	// Basic features that every editor should enable.
+	Clipboard,
+	Enter,
+	Paragraph,
+	Typing,
+	UndoEditing,
+	// Basic features associated with the edited content.
+	BoldEditing,
+	ItalicEditing,
+	UnderlineEditing,
+	HeadingEditing
+} from 'ckeditor5';
 ```
 
 <info-box info>
@@ -121,8 +123,8 @@ With the Bootstrap framework loaded in the web page, you can define the actual U
 		<!-- The headings dropdown. -->
 		<div class="btn-group mr-2" role="group" aria-label="Headings">
 			<div class="dropdown" id="heading">
-			  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Headings</span></button>
-			  <div class="dropdown-menu" aria-labelledby="heading-button"></div>
+			 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Headings</span></button>
+			 <div class="dropdown-menu" aria-labelledby="heading-button"></div>
 			</div>
 		</div>
 
@@ -478,19 +480,18 @@ _setupBootstrapHeadingDropdown() {
 When the editor classes and the user interface are ready, it is time to run the editor. Just make sure all the plugins are loaded and the right DOM element is passed to `BootstrapEditor#create`:
 
 ```js
-BootstrapEditor
-	.create( $( '#editor' ).get( 0 ), {
-		plugins: [
-			Clipboard, Enter, Typing, Paragraph,
-			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+BootstrapEditor.create( $( '#editor' ).get( 0 ), {
+	plugins: [
+		Clipboard, Enter, Typing, Paragraph,
+		BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
+	]
+} )
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
 ```
 
-Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.
+Once everything works as expected, you may want to create a custom preset of your editor to ship it across the applications. To learn more check out the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

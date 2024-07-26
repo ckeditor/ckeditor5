@@ -30,6 +30,10 @@
 	outline: none;
 	transition: none;
 
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
 	&:focus {
 		box-shadow: none;
 	}

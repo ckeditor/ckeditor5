@@ -69,6 +69,14 @@ msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "Αντικατάσταση εικόνας με τη διαχείριση αρχείων"
 
+msgctxt "The label for a button that opens a file manager in order to insert a file."
+msgid "File"
+msgstr "Αρχείο"
+
+msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
+msgid "With file manager"
+msgstr "Με διαχειριστή φακέλων"
+
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
 msgstr "Εναλλαγή απόκρυψης λεζάντας"
@@ -105,14 +113,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Μετακίνηση της εστίασης μεταξύ των πεδίων φόρμας (εισαγωγές, κουμπιά, κ.λπ.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Μετακίνηση της εστίασης στη γραμμή μενού, πλοήγηση μεταξύ των γραμμών μενού"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Μετακίνηση της εστίασης στη γραμμή εργαλείων, πλοήγηση μεταξύ των γραμμών εργαλείων"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Πλοήγηση στη γραμμή εργαλείων"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Πλοήγηση μέσω της γραμμής εργαλείων ή της γραμμής μενού"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Εκτέλεση του τρέχοντος εστιασμένου κουμπιού"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Εκτέλεση του τρέχοντος εστιασμένου κουμπιού. Η εκτέλεση κουμπιών που αλληλεπιδρούν με το περιεχόμενο του συντάκτη μετακινεί την εστίαση πίσω στο περιεχόμενο."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Αποδοχή"

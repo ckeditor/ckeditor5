@@ -39,11 +39,6 @@ import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
  */
 export default class CKBoxEditing extends Plugin {
 	/**
-	 * CKEditor Cloud Services access token.
-	 */
-	private _token!: InitializedToken;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {

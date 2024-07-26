@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "../../mixins/_unselectable.css";
+
 .ck.ck-balloon-panel.ck-tooltip {
-	/* Keep tooltips transparent for any interactions. */
-	pointer-events: none;
+	@mixin ck-unselectable;
 
 	z-index: calc( var(--ck-z-dialog) + 100 );
 }

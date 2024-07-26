@@ -69,6 +69,14 @@ msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "Remplacer l'image avec le gestionnaire de fichiers"
 
+msgctxt "The label for a button that opens a file manager in order to insert a file."
+msgid "File"
+msgstr "Fichier"
+
+msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
+msgid "With file manager"
+msgstr "Avec le gestionnaire de fichiers"
+
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
 msgstr "Désactiver la légende"
@@ -105,14 +113,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Déplacer le focus entre les champs du formulaire (saisies, boutons, etc.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Déplacer le focus sur la barre du menu, naviguer entre les barres de menu"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Déplacez le focus sur la barre d'outils, naviguez entre les barres d'outils"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Naviguer dans la barre d'outils"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Naviguer sur la barre d'outils ou la barre de menu"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Exécuter le bouton actuellement ciblé"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Exécuter le bouton sur lequel se trouve le focus. L'exécution de boutons qui interagissent avec le contenu de l'éditeur ramène le focus sur le contenu."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Accepter"

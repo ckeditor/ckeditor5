@@ -104,7 +104,7 @@ export default class Locale {
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
-	 * {@glink features/ui-language configuring the language of the editor}.
+	 * {@glink getting-started/setup/ui-language configuring the language of the editor}.
 	 *
 	 * @param options Locale configuration.
 	 * @param options.uiLanguage The editor UI language code in the
@@ -201,6 +201,6 @@ function interpolateString( string: string, values: ReadonlyArray<any> ): string
 export type Translations = {
 	[ language: string ]: {
 		dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
-		getPluralForm?: ( n: number ) => number;
+		getPluralForm?: ( ( n: number ) => number | boolean ) | null;
 	};
 };

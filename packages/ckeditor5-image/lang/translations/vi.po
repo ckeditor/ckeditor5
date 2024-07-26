@@ -85,6 +85,14 @@ msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
 msgstr "Tải hình ảnh lên từ máy tính"
 
+msgctxt "The label for the upload image from computer menu bar button (standalone button)."
+msgid "Image from computer"
+msgstr "Hình ảnh từ máy tính"
+
+msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
+msgid "From computer"
+msgstr "Từ máy tính"
+
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
 msgstr "Thay thế hình ảnh từ máy tính"
@@ -109,25 +117,41 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "Chỉnh về ảnh kích cỡ nguyên gốc"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr "Đặt lại kích thước hình ảnh (bằng %0)"
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "Nguyên bản"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr "Tùy chỉnh kích thước hình ảnh"
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr "Tùy chỉnh"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
 msgstr "Danh sách ảnh đã chỉnh kích thước"
 
-msgctxt "The label of the form submit button if the image source URL input has no value."
-msgid "Insert"
-msgstr "Chèn"
-
-msgctxt "The label of the form submit button if the image source URL input has a value."
-msgid "Update"
-msgstr "Cập nhật"
-
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
 msgstr "Chèn ảnh từ URL"
+
+msgctxt "The label for the insert image via url dropdown button."
+msgid "Insert via URL"
+msgstr "Chèn bằng URL"
+
+msgctxt "The label for the insert image via url menu bar button (standalone button)."
+msgid "Image via URL"
+msgstr "Hình ảnh bằng URL"
+
+msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
+msgid "Via URL"
+msgstr "Bằng URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -140,3 +164,27 @@ msgstr "Chú thích cho hình ảnh"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "Chú thích cho hình ảnh: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr "Không được để trống giá trị này."
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr "Giá trị này phải là một số thường."
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr "Đang tải hình ảnh lên"
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr "Hoàn tất quá trình tải hình ảnh lên"
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr "Xảy ra lỗi trong quá trình tải hình ảnh lên"
+
+msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
+msgid "Image"
+msgstr "Hình ảnh"

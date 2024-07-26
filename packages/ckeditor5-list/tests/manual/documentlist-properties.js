@@ -99,6 +99,9 @@ const config = {
 	htmlEmbed: {
 		showPreviews: true,
 		sanitizeHtml: html => ( { html, hasChange: false } )
+	},
+	menuBar: {
+		isVisible: true
 	}
 };
 
@@ -158,6 +161,38 @@ createEditor( 'reversed', {
 
 createEditor( 'style', {
 	styles: true,
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-bulleted-only', {
+	styles: {
+		listTypes: 'bulleted'
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-bulleted-only-styles', {
+	styles: {
+		listTypes: 'bulleted'
+	},
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-numbered-only', {
+	styles: {
+		listTypes: 'numbered'
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-numbered-only-styles', {
+	styles: {
+		listTypes: 'numbered'
+	},
 	startIndex: false,
 	reversed: false
 } );

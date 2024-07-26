@@ -8,10 +8,16 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
 import StandardEditingMode from '../../src/standardeditingmode.js';
 import RestrictedEditingMode from '../../src/restrictededitingmode.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -35,14 +41,17 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, StandardEditingMode ],
+		plugins: [ ArticlePluginSet, Table, EasyImage, ImageInsert, ImageUpload, CloudServices, StandardEditingMode ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
-			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
 			'restrictedEditingException', '|', 'undo', 'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ],
+			insert: {
+				type: 'auto'
+			}
 		},
 		table: {
 			contentToolbar: [
@@ -51,6 +60,10 @@ async function startStandardEditingMode() {
 				'mergeTableCells'
 			]
 		},
+		menuBar: {
+			isVisible: true
+		},
+		cloudServices: CS_CONFIG,
 		updateSourceElementOnDestroy: true
 	} );
 }
@@ -74,13 +87,27 @@ function MyPlugin( editor ) {
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin ],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
+		plugins: [
+			ArticlePluginSet, Table, TableToolbar, EasyImage, ImageInsert, ImageUpload, CloudServices, RestrictedEditingMode, MyPlugin
+		],
+		toolbar: [ 'bold', 'italic', 'link', 'insertImage', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
+		image: {
+			insert: {
+				type: 'inline'
+			}
+		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		},
-		updateSourceElementOnDestroy: true
+		updateSourceElementOnDestroy: true,
+		menuBar: {
+			isVisible: true
+		},
+		restrictedEditing: {
+			allowedCommands: [ 'imageInsert', 'imageUpload' ]
+		},
+		cloudServices: CS_CONFIG
 	} );
 }
 

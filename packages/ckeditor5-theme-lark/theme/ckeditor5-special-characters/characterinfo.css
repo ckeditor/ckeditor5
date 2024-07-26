@@ -23,8 +23,4 @@
 	& .ck-character-info__code {
 		opacity: .6;
 	}
-
-	@mixin ck-media-phone {
-		max-width: 190px;
-	}
 }

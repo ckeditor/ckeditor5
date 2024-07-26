@@ -14,27 +14,29 @@ import IndentEditing from '../src/indentediting.js';
 import IndentUI from '../src/indentui.js';
 
 describe( 'IndentUI', () => {
-	let editor, element;
+	let editor, rtlEditor, element, button, rtlButton;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor
-			.create( element, { plugins: [ IndentUI, IndentEditing ] } )
-			.then( newEditor => {
-				editor = newEditor;
+		editor = await ClassicTestEditor
+			.create( element, { plugins: [ IndentUI, IndentEditing ] } );
+
+		rtlEditor = await ClassicTestEditor
+			.create( element, {
+				plugins: [ IndentUI, IndentEditing ],
+				language: 'ar'
 			} );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		element.remove();
 
-		if ( editor ) {
-			return editor.destroy();
-		}
+		await editor.destroy();
+		await rtlEditor.destroy();
 	} );
 
 	it( 'should be named', () => {
@@ -45,97 +47,111 @@ describe( 'IndentUI', () => {
 		expect( editor.plugins.get( IndentUI ) ).to.be.instanceOf( IndentUI );
 	} );
 
-	it( 'should set up button for indent', () => {
-		const indentButton = editor.ui.componentFactory.create( 'indent' );
-
-		expect( indentButton ).to.be.instanceOf( ButtonView );
-		expect( indentButton.label ).to.equal( 'Increase indent' );
-	} );
-
-	it( 'should set up button for outdent', () => {
-		const outdentButton = editor.ui.componentFactory.create( 'outdent' );
-
-		expect( outdentButton ).to.be.instanceOf( ButtonView );
-		expect( outdentButton.label ).to.equal( 'Decrease indent' );
-	} );
-
-	describe( 'icons', () => {
-		describe( 'left–to–right UI', () => {
-			it( 'should display the right icon for indent', () => {
-				const indentButton = editor.ui.componentFactory.create( 'indent' );
-
-				expect( indentButton.icon ).to.equal( icons.indent );
+	describe( 'toolbar buttons', () => {
+		describe( '"indent" button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'indent' );
+				rtlButton = rtlEditor.ui.componentFactory.create( 'indent' );
 			} );
 
-			it( 'should display the right icon for outdent', () => {
-				const outdentButton = editor.ui.componentFactory.create( 'outdent' );
+			testButton( 'indent', 'Increase indent', {
+				ltrIcon: icons.indent,
+				rtlIcon: icons.outdent
+			}, ButtonView );
 
-				expect( outdentButton.icon ).to.equal( icons.outdent );
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
 			} );
 		} );
 
-		describe( 'right–to–left UI', () => {
-			it( 'should display the right icon for indent', () => {
-				const element = document.createElement( 'div' );
-				document.body.appendChild( element );
-
-				return ClassicTestEditor
-					.create( element, {
-						plugins: [ IndentUI, IndentEditing ],
-						language: 'ar'
-					} )
-					.then( newEditor => {
-						const indentButton = newEditor.ui.componentFactory.create( 'indent' );
-
-						expect( indentButton.icon ).to.equal( icons.outdent );
-
-						return newEditor.destroy();
-					} )
-					.then( () => {
-						element.remove();
-					} );
+		describe( '"outdent" button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'outdent' );
+				rtlButton = rtlEditor.ui.componentFactory.create( 'outdent' );
 			} );
 
-			it( 'should display the right icon for outdent', () => {
-				const element = document.createElement( 'div' );
-				document.body.appendChild( element );
+			testButton( 'outdent', 'Decrease indent', {
+				ltrIcon: icons.outdent,
+				rtlIcon: icons.indent
+			}, ButtonView );
 
-				return ClassicTestEditor
-					.create( element, {
-						plugins: [ IndentUI, IndentEditing ],
-						language: 'ar'
-					} )
-					.then( newEditor => {
-						const outdentButton = newEditor.ui.componentFactory.create( 'outdent' );
-
-						expect( outdentButton.icon ).to.equal( icons.indent );
-
-						return newEditor.destroy();
-					} )
-					.then( () => {
-						element.remove();
-					} );
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
 			} );
 		} );
 	} );
 
-	it( 'should execute indent command on button execute', () => {
-		const button = editor.ui.componentFactory.create( 'indent' );
-		const spy = sinon.spy( editor, 'execute' );
+	describe( 'menu bar buttons', () => {
+		describe( '"menuBar:indent" button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'menuBar:indent' );
+				rtlButton = rtlEditor.ui.componentFactory.create( 'menuBar:indent' );
+			} );
 
-		button.fire( 'execute' );
+			testButton( 'indent', 'Increase indent', {
+				ltrIcon: icons.indent,
+				rtlIcon: icons.outdent
+			}, ButtonView );
+		} );
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledWithExactly( spy, 'indent' );
+		describe( '"menuBar:outdent" button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'menuBar:outdent' );
+				rtlButton = rtlEditor.ui.componentFactory.create( 'menuBar:outdent' );
+			} );
+
+			testButton( 'outdent', 'Decrease indent', {
+				ltrIcon: icons.outdent,
+				rtlIcon: icons.indent
+			}, ButtonView );
+		} );
 	} );
 
-	it( 'should execute outdent command on button execute', () => {
-		const button = editor.ui.componentFactory.create( 'outdent' );
-		const spy = sinon.spy( editor, 'execute' );
+	function testButton( featureName, label, { ltrIcon, rtlIcon }, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
 
-		button.fire( 'execute' );
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( label );
+		} );
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledWithExactly( spy, 'outdent' );
-	} );
+		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
+		} );
+
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
+
+		describe( 'icons and UI language', () => {
+			describe( 'left–to–right UI', () => {
+				it( 'should display the correct icon', () => {
+					expect( button.icon ).to.equal( ltrIcon );
+				} );
+			} );
+
+			describe( 'right–to–left UI', () => {
+				it( 'should display the correct icon', () => {
+					expect( rtlButton.icon ).to.equal( rtlIcon );
+				} );
+			} );
+		} );
+	}
 } );
