@@ -3,7 +3,7 @@ category: licensing
 menu-title: Usage-based billing
 meta-title: Usage-based billing | CKEditor 5 documentation
 meta-description: Learn how usage-based billing works in CKEditor 5.
-order: 30
+order: 40
 modified_at: 2024-06-25
 ---
 

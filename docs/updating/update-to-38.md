@@ -45,7 +45,7 @@ Starting from version 38.0.0, all **open source installations** of CKEditor&nbsp
 
 If you have a **commercial license**, you can hide the logo by adding {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} to your configuration. If you already use pagination, productivity pack, or asynchronous collaboration features, you do not need to take any action as you should already have `config.licenseKey` in place. The logo will not be visible in your editor.
 
-We have prepared a detailed {@link getting-started/setup/managing-ckeditor-logo Managing the "Powered by CKEditor" logo} guide to help everyone through the transition and explain any concerns.
+We have prepared a detailed {@link getting-started/licensing/managing-ckeditor-logo Managing the "Powered by CKEditor" logo} guide to help everyone through the transition and explain any concerns.
 
 ### Introduction of color pickers to font color and font background color features
 

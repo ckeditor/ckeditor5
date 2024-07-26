@@ -1,6 +1,6 @@
 ---
 category: licensing
-order: 15
+order: 20
 meta-title: License key and activation | CKEditor 5 Documentation
 menu-title: License key and activation
 ---
@@ -28,7 +28,7 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 Other premium features such as {@link features/real-time-collaboration real-time collaboration}, {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, or {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
 <info-box>
-	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link getting-started/licensing/license-and-legal open source software under the GPL license}. It will then {@link getting-started/setup/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
+	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link getting-started/licensing/license-and-legal open source software under the GPL license}. It will then {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 
 	For commercial purposes, there are {@link getting-started/licensing/license-and-legal trial, development and production license keys} are available.
 </info-box>

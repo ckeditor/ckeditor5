@@ -3,7 +3,7 @@ category: licensing
 menu-title: License plans
 meta-title: Available license plans | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5.
-order: 20
+order: 30
 modified_at: 2024-06-25
 ---
 
