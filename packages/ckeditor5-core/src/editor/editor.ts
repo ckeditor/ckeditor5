@@ -11,9 +11,16 @@ import {
 	Config,
 	CKEditorError,
 	ObservableMixin,
+	logError,
+	parseBase64EncodedObject,
+	releaseDate,
+	toArray,
+	uid,
+	crc32,
 	type Locale,
 	type LocaleTranslate,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type CRCData
 } from '@ckeditor/ckeditor5-utils';
 
 import {
@@ -35,6 +42,11 @@ import Accessibility from '../accessibility.js';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
+
+declare global {
+	// eslint-disable-next-line no-var
+	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
+}
 
 /**
  * The class representing a basic, generic editor.
@@ -301,6 +313,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
+		checkLicenseKeyIsDefined( this.config );
+
 		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 
 		this.locale = this._context.locale;
@@ -335,6 +349,188 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.keystrokes.listenTo( this.editing.view.document );
 
 		this.accessibility = new Accessibility( this );
+
+		verifyLicenseKey( this );
+
+		// Checks if the license key is defined and throws an error if it is not.
+		function checkLicenseKeyIsDefined( config: Config<EditorConfig> ) {
+			let licenseKey = config.get( 'licenseKey' );
+
+			if ( !licenseKey && window.CKEDITOR_GLOBAL_LICENSE_KEY ) {
+				licenseKey = window.CKEDITOR_GLOBAL_LICENSE_KEY;
+				config.set( 'licenseKey', licenseKey );
+			}
+
+			if ( !licenseKey ) {
+				/**
+				 * The licenseKey is missing. Add your license or 'GPL' string to the editor config.
+				 *
+				 * @error editor-license-key-missing
+				 */
+				throw new CKEditorError( 'editor-license-key-missing' );
+			}
+		}
+
+		function verifyLicenseKey( editor: Editor ) {
+			const licenseKey = editor.config.get( 'licenseKey' )!;
+			const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ] || 'sh';
+
+			if ( licenseKey == 'GPL' ) {
+				if ( distributionChannel == 'cloud' ) {
+					blockEditor( 'distributionChannel' );
+				}
+
+				return;
+			}
+
+			const encodedPayload = getPayload( licenseKey );
+
+			if ( !encodedPayload ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			const licensePayload = parseBase64EncodedObject( encodedPayload );
+
+			if ( !licensePayload ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			if ( !hasAllRequiredFields( licensePayload ) ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			if ( licensePayload.distributionChannel && !toArray( licensePayload.distributionChannel ).includes( distributionChannel ) ) {
+				blockEditor( 'distributionChannel' );
+
+				return;
+			}
+
+			if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.vc.toLowerCase() ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			const expirationDate = new Date( licensePayload.exp * 1000 );
+
+			if ( expirationDate < releaseDate ) {
+				blockEditor( 'expired' );
+
+				return;
+			}
+
+			const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
+
+			if ( licensedHosts && licensedHosts.length > 0 ) {
+				const hostname = window.location.hostname;
+				const willcards = licensedHosts
+					.filter( val => val.startsWith( '*' ) )
+					.map( val => val.substring( 1 ) );
+
+				const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
+				const isWillcardMatched = willcards.some( willcard => hostname.endsWith( willcard ) );
+
+				if ( !isWillcardMatched && !isHostnameMatched ) {
+					blockEditor( 'domainLimit' );
+
+					return;
+				}
+			}
+
+			if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+				blockEditor( 'expired' );
+
+				return;
+			}
+
+			if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+				const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
+				console.info(
+					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
+					'Make sure you will not use it in the production environment.'
+				);
+
+				const timerId = setTimeout( () => {
+					blockEditor( `${ licenseType }Limit` );
+				}, 600000 );
+
+				editor.on( 'destroy', () => {
+					clearTimeout( timerId );
+				} );
+			}
+
+			if ( licensePayload.usageEndpoint ) {
+				editor.once<EditorReadyEvent>( 'ready', () => {
+					const telemetry = editor._getTelemetryData();
+
+					const request = {
+						requestId: uid(),
+						requestTime: Math.round( Date.now() / 1000 ),
+						license: licenseKey,
+						telemetry
+					};
+
+					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
+						const { status, message } = response;
+
+						if ( message ) {
+							console.warn( message );
+						}
+
+						if ( status != 'ok' ) {
+							blockEditor( 'usageLimit' );
+						}
+					}, () => {
+						/**
+						 * Your license key cannot be validated because of a network issue.
+						 * Please make sure that your setup does not block the request.
+						 *
+						 * @error license-key-validation-endpoint-not-reachable
+						 * @param {String} url The URL that was attempted to reach.
+						 */
+						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
+					} );
+				}, { priority: 'high' } );
+			}
+
+			function getPayload( licenseKey: string ): string | null {
+				const parts = licenseKey.split( '.' );
+
+				if ( parts.length != 3 ) {
+					return null;
+				}
+
+				return parts[ 1 ];
+			}
+
+			function blockEditor( reason: LicenseErrorReason ) {
+				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
+				editor._showLicenseError( reason );
+			}
+
+			function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
+				const requiredFields = [ 'exp', 'jti', 'vc' ];
+
+				return requiredFields.every( field => field in licensePayload );
+			}
+
+			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
+				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
+
+				const filteredValues = keysToCheck
+					.filter( key => key != 'vc' && licensePayload[ key ] != null )
+					.map( key => licensePayload[ key ] );
+
+				return filteredValues as CRCData;
+			}
+		}
 	}
 
 	/**
@@ -664,7 +860,132 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
 	public static ContextWatchdog = ContextWatchdog;
+
+	private _getTelemetryData() {
+		return {
+			editorVersion: globalThis.CKEDITOR_VERSION
+		};
+	}
+
+	private _showLicenseError( reason: LicenseErrorReason, pluginName?: string ) {
+		setTimeout( () => {
+			if ( reason == 'invalid' ) {
+				/**
+				 * Invalid license key. Please contact our customer support at https://ckeditor.com/contact/.
+				 *
+				 * @error invalid-license-key
+				 */
+				throw new CKEditorError( 'invalid-license-key', this );
+			}
+
+			if ( reason == 'expired' ) {
+				/**
+				 * Your license key has expired. Please renew your license at https://ckeditor.com/TODO/.
+				 *
+				 * @error license-key-expired
+				 */
+				throw new CKEditorError( 'license-key-expired', this );
+			}
+
+			if ( reason == 'domainLimit' ) {
+				/**
+				 * The hostname is not allowed by your license. Please update your license configuration at https://ckeditor.com/TODO/.
+				 *
+				 * @error license-key-domain-limit
+				 */
+				throw new CKEditorError( 'license-key-domain-limit', this );
+			}
+
+			if ( reason == 'featureNotAllowed' ) {
+				/**
+				 * The plugin is not allowed by your license.
+				 *
+				 * Please check your license or contact support at https://ckeditor.com/contact/ for more information.
+				 *
+				 * @error license-key-feature-not-allowed
+				 * @param {String} pluginName
+				 */
+				throw new CKEditorError( 'license-key-feature-not-allowed', this, { pluginName } );
+			}
+
+			if ( reason == 'trialLimit' ) {
+				/**
+				 * You have exhausted the trial usage limit. Restart the editor.
+				 *
+				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-trial-limit
+				 */
+				throw new CKEditorError( 'license-key-trial-limit', this );
+			}
+
+			if ( reason == 'developmentLimit' ) {
+				/**
+				 * You have reached the development usage limit. Restart the editor.
+				 *
+				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-development-limit
+				 */
+				throw new CKEditorError( 'license-key-development-limit', this );
+			}
+
+			if ( reason == 'usageLimit' ) {
+				/**
+				 * The editor usage limit has been reached.
+				 *
+				 * Visit Contact support to extend the limit at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-usage-limit
+				 */
+				throw new CKEditorError( 'license-key-usage-limit', this );
+			}
+
+			if ( reason == 'distributionChannel' ) {
+				/**
+				 * The usage is not valid for this distribution channel.
+				 *
+				 * Please check your installation or contact support at https://ckeditor.com/contact/ for more information.
+				 *
+				 * @error license-key-distribution-channel
+				 */
+				throw new CKEditorError( 'license-key-distribution-channel', this );
+			}
+
+			/* istanbul ignore next -- @preserve */
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const unreachable: never = reason;
+		}, 0 );
+
+		this._showLicenseError = () => {};
+	}
+
+	private async _sendUsageRequest( endpoint: string, request: unknown ) {
+		const headers = new Headers( { 'Content-Type': 'application/json' } );
+		const response = await fetch( new URL( endpoint ), {
+			method: 'POST',
+			headers,
+			body: JSON.stringify( request )
+		} );
+
+		if ( !response.ok ) {
+			// TODO: refine message.
+			throw new Error( `HTTP Response: ${ response.status }` );
+		}
+
+		return response.json();
+	}
 }
+
+type LicenseErrorReason =
+	'invalid' |
+	'expired' |
+	'domainLimit' |
+	'featureNotAllowed' |
+	'trialLimit' |
+	'developmentLimit' |
+	'usageLimit' |
+	'distributionChannel';
 
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional

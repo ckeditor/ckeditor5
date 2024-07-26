@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-theme-lark",
-  "version": "42.0.1",
+  "version": "42.0.2",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,28 +9,28 @@
     "ckeditor5-theme"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "42.0.1"
+    "@ckeditor/ckeditor5-ui": "42.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "42.0.1",
-    "@ckeditor/ckeditor5-core": "42.0.1",
-    "@ckeditor/ckeditor5-editor-balloon": "42.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "42.0.1",
-    "@ckeditor/ckeditor5-find-and-replace": "42.0.1",
-    "@ckeditor/ckeditor5-font": "42.0.1",
-    "@ckeditor/ckeditor5-highlight": "42.0.1",
-    "@ckeditor/ckeditor5-link": "42.0.1",
-    "@ckeditor/ckeditor5-media-embed": "42.0.1",
-    "@ckeditor/ckeditor5-page-break": "42.0.1",
-    "@ckeditor/ckeditor5-remove-format": "42.0.1",
-    "@ckeditor/ckeditor5-restricted-editing": "42.0.1",
-    "@ckeditor/ckeditor5-select-all": "42.0.1",
-    "@ckeditor/ckeditor5-show-blocks": "42.0.1",
-    "@ckeditor/ckeditor5-source-editing": "42.0.1",
-    "@ckeditor/ckeditor5-special-characters": "42.0.1",
-    "@ckeditor/ckeditor5-utils": "42.0.1",
-    "@ckeditor/ckeditor5-table": "42.0.1",
-    "ckeditor5": "42.0.1"
+    "@ckeditor/ckeditor5-basic-styles": "42.0.2",
+    "@ckeditor/ckeditor5-core": "42.0.2",
+    "@ckeditor/ckeditor5-editor-balloon": "42.0.2",
+    "@ckeditor/ckeditor5-editor-classic": "42.0.2",
+    "@ckeditor/ckeditor5-find-and-replace": "42.0.2",
+    "@ckeditor/ckeditor5-font": "42.0.2",
+    "@ckeditor/ckeditor5-highlight": "42.0.2",
+    "@ckeditor/ckeditor5-link": "42.0.2",
+    "@ckeditor/ckeditor5-media-embed": "42.0.2",
+    "@ckeditor/ckeditor5-page-break": "42.0.2",
+    "@ckeditor/ckeditor5-remove-format": "42.0.2",
+    "@ckeditor/ckeditor5-restricted-editing": "42.0.2",
+    "@ckeditor/ckeditor5-select-all": "42.0.2",
+    "@ckeditor/ckeditor5-show-blocks": "42.0.2",
+    "@ckeditor/ckeditor5-source-editing": "42.0.2",
+    "@ckeditor/ckeditor5-special-characters": "42.0.2",
+    "@ckeditor/ckeditor5-utils": "42.0.2",
+    "@ckeditor/ckeditor5-table": "42.0.2",
+    "ckeditor5": "42.0.2"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
