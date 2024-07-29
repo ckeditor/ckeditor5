@@ -53,7 +53,7 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
-Such imports are neat because they are very readable and easy to follow. However, these style sheets contain all the styles for all the plugins and features. If you want to reduce the build size, you can import only the core styles alongside the styles for used plugins.
+Such imports are neat because they are easily readable and easy to follow. However, these style sheets contain all the styles for all the plugins and features. If you want to reduce the build size, you can import only the core styles alongside the styles for used plugins.
 
 First, import the core styles. They are all needed for the editor to work properly:
 
@@ -445,4 +445,4 @@ The build size of the project before and after the optimizations is as follows:
 | JavaScript gzipped 	| 343.56 kB           	| 288.84 kB          	| -15.93%     	|
 | CSS gzipped        	| 46.16 kB            	| 28.71 kB           	| -37.80%     	|
 
-Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `386.62 kB` (`72.17 kB` gzipped), which in effect gives us ~75-80% of the original size. These results will vary depending on the features you use.
+Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `386.62 kB` (`72.17 kB` gzipped), which in effect gives us ~75&ndash;80% of the original size. These results will vary depending on the features you use.

@@ -7,7 +7,7 @@ order: 10
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text editor component
+# React rich text editor component setup
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -20,77 +20,6 @@ React lets you build user interfaces out of individual pieces called components.
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
 </info-box>
-
-## Quick start
-
-### Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
-
-### Setting up the project
-
-This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
-
-### Installing from npm
-
-First, install the CKEditor&nbsp;5 packages:
-
-* `ckeditor5` &ndash; package with open-source plugins and features.
-* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
-
-Depending on your configuration and chosen plugins, you may need to install the first or both packages.
-
-```bash
-npm install ckeditor5 ckeditor5-premium-features
-```
-
-Then, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
-
-```bash
-npm install @ckeditor/ckeditor5-react
-```
-
-Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source and premium plugins.
-
-```jsx
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-function App() {
-	return (
-		<CKEditor
-			editor={ ClassicEditor }
-			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: { 
-					// Mention configuration
-				},
-				initialData: '<p>Hello from CKEditor 5 in React!</p>',
-			} }
-		/>
-	);
-}
-
-export default App;
-```
-
-Remember to import the necessary style sheets. The `ckeditor5` package contains the styles for open-source features, while the `ckeditor5-premium-features` package contains the premium features styles.
 
 ## Component properties
 
