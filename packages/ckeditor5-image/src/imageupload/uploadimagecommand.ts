@@ -46,6 +46,11 @@ import type ImageUtils from '../imageutils.js';
  * ```
  */
 export default class UploadImageCommand extends Command {
+	/**
+	 * The command property: `false` if there is no permission on image upload, otherwise `true`.
+	 *
+	 * @observable
+	 */
 	declare public isAccessAlowed: boolean;
 
 	/**
