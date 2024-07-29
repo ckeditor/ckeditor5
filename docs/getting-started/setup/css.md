@@ -13,7 +13,7 @@ CKEditor&nbsp;5 is distributed with two types of styles:
 * Editor styles, used to style the editor's user interface.
 * Content styles, used to style the content in the editor.
 
-If you went through our {@link getting-started/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide CSS style sheets that have both the editor and content styles combined:
+If you went through our {@link getting-started/integrations-cdn/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide CSS style sheets that have both the editor and content styles combined:
 
 ```js
 import 'ckeditor5/ckeditor5.css';

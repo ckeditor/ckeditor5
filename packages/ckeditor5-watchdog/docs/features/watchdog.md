@@ -31,7 +31,7 @@ There are two available types of watchdogs:
 
 ### Editor watchdog
 
-After {@link getting-started/quick-start installing the editor}, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
 
 ```js
 
@@ -139,7 +139,7 @@ watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 
 ### Context watchdog
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
 import { ClassicEditor, ContextWatchdog, Bold, Italic, Context, Essentials, Paragraph } from 'ckeditor5';

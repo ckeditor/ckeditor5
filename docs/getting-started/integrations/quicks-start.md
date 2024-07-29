@@ -1,11 +1,11 @@
 ---
-category: installation
-order: 10
-menu-title: Quick start
-meta-title: Quick start | CKEditor 5 documentation
-meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm or CDN.
-modified_at: 2024-06-25
+menu-title: Vanilla JS
+meta-title: Vanilla JS CKEditor 5 instllation | CKEditor 5 documentation
+category: self-hosted
+order: 20
 ---
+
+{@snippet installation/integrations/framework-integration}
 
 # Quick start
 

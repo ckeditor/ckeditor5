@@ -13,7 +13,7 @@ The build size optimization is only possible when using the npm build and module
 
 ## How to optimize the build size
 
-To optimize the build size, you only need to make a few changes to the way you import the editor, styles, and optionally the translations, compared to what was shown in the {@link getting-started/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
+To optimize the build size, you only need to make a few changes to the way you import the editor, styles, and optionally the translations, compared to what was shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
 
 ### Code imports
 

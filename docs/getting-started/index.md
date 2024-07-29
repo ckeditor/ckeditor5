@@ -18,7 +18,7 @@ CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSI
 
 ## Are you new to CKEditor&nbsp;5?
 
-If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily with the **{@link getting-started/quick-start Quick&nbsp;start guide}**. You will learn how to run CKEditor&nbsp;5 from npm or CDN.
+If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily with the **{@link getting-started/integrations-cdn/quick-start Quick&nbsp;start guide}**. You will learn how to run CKEditor&nbsp;5 from npm or CDN.
 
 ## Migrating from CKEditor&nbsp;4?
 
