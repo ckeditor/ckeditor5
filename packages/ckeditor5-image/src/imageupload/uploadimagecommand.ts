@@ -49,7 +49,7 @@ export default class UploadImageCommand extends Command {
 	declare public isAccessAlowed: boolean;
 
 	/**
-	 * Creates an instance of the image ulpoad command. When executed, the command upload one of
+	 * Creates an instance of the `imageUlpoad` command. When executed, the command upload one of
 	 * the currently selected image from computer.
 	 *
 	 * @param editor The editor instance.
