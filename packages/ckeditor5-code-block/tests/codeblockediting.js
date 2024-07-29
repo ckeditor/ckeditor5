@@ -150,9 +150,40 @@ describe( 'CodeBlockEditing', () => {
 		setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 		editor.execute( 'alignment', { value: 'right' } );
+
+		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+	} );
+
+	it( 'disallows for formatting attributes on nodes inside codeBlock #1 - text', () => {
+		setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+
 		editor.execute( 'bold' );
 
 		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+	} );
+
+	it( 'disallows for formatting attributes on nodes inside codeBlock #2 - object', () => {
+		model.schema.register( 'codeBlockObject', {
+			inheritAllFrom: '$inlineObject',
+			allowIn: 'codeBlock',
+			allowAttributes: [ 'bold' ]
+		} );
+
+		const isAllowed = model.schema.checkAttribute( [ '$root', 'codeBlock', 'bold' ], 'objId' );
+
+		expect( isAllowed ).to.be.false;
+	} );
+
+	it( 'allows for non-formatting attributes on nodes inside codeBlock', () => {
+		model.schema.register( 'codeBlockObject', {
+			inheritAllFrom: '$inlineObject',
+			allowIn: 'codeBlock',
+			allowAttributes: [ 'objId' ]
+		} );
+
+		const isAllowed = model.schema.checkAttribute( [ '$root', 'codeBlock', 'codeBlockObject' ], 'objId' );
+
+		expect( isAllowed ).to.be.true;
 	} );
 
 	describe( 'tab key handling', () => {
