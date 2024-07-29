@@ -108,6 +108,12 @@ export default class TodoListEditing extends Plugin {
 			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
 				{ name: 'span', classes: 'todo-list__label__description' }
 			) );
+
+			// Priority is set to low to allow generic list item converter to run first.
+			dispatcher.on( 'element:li', todoListItemUpcastConverter(), {
+				priority: 'low'
+			} );
+
 			dispatcher.on( 'element:ul', attributeUpcastConsumingConverter(
 				{ name: 'ul', classes: 'todo-list' }
 			) );
@@ -387,6 +393,29 @@ export default class TodoListEditing extends Plugin {
 			lastFocusedCodeBlock = focusParent;
 		} );
 	}
+}
+
+/**
+ * Returns an upcast converter for to-do list items.
+ */
+function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
+	return ( evt, data, conversionApi ) => {
+		const { writer } = conversionApi;
+
+		if ( data.modelRange ) {
+			const items = Array
+				.from( data.modelRange.getItems( { shallow: true } ) )
+				.filter( ( item ): item is Element => item.getAttribute( 'listType' ) === 'todo' );
+
+			// In some cases we need to set value of `todoListChecked` attribute in to-do lists.
+			// See: https://github.com/ckeditor/ckeditor5/issues/15602#top.
+			if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
+				for ( const item of items ) {
+					writer.setAttribute( 'todoListChecked', true, item );
+				}
+			}
+		}
+	};
 }
 
 /**

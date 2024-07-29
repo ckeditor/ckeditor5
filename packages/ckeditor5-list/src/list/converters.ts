@@ -81,7 +81,6 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 
 		const listItemId = ListItemUid.next();
 		const listIndent = getIndent( data.viewItem );
-		const todoListChecked = isTodoListChecked( items );
 		let listType = data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted';
 
 		// Preserve list type if was already set (for example by to-do list feature).
@@ -94,10 +93,7 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		const attributes = {
 			listItemId,
 			listIndent,
-			listType,
-			// In some cases we need to set value of `todoListChecked` attribute in to-do lists.
-			// See: https://github.com/ckeditor/ckeditor5/issues/15602#top.
-			...( ( listType === 'todo' ) && todoListChecked ? { todoListChecked } : null )
+			listType
 		};
 
 		for ( const item of items ) {
@@ -714,15 +710,4 @@ function shouldUseBogusParagraph(
 	}
 
 	return blocks.length < 2;
-}
-
-// Returns `true` if at least one item have `todoListChecked` attribute set on `true`.
-function isTodoListChecked( items: Array<Element> ) {
-	for ( let i = 0; i < items.length; i++ ) {
-		if ( items[ i ].getAttribute( 'todoListChecked' ) ) {
-			return true;
-		}
-	}
-
-	return false;
 }
