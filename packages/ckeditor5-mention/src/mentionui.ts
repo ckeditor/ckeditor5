@@ -706,6 +706,10 @@ export function createRegExp( marker: string, minimumCharacters: number ): RegEx
 	const openAfterCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 	const mentionCharacters = '.';
 
+	// I wanted to make an util out of it, but since this regexp uses "u" flag, it became difficult.
+	// When "u" flag is used, the regexp has "strict" escaping rules, i.e. if you try to escape a character that does not need
+	// to be escaped, RegExp() will throw. It made it difficult to write a generic util, because different characters are
+	// allowed in different context. For example, escaping "-" sometimes was correct, but sometimes it threw an error.
 	marker = marker.replace( /[.*+?^${}()\-|[\]\\]/g, '\\$&' );
 
 	// The pattern consists of 3 groups:
