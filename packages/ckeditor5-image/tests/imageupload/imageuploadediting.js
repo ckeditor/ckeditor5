@@ -244,6 +244,28 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
+	it( 'should display alert when no permission to upload from compouter.', () => {
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+		sinon.stub( window, 'alert' );
+		uploadImageCommand.set( 'isAccessAlowed', false );
+
+		setModelData( model, '[]' );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		sinon.assert.calledOnce( window.alert );
+		expect( window.alert.firstCall.args[ 0 ] ).to.equal(
+			'No permission to upload from computer. Try to use file manager ' +
+			'or contact you administrator instead.'
+		);
+	} );
+
 	it( 'should insert image when is pasted on allowed position when UploadImageCommand is enabled', () => {
 		setModelData( model, '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 

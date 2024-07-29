@@ -4,7 +4,7 @@
  */
 
 import { FileRepository } from 'ckeditor5/src/upload.js';
-import { Command } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import type { Position } from 'ckeditor5/src/engine.js';
 
@@ -46,6 +46,20 @@ import type ImageUtils from '../imageutils.js';
  * ```
  */
 export default class UploadImageCommand extends Command {
+	declare public isAccessAlowed: boolean;
+
+	/**
+	 * Creates an instance of the image ulpoad command. When executed, the command upload one of
+	 * the currently selected image from computer.
+	 *
+	 * @param editor The editor instance.
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.set( 'isAccessAlowed', true );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

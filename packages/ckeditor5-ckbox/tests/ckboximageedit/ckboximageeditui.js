@@ -93,6 +93,14 @@ describe( 'CKBoxImageEditUI', () => {
 			expect( button.label ).to.equal( 'Edit image' );
 		} );
 
+		it( 'should have a label binded to #isAccessAlowed', () => {
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+			uploadImageCommand.set( 'isAccessAlowed', false );
+
+			expect( button.label ).to.equal( 'No permission to image editing. Try to ' +
+				'use file manager or contact you administrator instead.' );
+		} );
+
 		it( 'should have an icon', () => {
 			expect( button.icon ).to.match( /^<svg/ );
 		} );

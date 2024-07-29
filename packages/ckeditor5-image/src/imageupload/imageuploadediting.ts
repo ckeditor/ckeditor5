@@ -7,6 +7,8 @@
  * @module image/imageupload/imageuploadediting
  */
 
+/* globals window */
+
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
@@ -135,6 +137,14 @@ export default class ImageUploadEditing extends Plugin {
 
 				editor.execute( 'uploadImage', { file: images } );
 			} );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
+			const t = this.editor.locale.t;
+
+			if ( !uploadImageCommand.isAccessAlowed ) {
+				window.alert( t( 'No permission to upload from computer. Try to use file ' + // eslint-disable-line no-alert
+					'manager or contact you administrator instead.' ) );
+			}
 		} );
 
 		// Handle HTML pasted with images with base64 or blob sources.

@@ -1831,6 +1831,70 @@ describe( 'CKBoxEditing', () => {
 
 		expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
 	} );
+
+	describe( 'permissions', () => {
+		let sinonXHR;
+		const CKBOX_API_URL = 'https://upload.example.com';
+		const CKBOX_TOKEN_URL = 'http://cs.example.com';
+
+		beforeEach( () => {
+			sinonXHR = testUtils.sinon.useFakeServer();
+			sinonXHR.autoRespond = true;
+			sinonXHR.respondImmediately = true;
+		} );
+
+		afterEach( () => {
+			sinonXHR.restore();
+		} );
+
+		it( 'should not disable image upload command if access alowed', async () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': true
+					}
+				} )
+			] );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+			expect( uploadImageCommand.isEnabled ).to.be.true;
+			expect( uploadImageCommand.isAccessAlowed ).to.be.true;
+		} );
+
+		it( 'should disable image upload command if access not alowed', async () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': false
+					}
+				} )
+			] );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+			expect( uploadImageCommand.isEnabled ).to.be.false;
+			expect( uploadImageCommand.isAccessAlowed ).to.be.false;
+		} );
+	} );
 } );
 
 function createTestEditor( config = {}, loadCKBoxFirst = false ) {
