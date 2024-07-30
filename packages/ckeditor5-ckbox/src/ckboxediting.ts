@@ -469,7 +469,7 @@ function isLibraryLoaded(): boolean {
 }
 
 /**
- * Checks is access allowed to upload assets, if not it disables `imageUpload` and `ckboxImageEdit` commands.
+ * Checks is access allowed to upload assets.
  */
 async function isUploadPermissionGranted( editor: Editor ): Promise<boolean> {
 	const ckboxUtils = editor.plugins.get( CKBoxUtils );
