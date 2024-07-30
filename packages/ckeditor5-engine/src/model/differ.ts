@@ -1520,7 +1520,9 @@ function _generateDiffInstructionsFromChanges( oldChildrenLength: number, change
 			// We removed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
 		} else {
-			diff.push( ...'a'.repeat( change.howMany ).split( '' ) );
+			for ( let i = 0; i < change.howMany; i++ ) {
+				diff.push( 'a' );
+			}
 
 			// The last handled offset is at the position after the changed range.
 			offset = change.offset + change.howMany;
