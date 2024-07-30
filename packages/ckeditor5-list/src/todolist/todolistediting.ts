@@ -98,6 +98,11 @@ export default class TodoListEditing extends Plugin {
 			// Upcast of to-do list item is based on a checkbox at the beginning of a <li> to keep compatibility with markdown input.
 			dispatcher.on( 'element:input', todoItemInputConverter() );
 
+			// Priority is set to low to allow generic list item converter to run first.
+			dispatcher.on( 'element:li', todoListItemUpcastConverter(), {
+				priority: 'low'
+			} );
+
 			// Consume other elements that are normally generated in data downcast, so they won't get captured by GHS.
 			dispatcher.on( 'element:label', elementUpcastConsumingConverter(
 				{ name: 'label', classes: 'todo-list__label' }
@@ -108,11 +113,6 @@ export default class TodoListEditing extends Plugin {
 			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
 				{ name: 'span', classes: 'todo-list__label__description' }
 			) );
-
-			// Priority is set to low to allow generic list item converter to run first.
-			dispatcher.on( 'element:li', todoListItemUpcastConverter(), {
-				priority: 'low'
-			} );
 
 			dispatcher.on( 'element:ul', attributeUpcastConsumingConverter(
 				{ name: 'ul', classes: 'todo-list' }
@@ -402,17 +402,19 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer } = conversionApi;
 
-		if ( data.modelRange ) {
-			const items = Array
-				.from( data.modelRange.getItems( { shallow: true } ) )
-				.filter( ( item ): item is Element => item.getAttribute( 'listType' ) === 'todo' );
+		if ( !data.modelRange ) {
+			return;
+		}
 
-			// In some cases we need to set value of `todoListChecked` attribute in to-do lists.
-			// See: https://github.com/ckeditor/ckeditor5/issues/15602#top.
-			if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
-				for ( const item of items ) {
-					writer.setAttribute( 'todoListChecked', true, item );
-				}
+		const items = Array
+			.from( data.modelRange.getItems( { shallow: true } ) )
+			.filter( ( item ): item is Element => item.getAttribute( 'listType' ) === 'todo' );
+
+		// In some cases we need to set value of `todoListChecked` attribute in to-do lists.
+		// See: https://github.com/ckeditor/ckeditor5/issues/15602.
+		if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
+			for ( const item of items ) {
+				writer.setAttribute( 'todoListChecked', true, item );
 			}
 		}
 	};
