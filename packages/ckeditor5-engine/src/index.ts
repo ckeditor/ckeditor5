@@ -111,6 +111,9 @@ export type { default as Selection, Selectable } from './model/selection.js';
 export type { default as TypeCheckable } from './model/typecheckable.js';
 export type { default as Writer } from './model/writer.js';
 
+// Model utils.
+export * from './model/utils/autoparagraphing.js';
+
 // Model Events.
 export type { DocumentChangeEvent } from './model/document.js';
 export type { DocumentSelectionChangeEvent } from './model/documentselection.js';
