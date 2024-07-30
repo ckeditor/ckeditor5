@@ -9,10 +9,11 @@
 
 import {
 	isVisible,
+	EmitterMixin,
 	type ArrayOrItem,
 	type FocusTracker,
 	type KeystrokeHandler,
-	EmitterMixin
+	type KeystrokeHandlerOptions
 } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view.js';
@@ -115,6 +116,7 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 		focusables: ViewCollection<FocusableView>;
 		focusTracker: FocusTracker;
 		keystrokeHandler?: KeystrokeHandler;
+		keystrokeHandlerOptions?: KeystrokeHandlerOptions;
 		actions?: FocusCyclerActions;
 	} ) {
 		super();
@@ -136,7 +138,7 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 					options.keystrokeHandler.set( keystroke, ( data, cancel ) => {
 						this[ methodName as keyof FocusCyclerActions ]();
 						cancel();
-					} );
+					}, options.keystrokeHandlerOptions );
 				}
 			}
 		}
@@ -275,6 +277,95 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
+	 * Allows for creating continuous focus cycling across multiple focus cyclers and their collections of {@link #focusables}.
+	 *
+	 * It starts listening to the {@link module:ui/focuscycler~FocusCyclerForwardCycleEvent} and
+	 * {@link module:ui/focuscycler~FocusCyclerBackwardCycleEvent} events of the chained focus cycler and engages,
+	 * whenever the user reaches the last (forwards navigation) or first (backwards navigation) focusable view
+	 * and would normally start over. Instead, the navigation continues on the higher level (flattens).
+	 *
+	 * For instance, for the following nested focus navigation structure, the focus would get stuck the moment
+	 * the AB gets focused and its focus cycler starts managing it:
+	 *
+	 *	   ┌────────────┐   ┌──────────────────────────────────┐   ┌────────────┐
+	 *	   │ AA         │   │ AB                               │   │ AC         │
+	 *	   │            │   │                                  │   │            │
+	 *	   │            │   │    ┌─────┐  ┌─────┐  ┌─────┐     │   │            │
+	 *	   │            │   │ ┌──► ABA ├──► ABB ├──► ABC ├───┐ │   │            │
+	 *	   │            ├───► │  └─────┘  └─────┘  └─────┘   │ │   │            │
+	 *	   │            │   │ │                              │ │   │            │
+	 *	   │            │   │ │                              │ │   │            │
+	 *	   │            │   │ └──────────────────────────────┘ │   │            │
+	 *	   │            │   │                                  │   │            │
+	 *	   └────────────┘   └──────────────────────────────────┘   └────────────┘
+	 *
+	 * Chaining a focus tracker that manages AA, AB, and AC with the focus tracker that manages ABA, ABB, and ABC
+	 * creates a seamless navigation experience instead:
+	 *
+	 *	   ┌────────────┐   ┌──────────────────────────────────┐   ┌────────────┐
+	 *	   │ AA         │   │ AB                               │   │ AC         │
+	 *	   │            │   │                                  │   │            │
+	 *	   │            │   │    ┌─────┐  ┌─────┐  ┌─────┐     │   │            │
+	 *	   │            │   │ ┌──► ABA ├──► ABB ├──► ABC ├──┐  │   │            │
+	 *	┌──►            ├───┼─┘  └─────┘  └─────┘  └─────┘  └──┼───►            ├──┐
+	 *	│  │            │   │                                  │   │            │  │
+	 *	│  │            │   │                                  │   │            │  │
+	 *	│  │            │   │                                  │   │            │  │
+	 *	│  │            │   │                                  │   │            │  │
+	 *	│  └────────────┘   └──────────────────────────────────┘   └────────────┘  │
+	 *	│                                                                          │
+	 *	│                                                                          │
+	 *	└──────────────────────────────────────────────────────────────────────────┘
+	 *
+	 * See {@link #unchain} to reverse the chaining.
+	 */
+	public chain( chainedFocusCycler: FocusCycler ): void {
+		const getCurrentFocusedView = () => {
+			// This may happen when one focus cycler does not include focusables of the other (horizontal case).
+			if ( this.current === null ) {
+				return null;
+			}
+
+			return this.focusables.get( this.current );
+		};
+
+		this.listenTo<FocusCyclerForwardCycleEvent>( chainedFocusCycler, 'forwardCycle', evt => {
+			const oldCurrent = getCurrentFocusedView();
+
+			this.focusNext();
+
+			// Stop the event propagation only if an attempt at focusing the view actually moved the focus.
+			// If not, let the otherFocusCycler handle the event.
+			if ( oldCurrent !== getCurrentFocusedView() ) {
+				evt.stop();
+			}
+
+		// The priority is critical for cycling across multiple chain levels when there's a single view at some of them only.
+		}, { priority: 'low' } );
+
+		this.listenTo<FocusCyclerBackwardCycleEvent>( chainedFocusCycler, 'backwardCycle', evt => {
+			const oldCurrent = getCurrentFocusedView();
+
+			this.focusPrevious();
+
+			// Stop the event propagation only if an attempt at focusing the view actually moved the focus.
+			// If not, let the otherFocusCycler handle the event.
+			if ( oldCurrent !== getCurrentFocusedView() ) {
+				evt.stop();
+			}
+
+		// The priority is critical for cycling across multiple chain levels when there's a single view at some of them only.
+		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Reverses a chaining made by {@link #chain}.
+	 */
+	public unchain( otherFocusCycler: FocusCycler ): void {
+		this.stopListening( otherFocusCycler );
+	}
+
+	/**
 	 * Focuses the given view if it exists.
 	 *
 	 * @param view The view to be focused
@@ -362,12 +453,9 @@ export type ViewWithFocusCycler = FocusableView & {
 	focusCycler: FocusCycler;
 };
 
-export interface FocusCyclerActions {
-	focusFirst?: ArrayOrItem<string>;
-	focusLast?: ArrayOrItem<string>;
-	focusNext?: ArrayOrItem<string>;
-	focusPrevious?: ArrayOrItem<string>;
-}
+export type FocusCyclerActions = {
+	[ key in 'focusFirst' | 'focusLast' | 'focusPrevious' | 'focusNext' ]?: ArrayOrItem<string>
+};
 
 /**
  * Fired when the focus cycler is about to move the focus from the last focusable item
