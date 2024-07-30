@@ -108,6 +108,9 @@ export default class CKBoxEditing extends Plugin {
 		return hasConfiguration || isLibraryLoaded();
 	}
 
+	/**
+	 * Blocks `uploadImage` and `ckboxImageEdit` commands.
+	 */
 	private _blockImageCommands(): void {
 		const editor = this.editor;
 		const uploadImageCommand = editor.commands.get( 'uploadImage' );
