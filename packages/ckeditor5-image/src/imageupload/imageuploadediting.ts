@@ -139,11 +139,16 @@ export default class ImageUploadEditing extends Plugin {
 			} );
 
 			const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
-			const t = this.editor.locale.t;
 
-			if ( !uploadImageCommand.isAccessAlowed ) {
-				window.alert( t( 'No permission to upload from computer. Try to use file ' + // eslint-disable-line no-alert
-					'manager or contact you administrator instead.' ) );
+			if ( !uploadImageCommand.isAccessAllowed ) {
+				const notification: Notification = editor.plugins.get( 'Notification' );
+				const t = editor.locale.t;
+
+				// eslint-disable-next-line max-len
+				notification.showWarning( t( 'No permission to upload from computer. Try using the file manager or contact your administrator.' ), {
+					title: t( 'No permission' ),
+					namespace: 'image'
+				} );
 			}
 		} );
 

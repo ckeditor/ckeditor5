@@ -51,7 +51,7 @@ export default class UploadImageCommand extends Command {
 	 *
 	 * @observable
 	 */
-	declare public isAccessAlowed: boolean;
+	declare public isAccessAllowed: boolean;
 
 	/**
 	 * Creates an instance of the `imageUlpoad` command. When executed, the command upload one of
@@ -62,7 +62,7 @@ export default class UploadImageCommand extends Command {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.set( 'isAccessAlowed', true );
+		this.set( 'isAccessAllowed', true );
 	}
 
 	/**

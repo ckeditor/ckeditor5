@@ -135,7 +135,7 @@ export function sendHttpRequest( {
 	authorization
 }: {
 	url: URL;
-	signal?: AbortSignal;
+	signal: AbortSignal;
 	authorization: string;
 	method?: 'GET' | 'POST';
 	data?: FormData | null;
@@ -154,18 +154,16 @@ export function sendHttpRequest( {
 	};
 
 	return new Promise<any>( ( resolve, reject ) => {
-		if ( signal ) {
-			signal.throwIfAborted();
+		signal.throwIfAborted();
+		signal.addEventListener( 'abort', abortCallback );
+
+		xhr.addEventListener( 'loadstart', () => {
 			signal.addEventListener( 'abort', abortCallback );
+		} );
 
-			xhr.addEventListener( 'loadstart', () => {
-				signal.addEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'loadend', () => {
-				signal.removeEventListener( 'abort', abortCallback );
-			} );
-		}
+		xhr.addEventListener( 'loadend', () => {
+			signal.removeEventListener( 'abort', abortCallback );
+		} );
 
 		xhr.addEventListener( 'error', () => {
 			reject();

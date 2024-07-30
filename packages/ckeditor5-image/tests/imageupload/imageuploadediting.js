@@ -250,7 +250,7 @@ describe( 'ImageUploadEditing', () => {
 		const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
 		sinon.stub( window, 'alert' );
-		uploadImageCommand.set( 'isAccessAlowed', false );
+		uploadImageCommand.set( 'isAccessAllowed', false );
 
 		setModelData( model, '[]' );
 
@@ -261,8 +261,8 @@ describe( 'ImageUploadEditing', () => {
 
 		sinon.assert.calledOnce( window.alert );
 		expect( window.alert.firstCall.args[ 0 ] ).to.equal(
-			'No permission to upload from computer. Try to use file manager ' +
-			'or contact you administrator instead.'
+			'No permission to upload from computer. Try using the file manager ' +
+			'or contact your administrator.'
 		);
 	} );
 

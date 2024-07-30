@@ -453,12 +453,13 @@ async function verifyUploadAssetsPermission( editor: Editor ) {
 	const ckboxUtils = editor.plugins.get( CKBoxUtils );
 	const origin = editor.config.get( 'ckbox.serviceOrigin' );
 
-	const url = new URL( origin + '/permissions' );
+	const url = new URL( 'permissions', origin );
 	const { value } = await ckboxUtils.getToken();
 
 	const response = await sendHttpRequest( {
 		url,
-		authorization: value
+		authorization: value,
+		signal: ( new AbortController() ).signal // Aborting is unnecessary.
 	} );
 
 	const categories: Array<CategoryPermission> = [];
@@ -470,12 +471,17 @@ async function verifyUploadAssetsPermission( editor: Editor ) {
 	const isCreateAssetAlowed = categories.map( category => category[ 'asset:create' ] ).some( ( item: boolean ) => item );
 
 	if ( !isCreateAssetAlowed ) {
-		const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
-		const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' )!;
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' );
 
-		uploadImageCommand.set( 'isAccessAlowed', false );
-		uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
-		imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		if ( uploadImageCommand ) {
+			uploadImageCommand.isAccessAllowed = false;
+			uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
+
+		if ( imageEditingCommand ) {
+			imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
 	}
 }
 

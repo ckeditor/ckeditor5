@@ -55,8 +55,8 @@ describe( 'UploadImageCommand', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should set `isAccessAlowed` on `true` when initialized', () => {
-			expect( command.isAccessAlowed ).to.be.true;
+		it( 'should set `isAccessAllowed` on `true` when initialized', () => {
+			expect( command.isAccessAllowed ).to.be.true;
 		} );
 	} );
 
