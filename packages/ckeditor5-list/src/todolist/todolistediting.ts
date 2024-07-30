@@ -406,7 +406,7 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 			return;
 		}
 
-		// Group to-do list items by their listItemId attribute to ensure that all items of the same list have the same checked state.
+		// Group to-do list items by their listItemId attribute to ensure that all items of the same list item have the same checked state.
 		const groupedItems = Array
 			.from( data.modelRange.getItems( { shallow: true } ) )
 			.filter( ( item ): item is Element =>
