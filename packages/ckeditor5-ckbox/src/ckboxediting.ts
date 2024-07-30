@@ -71,7 +71,11 @@ export default class CKBoxEditing extends Plugin {
 			editor.commands.add( 'ckbox', new CKBoxCommand( editor ) );
 		}
 
-		verifyUploadAssetsPermission( editor );
+		isUploadPermissionGranted( editor ).then( ( isCreateAssetAllowed: boolean ) => {
+			if ( !isCreateAssetAllowed ) {
+				this._blockImageCommands();
+			}
+		} );
 	}
 
 	/**
@@ -102,6 +106,21 @@ export default class CKBoxEditing extends Plugin {
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
 
 		return hasConfiguration || isLibraryLoaded();
+	}
+
+	private _blockImageCommands(): void {
+		const editor = this.editor;
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' );
+
+		if ( uploadImageCommand ) {
+			uploadImageCommand.isAccessAllowed = false;
+			uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
+
+		if ( imageEditingCommand ) {
+			imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
 	}
 
 	/**
@@ -449,7 +468,7 @@ function isLibraryLoaded(): boolean {
 /**
  * Checks is access allowed to upload assets, if not it disables `imageUpload` and `ckboxImageEdit` commands.
  */
-async function verifyUploadAssetsPermission( editor: Editor ) {
+async function isUploadPermissionGranted( editor: Editor ): Promise<boolean> {
 	const ckboxUtils = editor.plugins.get( CKBoxUtils );
 	const origin = editor.config.get( 'ckbox.serviceOrigin' );
 
@@ -470,21 +489,7 @@ async function verifyUploadAssetsPermission( editor: Editor ) {
 
 	const isCreateAssetAllowed = Object.values( categories ).some( category => category[ 'asset:create' ] );
 
-	if ( isCreateAssetAllowed ) {
-		return;
-	}
-
-	const uploadImageCommand = editor.commands.get( 'uploadImage' );
-	const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' );
-
-	if ( uploadImageCommand ) {
-		uploadImageCommand.isAccessAllowed = false;
-		uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
-	}
-
-	if ( imageEditingCommand ) {
-		imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
-	}
+	return isCreateAssetAllowed;
 }
 
 type CategoryPermission = {
