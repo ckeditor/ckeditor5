@@ -244,12 +244,20 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
-	it( 'should display alert when no permission to upload from compouter.', () => {
+	it( 'should display notification when no permission to upload from computer.', done => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const notification = editor.plugins.get( Notification );
 
-		sinon.stub( window, 'alert' );
+		notification.on( 'show:warning', ( evt, data ) => {
+			tryExpect( done, () => {
+				expect( data.message ).to.equal( 'No permission to upload from computer. Try using the file manager ' +
+				'or contact your administrator.' );
+				evt.stop();
+			} );
+		}, { priority: 'high' } );
+
 		uploadImageCommand.set( 'isAccessAllowed', false );
 
 		setModelData( model, '[]' );
@@ -258,12 +266,6 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
-
-		sinon.assert.calledOnce( window.alert );
-		expect( window.alert.firstCall.args[ 0 ] ).to.equal(
-			'No permission to upload from computer. Try using the file manager ' +
-			'or contact your administrator.'
-		);
 	} );
 
 	it( 'should insert image when is pasted on allowed position when UploadImageCommand is enabled', () => {
