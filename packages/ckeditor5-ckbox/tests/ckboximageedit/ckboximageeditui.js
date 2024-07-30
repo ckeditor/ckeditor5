@@ -97,8 +97,8 @@ describe( 'CKBoxImageEditUI', () => {
 			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 			uploadImageCommand.set( 'isAccessAllowed', false );
 
-			expect( button.label ).to.equal( 'No permission to image editing. Try to ' +
-				'use file manager or contact you administrator instead.' );
+			expect( button.label ).to.equal( 'No permission for image editing. Try ' +
+				'using the file manager or contact your administrator.' );
 		} );
 
 		it( 'should have an icon', () => {

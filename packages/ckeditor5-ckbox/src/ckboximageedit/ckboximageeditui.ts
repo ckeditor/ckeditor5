@@ -45,7 +45,7 @@ export default class CKBoxImageEditUI extends Plugin {
 
 			view.bind( 'label' ).to( uploadImageCommand, 'isAccessAllowed', isAccessAllowed => isAccessAllowed ?
 				t( 'Edit image' ) :
-				t( 'No permission to image editing. Try to use file manager or contact you administrator instead.' )
+				t( 'No permission for image editing. Try using the file manager or contact your administrator.' )
 			);
 			view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
 			view.bind( 'isEnabled' ).to( command );
