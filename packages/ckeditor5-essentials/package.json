@@ -23,7 +23,7 @@
     "ckeditor5": "42.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^41.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
     "@ckeditor/ckeditor5-editor-classic": "42.0.2",
     "@ckeditor/ckeditor5-paragraph": "42.0.2",
     "@ckeditor/ckeditor5-theme-lark": "42.0.2",

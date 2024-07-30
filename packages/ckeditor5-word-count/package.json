@@ -22,7 +22,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "42.0.2",
     "@ckeditor/ckeditor5-block-quote": "42.0.2",
-    "@ckeditor/ckeditor5-dev-utils": "^41.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
     "@ckeditor/ckeditor5-editor-classic": "42.0.2",
     "@ckeditor/ckeditor5-editor-multi-root": "42.0.2",
     "@ckeditor/ckeditor5-engine": "42.0.2",
