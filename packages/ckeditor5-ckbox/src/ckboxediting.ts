@@ -447,7 +447,7 @@ function isLibraryLoaded(): boolean {
 }
 
 /**
- * Checks is access alowed to upload assets, if not it disables `imageUpload` and `ckboxImageEdit` commands.
+ * Checks is access allowed to upload assets, if not it disables `imageUpload` and `ckboxImageEdit` commands.
  */
 async function verifyUploadAssetsPermission( editor: Editor ) {
 	const ckboxUtils = editor.plugins.get( CKBoxUtils );
@@ -468,9 +468,9 @@ async function verifyUploadAssetsPermission( editor: Editor ) {
 		categories.push( response[ key ] );
 	}
 
-	const isCreateAssetAlowed = categories.some( category => category[ 'asset:create' ] );
+	const isCreateAssetAllowed = Object.values( categories ).some( category => category[ 'asset:create' ] );
 
-	if ( isCreateAssetAlowed ) {
+	if ( isCreateAssetAllowed ) {
 		return;
 	}
 

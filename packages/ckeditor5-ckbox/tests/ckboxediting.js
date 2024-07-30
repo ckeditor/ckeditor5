@@ -1848,7 +1848,7 @@ describe( 'CKBoxEditing', () => {
 			sinonXHR.restore();
 		} );
 
-		it( 'should not disable image upload command if access alowed', async () => {
+		it( 'should not disable image upload command if access allowed', async () => {
 			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
@@ -1872,7 +1872,7 @@ describe( 'CKBoxEditing', () => {
 			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
 		} );
 
-		it( 'should disable image upload command if access not alowed', async () => {
+		it( 'should disable image upload command if access not allowed', async () => {
 			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
@@ -1896,7 +1896,7 @@ describe( 'CKBoxEditing', () => {
 			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
 		} );
 
-		it( 'should not disable image upload command if access alowed ( CKBox loaded first )', async () => {
+		it( 'should not disable image upload command if access allowed ( CKBox loaded first )', async () => {
 			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
@@ -1920,7 +1920,7 @@ describe( 'CKBoxEditing', () => {
 			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
 		} );
 
-		it( 'should disable image upload command if access not alowed ( CKBox loaded first )', async () => {
+		it( 'should disable image upload command if access not allowed ( CKBox loaded first )', async () => {
 			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
