@@ -1232,6 +1232,24 @@ describe( 'DomConverter', () => {
 				sinon.assert.notCalled( warnStub );
 			} );
 
+			it( 'should yield the `RawElement` children properly', () => {
+				const downcastWriter = new DowncastWriter( viewDocument );
+				const dataConverter = new DomConverter( viewDocument, {
+					renderingMode: 'data'
+				} );
+				const parentElement = downcastWriter.createContainerElement( 'p' );
+				const transparentRawElement = downcastWriter.createRawElement( 'span', {}, function( domElement ) {
+					domElement.innerHTML = 'foo';
+				} );
+
+				downcastWriter.insert( downcastWriter.createPositionAt( parentElement, 'end' ), transparentRawElement );
+				downcastWriter.setCustomProperty( 'dataPipeline:transparentRendering', true, transparentRawElement );
+
+				expect( dataConverter.viewToDom( parentElement ).outerHTML ).to.equal(
+					'<p>foo</p>'
+				);
+			} );
+
 			it( 'should not be transparent in the editing pipeline', () => {
 				converter.renderingMode = 'editing';
 				converter.blockFillerMode = 'br';
