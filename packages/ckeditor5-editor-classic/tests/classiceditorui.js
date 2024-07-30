@@ -394,6 +394,44 @@ describe( 'ClassicEditorUI', () => {
 				} );
 			} );
 
+			it( 'should not update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				const targetElement = document.createElement( 'div' );
+				const limiterElement = document.createElement( 'div' );
+
+				targetElement.style.height = '400px';
+				limiterElement.style.height = '200px';
+
+				document.body.appendChild( targetElement );
+				document.body.appendChild( limiterElement );
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: {
+						target: targetElement,
+						limiter: limiterElement
+					}
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 0
+				} );
+
+				targetElement.remove();
+				limiterElement.remove();
+			} );
+
 			function getBalloonPositionData() {
 				const view = editorWithUi.editing.view;
 
