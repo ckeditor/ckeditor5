@@ -146,7 +146,6 @@ export default class ImageUploadEditing extends Plugin {
 
 				// eslint-disable-next-line max-len
 				notification.showWarning( t( 'No permission to upload from computer. Try using the file manager or contact your administrator.' ), {
-					title: t( 'No permission' ),
 					namespace: 'image'
 				} );
 			}
