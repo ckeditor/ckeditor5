@@ -72,7 +72,7 @@ export default class CKBoxEditing extends Plugin {
 		}
 
 		// Promise is not handled intentionally. Errors should be displayed in console if there are so.
-		isUploadPermissionGranted( editor ).then( ( isCreateAssetAllowed: boolean ) => {
+		isUploadPermissionGranted( editor ).then( isCreateAssetAllowed => {
 			if ( !isCreateAssetAllowed ) {
 				this._blockImageCommands();
 			}
@@ -479,21 +479,13 @@ async function isUploadPermissionGranted( editor: Editor ): Promise<boolean> {
 	const url = new URL( 'permissions', origin );
 	const { value } = await ckboxUtils.getToken();
 
-	const response = await sendHttpRequest( {
+	const response = ( await sendHttpRequest( {
 		url,
 		authorization: value,
 		signal: ( new AbortController() ).signal // Aborting is unnecessary.
-	} );
+	} ) ) as Record<string, CategoryPermission>;
 
-	const categories: Array<CategoryPermission> = [];
-
-	for ( const key in response ) {
-		categories.push( response[ key ] );
-	}
-
-	const isCreateAssetAllowed = Object.values( categories ).some( category => category[ 'asset:create' ] );
-
-	return isCreateAssetAllowed;
+	return Object.values( response ).some( category => category[ 'asset:create' ] );
 }
 
 type CategoryPermission = {
