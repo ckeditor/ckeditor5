@@ -11,7 +11,6 @@ import {
 	Matcher,
 	type UpcastElementEvent,
 	type Model,
-	type Element,
 	type MatcherPattern,
 	type ViewElement,
 	type ViewDocumentKeyDownEvent,
@@ -19,7 +18,8 @@ import {
 	type MapperViewToModelPositionEvent,
 	type ViewDocumentFragment,
 	type SelectionChangeRangeEvent,
-	type DocumentFragment
+	type DocumentFragment,
+	type Element
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -400,21 +400,37 @@ export default class TodoListEditing extends Plugin {
  */
 function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
-		const { writer } = conversionApi;
+		const { writer, schema } = conversionApi;
 
 		if ( !data.modelRange ) {
 			return;
 		}
 
-		const items = Array
+		// Group to-do list items by their listItemId attribute to ensure that all items of the same list have the same checked state.
+		const groupedItems = Array
 			.from( data.modelRange.getItems( { shallow: true } ) )
-			.filter( ( item ): item is Element => item.getAttribute( 'listType' ) === 'todo' );
+			.filter( ( item ): item is Element =>
+				item.getAttribute( 'listType' ) === 'todo' && schema.checkAttribute( item, 'listItemId' )
+			)
+			.reduce( ( acc, item ) => {
+				const listItemId = item.getAttribute( 'listItemId' ) as string;
+				const items = acc.get( listItemId ) || [];
 
-		// In some cases we need to set value of `todoListChecked` attribute in to-do lists.
-		// See: https://github.com/ckeditor/ckeditor5/issues/15602.
-		if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
-			for ( const item of items ) {
-				writer.setAttribute( 'todoListChecked', true, item );
+				items.push( item );
+				acc.set( listItemId, items );
+
+				return acc;
+			}, new Map<string, Array<Element>>() );
+
+		// During the upcast, we need to ensure that all items of the same list have the same checked state. From time to time
+		// the checked state of the items can be different when the user pastes content from the clipboard with <input type="checkbox">
+		// that has checked state set to true. In such cases, we need to ensure that all items of the same list have the same checked state.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/15602
+		for ( const [ , items ] of groupedItems.entries() ) {
+			if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
+				for ( const item of items ) {
+					writer.setAttribute( 'todoListChecked', true, item );
+				}
 			}
 		}
 	};
