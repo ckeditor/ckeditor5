@@ -1083,7 +1083,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 		// If the item is allowed, recursively verify the rest of the `context`.
 		const parentItemDefinition = this.getDefinition( parentItem );
-		const parentContext = context.pop();
+		const parentContext = context.trimLast();
 
 		// One of the items in the original `context` did not have a definition specified. In this case, the whole context is disallowed.
 		if ( !parentItemDefinition ) {
@@ -1120,8 +1120,8 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Calls child check callbacks to decide whether `def` is allowed in `context`. It uses both generic and specific (defined for `def`
-	 * item) callbacks. If neither callback makes a decision, `undefined` is returned.
+	 * Calls attribute check callbacks to decide whether `attributeName` can be set on the last element of `context`. It uses both
+	 * generic and specific (defined for `attributeName`) callbacks. If neither callback makes a decision, `undefined` is returned.
 	 *
 	 * Note that the first callback that makes a decision "wins", i.e., if any callback returns `true` or `false`, then the processing
 	 * is over and that result is returned.
@@ -1866,13 +1866,13 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 *
 	 * ```ts
 	 * const ctxParagraph = new SchemaContext( [ '$root', 'blockQuote', 'paragraph' ] );
-	 * const ctxBlockQuote = ctxParagraph.pop(); // Items in `ctxBlockQuote` are: `$root` an `blockQuote`.
-	 * const ctxRoot = ctxBlockQuote.pop(); // Items in `ctxRoot` are: `$root`.
+	 * const ctxBlockQuote = ctxParagraph.trimLast(); // Items in `ctxBlockQuote` are: `$root` an `blockQuote`.
+	 * const ctxRoot = ctxBlockQuote.trimLast(); // Items in `ctxRoot` are: `$root`.
 	 * ```
 	 *
 	 * @returns A new reduced schema context instance.
 	 */
-	public pop(): SchemaContext {
+	public trimLast(): SchemaContext {
 		const ctx = new SchemaContext( [] );
 
 		ctx._items = this._items.slice( 0, -1 );

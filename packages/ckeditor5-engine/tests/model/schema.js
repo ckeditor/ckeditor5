@@ -4177,6 +4177,19 @@ describe( 'SchemaContext', () => {
 		} );
 	} );
 
+	describe( 'trimLast()', () => {
+		it( 'creates new SchemaContext instance without the last item - #string', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.trimLast();
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+	} );
+
 	describe( 'getNames()', () => {
 		it( 'returns an iterator', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
