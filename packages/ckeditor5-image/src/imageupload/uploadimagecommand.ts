@@ -49,6 +49,7 @@ export default class UploadImageCommand extends Command {
 	/**
 	 * The command property: `false` if there is no permission on image upload, otherwise `true`.
 	 *
+	 * @observable
 	 * @internal
 	 */
 	declare public isAccessAllowed: boolean;
