@@ -457,7 +457,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 		const isAllowed = this._evaluateAttributeChecks( context as SchemaContext, attributeName );
 
 		// If the decision was not made inside attribute check callbacks, then use declarative rules.
-		return isAllowed ?? def.allowAttributes.includes( attributeName );
+		return isAllowed !== undefined ? isAllowed : def.allowAttributes.includes( attributeName );
 	}
 
 	public checkMerge( position: Position ): boolean;
@@ -588,7 +588,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * `checkChild()` calls which `def` parameter matches the `itemName`. Otherwise, the callback will run for every `checkChild` call.
 	 */
 	public addChildCheck( callback: SchemaChildCheckCallback, itemName?: string ): void {
-		const key = itemName ?? this._genericCheckSymbol;
+		const key = itemName !== undefined ? itemName : this._genericCheckSymbol;
 
 		const checks = this._customChildChecks.get( key ) || [];
 		checks.push( callback );
@@ -660,7 +660,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * `checkAttribute()` calls with matching `attributeName`. Otherwise, the callback will run for every `checkAttribute()` call.
 	 */
 	public addAttributeCheck( callback: SchemaAttributeCheckCallback, attributeName?: string ): void {
-		const key = attributeName ?? this._genericCheckSymbol;
+		const key = attributeName !== undefined ? attributeName : this._genericCheckSymbol;
 
 		const checks = this._customAttributeChecks.get( key ) || [];
 		checks.push( callback );
@@ -1074,7 +1074,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 		let isAllowed = this._evaluateChildChecks( context, def );
 
 		// If the decision was not made inside child check callbacks, then use declarative rules.
-		isAllowed = isAllowed ?? def.allowIn.includes( parentItem.name );
+		isAllowed = isAllowed !== undefined ? isAllowed : def.allowIn.includes( parentItem.name );
 
 		// If the item is not allowed in the `context`, return `false`.
 		if ( !isAllowed ) {
