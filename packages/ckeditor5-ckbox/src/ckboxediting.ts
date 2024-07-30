@@ -71,6 +71,7 @@ export default class CKBoxEditing extends Plugin {
 			editor.commands.add( 'ckbox', new CKBoxCommand( editor ) );
 		}
 
+		// Promise is not handled intentionally. Errors should be displayed in console if there are so.
 		isUploadPermissionGranted( editor ).then( ( isCreateAssetAllowed: boolean ) => {
 			if ( !isCreateAssetAllowed ) {
 				this._blockImageCommands();
