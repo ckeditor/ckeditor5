@@ -470,18 +470,20 @@ async function verifyUploadAssetsPermission( editor: Editor ) {
 
 	const isCreateAssetAlowed = categories.some( category => category[ 'asset:create' ] );
 
-	if ( !isCreateAssetAlowed ) {
-		const uploadImageCommand = editor.commands.get( 'uploadImage' );
-		const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' );
+	if ( isCreateAssetAlowed ) {
+		return;
+	}
 
-		if ( uploadImageCommand ) {
-			uploadImageCommand.isAccessAllowed = false;
-			uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
-		}
+	const uploadImageCommand = editor.commands.get( 'uploadImage' );
+	const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' );
 
-		if ( imageEditingCommand ) {
-			imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
-		}
+	if ( uploadImageCommand ) {
+		uploadImageCommand.isAccessAllowed = false;
+		uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+	}
+
+	if ( imageEditingCommand ) {
+		imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 	}
 }
 
