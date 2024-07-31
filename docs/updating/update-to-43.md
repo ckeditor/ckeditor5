@@ -26,7 +26,6 @@ Below are the most important changes that require your attention when upgrading 
 
 In version v42.0.0, we introduced new version of Export to Word plugin that utulizes updated v2 of the converter. It was introduced in an opt-in manner. From the v43.0.0, the Export to Word v2 is **the default** configuration. This may require updates to the editor's configuration if you use this plugin.
 
-
 Example v1 configuration:
 
 ```js
@@ -65,7 +64,7 @@ exportWord: {
 
 The full v2 configuration can be found in the {@link module:export-word/exportword~ExportWordConverterOptionsV2} API documentation.
 
-Alongside with the configuration changes we decided to switch the default `auto_pagination` option to `false`. This option was only used along our `Pagination` feature. When this option is enabled the breaks in the pagination forced the breaks in the exported Word document. Browser engines and Microsoft Word differ significantly. Because of that we decided to turn this option to `false` If you still want to enforce breaks from pagination, change it in the configuration to `true`.
+Alongside with the configuration changes we decided to switch the default `auto_pagination` option to `false`. This option was only used along our `Pagination` feature. When this option is enabled the breaks in the pagination force the breaks in the exported Word document. Browser engines and Microsoft Word differ significantly. Because of that we decided to turn this option to `false` If you still want to enforce breaks from pagination, change it in the configuration to `true`.
 
 ### Typing bug fixes
 
@@ -74,7 +73,7 @@ This release brings a couple of improvements to typing in the editor.
 * Android IME: multiple issues related to duplicated characters, reverse writing effects, etc. ([#13994](https://github.com/ckeditor/ckeditor5/issues/13994), [#14707](https://github.com/ckeditor/ckeditor5/issues/14707), [#13850](https://github.com/ckeditor/ckeditor5/issues/13850), [#13693](https://github.com/ckeditor/ckeditor5/issues/13693), [#14567](https://github.com/ckeditor/ckeditor5/issues/14567), [#11569](https://github.com/ckeditor/ckeditor5/issues/11569)).
 * Safari: the reverse typing effect after the focus change ([#14702](https://github.com/ckeditor/ckeditor5/issues/14702)).
 
-Those fixes don't require migration, but typing is a crucial area for the editor and we want to call them out explicitly.
+Those fixes don't require migration, but typing is a crucial area for the editor, and we want to call them out explicitly.
 
 ### Update of global names in UMD builds
 
@@ -97,7 +96,7 @@ You can skip this section if you have not yet followed the [Migrating custom plu
 
 1. Update all packages starting with `@ckeditor/ckeditor5-dev-` to version `^42.0.0`.
 2. Open the `package.json` file and replace the content as follows:
-    * If your project is written in TypeScript, replace the  `"types"` and `"exports"` fields:
+    * If your project is written in TypeScript, replace the `"types"` and `"exports"` fields:
 
         ```json
         "types": "dist/index.d.ts",
