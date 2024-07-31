@@ -252,8 +252,7 @@ describe( 'ImageUploadEditing', () => {
 
 		notification.on( 'show:warning', ( evt, data ) => {
 			tryExpect( done, () => {
-				expect( data.message ).to.equal( 'No permission to upload from computer. Try using the file manager ' +
-				'or contact your administrator.' );
+				expect( data.message ).to.equal( 'You have no image upload permissions.' );
 				evt.stop();
 			} );
 		}, { priority: 'high' } );
