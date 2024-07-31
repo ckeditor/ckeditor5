@@ -24,8 +24,6 @@ import {
 	type InputTextView,
 	type NormalizedColorOption,
 	type ColorPickerConfig,
-	type FocusCyclerForwardCycleEvent,
-	type FocusCyclerBackwardCycleEvent,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
@@ -357,15 +355,7 @@ export default class TablePropertiesView extends View {
 
 		// Maintain continuous focus cycling over views that have focusable children and focus cyclers themselves.
 		[ this.borderColorInput, this.backgroundInput ].forEach( view => {
-			view.fieldView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-				this._focusCycler.focusNext();
-				evt.stop();
-			} );
-
-			view.fieldView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-				this._focusCycler.focusPrevious();
-				evt.stop();
-			} );
+			this._focusCycler.chain( view.fieldView.focusCycler );
 		} );
 
 		[

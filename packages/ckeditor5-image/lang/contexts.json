@@ -20,6 +20,7 @@
 	"From computer": "The label for the upload image from computer menu bar button (inside 'Image' menu).",
   	"Replace image from computer": "The label for the replace image by upload from computer toolbar button.",
 	"Upload failed": "The title of the notification displayed when upload fails.",
+	"No permission to upload from computer. Try using the file manager or contact your administrator.": "The title of the notification displayed when there is no permission to upload assets.",
 	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget.",
 	"Resize image": "The label used for the dropdown in the image toolbar containing defined resize options.",
 	"Resize image to %0": "The label used for the standalone resize options buttons in the image toolbar.",
