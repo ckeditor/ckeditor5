@@ -77,7 +77,7 @@ export default class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Edit
 
 		this.model.document.createRoot();
 
-		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement );
+		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement, this.config.get( 'label' ) );
 		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );

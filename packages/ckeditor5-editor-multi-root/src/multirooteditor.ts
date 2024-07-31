@@ -189,7 +189,8 @@ export default class MultiRootEditor extends Editor {
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
-			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>
+			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>,
+			label: this.config.get( 'label' )
 		};
 
 		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootNames, options );
@@ -485,10 +486,11 @@ export default class MultiRootEditor extends Editor {
 	 * @param root Root for which the editable element should be created.
 	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
 	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: RootElement, placeholder?: string ): HTMLElement {
-		const editable = this.ui.view.createEditable( root.rootName );
+	public createEditable( root: RootElement, placeholder?: string, label?: string ): HTMLElement {
+		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
 
 		this.ui.addEditable( editable, placeholder );
 

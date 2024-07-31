@@ -821,6 +821,48 @@ export interface EditorConfig {
 	 * Translations to be used in the editor.
 	 */
 	translations?: ArrayOrItem<Translations>;
+
+	/**
+	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies
+	 * to tell apart multiple editor instances (editing areas) on the page. If not set, a default
+	 * "Rich Text Editor. Editing area [name of the area]" is used instead.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		label: 'My editor'
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor
+	 * roots names and values equal to the label that should be used for each root:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create(
+	 * 	// Roots for the editor:
+	 * 	{
+	 * 		header: document.querySelector( '#header' ),
+	 * 		content: document.querySelector( '#content' ),
+	 * 		leftSide: document.querySelector( '#left-side' ),
+	 * 		rightSide: document.querySelector( '#right-side' )
+	 * 	},
+	 * 	// Config:
+	 * 	{
+	 * 		label: {
+	 * 			header: 'Header label',
+	 * 			content: 'Content label',
+	 * 			leftSide: 'Left side label',
+	 * 			rightSide: 'Right side label'
+	 * 		}
+	 * 	}
+	 * )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 */
+	label?: string | Record<string, string>;
 }
 
 /**
