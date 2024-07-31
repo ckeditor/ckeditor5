@@ -571,8 +571,6 @@ export default class DomConverter {
 					childView.render( tempElement, this );
 
 					yield* [ ...tempElement.childNodes ];
-
-					tempElement.remove();
 				} else {
 					yield* this.viewChildrenToDom( childView, options );
 				}
