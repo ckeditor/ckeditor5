@@ -137,6 +137,129 @@ export interface CKBoxConfig {
 	 * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
 	 */
 	language?: string;
+
+	/**
+	 * This option allows opening CKBox in dialog mode. It takes a configuration object with
+	 * the width and height attributes.
+	 */
+	dialog?: CKBoxDialogConfig;
+
+	/**
+	 * Allows setting custom icons for categories.
+	 */
+	categories?: CKBoxCategoriesConfig;
+
+	/**
+	 * Configures the view of CKBox.
+	 */
+	view?: CKBoxViewConfig;
+
+	/**
+	 * Configures when dialog should be minimized and hidden.
+	 */
+	upload?: CKBoxUploadConfig;
+
+	/**
+	 * Specifies the file extensions considered valid for user interaction. Whith this
+	 * option developers can restrict user interaction to only those assets whose file
+	 * extensions match those listed in the array. Assets whose file
+	 * extensions are not listed in the `choosableFileExtensions` array are
+	 * automatically disabled within the CKBox interface.
+	 *
+	 * ```ts
+	 * const ckboxConfig = {
+	 *		choosableFileExtensions: ['jpg', 'png']
+	 * };
+	 * ```
+	 */
+	choosableFileExtensions?: Array<string>;
+}
+
+export interface CKBoxDialogConfig {
+
+	/**
+	 * The dialog width in pixels.
+	 */
+	width: number;
+
+	/**
+	 * The dialog height in pixels.
+	 */
+	height: number;
+}
+
+export interface CKBoxCategoriesConfig {
+
+	/**
+	 * This option takes an object with categories and icons that should be used instead
+	 * of the default ones. Categories can be defined using either their name or id.
+	 * Icons should be defined as strings containing the SVG images, or as React components.
+	 *
+	 * ```ts
+	 * const ckboxConfig = {
+	 * 		categories: {
+	 * 				icons: {
+	 * 					Images: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path ... /></svg>',
+	 * 					// Category can be referenced by ID
+	 * 					// 'fdf2a647-b67f-4a6c-b692-5ba1dc1ed87b': '<svg...'
+	 * 				}
+	 * 		}
+	 * }
+	 * ```
+	 */
+	icons?: {
+		[ key: string ]: string;
+	};
+}
+
+export interface CKBoxViewConfig {
+
+	/**
+	 * If it is set to `false` the last view visited by the user will not be reopened on
+	 * the next startup.
+	 */
+	openLastView?: boolean;
+
+	/**
+	 * Sets the ID of the folder that will be opened on startup. This option can be paired
+	 * with setting `view.openLastView` to `false` to enforce CKBox to always open in a given
+	 * folder at startup.
+	 */
+	startupFolderId?: string;
+
+	/**
+	 * Sets the ID of the category that will be opened on startup. This option can be paired
+	 * with setting `view.openLastView` to `false` to enforce CKBox to always open in a given
+	 * category at startup. If `view.startupCategoryId` is passed along with the
+	 * `view.startupFolderId` option, CKBox will prioritize opening category view on the startup.
+	 */
+	startupCategoryId?: string;
+
+	/**
+	 * Sets whether to hide the ‘Maximize’ button. By default, the button is shown and enabling
+	 * this option will hide it.
+	 */
+	hideMaximizeButton?: boolean;
+}
+
+export interface CKBoxUploadConfig {
+
+	/**
+	 * Sets timeout (in milliseconds) after which upload components (dialog and indicator) are
+	 * hidden. By default, these components hide automatically after 10 seconds.
+	 *
+	 * Read more: https://ckeditor.com/docs/ckbox/latest/guides/configuration/configuration-options.html#uploadcomponentshidetimeout
+	 */
+	componentsHideTimeout?: number;
+
+	/**
+	 * Sets timeout (in milliseconds) after which upload dialog is minimized once upload is
+	 * finished and all uploads were successful. By default, upload dialog is never minimized
+	 * automatically.
+	 *
+	 * Read more: https://ckeditor.com/docs/ckbox/latest/guides/configuration/configuration-options.html#uploaddialogminimizetimeout
+	 */
+	dialogMinimizeTimeout?: number;
 }
 
 /**

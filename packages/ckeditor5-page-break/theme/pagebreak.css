@@ -50,4 +50,14 @@
 			display: none;
 		}
 	}
+
+	/*
+	 * From time to time placing page-break directly after a block element with margin causes appending a new blank page in pagination mode.
+	 * Removing margin-bottom from the block element fixes that issue and the margin is not being moved to the next blank page.
+	 *
+	 * Keep this in sync with the pagination plugins.
+	 */
+	.ck-content *:has(+ .page-break) {
+		margin-bottom: 0;
+	}
 }

@@ -5,6 +5,7 @@
 
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
+@import "../../../mixins/_focus.css";
 
 :root {
 	--ck-menu-bar-menu-panel-max-width: 75vw;
@@ -43,5 +44,27 @@
 
 	&:focus {
 		outline: none;
+	}
+}
+
+.ck.ck-menu-bar {
+	& .ck-list-item-button {
+		&:focus,
+		&:active {
+			border-color: transparent;
+			box-shadow: none;
+		}
+	}
+
+	&.ck-menu-bar_focus-border-enabled .ck-list-item-button {
+		&:focus,
+		&:active {
+			/* Fix truncated shadows due to rendering order. */
+			position: relative;
+			z-index: 2;
+
+			@mixin ck-focus-ring;
+			@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+		}
 	}
 }

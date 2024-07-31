@@ -24,8 +24,6 @@ import FormHeaderView from '../formheader/formheaderview.js';
 import ButtonView from '../button/buttonview.js';
 import { type ButtonExecuteEvent } from '../button/button.js';
 import FocusCycler, { isViewWithFocusCycler,
-	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent,
 	type FocusableView,
 	isFocusable
 }
@@ -652,23 +650,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			this.focusTracker.add( focusable.element! );
 
 			if ( isViewWithFocusCycler( focusable ) ) {
-				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
-					this._focusCycler.focusNext();
-
-					// Stop the event propagation only if there are more focusables.
-					if ( this._focusCycler.next !== this._focusCycler.focusables.get( this._focusCycler.current! ) ) {
-						evt.stop();
-					}
-				} );
-
-				this.listenTo<FocusCyclerBackwardCycleEvent>( focusable.focusCycler, 'backwardCycle', evt => {
-					this._focusCycler.focusPrevious();
-
-					// Stop the event propagation only if there are more focusables.
-					if ( this._focusCycler.previous !== this._focusCycler.focusables.get( this._focusCycler.current! ) ) {
-						evt.stop();
-					}
-				} );
+				this._focusCycler.chain( focusable.focusCycler );
 			}
 		} );
 	}

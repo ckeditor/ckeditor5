@@ -414,6 +414,7 @@ export function parse(
 		lastRangeBackward?: boolean;
 		rootElement?: ViewElement | ViewDocumentFragment;
 		sameSelectionCharacters?: boolean;
+		inlineObjectElements?: Array<string>;
 	} = {}
 ): ViewNode | ViewDocumentFragment | { view: ViewNode | ViewDocumentFragment; selection: DocumentSelection } {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
@@ -425,6 +426,10 @@ export function parse(
 	const processor = new XmlDataProcessor( viewDocument, {
 		namespaces: Object.keys( allowedTypes )
 	} );
+
+	if ( options.inlineObjectElements ) {
+		processor.domConverter.inlineObjectElements.push( ...options.inlineObjectElements );
+	}
 
 	// Convert data to view.
 	let view: ViewDocumentFragment | ViewNode = processor.toView( data )!;

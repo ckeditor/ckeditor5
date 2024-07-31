@@ -21,29 +21,6 @@
 			margin-left: calc(-1 * var(--ck-spacing-small));
 			margin-right: var(--ck-spacing-small);
 		}
-
-		/*
-		 * Hovered items automatically get focused. Default focus styles look odd
-		 * while moving across a huge list of items so let's get rid of them
-		 */
-		&:focus {
-			border-color: transparent;
-			box-shadow: none;
-
-			&:not(.ck-on) {
-				background: var(--ck-color-button-default-hover-background);
-			}
-		}
-	}
-
-	/*
-	 * First-level sub-menu item buttons.
-	 */
-	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__panel > ul > .ck-menu-bar__menu__item > .ck-menu-bar__menu__item__button {
-		/* Spacing in buttons that miss the icon. */
-		&:not(:has(.ck-button__icon)) > .ck-button__label {
-			margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
-		}
 	}
 }
 

@@ -60,7 +60,7 @@ ClassicEditor
 The [`@ckeditor/ckeditor5-cbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package now solely operates with the [CKBox](https://ckeditor.com/docs/ckbox/latest/index.html) library version `2.0.0` or higher. Ensure you have the following script tag set in your HTML to load the correct version:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/2.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.0.0/ckbox.js"></script>
 ```
 
 #### On-premises CKBox backend adjustments

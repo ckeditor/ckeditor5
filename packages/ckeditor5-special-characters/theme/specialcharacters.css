@@ -8,3 +8,84 @@
  * it acts as a message to the builder telling that it should look for the corresponding styles
  * **in the theme** when compiling the editor.
  */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
+.ck.ck-special-characters {
+	& > .ck-dialog__content > div {
+		width: 350px;
+		max-width: 100%;
+		height: 100%;
+
+		display: grid;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 1fr auto;
+
+		& > .ck-character-categories {
+			grid-area: 1 / 1 / 2 / 2;
+			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+
+			& > .ck-labeled-field-view {
+				padding-top: var(--ck-spacing-standard);
+				width: 100%;
+
+				& .ck.ck-labeled-field-view__status {
+					background: var(--ck-color-base-error);
+					color: var(--ck-color-base-background);
+					padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+					min-width: var(--ck-table-properties-min-error-width);
+					text-align: center;
+
+					/* The arrow pointing towards the field. */
+					&::after {
+						border-color: transparent transparent var(--ck-color-base-error) transparent;
+						border-width: 0 var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size);
+						border-style: solid;
+					}
+
+					animation: ck-table-form-labeled-view-status-appear .15s ease both;
+
+					@media (prefers-reduced-motion: reduce) {
+						animation: none;
+					}
+				}
+
+				/* Hide the error balloon when the field is blurred. Makes the experience much more clear. */
+				& .ck-input.ck-error:not(:focus) + .ck.ck-labeled-field-view__status {
+					display: none;
+				}
+
+				& > .ck-label {
+					font-size: var(--ck-font-size-tiny);
+					text-align: center;
+				}
+			}
+
+			.ck-dropdown {
+				display: block;
+				width: 100%;
+
+				& > button {
+					&:not(:focus) {
+						border: 1px solid var(--ck-color-base-border);
+					}
+
+					& > span {
+						width: 100%;
+					}
+				}
+			}
+		}
+
+		& > .ck-character-grid {
+			grid-area: 2 / 1 / 3 / 2;
+			max-height: 200px;
+		}
+
+		& > .ck-character-info {
+			grid-area: 3 / 1 / 4 / 2;
+		}
+	}
+}

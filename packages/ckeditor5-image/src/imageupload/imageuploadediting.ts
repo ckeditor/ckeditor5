@@ -135,6 +135,18 @@ export default class ImageUploadEditing extends Plugin {
 
 				editor.execute( 'uploadImage', { file: images } );
 			} );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
+
+			if ( !uploadImageCommand.isAccessAllowed ) {
+				const notification: Notification = editor.plugins.get( 'Notification' );
+				const t = editor.locale.t;
+
+				// eslint-disable-next-line max-len
+				notification.showWarning( t( 'No permission to upload from computer. Try using the file manager or contact your administrator.' ), {
+					namespace: 'image'
+				} );
+			}
 		} );
 
 		// Handle HTML pasted with images with base64 or blob sources.

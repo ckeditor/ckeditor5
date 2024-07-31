@@ -1,5 +1,5 @@
 ---
-menu-title: Angular
+menu-title: (Legacy) Angular
 meta-title: Angular rich text editor component | Legacy CKEditor 5 documentation
 category: legacy-integrations
 order: 20
@@ -7,7 +7,7 @@ order: 20
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component &ndash; Legacy guide
+# (Legacy) Angular rich text editor component
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/angular CKEditor&nbsp;5 integration} guide.

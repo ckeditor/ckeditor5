@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+.ck.ck-list-item-button {
+	&,
+	&.ck-on {
+		background: var(--ck-color-list-background);
+		color: var(--ck-color-text);
+	}
+
+	/*
+	 * `.ck-on` class and background styling is overridden for `ck-button` in many places.
+	 * This is a workaround to make sure that the background is not overridden and uses similar
+	 * selector specificity as the other overrides.
+	 */
+	&:hover:not(.ck-disabled),
+	&.ck-button.ck-on:hover,
+	&.ck-on:not(.ck-list-item-button_toggleable),
+	&.ck-on:hover {
+		background: var(--ck-color-list-button-hover-background);
+
+		&:not(.ck-disabled) {
+			color: var(--ck-color-text);
+		}
+	}
+}

@@ -130,8 +130,9 @@ describe( 'ImageUploadUI', () => {
 			expect( buttonView.icon ).to.equal( icons.imageUpload );
 		} );
 
-		it( 'should bind to #isImageSelected', () => {
+		it( 'should bind to #isImageSelected and #isAccessAllowed', () => {
 			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
 			mockAnotherIntegration();
 
@@ -150,6 +151,17 @@ describe( 'ImageUploadUI', () => {
 			insertImageUI.isImageSelected = true;
 			expect( dropdownButton.label ).to.equal( 'Replace image from computer' );
 			expect( buttonView.label ).to.equal( 'Replace from computer' );
+
+			uploadImageCommand.isAccessAllowed = false;
+			expect( dropdownButton.label ).to.equal( 'No permission to upload from computer. ' +
+				'Try using the file manager or contact your administrator.' );
+			expect( buttonView.label ).to.equal( 'Replace from computer' );
+
+			insertImageUI.isImageSelected = false;
+			uploadImageCommand.isAccessAllowed = false;
+			expect( dropdownButton.label ).to.equal( 'No permission to upload from computer. ' +
+				'Try using the file manager or contact your administrator.' );
+			expect( buttonView.label ).to.equal( 'Upload from computer' );
 		} );
 
 		it( 'should close dropdown on execute', () => {

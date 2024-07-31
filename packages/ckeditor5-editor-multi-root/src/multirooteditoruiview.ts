@@ -27,16 +27,16 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
-	 * Menu bar view instance.
-	 */
-	public readonly menuBarView: MenuBarView;
-
-	/**
 	 * Editable elements used by the multi-root editor UI.
 	 */
 	public readonly editables: Record<string, InlineEditableUIView>;
 
 	public readonly editable: InlineEditableUIView;
+
+	/**
+	 * Menu bar view instance.
+	 */
+	public override menuBarView: MenuBarView;
 
 	/**
 	 * The editing view instance this view is related to.

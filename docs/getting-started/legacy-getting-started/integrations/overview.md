@@ -1,12 +1,12 @@
 ---
 category: legacy-integrations
-menu-title: CKEditor 5 integrations
+menu-title: (Legacy) CKEditor 5 integrations
 meta-title: CKEditor 5 integrations overview | Legacy CKEditor 5 documentation
 order: 10
 menu-title: Overview
 ---
 
-# CKEditor&nbsp;5 integrations &ndash; Legacy guide
+# (Legacy) CKEditor&nbsp;5 integrations
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 framework integrations, please refer to the newest version of the integration guides in the installation section.

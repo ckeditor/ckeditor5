@@ -1,5 +1,6 @@
 {
 	"Special characters": "Name of the special characters plugins, visible in a dropdown and as a button tooltip.",
+	"Category": "A label for a special character dropdown with symbol categories.",
 	"All": "A category name is displayed in a special characters dropdown representing all available symbols.",
 	"Arrows": "A category name is displayed in a special characters dropdown representing arrow symbols.",
 	"Currency": "A category name is displayed in a special characters dropdown representing currency symbols.",
@@ -262,6 +263,5 @@
 	"Trade mark sign": "A label for the \"trade mark sign\" symbol.",
 	"Section sign": "A label for the \"section sign\" symbol.",
 	"Paragraph sign": "A label for the \"paragraph sign\" symbol.",
-	"Reversed paragraph sign": "A label for the \"reversed paragraph sign\" symbol.",
-	"Character categories": "A label for a tooltip showing when the user hovers over the plugin icon."
+	"Reversed paragraph sign": "A label for the \"reversed paragraph sign\" symbol."
 }

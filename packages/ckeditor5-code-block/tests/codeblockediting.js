@@ -150,9 +150,40 @@ describe( 'CodeBlockEditing', () => {
 		setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 		editor.execute( 'alignment', { value: 'right' } );
+
+		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+	} );
+
+	it( 'disallows for formatting attributes on nodes inside codeBlock #1 - text', () => {
+		setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+
 		editor.execute( 'bold' );
 
 		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+	} );
+
+	it( 'disallows for formatting attributes on nodes inside codeBlock #2 - object', () => {
+		model.schema.register( 'codeBlockObject', {
+			inheritAllFrom: '$inlineObject',
+			allowIn: 'codeBlock',
+			allowAttributes: [ 'bold' ]
+		} );
+
+		const isAllowed = model.schema.checkAttribute( [ '$root', 'codeBlock', 'bold' ], 'objId' );
+
+		expect( isAllowed ).to.be.false;
+	} );
+
+	it( 'allows for non-formatting attributes on nodes inside codeBlock', () => {
+		model.schema.register( 'codeBlockObject', {
+			inheritAllFrom: '$inlineObject',
+			allowIn: 'codeBlock',
+			allowAttributes: [ 'objId' ]
+		} );
+
+		const isAllowed = model.schema.checkAttribute( [ '$root', 'codeBlock', 'codeBlockObject' ], 'objId' );
+
+		expect( isAllowed ).to.be.true;
 	} );
 
 	describe( 'tab key handling', () => {
@@ -1685,6 +1716,37 @@ describe( 'CodeBlockEditing', () => {
 			);
 
 			sinon.assert.calledOnce( dataTransferMock.getData );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
+		} );
+
+		it( 'should filter out the disallowed element from pasted content', () => {
+			setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+			clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+				model.change( writer => {
+					const fragment = writer.createDocumentFragment();
+					const element = writer.createElement( 'paragraph' );
+					writer.append( element, fragment );
+					data.content = fragment;
+				} );
+			}, { priority: 'high' } );
+
+			const dataTransferMock = {
+				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
+			};
+
+			viewDoc.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[]o</codeBlock>' );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );

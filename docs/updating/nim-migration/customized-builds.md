@@ -1,6 +1,6 @@
 ---
 category: nim-migration
-order: 30
+order: 40
 menu-title: Migrating from customized builds
 meta-title: Migrating from customized builds to new installation methods | CKEditor 5 documentation
 meta-description: Learn how to upgrade from customized builds to the new installation methods.
@@ -26,6 +26,86 @@ Before you start, follow the usual upgrade path to update your project to use th
 If you are using the customized build, follow the steps below:
 
 1. Start by uninstalling all CKEditor&nbsp;5 packages that you have installed in your project. This includes the main `ckeditor5` package and any additional plugins that you have installed separately.
+
+	```bash
+	npm uninstall \
+		@ckeditor/ckeditor5-adapter-ckfinder \
+		@ckeditor/ckeditor5-alignment \
+		@ckeditor/ckeditor5-autoformat \
+		@ckeditor/ckeditor5-autosave \
+		@ckeditor/ckeditor5-basic-styles \
+		@ckeditor/ckeditor5-block-quote \
+		@ckeditor/ckeditor5-ckbox \
+		@ckeditor/ckeditor5-ckfinder \
+		@ckeditor/ckeditor5-clipboard \
+		@ckeditor/ckeditor5-cloud-services \
+		@ckeditor/ckeditor5-code-block \
+		@ckeditor/ckeditor5-core \
+		@ckeditor/ckeditor5-easy-image \
+		@ckeditor/ckeditor5-editor-balloon \
+		@ckeditor/ckeditor5-editor-classic \
+		@ckeditor/ckeditor5-editor-decoupled \
+		@ckeditor/ckeditor5-editor-inline \
+		@ckeditor/ckeditor5-editor-multi-root \
+		@ckeditor/ckeditor5-engine \
+		@ckeditor/ckeditor5-enter \
+		@ckeditor/ckeditor5-essentials \
+		@ckeditor/ckeditor5-find-and-replace \
+		@ckeditor/ckeditor5-font \
+		@ckeditor/ckeditor5-heading \
+		@ckeditor/ckeditor5-highlight \
+		@ckeditor/ckeditor5-horizontal-line \
+		@ckeditor/ckeditor5-html-embed \
+		@ckeditor/ckeditor5-html-support \
+		@ckeditor/ckeditor5-image \
+		@ckeditor/ckeditor5-indent \
+		@ckeditor/ckeditor5-language \
+		@ckeditor/ckeditor5-link \
+		@ckeditor/ckeditor5-list \
+		@ckeditor/ckeditor5-markdown-gfm \
+		@ckeditor/ckeditor5-media-embed \
+		@ckeditor/ckeditor5-mention \
+		@ckeditor/ckeditor5-minimap \
+		@ckeditor/ckeditor5-page-break \
+		@ckeditor/ckeditor5-paragraph \
+		@ckeditor/ckeditor5-paste-from-office \
+		@ckeditor/ckeditor5-remove-format \
+		@ckeditor/ckeditor5-restricted-editing \
+		@ckeditor/ckeditor5-select-all \
+		@ckeditor/ckeditor5-show-blocks \
+		@ckeditor/ckeditor5-source-editing \
+		@ckeditor/ckeditor5-special-characters \
+		@ckeditor/ckeditor5-style \
+		@ckeditor/ckeditor5-table \
+		@ckeditor/ckeditor5-theme-lark \
+		@ckeditor/ckeditor5-typing \
+		@ckeditor/ckeditor5-ui \
+		@ckeditor/ckeditor5-undo \
+		@ckeditor/ckeditor5-upload \
+		@ckeditor/ckeditor5-utils \
+		@ckeditor/ckeditor5-watchdog \
+		@ckeditor/ckeditor5-widget \
+		@ckeditor/ckeditor5-word-count \
+		@ckeditor/ckeditor5-ai \
+		@ckeditor/ckeditor5-case-change \
+		@ckeditor/ckeditor5-collaboration-core \
+		@ckeditor/ckeditor5-comments \
+		@ckeditor/ckeditor5-document-outline \
+		@ckeditor/ckeditor5-export-pdf \
+		@ckeditor/ckeditor5-export-word \
+		@ckeditor/ckeditor5-format-painter \
+		@ckeditor/ckeditor5-import-word \
+		@ckeditor/ckeditor5-list-multi-level \
+		@ckeditor/ckeditor5-pagination \
+		@ckeditor/ckeditor5-paste-from-office-enhanced \
+		@ckeditor/ckeditor5-real-time-collaboration \
+		@ckeditor/ckeditor5-revision-history \
+		@ckeditor/ckeditor5-slash-command \
+		@ckeditor/ckeditor5-template \
+		@ckeditor/ckeditor5-track-changes \
+		ckeditor5 \
+		ckeditor5-collaboration
+	```
 
 2. Next, install the `ckeditor5` package. This package contains the editor and all of our open-source plugins.
 
