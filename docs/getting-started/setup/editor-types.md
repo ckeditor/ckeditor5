@@ -11,7 +11,7 @@ modified_at: 2024-06-25
 The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.
 
 <info-box>
-	All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). It lets you quickly view and experiment with different presets.
 </info-box>
 
 There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approaches to editing as well as various UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/quick-start Quick start} guide.
