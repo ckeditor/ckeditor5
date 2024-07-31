@@ -27,20 +27,20 @@ msgstr "Običan tekst"
 
 msgctxt "Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'"
 msgid "Leaving %0 code snippet"
-msgstr ""
+msgstr "Ostavljate %0 isečak koda"
 
 msgctxt "Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'"
 msgid "Entering %0 code snippet"
-msgstr ""
+msgstr "Unosite %0 isečak koda"
 
 msgctxt "Assistive technologies label for entering the code block with unspecified programming language."
 msgid "Entering code snippet"
-msgstr ""
+msgstr "Unošenje isečka koda"
 
 msgctxt "Assistive technologies label for leaving the code block with unspecified programming language."
 msgid "Leaving code snippet"
-msgstr ""
+msgstr "Ostavljanje fragmenta koda  "
 
 msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
 msgid "Code block"
-msgstr ""
+msgstr "Blok koda"
