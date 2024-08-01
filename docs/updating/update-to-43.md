@@ -92,7 +92,7 @@ We strongly recommend that you read the release highlights to update to the late
 
 In the last major release of CKEditor&nbsp;5 we introduced new installation methods. Since then we have received a lot of feedback from you. Thanks to this, we identified a number of minor issues fixed in versions 42.0.1 and 42.0.2. While these fixes did not require any changes in the application, they do require some changes in the custom plugins created with the Package Generator.
 
-You can skip this section if you have not yet read the [Migrating custom plugins](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/custom-plugins.html) guide. However, if you have, follow the steps below to apply these fixes to your plugin.
+You can skip this section if you have not read the [Migrating custom plugins](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/custom-plugins.html) guide. However, if you have, follow the steps below to apply these fixes to your plugin.
 
 1. Update all packages starting with `@ckeditor/ckeditor5-dev-` to version `^42.0.0`.
 2. Open the `package.json` file and replace the content as follows:
