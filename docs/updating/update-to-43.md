@@ -24,47 +24,47 @@ Below are the most important changes that require your attention when upgrading 
 
 ### Export to Word v2 becomes the default
 
-In version v42.0.0, we introduced new version of Export to Word plugin that utulizes updated v2 of the converter. It was introduced in an opt-in manner. From the v43.0.0, the Export to Word v2 is **the default** configuration. This may require updates to the editor's configuration if you use this plugin.
+In CKEditor&nbsp;5 v42.0.0, we introduced a new version of Export to Word plugin that utilizes the updated converter (marked as V2). It was introduced in an opt-in manner. Starting with v43.0.0, the Export to Word V2 is **the default** configuration. This may require updates to the editor's configuration if you use this plugin.
 
-Example v1 configuration:
-
-```js
-exportWord: {
-            tokenUrl: 'https://example.com/cs-token-endpoint',
-            fileName: 'my-file.docx',
-            converterOptions: {
-                format: 'A4',
-                margin_top: '20mm',
-                margin_bottom: '20mm',
-                margin_right: '12mm',
-                margin_left: '12mm'
-            }
-        }
-```
-
-Migrated to v2:
+Example V1 configuration:
 
 ```js
 exportWord: {
-            tokenUrl: 'https://example.com/cs-token-endpoint',
-            fileName: 'my-file.docx',
-            converterOptions: {
-                document: {
-                    size: 'A4',
-                    margin: {
-                        top: '20mm',
-                        bottom: '20mm',
-                        right: '12mm',
-                        left: '12mm'
-                    }
-                }
-            }
-        }
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			fileName: 'my-file.docx',
+			converterOptions: {
+				format: 'A4',
+				margin_top: '20mm',
+				margin_bottom: '20mm',
+				margin_right: '12mm',
+				margin_left: '12mm'
+			}
+		}
 ```
 
-The full v2 configuration can be found in the {@link module:export-word/exportword~ExportWordConverterOptionsV2} API documentation.
+The same migrated to V2:
 
-Alongside with the configuration changes we decided to switch the default `auto_pagination` option to `false`. This option was only used along our `Pagination` feature. When this option is enabled the breaks in the pagination force the breaks in the exported Word document. Browser engines and Microsoft Word differ significantly. Because of that we decided to turn this option to `false` If you still want to enforce breaks from pagination, change it in the configuration to `true`.
+```js
+exportWord: {
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			fileName: 'my-file.docx',
+			converterOptions: {
+				document: {
+					size: 'A4',
+					margin: {
+						top: '20mm',
+						bottom: '20mm',
+						right: '12mm',
+						left: '12mm'
+					}
+				}
+			}
+		}
+```
+
+You can find the full V2 configuration in the {@link module:export-word/exportword~ExportWordConverterOptionsV2} API documentation.
+
+Alongside with the configuration changes we decided to switch the default `auto_pagination` option to `false`. This option was only used with the pagination feature. When it is enabled the breaks in the pagination force the page breaks in the exported Word document. However, browser engines and Microsoft Word differ significantly. Because of that we decided to turn this option to `false`. If you still want to enforce breaks from pagination, change it in the configuration to `true`.
 
 ### Typing bug fixes
 
@@ -73,54 +73,54 @@ This release brings a couple of improvements to typing in the editor.
 * Android IME: multiple issues related to duplicated characters, reverse writing effects, etc. ([#13994](https://github.com/ckeditor/ckeditor5/issues/13994), [#14707](https://github.com/ckeditor/ckeditor5/issues/14707), [#13850](https://github.com/ckeditor/ckeditor5/issues/13850), [#13693](https://github.com/ckeditor/ckeditor5/issues/13693), [#14567](https://github.com/ckeditor/ckeditor5/issues/14567), [#11569](https://github.com/ckeditor/ckeditor5/issues/11569)).
 * Safari: the reverse typing effect after the focus change ([#14702](https://github.com/ckeditor/ckeditor5/issues/14702)).
 
-Those fixes don't require migration, but typing is a crucial area for the editor, and we want to call them out explicitly.
+These fixes do not require migration, but typing is a crucial area for the editor, and we want to call them out explicitly.
 
-### Update of global names in UMD builds
+### Update of global names in the UMD builds
 
 We have decided to change the global names for the `ckeditor5` and `ckeditor5-premium-features` packages in the UMD builds to `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES` respectively.
 
 ### React and Vue integrations updates
 
-We have released new major versions of the React and Vue integrations. In both of them, we have migrated to JavaScript modules (ESM) and rewritten large parts of the codebases to support the latest versions of these frameworks and to follow the latest recommendations for writing the components.
+We have released new major versions of the React and Vue integrations. In both of them, we have migrated to JavaScript modules (ESM) and rewritten large parts of their codebases to support the latest versions of these frameworks and to follow the latest recommendations for writing the components.
 
-We strongly recommend that you follow the release highlights to update to the latest versions:
+We strongly recommend that you read the release highlights to update to the latest versions:
 
 - [Release highlights for React integration](https://github.com/ckeditor/ckeditor5-react/releases/tag/v9.0.0).
 - [Release highlights for Vue integration](https://github.com/ckeditor/ckeditor5-vue/releases/tag/v7.0.0).
 
 ### Updates to the Package Generator
 
-In the last major release of CKEditor we introduced new installation methods, and since then we have received a lot of feedback from you. Thanks to this feedback, we identified a number of minor issues that we fixed in versions 42.0.1 and 42.0.2. While these fixes did not require any changes in the consuming application, they do require some changes in the custom plugins created with the Package Generator.
+In the last major release of CKEditor&nbsp;5 we introduced new installation methods. Since then we have received a lot of feedback from you. Thanks to this, we identified a number of minor issues fixed in versions 42.0.1 and 42.0.2. While these fixes did not require any changes in the application, they do require some changes in the custom plugins created with the Package Generator.
 
-You can skip this section if you have not yet followed the [Migrating custom plugins](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/custom-plugins.html) guide. However, if you have, follow the steps below to apply these fixes to your plugin.
+You can skip this section if you have not yet read the [Migrating custom plugins](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/custom-plugins.html) guide. However, if you have, follow the steps below to apply these fixes to your plugin.
 
 1. Update all packages starting with `@ckeditor/ckeditor5-dev-` to version `^42.0.0`.
 2. Open the `package.json` file and replace the content as follows:
-    * If your project is written in TypeScript, replace the `"types"` and `"exports"` fields:
+	* If your project is written in TypeScript, replace the `"types"` and `"exports"` fields:
 
-        ```json
-        "types": "dist/index.d.ts",
-        "exports": {
-        	".": {
-        		"types": "./dist/index.d.ts",
-        		"import": "./dist/index.js"
-        	},
-        	"./*": "./dist/*",
-        	"./browser/*": null,
-        	"./package.json": "./package.json"
-        }
-        ```
+		```json
+		"types": "dist/index.d.ts",
+		"exports": {
+			".": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js"
+			},
+			"./*": "./dist/*",
+			"./browser/*": null,
+			"./package.json": "./package.json"
+		}
+		```
 
-    * If your project in written in plain JavaScript, replace the `“exports”` field:
+	* If your project is written in plain JavaScript, replace the `“exports”` field:
 
-        ```json
-        "exports": {
-        	".": "./dist/index.js",
-        	"./*": "./dist/*",
-        	"./browser/*": null,
-        	"./package.json": "./package.json"
-        }
-        ```
+		```json
+		"exports": {
+			".": "./dist/index.js",
+			"./*": "./dist/*",
+			"./browser/*": null,
+			"./package.json": "./package.json"
+		}
+		```
 
-3. Open `scripts/build-dist.mjs` file and look for the `name` object key in the second `build()` step. This value represents the global variable under which your plugin is available in the UMD build and should currently match the name of your package. UMD is an alternative build format that we provide for those who cannot use JavaScript modules in their applications. We encourage you to update this value to `CKEDITOR_PLUGIN_X`, where `X` uniquely identifies your plugin. We recommend using only uppercase letters and underscores (`_`).
+3. Open the `scripts/build-dist.mjs` file and look for the `name` object key in the second `build()` step. This value represents the global variable under which your plugin is available in the UMD build and should currently match the name of your package. UMD is an alternative build format that we provide for those who cannot use JavaScript modules in their applications. We encourage you to update this value to `CKEDITOR_PLUGIN_X`, where `X` uniquely identifies your plugin. We recommend using only uppercase letters and underscores (`_`).
 
