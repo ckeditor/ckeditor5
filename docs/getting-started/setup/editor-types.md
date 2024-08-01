@@ -66,7 +66,7 @@ See an {@link examples/builds/balloon-block-editor example of the balloon block 
 
 The Decoupled editor is named for its unique structure, where the toolbar and editing area are separate elements. This design allows for greater flexibility and customization, making it suitable for a wide range of applications beyond just classic WYSIWYG editing.
 
-The most popular use case for the Decoupled editor is the “document editor” similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
+The most popular use case for the Decoupled editor is the “document editor”, similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
 
 By separating the toolbar from the editing area, you can integrate the editor into different parts of your application or customize its appearance and functionality to suit various needs. For example, you may want to create an email creator that reflects the setup in which the toolbar is at the bottom of the editing area. We have {@link examples/custom/bottom-toolbar-editor a working example} for this.
 
