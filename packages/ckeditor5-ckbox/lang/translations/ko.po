@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "기본 작업 공간에 액세스할 수 없습니다."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "이미지 편집 권한이 없습니다. 파일 관리자를 사용해 보시거나 관리자에게 문의하세요."
+msgid "You have no image editing permissions."
+msgstr ""
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

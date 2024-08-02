@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "Negalima pasiekti numatytosios darbo erdvės."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "Nėra leidimo redaguoti vaizdą. Pabandykite naudoti failų tvarkyklę arba kreipkitės į administratorių."
+msgid "You have no image editing permissions."
+msgstr ""
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

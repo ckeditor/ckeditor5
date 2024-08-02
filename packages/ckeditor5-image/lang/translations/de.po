@@ -102,8 +102,8 @@ msgid "Upload failed"
 msgstr "Hochladen fehlgeschlagen"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
-msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr "Keine Berechtigung zum Hochladen vom Computer. Versuchen Sie es mit dem Dateimanager oder wenden Sie sich an Ihren Administrator."
+msgid "You have no image upload permissions."
+msgstr ""
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

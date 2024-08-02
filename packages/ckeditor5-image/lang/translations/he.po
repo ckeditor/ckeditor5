@@ -102,8 +102,8 @@ msgid "Upload failed"
 msgstr "העלאה נכשלה"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
-msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr "אין הרשאה לבצע העלאה מהמחשב. נסו להשתמש במנהל הקבצים או פנו למנהל המערכת שלכם."
+msgid "You have no image upload permissions."
+msgstr ""
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

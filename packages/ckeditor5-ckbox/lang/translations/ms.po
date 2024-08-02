@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "Tidak dapat mengakses ruang kerja lalai."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "Tiada kebenaran untuk mengedit imej. Cuba gunakan pengurus fail atau hubungi pentadbir anda."
+msgid "You have no image editing permissions."
+msgstr ""
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

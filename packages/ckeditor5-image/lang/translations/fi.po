@@ -102,8 +102,8 @@ msgid "Upload failed"
 msgstr "Lataus epäonnistui"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
-msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr "Ei lupaa ladata tietokoneelta. Kokeile tiedostonhallinnan käyttämistä tai ota yhteys järjestelmänvalvojaan."
+msgid "You have no image upload permissions."
+msgstr ""
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

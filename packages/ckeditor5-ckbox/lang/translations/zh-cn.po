@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "无法访问默认工作区"
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "没有图像编辑权限。请尝试使用文件管理器或联系您的管理员。"
+msgid "You have no image editing permissions."
+msgstr ""
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
