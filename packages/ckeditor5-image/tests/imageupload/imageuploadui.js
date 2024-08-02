@@ -153,14 +153,12 @@ describe( 'ImageUploadUI', () => {
 			expect( buttonView.label ).to.equal( 'Replace from computer' );
 
 			uploadImageCommand.isAccessAllowed = false;
-			expect( dropdownButton.label ).to.equal( 'No permission to upload from computer. ' +
-				'Try using the file manager or contact your administrator.' );
+			expect( dropdownButton.label ).to.equal( 'You have no image upload permissions.' );
 			expect( buttonView.label ).to.equal( 'Replace from computer' );
 
 			insertImageUI.isImageSelected = false;
 			uploadImageCommand.isAccessAllowed = false;
-			expect( dropdownButton.label ).to.equal( 'No permission to upload from computer. ' +
-				'Try using the file manager or contact your administrator.' );
+			expect( dropdownButton.label ).to.equal( 'You have no image upload permissions.' );
 			expect( buttonView.label ).to.equal( 'Upload from computer' );
 		} );
 

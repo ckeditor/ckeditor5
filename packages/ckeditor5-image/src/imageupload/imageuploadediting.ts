@@ -143,7 +143,7 @@ export default class ImageUploadEditing extends Plugin {
 				const t = editor.locale.t;
 
 				// eslint-disable-next-line max-len
-				notification.showWarning( t( 'No permission to upload from computer. Try using the file manager or contact your administrator.' ), {
+				notification.showWarning( t( 'You have no image upload permissions.' ), {
 					namespace: 'image'
 				} );
 			}

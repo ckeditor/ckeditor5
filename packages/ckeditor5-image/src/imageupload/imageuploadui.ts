@@ -114,7 +114,7 @@ export default class ImageUploadUI extends Plugin {
 			'isAccessAllowed',
 			( isImageSelected, isAccessAllowed ) => {
 				if ( !isAccessAllowed ) {
-					return t( 'No permission to upload from computer. Try using the file manager or contact your administrator.' );
+					return t( 'You have no image upload permissions.' );
 				}
 
 				return isImageSelected ? t( 'Replace image from computer' ) : t( 'Upload image from computer' );
