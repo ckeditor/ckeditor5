@@ -33,7 +33,7 @@ You get ready-to-use code tailored to your needs!
 ## Installing CKEditor&nbsp;5 using npm
 
 <info-box>
-To set up the editor from npm, you need a bundler to build the JavaScript files correctly. CKEditor 5 is compatible with all modern JavaScript bundlers. For a quick project setup, we recommend using [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+	To set up the editor from npm, you need a bundler to build the JavaScript files correctly. CKEditor 5 is compatible with all modern JavaScript bundlers. For a quick project setup, we recommend using [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
 </info-box>
 
 First, install the necessary package. The command below will install the main CKEditor&nbsp;5 package containing all open-source plugins.
