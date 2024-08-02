@@ -30,7 +30,7 @@ Available modifiers for the command are:
 
 * `--use-npm` &ndash; use `npm` to install dependencies in the newly created package.
 * `--use-yarn` &ndash; use `yarn` to install dependencies in the newly created package.
-* `--global-name` &ndash; define a global name of the package to be used in UMD build.
+* `--global-name` &ndash; define a global name of the package to be used in the UMD build.
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
