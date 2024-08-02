@@ -18,17 +18,41 @@
 		text-align: right;
 	}
 
-	& .ck-list-item-button__check-holder {
-		display: inline-flex;
-		width: 1em;
-		height: 1em;
-
+	&.ck-list-item-button_toggleable {
 		@mixin ck-dir ltr {
-			margin-right: var(--ck-spacing-standard);
+			padding-left: var(--ck-spacing-small);
 		}
 
 		@mixin ck-dir rtl {
-			margin-left: var(--ck-spacing-standard);
+			padding-right: var(--ck-spacing-small);
+		}
+	}
+
+	& .ck-list-item-button__check-holder {
+		display: inline-flex;
+		width: .9em;
+		height: .9em;
+
+		@mixin ck-dir ltr {
+			margin-right: var(--ck-spacing-small);
+		}
+
+		@mixin ck-dir rtl {
+			margin-left: var(--ck-spacing-small);
+		}
+
+		/* Most icons do not use their whole viewbox. This creates an extra empty space to the right
+		of the check and some visual asymmetry. Addressing it by nudging the check to the right. */
+		&:has(+ .ck-icon) {
+			@mixin ck-dir ltr {
+				margin-right: calc(var(--ck-spacing-small) - var(--ck-spacing-tiny));
+				margin-left: var(--ck-spacing-tiny);
+			}
+
+			@mixin ck-dir rtl {
+				margin-left: calc(var(--ck-spacing-small) - var(--ck-spacing-tiny));
+				margin-right: var(--ck-spacing-tiny);
+			}
 		}
 	}
 
