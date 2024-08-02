@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "Puudub juurdepääs vaiketööruumile."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "Pildi muutmise luba puudu. Üritage kasutada failihaldurit või suhelge oma administraatoriga."
+msgid "You have no image editing permissions."
+msgstr ""
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

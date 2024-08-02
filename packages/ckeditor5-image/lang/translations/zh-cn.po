@@ -102,8 +102,8 @@ msgid "Upload failed"
 msgstr "上传失败"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
-msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr "没有从计算机上传的权限。请尝试使用文件管理器或联系您的管理员。"
+msgid "You have no image upload permissions."
+msgstr ""
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

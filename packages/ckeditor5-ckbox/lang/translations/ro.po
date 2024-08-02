@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "Nu poți accesa spațiul de lucru implicit."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "Nu există permisiune pentru editarea de imagini. Încercați să utilizați managerul de fișiere sau contactați-vă administratorul."
+msgid "You have no image editing permissions."
+msgstr ""
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

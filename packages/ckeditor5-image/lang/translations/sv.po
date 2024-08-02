@@ -102,8 +102,8 @@ msgid "Upload failed"
 msgstr "Uppladdning misslyckades"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
-msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr "Saknar tillåtelse att ladda upp från datorn. Försök använda filhanteraren eller kontakta din administratör."
+msgid "You have no image upload permissions."
+msgstr ""
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
