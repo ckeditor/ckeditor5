@@ -31,7 +31,7 @@ msgstr "Nie je možné získať prístup k predvolenému pracovnému priestoru."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Žiadne povolenie na úpravu obrázkov. Skúste použiť správcu súborov alebo kontaktujte správcu."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

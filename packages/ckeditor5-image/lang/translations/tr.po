@@ -103,7 +103,7 @@ msgstr "Yükleme başarsız"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
 msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Bilgisayardan yükleme yapma izni yok. Dosya yöneticisini kullanmayı deneyin veya yöneticinize ulaşın."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

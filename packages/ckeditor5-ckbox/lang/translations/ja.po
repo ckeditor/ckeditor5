@@ -31,7 +31,7 @@ msgstr "デフォルトワークスペースにアクセスできません。"
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "画像を編集する権限がありません。ファイルマネージャーを使用するか、管理者にお問い合わせください。"
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

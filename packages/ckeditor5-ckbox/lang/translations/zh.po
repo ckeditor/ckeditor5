@@ -31,7 +31,7 @@ msgstr "無法存取預設工作區。"
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "沒有編輯圖片的權限。請嘗試使用檔案管理工具或聯絡管理員。"
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

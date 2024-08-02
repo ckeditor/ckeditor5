@@ -31,7 +31,7 @@ msgstr "ไม่สามารถเข้าถึงพื้นที่ท
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "ไม่มีสิทธิ์ในการแก้ไขรูปภาพ ลองใช้ตัวจัดการไฟล์หรือติดต่อผู้ดูแลระบบของคุณ"
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

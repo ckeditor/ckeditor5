@@ -31,7 +31,7 @@ msgstr "Zugriff auf Standardarbeitsbereich nicht möglich."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Keine Berechtigung zur Bildbearbeitung. Versuchen Sie es mit dem Dateimanager oder wenden Sie sich an Ihren Administrator."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

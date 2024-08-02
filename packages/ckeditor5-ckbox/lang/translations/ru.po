@@ -31,7 +31,7 @@ msgstr "Не удается получить доступ к рабочему п
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Нет разрешения на редактирование изображений. Попробуйте использовать диспетчер файлов или обратитесь к администратору."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
