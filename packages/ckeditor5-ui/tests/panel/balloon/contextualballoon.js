@@ -211,7 +211,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
-	describe( 'getPosition()', () => {
+	describe( 'getPositionOptions()', () => {
 		beforeEach( () => {
 			sinon.stub( balloon.view, 'attachTo' ).returns( {} );
 			sinon.stub( balloon.view, 'pin' ).returns( {} );
@@ -222,7 +222,7 @@ describe( 'ContextualBalloon', () => {
 				view: viewA
 			} );
 
-			expect( balloon.getPosition() ).to.be.undefined;
+			expect( balloon.getPositionOptions() ).to.be.undefined;
 		} );
 
 		it( 'should return position of the last visible stack element', () => {
@@ -233,7 +233,7 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			expect( balloon.getPosition() ).to.be.deep.equal( {
+			expect( balloon.getPositionOptions() ).to.be.deep.equal( {
 				limiter: balloon.positionLimiter,
 				target: 'fake',
 				viewportOffsetConfig: {
@@ -250,7 +250,7 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			expect( balloon.getPosition().limiter ).to.be.equal( balloon.positionLimiter );
+			expect( balloon.getPositionOptions().limiter ).to.be.equal( balloon.positionLimiter );
 		} );
 
 		it( 'should attach viewportOffsetConfig to the position of element from the last visible stack if it\'s not present', () => {
@@ -261,7 +261,7 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			expect( balloon.getPosition().viewportOffsetConfig ).to.be.equal( editor.ui.viewportOffset );
+			expect( balloon.getPositionOptions().viewportOffsetConfig ).to.be.equal( editor.ui.viewportOffset );
 		} );
 	} );
 

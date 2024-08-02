@@ -155,7 +155,7 @@ export default class ContextualBalloon extends Plugin {
 			return null;
 		};
 
-		this.decorate( 'getPosition' );
+		this.decorate( 'getPositionOptions' );
 
 		this.set( 'visibleView', null );
 		this.set( '_numberOfStacks', 0 );
@@ -323,7 +323,7 @@ export default class ContextualBalloon extends Plugin {
 			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
 
-		this.view.pin( this.getPosition()! );
+		this.view.pin( this.getPositionOptions()! );
 		this._fakePanelsView!.updatePosition();
 	}
 
@@ -331,7 +331,7 @@ export default class ContextualBalloon extends Plugin {
 	 * Returns position options of the last view in the stack.
 	 * This keeps the balloon in the same position when the view is changed.
 	 */
-	public getPosition(): Partial<PositionOptions> | undefined {
+	public getPositionOptions(): Partial<PositionOptions> | undefined {
 		let position = Array.from( this._visibleStack.values() ).pop()!.position;
 
 		if ( position ) {
@@ -523,7 +523,7 @@ export default class ContextualBalloon extends Plugin {
 
 		this._rotatorView!.showView( view );
 		this.visibleView = view;
-		this.view.pin( this.getPosition()! );
+		this.view.pin( this.getPositionOptions()! );
 		this._fakePanelsView!.updatePosition();
 
 		if ( singleViewMode ) {
@@ -535,9 +535,9 @@ export default class ContextualBalloon extends Plugin {
 /**
  * An event fired when the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} is about to get the position of the balloon.
  *
- * @eventName ~ContextualBalloon#getPosition
+ * @eventName ~ContextualBalloon#getPositionOptions
  */
-export type ContextualBalloonGetPositionEvent = DecoratedMethodEvent<ContextualBalloon, 'getPosition'>;
+export type ContextualBalloonGetPositionOptionsEvent = DecoratedMethodEvent<ContextualBalloon, 'getPositionOptions'>;
 
 /**
  * The configuration of the view.

@@ -310,10 +310,10 @@ describe( 'ClassicEditorUI', () => {
 				editorElement.remove();
 			} );
 
-			it( 'should handle BalloonPlugin#getPosition returning undefined value', () => {
+			it( 'should handle BalloonPlugin#getPositionOptions returning undefined value', () => {
 				sinon.stub( contextualBalloon, '_visibleStack' ).get( () => ( { values: () => [ { position: undefined } ] } ) );
 
-				expect( contextualBalloon.getPosition() ).to.be.undefined;
+				expect( contextualBalloon.getPositionOptions() ).to.be.undefined;
 			} );
 
 			it( 'should set proper viewportOffsetConfig top offset when sticky panel is visible', () => {

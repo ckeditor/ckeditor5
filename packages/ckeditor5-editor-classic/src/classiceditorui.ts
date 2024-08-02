@@ -17,7 +17,7 @@ import {
 	type DialogViewMoveToEvent,
 	type Dialog,
 	type EditorUIReadyEvent,
-	type ContextualBalloonGetPositionEvent
+	type ContextualBalloonGetPositionOptionsEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -206,7 +206,7 @@ export default class ClassicEditorUI extends EditorUI {
 		const { stickyPanel } = this.view;
 		const contextualBalloon = this.editor.plugins.get( 'ContextualBalloon' );
 
-		contextualBalloon.on<ContextualBalloonGetPositionEvent>( 'getPosition', evt => {
+		contextualBalloon.on<ContextualBalloonGetPositionOptionsEvent>( 'getPositionOptions', evt => {
 			const position = evt.return;
 
 			if ( !position || !stickyPanel.isSticky || !stickyPanel.element ) {
