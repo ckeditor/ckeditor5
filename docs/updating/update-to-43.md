@@ -64,7 +64,10 @@ exportWord: {
 
 You can find the full V2 configuration in the {@link module:export-word/exportword~ExportWordConverterOptionsV2} API documentation.
 
-Alongside with the configuration changes we decided to switch the default `auto_pagination` option to `false`. This option was only used with the pagination feature. When it is enabled the breaks in the pagination force the page breaks in the exported Word document. However, browser engines and Microsoft Word differ significantly. Because of that we decided to turn this option to `false`. If you still want to enforce breaks from pagination, change it in the configuration to `true`.
+#### Other configuration changes
+
+* We decided to switch the default `auto_pagination` option to `false`. This option was only used with the pagination feature. When it is enabled the breaks in the pagination force the page breaks in the exported Word document. However, browser engines and Microsoft Word differ significantly. Because of that we decided to turn this option to `false`. If you still want to enforce breaks from pagination, change it in the configuration to `true`.
+* New configuration option was added `document.language`, by default it is set to editor content language.
 
 ### Typing bug fixes
 
@@ -74,6 +77,10 @@ This release brings a couple of improvements to typing in the editor.
 * Safari: the reverse typing effect after the focus change ([#14702](https://github.com/ckeditor/ckeditor5/issues/14702)).
 
 These fixes do not require migration, but typing is a crucial area for the editor, and we want to call them out explicitly.
+
+### Special characters' user interface
+
+Special characters UI has been moved from a dropdown to a dialog. This unifies the action between the menu bar and toolbar, and also gives content creators quicker access to the always-on-top dialog when they insert a lot of symbols to the content.
 
 ### Update of global names in the UMD builds
 
