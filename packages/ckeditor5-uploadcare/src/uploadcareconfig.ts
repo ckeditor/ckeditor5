@@ -92,29 +92,5 @@ export interface UploadcareAssetImageDefinition {
 	/**
 	 * Asset attributes.
 	 */
-	attributes: UploadcareAssetImageAttributesDefinition;
-}
-
-/**
- * Asset attributes definition for an image.
- *
- * The definition contains the `imageFallbackUrl`, an `imageSources` array with one image source definition object and the
- * `imageTextAlternative`.
- */
-export interface UploadcareAssetImageAttributesDefinition {
-
-	/**
-	 * A fallback URL for browsers that do not support the "webp" format.
-	 */
-	imageFallbackUrl: string;
-
-	/**
-	 * Image width.
-	 */
-	imageWidth?: number;
-
-	/**
-	 * Image height.
-	 */
-	imageHeight?: number;
+	url: string;
 }

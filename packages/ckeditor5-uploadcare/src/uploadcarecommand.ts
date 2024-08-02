@@ -18,7 +18,7 @@ import * as LR from '@uploadcare/blocks';
 
 import UploadcareFormView from './ui/uploadcareformview.js';
 import imageUploadIcon from '../theme/icons/image-upload.svg';
-import { type UploadcareAssetImageDefinition } from './uploadcareconfig.js';
+import type { UploadcareAssetImageDefinition } from './uploadcareconfig.js';
 
 /**
  * The Uploadcare command. It is used by the {@link module:uploadcare/uploadcareediting~UploadcareEditing Uploadcare editing feature}
@@ -59,11 +59,6 @@ export default class UploadcareCommand extends Command {
 	private _api: LR.UploaderPublicApi | null = null;
 
 	/**
-	 * @internal
-	 */
-	public readonly _chosenAssets = new Set<UploadcareAssetImageDefinition>();
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
@@ -102,9 +97,15 @@ export default class UploadcareCommand extends Command {
 			this._reinitFlow();
 		}
 
-		console.log( this._ctxElement );
-
 		this._api = this._ctxElement!.getAPI();
+
+		// When the file editor is opened from the upload component, the file list is not cleared.
+		// Clearing it upon closing the modal generates errors in Uploadcare methods (some elements are not available).
+		// This function is called before opening the modal to ensure the list is cleaned.
+		//
+		// TODO: This issue should probably be fixed on the Uploadcare side.
+		this._api!.removeAllFiles();
+
 		// It should be called after initializing all elements.
 		this._api.initFlow();
 	}
@@ -180,8 +181,6 @@ export default class UploadcareCommand extends Command {
 	 */
 	private _close() {
 		this._type = null;
-		this._chosenAssets.clear();
-		this._api!.removeAllFiles();
 
 		this._configElement!.remove();
 		this._configElement = null;
@@ -200,15 +199,27 @@ export default class UploadcareCommand extends Command {
 		const editor = this.editor;
 
 		this._ctxElement!.addEventListener( 'done-click', () => {
+			const { allEntries } = this._api!.getOutputCollectionState();
+
 			const model = this.editor.model;
 
 			// All assets are inserted in one undo step.
 			model.change( writer => {
-				const assetsToProcess = Array.from( this._chosenAssets );
-				const assetsCount = assetsToProcess.length;
+				const entriesCount = allEntries.length;
 
-				for ( const asset of assetsToProcess ) {
-					const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
+				for ( const entry of allEntries ) {
+					const isLastAsset = entry === allEntries[ entriesCount - 1 ];
+					const { cdnUrl, fileInfo } = entry;
+
+					if ( !cdnUrl || !fileInfo ) {
+						continue;
+					}
+
+					const asset: UploadcareAssetImageDefinition = {
+						id: fileInfo!.uuid,
+						type: 'image',
+						url: cdnUrl
+					};
 
 					this._insertAsset( asset, isLastAsset, writer );
 				}
@@ -217,42 +228,9 @@ export default class UploadcareCommand extends Command {
 			this._dialog.hide();
 		} );
 
-		// Handle choosing the assets.
-		this._ctxElement!.addEventListener( 'file-upload-success', ( evt: CustomEvent<LR.OutputFileEntry> ) => {
-			const { fileInfo } = evt.detail;
-
-			if ( !this.isEnabled || !fileInfo ) {
-				return;
-			}
-
-			const asset: UploadcareAssetImageDefinition = {
-				id: fileInfo.uuid,
-				type: 'image',
-				attributes: {
-					imageFallbackUrl: fileInfo.cdnUrl!,
-					imageWidth: fileInfo.imageInfo!.width,
-					imageHeight: fileInfo.imageInfo!.height
-				}
-			};
-
-			this._chosenAssets.add( asset );
-
-			editor.editing.view.focus();
-		} );
-
-		// Handle removing the asset from list.
-		this._ctxElement!.addEventListener( 'file-removed', ( evt: CustomEvent<LR.OutputFileEntry> ) => {
-			const { fileInfo } = evt.detail;
-
-			const assetToRemove = Array.from( this._chosenAssets ).find( asset => asset.id === fileInfo!.uuid );
-
-			this._chosenAssets.delete( assetToRemove );
-		} );
-
 		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
 			// Whenever the `clear` button is triggered we need to re-init the flow.
 			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length ) {
-				this._chosenAssets.clear();
 				this._api!.setCurrentActivity( 'start-from' );
 			}
 		} );
@@ -302,18 +280,9 @@ export default class UploadcareCommand extends Command {
 	 */
 	private _insertImage( asset: UploadcareAssetImageDefinition ) {
 		const editor = this.editor;
-		const {
-			imageFallbackUrl,
-			imageWidth,
-			imageHeight
-		} = asset.attributes;
 
 		editor.execute( 'insertImage', {
-			source: {
-				src: imageFallbackUrl,
-				width: imageWidth,
-				height: imageHeight
-			}
+			source: asset.url
 		} );
 	}
 }
