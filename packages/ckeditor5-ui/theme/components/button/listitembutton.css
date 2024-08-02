@@ -40,20 +40,6 @@
 		@mixin ck-dir rtl {
 			margin-left: var(--ck-spacing-small);
 		}
-
-		/* Most icons do not use their whole viewbox. This creates an extra empty space to the right
-		of the check and some visual asymmetry. Addressing it by nudging the check to the right. */
-		&:has(+ .ck-icon) {
-			@mixin ck-dir ltr {
-				margin-right: calc(var(--ck-spacing-small) - var(--ck-spacing-tiny));
-				margin-left: var(--ck-spacing-tiny);
-			}
-
-			@mixin ck-dir rtl {
-				margin-left: calc(var(--ck-spacing-small) - var(--ck-spacing-tiny));
-				margin-right: var(--ck-spacing-tiny);
-			}
-		}
 	}
 
 	& .ck-list-item-button__check-icon {
