@@ -17,14 +17,14 @@
  * ClassicEditor
  * 	.create( editorElement, {
  * 		uploadcare: {
- * 			tokenUrl: 'https://example.com/cs-token-endpoint'
+ * 			pubKey: 'YOUR_PUBLIC_KEY'
  * 		}
  * 	} )
  * 	.then( ... )
  * 	.catch( ... );
  * ```
  *
- * Hovewer, you can also adjust the feature to fit your needs:
+ * However, you can also adjust the feature to fit your needs:
  *
  * ```ts
  * ClassicEditor
@@ -36,7 +36,7 @@
  * 				'instagram',
  * 				'gdrive'
  * 			],
- * 			tokenUrl: 'https://example.com/cs-token-endpoint'
+ * 			pubkey: 'YOUR_PUBLIC_KEY'
  * 		}
  * 	} )
  * 	.then( ... )
@@ -75,7 +75,7 @@ export enum UploadcareSource {
 /**
  * Image asset definition.
  *
- * The definition contains the unique `id`, asset `type` and an `attributes` definition.
+ * The definition contains the unique `id`, asset `type` and an `url`.
  */
 export interface UploadcareAssetImageDefinition {
 

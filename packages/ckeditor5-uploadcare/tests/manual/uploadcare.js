@@ -48,6 +48,7 @@ ClassicEditor
 			]
 		},
 		uploadcare: {
+			pubkey: '532fdaa30fa803cef431',
 			sourceList: [
 				'local',
 				'url',

@@ -142,10 +142,16 @@ export default class UploadcareCommand extends Command {
 	}
 
 	private _initConfig() {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const configOptions = this.editor.config.get( 'uploadcare' ) || {};
+
 		this._configElement = createElement( document, 'lr-config', {
-			'pubKey': '532fdaa30fa803cef431',
+			...configOptions,
 			'ctx-name': 'uploader',
-			'source-list': this._type
+			'sourceList': this._type,
+			'imgOnly': true,
+			'removeCopyright': true,
+			'localeName': this.editor.locale.contentLanguage
 		} );
 
 		document.body.appendChild( this._configElement );
