@@ -1725,7 +1725,7 @@ describe( 'Differ', () => {
 				writer.setAttribute( attributeKey, true, writer.createRangeIn( p ) );
 			} );
 
-			// Let's check if append instructions has been batched together in single `.push()` call.
+			// Let's check if appended instructions has been batched together in single `.push()` call.
 			const instructionsDiff = pushSpy.args.find( args => (
 				args.length >= 300 &&
 					args.length < MAX_PUSH_CALL_STACK_ARGS &&
@@ -1754,7 +1754,7 @@ describe( 'Differ', () => {
 				writer.setAttribute( attributeKey, true, writer.createRangeIn( p ) );
 			} );
 
-			// Let's check if append instructions has been NOT batched together in single `.push()` call.
+			// Let's check if appended instructions has been NOT batched together in single `.push()` call.
 			const instructionsDiff = pushSpy.args.find( args => (
 				args.length > MAX_PUSH_CALL_STACK_ARGS &&
 				args.every( ch => ch === 'a' )
