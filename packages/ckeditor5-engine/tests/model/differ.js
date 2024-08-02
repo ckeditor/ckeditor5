@@ -1710,7 +1710,7 @@ describe( 'Differ', () => {
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/16819
 		it( 'on element with very long text should have batched instructions together during generating diff from changes', () => {
-			const MAX_PUSH_CALL_STACK_ARGS = 500;
+			const MAX_PUSH_CALL_STACK_ARGS = 1500;
 
 			const p = root.getChild( 0 );
 			const veryLongString = 'a'.repeat( 300 );
@@ -1739,7 +1739,7 @@ describe( 'Differ', () => {
 		// See: https://github.com/ckeditor/ckeditor5/issues/16819
 		it( 'on element with very long text should not have batched instructions together during generating diff from changes ' +
 				'that are larger than max push call stack args count', () => {
-			const MAX_PUSH_CALL_STACK_ARGS = 500;
+			const MAX_PUSH_CALL_STACK_ARGS = 1500;
 
 			const p = root.getChild( 0 );
 			const veryLongString = 'a'.repeat( MAX_PUSH_CALL_STACK_ARGS + 10 );

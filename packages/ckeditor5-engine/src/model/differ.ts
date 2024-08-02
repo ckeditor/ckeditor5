@@ -1524,7 +1524,7 @@ function _generateDiffInstructionsFromChanges( oldChildrenLength: number, change
 			// add them manually one by one to avoid this limit. However loop might be a bit slower than `push` method on
 			// smaller changesets so we need to decide which method to use based on the size of the change.
 			// See: https://github.com/ckeditor/ckeditor5/issues/16819
-			if ( change.howMany > 500 ) {
+			if ( change.howMany > 1500 ) {
 				for ( let i = 0; i < change.howMany; i++ ) {
 					diff.push( 'a' );
 				}
