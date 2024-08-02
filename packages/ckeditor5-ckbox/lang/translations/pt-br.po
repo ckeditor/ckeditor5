@@ -31,7 +31,7 @@ msgstr "Não é possível acessar o espaço de trabalho padrão."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Sem permissão para edição de imagem. Tente usar o gerenciador de arquivos ou entre em contato com seu administrador."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

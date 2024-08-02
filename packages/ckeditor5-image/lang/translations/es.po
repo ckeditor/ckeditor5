@@ -103,7 +103,7 @@ msgstr "Fallo en la subida"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
 msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "No hay permiso para cargar desde el ordenador. Intente utilizar el administrador de archivos o comuníquese con su administrador."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

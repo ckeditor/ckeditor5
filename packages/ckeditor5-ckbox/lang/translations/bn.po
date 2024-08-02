@@ -31,7 +31,7 @@ msgstr "ডিফল্ট ওয়ার্কস্পেস অ্যাক�
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "ইমেজ ইডিট করার কোনো অনুমতি নেই। ফাইল ম্যানেজার ব্যবহার করার চেষ্টা করুন বা আপনার অ্যাডমিনিস্ট্রেটরের সাথে যোগাযোগ করুন।"
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

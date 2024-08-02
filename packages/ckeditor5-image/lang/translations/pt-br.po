@@ -103,7 +103,7 @@ msgstr "Falha ao enviar arquivo"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
 msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Sem permissão para fazer upload do computador. Tente usar o gerenciador de arquivos ou entre em contato com seu administrador."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

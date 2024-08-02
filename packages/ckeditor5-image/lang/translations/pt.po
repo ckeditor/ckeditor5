@@ -103,7 +103,7 @@ msgstr "Falha ao carregar"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
 msgid "No permission to upload from computer. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Não tem permissão para carregar a partir do computador. Tente utilizar o gestor de ficheiros ou contacte o seu administrador."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

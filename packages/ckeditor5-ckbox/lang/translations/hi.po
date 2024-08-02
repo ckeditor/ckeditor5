@@ -31,7 +31,7 @@ msgstr "डिफ़ॉल्ट वर्कस्पेस को ऐक्से
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "इमेज को एडिट करने की अनुमति नहीं है. फ़ाइल मैनेजर का इस्तेमाल करके देखें या अपने एडमिनिस्ट्रेटर से संपर्क करें."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

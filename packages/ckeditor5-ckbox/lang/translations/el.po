@@ -31,7 +31,7 @@ msgstr "Δεν είναι δυνατή η πρόσβαση στον προεπι
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Δεν υπάρχει άδεια για επεξεργασία εικόνας. Δοκιμάστε να χρησιμοποιήσετε τη διαχείριση αρχείων ή επικοινωνήστε με τον διαχειριστή σας."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

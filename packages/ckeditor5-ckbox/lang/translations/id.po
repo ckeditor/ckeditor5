@@ -31,7 +31,7 @@ msgstr "Tidak dapat mengakses ruang kerja baku."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr ""
+msgstr "Tidak ada izin untuk mengedit gambar. Coba gunakan manajer file atau hubungi administrator Anda."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
