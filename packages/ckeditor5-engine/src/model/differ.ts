@@ -1523,6 +1523,7 @@ function _generateDiffInstructionsFromChanges( oldChildrenLength: number, change
 			// Total maximum amount of arguments that can be passed to `Array.prototype.push` may be limited so we need to
 			// add them manually one by one to avoid this limit. However loop might be a bit slower than `push` method on
 			// smaller changesets so we need to decide which method to use based on the size of the change.
+			// See: https://github.com/ckeditor/ckeditor5/issues/16819
 			if ( change.howMany > 500 ) {
 				for ( let i = 0; i < change.howMany; i++ ) {
 					diff.push( 'a' );
