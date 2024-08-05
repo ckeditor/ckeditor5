@@ -9,41 +9,36 @@ We are happy to announce the release of CKEditor 5 v43.0.0.
 
 #### Merge fields
 
-The new merge fields feature is a game-changer for creating dynamic documents. Imagine being able to insert placeholders in your text, indicating where specific values should go, without showing the actual values. This is perfect for crafting email templates or document forms, which you can later export as Word or PDF files filled with real content.
+The new [merge fields feature](https://ckeditor.com/docs/ckeditor5/latest/features/merge-fields.html) is a game-changer for creating dynamic documents. Imagine being able to insert placeholders in your content, indicating where specific values should go, without showing the actual values. This is perfect for crafting email templates or document forms, which you can later export as Word or PDF files filled with real content.
 
 There are exciting ways you can use merge fields:
 
 1. **Creating Templates:** Easily insert merge fields as placeholders. The default preview mode shows these placeholders, giving you a clear layout without any data distraction.
 2. **Previewing with Example Data:** Want to see how your document will look with actual data? Switch the preview mode to display sample data, giving you a sneak peek of the final result.
-3. **Editing Merged Documents:** Start with a blank document or a pre-made template, and see placeholders automatically filled with real data. This mode shows the actual data instead of placeholders, streamlining the editing process.
+3. **Editing Merged Documents:** Start with a blank document or a pre-made template, and see placeholders automatically fill with real data. This mode shows the actual data instead of placeholders, streamlining the editing process.
 
-<!-- TODO: Missing link. -->
-Read more in the documentation. [LINK]
+Read more in the [merge fields documentation](https://ckeditor.com/docs/ckeditor5/latest/features/merge-fields.html).
 
-#### Export to Word v2 as the default version
+#### Export to Word V2 as the default version
 
-The v2 version of the Export to Word feature, introduces significant improvements, optimizations, and fixes. This update enhances the overall performance, making the export process faster and more reliable, especially for large documents. Key improvements include better handling of table borders, automatic detection of Word styles from CSS, and support for more text-related CSS properties, ensuring your documents maintain their intended formatting.
+The V2 version of the [export to Word feature](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html) introduced significant improvements, optimizations, and fixes. This update enhances the overall performance, making the export process faster and more reliable, especially for large documents. Key improvements include better handling of table borders, automatic detection of Word styles from CSS, and support for more text-related CSS properties, ensuring your documents maintain their intended formatting.
 
-<!-- TODO: Missing link. -->
-From this version, the v2 configuration becomes the default in the `ExportWord` plugin. Make sure to [migrate your configuration](link) if you are using it.
+Starting this version, the V2 configuration becomes the default in the `ExportWord` plugin. Make sure to [migrate your configuration](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-43.html#export-to-word-v2-becomes-the-default) if you are using it.
 
 #### Improved sidebar accessibility and navigation
 
 We have introduced multiple enhancements to make the sidebar more accessible. You can now use `Shift+Ctrl+E` to move focus from the editor to the active annotation. Navigation has been improved with `Arrow Up` and `Arrow Down` for annotations and comments archive.
 
-<!-- TODO: Missing link. -->
-Read more in the update guide??
-
 #### Important bug fixes and improvements
 
-This release brings quite a few notable bug fixes and improvements to enhance your editing experience.
+This release brings notable bug fixes and improvements to enhance your editing experience.
 
 * Several improvements have been made to typing in the editor, especially for Android IME and Safari. On Android, issues like duplicated characters and reverse writing effects have been resolved. In Safari, the reverse typing effect after focus change has been fixed.
-* A couple of UI improvements
-    * We replaced the visual indication of the selected option in dropdowns (blue background) with the checkbox marks to better indicate selected options, aligning visual cues across the toolbar and menu bar.
-    * All editor types now support the menu bar.
-    * Additionally, the Special characters UI has been moved to a dialog from a dropdown, this unifies the action between the menu bar and toolbar, and also gives content creators quicker access to the always-on-top dialog.
-* We have improved the drawing of page break line algorithm to address Pagination feature issues. We also improved the performance of the plugin.
+* A couple of UI improvements:
+	* We replaced the visual indication of the selected option in dropdowns (blue background) with the checkbox marks to better indicate selected options, aligning visual cues across the toolbar and menu bar.
+	* All editor types now support the menu bar.
+	* Additionally, the special characters UI has been moved from a dropdown to a dialog. This unifies the action between the menu bar and toolbar, and also gives content creators quicker access to the always-on-top dialog.
+* We have improved the drawing of page break line algorithm to address the pagination feature issues. We also improved the performance of the plugin.
 
 #### React and Vue integrations updates
 
@@ -51,15 +46,15 @@ We have released new major versions of the React and Vue integrations. In both o
 
 We strongly recommend that you follow the release highlights to update to the latest versions:
 
-- [Release highlights for React integration](https://github.com/ckeditor/ckeditor5-react/releases/tag/v9.0.0).
-- [Release highlights for Vue integration](https://github.com/ckeditor/ckeditor5-vue/releases/tag/v7.0.0).
+* [Release highlights for React integration](https://github.com/ckeditor/ckeditor5-react/releases/tag/v9.0.0).
+* [Release highlights for Vue integration](https://github.com/ckeditor/ckeditor5-vue/releases/tag/v7.0.0).
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Global name for the `ckeditor5` package in the UMD builds have been changed to `CKEDITOR`.
-* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Global name for the `ckeditor5-premium-features` package in the UMD builds have been changed to `CKEDITOR_PREMIUM_FEATURES`.
-* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Export word v1 configuration format is deprecated, v2 is set as default. The `exportWord.converterOptions` configuration should be adjusted to new API. See the migration guide.
-* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Configuration option `auto_pagination` in `exportWord.converterOptions` is `false` by default.
+* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Global name for the `ckeditor5` package in the UMD builds has been changed to `CKEDITOR`.
+* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Global name for the `ckeditor5-premium-features` package in the UMD builds has been changed to `CKEDITOR_PREMIUM_FEATURES`.
+* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Export to Word V1 configuration format is deprecated, V2 is set as default. The `exportWord.converterOptions` configuration should be adjusted to new API. See the migration guide.
+* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: The `auto_pagination` configuration option in `exportWord.converterOptions` is set to `false` by default.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -74,7 +69,7 @@ We strongly recommend that you follow the release highlights to update to the la
 
 ### Features
 
-* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: The image upload and edit buttons are disabled if the user has no permission to upload any asset. ([commit](https://github.com/ckeditor/ckeditor5/commit/5182fdabf47a4db6b15ae80032a241024a50f6c5))
+* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: The image upload and edit buttons are disabled if the user has no permission to upload an asset. ([commit](https://github.com/ckeditor/ckeditor5/commit/5182fdabf47a4db6b15ae80032a241024a50f6c5))
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Added more configuration options passed down to the CKBox. Closes [#3695](https://github.com/ckeditor/ckeditor5/issues/3695). ([commit](https://github.com/ckeditor/ckeditor5/commit/6c0145a7ddfe80390b7b2c5a6ee548cd0ab55fa8))
 * **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core)**: Introduced the `AriaDescriptionView` class that brings `aria-describedby` functionality to any view.
 * **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core)**: Introduced the `LateFocusButtonView` and `LateFocusDropdownButtonView` classes that are specific buttons, for which `focus` event is fired after `mouseup` instead of `mousedown`. This delays all focus-related actions until the button action is performed.
@@ -119,7 +114,7 @@ We strongly recommend that you follow the release highlights to update to the la
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination renders pages differently depending on user selection.
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The deleted comment thread will no longer be brought back after restoring a revision in which it existed.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Horizontal split button no longer splits larger table cell spans into more than two parts. Closes [#14658](https://github.com/ckeditor/ckeditor5/issues/14658). ([commit](https://github.com/ckeditor/ckeditor5/commit/3c2375548844c0fd225edf4589596c60ed08c0fa))
-* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Addressed a regression in the height of buttons displayed inside lists (e.g. buttons in annotation menus). ([commit](https://github.com/ckeditor/ckeditor5/commit/986a06440ad8ed89d597dbef98ffee4afdc50c2a))
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Addressed a regression in the height of buttons displayed inside lists (such as buttons in annotation menus). ([commit](https://github.com/ckeditor/ckeditor5/commit/986a06440ad8ed89d597dbef98ffee4afdc50c2a))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: The user had to click the annotation button twice to execute an action as the first click focused the annotation and caused it to move away, which prevented the click.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed editor crash when accepting or discarding a replace suggestion with multiple parts including adding or merging a block element (paragraph, etc.).
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Predictive text should not get doubled while typing. Closes [#16106](https://github.com/ckeditor/ckeditor5/issues/16106). ([commit](https://github.com/ckeditor/ckeditor5/commit/e4317d0bd4a5471062597e380c99ff4b3d9d9bae))
@@ -140,7 +135,7 @@ We strongly recommend that you follow the release highlights to update to the la
 * **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Global name for the `ckeditor5` package in the UMD builds have been changed to `CKEDITOR`. Closes [#16798](https://github.com/ckeditor/ckeditor5/issues/16798). ([commit](https://github.com/ckeditor/ckeditor5/commit/7a332eb7e58c0c4fad35744391f3ce9a7b6a481e))
 * **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Global name for the `ckeditor5-premium-features` package in the UMD builds have been changed to `CKEDITOR_PREMIUM_FEATURES`.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Schema#trimLast()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/c4878b7619751aa4bef64ca00d26d861b40e54f3))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Model#insertContent()` method should keep inline objects in the same auto-paragraph as text nodes and other inline objects. See [#16321](https://github.com/ckeditor/ckeditor5/issues/16321). ([commit](https://github.com/ckeditor/ckeditor5/commit/34cf600283c42d35cb609e503dc42a6e39e184ac))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Model#insertContent()` method should keep inline objects in the same auto paragraph as text nodes and other inline objects. See [#16321](https://github.com/ckeditor/ckeditor5/issues/16321). ([commit](https://github.com/ckeditor/ckeditor5/commit/34cf600283c42d35cb609e503dc42a6e39e184ac))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Schema#checkMerge()` method should return `false` if one of the elements is a limit element. See [#16321](https://github.com/ckeditor/ckeditor5/issues/16321). ([commit](https://github.com/ckeditor/ckeditor5/commit/34cf600283c42d35cb609e503dc42a6e39e184ac))
 * **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Set export word v2 as default.
 * **[page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break)**: No longer generate an extra empty page after placing a page break after an element with a margin. ([commit](https://github.com/ckeditor/ckeditor5/commit/28d0389424dcb74d1163741d33a379e26816fc4c))
