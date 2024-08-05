@@ -58,7 +58,7 @@ This key grants access to your subscription features without imposing any limita
 * **Usage Limitation**: None specified.
 * **Editor Loads**: Consumes editor loads, especially after the 14-day trial period ends.
 
-There are {@link getting-started/licensing/plans several commercial plans available} to choose from. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) for more details
+There are several commercial plans available to choose from. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) for more details
 
 ## Sources of intellectual property included in CKEditor
 

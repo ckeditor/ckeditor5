@@ -13,7 +13,7 @@ Usage-Based Billing (UBB) means the cost you incur depends on how much you use t
 
 ##  How it works
 
-We offer {@link getting-started/licensing/plans several pricing plans for commercial users}. Each of these plans includes a specific number of editor loads.
+We offer several pricing plans for commercial users. Each of these plans includes a specific number of editor loads.
 
 <info-box info>
 	An editor load is a term used for each time CKEditor&nbsp;5 is loaded. For example, if 100 users load CKEditor 10 times each, there are 1,000 editor loads.
