@@ -165,6 +165,8 @@ New packages:
 Major releases (contain major breaking changes):
 
 * [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word/v/43.0.0): v42.0.2 => v43.0.0
+* [ckeditor5](https://www.npmjs.com/package/ckeditor5/v/43.0.0): v42.0.2 => v43.0.0
+* [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/43.0.0): v42.0.2 => v43.0.0
 
 Minor releases (contain minor breaking changes):
 
@@ -252,7 +254,6 @@ Other releases:
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget/v/43.0.0): v42.0.2 => v43.0.0
 * [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count/v/43.0.0): v42.0.2 => v43.0.0
 * [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/43.0.0): v42.0.2 => v43.0.0
-* [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/43.0.0): v42.0.2 => v43.0.0
 </details>
 
 
