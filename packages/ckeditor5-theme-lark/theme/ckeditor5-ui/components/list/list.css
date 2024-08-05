@@ -8,24 +8,24 @@
 @import "../../../mixins/_shadow.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-:root {
-	--ck-list-button-padding:
-		calc(.11 * var(--ck-line-height-base) * var(--ck-font-size-base))
-		calc(.4 * var(--ck-line-height-base) * var(--ck-font-size-base));
-}
-
 .ck.ck-list {
 	@mixin ck-rounded-corners;
 
 	list-style-type: none;
 	background: var(--ck-color-list-background);
+
+	/* A spacing at the beginning and end of the list */
+	padding: var(--ck-spacing-small) 0;
 }
 
 .ck.ck-list__item {
 	cursor: default;
-	min-width: 12em;
+
+	/* Almost as wide as menu bar items. */
+	min-width: 15em;
 
 	& > .ck-button:not(.ck-list-item-button) {
+		padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
 		min-height: unset;
 		width: 100%;
 		border-radius: 0;
@@ -37,11 +37,6 @@
 		@mixin ck-dir rtl {
 			text-align: right;
 		}
-
-		/* List items should have the same height. Use absolute units to make sure it is so
-		   because e.g. different heading styles may have different height
-		   https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-		padding: var(--ck-list-button-padding);
 
 		& .ck-button__label {
 			/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
@@ -92,6 +87,11 @@
 .ck-list .ck-list__group {
 	padding-top: var(--ck-spacing-medium);
 
+	/* Lists come with an inner vertical padding. Don't duplicate it. */
+	&:first-child {
+		padding-top: 0;
+	}
+
 	/* The group should have a border when it's not the first item. */
 	*:not(.ck-hidden) ~ & {
 		border-top: 1px solid var(--ck-color-base-border);
@@ -100,7 +100,7 @@
 	& > .ck-label {
 		font-size: 11px;
 		font-weight: bold;
-		padding: var(--ck-spacing-medium) var(--ck-spacing-medium) 0 var(--ck-spacing-medium);
+		padding: var(--ck-spacing-medium) var(--ck-spacing-large) 0;
 	}
 }
 
@@ -108,4 +108,7 @@
 	height: 1px;
 	width: 100%;
 	background: var(--ck-color-base-border);
+
+	/* Give the separator some air */
+	margin: var(--ck-spacing-small) 0;
 }
