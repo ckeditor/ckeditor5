@@ -427,7 +427,7 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		// that has checked state set to true. In such cases, we need to ensure that all items of the same list have the same checked state.
 		// See more: https://github.com/ckeditor/ckeditor5/issues/15602
 		for ( const [ , items ] of groupedItems.entries() ) {
-			if ( [ ...items ].some( item => item.getAttribute( 'todoListChecked' ) ) ) {
+			if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
 				for ( const item of items ) {
 					writer.setAttribute( 'todoListChecked', true, item );
 				}
