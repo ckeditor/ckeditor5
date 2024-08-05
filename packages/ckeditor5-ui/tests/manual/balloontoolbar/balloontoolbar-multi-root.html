@@ -1,0 +1,29 @@
+<div id="toolbar">
+	<button id="add-root">Add root</button>
+	<button id="remove-root">Remove root</button>
+</div>
+
+<br />
+
+<div id="editables">
+	<div id="header">Header root</div>
+	<div id="content">Content root</div>
+</div>
+
+<style>
+	#toolbar {
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+	}
+
+	#editables {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		& .ck-editor__editable {
+			border: 1px solid black;
+		}
+	}
+</style>
