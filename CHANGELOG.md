@@ -1,12 +1,65 @@
 Changelog
 =========
 
-## [43.0.0](https://github.com/ckeditor/ckeditor5/compare/v42.0.2...v43.0.0) (August 5, 2024)
+## [43.0.0](https://github.com/ckeditor/ckeditor5/compare/v42.0.2...v43.0.0) (August 7, 2024)
+
+We are happy to announce the release of CKEditor 5 v43.0.0.
+
+### Release highlights
+
+#### Merge fields
+
+The new merge fields feature is a game-changer for creating dynamic documents. Imagine being able to insert placeholders in your text, indicating where specific values should go, without showing the actual values. This is perfect for crafting email templates or document forms, which you can later export as Word or PDF files filled with real content.
+
+There are exciting ways you can use merge fields:
+
+1. **Creating Templates:** Easily insert merge fields as placeholders. The default preview mode shows these placeholders, giving you a clear layout without any data distraction.
+2. **Previewing with Example Data:** Want to see how your document will look with actual data? Switch the preview mode to display sample data, giving you a sneak peek of the final result.
+3. **Editing Merged Documents:** Start with a blank document or a pre-made template, and see placeholders automatically filled with real data. This mode shows the actual data instead of placeholders, streamlining the editing process.
+
+<!-- TODO: Missing link. -->
+Read more in the documentation. [LINK]
+
+#### Export to Word v2 as the default version
+
+The v2 version of the Export to Word feature, introduces significant improvements, optimizations, and fixes. This update enhances the overall performance, making the export process faster and more reliable, especially for large documents. Key improvements include better handling of table borders, automatic detection of Word styles from CSS, and support for more text-related CSS properties, ensuring your documents maintain their intended formatting.
+
+<!-- TODO: Missing link. -->
+From this version, the v2 configuration becomes the default in the `ExportWord` plugin. Make sure to [migrate your configuration](link) if you are using it.
+
+#### Improved sidebar accessibility and navigation
+
+We have introduced multiple enhancements to make the sidebar more accessible. You can now use `Shift+Ctrl+E` to move focus from the editor to the active annotation. Navigation has been improved with `Arrow Up` and `Arrow Down` for annotations and comments archive.
+
+<!-- TODO: Missing link. -->
+Read more in the update guide??
+
+#### Important bug fixes and improvements
+
+This release brings quite a few notable bug fixes and improvements to enhance your editing experience.
+
+* Several improvements have been made to typing in the editor, especially for Android IME and Safari. On Android, issues like duplicated characters and reverse writing effects have been resolved. In Safari, the reverse typing effect after focus change has been fixed.
+* A couple of UI improvements
+    * We replaced the visual indication of the selected option in dropdowns (blue background) with the checkbox marks to better indicate selected options, aligning visual cues across the toolbar and menu bar.
+    * All editor types now support the menu bar.
+    * Additionally, the Special characters UI has been moved to a dialog from a dropdown, this unifies the action between the menu bar and toolbar, and also gives content creators quicker access to the always-on-top dialog.
+* We have improved the drawing of page break line algorithm to address Pagination feature issues. We also improved the performance of the plugin.
+
+#### React and Vue integrations updates
+
+We have released new major versions of the React and Vue integrations. In both of them, we have migrated to JavaScript modules (ESM) and rewritten large parts of the codebases to support the latest versions of these frameworks and to follow the latest recommendations for writing the components.
+
+We strongly recommend that you follow the release highlights to update to the latest versions:
+
+- [Release highlights for React integration](https://github.com/ckeditor/ckeditor5-react/releases/tag/v9.0.0).
+- [Release highlights for Vue integration](https://github.com/ckeditor/ckeditor5-vue/releases/tag/v7.0.0).
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Export word v1 configuration format is deprecated, v2 is set as default. In config converterOptions should be adjusted to new API, see migration guide.
-* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Configuration option auto_pagination in exportWord.converterOptions is false by default.
+* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Global name for the `ckeditor5` package in the UMD builds have been changed to `CKEDITOR`.
+* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Global name for the `ckeditor5-premium-features` package in the UMD builds have been changed to `CKEDITOR_PREMIUM_FEATURES`.
+* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Export word v1 configuration format is deprecated, v2 is set as default. The `exportWord.converterOptions` configuration should be adjusted to new API. See the migration guide.
+* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Configuration option `auto_pagination` in `exportWord.converterOptions` is `false` by default.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -48,6 +101,8 @@ Changelog
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Opening AI Assistant with a selection containing an empty line will no longer cause a crash.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Assistant will now correctly handle selected content containing empty lines.
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Use a safer way to convert numbers to strings to avoid issues with some bundlers. Closes [#16040](https://github.com/ckeditor/ckeditor5/issues/16040). ([commit](https://github.com/ckeditor/ckeditor5/commit/bd13d8ff7fd766447bc83dfc6b813f9723060b27))
+* **[ckeditor5](https://www.npmjs.com/package/ckeditor5)**: Global name for the `ckeditor5` package in the UMD builds have been changed to `CKEDITOR`. Closes [#16798](https://github.com/ckeditor/ckeditor5/issues/16798). ([commit](https://github.com/ckeditor/ckeditor5/commit/7a332eb7e58c0c4fad35744391f3ce9a7b6a481e))
+* **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Global name for the `ckeditor5-premium-features` package in the UMD builds have been changed to `CKEDITOR_PREMIUM_FEATURES`.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The user had to click the annotation button twice to execute an action as the first click focused the annotation and caused it to move away, which prevented the click.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Schema#checkChild()` will now correctly check custom callback checks for each item in the context. ([commit](https://github.com/ckeditor/ckeditor5/commit/c4878b7619751aa4bef64ca00d26d861b40e54f3))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `insertcontent-invalid-insertion-position` exception is no longer thrown after pasting content containing `block element` + `non-paragraph` + `block element` elements. Closes [#16321](https://github.com/ckeditor/ckeditor5/issues/16321). ([commit](https://github.com/ckeditor/ckeditor5/commit/34cf600283c42d35cb609e503dc42a6e39e184ac))
@@ -61,7 +116,7 @@ Changelog
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Text nodes directly inside `<ul>` or `<ol>` should not be removed while loading editor data. Closes [#16450](https://github.com/ckeditor/ckeditor5/issues/16450). ([commit](https://github.com/ckeditor/ckeditor5/commit/09b31af800b16c5dabee5beba2f8d07f0b9e7bc9))
 * **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Escape mentions markers when building regular expression to prevent crashes when markers like '\' are used. Closes [#16818](https://github.com/ckeditor/ckeditor5/issues/16818). ([commit](https://github.com/ckeditor/ckeditor5/commit/5221aca653e8c8c4b1e1ee9c61bc7d55ee3c085e))
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: No longer generate an extra empty page after placing a page break after an element with a margin.
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Should not apply additional styles on pageBreak element.
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Should not apply additional styles on `pageBreak` element.
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination feature no longer skips pages when handling large tables. Closes https://github.com/ckeditor/ckeditor5/issues/14426.
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination renders pages differently depending on user selection.
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The deleted comment thread will no longer be brought back after restoring a revision in which it existed.
@@ -89,14 +144,12 @@ Changelog
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Schema#checkMerge()` method should return `false` if one of the elements is a limit element. See [#16321](https://github.com/ckeditor/ckeditor5/issues/16321). ([commit](https://github.com/ckeditor/ckeditor5/commit/34cf600283c42d35cb609e503dc42a6e39e184ac))
 * **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Set export word v2 as default.
 * **[page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break)**: No longer generate an extra empty page after placing a page break after an element with a margin. ([commit](https://github.com/ckeditor/ckeditor5/commit/28d0389424dcb74d1163741d33a379e26816fc4c))
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Enhance the performance of rendering large documents when the Pagination plugin is enabled.
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Enhance the performance of rendering large documents when the pagination plugin is enabled.
 * **[special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)**: Special characters plugin now uses a dialog (instead of a toolbar dropdown). ([commit](https://github.com/ckeditor/ckeditor5/commit/1145286e5aadd6d3d2f241800358204d577b4938))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `LabelWithHighlightView` and `ButtonLabelWithHighlightView` components to the UI library. ([commit](https://github.com/ckeditor/ckeditor5/commit/3351b363d96a5bb0c8a8f709d41ac0323353fe3c))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `filterGroupAndItemNames()` helper to the UI library. ([commit](https://github.com/ckeditor/ckeditor5/commit/3351b363d96a5bb0c8a8f709d41ac0323353fe3c))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `SearchTextView#reset()` method will also reset the scroll of its `filteredView` to the top. ([commit](https://github.com/ckeditor/ckeditor5/commit/3351b363d96a5bb0c8a8f709d41ac0323353fe3c))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/48ea508d4c6593e91349941f2941a7c2f3dd6328), [commit](https://github.com/ckeditor/ckeditor5/commit/6bb2924bec789f9fcfba949d0a8eed4e19dade7b), [commit](https://github.com/ckeditor/ckeditor5/commit/7c467305674da47ac491261139711da148467bdb), [commit](https://github.com/ckeditor/ckeditor5/commit/354e9510809fa1a6cc54d6b3dd617e8005d046a7))
-
-  Internal (build-*): Builds.
 
 ### Released packages
 
