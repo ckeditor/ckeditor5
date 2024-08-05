@@ -23,7 +23,7 @@ msgstr "特殊文字"
 
 msgctxt "A label for a special character dropdown with symbol categories."
 msgid "Category"
-msgstr ""
+msgstr "カテゴリー"
 
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"

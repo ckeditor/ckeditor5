@@ -30,8 +30,8 @@ msgid "Cannot access default workspace."
 msgstr "Non é posíbel acceder ao espazo de traballo predeterminado."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
-msgid "No permission for image editing. Try using the file manager or contact your administrator."
-msgstr "Non ten permiso para editar imaxes. Tente usar o xestor de ficheiros ou póñase en contacto coa administración do sitio."
+msgid "You have no image editing permissions."
+msgstr "Vde. non ten permisos de edición de imaxes."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
