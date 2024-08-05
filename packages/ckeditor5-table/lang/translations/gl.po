@@ -255,7 +255,7 @@ msgstr "Introduza o título da táboa"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
 msgid "Keystrokes that can be used in a table cell"
-msgstr "Pulsacións de teclas que se poden usar nunha cela da táboa"
+msgstr "Teclas de atallo que se poden usar nunha cela da táboa"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
 msgid "Move the selection to the next cell"

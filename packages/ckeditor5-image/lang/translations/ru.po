@@ -103,7 +103,7 @@ msgstr "Загрузка не выполнена"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
 msgid "You have no image upload permissions."
-msgstr ""
+msgstr "У вас нет разрешений на загрузку изображений в систему."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

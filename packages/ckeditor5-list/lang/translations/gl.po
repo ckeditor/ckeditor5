@@ -131,7 +131,7 @@ msgstr "Orde inversa"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
 msgid "Keystrokes that can be used in a list"
-msgstr "Pulsacións de teclas que se poden usar nunha lista"
+msgstr "Teclas de atallo que se poden usar nunha lista"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
 msgid "Increase list item indent"

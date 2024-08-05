@@ -31,7 +31,7 @@ msgstr "No se puede acceder al espacio de trabajo predeterminado."
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "You have no image editing permissions."
-msgstr ""
+msgstr "No tienes permiso para editar imágenes."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

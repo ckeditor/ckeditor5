@@ -31,7 +31,7 @@ msgstr "Немає доступу до робочого простору за з
 
 msgctxt "The title of the notification displayed when there is no permission to edit assets."
 msgid "You have no image editing permissions."
-msgstr ""
+msgstr "У вас немає прав на редагування зображень."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
