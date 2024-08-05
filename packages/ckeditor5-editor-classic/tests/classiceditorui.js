@@ -20,7 +20,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'lodash-es';
-import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
+import { ContextualBalloon, Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -271,6 +271,211 @@ describe( 'ClassicEditorUI', () => {
 						} );
 				} );
 			} );
+		} );
+
+		describe( 'integration with the Contextual Balloon plugin', () => {
+			let editorWithUi, editorElement, contextualBalloon;
+
+			beforeEach( async () => {
+				editorElement = document.body.appendChild(
+					document.createElement( 'div' )
+				);
+
+				editorWithUi = await ClassicEditor.create( editorElement, {
+					plugins: [
+						ContextualBalloon,
+						Paragraph
+					]
+				} );
+
+				contextualBalloon = editorWithUi.plugins.get( 'ContextualBalloon' );
+
+				sinon.stub( editorWithUi.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+					height: 50,
+					bottom: 50
+				} );
+
+				sinon.stub( editorWithUi.ui.view.editable.element, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 300,
+					bottom: 100,
+					left: 0,
+					width: 300,
+					height: 100
+				} );
+			} );
+
+			afterEach( async () => {
+				await editorWithUi.destroy();
+				editorElement.remove();
+			} );
+
+			it( 'should handle BalloonPlugin#getPositionOptions returning undefined value', () => {
+				sinon.stub( contextualBalloon, '_visibleStack' ).get( () => ( { values: () => [ { position: undefined } ] } ) );
+
+				expect( contextualBalloon.getPositionOptions() ).to.be.undefined;
+			} );
+
+			it( 'should set proper viewportOffsetConfig top offset when sticky panel is visible', () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: getBalloonPositionData()
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 50
+				} );
+			} );
+
+			it( 'should summarize ui viewportOffset and sticky panel height in the viewportOffset option', () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+				editorWithUi.ui.viewportOffset = {
+					top: 100
+				};
+
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: getBalloonPositionData()
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 150
+				} );
+
+				// Handle change of viewport offset.
+				editorWithUi.ui.viewportOffset = {
+					top: 200
+				};
+
+				expect( pinSpy ).to.be.calledTwice;
+				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 250
+				} );
+			} );
+
+			it( 'should set proper viewportOffsetConfig top offset when sticky panel is not visible', () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = false;
+
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: getBalloonPositionData()
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 0
+				} );
+			} );
+
+			it( 'should update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				editorWithUi.ui.view.stickyPanel.isSticky = false;
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: getBalloonPositionData()
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 0
+				} );
+
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 50
+				} );
+			} );
+
+			it( 'should not update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				const targetElement = document.createElement( 'div' );
+				const limiterElement = document.createElement( 'div' );
+
+				targetElement.style.height = '400px';
+				limiterElement.style.height = '200px';
+
+				document.body.appendChild( targetElement );
+				document.body.appendChild( limiterElement );
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: {
+						target: targetElement,
+						limiter: limiterElement
+					}
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 0
+				} );
+
+				targetElement.remove();
+				limiterElement.remove();
+			} );
+
+			function getBalloonPositionData() {
+				const view = editorWithUi.editing.view;
+
+				return {
+					target: () => view.domConverter.viewRangeToDom( view.document.selection.getFirstRange() )
+				};
+			}
 		} );
 
 		describe( 'integration with the Dialog plugin and sticky panel (toolbar)', () => {
