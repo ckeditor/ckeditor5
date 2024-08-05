@@ -49,7 +49,7 @@
  * https://github.com/ckeditor/ckeditor5/issues/6186
  *
  * it's causing another issue with the table height in the print preview mode here:
- * https://github.com/cksource/ckeditor5-commercial/issues/6507
+ * https://github.com/ckeditor/ckeditor5/issues/16856
  *
  * At this moment reset the height to `initial` in the print mode works as a workaround.
  */
