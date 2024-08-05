@@ -340,6 +340,43 @@ describe( 'ClassicEditorUI', () => {
 				} );
 			} );
 
+			it( 'should summarize ui viewportOffset and sticky panel height in the viewportOffset option', () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+				editorWithUi.ui.viewportOffset = {
+					top: 100
+				};
+
+				setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
+
+				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const contentView = new View( editorWithUi.locale );
+
+				contentView.setTemplate( {
+					tag: 'div',
+					children: [ 'Hello World' ]
+				} );
+
+				contextualBalloon.add( {
+					view: contentView,
+					position: getBalloonPositionData()
+				} );
+
+				expect( pinSpy ).to.be.calledOnce;
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 150
+				} );
+
+				// Handle change of viewport offset.
+				editorWithUi.ui.viewportOffset = {
+					top: 200
+				};
+
+				expect( pinSpy ).to.be.calledTwice;
+				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
+					top: 250
+				} );
+			} );
+
 			it( 'should set proper viewportOffsetConfig top offset when sticky panel is not visible', () => {
 				editorWithUi.ui.view.stickyPanel.isSticky = false;
 

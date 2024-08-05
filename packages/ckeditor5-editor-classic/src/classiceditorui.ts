@@ -7,8 +7,6 @@
  * @module editor-classic/classiceditorui
  */
 
-import { isFunction } from 'lodash-es';
-
 import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
 import {
 	EditorUI,
@@ -220,8 +218,8 @@ export default class ClassicEditorUI extends EditorUI {
 			// It's an issue because the contextual balloon can overlap top table cells when the table is larger than the viewport
 			// and it's placed at the top of the editor. It's better to overlap toolbar in that situation.
 			// Check this issue: https://github.com/ckeditor/ckeditor5/issues/15744
-			const target = isFunction( position.target ) ? position.target() : position.target;
-			const limiter = isFunction( position.limiter ) ? position.limiter() : position.limiter;
+			const target = typeof position.target === 'function' ? position.target() : position.target;
+			const limiter = typeof position.limiter === 'function' ? position.limiter() : position.limiter;
 
 			if ( target && limiter && new Rect( target ).height >= new Rect( limiter ).height - stickyPanelHeight ) {
 				return;
@@ -229,7 +227,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 			// Ensure that viewport offset is present, it can be undefined according to the typing.
 			const viewportOffsetConfig = { ...position.viewportOffsetConfig };
-			const newTopViewportOffset = Math.max( stickyPanelHeight, viewportOffsetConfig.top || 0 );
+			const newTopViewportOffset = ( viewportOffsetConfig.top || 0 ) + stickyPanelHeight;
 
 			evt.return = {
 				...position,
@@ -240,11 +238,15 @@ export default class ClassicEditorUI extends EditorUI {
 			};
 		}, { priority: 'low' } );
 
-		this.listenTo( stickyPanel, 'change:isSticky', () => {
+		// Update balloon position when the toolbar becomes sticky or when ui viewportOffset changes.
+		const updateBalloonPosition = () => {
 			if ( contextualBalloon.visibleView ) {
 				contextualBalloon.updatePosition();
 			}
-		} );
+		};
+
+		this.listenTo( stickyPanel, 'change:isSticky', updateBalloonPosition );
+		this.listenTo( this.editor.ui, 'change:viewportOffset', updateBalloonPosition );
 	}
 
 	/**
