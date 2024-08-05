@@ -32,7 +32,7 @@ import {
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import { isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
+import { getAllListItemBlocks, isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
 import ListEditing, {
 	type ListEditingCheckElementEvent,
 	type ListEditingPostFixerEvent
@@ -414,10 +414,10 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 			)
 			.reduce( ( acc, item ) => {
 				const listItemId = item.getAttribute( 'listItemId' ) as string;
-				const items = acc.get( listItemId ) || [];
 
-				items.push( item );
-				acc.set( listItemId, items );
+				if ( !acc.has( listItemId ) ) {
+					acc.set( listItemId, getAllListItemBlocks( item ) );
+				}
 
 				return acc;
 			}, new Map<string, Array<Element>>() );
@@ -427,7 +427,7 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		// that has checked state set to true. In such cases, we need to ensure that all items of the same list have the same checked state.
 		// See more: https://github.com/ckeditor/ckeditor5/issues/15602
 		for ( const [ , items ] of groupedItems.entries() ) {
-			if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
+			if ( [ ...items ].some( item => item.getAttribute( 'todoListChecked' ) ) ) {
 				for ( const item of items ) {
 					writer.setAttribute( 'todoListChecked', true, item );
 				}
