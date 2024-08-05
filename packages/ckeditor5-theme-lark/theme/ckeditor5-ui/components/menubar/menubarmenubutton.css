@@ -86,7 +86,7 @@
 				/* A space to accommodate the triangle. */
 				margin-right: var(--ck-spacing-small);
 
-				/* Nudge the arrow gently to the right because its center of gravity is to the left */
+				/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
 				margin-left: calc(-1 * var(--ck-spacing-small));
 			}
 		}
