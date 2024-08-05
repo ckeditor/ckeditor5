@@ -247,7 +247,7 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Creates a button for toolbar anda menu bar that will show special characters dialog.
+	 * Creates a button for toolbar and menu bar that will show special characters dialog.
 	 */
 	private _createDialogButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
