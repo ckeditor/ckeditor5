@@ -43,15 +43,15 @@
 }
 
 /**
- * Expanding the table to the full height of the parent container is necessary due to the fact that
- * the tables are rendered inside a <figure> elements which are kinda buggy in terms of table height calculation.
+ * Expanding the table to the full height of the parent container is necessary because tables
+ * are rendered inside <figure> elements, which is kinda buggy in table height calculation.
  * While setting `height: 100%` fixes the issue in the editing mode described here:
  * https://github.com/ckeditor/ckeditor5/issues/6186
  *
  * it's causing another issue with the table height in the print preview mode here:
  * https://github.com/ckeditor/ckeditor5/issues/16856
  *
- * At this moment reset the height to `initial` in the print mode works as a workaround.
+ * For now, resetting the height to `initial` in the print mode works as a workaround.
  */
 @media print {
 	.ck-content .table table {
