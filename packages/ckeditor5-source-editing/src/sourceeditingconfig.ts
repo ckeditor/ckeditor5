@@ -34,4 +34,13 @@ export interface SourceEditingConfig {
 	 * @default false
 	 */
 	allowCollaborationFeatures?: boolean;
+
+	/**
+	 * Set to `true` to force the source editing feature to be in in-place mode, instead of the default dialog mode.
+	 *
+	 * This option has effect only on {@glink examples/builds/classic-editor Classic editor} where in-place mode is supported.
+	 *
+	 * @default false
+	 */
+	forceInPlaceMode?: boolean;
 }

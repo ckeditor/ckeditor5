@@ -5,6 +5,7 @@
 
 /* global document, window, console */
 
+import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
@@ -29,10 +30,39 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		sourceEditing: {
+			forceInPlaceMode: true
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+InlineEditor
+	.create( document.querySelector( '#editor2' ), {
+		plugins: [ ArticlePluginSet, Table, TableToolbar, SourceEditing ],
+		toolbar: [
+			'sourceEditing', '|', 'heading', '|', 'bold', 'italic', 'link', '|',
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
+			'undo', 'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

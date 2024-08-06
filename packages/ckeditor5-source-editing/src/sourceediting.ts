@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
+import { View, ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
@@ -76,6 +76,7 @@ export default class SourceEditing extends Plugin {
 		this._dataFromRoots = new Map();
 
 		editor.config.define( 'sourceEditing.allowCollaborationFeatures', false );
+		editor.config.define( 'sourceEditing.forceInPlaceMode', false );
 	}
 
 	/**
@@ -113,22 +114,12 @@ export default class SourceEditing extends Plugin {
 
 		// Currently, the plugin handles the source editing mode by itself only for the classic editor. To use this plugin with other
 		// integrations, listen to the `change:isSourceEditingMode` event and act accordingly.
-		if ( this._isAllowedToHandleSourceEditingMode() ) {
-			this.on( 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
-				if ( isSourceEditingMode ) {
-					this._hideVisibleDialog();
-					this._showSourceEditing();
-					this._disableCommands();
-				} else {
-					this._hideSourceEditing();
-					this._enableCommands();
-				}
-			} );
+		this.on( 'change:isSourceEditingMode', ( _evt, _name, isSourceEditingMode ) =>
+			this._handleSourceEditingModeChange( isSourceEditingMode, !!editor.config.get( 'sourceEditing.forceInPlaceMode' ) ) );
 
-			this.on( 'change:isEnabled', ( evt, name, isEnabled ) => this._handleReadOnlyMode( !isEnabled ) );
+		this.on( 'change:isEnabled', ( evt, name, isEnabled ) => this._handleReadOnlyMode( !isEnabled ) );
 
-			this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
-		}
+		this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
 
 		// Update the editor data while calling editor.getData() in the source editing mode.
 		editor.data.on( 'get', () => {
@@ -141,9 +132,13 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * Updates the source data in all hidden editing roots.
 	 */
-	public updateEditorData(): void {
+	public updateEditorData( newContent?: string ): void {
 		const editor = this.editor;
 		const data: Record<string, string> = {};
+
+		if ( newContent ) {
+			editor.data.set( newContent, { batchType: { isUndoable: true }, suppressErrorInCollaboration: true } );
+		}
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
 			const oldData = this._dataFromRoots.get( rootName );
@@ -208,6 +203,35 @@ export default class SourceEditing extends Plugin {
 				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
 				'that contains markers created by the restricted editing feature.'
 			);
+		}
+
+		const forceInPlaceMode = editor.config.get( 'sourceEditing.forceInPlaceMode' );
+		if ( forceInPlaceMode && !this._allowsInPlaceMode() ) {
+			console.warn(
+				'You initialized the editor with the source editing feature and forceInPlaceMode set to true. ' +
+				'Please be advised that this configuration options has effect only on Classic editor type.'
+			);
+		}
+	}
+
+	private _handleSourceEditingModeChange( isSourceEditingMode: boolean, useInPlaceMode: boolean ): void {
+		if ( isSourceEditingMode !== this.isSourceEditingMode ) {
+			return;
+		}
+
+		if ( isSourceEditingMode ) {
+			if ( useInPlaceMode && this._allowsInPlaceMode() ) {
+				this._hideVisibleDialog();
+				this._showSourceEditing();
+			} else {
+				this._showSourceModal();
+			}
+			this._disableCommands();
+		} else {
+			if ( useInPlaceMode && this._allowsInPlaceMode() ) {
+				this._hideSourceEditing();
+			}
+			this._enableCommands();
 		}
 	}
 
@@ -380,6 +404,10 @@ export default class SourceEditing extends Plugin {
 		return editable && !editable.hasExternalElement;
 	}
 
+	private _allowsInPlaceMode(): boolean {
+		return this._isAllowedToHandleSourceEditingMode();
+	}
+
 	/**
 	 * If any {@link module:ui/dialog/dialogview~DialogView editor dialog} is currently visible, hide it.
 	 */
@@ -435,6 +463,71 @@ export default class SourceEditing extends Plugin {
 		} );
 
 		return buttonView;
+	}
+
+	private _showSourceModal() {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const t = locale.t;
+		const dialog = editor.plugins.get( 'Dialog' );
+
+		const textView = new View( locale );
+
+		textView.setTemplate( {
+			tag: 'div',
+			attributes: {
+				style: {
+					padding: 'var(--ck-spacing-large)',
+					whiteSpace: 'initial',
+					width: '100%',
+					maxWidth: '1000px',
+					minWidth: '600px',
+					minHeight: '400px'
+				},
+				tabindex: -1
+			},
+			children: [ {
+				tag: 'textarea',
+				attributes: {
+					style: {
+						width: '100%',
+						height: '100%',
+						minHeight: '400px'
+					},
+					tabindex: -1
+				},
+				children: [ formatSource( editor.data.get() ) ]
+			}
+			]
+		} );
+
+		dialog.show( {
+			id: 'sourceEditing',
+			title: t( 'Source Editing' ),
+			isModal: true,
+			content: textView,
+			actionButtons: [
+				{
+					label: t( 'Cancel' ),
+					withText: true,
+					onExecute: () => {
+						this.isSourceEditingMode = false;
+						dialog.hide();
+					}
+				},
+				{
+					label: t( 'Accept' ),
+					class: 'ck-button-action',
+					withText: true,
+					onExecute: () => {
+						const data = textView.element?.querySelector( 'textarea' )?.value;
+						this.updateEditorData( data );
+						this.isSourceEditingMode = false;
+						dialog.hide();
+					}
+				}
+			]
+		} );
 	}
 }
 
