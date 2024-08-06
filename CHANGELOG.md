@@ -27,7 +27,9 @@ Starting this version, the V2 configuration becomes the default in the `ExportWo
 
 #### Improved sidebar accessibility and navigation
 
-We have introduced multiple enhancements to make the sidebar more accessible. You can now use `Shift+Ctrl+E` to move focus from the editor to the active annotation. Navigation has been improved with `Arrow Up` and `Arrow Down` for annotations and comments archive.
+We have introduced multiple enhancements to make the sidebar more accessible. Among other improvements, you can now use the <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>E</kbd> keystroke to move focus from the editor marker to the active annotation. When your comment reply is ready, you can quickly submit it using the new <kbd>Ctrl</kbd>+<kbd>Enter</kbd> shortcut. Also, navigation from one annotation to another is now possible by using arrow keys.
+
+The full lists of keyboard supported actions can be reviewed in our [Accessibility support guide](https://ckeditor.com/docs/ckeditor5/latest/features/features/accessibility.html#keystrokes-for-interacting-with-annotation-threads-eg-comments-track-changes-suggestions).
 
 #### Important bug fixes and improvements
 
