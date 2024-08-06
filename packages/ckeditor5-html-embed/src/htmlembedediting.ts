@@ -59,6 +59,7 @@ export default class HtmlEmbedEditing extends Plugin {
 			};
 
 		editor.config.define( 'sanitizeHtml', sanitizeCallback );
+		editor.config.define( 'htmlEmbed.showPreviews', false );
 	}
 
 	/**

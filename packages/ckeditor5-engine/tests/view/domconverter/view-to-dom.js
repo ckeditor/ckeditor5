@@ -1239,14 +1239,14 @@ describe( 'DomConverter', () => {
 				} );
 				const parentElement = downcastWriter.createContainerElement( 'p' );
 				const transparentRawElement = downcastWriter.createRawElement( 'span', {}, function( domElement ) {
-					domElement.innerHTML = 'foo';
+					domElement.innerHTML = 'foo <span style="color:red;">bar</span> <strong>is</strong> good';
 				} );
 
 				downcastWriter.insert( downcastWriter.createPositionAt( parentElement, 'end' ), transparentRawElement );
 				downcastWriter.setCustomProperty( 'dataPipeline:transparentRendering', true, transparentRawElement );
 
 				expect( dataConverter.viewToDom( parentElement ).outerHTML ).to.equal(
-					'<p>foo</p>'
+					'<p>foo <span style="color:red;">bar</span> <strong>is</strong> good</p>'
 				);
 			} );
 

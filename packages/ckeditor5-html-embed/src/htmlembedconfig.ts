@@ -72,12 +72,16 @@ export interface HtmlEmbedConfig {
 	 *
 	 * **Note:** The function is used only when the feature
 	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews is configured to render previews}.
+	 *
+	 * @deprecated
 	 */
 	sanitizeHtml?: ( html: string ) => HtmlEmbedSanitizeOutput;
 }
 
 /**
  * An object returned by the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml} function.
+ *
+ * @deprecated
  */
 export interface HtmlEmbedSanitizeOutput {
 

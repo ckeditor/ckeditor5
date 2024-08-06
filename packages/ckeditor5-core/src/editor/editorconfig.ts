@@ -831,7 +831,7 @@ export interface EditorConfig {
 	 * the {@glink features/html/html-embed HTML embed} feature guide.
 	 *
 	 * The function receives the input HTML (as a string), and should return an object
-	 * that matches the {@link module:html-embed/htmlembedconfig~HtmlEmbedSanitizeOutput} interface.
+	 * that matches the {@link module:core/editor/editorconfig~SanitizedOutput} interface.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -855,10 +855,13 @@ export interface EditorConfig {
 	 *   .catch( ... );
 	 * ```
 	 *
-	 * **Note:** The function is used only when the feature
-	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews is configured to render previews}.
+	 * This function is used by following features:
+	 * * {@glink features/html/html-embed HTML embed}
+	 * 	(when {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `showPreviews`} flag is set)
+	 * * {@glink features/merge-fields Merge fields}
+	 * 	(when {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#previewHtmlValues `previewHtmlValues`} flag is set).
 	 */
-	sanitizeHtml?: ( html: string ) => HtmlEmbedSanitizeOutput;
+	sanitizeHtml?: ( html: string ) => SanitizedOutput;
 }
 
 /**
@@ -1019,4 +1022,20 @@ export interface UiConfig {
 	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
 	 **/
 	poweredBy?: PoweredByConfig;
+}
+
+/**
+ * An object returned by the {@link module:core/editor/editorconfig~EditorConfig#sanitizeHtml} function.
+ */
+export interface SanitizedOutput {
+
+	/**
+	 * An output (safe) HTML that will be inserted into the {@glink framework/architecture/editing-engine editing view}.
+	 */
+	html: string;
+
+	/**
+	 * A flag that indicates whether the output HTML is different than the input value.
+	 */
+	hasChanged: boolean;
 }
