@@ -835,31 +835,28 @@ export interface EditorConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 *   .create( editorElement, {
-	 *     htmlEmbed: {
-	 *       showPreviews: true,
-	 *       sanitizeHtml( inputHtml ) {
-	 *         // Strip unsafe elements and attributes, e.g.:
-	 *         // the `<script>` elements and `on*` attributes.
-	 *         const outputHtml = sanitize( inputHtml );
+	 * 	.create( editorElement, {
+	 * 		sanitizeHtml( inputHtml ) {
+	 * 		// Strip unsafe elements and attributes, e.g.:
+	 * 		// the `<script>` elements and `on*` attributes.
+	 * 		const outputHtml = sanitize( inputHtml );
 	 *
-	 *         return {
-	 *           html: outputHtml,
-	 *           // true or false depending on whether the sanitizer stripped anything.
-	 *           hasChanged: ...
-	 *         };
-	 *       },
-	 *     }
-	 *   } )
-	 *   .then( ... )
-	 *   .catch( ... );
+	 * 		return {
+	 * 			html: outputHtml,
+	 * 			// `true` or `false` depending on whether the sanitizer stripped anything.
+	 * 			hasChanged: inputHtml !== outputHtml
+	 * 		};
+	 *	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
 	 * ```
 	 *
 	 * This function is used by following features:
+	 *
 	 * * {@glink features/html/html-embed HTML embed}
-	 * 	(when {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `showPreviews`} flag is set)
+	 *   (when {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `showPreviews`} flag is set).
 	 * * {@glink features/merge-fields Merge fields}
-	 * 	(when {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#previewHtmlValues `previewHtmlValues`} flag is set).
+	 *   (when {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#previewHtmlValues `previewHtmlValues`} flag is set).
 	 */
 	sanitizeHtml?: ( html: string ) => SanitizedOutput;
 }
