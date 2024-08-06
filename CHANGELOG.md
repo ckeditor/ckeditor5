@@ -9,16 +9,11 @@ We are happy to announce the release of CKEditor 5 v43.0.0.
 
 #### Merge fields
 
-The new [merge fields feature](https://ckeditor.com/docs/ckeditor5/latest/features/merge-fields.html) is a game-changer for creating dynamic documents. Imagine being able to insert placeholders in your content, indicating where specific values should go, without showing the actual values. This is perfect for crafting email templates or document forms, which you can later export as Word or PDF files filled with real content.
+The new [merge fields feature](https://ckeditor.com/docs/ckeditor5/latest/features/merge-fields.html) is a game-changer for creating document templates and other kinds of personalized or dynamic content. Thanks to this feature, you can insert placeholders into your content, indicating where actual values should go. These places are marked in the final content in a distinctive way, making it easy to later process the template and fill it with the actual values. The feature supports a preview mode too - you can define preview data sets, and see how the content will look like when real values are used directly in the editor. The plugin is highly customizable to fit various applications and scenarios. Finally, merge fields are fully integrated with our Export to Word, Export to PDF, and Import from Word features, both when they are used from the editor and via REST API.
 
-There are exciting ways you can use merge fields:
+We are extremely happy to share with you this highly demanded feature, and we cannot wait to listen to your feedback!
 
-1. **Creating Templates:** Easily insert merge fields as placeholders. The default preview mode shows these placeholders, giving you a clear layout without any data distraction.
-2. **Previewing with Example Data:** Want to see how your document will look with actual data? Switch the preview mode to display sample data, giving you a sneak peek of the final result.
-3. **Editing Merged Documents:** Start with a blank document or a pre-made template, and see placeholders automatically fill with real data. This mode shows the actual data instead of placeholders, streamlining the editing process.
-
-Read more in the [merge fields documentation](https://ckeditor.com/docs/ckeditor5/latest/features/merge-fields.html).
-
+Make sure to visit our [builder](https://ckeditor.com/ckeditor-5/builder/) or [documentation](https://ckeditor.com/docs/ckeditor5/latest/features/merge-fields.html) to learn more about the feature.
 #### Export to Word V2 as the default version
 
 The V2 version of the [export to Word feature](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html) introduced significant improvements, optimizations, and fixes. This update enhances the overall performance, making the export process faster and more reliable, especially for large documents. Key improvements include better handling of table borders, automatic detection of Word styles from CSS, and support for more text-related CSS properties, ensuring your documents maintain their intended formatting.
