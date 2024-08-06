@@ -23,7 +23,7 @@ msgstr "ویرایشگر متن غنی"
 
 msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
 msgid "Editor editing area: %0"
-msgstr ""
+msgstr "ناحیه ویرایش ویرایشگر: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
@@ -31,11 +31,11 @@ msgstr "ویرایش قطعه"
 
 msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Click to edit block"
-msgstr ""
+msgstr "برای ویرایش بلوک کلیک کنید"
 
 msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Drag to move"
-msgstr ""
+msgstr "برای حرکت دادن بکشید"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -115,7 +115,7 @@ msgstr "بنفش"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "نوار ابزار محتوای بلوک ویرایشگر"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
@@ -123,15 +123,15 @@ msgstr ""
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "هگز"
 
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
-msgstr ""
+msgstr "نتیجه ای یافت نشد"
 
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
-msgstr ""
+msgstr "موارد قابل جستجو وجود ندارد"
 
 msgctxt "A default label of a dialog window displayed on top the editor."
 msgid "Editor dialog"
@@ -139,7 +139,7 @@ msgstr ""
 
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
-msgstr ""
+msgstr "بستن"
 
 msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
 msgid "Help Contents. To close this dialog press ESC."
@@ -147,7 +147,7 @@ msgstr ""
 
 msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
 msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
-msgstr ""
+msgstr "در زیر، می توانید لیستی از میانبرهای صفحه کلید را که می توان در ویرایشگر استفاده کرد، پیدا کنید."
 
 msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
 msgid "(may require <kbd>Fn</kbd>)"
@@ -155,7 +155,7 @@ msgstr ""
 
 msgctxt "The label for the button that opens the Accessibility help dialog from the application menu bar."
 msgid "Accessibility"
-msgstr ""
+msgstr "دسترسی"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
@@ -171,7 +171,7 @@ msgstr ""
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.)."
 msgid "MENU_BAR_MENU_FILE"
-msgstr ""
+msgstr "فایل"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.)."
 msgid "MENU_BAR_MENU_EDIT"
@@ -179,7 +179,7 @@ msgstr "ویرایش"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source)."
 msgid "MENU_BAR_MENU_VIEW"
-msgstr ""
+msgstr "نمایش"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
 msgid "MENU_BAR_MENU_INSERT"
@@ -187,23 +187,23 @@ msgstr ""
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
 msgid "MENU_BAR_MENU_FORMAT"
-msgstr ""
+msgstr "قالب"
 
 msgctxt "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.)."
 msgid "MENU_BAR_MENU_TOOLS"
-msgstr ""
+msgstr "ابزار ها"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help)."
 msgid "MENU_BAR_MENU_HELP"
-msgstr ""
+msgstr "کمک"
 
 msgctxt "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.)."
 msgid "MENU_BAR_MENU_TEXT"
-msgstr ""
+msgstr "متن"
 
 msgctxt "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
 msgid "MENU_BAR_MENU_FONT"
-msgstr ""
+msgstr "فونت"
 
 msgctxt "The accessible label of the editor menu bar used by assistive technologies."
 msgid "Editor menu bar"

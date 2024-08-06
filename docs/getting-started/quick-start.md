@@ -32,6 +32,10 @@ You get ready-to-use code tailored to your needs!
 
 ## Installing CKEditor&nbsp;5 using npm
 
+<info-box>
+	To set up the editor from npm, you need a bundler to build the JavaScript files correctly. CKEditor 5 is compatible with all modern JavaScript bundlers. For a quick project setup, we recommend using [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+</info-box>
+
 First, install the necessary package. The command below will install the main CKEditor&nbsp;5 package containing all open-source plugins.
 
 ```bash
@@ -214,7 +218,7 @@ The easiest way to see the editor in action is to serve the `index.html` file vi
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
 
-All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
+All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. Therefore, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ## Installing premium features
 
@@ -291,7 +295,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 
 Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the final section of this guide.
 
-In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
+In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
 ```html
 <script type="module">
@@ -416,7 +420,7 @@ The easiest way to see the editor in action is to serve the `index.html` file vi
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
 
-All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
+All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. Therefore, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ### Obtaining a license key
 

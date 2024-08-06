@@ -54,6 +54,12 @@ describe( 'UploadImageCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		it( 'should set `isAccessAllowed` on `true` when initialized', () => {
+			expect( command.isAccessAllowed ).to.be.true;
+		} );
+	} );
+
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
 			model.enqueueChange( { isUndoable: false }, () => {

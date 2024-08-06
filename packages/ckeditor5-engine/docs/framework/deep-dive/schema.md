@@ -675,31 +675,88 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 </$root>
 ```
 
-## Defining advanced rules in `checkChild()` callbacks
+## Defining advanced rules using callbacks
 
-The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~Observable#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
+The base {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API} is by its nature limited, and some custom rules might not be possible to be implemented this way.
 
-These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
+For this reason, it is also possible to define schema checks by providing callbacks. This gives you flexibility to implement any logic that you need.
 
-For instance, to disallow nested `<blockQuote>` structures, you can define such a listener:
+These callbacks can be set both for child checks (model structure checks) and attribute checks.
+
+Note that the callbacks take precedence over the rules defined through the declarative API and can overwrite these rules.
+
+### Child checks (structure checks)
+
+Using {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} you can provide function callbacks in order to implement specific advanced rules for checking the model structure.
+
+You can provide callbacks that are fired only when a specific child is checked, or generic callbacks fired for all checks performed by the schema.
+
+Below is an example of a specific callback, that disallows inline images inside code blocks:
+
+```js
+schema.addChildCheck( context => {
+	if ( context.endsWith( 'codeBlock' ) ) {
+		return false;
+	}
+}, 'imageInline' );
+```
+
+The second parameter (`'imageInline'`) specifies that the callback will be used only if `imageInline` is being checked.
+
+You can also use a callback to force given item to be allowed. For example, allow special `$marker` item to be allowed everywhere:
+
+```js
+schema.addChildCheck( () => true, '$marker' );
+```
+
+Note that a callback may return `true`, `false`, or no value (`undefined`). If `true` or `false` is returned, the decision was made and further callbacks or declarative rules will not be checked. The item will be allowed or disallowed. If no value is returned, further checks will decide whether the item is allowed or not. 
+
+In some cases, you may need to define a generic listener that will be fired on every schema check.
+
+For instance, to disallow all block objects (e.g. tables) inside a block quotes, you can define following callback:
 
 ```js
 schema.addChildCheck( ( context, childDefinition ) => {
-	// Note that the context is automatically normalized to a SchemaContext instance and
-	// the child to its definition (SchemaCompiledItemDefinition).
-
-	// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
-	// to check, make the checkChild() method return false.
-	if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
+	if ( context.endsWith( 'blockQuote' ) && childDefinition.isBlock && childDefinition.isObject ) {
 		return false;
 	}
 } );
 ```
-<!--
-## Defining attributes
 
-TODO
--->
+The above will trigger on every `checkChild()` call giving you more flexibility. However, please keep in mind that using multiple generic callbacks might negatively impact the editor performance.
+
+### Attribute checks
+
+Similarly, you can define callbacks to check whether given attribute is or is not allowed on given item.
+
+This time, you will use {@link module:engine/model/schema~Schema#addAttributeCheck `Schema#addAttributeCheck()`} to provide the callback.
+
+For example, allow custom attribute `headingMarker` on all headings:
+
+```js
+schema.addAttributeCheck( ( context, attributeName ) => {
+	const isHeading = context.last.name.startsWith( 'heading' );
+	
+	if ( isHeading ) {
+		return true;
+	}
+}, 'headingMarker' );
+```
+
+Generic callbacks are available too. For example, disallow formatting attributes (like bold or italic) on text inside all headings:
+
+```js
+schema.addAttributeCheck( ( context, attributeName ) => {
+	const parent = context.getItem( context.length - 2 );
+	const insideHeading = parent && parent.name.startsWith( 'heading' );
+	
+	if ( insideHeading && context.endsWith( '$text' ) && schema.getAttributeProperties( attributeName ).isFormatting ) {
+		return false;
+	}
+} );
+```
+
+All notes related to child check callbacks apply to attribute callbacks as well.
 
 ## Implementing additional constraints
 

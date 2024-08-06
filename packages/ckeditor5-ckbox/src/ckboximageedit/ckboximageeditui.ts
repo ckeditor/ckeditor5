@@ -34,15 +34,19 @@ export default class CKBoxImageEditUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'ckboxImageEdit', locale => {
 			const command = editor.commands.get( 'ckboxImageEdit' )!;
+			const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
 			const view = new ButtonView( locale );
 			const t = locale.t;
 
 			view.set( {
-				label: t( 'Edit image' ),
 				icon: ckboxImageEditIcon,
 				tooltip: true
 			} );
 
+			view.bind( 'label' ).to( uploadImageCommand, 'isAccessAllowed', isAccessAllowed => isAccessAllowed ?
+				t( 'Edit image' ) :
+				t( 'You have no image editing permissions.' )
+			);
 			view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
 			view.bind( 'isEnabled' ).to( command );
 

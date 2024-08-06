@@ -12,7 +12,6 @@
 	 * All menu buttons.
 	 */
 	& > .ck-menu-bar__menu__button {
-		padding: var(--ck-list-button-padding);
 		width: 100%;
 
 		& > .ck-button__label {
@@ -71,33 +70,29 @@
 
 			@mixin ck-dir ltr {
 				transform: rotate(-90deg);
+
+				/* A space to accommodate the triangle. */
+				margin-left: var(--ck-spacing-standard);
+
+				/* Nudge the arrow gently to the right because its center of gravity is to the left */
+				margin-right: calc(-1 * var(--ck-spacing-small));
 			}
 
 			@mixin ck-dir rtl {
 				transform: rotate(90deg);
+
+				left: var(--ck-spacing-standard);
+
+				/* A space to accommodate the triangle. */
+				margin-right: var(--ck-spacing-small);
+
+				/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
+				margin-left: calc(-1 * var(--ck-spacing-small));
 			}
 		}
 
 		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
 			@mixin ck-disabled;
-		}
-
-		@mixin ck-dir ltr {
-			& > .ck-menu-bar__menu__button__arrow {
-				right: var(--ck-spacing-standard);
-
-				/* A space to accommodate the triangle. */
-				margin-left: var(--ck-spacing-standard);
-			}
-		}
-
-		@mixin ck-dir rtl {
-			& > .ck-menu-bar__menu__button__arrow {
-				left: var(--ck-spacing-standard);
-
-				/* A space to accommodate the triangle. */
-				margin-right: var(--ck-spacing-small);
-			}
 		}
 	}
 }
