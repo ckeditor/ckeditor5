@@ -1,8 +1,8 @@
 ---
 category: getting-started
 order: 10
-menu-title: Overview
-meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
+menu-title: Quick Start
+meta-title: CKEditor 5 Installation Quick Start | CKEditor 5 documentation
 meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
 ---
 
@@ -18,21 +18,34 @@ CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSI
 
 ## Are you new to CKEditor&nbsp;5?
 
-If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily with the **{@link getting-started/integrations-cdn/quick-start Quick&nbsp;start guide}**. You will learn how to run CKEditor&nbsp;5 from npm or CDN.
+If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily. You have a few methods to choose from:
 
-## Migrating from CKEditor&nbsp;4?
+* [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
+* {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm Using npm}, where you use a JavaScript package and build the editor with a bundler.
+* {@link getting-started/integrations-cdn/quick-start#installing-ckeditor-5-from-cdn Using CDN}, where you use our cloud-distributed CDN in a no-build setup.
+* {@link getting-started/integrations/quick-start#installing-ckeditor-5-from-a-zip-file Using a ZIP file}, where you download the ready-to-run files and copy them to your project.
+* Choosing one of the [pre-made integrations with popular frameworks](#ckeditor-5-framework-integrations).
 
-If you are familiar with our previous, discontinued product and would like to switch, check the **{@link updating/migration-from-ckeditor-4 Migration section}**. You will find a useful upgrade guide there to help you switch with the least effort.
+## Using CKEditor&nbsp;5 Builder
+
+Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
+* editor type,
+* the features you need,
+* the preferred framework (React, Angular, Vue or Vanilla JS),
+* the preferred distribution method.
+
+You get ready-to-use code tailored to your needs!
 
 ## CKEditor&nbsp;5 framework integrations
 
 Do you to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
 
-* {@link getting-started/integrations/angular Integrate CKEditor&nbsp;5 with Angular}
-* {@link getting-started/integrations/react Integrate CKEditor&nbsp;5 with React}
-* {@link getting-started/integrations/next-js Integrate CKEditor&nbsp;5 with Next.js}
-* {@link getting-started/integrations/vuejs-v3 Integrate CKEditor&nbsp;5 with Vue.js 3.x}
-* {@link getting-started/integrations/vuejs-v2 Integrate CKEditor&nbsp;5 with Vue.js 2.x}
+* Integrate CKEditor&nbsp;5 with Angular using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm/ZIP}
+* Integrate CKEditor&nbsp;5 with React using  {@link getting-started/integrations-cdn/react CDN} or {@link getting-started/integrations/react npm/ZIP}
+* Integrate CKEditor&nbsp;5 with Next.js using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm/ZIP}
+* Integrate CKEditor&nbsp;5 with Vue.js 3.x using {@link getting-started/integrations-cdn/vuejs-v3 CDN} or {@link getting-started/integrations/vuejs-v3 npm/ZIP}
+* Integrate CKEditor&nbsp;5 with Vue.js 2.x using {@link getting-started/integrations-cdn/vuejs-v2 CDN} or {@link getting-started/integrations/vuejs-v2 npm/ZIP}
 
 However, integration steps for some more frameworks are also documented. Refer to their documentation on the left to learn how to use them.
 
@@ -43,6 +56,10 @@ CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in Ty
 CKEditor&nbsp;5 is also compatible with popular CSS frameworks such as Bootstrap or Foundation. Such integrations, however, often require additional changes and adjustments that we have gathered {@link getting-started/integrations/css in this guide}.
 
 We plan to provide more integrations with time. We would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) about what we should work on next.
+
+## Migrating from CKEditor&nbsp;4?
+
+If you are familiar with our previous, discontinued product and would like to switch, check the **{@link updating/migration-from-ckeditor-4 Migration section}**. You will find a useful upgrade guide there to help you switch with the least effort.
 
 ## Configuring CKEditor&nbsp;5
 

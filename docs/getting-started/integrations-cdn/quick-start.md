@@ -1,34 +1,19 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 instllation | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 installation | CKEditor 5 documentation
 category: cloud
 order: 20
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Quick start
+# Vanilla JS Quick start
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
-You have a few methods to choose from:
-
-* [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
-* {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm Using npm}, where you use a JavaScript package and build the editor with a bundler.
-* [Using CDN](#installing-ckeditor-5-from-cdn), where you use our cloud-distributed CDN in a no-build setup.
-* {@link getting-started/integrations/quick-start#installing-ckeditor-5-from-a-zip-file Using a ZIP file}, where you download the ready-to-run files and copy them to your project.
-* Choosing one of the pre-made integrations with popular frameworks (see table of contents for details).
-
 ## Using CKEditor&nbsp;5 Builder
 
-Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* editor type,
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
+Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
 
 ## Installing CKEditor&nbsp;5 from CDN
 
