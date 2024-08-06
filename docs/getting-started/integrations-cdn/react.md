@@ -37,61 +37,6 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
 
-### Installing from npm
-
-First, install the CKEditor&nbsp;5 packages:
-
-* `ckeditor5` &ndash; package with open-source plugins and features.
-* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
-
-Depending on your configuration and chosen plugins, you may need to install the first or both packages.
-
-```bash
-npm install ckeditor5 ckeditor5-premium-features
-```
-
-Then, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
-
-```bash
-npm install @ckeditor/ckeditor5-react
-```
-
-Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source and premium plugins.
-
-```jsx
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-function App() {
-	return (
-		<CKEditor
-			editor={ ClassicEditor }
-			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: { 
-					// Mention configuration
-				},
-				initialData: '<p>Hello from CKEditor 5 in React!</p>',
-			} }
-		/>
-	);
-}
-
-export default App;
-```
-
-Remember to import the necessary style sheets. The `ckeditor5` package contains the styles for open-source features, while the `ckeditor5-premium-features` package contains the premium features styles.
-
 ## Component properties
 
 The `<CKEditor>` component supports the following properties:

@@ -478,16 +478,7 @@
 					"name": "Setup",
 					"id": "setup",
 					"slug": "setup",
-					"order": 40,
-					"categories": [
-						{
-							"name": "Integrations",
-							"id": "integrations",
-							"slug": "integrations",
-							"folded": true,
-							"order": 130
-						}
-					]
+					"order": 40
 				},
 				{
 					"name": "Licensing",
