@@ -377,7 +377,7 @@
 		"examples/builds-custom/bottom-toolbar-editor.html": "examples/framework/bottom-toolbar-editor.html",
 		"examples/how-tos.html": "framework/how-tos.html",
 		"support/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
-		"": ""
+		"features/productivity-pack.html": "features/index.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
