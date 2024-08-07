@@ -120,7 +120,7 @@ Also, pay attention to the import path - this guide uses the [default import ali
 
 ### Using the editor with collaboration plugins
 
-We provide a few **ready-to-use integrations** featuring collaborative editing in Next.js applications:
+We provide several **ready-to-use integrations** featuring collaborative editing in Next.js applications:
 
 * [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-next)
 * [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-next)
