@@ -142,7 +142,7 @@ By default, the two-way data binding is enabled. It means that every change done
 
 ### Using the editor with collaboration plugins
 
-We provide a few **ready-to-use integration** featuring collaborative editing with multi-root in React applications:
+We provide several **ready-to-use integration** featuring collaborative editing with multi-root in React applications:
 
 * [CKEditor&nbsp;5 multi-root with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-editor-multi-root-for-react)
 
