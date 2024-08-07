@@ -14,7 +14,7 @@ The data provided at the editor initialization is by default stripped out of any
 
 ## Features previewing the HTML snippets
 
-If you configure the HTML embed feature to {@link features/html-embed#content-previews show content previews} or the merge fields feature to render the {@link features/merge-fields#html-previews values defined as HTML strings}, the HTML is then rendered to the user. If the HTML was rendered as-is, **the browser would execute any JavaScript code included in these HTML snippets in the context of your website**.
+If you configure the HTML embed feature to {@link features/html-embed#content-previews show content previews} or the merge fields feature to render the {@link features/merge-fields#using-html-tags-in-merge-fields-values values defined as HTML strings}, the HTML is then rendered to the user. If the HTML was rendered as-is, **the browser would execute any JavaScript code included in these HTML snippets in the context of your website**.
 
 This, in turn, is a plain security risk (especially in HTML embed feature, where user can input any content). The HTML provided by the user might be mistakenly copied from a malicious website. It could also end up in the user's clipboard (as it would usually be copied and pasted) by any other means.
 
