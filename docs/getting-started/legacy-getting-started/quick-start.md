@@ -279,7 +279,7 @@ In this example, you remove the premium collaboration features and several other
 					// Careful, with the Mathtype plugin CKEditor will not load when loading this sample
 					// from a local file system (file://) - load this site via HTTP server if you enable MathType.
 					'MathType',
-					// The following features are part of the Productivity Pack and require additional license.
+					// The following features require additional license.
 					'SlashCommand',
 					'Template',
 					'DocumentOutline',

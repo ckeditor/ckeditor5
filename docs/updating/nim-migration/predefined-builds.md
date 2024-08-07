@@ -1723,7 +1723,6 @@ One notable difference between the old and new CDN builds is that the former use
 			toolbar: [
 				'aiCommands', 'aiAssistant',
 				'|',
-				// Productivity pack.
 				'tableOfContents', 'formatPainter', 'insertTemplate', 'caseChange',
 				'|',
 				'pagination',

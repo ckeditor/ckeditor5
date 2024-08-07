@@ -13,17 +13,16 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 	* {@link features/track-changes Track changes}
 	* {@link features/comments Comments}
 	* {@link features/revision-history Revision history}
-* {@link features/pagination Pagination}
 * {@link features/ai-assistant-overview AI Assistant}
+* {@link features/case-change Case change}
+* {@link features/document-outline Document outline}
+* {@link features/format-painter Format painter}
 * {@link features/multi-level-lists Multi-level list}
-* The Productivity Pack that includes:
-	* {@link features/case-change Case change}
-	* {@link features/document-outline Document outline}
-	* {@link features/format-painter Format painter}
-	* {@link features/paste-from-office-enhanced Paste from Office enhanced}
-	* {@link features/slash-commands Slash commands}
-	* {@link features/table-of-contents Table of contents}
-	* {@link features/template Templates}
+* {@link features/pagination Pagination}
+* {@link features/paste-from-office-enhanced Paste from Office enhanced}
+* {@link features/slash-commands Slash commands}
+* {@link features/table-of-contents Table of contents}
+* {@link features/template Templates}
 
 Other premium features such as {@link features/real-time-collaboration real-time collaboration}, {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, or {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
@@ -65,7 +64,7 @@ After logging in, click "CKEditor" under the "Your products" header on the left.
 
 ### Copy the license key
 
-After clicking "Manage," you can access the license key needed to run the editor and the premium features. Note that the same license key will be valid for both the Productivity Pack and other standalone features, as well as CKEditor&nbsp;5 itself.
+After clicking "Manage," you can access the license key needed to run the editor and the premium features. Note that the same license key will be valid for both the standalone features, as well as CKEditor&nbsp;5 itself.
 
 {@img assets/img/ckeditor-key.png 822 Premium features license key in the management console.}
 
