@@ -146,7 +146,7 @@ We provide several **ready-to-use integration** featuring collaborative editing 
 
 * [CKEditor&nbsp;5 multi-root with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-editor-multi-root-for-react)
 
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+It is not necessary to build applications on top of the above samples, however, they should help you get started.
 
 ## Contributing and reporting issues
 
