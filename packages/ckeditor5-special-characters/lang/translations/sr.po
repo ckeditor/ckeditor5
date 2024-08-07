@@ -21,6 +21,10 @@ msgctxt "Name of the special characters plugins, visible in a dropdown and as a 
 msgid "Special characters"
 msgstr "Специјални карактери"
 
+msgctxt "A label for a special character dropdown with symbol categories."
+msgid "Category"
+msgstr "Kategorija"
+
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
 msgstr "Сви"
@@ -1072,7 +1076,3 @@ msgstr "Знак параграф"
 msgctxt "A label for the \"reversed paragraph sign\" symbol."
 msgid "Reversed paragraph sign"
 msgstr "Обрнути знак параграфа"
-
-msgctxt "A label for a tooltip showing when the user hovers over the plugin icon."
-msgid "Character categories"
-msgstr "Категорија карактера"

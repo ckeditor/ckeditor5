@@ -71,7 +71,10 @@ export default class Dialog extends Plugin {
 		this._initFocusToggler();
 		this._initMultiRootIntegration();
 
-		this.set( 'id', null );
+		this.set( {
+			id: null,
+			isOpen: false
+		} );
 
 		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {

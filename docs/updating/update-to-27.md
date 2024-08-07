@@ -8,7 +8,7 @@ order: 97
 # Update to CKEditor&nbsp;5 v27.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -19,7 +19,7 @@ _Released on April 21, 2021._
 
 For the entire list of changes introduced in version 27.1.0, see the [release notes for CKEditor&nbsp;5 v27.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v27.1.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v27.1.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v27.1.0.
 
 ### Disallowing nesting tables
 
@@ -39,7 +39,7 @@ _Released on March 24, 2021._
 
 For the entire list of changes introduced in version 27.0.0, see the [release notes for CKEditor&nbsp;5 v27.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v27.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v27.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v27.0.0.
 
 ### Clipboard input pipeline integration
 

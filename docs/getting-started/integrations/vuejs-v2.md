@@ -92,11 +92,11 @@ export default {
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
 				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				 },
 				plugins: [
-                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-                ],
+					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				mention: { 
 					// Mention configuration
@@ -372,7 +372,8 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-	import 'ckeditor5/ckeditor5.css';
+
+	import 'ckeditor5/ckeditor5.css'
 
 	export default {
 		name: 'app',

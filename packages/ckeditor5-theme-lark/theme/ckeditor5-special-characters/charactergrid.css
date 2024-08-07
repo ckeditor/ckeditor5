@@ -13,21 +13,11 @@
 .ck.ck-character-grid {
 	overflow-y: auto;
 	overflow-x: hidden;
-	width: 350px;
-	max-height: 200px;
-
-	@mixin ck-media-phone {
-		width: 190px;
-	}
 
 	& .ck-character-grid__tiles {
-		grid-template-columns: repeat(10, 1fr);
+		grid-template-columns: repeat(auto-fill, minmax(var(--ck-character-grid-tile-size), 1fr));
 		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 		grid-gap: var(--ck-spacing-standard);
-
-		@mixin ck-media-phone {
-			grid-template-columns: repeat(5, 1fr);
-		}
 	}
 
 	& .ck-character-grid__tile {
@@ -35,7 +25,7 @@
 		height: var(--ck-character-grid-tile-size);
 		min-width: var(--ck-character-grid-tile-size);
 		min-height: var(--ck-character-grid-tile-size);
-		font-size: 1.2em;
+		font-size: 1.5em;
 		padding: 0;
 		transition: .2s ease box-shadow;
 		border: 0;

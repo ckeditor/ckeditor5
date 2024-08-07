@@ -255,24 +255,24 @@ msgstr "Introduza o título da táboa"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
 msgid "Keystrokes that can be used in a table cell"
-msgstr ""
+msgstr "Teclas de atallo que se poden usar nunha cela da táboa"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
 msgid "Move the selection to the next cell"
-msgstr ""
+msgstr "Mover a selección cara a seguinte cela"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell."
 msgid "Move the selection to the previous cell"
-msgstr ""
+msgstr "Mover a selección cara a cela anterior"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for inserting a new table row."
 msgid "Insert a new table row (when in the last cell of a table)"
-msgstr ""
+msgstr "Inserir unha nova fila de táboa (cando se atope na última cela dunha táboa)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
-msgstr ""
+msgstr "Desprazarse pola táboa"
 
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
-msgstr ""
+msgstr "Táboa"

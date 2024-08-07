@@ -65,15 +65,62 @@ describe( 'CKBoxUtils', () => {
 	} );
 
 	describe( 'getToken()', () => {
-		it( 'should return an instance of token', () => {
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
+		it( 'should return an instance of token', async () => {
+			expect( await ckboxUtils.getToken() ).to.be.instanceOf( Token );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should not block initialization of plugin while fetching token', async () => {
+			const defer = createDefer();
+			const slowToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
+
+			await editor.destroy();
+
+			class SlowCloudServices extends CloudServices {
+				async registerTokenUrl() {
+					await defer.promise;
+					return slowToken;
+				}
+			}
+
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ImageBlockEditing,
+					ImageInlineEditing,
+					ImageCaptionEditing,
+					LinkEditing,
+					LinkImageEditing,
+					PictureEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					SlowCloudServices,
+					CKBoxUploadAdapter,
+					CKBoxEditing
+				],
+				substitutePlugins: [
+					CloudServicesCoreMock
+				],
+				ckbox: {
+					tokenUrl: 'http://cs.example.com',
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			ckboxUtils = editor.plugins.get( CKBoxUtils );
+			expect( ckboxUtils.getToken() ).to.be.instanceOf( Promise );
+
+			defer.resolve();
+			expect( await ckboxUtils.getToken() ).to.be.equal( slowToken );
 		} );
 	} );
 
 	describe( 'fetching token', () => {
-		it( 'should create an instance of Token class which is ready to use (specified ckbox.tokenUrl)', () => {
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+		it( 'should create an instance of Token class which is ready to use (specified ckbox.tokenUrl)', async () => {
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://cs.example.com' );
 		} );
 
@@ -105,8 +152,10 @@ describe( 'CKBoxUtils', () => {
 				} );
 
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://cs.example.com' );
 
 			editorElement.remove();
@@ -142,8 +191,10 @@ describe( 'CKBoxUtils', () => {
 				} );
 
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://ckbox.example.com' );
 
 			editorElement.remove();
@@ -179,8 +230,10 @@ describe( 'CKBoxUtils', () => {
 				} );
 
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://example.com' );
 
 			editorElement.remove();
@@ -562,6 +615,24 @@ describe( 'CKBoxUtils', () => {
 			sinonXHR.restore();
 		} );
 
+		// See: https://github.com/ckeditor/ckeditor5/issues/16040
+		it( 'should not use `Number#toString()` method due to minification issues on some bundlers', async () => {
+			const categories = createCategories( 10 );
+			const toStringSpy = sinon.spy( Number.prototype, 'toString' );
+
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: categories, offset: 0, limit: 50, totalCount: 10
+				} )
+			] );
+
+			await ckboxUtils._getAvailableCategories( options );
+
+			expect( toStringSpy ).not.to.be.called;
+		} );
+
 		it( 'should return categories in one call', async () => {
 			const categories = createCategories( 10 );
 
@@ -702,4 +773,17 @@ function createToken( tokenClaims ) {
 		// Signature.
 		'signature'
 	].join( '.' );
+}
+
+function createDefer() {
+	const deferred = {
+		resolve: ( ) => {},
+		promise: Promise.resolve( null )
+	};
+
+	deferred.promise = new Promise( resolve => {
+		deferred.resolve = resolve;
+	} );
+
+	return deferred;
 }

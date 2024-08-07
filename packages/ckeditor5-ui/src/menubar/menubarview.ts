@@ -34,6 +34,7 @@ import {
 const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
 import '../../theme/components/menubar/menubar.css';
+import type EditorUI from '../editorui/editorui.js';
 
 /**
  * The application menu bar component. It brings a set of top-level menus (and sub-menus) that can be used
@@ -54,6 +55,16 @@ export default class MenuBarView extends View implements FocusableView {
 	declare public isOpen: boolean;
 
 	/**
+	 * Indicates whether the menu bar has been interacted with using the keyboard.
+	 *
+	 * It is useful for showing focus outlines while hovering over the menu bar when
+	 * interaction with the keyboard was detected.
+	 *
+	 * @observable
+	 */
+	declare public isFocusBorderEnabled: boolean;
+
+	/**
 	 * A list of {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instances registered in the menu bar.
 	 *
 	 * @observable
@@ -69,8 +80,13 @@ export default class MenuBarView extends View implements FocusableView {
 		super( locale );
 
 		const t = locale.t;
+		const bind = this.bindTemplate;
 
-		this.set( 'isOpen', false );
+		this.set( {
+			isOpen: false,
+			isFocusBorderEnabled: false
+		} );
+
 		this._setupIsOpenUpdater();
 
 		this.children = this.createCollection();
@@ -85,7 +101,8 @@ export default class MenuBarView extends View implements FocusableView {
 			attributes: {
 				class: [
 					'ck',
-					'ck-menu-bar'
+					'ck-menu-bar',
+					bind.if( 'isFocusBorderEnabled', 'ck-menu-bar_focus-border-enabled' )
 				],
 				'aria-label': t( 'Editor menu bar' ),
 				role: 'menubar'
@@ -101,12 +118,17 @@ export default class MenuBarView extends View implements FocusableView {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar} in the editor
 	 * configuration reference to learn how to configure the menu bar.
 	 */
-	public fillFromConfig( config: NormalizedMenuBarConfigObject, componentFactory: ComponentFactory ): void {
+	public fillFromConfig(
+		config: NormalizedMenuBarConfigObject,
+		componentFactory: ComponentFactory,
+		extraItems: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = []
+	): void {
 		const locale = this.locale!;
 		const processedConfig = processMenuBarConfig( {
 			normalizedConfig: config,
 			locale,
-			componentFactory
+			componentFactory,
+			extraItems
 		} );
 
 		const topLevelCategoryMenuViews = processedConfig.items.map( menuDefinition => this._createMenu( {
@@ -128,6 +150,7 @@ export default class MenuBarView extends View implements FocusableView {
 		MenuBarBehaviors.closeMenuWhenAnotherOnTheSameLevelOpens( this );
 		MenuBarBehaviors.focusCycleMenusOnArrows( this );
 		MenuBarBehaviors.closeOnClickOutside( this );
+		MenuBarBehaviors.enableFocusHighlightOnInteraction( this );
 	}
 
 	/**

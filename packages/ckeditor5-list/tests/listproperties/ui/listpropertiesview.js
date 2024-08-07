@@ -125,9 +125,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -145,9 +143,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -190,9 +186,7 @@ describe( 'ListPropertiesView', () => {
 						enabledProperties: {
 							startIndex: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -215,9 +209,7 @@ describe( 'ListPropertiesView', () => {
 						enabledProperties: {
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -376,10 +368,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale ),
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -399,10 +388,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale ),
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -585,9 +571,7 @@ describe( 'ListPropertiesView', () => {
 					startIndex: true,
 					reversed: true
 				},
-				styleButtonViews: [
-					new ButtonView( locale )
-				],
+				styleButtonViews: [],
 				styleGridAriaLabel: 'Foo'
 			} );
 
@@ -608,9 +592,7 @@ describe( 'ListPropertiesView', () => {
 				enabledProperties: {
 					reversed: true
 				},
-				styleButtonViews: [
-					new ButtonView( locale )
-				],
+				styleButtonViews: [],
 				styleGridAriaLabel: 'Foo'
 			} );
 

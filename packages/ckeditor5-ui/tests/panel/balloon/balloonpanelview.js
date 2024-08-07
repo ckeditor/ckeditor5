@@ -9,7 +9,7 @@ import ViewCollection from '../../../src/viewcollection.js';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
 import ButtonView from '../../../src/button/buttonview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Rect } from '@ckeditor/ckeditor5-utils';
+import { Rect, ResizeObserver, global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {
 	let view;
@@ -48,6 +48,49 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'creates view#content collection', () => {
 			expect( view.content ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'should initialize _resizeObserver with null value', () => {
+			expect( view._resizeObserver ).to.be.null;
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should hide the panel if it is pinned', () => {
+			view.isVisible = false;
+
+			view.show();
+
+			expect( view.isVisible ).to.true;
+
+			view.destroy();
+
+			expect( view.isVisible ).to.false;
+		} );
+
+		it( 'should destroy the _resizeObserver if present', () => {
+			const target = document.createElement( 'div' );
+			const limiter = document.createElement( 'div' );
+
+			document.body.appendChild( target );
+			document.body.appendChild( limiter );
+
+			view.show();
+			view.pin( {
+				target,
+				limiter
+			} );
+
+			const spy = sinon.spy( view._resizeObserver, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( spy );
+
+			target.remove();
+			limiter.remove();
 		} );
 	} );
 
@@ -970,6 +1013,115 @@ describe( 'BalloonPanelView', () => {
 
 				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
 				sinon.assert.calledTwice( attachToSpy );
+			} );
+
+			describe( 'observe element visibility', () => {
+				let clock;
+
+				beforeEach( () => {
+					clock = sinon.useFakeTimers();
+				} );
+
+				afterEach( () => {
+					clock.restore();
+				} );
+
+				it( 'should hide if the target is not visible (display: none)', () => {
+					const showSpy = sinon.spy( view, 'show' );
+					const hideSpy = sinon.spy( view, 'hide' );
+
+					target.style.display = 'none';
+					view.pin( { target, limiter } );
+
+					sinon.assert.notCalled( hideSpy );
+					sinon.assert.notCalled( showSpy );
+				} );
+
+				it( 'should not hide if the target is not visible (visibility: hidden)', () => {
+					const showSpy = sinon.spy( view, 'show' );
+					const hideSpy = sinon.spy( view, 'hide' );
+
+					target.style.visibility = 'hidden';
+					view.pin( { target, limiter } );
+
+					sinon.assert.notCalled( hideSpy );
+					sinon.assert.calledOnce( showSpy );
+				} );
+
+				it( 'should hide if the target is being hidden (display: none)', () => {
+					const resizeCallbackRef = createResizeObserverCallbackRef();
+
+					view.pin( { target, limiter } );
+					clock.tick( 100 );
+
+					expect( view.isVisible ).to.be.true;
+
+					// It's still visible, nothing changed.
+					resizeCallbackRef.current( [ { target } ] );
+					clock.tick( 100 );
+					expect( view.isVisible ).to.be.true;
+
+					// Hide the target and force call resize callback.
+					target.style.display = 'none';
+					resizeCallbackRef.current( [ { target } ] );
+
+					// It should be hidden now.
+					clock.tick( 100 );
+					expect( view.isVisible ).to.be.false;
+				} );
+
+				it( 'should not hide if the target is being hidden (visibility: hidden)', () => {
+					const resizeCallbackRef = createResizeObserverCallbackRef();
+
+					view.pin( { target, limiter } );
+					clock.tick( 100 );
+
+					expect( view.isVisible ).to.be.true;
+
+					// It's still visible, nothing changed.
+					resizeCallbackRef.current( [ { target } ] );
+					clock.tick( 100 );
+					expect( view.isVisible ).to.be.true;
+
+					// Hide the target and force call resize callback.
+					target.style.visibility = 'hidden';
+					resizeCallbackRef.current( [ { target } ] );
+
+					// It should be still visible.
+					clock.tick( 100 );
+					expect( view.isVisible ).to.be.true;
+				} );
+
+				it( 'should properly cleanup resize observer when stop pinning', () => {
+					view.pin( { target, limiter } );
+					clock.tick( 100 );
+
+					expect( view._resizeObserver ).not.to.be.null;
+
+					const destroyObserverSpy = sinon.spy( view._resizeObserver, 'destroy' );
+
+					view.unpin();
+					clock.tick( 100 );
+
+					expect( destroyObserverSpy ).to.be.calledOnce;
+					expect( view._resizeObserver ).to.be.null;
+				} );
+
+				function createResizeObserverCallbackRef() {
+					const resizeCallbackRef = { current: null };
+
+					ResizeObserver._observerInstance = null;
+					testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+						resizeCallbackRef.current = callback;
+
+						return {
+							observe() {},
+							unobserve() {}
+						};
+					} );
+
+					return resizeCallbackRef;
+				}
 			} );
 		} );
 

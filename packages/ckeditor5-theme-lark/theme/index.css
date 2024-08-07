@@ -10,6 +10,7 @@
 @import "./ckeditor5-ui/components/autocomplete/autocomplete.css";
 @import "./ckeditor5-ui/components/button/button.css";
 @import "./ckeditor5-ui/components/button/switchbutton.css";
+@import "./ckeditor5-ui/components/button/listitembutton.css";
 @import "./ckeditor5-ui/components/collapsible/collapsible.css";
 @import "./ckeditor5-ui/components/colorgrid/colorgrid.css";
 @import "./ckeditor5-ui/components/colorselector/colorselector.css";
