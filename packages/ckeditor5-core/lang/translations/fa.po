@@ -67,11 +67,11 @@ msgstr ""
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "جایگزینی تصویر با مدیریت کننده فایل"
 
 msgctxt "The label for a button that opens a file manager in order to insert a file."
 msgid "File"
-msgstr ""
+msgstr "فایل"
 
 msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
 msgid "With file manager"
@@ -131,4 +131,4 @@ msgstr ""
 
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"
-msgstr ""
+msgstr "پذیرفتن"

@@ -8,7 +8,7 @@ order: 84
 # Update to CKEditor&nbsp;5 v40.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -19,7 +19,7 @@ _Released on December 12, 2023._
 
 For the entire list of changes introduced in version 40.2.0, see the [release notes for CKEditor&nbsp;5 v40.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.2.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
 
 ### AI Assistant integration
 
@@ -209,7 +209,7 @@ _Released on November 15, 2023._
 
 For the entire list of changes introduced in version 40.1.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.1.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.1.0.
 
 ### Changes to the default insert image action
 
@@ -252,7 +252,7 @@ _Released on October 4, 2023._
 
 For the entire list of changes introduced in version 40.0.0, see the [release notes for CKEditor&nbsp;5 v40.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.0.0.
 
 ### Changes to the image feature
 

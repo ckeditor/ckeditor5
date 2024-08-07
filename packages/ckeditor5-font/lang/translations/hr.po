@@ -43,7 +43,7 @@ msgstr "Obitelj fonta"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
-msgstr "Podrazumijevano"
+msgstr "Zadano"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
@@ -51,7 +51,7 @@ msgstr "Boja Fonta"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr "Pozadinska Boja Fonta"
+msgstr "Pozadinska boja fonta"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"

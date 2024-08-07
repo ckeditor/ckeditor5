@@ -823,6 +823,44 @@ export interface EditorConfig {
 	translations?: ArrayOrItem<Translations>;
 
 	/**
+	 * Callback used to sanitize the HTML provided by the user when generating previews of it in the editor.
+	 *
+	 * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
+	 *
+	 * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
+	 * the {@glink features/html/html-embed HTML embed} feature guide.
+	 *
+	 * The function receives the input HTML (as a string), and should return an object
+	 * that matches the {@link module:core/editor/editorconfig~SanitizedOutput} interface.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		sanitizeHtml( inputHtml ) {
+	 * 		// Strip unsafe elements and attributes, e.g.:
+	 * 		// the `<script>` elements and `on*` attributes.
+	 * 		const outputHtml = sanitize( inputHtml );
+	 *
+	 * 		return {
+	 * 			html: outputHtml,
+	 * 			// `true` or `false` depending on whether the sanitizer stripped anything.
+	 * 			hasChanged: inputHtml !== outputHtml
+	 * 		};
+	 *	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * This function is used by following features:
+	 *
+	 * * {@glink features/html/html-embed HTML embed}
+	 *   (when {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `showPreviews`} flag is set).
+	 * * {@glink features/merge-fields Merge fields}
+	 *   (when {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#previewHtmlValues `previewHtmlValues`} flag is set).
+	 */
+	sanitizeHtml?: ( html: string ) => SanitizedOutput;
+
+	/**
 	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies
 	 * to tell apart multiple editor instances (editing areas) on the page. If not set, a default
 	 * "Rich Text Editor. Editing area [name of the area]" is used instead.
@@ -1023,4 +1061,20 @@ export interface UiConfig {
 	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
 	 **/
 	poweredBy?: PoweredByConfig;
+}
+
+/**
+ * An object returned by the {@link module:core/editor/editorconfig~EditorConfig#sanitizeHtml} function.
+ */
+export interface SanitizedOutput {
+
+	/**
+	 * An output (safe) HTML that will be inserted into the {@glink framework/architecture/editing-engine editing view}.
+	 */
+	html: string;
+
+	/**
+	 * A flag that indicates whether the output HTML is different than the input value.
+	 */
+	hasChanged: boolean;
 }

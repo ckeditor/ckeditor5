@@ -18,17 +18,27 @@
 		text-align: right;
 	}
 
-	& .ck-list-item-button__check-holder {
-		display: inline-flex;
-		width: 1em;
-		height: 1em;
-
+	&.ck-list-item-button_toggleable {
 		@mixin ck-dir ltr {
-			margin-right: var(--ck-spacing-standard);
+			padding-left: var(--ck-spacing-small);
 		}
 
 		@mixin ck-dir rtl {
-			margin-left: var(--ck-spacing-standard);
+			padding-right: var(--ck-spacing-small);
+		}
+	}
+
+	& .ck-list-item-button__check-holder {
+		display: inline-flex;
+		width: .9em;
+		height: .9em;
+
+		@mixin ck-dir ltr {
+			margin-right: var(--ck-spacing-small);
+		}
+
+		@mixin ck-dir rtl {
+			margin-left: var(--ck-spacing-small);
 		}
 	}
 

@@ -101,6 +101,10 @@ msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "อัปโหลดไม่สำเร็จ"
 
+msgctxt "The title of the notification displayed when there is no permission to upload assets."
+msgid "You have no image upload permissions."
+msgstr "คุณไม่มีสิทธิ์อัปโหลดรูปภาพ"
+
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
 msgstr "เครื่องมือรูปภาพ"
