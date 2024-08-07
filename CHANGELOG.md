@@ -56,7 +56,7 @@ We strongly recommend that you follow the release highlights to update to the la
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: The `CKBoxUtils#getWorkspaceId` and `CKBoxUtils#getToken` methods now return a promise instead of a resolved value.
+* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: The `CKBoxUtils#getWorkspaceId()` and `CKBoxUtils#getToken()` methods now return a promise instead of a resolved value.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `AnnotationView#focus()` will focus the first view in the `content` collection instead of the view DOM element.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `Sidebar#addAnnotation()` will expect the annotation view to meet the `FocusableView` interface (previously any UI `View`).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Schema` callbacks added through `addChildCheck()` will no longer add event listeners with `high` priority and will no longer stop `checkChild` event. Instead, these callbacks are now handled on `normal` priority, as a part of the default `checkChild()` call. This also means that listeners added to `checkChild` event on `high` priority will fire before any callbacks added by `checkChild()`. Earlier they would fire in registration order. This may impact you if you implemented custom schema callback using both `addChildCheck()` and direct listener to `checkChild` event. All above is also true for `addAttributeCheck()` and `checkAttribute` event and callbacks.
