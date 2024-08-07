@@ -11,10 +11,10 @@ import {
 	Config,
 	CKEditorError,
 	ObservableMixin,
+	logWarning,
 	type Locale,
 	type LocaleTranslate,
-	type ObservableChangeEvent,
-	logWarning
+	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import {
