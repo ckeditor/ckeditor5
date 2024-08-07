@@ -79,6 +79,17 @@ export interface NormalizedDefaultProperties {
 }
 
 /**
+ * Options for the `getNormalizedDefaultProperties` function.
+ */
+type NormalizeTableDefaultPropertiesOptions = {
+	includeAlignmentProperty?: boolean;
+	includePaddingProperty?: boolean;
+	includeVerticalAlignmentProperty?: boolean;
+	includeHorizontalAlignmentProperty?: boolean;
+	isRightToLeftContent?: boolean;
+};
+
+/**
  * Returns the normalized configuration.
  *
  * @param options.includeAlignmentProperty Whether the "alignment" property should be added.
@@ -89,13 +100,7 @@ export interface NormalizedDefaultProperties {
  */
 export function getNormalizedDefaultProperties(
 	config: Partial<NormalizedDefaultProperties> | undefined,
-	options: {
-		includeAlignmentProperty?: boolean;
-		includePaddingProperty?: boolean;
-		includeVerticalAlignmentProperty?: boolean;
-		includeHorizontalAlignmentProperty?: boolean;
-		isRightToLeftContent?: boolean;
-	} = {}
+	options: NormalizeTableDefaultPropertiesOptions = {}
 ): NormalizedDefaultProperties {
 	const normalizedConfig: NormalizedDefaultProperties = {
 		borderStyle: 'none',
@@ -124,4 +129,36 @@ export function getNormalizedDefaultProperties(
 	}
 
 	return normalizedConfig;
+}
+
+/**
+ * Returns the normalized default table properties.
+ */
+export function getNormalizedDefaultTableProperties(
+	config: Partial<NormalizedDefaultProperties> | undefined,
+	options?: NormalizeTableDefaultPropertiesOptions
+): NormalizedDefaultProperties {
+	return getNormalizedDefaultProperties( {
+		borderStyle: 'double',
+		borderColor: 'hsl(0, 0%, 70%)',
+		borderWidth: '1px',
+		width: '100%',
+		height: '100%',
+		...config
+	}, options );
+}
+
+/**
+ * Returns the normalized default cell properties.
+ */
+export function getNormalizedDefaultCellProperties(
+	config: Partial<NormalizedDefaultProperties> | undefined,
+	options?: NormalizeTableDefaultPropertiesOptions
+): NormalizedDefaultProperties {
+	return getNormalizedDefaultProperties( {
+		borderStyle: 'solid',
+		borderColor: 'hsl(0, 0%, 75%)',
+		borderWidth: '1px',
+		...config
+	}, options );
 }

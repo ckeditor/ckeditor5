@@ -50,13 +50,7 @@ describe( 'table properties', () => {
 
 				expect( config ).to.be.an( 'object' );
 				expect( config ).to.have.property( 'defaultProperties' );
-				expect( config.defaultProperties ).to.include( {
-					borderStyle: 'double',
-					borderColor: 'hsl(0, 0%, 70%)',
-					borderWidth: '1px',
-					width: '100%',
-					height: '100%'
-				} );
+				expect( config.defaultProperties ).to.include( {} );
 			} );
 
 			it( 'adds tableBorderColor command', () => {

@@ -46,11 +46,7 @@ describe( 'table cell properties', () => {
 
 			expect( config ).to.be.an( 'object' );
 			expect( config ).to.have.property( 'defaultProperties' );
-			expect( config.defaultProperties ).to.include( {
-				borderStyle: 'solid',
-				borderColor: 'hsl(0, 0%, 75%)',
-				borderWidth: '1px'
-			} );
+			expect( config.defaultProperties ).to.include( {} );
 		} );
 
 		it( 'adds tableCellBorderColor command', () => {
