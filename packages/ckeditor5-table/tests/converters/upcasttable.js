@@ -101,6 +101,17 @@ describe( 'upcastTable()', () => {
 		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
 	} );
 
+	it( 'should consume ck-table-resized class during table conversion', () => {
+		const upcastSpy = sinon.spy( ( evt, data, conversionApi ) => {
+			expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-table-resized' } ) ).to.be.false;
+		} );
+
+		editor.data.upcastDispatcher.on( 'element:table', upcastSpy, { priority: 'low' } );
+		editor.setData( '<figure class="table"><table class="ck-table-resized">xyz</table></figure>' );
+
+		expect( upcastSpy ).to.be.called;
+	} );
+
 	it( 'should convert if figure do not have class="table" attribute', () => {
 		editor.setData(
 			'<figure>' +

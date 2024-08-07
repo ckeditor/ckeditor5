@@ -10,12 +10,14 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Link from '../../src/link.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Typing, Paragraph, Undo, Enter ],
-		toolbar: [ 'link', 'undo', 'redo' ]
+		plugins: [ Link, Typing, Paragraph, Undo, Enter, RemoveFormat, FontColor ],
+		toolbar: [ 'link', 'undo', 'redo', 'removeFormat', 'fontColor' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

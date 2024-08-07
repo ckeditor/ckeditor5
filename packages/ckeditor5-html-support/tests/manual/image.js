@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
@@ -18,9 +19,13 @@ ClassicEditor
 			ArticlePluginSet,
 			LinkImage,
 			SourceEditing,
-			GeneralHtmlSupport
+			GeneralHtmlSupport,
+			RemoveFormat
 		],
-		toolbar: [ 'sourceEditing', '|', 'link', '|', 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
+		toolbar: [
+			'sourceEditing', '|', 'removeFormat', '|', 'link', '|', 'heading', '|',
+			'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList'
+		],
 		image: {
 			toolbar: [
 				'linkImage', '|',

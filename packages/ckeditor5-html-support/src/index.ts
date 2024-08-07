@@ -13,6 +13,7 @@ export { default as DataSchema, type DataSchemaBlockElementDefinition } from './
 export { default as HtmlComment } from './htmlcomment.js';
 export { default as FullPage } from './fullpage.js';
 export { default as HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
+export type { GHSViewAttributes } from './utils.js';
 export type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 export type { default as CodeBlockElementSupport } from './integrations/codeblock.js';
 export type { default as CustomElementSupport } from './integrations/customelement.js';
