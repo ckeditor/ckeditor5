@@ -12,7 +12,7 @@
 import type { Writer } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
-import { Dialog } from 'ckeditor5/src/ui.js';
+import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 import * as LR from '@uploadcare/blocks';
 
@@ -97,17 +97,8 @@ export default class UploadcareCommand extends Command {
 			this._reinitFlow();
 		}
 
-		this._api = this._ctxElement!.getAPI();
-
-		// When the file editor is opened from the upload component, the file list is not cleared.
-		// Clearing it upon closing the modal generates errors in Uploadcare methods (some elements are not available).
-		// This function is called before opening the modal to ensure the list is cleaned.
-		//
-		// TODO: This issue should probably be fixed on the Uploadcare side.
-		this._api!.removeAllFiles();
-
 		// It should be called after initializing all elements.
-		this._api.initFlow();
+		this._api!.initFlow();
 	}
 
 	/**
@@ -134,15 +125,19 @@ export default class UploadcareCommand extends Command {
 
 	/**
 	 * Finishes the current flow and updates the components if they are already initialized.
-	 * It is used when the dialog is already open and the command is executed with another type.
 	 */
 	private _reinitFlow() {
 		this._api!.doneFlow();
 		this._configElement!.setAttribute( 'source-list', this._type );
+
+		if ( this._dialog.isOpen ) {
+			this._api!.removeAllFiles();
+		} else {
+			this._initDialog();
+		}
 	}
 
 	private _initConfig() {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const configOptions = this.editor.config.get( 'uploadcare' ) || {};
 
 		this._configElement = createElement( document, 'lr-config', {
@@ -163,6 +158,8 @@ export default class UploadcareCommand extends Command {
 		} ) as LR.UploaderBlock;
 
 		document.body.appendChild( this._ctxElement );
+
+		this._api = this._ctxElement!.getAPI();
 	}
 
 	private _initDialog() {
@@ -176,6 +173,7 @@ export default class UploadcareCommand extends Command {
 			icon: imageUploadIcon,
 			title: t( 'Uploadcare' ),
 			content: form,
+			position: DialogViewPosition.EDITOR_TOP_SIDE,
 			onHide: () => {
 				this._close();
 			}
@@ -186,13 +184,9 @@ export default class UploadcareCommand extends Command {
 	 * Clears the current state and removes the created elements.
 	 */
 	private _close() {
+		this._api!.removeAllFiles();
+
 		this._type = null;
-
-		this._configElement!.remove();
-		this._configElement = null;
-
-		this._ctxElement!.remove();
-		this._ctxElement = null;
 
 		this.editor.editing.view.focus();
 	}
@@ -237,13 +231,21 @@ export default class UploadcareCommand extends Command {
 		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
 			// Whenever the `clear` button is triggered we need to re-init the flow.
 			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length ) {
-				this._api!.setCurrentActivity( 'start-from' );
+				const activity = this._type === 'local' ? 'start-from' : this._type;
+
+				this._api!.setCurrentActivity( activity );
 			}
 		} );
 
 		// Clean up after the editor is destroyed.
 		this.listenTo( editor, 'destroy', () => {
 			this._close();
+
+			this._configElement!.remove();
+			this._configElement = null;
+
+			this._ctxElement!.remove();
+			this._ctxElement = null;
 		} );
 	}
 

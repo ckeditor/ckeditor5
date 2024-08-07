@@ -14,6 +14,10 @@
 		display: none;
 	}
 
+	.uc-viewport {
+		min-height: 300px;
+	}
+
 	/* stylelint-disable selector-type-no-unknown */
 	lr-activity-header > button {
 		display: none;

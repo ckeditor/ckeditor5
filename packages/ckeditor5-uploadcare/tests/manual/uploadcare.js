@@ -20,8 +20,6 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, ImageUpload, ImageInsert, Uploadcare ],
 		menuBar: { isVisible: true },
 		toolbar: [
-			'uploadcare',
-			'|',
 			'imageInsert',
 			'|',
 			'heading',

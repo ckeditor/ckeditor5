@@ -172,7 +172,7 @@ export default class UploadcareUI extends Plugin {
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const command = editor.commands.get( 'uploadcare' )!;
 
-		view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+		view.bind( 'isEnabled' ).to( command );
 
 		view.on( 'execute', () => {
 			command.execute( type );
