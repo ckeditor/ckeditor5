@@ -68,7 +68,7 @@ ClassicEditor
 
 The feature is by default configured to not show previews of the HTML snippets. You can enable the previews by setting the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `config.htmlEmbed.showPreviews`} option to `true`.
 
-However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug in some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. You can plug in the sanitizer by defining the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
+However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug in some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. You can plug in the sanitizer by defining the {@link module:core/editor/editorconfig~EditorConfig#sanitizeHtml `config.sanitizeHtml`} option.
 
 ```js
 ClassicEditor
@@ -76,53 +76,27 @@ ClassicEditor
 		plugins: [ HtmlEmbed, /* ... */ ],
 		toolbar: [ 'htmlEmbed', /* ... */ ],
 		htmlEmbed: {
-			showPreviews: true,
-			sanitizeHtml: ( inputHtml ) => {
-				// Strip unsafe elements and attributes, for example:
-				// the `<script>` elements and `on*` attributes.
-				const outputHtml = sanitize( inputHtml );
+			showPreviews: true
+		},
+		sanitizeHtml: ( inputHtml ) => {
+			// Strip unsafe elements and attributes, for example:
+			// the `<script>` elements and `on*` attributes.
+			const outputHtml = sanitize( inputHtml );
 
-				return {
-					html: outputHtml,
-					// true or false depending on whether the sanitizer stripped anything.
-					hasChanged: true
-				};
-			}
+			return {
+				html: outputHtml,
+				// true or false depending on whether the sanitizer stripped anything.
+				hasChanged: true
+			};
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
-Currently, the [feature does not execute `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript to generate a preview will not show in the editor. However, other JavaScript code, for example, used in `on*` observers and `src="javascript:..."` attributes will be executed. You still need to enable the sanitizer.
+### Content Security Policy
 
-Read more about the security aspect in the next section.
-
-### Security
-
-If you configure the HTML embed feature to [show content previews](#content-previews), the HTML that the user inserts into the HTML embed widget is then rendered back to the user. **If the HTML was rendered as-is, **the browser would execute any JavaScript code included in these HTML snippets in the context of your website**.
-
-This, in turn, is a plain security risk. The HTML provided by the user might be mistakenly copied from a malicious website. It could also end up in the user's clipboard (as it would usually be copied and pasted) by any other means.
-
-You can instruct some advanced users to never paste HTML code from untrusted sources. However, in most cases, it is highly recommended to secure the system by configuring the HTML embed feature to use an HTML sanitizer and, optionally, by setting strict Content Security Policy (CSP) rules.
-
-<info-box>
-	The tricky part is that some HTML snippets require executing JavaScript to render any meaningful previews (for example, Facebook embeds). Some, in turn, do not make sense to execute (like analytics code).
-
-	Therefore, when configuring the sanitizer and CSP rules, you can take these situations into consideration and for instance, allow `<script>` tags pointing only to certain domains (like a trusted external page that requires JavaScript).
-</info-box>
-
-#### Sanitizer
-
-The {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option allows plugging an external sanitizer.
-
-Some popular JavaScript libraries that you can use include [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) and [`DOMPurify`](https://www.npmjs.com/package/dompurify).
-
-The default settings of these libraries usually strip all potentially malicious content including `<iframe>`, `<video>`, or similar elements and JavaScript code coming from trusted sources. You may need to adjust their settings to match your needs.
-
-#### CSP
-
-In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts.
+To further strenghten the security, in addition to using a {@link module:core/editor/editorconfig~EditorConfig#sanitizeHtml HTML sanitizer}, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts. See the dedicated {@link getting-started/setup/csp Content Security Policy guide} for details.
 
 ## Related features
 

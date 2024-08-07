@@ -40,25 +40,15 @@ export default class HtmlEmbedEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		const sanitizeCallback = editor.config.get( 'htmlEmbed.sanitizeHtml' ) ||
-			function( rawHtml ) {
-				/**
-				 * When using the HTML embed feature with the `htmlEmbed.showPreviews=true` option, it is strongly recommended to
-				 * define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
-				 *
-				 * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
-				 *
-				 * @error html-embed-provide-sanitize-function
-				 */
-				logWarning( 'html-embed-provide-sanitize-function' );
+		const sanitizeCallback = editor.config.get( 'htmlEmbed.sanitizeHtml' );
 
-				return {
-					html: rawHtml,
-					hasChanged: false
-				};
-			};
+		// Overwrite the new sanitization function property if the deprecated one is explicitly provided.
+		if ( sanitizeCallback ) {
+			logWarning( 'The `htmlEmbed.sanitizeHtml` configuration option is deprecated. Use the `sanitizeHtml` option instead.' );
 
-		editor.config.define( 'sanitizeHtml', sanitizeCallback );
+			editor.config.set( 'sanitizeHtml', sanitizeCallback );
+		}
+
 		editor.config.define( 'htmlEmbed.showPreviews', false );
 	}
 
