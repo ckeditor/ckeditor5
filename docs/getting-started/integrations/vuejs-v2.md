@@ -396,14 +396,6 @@ Since accessing the editor toolbar is not possible until after the editor instan
 </script>
 ```
 
-### Using the editor with collaboration plugins
-
-We provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
-
-* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
-
-It is not mandatory to build applications on top of the above sample, however, it should help you get started.
-
 ### Localization
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue 2 component. Follow the instructions below to translate CKEditor&nbsp;5 in your Vue application.
