@@ -180,6 +180,36 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( observerMock.observe );
 			sinon.assert.calledOnce( observerMockGlobalCount.observe );
 		} );
+
+		it( 'should transfer all DOM attributes to the root element', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'baz', 'qux' );
+
+			view.attachDomRoot( domDiv );
+
+			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+		} );
+
+		it( 'should not transfer a DOM attribute to the root element if already exists before attaching', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'baz', 'qux' );
+
+			view.change( writer => {
+				writer.setAttribute( 'foo', 'pre-existing', viewRoot );
+			} );
+
+			view.attachDomRoot( domDiv );
+
+			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'pre-existing' );
+			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+		} );
 	} );
 
 	describe( 'detachDomRoot()', () => {
@@ -229,6 +259,28 @@ describe( 'view', () => {
 			} );
 
 			domDiv.remove();
+		} );
+
+		it( 'should restore the DOM root attributes that have been set on the view root before attaching', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'baz', 'qux' );
+
+			view.change( writer => {
+				writer.setAttribute( 'foo', 'pre-existing', viewRoot );
+			} );
+
+			view.attachDomRoot( domDiv );
+
+			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'pre-existing' );
+			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+
+			view.detachDomRoot( 'main' );
+
+			expect( domDiv.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( domDiv.getAttribute( 'baz' ) ).to.equal( 'qux' );
 		} );
 
 		it( 'should remove the "contenteditable" attribute from the DOM root', () => {

@@ -32,20 +32,19 @@ export default class BalloonEditorUIView extends EditorUIView {
 	 * @param editingView The editing view instance this view is related to.
 	 * @param editableElement The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
+	 * @param label When set, this value will be used as an accessible `aria-label` of the
+	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view}.
 	 */
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement
+		editableElement?: HTMLElement,
+		label?: string | Record<string, string>
 	) {
 		super( locale );
 
-		const t = locale.t;
-
 		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
-			label: editableView => {
-				return t( 'Rich Text Editor. Editing area: %0', editableView.name! );
-			}
+			label
 		} );
 
 		this.menuBarView = new MenuBarView( locale );

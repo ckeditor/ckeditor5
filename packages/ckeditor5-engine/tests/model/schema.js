@@ -695,6 +695,28 @@ describe( 'Schema', () => {
 
 			schema.checkChild( root1, r1p1 );
 		} );
+
+		it( 'fires custom callback for each item in the context - generic callback', () => {
+			schema.register( 'div' );
+
+			const stub = sinon.stub().returns( true );
+
+			schema.addChildCheck( stub );
+
+			schema.checkChild( [ '$root', 'div', 'paragraph' ], '$text' );
+
+			expect( stub.callCount ).to.equal( 3 ); // $text, paragraph, div. Not called for top-level parent ($root in this case).
+		} );
+
+		it( 'returns false if any of context items is not defined', () => {
+			// Force all elements to be allowed.
+			schema.addChildCheck( () => true );
+
+			// ... but div is not registered.
+			const result = schema.checkChild( [ '$root', 'div', 'paragraph' ], '$text' );
+
+			expect( result ).to.be.false;
+		} );
 	} );
 
 	describe( 'checkAttribute()', () => {
@@ -768,59 +790,69 @@ describe( 'Schema', () => {
 	describe( 'addChildCheck()', () => {
 		beforeEach( () => {
 			schema.register( '$root' );
-			schema.register( 'paragraph', {
-				allowIn: '$root'
-			} );
+			schema.register( 'paragraph', { allowIn: '$root' } );
+			schema.register( 'blockQuote', { allowIn: '$root' } );
+			schema.register( 'foo' );
 		} );
 
-		it( 'adds a high-priority listener', () => {
+		it( 'supports generic and specific checks', () => {
+			const spyGeneric = sinon.spy();
+			const spySpecificP = sinon.spy();
+			const spySpecificBar = sinon.spy();
+
+			schema.addChildCheck( spyGeneric );
+			schema.addChildCheck( spySpecificP, 'paragraph' );
+			schema.addChildCheck( spySpecificBar, 'bar' );
+
+			schema.checkChild( [ '$root' ], 'paragraph' );
+
+			expect( spyGeneric.calledOnce ).to.be.true;
+			expect( spySpecificP.calledOnce ).to.be.true;
+			expect( spySpecificBar.called ).to.be.false;
+		} );
+
+		it( 'proper checks order', () => {
 			const order = [];
 
-			schema.on( 'checkChild', () => {
-				order.push( 'checkChild:high-before' );
-			}, { priority: 'high' } );
+			schema.addChildCheck( () => {
+				order.push( 'addChildCheckSpecific' );
+			}, 'paragraph' );
 
 			schema.addChildCheck( () => {
-				order.push( 'addChildCheck' );
+				order.push( 'addChildCheckGeneric' );
 			} );
 
 			schema.on( 'checkChild', () => {
-				order.push( 'checkChild:high-after' );
+				order.push( 'checkChild:high' );
 			}, { priority: 'high' } );
 
 			schema.checkChild( root1, r1p1 );
 
-			expect( order.join() ).to.equal( 'checkChild:high-before,addChildCheck,checkChild:high-after' );
+			expect( order.join() ).to.equal( 'checkChild:high,addChildCheckGeneric,addChildCheckSpecific' );
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned true', () => {
-			schema.register( '$text' );
+		it( 'overrides the declarative check - force allow', () => {
+			expect( schema.checkChild( [ '$root' ], 'foo' ) ).to.be.false;
 
-			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
+			schema.addChildCheck( () => true, 'foo' );
 
-			schema.addChildCheck( () => {
-				return true;
-			} );
-
-			schema.on( 'checkChild', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
-
-			expect( schema.checkChild( root1, '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], 'foo' ) ).to.be.true;
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned false', () => {
-			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+		it( 'overrides the declarative check - force disallow', () => {
+			expect( schema.checkChild( [ '$root' ], 'paragraph' ) ).to.be.true;
 
-			schema.addChildCheck( () => {
-				return false;
-			} );
+			schema.addChildCheck( () => false, 'paragraph' );
 
-			schema.on( 'checkChild', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
+			expect( schema.checkChild( [ '$root' ], 'paragraph' ) ).to.be.false;
+		} );
 
-			expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
+		it( 'uses declarative check when undefined is returned', () => {
+			expect( schema.checkChild( [ '$root' ], 'paragraph' ) ).to.be.true;
+
+			schema.addChildCheck( () => {}, 'paragraph' );
+
+			expect( schema.checkChild( [ '$root' ], 'paragraph' ) ).to.be.true;
 		} );
 
 		it( 'receives context and child definition as params', () => {
@@ -833,67 +865,74 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'is not called when checking a non-registered element', () => {
-			expect( schema.getDefinition( 'foo' ) ).to.be.undefined;
+			expect( schema.getDefinition( 'bar' ) ).to.be.undefined;
 
 			schema.addChildCheck( () => {
 				throw new Error( 'callback should not be called' );
 			} );
 
-			expect( schema.checkChild( root1, 'foo' ) ).to.be.false;
+			expect( schema.checkChild( root1, 'bar' ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'addAttributeCheck()', () => {
 		beforeEach( () => {
-			schema.register( 'paragraph', {
-				allowAttributes: 'foo'
-			} );
+			schema.register( '$root' );
+			schema.register( 'paragraph', { allowIn: '$root', allowAttributes: [ 'foo' ] } );
 		} );
 
-		it( 'adds a high-priority listener', () => {
+		it( 'supports generic and specific checks', () => {
+			const spyGeneric = sinon.spy();
+			const spySpecificX = sinon.spy();
+			const spySpecificBar = sinon.spy();
+
+			schema.addAttributeCheck( spyGeneric );
+			schema.addAttributeCheck( spySpecificX, 'x' );
+			schema.addAttributeCheck( spySpecificBar, 'bar' );
+
+			schema.checkAttribute( [ '$root', 'paragraph' ], 'x' );
+
+			expect( spyGeneric.calledOnce ).to.be.true;
+			expect( spySpecificX.calledOnce ).to.be.true;
+			expect( spySpecificBar.called ).to.be.false;
+		} );
+
+		it( 'proper checks order', () => {
 			const order = [];
 
-			schema.on( 'checkAttribute', () => {
-				order.push( 'checkAttribute:high-before' );
-			}, { priority: 'high' } );
+			schema.addAttributeCheck( () => {
+				order.push( 'addAttributeCheckSpecific' );
+			}, 'foo' );
 
 			schema.addAttributeCheck( () => {
-				order.push( 'addAttributeCheck' );
+				order.push( 'addAttributeCheckGeneric' );
 			} );
 
 			schema.on( 'checkAttribute', () => {
-				order.push( 'checkAttribute:high-after' );
+				order.push( 'checkAttribute:high' );
 			}, { priority: 'high' } );
 
 			schema.checkAttribute( r1p1, 'foo' );
 
-			expect( order.join() ).to.equal( 'checkAttribute:high-before,addAttributeCheck,checkAttribute:high-after' );
+			expect( order.join() ).to.equal( 'checkAttribute:high,addAttributeCheckGeneric,addAttributeCheckSpecific' );
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned true', () => {
+		it( 'overrides the return value when callback returned true', () => {
 			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.false;
 
 			schema.addAttributeCheck( () => {
 				return true;
 			} );
 
-			schema.on( 'checkAttribute', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
-
 			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.true;
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned false', () => {
+		it( 'overrides the return value when callback returned false', () => {
 			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
 
 			schema.addAttributeCheck( () => {
 				return false;
 			} );
-
-			schema.on( 'checkAttribute', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
 
 			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.false;
 		} );
@@ -4134,6 +4173,19 @@ describe( 'SchemaContext', () => {
 			expect( newCtx ).to.instanceof( SchemaContext );
 			expect( newCtx ).to.not.equal( ctx );
 			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+	} );
+
+	describe( 'trimLast()', () => {
+		it( 'creates new SchemaContext instance without the last item - #string', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.trimLast();
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 	} );

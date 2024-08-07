@@ -79,11 +79,11 @@ msgstr "Con gestione file"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
-msgstr "Attiva didascalia"
+msgstr "Disattiva didascalia"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
 msgid "Toggle caption on"
-msgstr "Disattiva didascalia"
+msgstr "Attiva didascalia"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"

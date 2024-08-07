@@ -94,7 +94,7 @@ export { default as Notification } from './notification/notification.js';
 
 export { default as ViewModel } from './model.js';
 export { default as BalloonPanelView } from './panel/balloon/balloonpanelview.js';
-export { default as ContextualBalloon } from './panel/balloon/contextualballoon.js';
+export { default as ContextualBalloon, type ContextualBalloonGetPositionOptionsEvent } from './panel/balloon/contextualballoon.js';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview.js';
 
 export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview.js';

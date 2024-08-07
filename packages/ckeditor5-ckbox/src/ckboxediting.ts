@@ -9,7 +9,6 @@
  * @module ckbox/ckboxediting
  */
 
-import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	Range,
@@ -32,6 +31,9 @@ import CKBoxUploadAdapter from './ckboxuploadadapter.js';
 import CKBoxUtils from './ckboxutils.js';
 
 import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
+import { sendHttpRequest } from './utils.js';
+
+const COMMAND_FORCE_DISABLE_ID = 'NoPermission';
 
 /**
  * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and
@@ -68,6 +70,13 @@ export default class CKBoxEditing extends Plugin {
 		if ( isLibraryLoaded() ) {
 			editor.commands.add( 'ckbox', new CKBoxCommand( editor ) );
 		}
+
+		// Promise is not handled intentionally. Errors should be displayed in console if there are so.
+		isUploadPermissionGranted( editor ).then( isCreateAssetAllowed => {
+			if ( !isCreateAssetAllowed ) {
+				this._blockImageCommands();
+			}
+		} );
 	}
 
 	/**
@@ -98,6 +107,24 @@ export default class CKBoxEditing extends Plugin {
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
 
 		return hasConfiguration || isLibraryLoaded();
+	}
+
+	/**
+	 * Blocks `uploadImage` and `ckboxImageEdit` commands.
+	 */
+	private _blockImageCommands(): void {
+		const editor = this.editor;
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const imageEditingCommand = editor.commands.get( 'ckboxImageEdit' );
+
+		if ( uploadImageCommand ) {
+			uploadImageCommand.isAccessAllowed = false;
+			uploadImageCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
+
+		if ( imageEditingCommand ) {
+			imageEditingCommand.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
 	}
 
 	/**
@@ -140,13 +167,12 @@ export default class CKBoxEditing extends Plugin {
 			schema.extend( 'imageInline', { allowAttributes: [ 'ckboxImageId', 'ckboxLinkId' ] } );
 		}
 
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			const isLink = !!context.last.getAttribute( 'linkHref' );
-
-			if ( !isLink && attributeName === 'ckboxLinkId' ) {
+		schema.addAttributeCheck( context => {
+			// Don't allow `ckboxLinkId` on elements which do not have `linkHref` attribute.
+			if ( !context.last.getAttribute( 'linkHref' ) ) {
 				return false;
 			}
-		} );
+		}, 'ckboxLinkId' );
 	}
 
 	/**
@@ -441,3 +467,26 @@ function shouldUpcastAttributeForNode( node: Node ) {
 function isLibraryLoaded(): boolean {
 	return !!window.CKBox;
 }
+
+/**
+ * Checks is access allowed to upload assets.
+ */
+async function isUploadPermissionGranted( editor: Editor ): Promise<boolean> {
+	const ckboxUtils = editor.plugins.get( CKBoxUtils );
+	const origin = editor.config.get( 'ckbox.serviceOrigin' );
+
+	const url = new URL( 'permissions', origin );
+	const { value } = await ckboxUtils.getToken();
+
+	const response = ( await sendHttpRequest( {
+		url,
+		authorization: value,
+		signal: ( new AbortController() ).signal // Aborting is unnecessary.
+	} ) ) as Record<string, CategoryPermission>;
+
+	return Object.values( response ).some( category => category[ 'asset:create' ] );
+}
+
+type CategoryPermission = {
+	[ key: string ]: boolean;
+};

@@ -21,6 +21,10 @@ msgctxt "Name of the special characters plugins, visible in a dropdown and as a 
 msgid "Special characters"
 msgstr "특수 문자"
 
+msgctxt "A label for a special character dropdown with symbol categories."
+msgid "Category"
+msgstr "카테고리"
+
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
 msgstr "전체"
@@ -1072,7 +1076,3 @@ msgstr "단락 기호"
 msgctxt "A label for the \"reversed paragraph sign\" symbol."
 msgid "Reversed paragraph sign"
 msgstr "반전된 단락 기호"
-
-msgctxt "A label for a tooltip showing when the user hovers over the plugin icon."
-msgid "Character categories"
-msgstr "문자 카테고리"
