@@ -13,7 +13,8 @@ import {
 	ObservableMixin,
 	type Locale,
 	type LocaleTranslate,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	logWarning
 } from '@ckeditor/ckeditor5-utils';
 
 import {
@@ -300,6 +301,23 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.config = new Config<EditorConfig>( rest, defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
+		this.config.define( 'sanitizeHtml', function( rawHtml ) {
+			/**
+			 * When using the HTML embed feature with the `htmlEmbed.showPreviews=true` option or the merge fields feature with
+			 * the `mergeFields.previewHtmlValues=true` option, it is strongly recommended to
+			 * define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
+			 *
+			 * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
+			 *
+			 * @error provide-sanitize-function
+			 */
+			logWarning( 'provide-sanitize-function' );
+
+			return {
+				html: rawHtml,
+				hasChanged: false
+			};
+		} );
 
 		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 
