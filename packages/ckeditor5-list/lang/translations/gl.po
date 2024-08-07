@@ -119,7 +119,7 @@ msgstr "Comezar en"
 
 msgctxt "The error message displayed when the numbered list start index input value is not a valid number."
 msgid "Invalid start index value."
-msgstr ""
+msgstr "O valor do índice de inicio non é válido."
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
@@ -131,20 +131,20 @@ msgstr "Orde inversa"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
 msgid "Keystrokes that can be used in a list"
-msgstr ""
+msgstr "Teclas de atallo que se poden usar nunha lista"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
 msgid "Increase list item indent"
-msgstr ""
+msgstr "Aumentar a sangría do elemento da lista"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
-msgstr ""
+msgstr "Diminuir a sangría do elemento da lista"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Introducir unha lista de tarefas pendentes"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Abandonando unha lista de tarefas pendentes"

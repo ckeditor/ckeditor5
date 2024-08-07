@@ -73,38 +73,41 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 
 	describe( 'config', () => {
-		let htmlEmbed;
+		let htmlEmbedConfig;
 
 		beforeEach( () => {
-			htmlEmbed = editor.config.get( 'htmlEmbed' );
+			htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
 		} );
 
 		describe( 'htmlEmbed.showPreviews', () => {
 			it( 'should be set to `false` by default', () => {
-				expect( htmlEmbed.showPreviews ).to.equal( false );
+				expect( htmlEmbedConfig.showPreviews ).to.equal( false );
 			} );
 		} );
 
-		describe( 'htmlEmbed.sanitizeHtml', () => {
+		describe( 'config.sanitizeHtml', () => {
+			let sanitizeHtml;
+
 			beforeEach( () => {
 				sinon.stub( console, 'warn' );
+				sanitizeHtml = editor.config.get( 'sanitizeHtml' );
 			} );
 
-			it( 'should return an object with cleaned html and a note whether something has changed', () => {
-				expect( htmlEmbed.sanitizeHtml( 'foo' ) ).to.deep.equal( {
+			it( 'should return an input string (without any modifications)', () => {
+				expect( sanitizeHtml( 'foo' ) ).to.deep.equal( {
 					html: 'foo',
 					hasChanged: false
 				} );
 			} );
 
-			it( 'should return an input string (without any modifications)', () => {
+			it( 'should return an object with cleaned html and a note whether something has changed', () => {
 				const unsafeHtml = '<img src="data:/xxx,<script>void</script>" onload="void;">';
 
-				expect( htmlEmbed.sanitizeHtml( unsafeHtml ).html ).to.deep.equal( unsafeHtml );
+				expect( sanitizeHtml( unsafeHtml ).html ).to.deep.equal( unsafeHtml );
 			} );
 
 			it( 'should display a warning when using the default sanitizer', () => {
-				htmlEmbed.sanitizeHtml( 'foo' );
+				sanitizeHtml( 'foo' );
 
 				expect( console.warn.callCount ).to.equal( 1 );
 				expect( console.warn.firstCall.args[ 0 ] ).to.equal( 'html-embed-provide-sanitize-function' );

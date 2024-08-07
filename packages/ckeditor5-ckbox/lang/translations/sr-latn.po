@@ -29,18 +29,22 @@ msgctxt "A message is displayed when the user is not authorised to access the CK
 msgid "Cannot access default workspace."
 msgstr "Nije moguće pristupiti podrazumevanom radnom prostoru."
 
+msgctxt "The title of the notification displayed when there is no permission to edit assets."
+msgid "You have no image editing permissions."
+msgstr ""
+
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Uredi sliku"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "Obrada uređene slike."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "Server nije uspeo da obradi sliku."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Određivanje kategorije uređene slike nije uspelo."
