@@ -75,7 +75,7 @@ function CustomEditor() {
 					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: { 
+				mention: {
 					// Mention configuration
 				},
 				initialData: '<p>Hello from CKEditor 5 in React!</p>'
@@ -114,7 +114,7 @@ You can run your project now. If you chose `create-next-app`, type `npm run dev`
 If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
 </info-box>
 
-Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
+Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
 
 ## How to?
 
