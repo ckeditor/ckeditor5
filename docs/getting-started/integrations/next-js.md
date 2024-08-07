@@ -75,7 +75,7 @@ function CustomEditor() {
 					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: {
+				mention: { 
 					// Mention configuration
 				},
 				initialData: '<p>Hello from CKEditor 5 in React!</p>'
