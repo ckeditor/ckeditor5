@@ -78,10 +78,10 @@ If you have any documents in the DOCX format, you can convert them into HTML wit
 The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can save into a database. The default output can be also switched to {@link features/markdown GitHub-flavored Markdown} formatted text.
 
 {@img assets/img/features-output.png 800 CKEditor&nbsp;5 output features.}
-
+<!--
 ### Productivity pack
 
-The {@link features/productivity-pack productivity pack} is a set of exclusive premium features available to holders of a CKEditor&nbsp;5 commercial license.
+The productivity pack is a set of exclusive premium features available to holders of a CKEditor&nbsp;5 commercial license.
 
 The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon ckeditor5-collaboration/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}.
 
@@ -89,7 +89,7 @@ The productivity pack provides tools that make the creation of content faster an
 
 {@link features/format-painter Format painter} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets the users style their content in a blaze while the {@link features/case-change case change feature} {@icon ckeditor5-collaboration/theme/icons/case-change.svg Case change} lets them apply the title case to selected sentences or turn whole paragraphs into uppercase.
 
-Productivity pack also includes the {@link features/paste-from-office-enhanced enhanced paste from Office} plugin with far greater formatting support.
+Productivity pack also includes the {@link features/paste-from-office-enhanced enhanced paste from Office} plugin with far greater formatting support. -->
 
 ### Other productivity features
 

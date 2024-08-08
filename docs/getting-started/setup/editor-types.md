@@ -14,7 +14,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). It lets you quickly view and experiment with different presets.
 </info-box>
 
-There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approaches to editing as well as various UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/quick-start Quick start} guide.
+There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approaches to editing as well as various UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide.
 
 Other custom-tailored editor types can be made using the {@link framework/external-ui CKEditor&nbsp;5 Framework}.
 

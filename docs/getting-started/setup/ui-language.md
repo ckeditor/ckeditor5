@@ -81,7 +81,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
+See the {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
 ### CDN
 
@@ -128,7 +128,7 @@ ClassicEditor
 </script>
 ```
 
-See the {@link getting-started/quick-start#installing-ckeditor-5-from-cdn CDN installation guide} for more information.
+See the {@link getting-started/integrations-cdn/quick-start#installing-ckeditor-5-from-cdn CDN installation guide} for more information.
 
 ## Setting the language of the content
 

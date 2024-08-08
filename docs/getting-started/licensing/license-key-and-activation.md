@@ -1,6 +1,6 @@
 ---
-category: setup
-order: 80
+category: licensing
+order: 20
 meta-title: License key and activation | CKEditor 5 Documentation
 menu-title: License key and activation
 ---
@@ -13,23 +13,23 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 	* {@link features/track-changes Track changes}
 	* {@link features/comments Comments}
 	* {@link features/revision-history Revision history}
-* {@link features/pagination Pagination}
 * {@link features/ai-assistant-overview AI Assistant}
+* {@link features/case-change Case change}
+* {@link features/document-outline Document outline}
+* {@link features/format-painter Format painter}
 * {@link features/multi-level-lists Multi-level list}
-* The Productivity Pack that includes:
-	* {@link features/case-change Case change}
-	* {@link features/document-outline Document outline}
-	* {@link features/format-painter Format painter}
-	* {@link features/merge-fields Merge fields}
-	* {@link features/paste-from-office-enhanced Paste from Office enhanced}
-	* {@link features/slash-commands Slash commands}
-	* {@link features/table-of-contents Table of contents}
-	* {@link features/template Templates}
+* {@link features/pagination Pagination}
+* {@link features/paste-from-office-enhanced Paste from Office enhanced}
+* {@link features/slash-commands Slash commands}
+* {@link features/table-of-contents Table of contents}
+* {@link features/template Templates}
 
 Other premium features such as {@link features/real-time-collaboration real-time collaboration}, {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, or {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
 <info-box>
-	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link support/license-and-legal open source software under the GPL license}. It will then {@link getting-started/setup/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
+	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link getting-started/licensing/license-and-legal open source software under the GPL license}. It will then {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
+
+	For commercial purposes, there are {@link getting-started/licensing/license-and-legal trial, development and production license keys} are available.
 </info-box>
 
 ## Obtaining a license
@@ -42,7 +42,7 @@ If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one
 
 ### Subscribing to the CKEditor Premium Features free trial
 
-If you wish to test our offer, you can create an account by [signing up for CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard).
+If you wish to test our offer, you can create an account by [signing up for CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard).
 
 The trial is commitment-free, and there is no need to provide credit card details to start it. The Premium Features free trial allows you to test all paid CKEditor Ecosystem products at no cost.
 
@@ -64,7 +64,7 @@ After logging in, click "CKEditor" under the "Your products" header on the left.
 
 ### Copy the license key
 
-After clicking "Manage," you can access the license key needed to run the editor and the premium features. Note that the same license key will be valid for both the Productivity Pack and other standalone features, as well as CKEditor&nbsp;5 itself.
+After clicking "Manage," you can access the license key needed to run the editor and the premium features. Note that the same license key will be valid for both the standalone features, as well as CKEditor&nbsp;5 itself.
 
 {@img assets/img/ckeditor-key.png 822 Premium features license key in the management console.}
 

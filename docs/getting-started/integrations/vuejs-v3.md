@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 3+
 meta-title: Vue.js 3+ rich text editor component | CKEditor 5 documentation
-category: installation
+category: self-hosted
 order: 50
 ---
 

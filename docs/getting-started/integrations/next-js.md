@@ -2,7 +2,7 @@
 menu-title: Next.js
 meta-title: Integration with Next.js | CKEditor 5 documentation
 meta-description: Learn how to integrate the rich text editor - CKEditor 5 - with the Next.js framework using the App Router or Pages Router routing strategies.
-category: installation
+category: self-hosted
 order: 40
 modified_at: 2023-11-14
 ---
@@ -23,7 +23,7 @@ The easiest way to use CKEditor&nbsp;5 in your Next.js application is configurin
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
 
-You get ready-to-use code tailored to your needs! You can take the output from the builder, specifically the npm React snippet, and follow the npm path below. Just replace the content of the `components/custom-editor.js` file. The snippet may contain client-side hooks, so don't forget about adding the `'use client'` directive in the case of the App Router.
+You get ready-to-use code tailored to your needs! You can take the output from the builder, specifically the npm React snippet, and follow the npm path below. Just replace the content of the `components/custom-editor.js` file. The snippet may contain client-side hooks, so do not forget about adding the `'use client'` directive in the case of the App Router.
 
 ## Setting up the project
 

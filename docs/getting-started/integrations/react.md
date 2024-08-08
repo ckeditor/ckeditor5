@@ -1,7 +1,7 @@
 ---
 menu-title: Default integration
 meta-title: React rich text editor component | CKEditor 5 documentation
-category: react
+category: react-npm
 order: 10
 ---
 

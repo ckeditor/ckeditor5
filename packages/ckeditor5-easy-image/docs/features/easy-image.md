@@ -13,7 +13,7 @@ The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) is an
 <info-box info>
 	This is a premium feature and you need a license for it on top of your CKEditor&nbsp;5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 
-	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+	You can also sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 </info-box>
 
 ## Demo
