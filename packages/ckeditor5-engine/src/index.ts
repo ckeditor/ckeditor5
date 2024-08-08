@@ -170,6 +170,7 @@ export {
 	type ViewDocumentBlurEvent,
 	type ViewDocumentFocusEvent
 } from './view/observer/focusobserver.js';
+export { default as CompositionObserver } from './view/observer/compositionobserver.js';
 
 export { default as DowncastWriter } from './view/downcastwriter.js';
 export { default as UpcastWriter } from './view/upcastwriter.js';

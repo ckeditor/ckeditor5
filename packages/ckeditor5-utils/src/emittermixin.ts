@@ -676,6 +676,7 @@ export interface CallbackOptions {
  */
 export function _getEmitterListenedTo( listeningEmitter: Emitter, listenedToEmitterId: string ): Emitter | null {
 	const listeningTo = ( listeningEmitter as EmitterInternal )[ _listeningTo ];
+
 	if ( listeningTo && listeningTo[ listenedToEmitterId ] ) {
 		return listeningTo[ listenedToEmitterId ].emitter;
 	}
