@@ -655,6 +655,8 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
+There is a known issue related to the localization in Angular 17. Read more in the [known issues subsection](#known-issues).
+
 CKEditor 5 supports multiple UI languages, and so does the official Angular component. Follow the instructions below to translate CKEditor 5 in your Angular application.
 
 Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
@@ -689,6 +691,8 @@ export class AppComponent {
 ```
 
 For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+## Known issues
 
 ## Contributing and reporting issues
 
