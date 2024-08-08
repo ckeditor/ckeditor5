@@ -1,11 +1,12 @@
 ---
 category: licensing
 order: 50
-meta-title: Managing the "Powered by CKEditor" logo | CKEditor 5 Documentation
+menu-title: Whitelabelling the editor
+meta-title: WHitelabelling CKEditor 5 | CKEditor 5 Documentation
 meta-description: Managing the "Powered by CKEditor" logo
 ---
 
-# Managing the "Powered by CKEditor" logo
+# Whitelabelling CKEditor&nbsp;5
 
 ## Why the "Powered by CKEditor" logo?
 
