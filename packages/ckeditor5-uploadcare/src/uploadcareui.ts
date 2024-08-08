@@ -8,7 +8,7 @@
  * @publicApi
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import dropboxIcon from '../theme/icons/dropbox.svg';
 import facebookIcon from '../theme/icons/facebook.svg';
@@ -16,10 +16,10 @@ import googleDriveIcon from '../theme/icons/google-drive.svg';
 import googlePhotosIcon from '../theme/icons/google-photos.svg';
 import instagramIcon from '../theme/icons/instagram.svg';
 import linkIcon from '../theme/icons/link.svg';
-import localIcon from '../theme/icons/local.svg';
 import oneDriveIcon from '../theme/icons/onedrive.svg';
 
 import { UploadcareSource } from './uploadcareconfig.js';
+import { getTranslation } from './utils/common-translations.js';
 
 type SourceDefinition = {
 	icon: any;
@@ -82,65 +82,60 @@ export default class UploadcareUI extends Plugin {
 	 * Returns a definitions of the upload source containing icons and translations.
 	 */
 	private _normalizeConfigSourceList( sourceList: Array<UploadcareSource> ): Array<SourceDefinition> {
-		const { t } = this.editor;
+		const { locale } = this.editor;
 
-		return sourceList.map( el => {
-			switch ( el ) {
+		return sourceList.map( source => {
+			const translations = getTranslation( locale, source );
+
+			switch ( source ) {
 				case UploadcareSource.Local:
 					return {
-						icon: localIcon,
+						icon: icons.imageUpload,
 						type: UploadcareSource.Local,
-						text: t( 'Upload from computer' ),
-						shortText: t( 'From computer' )
+						...translations
 					};
 				case UploadcareSource.URL:
 					return {
 						icon: linkIcon,
 						type: UploadcareSource.URL,
-						text: t( 'Insert via URL' ),
-						shortText: t( 'Via URL' )
+						...translations
 					};
 				case UploadcareSource.Dropbox:
 					return {
 						icon: dropboxIcon,
 						type: UploadcareSource.Dropbox,
-						text: t( 'Insert with Dropbox' ),
-						shortText: t( 'With Dropbox' )
+						...translations
 					};
 				case UploadcareSource.Facebook:
 					return {
 						icon: facebookIcon,
 						type: UploadcareSource.Facebook,
-						text: t( 'Insert with Facebook' ),
-						shortText: t( 'With Facebook' )
+						...translations
 					};
 				case UploadcareSource.GDrive:
 					return {
 						icon: googleDriveIcon,
 						type: UploadcareSource.GDrive,
-						text: t( 'Insert with Google Drive' ),
-						shortText: t( 'With Google Drive' )
+						...translations
+
 					};
 				case UploadcareSource.GPhotos:
 					return {
 						icon: googlePhotosIcon,
 						type: UploadcareSource.GPhotos,
-						text: t( 'Insert with Google Photos' ),
-						shortText: t( 'With Google Photos' )
+						...translations
 					};
 				case UploadcareSource.Instagram:
 					return {
 						icon: instagramIcon,
 						type: UploadcareSource.Instagram,
-						text: t( 'Insert with Instagram' ),
-						shortText: t( 'With Instagram' )
+						...translations
 					};
 				case UploadcareSource.OneDrive:
 					return {
 						icon: oneDriveIcon,
 						type: UploadcareSource.OneDrive,
-						text: t( 'Insert with OneDrive' ),
-						shortText: t( 'With OneDrive' )
+						...translations
 					};
 			}
 		} );
@@ -217,7 +212,7 @@ export default class UploadcareUI extends Plugin {
 		return btnSources.map( source => {
 			const button = this._createButton( MenuBarMenuListItemButtonView, source.type );
 
-			button.withText = true;
+			// button.withText = true;
 			button.icon = source.icon;
 			button.label = source.shortText;
 

@@ -5,6 +5,7 @@
 
 :root {
 	--ck-uploadcare-form-view-width: 600px;
+	--ck-uploadcare-external-source-view-height: 350px;
 }
 
 .ck .ck-uploadcare-form {
@@ -14,12 +15,29 @@
 		display: none;
 	}
 
+	.uc-content {
+		padding: var(--ck-spacing-large);
+		gap: 0;
+
+		& > .uc-iframe-wrapper {
+			height: var(--ck-uploadcare-external-source-view-height);
+		}
+	}
+
+	.uc-files {
+		padding-top: var(--ck-spacing-large);
+	}
+
 	.uc-viewport {
-		min-height: 300px;
+		height: var(--ck-uploadcare-external-source-view-height);
 	}
 
 	/* stylelint-disable selector-type-no-unknown */
-	lr-activity-header > button {
+	lr-file-uploader-inline > lr-progress-bar {
+		display: none;
+	}
+
+	lr-activity-header {
 		display: none;
 	}
 

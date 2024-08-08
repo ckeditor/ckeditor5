@@ -237,6 +237,8 @@ export default class ImageInsertUI extends Plugin {
 
 			listItemView.children.add( integrationView );
 			listView.items.add( listItemView );
+
+			integrationView.delegate( 'execute' ).to( resultView );
 		}
 
 		return resultView;

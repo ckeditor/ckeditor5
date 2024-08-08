@@ -7,6 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
 
@@ -17,7 +20,15 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, ImageInsert, Uploadcare ],
+		plugins: [
+			ArticlePluginSet,
+			Indent,
+			IndentBlock,
+			ImageUpload,
+			ImageInsert,
+			ImageResize,
+			Uploadcare
+		],
 		menuBar: { isVisible: true },
 		toolbar: [
 			'imageInsert',
@@ -36,7 +47,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

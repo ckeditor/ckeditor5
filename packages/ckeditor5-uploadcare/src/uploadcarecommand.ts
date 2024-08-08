@@ -10,15 +10,15 @@
  */
 
 import type { Writer } from 'ckeditor5/src/engine.js';
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command, icons, type Editor } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 import * as LR from '@uploadcare/blocks';
 
 import UploadcareFormView from './ui/uploadcareformview.js';
-import imageUploadIcon from '../theme/icons/image-upload.svg';
-import type { UploadcareAssetImageDefinition } from './uploadcareconfig.js';
+import type { UploadcareAssetImageDefinition, UploadcareSource } from './uploadcareconfig.js';
+import { getTranslation } from './utils/common-translations.js';
 
 /**
  * The Uploadcare command. It is used by the {@link module:uploadcare/uploadcareediting~UploadcareEditing Uploadcare editing feature}
@@ -39,7 +39,7 @@ export default class UploadcareCommand extends Command {
 	/**
 	 * The choosen source type.
 	 */
-	private _type: null | string;
+	private _type: null | UploadcareSource;
 
 	/**
 	 * The DOM element that represents the Uploadcare config web component.
@@ -84,7 +84,7 @@ export default class UploadcareCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	public override execute( type: string ): void {
+	public override execute( type: UploadcareSource ): void {
 		if ( !this.isEnabled ) {
 			return;
 		}
@@ -163,17 +163,16 @@ export default class UploadcareCommand extends Command {
 	}
 
 	private _initDialog() {
-		const { editor: { locale } } = this;
-		const { t } = locale;
+		const { locale } = this.editor;
 
 		const form = new UploadcareFormView( locale );
 
 		this._dialog.show( {
 			id: 'uploadCare',
-			icon: imageUploadIcon,
-			title: t( 'Uploadcare' ),
+			icon: icons.imageUpload,
+			title: getTranslation( locale, this._type! ).text,
 			content: form,
-			position: DialogViewPosition.EDITOR_TOP_SIDE,
+			position: DialogViewPosition.EDITOR_TOP_CENTER,
 			onHide: () => {
 				this._close();
 			}
