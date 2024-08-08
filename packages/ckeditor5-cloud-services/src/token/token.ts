@@ -13,7 +13,8 @@ import { ObservableMixin, CKEditorError } from 'ckeditor5/src/utils.js';
 import type { TokenUrl } from '../cloudservicesconfig.js';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };
-const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;
+const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000; // 1 hour
+const TOKEN_FAILED_REFRESH_TIMEOUT_TIME = 5000; // 5 seconds
 
 /**
  * Class representing the token used for communication with CKEditor Cloud Services.
@@ -39,6 +40,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	private _options: { initValue?: string; autoRefresh: boolean };
 
 	private _tokenRefreshTimeout?: ReturnType<typeof setTimeout>;
+	private _tokenFailedRefreshTimeout?: ReturnType<typeof setTimeout>;
 
 	/**
 	 * Creates `Token` instance.
@@ -112,6 +114,21 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 				}
 
 				return this as InitializedToken;
+			} )
+			.catch( err => {
+				/**
+				 * TODO
+				 *
+				 * @error token-refresh-failed
+				 */
+				console.warn( 'token-refresh-failed: TODO' );
+
+				// If the refresh failed, keep trying to refresh the token. Failing to do so will eventually
+				// lead to the disconnection from the RTC service and the editing session (and potential data loss
+				// if the user keeps editing).
+				this._registerFailedRefreshTokenTimeout();
+
+				return err;
 			} );
 	}
 
@@ -119,7 +136,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * Destroys token instance. Stops refreshing.
 	 */
 	public destroy(): void {
-		clearTimeout( this._tokenRefreshTimeout );
+		this._clearRefreshTimeouts();
 	}
 
 	/**
@@ -154,11 +171,31 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	private _registerRefreshTokenTimeout() {
 		const tokenRefreshTimeoutTime = this._getTokenRefreshTimeoutTime();
 
-		clearTimeout( this._tokenRefreshTimeout );
+		this._clearRefreshTimeouts();
 
 		this._tokenRefreshTimeout = setTimeout( () => {
+			console.log( 'Refreshing token due to expiry time...' );
+
 			this.refreshToken();
 		}, tokenRefreshTimeoutTime );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _registerFailedRefreshTokenTimeout() {
+		this._clearRefreshTimeouts();
+
+		this._tokenFailedRefreshTimeout = setTimeout( () => {
+			console.log( 'Refreshing token after a failure...' );
+
+			this.refreshToken()
+				.then( () => {
+					// If refresh was successful, the logic will switch to the default timeout (if enabled)
+					// based on token expiry time and this timeout will no longer be needed.
+					clearTimeout( this._tokenFailedRefreshTimeout );
+				} );
+		}, TOKEN_FAILED_REFRESH_TIMEOUT_TIME );
 	}
 
 	/**
@@ -170,6 +207,8 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 		try {
 			const [ , binaryTokenPayload ] = this.value!.split( '.' );
 			const { exp: tokenExpireTime } = JSON.parse( atob( binaryTokenPayload ) );
+
+			console.log( 'Token expiry time', new Date( tokenExpireTime * 1000 ) );
 
 			if ( !tokenExpireTime ) {
 				return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
@@ -193,6 +232,14 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 		const token = new Token( tokenUrlOrRefreshToken, options );
 
 		return token.init();
+	}
+
+	/**
+	 * TODO
+	 */
+	private _clearRefreshTimeouts() {
+		clearTimeout( this._tokenRefreshTimeout );
+		clearTimeout( this._tokenFailedRefreshTimeout );
 	}
 }
 
