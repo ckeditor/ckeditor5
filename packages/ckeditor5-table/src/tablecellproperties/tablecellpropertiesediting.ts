@@ -28,7 +28,7 @@ import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontala
 import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
 import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand.js';
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand.js';
-import { getNormalizedDefaultProperties } from '../utils/table-properties.js';
+import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
@@ -76,9 +76,9 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
-		editor.config.define( 'table.tableCellProperties.defaultProperties', {} );
+		editor.config.define( 'table.tableCellProperties.defaultProperties', { } );
 
-		const defaultTableCellProperties = getNormalizedDefaultProperties(
+		const defaultTableCellProperties = getNormalizedDefaultCellProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
 			{
 				includeVerticalAlignmentProperty: true,

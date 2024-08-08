@@ -31,7 +31,7 @@ import {
 } from '../utils/ui/table-properties.js';
 import { getSelectionAffectedTableWidget } from '../utils/ui/widget.js';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
-import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
+import { getNormalizedDefaultTableProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
 import type { Batch } from 'ckeditor5/src/engine.js';
 import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
@@ -117,9 +117,13 @@ export default class TablePropertiesUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' )!, {
-			includeAlignmentProperty: true
-		} );
+		this._defaultTableProperties = getNormalizedDefaultTableProperties(
+			editor.config.get( 'table.tableProperties.defaultProperties' )!,
+			{
+				includeAlignmentProperty: true
+			}
+		);
+
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		editor.ui.componentFactory.add( 'tableProperties', locale => {
