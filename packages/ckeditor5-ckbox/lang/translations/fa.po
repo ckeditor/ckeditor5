@@ -29,6 +29,10 @@ msgctxt "A message is displayed when the user is not authorised to access the CK
 msgid "Cannot access default workspace."
 msgstr "فضای کاری پیش فرض قابل دسترس نیست."
 
+msgctxt "The title of the notification displayed when there is no permission to edit assets."
+msgid "You have no image editing permissions."
+msgstr ""
+
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
 msgstr ""

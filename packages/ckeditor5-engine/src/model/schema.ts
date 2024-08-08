@@ -42,6 +42,28 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * A dictionary containing attribute properties.
 	 */
 	private readonly _attributeProperties: Record<string, AttributeProperties> = {};
+
+	/**
+	 * Stores additional callbacks registered for schema items, which are evaluated when {@link ~Schema#checkChild} is called.
+	 *
+	 * Keys are schema item names for which the callbacks are registered. Values are arrays with the callbacks.
+	 *
+	 * Some checks are added under {@link ~Schema#_genericCheckSymbol} key, these are evaluated for every {@link ~Schema#checkChild} call.
+	 */
+	private readonly _customChildChecks: Map<string | symbol, Array<SchemaChildCheckCallback>> = new Map();
+
+	/**
+	 * Stores additional callbacks registered for attribute names, which are evaluated when {@link ~Schema#checkAttribute} is called.
+	 *
+	 * Keys are schema attribute names for which the callbacks are registered. Values are arrays with the callbacks.
+	 *
+	 * Some checks are added under {@link ~Schema#_genericCheckSymbol} key, these are evaluated for every
+	 * {@link ~Schema#checkAttribute} call.
+	 */
+	private readonly _customAttributeChecks: Map<string | symbol, Array<SchemaAttributeCheckCallback>> = new Map();
+
+	private readonly _genericCheckSymbol = Symbol( '$generic' );
+
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
 
 	/**
@@ -363,7 +385,7 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Checks whether the given node (`child`) can be a child of the given context.
+	 * Checks whether the given node can be a child of the given context.
 	 *
 	 * ```ts
 	 * schema.checkChild( model.document.getRoot(), paragraph ); // -> false
@@ -371,30 +393,36 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * schema.register( 'paragraph', {
 	 * 	allowIn: '$root'
 	 * } );
+	 *
 	 * schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 * ```
 	 *
-	 * Note: When verifying whether the given node can be a child of the given context, the
-	 * schema also verifies the entire context &ndash; from its root to its last element. Therefore, it is possible
-	 * for `checkChild()` to return `false` even though the context's last element can contain the checked child.
-	 * It happens if one of the context's elements does not allow its child.
+	 * Both {@link module:engine/model/schema~Schema#addChildCheck callback checks} and declarative rules (added when
+	 * {@link module:engine/model/schema~Schema#register registering} and {@link module:engine/model/schema~Schema#extend extending} items)
+	 * are evaluated when this method is called.
+	 *
+	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
+	 *
+	 * Note that when verifying whether the given node can be a child of the given context, the schema also verifies the entire
+	 * context &ndash; from its root to its last element. Therefore, it is possible for `checkChild()` to return `false` even though
+	 * the `context` last element can contain the checked child. It happens if one of the `context` elements does not allow its child.
+	 * When `context` is verified, {@link module:engine/model/schema~Schema#addChildCheck custom checks} are considered as well.
 	 *
 	 * @fires checkChild
 	 * @param context The context in which the child will be checked.
 	 * @param def The child to check.
 	 */
 	public checkChild( context: SchemaContextDefinition, def: string | Node | DocumentFragment ): boolean {
-		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
+		// Note: `context` and `def` are already normalized here to `SchemaContext` and `SchemaCompiledItemDefinition`.
 		if ( !def ) {
 			return false;
 		}
 
-		return this._checkContextMatch( def as any, context as any );
+		return this._checkContextMatch( context as SchemaContext, def as unknown as SchemaCompiledItemDefinition );
 	}
 
 	/**
-	 * Checks whether the given attribute can be applied in the given context (on the last
-	 * item of the context).
+	 * Checks whether the given attribute can be applied in the given context (on the last item of the context).
 	 *
 	 * ```ts
 	 * schema.checkAttribute( textNode, 'bold' ); // -> false
@@ -402,20 +430,34 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * schema.extend( '$text', {
 	 * 	allowAttributes: 'bold'
 	 * } );
+	 *
 	 * schema.checkAttribute( textNode, 'bold' ); // -> true
 	 * ```
 	 *
+	 * Both {@link module:engine/model/schema~Schema#addAttributeCheck callback checks} and declarative rules (added when
+	 * {@link module:engine/model/schema~Schema#register registering} and {@link module:engine/model/schema~Schema#extend extending} items)
+	 * are evaluated when this method is called.
+	 *
+	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
+	 *
 	 * @fires checkAttribute
 	 * @param context The context in which the attribute will be checked.
+	 * @param attributeName Name of attribute to check in the given context.
 	 */
 	public checkAttribute( context: SchemaContextDefinition, attributeName: string ): boolean {
-		const def = this.getDefinition( ( context as any ).last );
+		// Note: `context` is already normalized here to `SchemaContext`.
+		const def = this.getDefinition( ( context as SchemaContext ).last );
 
 		if ( !def ) {
 			return false;
 		}
 
-		return def.allowAttributes.includes( attributeName );
+		// First, check all attribute checks declared as callbacks.
+		// Note that `_evaluateAttributeChecks()` will return `undefined` if neither child check was applicable (no decision was made).
+		const isAllowed = this._evaluateAttributeChecks( context as SchemaContext, attributeName );
+
+		// If the decision was not made inside attribute check callbacks, then use declarative rules.
+		return isAllowed !== undefined ? isAllowed : def.allowAttributes.includes( attributeName );
 	}
 
 	public checkMerge( position: Position ): boolean;
@@ -486,60 +528,72 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
 	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
-	 * For example, by using this method you can disallow elements in specific contexts.
 	 *
-	 * This method is a shorthand for using the {@link #event:checkChild} event. For even better control,
-	 * you can use that event instead.
+	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
 	 *
-	 * Example:
+	 * For example, by using this method you can disallow elements in specific contexts:
 	 *
 	 * ```ts
-	 * // Disallow heading1 directly inside a blockQuote.
+	 * // Disallow `heading1` inside a `blockQuote` that is inside a table.
 	 * schema.addChildCheck( ( context, childDefinition ) => {
-	 * 	if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
+	 * 	if ( context.endsWith( 'tableCell blockQuote' ) ) {
 	 * 		return false;
+	 * 	}
+	 * }, 'heading1' );
+	 * ```
+	 *
+	 * You can skip the optional `itemName` parameter to evaluate the callback for every `checkChild()` call.
+	 *
+	 * ```ts
+	 * // Inside specific custom element, allow only children, which allows for a specific attribute.
+	 * schema.addChildCheck( ( context, childDefinition ) => {
+	 * 	if ( context.endsWith( 'myElement' ) ) {
+	 * 		return childDefinition.allowAttributes.includes( 'myAttribute' );
 	 * 	}
 	 * } );
 	 * ```
 	 *
-	 * Which translates to:
+	 * Please note that the generic callbacks may affect the editor performance and should be avoided if possible.
+	 *
+	 * When one of the callbacks makes a decision (returns `true` or `false`) the processing is finished and other callbacks are not fired.
+	 * Callbacks are fired in the order they were added, however generic callbacks are fired before callbacks added for a specified item.
+	 *
+	 * You can also use `checkChild` event, if you need even better control. The result from the example above could also be
+	 * achieved with following event callback:
 	 *
 	 * ```ts
 	 * schema.on( 'checkChild', ( evt, args ) => {
 	 * 	const context = args[ 0 ];
 	 * 	const childDefinition = args[ 1 ];
 	 *
-	 * 	if ( context.endsWith( 'blockQuote' ) && childDefinition && childDefinition.name == 'heading1' ) {
+	 * 	if ( context.endsWith( 'myElement' ) ) {
 	 * 		// Prevent next listeners from being called.
 	 * 		evt.stop();
-	 * 		// Set the checkChild()'s return value.
-	 * 		evt.return = false;
+	 * 		// Set the `checkChild()` return value.
+	 * 		evt.return = childDefinition.allowAttributes.includes( 'myAttribute' );
 	 * 	}
 	 * }, { priority: 'high' } );
 	 * ```
 	 *
+	 * Note that the callback checks and declarative rules checks are processed on `normal` priority.
+	 *
+	 * Adding callbacks this way can also negatively impact editor performance.
+	 *
 	 * @param callback The callback to be called. It is called with two parameters:
 	 * {@link module:engine/model/schema~SchemaContext} (context) instance and
-	 * {@link module:engine/model/schema~SchemaCompiledItemDefinition} (child-to-check definition).
-	 * The callback may return `true/false` to override `checkChild()`'s return value. If it does not return
-	 * a boolean value, the default algorithm (or other callbacks) will define `checkChild()`'s return value.
+	 * {@link module:engine/model/schema~SchemaCompiledItemDefinition} (definition). The callback may return `true/false` to override
+	 * `checkChild()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks) will define
+	 * `checkChild()`'s return value.
+	 * @param itemName Name of the schema item for which the callback is registered. If specified, the callback will be run only for
+	 * `checkChild()` calls which `def` parameter matches the `itemName`. Otherwise, the callback will run for every `checkChild` call.
 	 */
-	public addChildCheck( callback: SchemaChildCheckCallback ): void {
-		this.on<SchemaCheckChildEvent>( 'checkChild', ( evt, [ ctx, childDef ] ) => {
-			// checkChild() was called with a non-registered child.
-			// In 99% cases such check should return false, so not to overcomplicate all callbacks
-			// don't even execute them.
-			if ( !childDef ) {
-				return;
-			}
+	public addChildCheck( callback: SchemaChildCheckCallback, itemName?: string ): void {
+		const key = itemName !== undefined ? itemName : this._genericCheckSymbol;
 
-			const retValue = callback( ctx, childDef );
+		const checks = this._customChildChecks.get( key ) || [];
+		checks.push( callback );
 
-			if ( typeof retValue == 'boolean' ) {
-				evt.stop();
-				evt.return = retValue;
-			}
-		}, { priority: 'high' } );
+		this._customChildChecks.set( key, checks );
 	}
 
 	/**
@@ -547,53 +601,71 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
 	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
-	 * For example, by using this method you can disallow attribute if node to which it is applied
-	 * is contained within some other element (e.g. you want to disallow `bold` on `$text` within `heading1`).
 	 *
-	 * This method is a shorthand for using the {@link #event:checkAttribute} event. For even better control,
-	 * you can use that event instead.
+	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
 	 *
-	 * Example:
+	 * For example, by using this method you can disallow setting attributes on nodes in specific contexts:
 	 *
 	 * ```ts
-	 * // Disallow bold on $text inside heading1.
+	 * // Disallow setting `bold` on text inside `heading1` element:
+	 * schema.addAttributeCheck( context => {
+	 * 	if ( context.endsWith( 'heading1 $text' ) ) {
+	 * 		return false;
+	 * 	}
+	 * }, 'bold' );
+	 * ```
+	 *
+	 * You can skip the optional `attributeName` parameter to evaluate the callback for every `checkAttribute()` call.
+	 *
+	 * ```ts
+	 * // Disallow formatting attributes on text inside custom `myTitle` element:
 	 * schema.addAttributeCheck( ( context, attributeName ) => {
-	 * 	if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+	 * 	if ( context.endsWith( 'myTitle $text' ) && schema.getAttributeProperties( attributeName ).isFormatting ) {
 	 * 		return false;
 	 * 	}
 	 * } );
 	 * ```
 	 *
-	 * Which translates to:
+	 * Please note that the generic callbacks may affect the editor performance and should be avoided if possible.
+	 *
+	 * When one of the callbacks makes a decision (returns `true` or `false`) the processing is finished and other callbacks are not fired.
+	 * Callbacks are fired in the order they were added, however generic callbacks are fired before callbacks added for a specified item.
+	 *
+	 * You can also use {@link #event:checkAttribute} event, if you need even better control. The result from the example above could also
+	 * be achieved with following event callback:
 	 *
 	 * ```ts
 	 * schema.on( 'checkAttribute', ( evt, args ) => {
 	 * 	const context = args[ 0 ];
 	 * 	const attributeName = args[ 1 ];
 	 *
-	 * 	if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+	 * 	if ( context.endsWith( 'myTitle $text' ) && schema.getAttributeProperties( attributeName ).isFormatting ) {
 	 * 		// Prevent next listeners from being called.
 	 * 		evt.stop();
-	 * 		// Set the checkAttribute()'s return value.
+	 * 		// Set the `checkAttribute()` return value.
 	 * 		evt.return = false;
 	 * 	}
 	 * }, { priority: 'high' } );
 	 * ```
 	 *
+	 * Note that the callback checks and declarative rules checks are processed on `normal` priority.
+	 *
+	 * Adding callbacks this way can also negatively impact editor performance.
+	 *
 	 * @param callback The callback to be called. It is called with two parameters:
-	 * {@link module:engine/model/schema~SchemaContext} (context) instance and attribute name.
-	 * The callback may return `true/false` to override `checkAttribute()`'s return value. If it does not return
-	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
+	 * {@link module:engine/model/schema~SchemaContext `context`} and attribute name. The callback may return `true` or `false`, to
+	 * override `checkAttribute()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks)
+	 * will define `checkAttribute()`'s return value.
+	 * @param attributeName Name of the attribute for which the callback is registered. If specified, the callback will be run only for
+	 * `checkAttribute()` calls with matching `attributeName`. Otherwise, the callback will run for every `checkAttribute()` call.
 	 */
-	public addAttributeCheck( callback: SchemaAttributeCheckCallback ): void {
-		this.on<SchemaCheckAttributeEvent>( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
-			const retValue = callback( ctx, attributeName );
+	public addAttributeCheck( callback: SchemaAttributeCheckCallback, attributeName?: string ): void {
+		const key = attributeName !== undefined ? attributeName : this._genericCheckSymbol;
 
-			if ( typeof retValue == 'boolean' ) {
-				evt.stop();
-				evt.return = retValue;
-			}
-		}, { priority: 'high' } );
+		const checks = this._customAttributeChecks.get( key ) || [];
+		checks.push( callback );
+
+		this._customAttributeChecks.set( key, checks );
 	}
 
 	/**
@@ -994,23 +1066,76 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 		this._compiledDefinitions = compileDefinitions( definitions );
 	}
 
-	private _checkContextMatch(
-		def: SchemaCompiledItemDefinition,
-		context: SchemaContext,
-		contextItemIndex: number = context.length - 1
-	): boolean {
-		const contextItem = context.getItem( contextItemIndex );
+	private _checkContextMatch( context: SchemaContext, def: SchemaCompiledItemDefinition ): boolean {
+		const parentItem = context.last;
 
-		if ( def.allowIn.includes( contextItem.name ) ) {
-			if ( contextItemIndex == 0 ) {
-				return true;
-			} else {
-				const parentRule = this.getDefinition( contextItem );
+		// First, check all child checks declared as callbacks.
+		// Note that `_evaluateChildChecks()` will return `undefined` if neither child check was applicable (no decision was made).
+		let isAllowed = this._evaluateChildChecks( context, def );
 
-				return this._checkContextMatch( parentRule!, context, contextItemIndex - 1 );
-			}
-		} else {
+		// If the decision was not made inside child check callbacks, then use declarative rules.
+		isAllowed = isAllowed !== undefined ? isAllowed : def.allowIn.includes( parentItem.name );
+
+		// If the item is not allowed in the `context`, return `false`.
+		if ( !isAllowed ) {
 			return false;
+		}
+
+		// If the item is allowed, recursively verify the rest of the `context`.
+		const parentItemDefinition = this.getDefinition( parentItem );
+		const parentContext = context.trimLast();
+
+		// One of the items in the original `context` did not have a definition specified. In this case, the whole context is disallowed.
+		if ( !parentItemDefinition ) {
+			return false;
+		}
+
+		// Whole `context` was verified and passed checks.
+		if ( parentContext.length == 0 ) {
+			return true;
+		}
+
+		// Verify "truncated" parent context. The last item of the original context is now the definition to check.
+		return this._checkContextMatch( parentContext, parentItemDefinition );
+	}
+
+	/**
+	 * Calls child check callbacks to decide whether `def` is allowed in `context`. It uses both generic and specific (defined for `def`
+	 * item) callbacks. If neither callback makes a decision, `undefined` is returned.
+	 *
+	 * Note that the first callback that makes a decision "wins", i.e., if any callback returns `true` or `false`, then the processing
+	 * is over and that result is returned.
+	 */
+	private _evaluateChildChecks( context: SchemaContext, def: SchemaCompiledItemDefinition ): boolean | undefined {
+		const genericChecks = this._customChildChecks.get( this._genericCheckSymbol ) || [];
+		const childChecks = this._customChildChecks.get( def.name ) || [];
+
+		for ( const check of [ ...genericChecks, ...childChecks ] ) {
+			const result = check( context, def );
+
+			if ( result !== undefined ) {
+				return result;
+			}
+		}
+	}
+
+	/**
+	 * Calls attribute check callbacks to decide whether `attributeName` can be set on the last element of `context`. It uses both
+	 * generic and specific (defined for `attributeName`) callbacks. If neither callback makes a decision, `undefined` is returned.
+	 *
+	 * Note that the first callback that makes a decision "wins", i.e., if any callback returns `true` or `false`, then the processing
+	 * is over and that result is returned.
+	 */
+	private _evaluateAttributeChecks( context: SchemaContext, attributeName: string ): boolean | undefined {
+		const genericChecks = this._customAttributeChecks.get( this._genericCheckSymbol ) || [];
+		const childChecks = this._customAttributeChecks.get( attributeName ) || [];
+
+		for ( const check of [ ...genericChecks, ...childChecks ] ) {
+			const result = check( context, attributeName );
+
+			if ( result !== undefined ) {
+				return result;
+			}
 		}
 	}
 
@@ -1463,26 +1588,36 @@ export interface SchemaItemDefinition {
 
 	/**
 	 * Inherits "allowed children" from other items.
+	 *
+	 * Note that the item's "own" rules take precedence over "inherited" rules and can overwrite them.
 	 */
 	allowContentOf?: string | Array<string>;
 
 	/**
 	 * Inherits "allowed in" from other items.
+	 *
+	 * Note that the item's "own" rules take precedence over "inherited" rules and can overwrite them.
 	 */
 	allowWhere?: string | Array<string>;
 
 	/**
 	 * Inherits "allowed attributes" from other items.
+	 *
+	 * Note that the item's "own" rules take precedence over "inherited" rules and can overwrite them.
 	 */
 	allowAttributesOf?: string | Array<string>;
 
 	/**
 	 * Inherits `is*` properties of other items.
+	 *
+	 * Note that the item's "own" rules take precedence over "inherited" rules and can overwrite them.
 	 */
 	inheritTypesFrom?: string | Array<string>;
 
 	/**
 	 * A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
+	 *
+	 * Note that the item's "own" rules take precedence over "inherited" rules and can overwrite them.
 	 */
 	inheritAllFrom?: string;
 
@@ -1727,6 +1862,25 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	}
 
 	/**
+	 * Returns a new schema context that is based on this context but has the last item removed.
+	 *
+	 * ```ts
+	 * const ctxParagraph = new SchemaContext( [ '$root', 'blockQuote', 'paragraph' ] );
+	 * const ctxBlockQuote = ctxParagraph.trimLast(); // Items in `ctxBlockQuote` are: `$root` an `blockQuote`.
+	 * const ctxRoot = ctxBlockQuote.trimLast(); // Items in `ctxRoot` are: `$root`.
+	 * ```
+	 *
+	 * @returns A new reduced schema context instance.
+	 */
+	public trimLast(): SchemaContext {
+		const ctx = new SchemaContext( [] );
+
+		ctx._items = this._items.slice( 0, -1 );
+
+		return ctx;
+	}
+
+	/**
 	 * Gets an item on the given index.
 	 */
 	public getItem( index: number ): SchemaContextItem {
@@ -1787,7 +1941,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * * By defining an **array of node names** (potentially, mixed with real nodes) – The same as **name of node**
  * but it is possible to create a path.
  * * By defining a {@link module:engine/model/schema~SchemaContext} instance - in this case the same instance as provided
- * will be return.
+ * will be returned.
  *
  * Examples of context definitions passed to the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`}
  * method:

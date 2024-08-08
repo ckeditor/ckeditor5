@@ -53,7 +53,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		private _lastDraggingCoordinates: { x: number; y: number } = { x: 0, y: 0 };
 
 		/**
-		 * @inheritdoc
+		 * @inheritDoc
 		 */
 		constructor( ...args: Array<any> ) {
 			super( ...args );

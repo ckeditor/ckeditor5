@@ -12,7 +12,9 @@ modified_at: 2024-06-25
 The functionality of CKEditor&nbsp;5 is provided by specialized features, accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain {@link getting-started/setup/editor-types editor types}.
 
 <info-box>
-	All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	The best tool for experimenting with different features is [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). You can test various possibilities and setups.
+
+	Additionally, almost all features offer multiple configuration options and APIs. For detailed information, consult the {@link features/index feature pages}.
 </info-box>
 
 ## Adding features

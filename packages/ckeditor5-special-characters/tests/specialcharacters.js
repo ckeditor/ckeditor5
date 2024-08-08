@@ -80,6 +80,7 @@ describe( 'SpecialCharacters', () => {
 		it( 'should get basic properties', () => {
 			expect( button.label ).to.equal( 'Special characters' );
 			expect( button.icon ).to.equal( specialCharactersIcon );
+			expect( button.isToggleable ).to.be.true;
 		} );
 
 		it( 'should bind #isEnabled to the command', () => {

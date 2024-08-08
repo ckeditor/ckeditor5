@@ -48,6 +48,8 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 * @param options.shouldToolbarGroupWhenFull When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
+	 * @param options.label When set, this value will be used as an accessible `aria-label` of the
+	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view}.
 	 */
 	constructor(
 		locale: Locale,
@@ -55,11 +57,10 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		options: {
 			editableElement?: HTMLElement;
 			shouldToolbarGroupWhenFull?: boolean;
+			label?: string | Record<string, string>;
 		} = {}
 	) {
 		super( locale );
-
-		const t = locale.t;
 
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
@@ -68,9 +69,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		this.menuBarView = new MenuBarView( locale );
 
 		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
-			label: editableView => {
-				return t( 'Rich Text Editor. Editing area: %0', editableView.name! );
-			}
+			label: options.label
 		} );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.

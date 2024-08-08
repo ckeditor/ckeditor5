@@ -139,9 +139,12 @@ export default class CodeBlockEditing extends Plugin {
 			isBlock: true
 		} );
 
-		// Disallow all attributes on `$text` inside `codeBlock`.
-		schema.addAttributeCheck( context => {
-			if ( context.endsWith( 'codeBlock $text' ) ) {
+		// Disallow formatting attributes on `codeBlock` children.
+		schema.addAttributeCheck( ( context, attributeName ) => {
+			const parent = context.getItem( context.length - 2 );
+			const isFormatting = schema.getAttributeProperties( attributeName ).isFormatting;
+
+			if ( isFormatting && parent && parent.name == 'codeBlock' ) {
 				return false;
 			}
 		} );

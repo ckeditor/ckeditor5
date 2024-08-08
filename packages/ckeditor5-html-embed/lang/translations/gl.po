@@ -31,7 +31,7 @@ msgstr "Pegar HTML en bruto aquí…"
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"
-msgstr "Editar fonte"
+msgstr "Editar a orixe"
 
 msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
 msgid "Save changes"

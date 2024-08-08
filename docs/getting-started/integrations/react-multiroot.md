@@ -138,6 +138,16 @@ By default, the two-way data binding is enabled. It means that every change done
 	The recommended approach for achieving this is based on utilizing the {@link features/autosave autosave plugin}. The second approach involves providing the `onChange` callback, which is called on each editor update.
 </info-box>
 
+## How to?
+
+### Using the editor with collaboration plugins
+
+We provide several **ready-to-use integration** featuring collaborative editing with multi-root in React applications:
+
+* [CKEditor&nbsp;5 multi-root with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-editor-multi-root-for-react)
+
+It is not necessary to build applications on top of the above samples, however, they should help you get started.
+
 ## Contributing and reporting issues
 
 The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).

@@ -119,7 +119,7 @@ msgstr "Početi u"
 
 msgctxt "The error message displayed when the numbered list start index input value is not a valid number."
 msgid "Invalid start index value."
-msgstr ""
+msgstr "Nevažeća vrednost početnog indeksa."
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
@@ -131,20 +131,20 @@ msgstr "Obrnuti redosled"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
 msgid "Keystrokes that can be used in a list"
-msgstr ""
+msgstr "Pritisci na tastere koji se mogu koristiti na listi"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
 msgid "Increase list item indent"
-msgstr ""
+msgstr "Povećaj uvlačenje stavke liste"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
-msgstr ""
+msgstr "Smanji uvlačenje stavke liste"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Unošenje liste obaveza"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Ostavljanje liste obaveza"

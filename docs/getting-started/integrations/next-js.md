@@ -115,3 +115,14 @@ If you have trouble seeing the editor, remember that the Next.js project ships w
 </info-box>
 
 Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
+
+## How to?
+
+### Using the editor with collaboration plugins
+
+We provide several **ready-to-use integrations** featuring collaborative editing in Next.js applications:
+
+* [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-next)
+* [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-next)
+
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.

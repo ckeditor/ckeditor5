@@ -428,7 +428,8 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 We provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
 
-* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
+* [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
+* [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-vue)
 
 It is not mandatory to build applications on top of the above sample, however, it should help you get started.
 
