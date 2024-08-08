@@ -139,6 +139,8 @@ export function getNormalizedDefaultTableProperties(
 	options?: NormalizeTableDefaultPropertiesOptions
 ): NormalizedDefaultProperties {
 	return getNormalizedDefaultProperties( {
+		// It's workaround for the issue with missing support for border none in the table element.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/6841#issuecomment-1959195608
 		borderStyle: 'double',
 		borderColor: 'hsl(0, 0%, 70%)',
 		borderWidth: '1px',
@@ -156,6 +158,8 @@ export function getNormalizedDefaultCellProperties(
 	options?: NormalizeTableDefaultPropertiesOptions
 ): NormalizedDefaultProperties {
 	return getNormalizedDefaultProperties( {
+		// It's workaround for the issue with missing support for border none in the table element.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/6841#issuecomment-1959195608
 		borderStyle: 'solid',
 		borderColor: 'hsl(0, 0%, 75%)',
 		borderWidth: '1px',
