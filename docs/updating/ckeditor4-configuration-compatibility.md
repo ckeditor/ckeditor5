@@ -285,7 +285,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_class"><code>easyimage_class</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_defaultStyle"><code>easyimage_defaultStyle</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_styles"><code>easyimage_styles</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_toolbar"><code>easyimage_toolbar</code></a></td>
-			<td>Refer to the {@link features/easy-image Easy Image} and {@link features/images-overview Images} feature guides to learn more about image-related features and Easy Image integration in CKEditor&nbsp;5.</td>
+			<td>Refer to the {@link features/images-overview Images} feature guides to learn more about image-related features in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-editorplaceholder"><code>editorplaceholder</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-editorplaceholder_delay"><code>editorplaceholder_delay</code></a></td>

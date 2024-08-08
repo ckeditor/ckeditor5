@@ -149,7 +149,7 @@
 		"features/collaboration/real-time-collaboration/real-time-collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/real-time-collaboration/real-time-collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
-		"features/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/easy-image.html": "features/images/image-upload/image-upload.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/export-pdf.html": "features/converters/export-pdf.html",
 		"features/export-word.html": "features/converters/export-word.html",
@@ -163,7 +163,7 @@
 		"features/images/overview.html": "features/images/images-overview.html",
 		"features/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/image-upload.html": "features/images/image-upload/image-upload.html",
-		"features/image-upload/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/image-upload/easy-image.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
@@ -377,7 +377,8 @@
 		"examples/builds-custom/bottom-toolbar-editor.html": "examples/framework/bottom-toolbar-editor.html",
 		"examples/how-tos.html": "framework/how-tos.html",
 		"support/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
-		"features/productivity-pack.html": "features/index.html"
+		"features/productivity-pack.html": "features/index.html",
+		"features/images/image-upload/easy-image.html": "features/images/image-upload/image-upload.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",

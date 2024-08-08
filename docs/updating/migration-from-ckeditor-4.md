@@ -104,10 +104,10 @@ Here are the key differences between the two editor versions:
                     <strong>File management and image upload</strong>
                 </td>
                 <td>
-                    CKFinder, Easy Image
+                    CKFinder
                 </td>
                 <td>
-                    CKBox, CKFinder, Easy Image
+                    CKBox, CKFinder
                 </td>
             </tr>
             <tr>
