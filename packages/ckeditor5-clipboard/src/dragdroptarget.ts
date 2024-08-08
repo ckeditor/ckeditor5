@@ -383,9 +383,21 @@ function findDropTargetRange(
 				if ( targetViewRanges ) {
 					const targetViewPosition = targetViewRanges[ 0 ].start;
 					const targetModelPosition = mapper.toModelPosition( targetViewPosition );
+					const checkedItems = new Set();
 					const canDropOnPosition = !draggedRange || Array
 						.from( draggedRange.getItems() )
-						.every( item => model.schema.checkChild( targetModelPosition, item as Node ) );
+						.every( item => {
+							if (
+								item.parent && checkedItems.has( item.parent ) ||
+								model.schema.checkChild( targetModelPosition, item as Node )
+							) {
+								checkedItems.add( item );
+
+								return true;
+							} else {
+								return false;
+							}
+						} );
 
 					if ( canDropOnPosition ) {
 						if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
