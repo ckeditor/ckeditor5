@@ -1256,7 +1256,7 @@ describe( 'Drag and Drop', () => {
 				expectFinalized();
 
 				expect( getModelData( model ) ).to.equal(
-					'<paragraph>foobar</paragraph><paragraph><softBreak></softBreak> []</paragraph>' +
+					'<paragraph>foobar</paragraph><paragraph><softBreak></softBreak>[]</paragraph>' +
 					'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 				);
 			} );
