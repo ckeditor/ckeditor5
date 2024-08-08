@@ -7,7 +7,7 @@
  * @module uploadcare/ui/uploadcareformview
  */
 
-import { type Locale } from 'ckeditor5/src/utils.js';
+import { type Locale, FocusTracker } from 'ckeditor5/src/utils.js';
 import { View } from 'ckeditor5/src/ui.js';
 
 /**
@@ -27,7 +27,9 @@ export default class UploadcareFormView extends View {
 					'ck',
 					'ck-reset_all-excluded',
 					'ck-uploadcare-form'
-				]
+				],
+
+				tabindex: '-1'
 			},
 			children: [
 				{
@@ -39,5 +41,12 @@ export default class UploadcareFormView extends View {
 				}
 			]
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public focus(): void {
+		this.element!.focus();
 	}
 }

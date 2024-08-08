@@ -22,6 +22,10 @@
 		& > .uc-iframe-wrapper {
 			height: var(--ck-uploadcare-external-source-view-height);
 		}
+
+		& > .uc-toolbar {
+			padding: var(--ck-spacing-large) 0 0;
+		}
 	}
 
 	.uc-files {

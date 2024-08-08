@@ -131,10 +131,10 @@ export default class UploadcareCommand extends Command {
 		this._configElement!.setAttribute( 'source-list', this._type );
 
 		if ( this._dialog.isOpen ) {
-			this._api!.removeAllFiles();
-		} else {
-			this._initDialog();
+			this._dialog.hide();
 		}
+
+		this._initDialog();
 	}
 
 	private _initConfig() {
@@ -173,6 +173,9 @@ export default class UploadcareCommand extends Command {
 			title: getTranslation( locale, this._type! ).text,
 			content: form,
 			position: DialogViewPosition.EDITOR_TOP_CENTER,
+			onShow: () => {
+				form.focus();
+			},
 			onHide: () => {
 				this._close();
 			}
@@ -184,8 +187,6 @@ export default class UploadcareCommand extends Command {
 	 */
 	private _close() {
 		this._api!.removeAllFiles();
-
-		this._type = null;
 
 		this.editor.editing.view.focus();
 	}
