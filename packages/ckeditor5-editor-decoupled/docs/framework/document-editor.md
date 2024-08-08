@@ -42,10 +42,6 @@ DecoupledEditor.create( document.querySelector( '.document-editor__editable' ), 
 
 You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:ui/editorui/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
 
-<info-box>
-	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/easy-image Easy Image documentation} to learn more.
-</info-box>
-
 ## The user interface
 
 The code you have just created will run the editor but the user interface is still missing. Start off with a basic HTML structure to host the editor components (the toolbar and the editable).

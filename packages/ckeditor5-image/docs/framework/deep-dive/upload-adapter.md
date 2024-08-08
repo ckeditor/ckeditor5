@@ -354,10 +354,6 @@ Other image sizes can also be provided in the response, allowing [responsive ima
 
 The {@link module:image/imageupload~ImageUpload image upload} plugin is capable of handling multiple image sizes returned by the upload adapter. It will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
 
-<info-box>
-	The {@link features/easy-image Easy Image} feature provides responsive image support {@link features/easy-image#responsive-images out of the box}.
-</info-box>
-
 Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous section](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
 
 ```js

@@ -48,6 +48,45 @@ The trial is commitment-free, and there is no need to provide credit card detail
 
 If you are using the trial, refer to the [CKEditor&nbsp;5 Premium Features free trial documentation](https://ckeditor.com/docs/trial/latest/guides/overview.html) to learn how to access the relevant license key and activate the premium features.
 
+## License key types
+
+### Trial license key
+
+This key grants access to **all features**. Valid for **14 days**. It does not consume editor loads, but editor is limited functionally (for example session time, number of changes). It is **perfect for evaluating the platform** and all its features. It can be used only for evaluation purposes.
+
+* **Features**: Grants access to all features and add-ons.
+* **Duration**: Valid for 14 days (until 12th May 2024).
+* **Functionality**: The editor is limited functionally, such as session time and the number of changes allowed.
+* **Intended Use**: Ideal for evaluating the platform and all its features.
+* **Usage Limitation**: Can only be used for evaluation purposes and not for production.
+* **Editor Loads**: Does not consume editor loads.
+
+You can sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the editor.
+
+### Development license key
+
+This key grants access to your subscription features. It does not consume editor loads, but editor is limited functionally (for example session time, number of changes, development domains). It is **perfect for development environments** (local work, CI, E2E tests). It must not be used for production environments.
+
+* **Features**: Grants access to subscription features.
+* **Functionality**: Similar to the trial license, the editor is limited functionally, including session time and the number of changes allowed. Additionally, there might be limitations on development domains.
+* **Intended Use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
+* **Usage Limitation**: Must not be used for production environments.
+* **Editor Loads**: Does not consume editor loads.
+
+[Contact us](https://ckeditor.com/contact/?sales=true#contact-form) for more details
+
+### Production license key
+
+This key grants access to your subscription features without imposing any limitations. It **consumes editor loads** (after the 14 days trial period ends).
+
+* **Features**: Grants access to subscription features.
+* **Functionality**: The editor functions without any restrictions.
+* **Intended Use**: Meant for production environments where the software is actively used by end-users.
+* **Usage Limitation**: None specified.
+* **Editor Loads**: Consumes editor loads, especially after the 14-day trial period ends.
+
+There are several commercial plans available to choose from. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) for more details
+
 ## Obtaining a license key
 
 Follow this guide to get the license key necessary to activate your purchased premium features or to white-label CKEditor&nbsp;5 (remove the "Powered by CKEditor" logo).
