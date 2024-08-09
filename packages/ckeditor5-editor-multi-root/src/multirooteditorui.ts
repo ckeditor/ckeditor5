@@ -238,7 +238,7 @@ export default class MultiRootEditorUI extends EditorUI {
 	/**
 	 * It's workaround for issue with block selection in Chrome. Chrome doesn't fire selection change event when user
 	 * clicks element with single block element (for example table). It causes the editor to rollback selection (and focus)
-	 * to previously selected editable element.
+	 * to previously selected editable element. This method forces Chrome to select the focused element.
 	 *
 	 * The timeout is used because selection change event is async event and it's fired shortly after focus event.
 	 * Make sure it's lower than the timeout used in {@link module:engine/view/observer/focusobserver~FocusObserver#_handleFocus}
@@ -252,10 +252,15 @@ export default class MultiRootEditorUI extends EditorUI {
 		this._domEmitter.listenTo( editableElement, 'focus', () => {
 			// Selection changes shortly after focus event so run the fix after a short delay.
 			setTimeout( () => {
-				const domSelection = global.document.defaultView!.getSelection()!;
+				const selection = global.document.defaultView!.getSelection();
 
-				// Cancel fix if the anchor node is inside the editable element. It happens from time to time on Chrome.
-				if ( editableElement !== domSelection.anchorNode && editableElement.contains( domSelection.anchorNode ) ) {
+				// If there is no selection, don't activate fix.
+				if ( !selection ) {
+					return;
+				}
+
+				// If selection anchor is somewhere in editable element, don't force select the focused element.
+				if ( editableElement !== selection.anchorNode && editableElement.contains( selection.anchorNode ) ) {
 					return;
 				}
 
@@ -270,9 +275,8 @@ export default class MultiRootEditorUI extends EditorUI {
 
 				// If there's no contenteditable element, force select the focused element.
 				const { activeElement } = global.document;
-				const selection = window.getSelection();
 
-				if ( activeElement && selection ) {
+				if ( activeElement ) {
 					selection.selectAllChildren( activeElement );
 				}
 			}, 20 );
