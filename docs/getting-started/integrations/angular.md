@@ -655,8 +655,6 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
-There is a known issue related to the localization in Angular 17. Read more in the [known issues subsection](#known-issues).
-
 CKEditor 5 supports multiple UI languages, and so does the official Angular component. Follow the instructions below to translate CKEditor 5 in your Angular application.
 
 Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
@@ -692,7 +690,18 @@ export class AppComponent {
 
 For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
+<info-box warning>
+There is a known issue related to the localization in Angular 17. Read more in the [known issues section](#known-issues) below.
+</info-box>
+
 ## Known issues
+
+The `moduleResolution` option of the TypeScript configuration determines the algorithm for finding and resolving modules from `node_modules`. In Angular 17, the option is set to `node` by default. This option prevents type declaration for editor translations from being correctly loaded. To fix it, you have several options:
+
+* You can set the `moduleResolution` option to `bundler`. It is the recommended setting in TypeScript 5.0+ for applications that use a bundler. And it is a recommended way of fixing this problem. You can check other solutions for lower TypeScript versions.
+* You can tell the TypeScript compiler to suppress the problem using the `// @ts-expect-error` comment above the imported translations.
+* You can update Angular to version 18, where the `moduleResolution` option is set to `bundler`  by default.
+* You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/42.0.2/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the config.
 
 ## Contributing and reporting issues
 
