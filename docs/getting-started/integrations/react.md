@@ -78,7 +78,7 @@ function App() {
 					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: { 
+				mention: {
 					// Mention configuration
 				},
 				initialData: '<p>Hello from CKEditor 5 in React!</p>',
@@ -169,7 +169,7 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
-* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
+* `onReady` &ndash; A function called when the context is initialized but before the editors in the tree are set up. After this function is executed, you can track additions and removals in the context tree using the `context.editors.on('change', () => {})` method.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
   * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
   * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
@@ -194,7 +194,7 @@ import 'ckeditor5/ckeditor5.css';
 function App() {
 	const editorToolbarRef = useRef( null );
 	const [ isMounted, setMounted ] = useState( false );
-	
+
 	useEffect( () => {
 		setMounted( true );
 
@@ -216,7 +216,7 @@ function App() {
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
 						onReady={ ( editor ) => {
-							if ( editorToolbarRef.current ) { 
+							if ( editorToolbarRef.current ) {
 								editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
 							}
 						}}
