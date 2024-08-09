@@ -17,6 +17,7 @@ import {
 	type InlineEditableUIView
 } from 'ckeditor5/src/ui.js';
 
+import { DomEmitterMixin, env, global, type DomEmitter } from 'ckeditor5/src/utils.js';
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
 import type MultiRootEditorUIView from './multirooteditoruiview.js';
@@ -34,6 +35,11 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * The editable element that was focused the last time when any of the editables had focus.
 	 */
 	private _lastFocusedEditableElement: HTMLElement | null;
+
+	/**
+	 * DOM Emitter.
+	 */
+	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
 
 	/**
 	 * Creates an instance of the multi-root editor UI class.
@@ -144,6 +150,10 @@ export default class MultiRootEditorUI extends EditorUI {
 			} );
 
 		this._initPlaceholder( editable, placeholder );
+
+		if ( env.isBlink ) {
+			this._enableChromeBlockSelectionWorkaround( editableElement );
+		}
 	}
 
 	/**
@@ -157,6 +167,10 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * @param editable Editable to remove from the editor UI.
 	 */
 	public removeEditable( editable: InlineEditableUIView ): void {
+		if ( env.isBlink && editable.element ) {
+			this._disableChromeBlockSelectionWorkaround( editable.element );
+		}
+
 		this.editor.editing.view.detachDomRoot( editable.name! );
 		editable.unbind( 'isFocused' );
 		this.removeEditableElement( editable.name! );
@@ -167,6 +181,7 @@ export default class MultiRootEditorUI extends EditorUI {
 	 */
 	public override destroy(): void {
 		super.destroy();
+		this._domEmitter.stopListening();
 
 		for ( const editable of Object.values( this.view.editables ) ) {
 			this.removeEditable( editable );
@@ -218,5 +233,60 @@ export default class MultiRootEditorUI extends EditorUI {
 			isDirectHost: false,
 			keepOnFocus: true
 		} );
+	}
+
+	/**
+	 * It's workaround for issue with block selection in Chrome. Chrome doesn't fire selection change event when user
+	 * clicks element with single block element (for example table). It causes the editor to rollback selection (and focus)
+	 * to previously selected editable element. This method forces Chrome to select the focused element.
+	 *
+	 * The timeout is used because selection change event is async event and it's fired shortly after focus event.
+	 * Make sure it's lower than the timeout used in {@link module:engine/view/observer/focusobserver~FocusObserver#_handleFocus}
+	 * to avoid UI flickering.
+	 *
+	 * See more: https://github.com/ckeditor/ckeditor5/issues/16806
+	 *
+	 * @param editableElement The editable element.
+	 */
+	private _enableChromeBlockSelectionWorkaround( editableElement: Element ) {
+		this._domEmitter.listenTo( editableElement, 'focus', () => {
+			// Selection changes shortly after focus event so run the fix after a short delay.
+			setTimeout( () => {
+				const selection = global.document.defaultView!.getSelection();
+
+				// If there is no selection, don't activate fix.
+				if ( !selection ) {
+					return;
+				}
+
+				// If selection anchor is somewhere in editable element, don't force select the focused element.
+				if ( editableElement !== selection.anchorNode && editableElement.contains( selection.anchorNode ) ) {
+					return;
+				}
+
+				// Focus the first contenteditable element inside the editable element.
+				// It's more accurate for tables, because it'll select first cell instead of the whole table.
+				const contentEditable = editableElement.querySelector( '[contenteditable="true"]' );
+
+				if ( contentEditable ) {
+					( contentEditable as HTMLElement ).focus();
+					return;
+				}
+
+				// If there's no contenteditable element, force select the focused element.
+				const { activeElement } = global.document;
+
+				if ( activeElement ) {
+					selection.selectAllChildren( activeElement );
+				}
+			}, 20 );
+		}, { priority: 'high', useCapture: true } );
+	}
+
+	/**
+	 * Disables the Chrome block selection workaround applied by {@link #_enableChromeBlockSelectionWorkaround}.
+	 */
+	private _disableChromeBlockSelectionWorkaround( editableElement: Element ) {
+		this._domEmitter.stopListening( editableElement, 'focus' );
 	}
 }

@@ -8,7 +8,14 @@
 import MultiRootEditor from '../src/multirooteditor.js';
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { viewTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
+
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
@@ -32,7 +39,9 @@ describe( 'MultiRootEditorUI', () => {
 	} );
 
 	afterEach( () => {
-		editor.destroy();
+		if ( editor ) {
+			editor.destroy();
+		}
 	} );
 
 	describe( 'constructor()', () => {
@@ -422,6 +431,132 @@ describe( 'MultiRootEditorUI', () => {
 			await newEditor.destroy();
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
+		} );
+	} );
+
+	describe( 'Blink quirks', () => {
+		let model, editables, clock;
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editables = {
+				first: document.body.appendChild( document.createElement( 'div' ) ),
+				second: document.body.appendChild( document.createElement( 'div' ) )
+			};
+
+			editor = await MultiRootEditor.create(
+				editables,
+				{
+					extraPlugins: [ Paragraph, Table, Image ]
+				}
+			);
+
+			clock = sinon.useFakeTimers();
+			ui = editor.ui;
+			model = editor.model;
+			view = ui.view;
+
+			sinon.stub( env, 'isBlink' ).returns( true );
+		} );
+
+		afterEach( async () => {
+			clock.restore();
+
+			await editor.destroy();
+			editor = null;
+
+			Object.values( editables ).forEach( element => {
+				element.remove();
+			} );
+		} );
+
+		describe( 'block selection workaround', () => {
+			it( 'should focus first contenteditable table element after focusing editable', () => {
+				editor.setData( {
+					first: '<p>First</p>',
+					second: viewTable( [
+						[ '00', '01' ],
+						[ '02', '03' ]
+					] )
+				} );
+
+				// First editable is selected.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRangeIn( model.document.getRoot( 'first' ).getChild( 0 ) ) );
+				} );
+
+				// Lets trigger focus on second editable to see if the first cell of the table is focused.
+				editables.second.focus();
+				clock.tick( 20 );
+
+				// Expect that first table cell is focused.
+				expect( document.querySelector( 'td' ).matches( ':focus' ) ).to.be.true;
+			} );
+
+			it( 'should select first image element after focusing editable', () => {
+				editor.setData( {
+					first: '<p>First</p>',
+					second: '<img src="/assets/sample.png">'
+				} );
+
+				// First editable is selected.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRangeIn( model.document.getRoot( 'first' ).getChild( 0 ) ) );
+				} );
+
+				// Let's check if the image will be forced to be selected.
+				const spySelectAllChildren = sinon.spy();
+
+				sinon.stub( global.document.defaultView, 'getSelection' ).returns( {
+					anchorNode: null,
+					selectAllChildren: spySelectAllChildren
+				} );
+
+				editables.second.focus();
+				clock.tick( 20 );
+
+				expect( spySelectAllChildren ).to.be.calledOnce;
+			} );
+
+			it( 'should not crash when there is no selection', () => {
+				editor.setData( {
+					first: '<p>First</p>',
+					second: '<p>Second</p>'
+				} );
+
+				sinon.stub( global.document.defaultView, 'getSelection' ).returns( null );
+
+				expect( () => {
+					editables.second.focus();
+					clock.tick( 20 );
+				} ).not.to.throw();
+			} );
+
+			it( 'should not activate fix when anchor node is inside editable', () => {
+				editor.setData( {
+					first: '<p>First</p>',
+					second: '<img src="/assets/sample.png">'
+				} );
+
+				// First editable is selected.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRangeIn( model.document.getRoot( 'first' ).getChild( 0 ) ) );
+				} );
+
+				// Let's check if the image will be forced to be selected.
+				const spySelectAllChildren = sinon.spy();
+
+				sinon.stub( global.document.defaultView, 'getSelection' ).returns( {
+					anchorNode: document.querySelector( 'img[src="/assets/sample.png"]' ),
+					selectAllChildren: spySelectAllChildren
+				} );
+
+				editables.second.focus();
+				clock.tick( 20 );
+
+				expect( spySelectAllChildren ).not.to.be.called;
+			} );
 		} );
 	} );
 } );
