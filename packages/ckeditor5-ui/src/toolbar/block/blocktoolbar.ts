@@ -249,7 +249,6 @@ export default class BlockToolbar extends Plugin {
 		panelView.content.add( this.toolbarView );
 		panelView.class = 'ck-toolbar-container';
 		editor.ui.view.body.add( panelView );
-		editor.ui.focusTracker.add( panelView.element! );
 
 		// Close #panelView on `Esc` press.
 		this.toolbarView.keystrokes.set( 'Esc', ( evt, cancel ) => {
@@ -291,7 +290,6 @@ export default class BlockToolbar extends Plugin {
 		} );
 
 		editor.ui.view.body.add( buttonView );
-		editor.ui.focusTracker.add( buttonView.element! );
 
 		return buttonView;
 	}

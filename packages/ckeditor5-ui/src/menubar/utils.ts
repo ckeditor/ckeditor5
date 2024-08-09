@@ -8,6 +8,7 @@
  */
 
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
@@ -28,7 +29,6 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
-import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	logWarning,
 	type Locale,
@@ -38,13 +38,6 @@ import {
 import { cloneDeep } from 'lodash-es';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
-
-type DeepReadonly<T> = Readonly<{
-	[K in keyof T]:
-		T[K] extends string ? Readonly<T[K]>
-			: T[K] extends Array<infer A> ? Readonly<Array<DeepReadonly<A>>>
-				: DeepReadonly<T[K]>;
-}>;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
@@ -724,7 +717,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * The menu bar can be customized using the `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
 // **NOTE: Whenever you make changes to this value, reflect it in the documentation above!**
-export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
+export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 	{
 		menuId: 'file',
 		label: 'File',
@@ -1287,7 +1280,7 @@ function addMenuOrItemToGroup(
  * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
  */
 function purgeUnavailableComponents(
-	originalConfig: DeepReadonly<NormalizedMenuBarConfigObject>,
+	originalConfig: NormalizedMenuBarConfigObject,
 	config: NormalizedMenuBarConfigObject,
 	componentFactory: ComponentFactory
 ) {
@@ -1397,7 +1390,7 @@ function purgeEmptyMenus(
 
 function warnAboutEmptyMenu(
 	originalConfig: NormalizedMenuBarConfigObject,
-	emptyMenuConfig: MenuBarMenuDefinition | DeepReadonly<NormalizedMenuBarConfigObject>,
+	emptyMenuConfig: MenuBarMenuDefinition | NormalizedMenuBarConfigObject,
 	isUsingDefaultConfig: boolean
 ) {
 	if ( isUsingDefaultConfig ) {

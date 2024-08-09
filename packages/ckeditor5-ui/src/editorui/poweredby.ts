@@ -151,7 +151,6 @@ export default class PoweredBy extends /* #__PURE__ */ DomEmitterMixin() {
 		} );
 
 		editor.ui.view.body.add( balloon );
-		editor.ui.focusTracker.add( balloon.element! );
 
 		this._balloonView = balloon;
 	}

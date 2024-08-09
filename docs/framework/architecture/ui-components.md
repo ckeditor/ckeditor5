@@ -387,6 +387,54 @@ toolbarDropdown.render();
 document.getElementById( 'toolbar-button' ).append( toolbarDropdown.element );
 ```
 
+### Menu
+
+Finally, you can add a multi-level menu to a dropdown. Use the {@link module:ui/dropdown/utils~addMenuToDropdown `addMenuToDropdown()`} helper function to simplify the process.
+
+```js
+import {
+	addMenuToDropdown,
+    createDropdown
+} from 'ckeditor5';
+
+const locale = new Locale(); // Can be `editor.locale`.
+const body = new BodyCollection(); // Can be `editor.ui.view.body`.
+
+const menuDropdown = createDropdown( locale );
+
+// The menu items definitions.
+const definition = [
+	{
+		id: 'menu_1',
+		menu: 'Menu 1',
+		children: [
+			{
+				id: 'menu_1_a',
+				label: 'Item A'
+			},
+			{
+				id: 'menu_1_b',
+				label: 'Item B'
+			}
+		]
+	},
+	{
+		id: 'top_a',
+		label: 'Top Item A'
+	},
+	{
+		id: 'top_b',
+		label: 'Top Item B'
+	}
+];
+
+addMenuToDropdown( menuDropdown, body, definition );
+
+menuDropdown.render();
+
+document.getElementById( 'menu-dropdown' ).append( menuDropdown.element );
+```
+
 ### Split button
 
 Besides the standard button, you can also use the split button for a dropdown. It has two clickable sections: one for the main action and a second for expanding the dropdown with more options.

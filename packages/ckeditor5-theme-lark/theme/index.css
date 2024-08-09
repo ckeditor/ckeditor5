@@ -20,6 +20,10 @@
 @import "./ckeditor5-ui/components/dropdown/listdropdown.css";
 @import "./ckeditor5-ui/components/dropdown/splitbutton.css";
 @import "./ckeditor5-ui/components/dropdown/toolbardropdown.css";
+@import "./ckeditor5-ui/components/dropdown/menu/dropdownmenubutton.css";
+@import "./ckeditor5-ui/components/dropdown/menu/dropdownmenulistitem.css";
+@import "./ckeditor5-ui/components/dropdown/menu/dropdownmenulistitembutton.css";
+@import "./ckeditor5-ui/components/dropdown/menu/dropdownmenupanel.css";
 @import "./ckeditor5-ui/components/editorui/accessibilityhelp.css";
 @import "./ckeditor5-ui/components/editorui/editorui.css";
 @import "./ckeditor5-ui/components/formheader/formheader.css";
