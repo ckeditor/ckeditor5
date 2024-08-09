@@ -271,7 +271,7 @@ export default class MultiRootEditorUI extends EditorUI {
 				if ( element ) {
 					( element as HTMLElement ).focus();
 				}
-			}, 50 );
+			}, 40 );
 		} );
 	}
 

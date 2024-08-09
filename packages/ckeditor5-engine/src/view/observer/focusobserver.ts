@@ -107,7 +107,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			this._renderTimeoutId = null;
 			this.flush();
 			this.view.change( () => {} );
-		}, 80 );
+		}, 50 );
 	}
 
 	/**
