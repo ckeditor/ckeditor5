@@ -563,7 +563,17 @@ export default class DomConverter {
 				!first( childView.getAttributes() );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {
-				yield* this.viewChildrenToDom( childView, options );
+				// `RawElement` doesn't have #children defined, so they need to be temporarily rendered
+				// and extracted directly.
+				if ( childView.is( 'rawElement' ) ) {
+					const tempElement = this._domDocument.createElement( childView.name );
+
+					childView.render( tempElement, this );
+
+					yield* [ ...tempElement.childNodes ];
+				} else {
+					yield* this.viewChildrenToDom( childView, options );
+				}
 			} else {
 				if ( transparentRendering ) {
 					/**

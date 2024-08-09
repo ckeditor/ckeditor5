@@ -20,6 +20,7 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 	* {@link features/case-change Case change}
 	* {@link features/document-outline Document outline}
 	* {@link features/format-painter Format painter}
+	* {@link features/merge-fields Merge fields}
 	* {@link features/paste-from-office-enhanced Paste from Office enhanced}
 	* {@link features/slash-commands Slash commands}
 	* {@link features/table-of-contents Table of contents}

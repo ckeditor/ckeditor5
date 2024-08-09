@@ -88,6 +88,116 @@ describe( 'DecoupledEditor', () => {
 					editorElement.remove();
 				} );
 			} );
+
+			describe( 'configurable editor label (aria-label)', () => {
+				let editorElement;
+
+				beforeEach( () => {
+					editorElement = document.createElement( 'div' );
+
+					document.body.appendChild( editorElement );
+				} );
+
+				afterEach( () => {
+					editorElement.remove();
+				} );
+
+				it( 'should be set to the defaut value if not configured', async () => {
+					const editor = await DecoupledEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ]
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Rich Text Editor. Editing area: main'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should support the string format', async () => {
+					const editor = await DecoupledEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						label: 'Custom label'
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Custom label'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should support object format', async () => {
+					const editor = await DecoupledEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						label: {
+							main: 'Custom label'
+						}
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Custom label'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should keep an existing value from the source DOM element', async () => {
+					editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
+					const editor = await DecoupledEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ]
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Keep value' ).to.equal(
+						'Pre-existing value'
+					);
+
+					await editor.destroy();
+
+					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+				} );
+
+				it( 'should override the existing value from the source DOM element', async () => {
+					editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
+					const editor = await DecoupledEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						label: 'Custom label'
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+						'Custom label'
+					);
+
+					await editor.destroy();
+
+					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+				} );
+
+				it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
+					const editor = await DecoupledEditor.create( '<p>Initial data</p>', {
+						plugins: [ Paragraph, Bold ]
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+						'Rich Text Editor. Editing area: main'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
+					const editor = await DecoupledEditor.create( '<p>Initial data</p>', {
+						plugins: [ Paragraph, Bold ],
+						label: 'Custom label'
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+						'Custom label'
+					);
+
+					await editor.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'config.initialData', () => {

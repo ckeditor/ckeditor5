@@ -1,6 +1,5 @@
 {
 	"Rich Text Editor": "Title of the CKEditor5 editor.",
-	"Editor editing area: %0": "Accessible label of the specific editing area belonging to a container with an ARIA application role.",
 	"Edit block": "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)",
 	"Click to edit block": "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)",
 	"Drag to move": "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)",

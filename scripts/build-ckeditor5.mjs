@@ -80,7 +80,7 @@ function dist( path ) {
 		sourceMap: true,
 		minify: true,
 		browser: true,
-		name: 'ckeditor5',
+		name: 'CKEDITOR',
 		external: []
 	} );
 } )();

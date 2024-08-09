@@ -29,6 +29,10 @@ msgctxt "A message is displayed when the user is not authorised to access the CK
 msgid "Cannot access default workspace."
 msgstr "기본 작업 공간에 액세스할 수 없습니다."
 
+msgctxt "The title of the notification displayed when there is no permission to edit assets."
+msgid "You have no image editing permissions."
+msgstr "이미지를 편집할 수 있는 권한이 없습니다."
+
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
 msgstr "이미지 편집"

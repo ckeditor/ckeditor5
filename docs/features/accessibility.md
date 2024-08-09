@@ -29,11 +29,14 @@ In our ongoing commitment to accessibility, we provide a report based on the [IT
 We continuously update the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report to reflect any changes or improvements. You can download the latest version of the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** document below.
 
 <info-box info>
-	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</b></a>
+	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v43.0.0.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v43.0.0 (Aug 7, 2024)</b></a>
 
 	<details>
 		<summary>Previous versions</summary>
 		<ul>
+			<li>
+				<a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</a>
+			</li>
 			<li>
 				<a href="../assets/pdf/VPAT_CKEditor_5_v41.3.0.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.3.0 (Apr 10, 2024)</a>
 			</li>
@@ -159,6 +162,47 @@ These keyboard shortcuts allow for quick access to content editing features.
 		<tr>
 			<td>Revert autoformatting action</td>
 			<td colspan="2"><kbd>Backspace</kbd></td>
+		</tr>
+	</tbody>
+</table>
+
+#### Keystrokes for interacting with annotation threads (e.g. comments, track changes suggestions)
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Move focus to the thread when the selection is anchored in its marker</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></td>
+			<td><kbd>⌘⇧E</kbd></td>
+		</tr>
+		<tr>
+			<td>Exit the annotation and move focus back to the edited content</td>
+			<td colspan="2"><kbd>Esc</kbd></td>
+		</tr>
+		<tr>
+			<td>Browse the focused annotation thread or thread comment</td>
+			<td colspan="2"><kbd>Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Move across internals of the annotation thread</td>
+			<td><kbd>⇥</kbd>, <kbd>Shift</kbd>+<kbd>⇥</kbd></td>
+			<td><kbd>⇥</kbd>, <kbd>⇧⇥</kbd></td>
+		</tr>
+		<tr>
+			<td>Submit the reply while writing a comment</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td>
+			<td><kbd>⌘Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Move to the previous or next thread in the annotations sidebar or comments archive</td>
+			<td colspan="2"><kbd>↑</kbd>, <kbd>↓</kbd></td>
 		</tr>
 	</tbody>
 </table>

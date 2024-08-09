@@ -366,6 +366,58 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
+	describe( 'createRegExp()', () => {
+		let regExpStub;
+
+		// Cache the original value to restore it after the tests.
+		const originalGroupSupport = env.features.isRegExpUnicodePropertySupported;
+
+		before( () => {
+			env.features.isRegExpUnicodePropertySupported = false;
+		} );
+
+		beforeEach( () => {
+			return createClassicTestEditor( staticConfig )
+				.then( editor => {
+					regExpStub = sinon.stub( window, 'RegExp' );
+
+					return editor;
+				} );
+		} );
+
+		after( () => {
+			env.features.isRegExpUnicodePropertySupported = originalGroupSupport;
+		} );
+
+		it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
+			env.features.isRegExpUnicodePropertySupported = false;
+			createRegExp( '@', 2 );
+			sinon.assert.calledOnce( regExpStub );
+			sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])(.{2,})$', 'u' );
+		} );
+
+		it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
+			env.features.isRegExpUnicodePropertySupported = true;
+			createRegExp( '@', 2 );
+			sinon.assert.calledOnce( regExpStub );
+			sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])(.{2,})$', 'u' );
+		} );
+
+		it( 'correctly escapes passed marker #1', () => {
+			env.features.isRegExpUnicodePropertySupported = true;
+			createRegExp( ']', 2 );
+			sinon.assert.calledOnce( regExpStub );
+			sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([\\]])(.{2,})$', 'u' );
+		} );
+
+		it( 'correctly escapes passed marker #2', () => {
+			env.features.isRegExpUnicodePropertySupported = true;
+			createRegExp( '\\', 2 );
+			sinon.assert.calledOnce( regExpStub );
+			sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([\\\\])(.{2,})$', 'u' );
+		} );
+	} );
+
 	describe( 'typing integration', () => {
 		it( 'should show panel for matched marker after typing minimum characters', () => {
 			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
@@ -560,44 +612,6 @@ describe( 'MentionUI', () => {
 
 						sinon.assert.callCount( mentionElementSpy.set, 2 );
 					} );
-			} );
-		} );
-
-		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
-			let regExpStub;
-
-			// Cache the original value to restore it after the tests.
-			const originalGroupSupport = env.features.isRegExpUnicodePropertySupported;
-
-			before( () => {
-				env.features.isRegExpUnicodePropertySupported = false;
-			} );
-
-			beforeEach( () => {
-				return createClassicTestEditor( staticConfig )
-					.then( editor => {
-						regExpStub = sinon.stub( window, 'RegExp' );
-
-						return editor;
-					} );
-			} );
-
-			after( () => {
-				env.features.isRegExpUnicodePropertySupported = originalGroupSupport;
-			} );
-
-			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
-				env.features.isRegExpUnicodePropertySupported = false;
-				createRegExp( '@', 2 );
-				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])(.{2,})$', 'u' );
-			} );
-
-			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
-				env.features.isRegExpUnicodePropertySupported = true;
-				createRegExp( '@', 2 );
-				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])(.{2,})$', 'u' );
 			} );
 		} );
 

@@ -92,11 +92,11 @@ export default {
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
 				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				 },
 				plugins: [
-                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-                ],
+					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				mention: { 
 					// Mention configuration
@@ -372,7 +372,8 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-	import 'ckeditor5/ckeditor5.css';
+
+	import 'ckeditor5/ckeditor5.css'
 
 	export default {
 		name: 'app',
@@ -394,14 +395,6 @@ Since accessing the editor toolbar is not possible until after the editor instan
 	};
 </script>
 ```
-
-### Using the editor with collaboration plugins
-
-We provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
-
-* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
-
-It is not mandatory to build applications on top of the above sample, however, it should help you get started.
 
 ### Localization
 

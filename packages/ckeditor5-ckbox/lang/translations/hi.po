@@ -29,6 +29,10 @@ msgctxt "A message is displayed when the user is not authorised to access the CK
 msgid "Cannot access default workspace."
 msgstr "डिफ़ॉल्ट वर्कस्पेस को ऐक्सेस नहीं किया जा सकता."
 
+msgctxt "The title of the notification displayed when there is no permission to edit assets."
+msgid "You have no image editing permissions."
+msgstr "आपके पास तस्वीर को एडिट करने की अनुमति नहीं है."
+
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
 msgstr "इमेज एडिट करें"
