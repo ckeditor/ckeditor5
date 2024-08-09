@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 const editorData = {
 	intro: document.querySelector( '#editor-intro' ),
@@ -23,7 +24,7 @@ let editor;
 function initEditor() {
 	MultiRootEditor
 		.create( editorData, {
-			plugins: [ Essentials, Paragraph, Heading, Bold, Italic ],
+			plugins: [ Essentials, Paragraph, Heading, Bold, Italic, Table ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )
 		.then( newEditor => {
@@ -55,3 +56,5 @@ function destroyEditor() {
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
 document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+
+initEditor();
