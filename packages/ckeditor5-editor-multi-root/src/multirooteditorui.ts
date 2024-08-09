@@ -17,7 +17,7 @@ import {
 	type InlineEditableUIView
 } from 'ckeditor5/src/ui.js';
 
-import { DomEmitterMixin, env, type DomEmitter } from 'ckeditor5/src/utils.js';
+import { DomEmitterMixin, env, global, type DomEmitter } from 'ckeditor5/src/utils.js';
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
 import type MultiRootEditorUIView from './multirooteditoruiview.js';
@@ -249,11 +249,13 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * @param editableElement The editable element.
 	 */
 	private _enableChromeBlockSelectionWorkaround( editableElement: Element ) {
-		const { domConverter } = this.editor.editing.view;
+		const { editing } = this.editor;
+		const { domConverter } = editing.view;
 
 		this._domEmitter.listenTo( editableElement, 'focus', () => {
+			// Selection changes shortly after focus event so run the fix after a short delay.
 			setTimeout( () => {
-				const domSelection = document.defaultView!.getSelection()!;
+				const domSelection = global.document.defaultView!.getSelection()!;
 
 				// Validate position of the selection. Cancel fix if it's not correct.
 				if ( !domConverter.isDomSelectionCorrect( domSelection ) ) {
@@ -266,13 +268,23 @@ export default class MultiRootEditorUI extends EditorUI {
 				}
 
 				// Focus the first contenteditable element inside the editable element.
-				const element = editableElement.querySelector( '[contenteditable="true"]' );
+				// It's more accurate for tables, because it'll select first cell instead of the whole table.
+				const contentEditable = editableElement.querySelector( '[contenteditable="true"]' );
 
-				if ( element ) {
-					( element as HTMLElement ).focus();
+				if ( contentEditable ) {
+					( contentEditable as HTMLElement ).focus();
+					return;
 				}
-			}, 40 );
-		} );
+
+				// If there's no contenteditable element, force select the focused element.
+				const { activeElement } = global.document;
+				const selection = window.getSelection();
+
+				if ( activeElement && selection ) {
+					selection.selectAllChildren( activeElement );
+				}
+			}, 20 );
+		}, { priority: 'high', useCapture: true } );
 	}
 
 	/**
