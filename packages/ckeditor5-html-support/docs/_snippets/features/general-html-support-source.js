@@ -60,7 +60,8 @@ ClassicEditor.defaultConfig = {
 		tokenUrl: TOKEN_URL,
 		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 		forceDemoLabel: true
-	}
+	},
+	licenseKey: 'GPL'
 };
 
 window.ClassicEditor = ClassicEditor;

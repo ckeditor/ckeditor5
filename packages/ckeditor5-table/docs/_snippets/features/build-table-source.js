@@ -44,7 +44,8 @@ ClassicEditor.defaultConfig = {
 			top: window.getViewportTopOffsetConfig()
 		}
 	},
-	indentBlock: { offset: 30, unit: 'px' }
+	indentBlock: { offset: 30, unit: 'px' },
+	licenseKey: 'GPL'
 };
 
 window.ClassicEditor = ClassicEditor;

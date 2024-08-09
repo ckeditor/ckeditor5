@@ -57,7 +57,8 @@ ClassicEditor
 		exportWord: {
 			fileName: 'export-word-demo.docx',
 			tokenUrl: false
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		const button = document.querySelector( '#snippet-read-only-toggle' );

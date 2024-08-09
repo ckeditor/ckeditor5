@@ -29,7 +29,8 @@ ClassicEditor
 				width: 800,
 				resourceType: 'Images'
 			}
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

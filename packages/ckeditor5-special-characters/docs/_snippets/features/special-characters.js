@@ -44,7 +44,8 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

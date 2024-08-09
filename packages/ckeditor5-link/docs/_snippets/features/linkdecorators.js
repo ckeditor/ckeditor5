@@ -45,7 +45,8 @@ ClassicEditor
 					}
 				}
 			]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		if ( !window.editors ) {

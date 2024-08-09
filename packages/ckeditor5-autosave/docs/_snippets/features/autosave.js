@@ -42,7 +42,8 @@ ClassicEditor
 			save( editor ) {
 				return saveData( editor.getData() );
 			}
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

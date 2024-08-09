@@ -21,7 +21,8 @@ function Example( editor ) {
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-upcast-element' ), {
 	plugins: [ Essentials, Example ],
-	toolbar: []
+	toolbar: [],
+	licenseKey: 'GPL'
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(

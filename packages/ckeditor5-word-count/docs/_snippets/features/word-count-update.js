@@ -87,7 +87,8 @@ BalloonEditor
 				// If the character limit is exceeded, disable the send button.
 				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 			}
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.catch( err => {
 		console.error( err.stack );

@@ -29,7 +29,8 @@ DecoupledEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );

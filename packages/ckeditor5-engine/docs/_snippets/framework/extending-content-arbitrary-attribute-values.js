@@ -62,7 +62,8 @@ ClassicEditor
 		},
 		fontSize: {
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;
