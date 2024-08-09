@@ -249,18 +249,10 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * @param editableElement The editable element.
 	 */
 	private _enableChromeBlockSelectionWorkaround( editableElement: Element ) {
-		const { editing } = this.editor;
-		const { domConverter } = editing.view;
-
 		this._domEmitter.listenTo( editableElement, 'focus', () => {
 			// Selection changes shortly after focus event so run the fix after a short delay.
 			setTimeout( () => {
 				const domSelection = global.document.defaultView!.getSelection()!;
-
-				// Validate position of the selection. Cancel fix if it's not correct.
-				if ( !domConverter.isDomSelectionCorrect( domSelection ) ) {
-					return;
-				}
 
 				// Cancel fix if the anchor node is inside the editable element. It happens from time to time on Chrome.
 				if ( editableElement !== domSelection.anchorNode && editableElement.contains( domSelection.anchorNode ) ) {
