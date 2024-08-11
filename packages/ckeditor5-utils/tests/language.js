@@ -36,7 +36,10 @@ describe( 'language', () => {
 
 			// Dhivehi, Divehi
 			{ code: 'dv', textDirection: 'rtl' },
-			{ code: 'div', textDirection: 'rtl' }
+			{ code: 'div', textDirection: 'rtl' },
+
+			// Urdu
+			{ code: 'ur', textDirection: 'rtl' }
 		].forEach( ( { code, textDirection } ) => {
 			it( `determines the "${ code }" language direction`, () => {
 				expect( getLanguageDirection( code ) ).to.equal( textDirection );
