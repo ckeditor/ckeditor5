@@ -75,6 +75,7 @@ import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ]
 	} )

@@ -98,6 +98,7 @@ import '@webspellchecker/wproofreader-ckeditor5/index.css';
 
 ClassicEditor
 	.create( editorElement, {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ WProofreader, /* ...], */ ]
 		toolbar: [ 'wproofreader', /* ... */ ]
 	} )
