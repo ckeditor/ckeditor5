@@ -37,6 +37,7 @@ import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'c
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
 		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )

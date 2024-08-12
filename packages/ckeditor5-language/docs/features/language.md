@@ -39,6 +39,7 @@ import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextPartLanguage, /* ... */ ],
 		toolbar: [ 'textPartLanguage', /* ... */ ]
 	} )

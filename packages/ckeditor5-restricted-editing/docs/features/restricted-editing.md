@@ -59,6 +59,7 @@ import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditingException', /* ... */ ]
 	} )
@@ -75,6 +76,7 @@ import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RestrictedEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditing', /* ... */ ]
 	} )

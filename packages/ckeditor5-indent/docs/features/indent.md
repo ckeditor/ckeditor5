@@ -33,6 +33,7 @@ import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Indent, IndentBlock, /* ... */ ],
 		toolbar: [ 'outdent', 'indent', /* ... */ ]
 	} )

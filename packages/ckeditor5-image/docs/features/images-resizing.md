@@ -45,6 +45,7 @@ import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from 'ck
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
 		// More of editor's configuration.
 		// ...

@@ -42,6 +42,7 @@ import { ClassicEditor, Bold, Italic, Essentials, PasteFromMarkdownExperimental 
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			PasteFromMarkdownExperimental,
 			Essentials,

@@ -40,6 +40,7 @@ import { DecoupledEditor, Minimap } from 'ckeditor5';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Minimap, /* ... */ ],
 		minimap: {
 			// Reference to the container element as shown in the configuration section of the guide

@@ -37,6 +37,7 @@ import { ClassicEditor, Table, TableCaption, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, TableCaption, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
 		table: {

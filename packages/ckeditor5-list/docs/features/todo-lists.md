@@ -34,10 +34,11 @@ You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</k
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { TodoList } from 'ckeditor5';
+import { ClassicEditor, TodoList } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TodoList, /* ... */ ],
 		toolbar: [ 'todoList', /* ... */ ],
 	} )

@@ -44,6 +44,7 @@ import { ClassicEditor, Bold, Italic, Essentials, Markdown } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			Markdown,
 			Essentials,

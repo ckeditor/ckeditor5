@@ -43,10 +43,8 @@ import { ClassicEditor, Undo } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Undo, /* ... */ ],
-
-		// Display the "Undo" and "Redo" buttons in the toolbar.
 		toolbar: [ 'undo', 'redo', /* ... */ ],
 	} )
 	.then( /* ... */ )

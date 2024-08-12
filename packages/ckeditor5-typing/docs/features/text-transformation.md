@@ -78,6 +78,7 @@ import { ClassicEditor, TextTransformation } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextTransformation, /* ... */ ],
 	} )
 	.then( /* ... */ )
