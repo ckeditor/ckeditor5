@@ -100,8 +100,9 @@ export const DropdownMenuBehaviors = {
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
 			if ( menuView.isOpen ) {
-				menuView.isOpen = false;
+				// Focus first, then close the panel. Otherwise, Safari won't send blur events for detached DOM elements, leading to errors.
 				menuView.focus();
+				menuView.isOpen = false;
 				cancel();
 			}
 		} );
@@ -110,8 +111,9 @@ export const DropdownMenuBehaviors = {
 	closeOnEscKey( menuView: DropdownMenuNestedMenuView ): void {
 		menuView.keystrokes.set( 'esc', ( data, cancel ) => {
 			if ( menuView.isOpen ) {
-				menuView.isOpen = false;
+				// Focus first, then close the panel. Otherwise, Safari won't send blur events for detached DOM elements, leading to errors.
 				menuView.focus();
+				menuView.isOpen = false;
 				cancel();
 			}
 		} );
