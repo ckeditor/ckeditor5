@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, KeyboardEvent */
+/* global document, Event, KeyboardEvent, MouseEvent */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
@@ -970,7 +970,7 @@ describe( 'MenuBarView utils', () => {
 			it( 'should set proper isFocusBorderEnabled when a clicked and focused item on opened menu', () => {
 				const clock = sinon.useFakeTimers();
 
-				sinon.stub( menuBarView.element, 'matches' ).withArgs( ':focus-within' ).returns( true	);
+				sinon.stub( menuBarView.element, 'matches' ).withArgs( ':focus-within' ).returns( true );
 
 				const menuA = getMenuByLabel( menuBarView, 'A' );
 
@@ -990,6 +990,43 @@ describe( 'MenuBarView utils', () => {
 				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
 
 				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should not clean #isFocusBorderEnabled if the menu bar was closed by an Esc key press', async () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.buttonView.focus();
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				await wait( 10 );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				await wait( 100 );
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+				expect( menuBarView.isOpen ).to.be.true;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.esc } ) );
+				await wait( 10 );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.esc } ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+				expect( menuBarView.isOpen ).to.be.false;
+			} );
+
+			it( 'should clean #isFocusBorderEnabled if the menu bar was closed without use of a keyboard', async () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.buttonView.element.dispatchEvent( new MouseEvent( 'click' ) );
+
+				await wait( 10 );
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				expect( menuBarView.isOpen ).to.be.true;
+
+				menuA.buttonView.element.dispatchEvent( new MouseEvent( 'click' ) );
+				await wait( 10 );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				expect( menuBarView.isOpen ).to.be.false;
 			} );
 		} );
 	} );
