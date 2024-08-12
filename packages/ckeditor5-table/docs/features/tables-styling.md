@@ -119,8 +119,7 @@ const customColorPalette = [
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		// ... Other configuration options ...
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells',

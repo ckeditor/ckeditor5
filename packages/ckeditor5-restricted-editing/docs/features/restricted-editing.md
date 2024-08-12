@@ -93,6 +93,7 @@ import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
 		toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
 		restrictedEditing: {

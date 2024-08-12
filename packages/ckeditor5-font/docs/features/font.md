@@ -80,6 +80,7 @@ For example, the following editor supports two font families besides the default
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontFamily: {
 			options: [
 				'default',
@@ -104,6 +105,7 @@ By default, all `font-family` values that are not specified in the `config.fontF
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontFamily: {
 			options: [
 				// Font family configuration options are described in the "Configuring the font family feature" section.
@@ -168,6 +170,7 @@ An example of an editor that supports two font sizes:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontSize: {
 			options: [
 				'tiny',
@@ -200,6 +203,7 @@ Here is an example of the WYSIWYG editor that supports numerical font sizes. Not
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontSize: {
 			options: [
 				9,
@@ -228,6 +232,7 @@ By default, all `font-size` values that are not specified in the `config.fontSiz
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontSize: {
 			options: [
 				// Numerical values.
@@ -265,6 +270,7 @@ It is possible to configure which colors are available in the color dropdown. Us
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			colors: [
 				{
@@ -335,6 +341,7 @@ Usually, you will want to use this option when changing the number of [available
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			colors: [
 				// 9 colors defined here.
@@ -368,6 +375,7 @@ By default, the number of displayed document colors is limited to one row, but y
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			// Display 6 columns in the color grid.
 			columns: 6,
@@ -404,6 +412,7 @@ To turn off the color picker entirely for the given feature, set the {@link modu
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			colorPicker: {
 				// Use 'hex' format for output instead of 'hsl'.

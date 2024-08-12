@@ -24,6 +24,7 @@ import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SimpleUploadAdapter, /* ... */ ],
 		toolbar: [ /* ... */ ],
 		simpleUpload: {
@@ -43,9 +44,7 @@ import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ SimpleUploadAdapter, /* ... */ ],
-		toolbar: [ /* ... */ ],
+		// ... Other configuration options ...
 		simpleUpload: {
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',

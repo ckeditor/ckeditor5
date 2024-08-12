@@ -57,6 +57,7 @@ It is possible to configure which languages are available to the users. You can 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
 				{ language: 'css', label: 'CSS' },
@@ -75,6 +76,7 @@ By default, the CSS class of the `<code>` element in the data and editing is gen
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
 				// Do not render the CSS class for the plain text code blocks.

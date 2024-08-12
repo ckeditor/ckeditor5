@@ -51,6 +51,7 @@ By default, the find and replace form displays inside a dialog. That allows for 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		findAndReplace: {
 			uiType: 'dropdown'
 		}

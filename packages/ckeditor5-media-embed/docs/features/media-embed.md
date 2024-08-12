@@ -178,8 +178,7 @@ For instance, to leave only the previewable providers, configure this feature as
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, /* ... */ ],
-		toolbar: [ 'mediaEmbed', /* ... */ ]
+		// ... Other configuration options ...
 		mediaEmbed: {
 			removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
 		}
@@ -195,8 +194,7 @@ To override the default providers, use {@link module:media-embed/mediaembedconfi
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, /* ... */ ],,
-		toolbar: [ 'mediaEmbed', /* ... */ ]
+		// ... Other configuration options ...
 		mediaEmbed: {
 			providers: [
 				{

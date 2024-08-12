@@ -102,7 +102,7 @@ You can execute your custom callback every time content statistics change by def
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, /* ... */ ],
+		// ... Other configuration options ...
 		wordCount: {
 			onUpdate: stats => {
 				// Prints the current content statistics.

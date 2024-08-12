@@ -53,7 +53,7 @@ To change the title placeholder, use the {@link module:heading/title~TitleConfig
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Title, /* ... */ ],
+		// ... Other configuration options ...
 		title: {
 			placeholder: 'My custom placeholder for the title'
 		},

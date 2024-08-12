@@ -60,10 +60,7 @@ The code snippet below was used to configure the demo above. It defines the list
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// This feature is available in the superbuild only.
-		// See the "Installation" section.
-		plugins: [ Mention, /* ... */ ],
-
+		// ... Other configuration options ...
 		mention: {
 			feeds: [
 				{
@@ -104,10 +101,7 @@ The callback receives the query text which should be used to filter item suggest
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// This feature is available in the superbuild only.
-		// See the "Installation" section.
-		plugins: [ Mention, /* ... */ ],
-
+		// ... Other configuration options ...
 		mention: {
 			feeds: [
 				{
@@ -172,7 +166,7 @@ This callback takes a feed item (it contains at least the `name` property) and m
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, /* ... */ ],
+		// ... Other configuration options ...
 		mention: {
 			feeds: [
 				{
@@ -213,7 +207,7 @@ The number of items displayed in the autocomplete list can be customized by defi
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, /* ... */ ],
+		// ... Other configuration options ...
 		mention: {
 			// Define the custom number of visible mentions.
 			dropdownLimit: 4
@@ -237,7 +231,7 @@ You can control the text inserted into the editor when creating a mention via th
 ```js
 ClassicEditor
 	.create( editorElement, {
-		plugins: [ Mention, ... ],
+		// ... Other configuration options ...
 		mention: {
 			feeds: [
 				// Feed items as objects.
@@ -289,6 +283,7 @@ By default, attribute elements that are next to each other and have the same val
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [ Mention, MentionCustomization, /* ... */ ], // Add the custom mention plugin function.
 		mention: {
 			// Configuration.
@@ -373,6 +368,7 @@ Below is an example of a customized mention feature that:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
+		// ... Other configuration options ...
 		plugins: [ Mention, MentionCustomization, /* ... */ ],
 		mention: {
 			dropdownLimit: 4,

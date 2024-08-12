@@ -265,14 +265,7 @@ Configuring the styles feature takes two steps. First, you need to define the st
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
-		},
+		// ... Other configuration options ...
 		style: {
 			definitions: [
 				{

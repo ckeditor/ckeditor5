@@ -115,15 +115,9 @@ After signing up for a [trial or paid version](https://ckeditor.com/contact/), y
 Add the following configuration to your editor:
 
 ```js
-import { ClassicEditor } from 'ckeditor5';
-import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
-
-import '@webspellchecker/wproofreader-ckeditor5/index.css';
-
 ClassicEditor
 	.create( editorElement, {
-		plugins: [ WProofreader, /* ... */ ],
-		toolbar: [ 'wproofreader', /* ... */ ]
+		// ... Other configuration options ...
 		wproofreader: {
 			serviceId: 'your-service-ID',
 			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
@@ -140,15 +134,9 @@ After signing up for a [trial or paid version](https://ckeditor.com/contact/), y
 You will need to add the following configuration to your editor:
 
 ```js
-import { ClassicEditor } from 'ckeditor5';
-import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
-
-import '@webspellchecker/wproofreader-ckeditor5/index.css';
-
 ClassicEditor
 	.create( editorElement, {
-		plugins: [ WProofreader, /* ... */ ],
-		toolbar: [ 'wproofreader', /* ... */ ]
+		// ... Other configuration options ...
 		wproofreader: {
 			serviceProtocol: 'https',
 			serviceHost: 'localhost',

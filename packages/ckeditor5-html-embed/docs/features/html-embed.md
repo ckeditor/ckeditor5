@@ -74,8 +74,7 @@ However, by showing previews of the embedded HTML snippets, you expose the users
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlEmbed, /* ... */ ],
-		toolbar: [ 'htmlEmbed', /* ... */ ],
+		// ... Other configuration options ...
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: ( inputHtml ) => {

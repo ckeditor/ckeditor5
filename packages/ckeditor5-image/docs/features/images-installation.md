@@ -43,11 +43,9 @@ ClassicEditor
 The Image feature comes with the unified image insert dropdown component {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image insert}. It automatically collects installed image insert methods. For example, if you install the `ImageUpload` plugin, the corresponding button will automatically appear in the dropdown. You only need to add a button to the toolbar:
 
 ```js
-import { ClassicEditor, Image } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image ],
+		// ... Other configuration options ...
 		toolbar: [ 'insertImage', /* ... */ ]
 	} )
 	.then( /* ... */ )
@@ -65,12 +63,9 @@ Note that the insert methods mentioned above will only be added if you install d
 If you need to limit the methods included in the dropdown (apart from not installing a specific feature) or change their order you can use the `image.insert.integration` configuration option:
 
 ```js
-import { ClassicEditor, Image } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image ],
-		toolbar: [ 'insertImage', /* ... */ ],
+		// ... Other configuration options ...
 		image: {
 			insert: {
 				// This is the default configuration, you do not need to provide
@@ -100,6 +95,7 @@ import {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 		toolbar: [ 'insertImage', /* ... */ ],
 		image: {

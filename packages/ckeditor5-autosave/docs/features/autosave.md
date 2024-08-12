@@ -83,12 +83,11 @@ One second is the default waiting time before the next save action if nothing ha
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		autosave: {
 			waitingTime: 5000, // in ms
 			save( editor ) {}
 		},
-
-		// ... other configuration options.
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -101,12 +100,7 @@ The demo example at the beginning of this guide shows a simple integration of th
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Autosave,
-
-			// ... other plugins.
-		],
-
+		// ... Other configuration options ...
 		autosave: {
 			save( editor ) {
 				return saveData( editor.getData() );

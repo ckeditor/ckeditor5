@@ -62,11 +62,9 @@ DecoupledEditor
 The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimapconfig~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
 
 ```js
-import { DecoupledEditor, Minimap } from 'ckeditor5';
-
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Minimap, /* ... */ ],
+		// ... Other configuration options ...
 		minimap: {
 			container: document.querySelector( '.minimap-container' )
 		}
@@ -168,11 +166,9 @@ Employ the following CSS:
 Finally, the JavaScript to run the editor (learn how to [install](#installation) the feature):
 
 ```js
-import { DecoupledEditor, Minimap } from 'ckeditor5';
-
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
-		plugins: [ Minimap, /* ... */ ],
+		// ... Other configuration options ...
 		minimap: {
 			container: document.querySelector( '.minimap-container' ),
 		}

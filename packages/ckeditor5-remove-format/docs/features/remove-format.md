@@ -75,6 +75,7 @@ Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/config
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [
 			RemoveFormat,
 			RemoveFormatLinks,

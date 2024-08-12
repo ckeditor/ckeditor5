@@ -102,6 +102,7 @@ For instance, to use the transformations from the "quotes" and "typography" grou
 ```js
 ClassicEditor
 	.create( editorElement, {
+		// ... Other configuration options ...
 		typing: {
 			transformations: {
 				include: [
@@ -126,6 +127,7 @@ Another example, removing some transformations and adding some extra ones:
 ```js
 ClassicEditor
 	.create( editorElement, {
+		// ... Other configuration options ...
 		typing: {
 			transformations: {
 				remove: [
