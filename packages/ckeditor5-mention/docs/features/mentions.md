@@ -44,7 +44,6 @@ ClassicEditor
 		plugins: [ Mention, /* ... */ ],
 		mention: {
 			// Configuration.
-			// ...
 		}
 	} )
 	.then( /* ... */ )

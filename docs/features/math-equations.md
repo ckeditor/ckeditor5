@@ -78,6 +78,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ]
+		mathTypeParameters : {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

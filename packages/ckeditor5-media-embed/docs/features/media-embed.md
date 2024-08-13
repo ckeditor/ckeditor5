@@ -44,8 +44,7 @@ ClassicEditor
 		plugins: [ MediaEmbed, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ]
 		mediaEmbed: {
-			// Configuration
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )

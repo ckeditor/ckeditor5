@@ -50,6 +50,13 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Font, /* ... */ ],
 		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
+		fontFamily: {
+			// Configuration.
+		}
+		fontCOlor: {
+			// Configuration.
+		}
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

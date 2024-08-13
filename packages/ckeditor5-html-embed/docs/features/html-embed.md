@@ -58,6 +58,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HtmlEmbed, /* ... */ ],
 		toolbar: [ 'htmlEmbed', /* ... */ ],
+		htmlEmbed: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

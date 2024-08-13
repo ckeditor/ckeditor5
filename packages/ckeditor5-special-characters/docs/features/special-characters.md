@@ -40,6 +40,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
 		toolbar: [ 'specialCharacters', /* ... */ ],
+		specialCharacters: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

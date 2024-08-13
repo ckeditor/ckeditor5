@@ -43,8 +43,7 @@ DecoupledEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Minimap, /* ... */ ],
 		minimap: {
-			// Reference to the container element as shown in the configuration section of the guide
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )

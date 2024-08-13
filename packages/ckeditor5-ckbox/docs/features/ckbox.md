@@ -94,8 +94,7 @@ ClassicEditor
 		plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
 		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
 		ckbox: {
-			// Feature configuration including license key.
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )

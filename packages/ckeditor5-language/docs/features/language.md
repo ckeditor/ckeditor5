@@ -42,6 +42,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextPartLanguage, /* ... */ ],
 		toolbar: [ 'textPartLanguage', /* ... */ ]
+		language: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

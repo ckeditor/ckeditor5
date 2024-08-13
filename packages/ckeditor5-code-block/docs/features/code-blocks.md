@@ -39,6 +39,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ CodeBlock, /* ... */ ],
 		toolbar: [ 'codeBlock', /* ... */ ]
+		codeBlock: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

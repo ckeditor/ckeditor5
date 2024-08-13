@@ -41,6 +41,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TodoList, /* ... */ ],
 		toolbar: [ 'todoList', /* ... */ ],
+		list: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

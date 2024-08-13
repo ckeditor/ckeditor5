@@ -57,6 +57,9 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Heading, /* ... */ ],
 		toolbar: [ 'heading', /* ... */ ]
+		heading: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

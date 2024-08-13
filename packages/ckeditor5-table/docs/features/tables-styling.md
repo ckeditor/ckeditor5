@@ -50,12 +50,10 @@ ClassicEditor
 
 			tableProperties: {
 				// The configuration of the TableProperties plugin.
-				// ...
 			},
 
 			tableCellProperties: {
 				// The configuration of the TableCellProperties plugin.
-				// ...
 			}
 		}
 	} )

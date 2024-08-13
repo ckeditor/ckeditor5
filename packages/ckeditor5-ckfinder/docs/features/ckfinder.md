@@ -81,8 +81,7 @@ ClassicEditor
 		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
 		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
 		ckfinder: {
-			// Feature configuration.
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )

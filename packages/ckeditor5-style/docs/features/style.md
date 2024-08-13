@@ -240,18 +240,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
+		toolbar: [ 'style', /* ... */ ],
 		},
 		style: {
-			definitions: [
-				// Styles definitions.
-				// ...
-			]
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )

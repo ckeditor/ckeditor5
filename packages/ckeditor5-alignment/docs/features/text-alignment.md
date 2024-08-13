@@ -36,6 +36,9 @@ ClassicEditor.
 		licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL'.
 		plugins: [ Alignment, /* ... */ ],
 		toolbar: [ 'alignment', /* ... */ ]
+		alignment: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

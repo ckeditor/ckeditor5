@@ -198,12 +198,29 @@ ClassicEditor
 		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Table contextual toolbar
+
+Easily control your tables employing a dedicated toolbar.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
 
 ### Default table headers
 
