@@ -48,7 +48,7 @@ ClassicEditor
 The latest versions of our official components for Angular, React, and Vue 3 were migrated to TypeScript and use native CKEditor&nbsp;5's type definitions. You do not need to provide custom definitions anymore. You can use the following guides:
 
 * {@link getting-started/integrations/angular Angular component}
-* {@link getting-started/integrations/react React component}
+* {@link getting-started/integrations/react-default-npm React component}
 * {@link getting-started/integrations/vuejs-v3 Vue.js 3+ component}
 
 ## Developing plugins with TypeScript

@@ -19,7 +19,7 @@ CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript 
 There are four official integrations:
 
 * {@link getting-started/integrations/angular CKEditor&nbsp;5 rich-text editor for Angular}
-* {@link getting-started/integrations/react CKEditor&nbsp;5 rich-text editor for React}
+* {@link getting-started/integrations/react-default-npm CKEditor&nbsp;5 rich-text editor for React}
 * {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 rich-text editor for Vue.js 2.x}
 * {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 rich-text editor for Vue.js 3.x}
 
