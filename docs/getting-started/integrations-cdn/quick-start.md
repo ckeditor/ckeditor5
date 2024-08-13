@@ -1,6 +1,7 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 installation | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 instllation with CDN | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using Vanilla JS with CDN
 category: cloud
 order: 20
 ---

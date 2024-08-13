@@ -1,6 +1,7 @@
 ---
 category: cloud
 meta-title: Compatibility with Laravel | CKEditor 5 documentation
+meta-description: Integrate CKEditor 5 using Laravel
 order: 70
 menu-title: Laravel
 ---
