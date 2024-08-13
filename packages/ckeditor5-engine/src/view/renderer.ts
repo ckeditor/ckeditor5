@@ -585,20 +585,18 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			return;
 		}
 
-		const domAttrKeys = Array.from( ( domElement as DomElement ).attributes ).map( attr => attr.name );
-		const viewAttrKeys = viewElement.getAttributeKeys();
-
-		// Add or overwrite attributes.
-		for ( const key of viewAttrKeys ) {
-			this.domConverter.setDomElementAttribute( domElement as DomElement, key, viewElement.getAttribute( key )!, viewElement );
-		}
-
 		// Remove from DOM attributes which do not exists in the view.
-		for ( const key of domAttrKeys ) {
+		for ( const attr of ( domElement as DomElement ).attributes ) {
+			const key = attr.name;
 			// All other attributes not present in the DOM should be removed.
 			if ( !viewElement.hasAttribute( key ) ) {
 				this.domConverter.removeDomElementAttribute( domElement as DomElement, key );
 			}
+		}
+
+		// Add or overwrite attributes.
+		for ( const key of viewElement.getAttributeKeys() ) {
+			this.domConverter.setDomElementAttribute( domElement as DomElement, key, viewElement.getAttribute( key )!, viewElement );
 		}
 	}
 
