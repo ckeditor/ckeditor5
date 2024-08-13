@@ -17,8 +17,9 @@ const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000; // 1 hour
 const TOKEN_FAILED_REFRESH_TIMEOUT_TIME = 5000; // 5 seconds
 
 /**
- * Class representing the token used for communication with CKEditor Cloud Services.
- * Value of the token is retrieving from the specified URL and is refreshed every 1 hour by default.
+ * The class representing the token used for communication with CKEditor Cloud Services.
+ * The value of the token is retrieved from the specified URL and refreshed every 1 hour by default.
+ * If the token retrieval fails, the token will automatically retry in 5 seconds intervals.
  */
 export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	/**
@@ -106,7 +107,13 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Refresh token method. Useful in a method form as it can be override in tests.
+	 * Refresh token method. Useful in a method form as it can be overridden in tests.
+	 *
+	 * This method will be invoked periodically based on the token expiry date after first call to keep the token up-to-date
+	 * (requires {@link module:cloud-services/token/token~TokenOptions auto refresh option} to be set).
+	 *
+	 * If the token refresh fails, the method will retry in 5 seconds intervals until success or until the token gets
+	 * {@link #destroy destroyed}.
 	 */
 	public refreshToken(): Promise<InitializedToken> {
 		const autoRefresh = this._options.autoRefresh;
@@ -132,8 +139,9 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 				 * endpoint is up and running. {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl Learn more}
 				 * about token configuration.
 				 *
-				 * **Note:** If the {@link module:cloud-services/token/token~TokenOptions auto refresh} is enabled, attempts to refresh
-				 * the token will be made until destroyed.
+				 * **Note:** If the token's {@link module:cloud-services/token/token~TokenOptions auto refresh option} is enabled,
+				 * attempts to refresh will be made until success or token's
+				 * {@link module:cloud-services/token/token~Token#destroy destruction}.
 				 *
 				 * @error token-refresh-failed
 				 * @param autoRefresh Whether the token will keep auto refreshing.
