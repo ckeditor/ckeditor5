@@ -673,8 +673,8 @@ describe( 'table properties', () => {
 						borderColor: 'hsl(0, 0%, 70%)',
 						borderWidth: '1px',
 						backgroundColor: '',
-						width: '100%',
-						height: '100%',
+						width: '',
+						height: '',
 						alignment: 'center'
 					} );
 				} );
