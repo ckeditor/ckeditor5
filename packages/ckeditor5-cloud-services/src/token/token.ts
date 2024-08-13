@@ -112,7 +112,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * This method will be invoked periodically based on the token expiry date after first call to keep the token up-to-date
 	 * (requires {@link module:cloud-services/token/token~TokenOptions auto refresh option} to be set).
 	 *
-	 * If the token refresh fails, the method will retry in 5 seconds intervals until success or until the token gets
+	 * If the token refresh fails, the method will retry in 5 seconds intervals until success or the token gets
 	 * {@link #destroy destroyed}.
 	 */
 	public refreshToken(): Promise<InitializedToken> {
