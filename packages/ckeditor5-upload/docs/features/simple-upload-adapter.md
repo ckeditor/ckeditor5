@@ -24,10 +24,11 @@ import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SimpleUploadAdapter, /* ... */ ],
 		toolbar: [ /* ... */ ],
 		simpleUpload: {
-			// Feature configuration.
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
@@ -39,12 +40,9 @@ ClassicEditor
 The client side of this feature is configurable using the {@link module:upload/uploadconfig~SimpleUploadConfig `config.simpleUpload`} object.
 
 ```js
-import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SimpleUploadAdapter, /* ... */ ],
-		toolbar: [ /* ... */ ],
+		// ... Other configuration options ...
 		simpleUpload: {
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',

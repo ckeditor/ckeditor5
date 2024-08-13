@@ -87,12 +87,16 @@ The `List` plugin provides the {@link features/lists ordered (numbered) and unor
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { List } from 'ckeditor5';
+import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+		list: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -105,11 +109,11 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
 
 ```js
-import { ListProperties } from 'ckeditor5';
+import { ClassicEditor, List, ListProperties } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ListProperties, /* ... */ ],
+		plugins: [ List, ListProperties, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 			properties: {

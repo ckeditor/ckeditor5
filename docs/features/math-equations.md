@@ -75,8 +75,12 @@ import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ]
+		mathTypeParameters : {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -99,16 +103,7 @@ To install the Java service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( document.querySelector( '#example' ), {
-				plugins: [ MathType, /* ... */ ],
-				toolbar: {
-					items: [
-						'MathType',
-						'ChemType',
-						// More toolbar items.
-						// ...
-					]
-				},
-				language: 'en',
+				// ... Other configuration options ...
 				// MathType parameters.
 				mathTypeParameters : {
 					serviceProviderProperties : {
@@ -134,16 +129,7 @@ To install the PHP service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( document.querySelector( '#example' ), {
-				plugins: [ MathType, /* ... */ ],
-				toolbar: {
-					items: [
-						'MathType',
-						'ChemType',
-						// More toolbar items.
-						// ...
-					]
-				},
-				language: 'en',
+				// ... Other configuration options ...
 				// MathType parameters.
 				mathTypeParameters : {
 					serviceProviderProperties : {
@@ -170,16 +156,7 @@ To install the .NET service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( document.querySelector( '#example' ), {
-				plugins: [ MathType, /* ... */ ],
-				toolbar: {
-					items: [
-						'MathType',
-						'ChemType',
-						// More toolbar items.
-						// ...
-					]
-				},
-				language: 'en',
+				// ... Other configuration options ...
 				// MathType parameters.
 				mathTypeParameters : {
 					serviceProviderProperties : {
@@ -210,16 +187,7 @@ To install the Ruby on Rails service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( document.querySelector( '#example' ), {
-				plugins: [ MathType, /* ... */ ],
-				toolbar: {
-					items: [
-						'MathType',
-						'ChemType',
-						// More toolbar items.
-						// ...
-					]
-				},
-				language: 'en',
+				// ... Other configuration options ...
 				// MathType parameters.
 				mathTypeParameters : {
 					serviceProviderProperties : {

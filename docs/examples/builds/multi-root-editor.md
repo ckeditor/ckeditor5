@@ -49,6 +49,7 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
+			licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 			plugins: [
 				Essentials,
 				Heading,

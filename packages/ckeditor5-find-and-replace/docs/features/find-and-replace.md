@@ -34,8 +34,12 @@ import { ClassicEditor, FindAndReplace } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ FindAndReplace, /* ... */ ],
 		toolbar: [ 'findAndReplace', /* ... */ ],
+		findAndReplace: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -50,6 +54,7 @@ By default, the find and replace form displays inside a dialog. That allows for 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		findAndReplace: {
 			uiType: 'dropdown'
 		}

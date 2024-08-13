@@ -33,6 +33,7 @@ import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
@@ -56,6 +57,7 @@ import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, AdjacentListsSupport, /* ... */ ]
 	} )
 	.then( /* ... */ )

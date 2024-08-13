@@ -163,7 +163,7 @@ These keyboard shortcuts allow for quick access to content editing features.
 	</tbody>
 </table>
 
-#### Keystrokes for interacting with annotation threads (e.g. comments, track changes suggestions)
+#### Keystrokes for interacting with annotation threads (such as comments or track changes suggestions)
 
 <table>
 	<thead>

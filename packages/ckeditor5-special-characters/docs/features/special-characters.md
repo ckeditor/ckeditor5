@@ -37,8 +37,12 @@ import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'c
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
 		toolbar: [ 'specialCharacters', /* ... */ ],
+		specialCharacters: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -55,8 +59,6 @@ You can define a new special characters category using the {@link module:special
 For example, the following plugin adds the "Emoji" category to the special characters dropdown.
 
 ```js
-import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
-
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ title: 'smiley face', character: '😊' },
@@ -69,12 +71,10 @@ function SpecialCharactersEmoji( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
-			// More plugins.
-			// ...
 		],
-		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -99,8 +99,6 @@ Below you can see a demo based on the example shown above. Use the special chara
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters to an existing category.
 
 ```js
-import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
-
 function SpecialCharactersExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
 		{ title: 'alpha', character: 'α' },
@@ -111,13 +109,10 @@ function SpecialCharactersExtended( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
-
-			// More plugins.
-			// ...
 		],
-		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -151,13 +146,10 @@ import { ClassicEditor, SpecialCharacters, SpecialCharactersCurrency, SpecialCha
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
-
-			// More plugins.
-			// ...
 		],
-		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -176,6 +168,7 @@ The categories order can be customized using the {@link module:special-character
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
 		specialCharacters: {
 			order: [
