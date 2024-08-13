@@ -1451,6 +1451,16 @@ describe( 'utils', () => {
 
 			dropdownView.element.remove();
 		} );
+
+		it( 'should correctly add the menu to an open dropdown', () => {
+			dropdownView.render();
+			dropdownView.isOpen = true;
+
+			addMenuToDropdown( dropdownView, body, definition );
+
+			expect( dropdownView.panelView.children.length ).to.equal( 1 );
+			expect( dropdownView.menuView.isRendered ).to.be.true;
+		} );
 	} );
 
 	describe( 'focusChildOnDropdownOpen()', () => {

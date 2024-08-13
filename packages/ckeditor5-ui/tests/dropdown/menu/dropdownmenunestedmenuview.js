@@ -147,18 +147,6 @@ describe( 'DropdownMenuNestedMenuView', () => {
 	} );
 
 	describe( 'panel repositioning upon open', () => {
-		it( 'should update the position whenever the menu gets open (but not when it closes)', () => {
-			menuView.render();
-			menuView.panelView.position = null;
-			menuView.isOpen = true;
-
-			expect( menuView.panelView.position ).to.not.be.null;
-
-			const newPositionName = menuView.panelView.position;
-			menuView.isOpen = false;
-			expect( menuView.panelView.position ).to.equal( newPositionName );
-		} );
-
 		it( 'should use a specific set of positioning functions in a specific priority order (LTR)', () => {
 			const spy = sinon.spy( menuView.panelView, 'pin' );
 

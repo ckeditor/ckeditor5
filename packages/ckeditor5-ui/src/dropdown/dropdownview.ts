@@ -126,13 +126,15 @@ export default class DropdownView extends View<HTMLDivElement> {
 	 * A child toolbar of the dropdown located in the
 	 * {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
 	 *
-	 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+	 * **Note**: Only supported when dropdown has a toolbar added using {@link module:ui/dropdown/utils~addToolbarToDropdown}.
 	 */
 	public toolbarView?: ToolbarView;
 
 	/**
 	 * A child menu component of the dropdown located
 	 * in its {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+	 *
+	 * **Note**: Only supported when dropdown has a menu added using {@link module:ui/dropdown/utils~addMenuToDropdown}.
 	 */
 	public menuView?: DropdownMenuRootListView;
 

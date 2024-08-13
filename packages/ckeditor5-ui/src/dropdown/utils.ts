@@ -190,34 +190,36 @@ export function createDropdown(
  * @param definition The menu component definition.
  */
 export function addMenuToDropdown( dropdownView: DropdownView, body: BodyCollection, definition: DropdownMenuDefinition ): void {
-	const dropdownMenuRootListView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
 
-	dropdownView.menuView = dropdownMenuRootListView;
+	if ( dropdownView.isOpen ) {
+		addMenuToOpenDropdown( dropdownView, body, definition );
+	} else {
+		// Load the UI elements only after the dropdown is opened for the first time - lazy loading.
+		dropdownView.once( 'change:isOpen', () => {
+			addMenuToOpenDropdown( dropdownView, body, definition );
+		}, { priority: 'highest' } );
+	}
+}
 
-	// Load the UI elements only after the dropdown is opened for the first time.
-	dropdownView.once( 'change:isOpen', () => {
-		dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
-		dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( !isOpen ) {
-				dropdownMenuRootListView.closeMenus();
-			}
-		}, { priority: 'low' } ); // Make sure this is fired after `focusDropdownButtonOnClose` behavior.
+function addMenuToOpenDropdown( dropdownView: DropdownView, body: BodyCollection, definition: DropdownMenuDefinition ): void {
+	const dropdownMenuRootListView = dropdownView.menuView!;
 
-		// When `dropdownMenuRootListView` is added as a `panelView` child, it becomes rendered (`panelView` is rendered at this point).
-		dropdownView.panelView.children.add( dropdownMenuRootListView );
-
-		// Nested menu panels are added to body collection, so they are not children of the `dropdownView` from DOM perspective.
-		// Add these panels to `dropdownView` focus tracker, so they are treated like part of the `dropdownView` for focus-related purposes.
-		for ( const menu of dropdownMenuRootListView.menus ) {
-			dropdownView.focusTracker.add( menu.panelView.element! );
+	dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
+	dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( !isOpen ) {
+			dropdownMenuRootListView.closeMenus();
 		}
+	}, { priority: 'low' } ); // Make sure this is fired after `focusDropdownButtonOnClose` behavior.
 
-		// Focus first child item in the `dropdownView`.
-		// We need to do this "manually" here when the dropdown is opened for the first time.
-		// Next times, the dropdown automatically focuses its children when it is opened.
-		// But when it is opened for the first time, the menu is not a children (it is lazy loaded), so it is not focused.
-		dropdownView.panelView.focus();
-	}, { priority: 'low' } );
+	// When `dropdownMenuRootListView` is added as a `panelView` child, it becomes rendered (`panelView` is rendered at this point).
+	dropdownView.panelView.children.add( dropdownMenuRootListView );
+
+	// Nested menu panels are added to body collection, so they are not children of the `dropdownView` from DOM perspective.
+	// Add these panels to `dropdownView` focus tracker, so they are treated like part of the `dropdownView` for focus-related purposes.
+	for ( const menu of dropdownMenuRootListView.menus ) {
+		dropdownView.focusTracker.add( menu.panelView.element! );
+	}
 }
 
 /**
