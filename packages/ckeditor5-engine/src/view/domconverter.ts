@@ -233,7 +233,7 @@ export default class DomConverter {
 			this._domToViewMapping.delete( domElement );
 			this._viewToDomMapping.delete( viewElement );
 
-			for ( const child of Array.from( domElement.children ) ) {
+			for ( const child of domElement.children ) {
 				this.unbindDomElement( child as DomElement );
 			}
 		}
