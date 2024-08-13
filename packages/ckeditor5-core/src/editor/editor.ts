@@ -427,20 +427,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
 
-			if ( licensedHosts && licensedHosts.length > 0 ) {
-				const hostname = window.location.hostname;
-				const willcards = licensedHosts
-					.filter( val => val.startsWith( '*' ) )
-					.map( val => val.substring( 1 ) );
+			if ( licensedHosts && licensedHosts.length > 0 && !checkLicensedHosts( licensedHosts ) ) {
+				blockEditor( 'domainLimit' );
 
-				const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
-				const isWillcardMatched = willcards.some( willcard => hostname.endsWith( willcard ) );
-
-				if ( !isWillcardMatched && !isHostnameMatched ) {
-					blockEditor( 'domainLimit' );
-
-					return;
-				}
+				return;
 			}
 
 			if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
@@ -529,6 +519,21 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 					.map( key => licensePayload[ key ] );
 
 				return filteredValues as CRCData;
+			}
+
+			function checkLicensedHosts( licensedHosts: Array<string> ): boolean {
+				const { hostname } = new URL( window.location.href );
+
+				if ( licensedHosts.includes( hostname ) ) {
+					return true;
+				}
+
+				const segments = hostname.split( '.' );
+
+				return licensedHosts
+					.filter( host => host.includes( '*' ) )
+					.map( host => host.split( '.' ) )
+					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 		}
 	}
