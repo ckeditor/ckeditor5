@@ -144,8 +144,6 @@ export function getNormalizedDefaultTableProperties(
 		borderStyle: 'double',
 		borderColor: 'hsl(0, 0%, 70%)',
 		borderWidth: '1px',
-		width: '100%',
-		height: '100%',
 		...config
 	}, options );
 }

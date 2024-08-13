@@ -50,7 +50,7 @@ describe( 'table properties', () => {
 
 				expect( config ).to.be.an( 'object' );
 				expect( config ).to.have.property( 'defaultProperties' );
-				expect( config.defaultProperties ).to.include( {} );
+				expect( config.defaultProperties ).to.deep.equal( {} );
 			} );
 
 			it( 'adds tableBorderColor command', () => {
