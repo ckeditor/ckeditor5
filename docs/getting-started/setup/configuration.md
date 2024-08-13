@@ -29,6 +29,7 @@ import { ClassicEditor, Indent, IndentBlock, BlockQuote } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // Plugins import.
 		toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // Toolbar configuration.
 	} )
@@ -48,6 +49,7 @@ import { ExportPdf } from 'ckeditor5-premium-features';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ ExportPdf, /* ... */ ],
 		toolbar: [ 'exportPdf', '|', /* ... */ ],
 		exportPdf: {
@@ -81,6 +83,7 @@ import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Font, Link, List } fr
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		toolbar: [
 			'heading',
 			'|',

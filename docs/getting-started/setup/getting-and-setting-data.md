@@ -33,6 +33,7 @@ However, if you cannot alter the HTML or you load the data asynchronously using 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ],
 		initialData: '<p>Hello, world!</p>'
@@ -60,6 +61,7 @@ let editor;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ]
 	} )
@@ -131,6 +133,7 @@ This approach is **only available in the Classic editor**, and only if the edito
 
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Essentials, Paragraph, Bold, Italic ],
 				toolbar: [ 'bold', 'italic' ]
 			} )

@@ -79,6 +79,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
@@ -92,6 +93,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }

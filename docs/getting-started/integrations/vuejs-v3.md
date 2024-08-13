@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 3+
-meta-title: Vue.js 3+ rich text editor component with npm | CKEditor 5 documentation
+meta-title: Vue.js 3+ rich text editor component | CKEditor 5 documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component
 category: self-hosted
 order: 50
@@ -107,9 +107,9 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
 			editorConfig: {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				licenseKey: '<YOUR_LICENSE_KEY>',
 				// Other configuration options...
 			}
 		};
@@ -151,9 +151,9 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
 			editorConfig: {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				licenseKey: '<YOUR_LICENSE_KEY>',
 				// Other configuration options...
 			}
 		};
@@ -463,6 +463,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hola desde CKEditor 5 en Vue!</p>',
 			editorConfig: {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},

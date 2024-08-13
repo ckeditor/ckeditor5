@@ -78,7 +78,7 @@ function App() {
 				plugins: [
 					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				mention: { 
 					// Mention configuration
 				},
@@ -134,6 +134,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
@@ -147,6 +148,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }

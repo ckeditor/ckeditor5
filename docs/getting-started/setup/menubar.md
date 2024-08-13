@@ -36,6 +36,7 @@ The menu bar is disabled by default. To make it available in your editor, set th
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 		menuBar: {
 			isVisible: true
@@ -55,6 +56,7 @@ When using the Decoupled, Balloon or Multi-root editor, you will need to insert 
 ```js
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
 	.then( editor => {

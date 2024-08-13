@@ -130,6 +130,7 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ) as HTMLElement, {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp' ],
 		timestamp: { utc: true } // This will be autocompleted and type checked thanks to our augmentation.

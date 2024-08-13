@@ -35,7 +35,9 @@ import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
+		toolbar: [ /* .. */ ],
 	} )
 	.then( editor => {
 		console.log( editor );
@@ -72,7 +74,9 @@ import { DecoupledEditor, Essentials } from 'ckeditor5';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
+		toolbar: [ /* .. */ ],
 	} )
 	.then( editor => {
 		const toolbarContainer = document.querySelector( '#toolbar-container' );

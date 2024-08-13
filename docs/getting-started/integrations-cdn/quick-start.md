@@ -60,6 +60,7 @@ In the following script tag, import the desired plugins, add them to the `plugin
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 			toolbar: {
 				items: [
@@ -118,6 +119,7 @@ Your final page should look similar to the one below.
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: {
 						items: [
@@ -177,6 +179,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: {
 				items: [
