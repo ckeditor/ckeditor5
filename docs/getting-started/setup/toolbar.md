@@ -2,6 +2,7 @@
 title: Editor toolbar
 category: setup
 meta-title: Editor toolbars | CKEditor 5 Documentation
+meta-description: Learn all about configuring and handling the CKEditor 5 toolbars for the best experience and performance.
 toc-limit: 4
 order: 40
 ---

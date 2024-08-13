@@ -2,6 +2,7 @@
 title: Menu bar
 category: setup
 meta-title: Menu bar | CKEditor 5 Documentation
+meta-description: Handling the CKEditor 5 menu bar.
 modified_at: 2024-05-13
 order: 50
 classes: main__content--no-toc

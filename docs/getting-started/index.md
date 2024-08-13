@@ -3,7 +3,7 @@ category: getting-started
 order: 10
 menu-title: Quick Start
 meta-title: CKEditor 5 Installation Quick Start | CKEditor 5 documentation
-meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
+meta-description: Learn how to install, integrate, configure, and develop CKEditor 5.
 ---
 
 # Getting started with CKEditor&nbsp;5
