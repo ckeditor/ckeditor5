@@ -1,7 +1,7 @@
 ---
 menu-title: Default integration
 meta-title: React rich text editor component with CDN | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using the React component
+meta-description: Install, integrate and configure CKEditor 5 using the React component with CDN.
 category: react-cdn
 order: 10
 ---

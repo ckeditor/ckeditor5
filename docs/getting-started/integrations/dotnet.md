@@ -1,7 +1,7 @@
 ---
 category: self-hosted
 meta-title: Compatibility with .NET | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using .NET with npm or ZIP
+meta-description: Install, integrate and configure CKEditor 5 using .NET with npm or ZIP.
 order: 80
 menu-title: .NET
 ---

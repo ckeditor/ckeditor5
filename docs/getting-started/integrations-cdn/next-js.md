@@ -1,7 +1,7 @@
 ---
 menu-title: Next.js
 meta-title: Integration with Next.js with CDN | CKEditor 5 documentation
-meta-description: Learn how to integrate CKEditor 5 with the Next.js framework using the App Router or Pages Router routing strategies
+meta-description: Learn how to integrate CKEditor 5 with the Next.js framework using the App Router or Pages Router routing strategies with CDN.
 category: cloud
 order: 40
 modified_at: 2023-11-14
