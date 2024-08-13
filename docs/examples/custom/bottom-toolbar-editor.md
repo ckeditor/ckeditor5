@@ -160,6 +160,7 @@ class FormattingOptions extends Plugin {
 
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
+		licenseKey: 'GPL',
 		plugins: [
 			Alignment,
 			Autoformat,

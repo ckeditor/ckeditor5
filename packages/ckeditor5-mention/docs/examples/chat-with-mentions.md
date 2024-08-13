@@ -36,6 +36,7 @@ import {
 
 ClassicEditor
 	.create( document.querySelector( '.chat__editor' ), {
+		licenseKey: 'GPL',
 		extraPlugins: [ Essentials, Paragraph, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
 		toolbar: {
 			items: [
