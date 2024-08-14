@@ -3,7 +3,7 @@ category: getting-started
 order: 10
 menu-title: Quick Start
 meta-title: CKEditor 5 Installation Quick Start | CKEditor 5 documentation
-meta-description: Learn how to get started with CKEditor 5, the modern JavaScript-rich text editor. Find installation guides, tutorials, and integration tips.
+meta-description: Learn how to start with CKEditor 5, the modern JavaScript-rich text editor. Find installation guides, tutorials, and integration tips.
 ---
 
 # Getting started with CKEditor&nbsp;5
