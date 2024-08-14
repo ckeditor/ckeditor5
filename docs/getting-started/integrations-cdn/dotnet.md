@@ -1,6 +1,6 @@
 ---
 category: cloud
-meta-title: Compatibility with .NET | CKEditor 5 documentation
+meta-title: Compatibility with .NET when using CDN| CKEditor 5 documentation
 meta-description: Install, integrate, and configure CKEditor 5 using .NET with CDN.
 order: 80
 menu-title: .NET
