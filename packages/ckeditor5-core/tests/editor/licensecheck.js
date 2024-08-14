@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console, Response, globalThis */
+/* globals window, console, Response, globalThis, URL */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -80,32 +80,93 @@ describe( 'Editor - license check', () => {
 			} );
 		} );
 
-		describe( 'domain check', () => {
-			it( 'should not block if localhost is in the licensedHosts list', () => {
-				const { licenseKey } = generateKey( { licensedHosts: [ 'localhost' ] } );
+		describe( '"licensedHosts" check', () => {
+			const sets = {
+				success: [
+					{
+						name: 'direct domain match',
+						hostname: 'example.com',
+						licensedHost: 'example.com'
+					},
+					{
+						name: 'direct IP match',
+						hostname: '127.0.0.1',
+						licensedHost: '127.0.0.1'
+					},
+					{
+						name: 'wildcard IP match',
+						hostname: '127.0.0.1',
+						licensedHost: '127.*.*.*'
+					},
+					{
+						name: 'wildcard subdomain match',
+						hostname: 'subdomain.example.com',
+						licensedHost: '*.example.com'
+					}
+				],
+				fail: [
+					{
+						name: 'domain mismatch',
+						hostname: 'example.com',
+						licensedHost: 'example.net'
+					},
+					{
+						name: 'IP mismatch',
+						hostname: '127.0.0.1',
+						licensedHost: '127.0.0.2'
+					},
+					{
+						name: 'domain mismatch (wildcard subdomain)',
+						hostname: 'sub.example.com',
+						licensedHost: '*.example.net'
+					},
+					{
+						name: 'IP mismatch (wildcard)',
+						hostname: '127.0.0.1',
+						licensedHost: '192.168.*.*'
+					},
+					{
+						name: 'subdomain mismatch',
+						hostname: 'subdomain.example.com',
+						licensedHost: 'sub.example.com'
+					},
+					{
+						name: 'missing root domain',
+						hostname: 'example.com',
+						licensedHost: 'subdomain.example.com'
+					},
+					{
+						name: 'missing subdomain',
+						hostname: 'subdomain.example.com',
+						licensedHost: 'example.com'
+					}
+				]
+			};
 
-				const editor = new TestEditor( { licenseKey } );
+			sets.success.forEach( set => {
+				it( `works on ${ set.name }`, () => {
+					sinon.stub( URL.prototype, 'hostname' ).value( set.hostname );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+					const { licenseKey } = generateKey( { licensedHosts: [ set.licensedHost ] } );
+					const editor = new TestEditor( { licenseKey } );
+
+					sinon.assert.notCalled( showErrorStub );
+
+					expect( editor.isReadOnly ).to.be.false;
+				} );
 			} );
 
-			it( 'should block if domain is not in the licensedHosts list', () => {
-				const { licenseKey } = generateKey( { licensedHosts: [ 'facebook.com' ] } );
+			sets.fail.forEach( set => {
+				it( `fails on ${ set.name }`, () => {
+					sinon.stub( URL.prototype, 'hostname' ).value( set.hostname );
 
-				const editor = new TestEditor( { licenseKey } );
+					const { licenseKey } = generateKey( { licensedHosts: [ set.licensedHost ] } );
+					const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
-				expect( editor.isReadOnly ).to.be.true;
-			} );
+					sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
 
-			it( 'should block if domain have no subdomain', () => {
-				const { licenseKey } = generateKey( { licensedHosts: [ '*.localhost' ] } );
-
-				const editor = new TestEditor( { licenseKey } );
-
-				sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
-				expect( editor.isReadOnly ).to.be.true;
+					expect( editor.isReadOnly ).to.be.true;
+				} );
 			} );
 		} );
 
