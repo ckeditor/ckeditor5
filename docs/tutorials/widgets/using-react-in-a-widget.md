@@ -436,6 +436,7 @@ export default function App( props ) {
 						editor={ ClassicEditor }
 						// The configuration of the <CKEditor> instance.
 						config={ {
+							licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 							plugins: [
 								// A set of editor features to be enabled and made available to the user.
 								Essentials, Heading, Bold, Italic, Underline,

@@ -121,6 +121,7 @@ import Abbreviation from './abbreviation/abbreviation';					// ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
 			Abbreviation												// ADDED
@@ -343,6 +344,7 @@ import Abbreviation from './abbreviation/abbreviation';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation
 		],

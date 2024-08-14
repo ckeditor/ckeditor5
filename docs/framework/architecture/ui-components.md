@@ -566,6 +566,7 @@ class MinimalisticDialog extends Plugin {
 // Create an editor instance. Remember to have an element with the `[id="editor"]` attribute in the document.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
 		toolbar: [ 'bold', 'italic', '|', 'showDialog' ]
 	} )
@@ -677,6 +678,7 @@ class MinimalisticModal extends Plugin {
 // Create an editor instance. Remember to have an element with the `[id="editor"]` attribute in the document.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
 		toolbar: [ 'bold', 'italic', '|', 'showModal' ]
 	} )
