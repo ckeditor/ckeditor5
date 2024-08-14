@@ -88,6 +88,37 @@ describe( 'EvaluationBadge', () => {
 				expect( editor.ui.evaluationBadge._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
 
+			it( 'should create the balloon when license type is `evaluation`', async () => {
+				const { licenseKey, todayTimestamp } = generateKey( {
+					licenseType: 'evaluation',
+					isExpired: false,
+					daysAfterExpiration: -1
+				} );
+
+				const today = todayTimestamp;
+				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+
+				const editor = await createEditor( element, {
+					licenseKey
+				} );
+
+				expect( editor.ui.evaluationBadge._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.evaluationBadge._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				const balloonElement = editor.ui.evaluationBadge._balloonView.element;
+
+				expect( balloonElement.querySelector( '.ck-evaluation-badge__label' ).textContent ).to.equal(
+					'For evaluation purposes only'
+				);
+
+				await editor.destroy();
+
+				dateNow.restore();
+			} );
+
 			it( 'should create the balloon when license type is `trial`', async () => {
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'trial',

@@ -433,14 +433,14 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				return;
 			}
 
-			if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) && licensePayload.exp * 1000 < Date.now() ) {
 				blockEditor( 'expired' );
 
 				return;
 			}
 
-			if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
-				const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+			if ( [ 'evaluation', 'trial', 'development' ].includes( licensePayload.licenseType ) ) {
+				const licenseType: 'evaluation' | 'trial' | 'development' = licensePayload.licenseType;
 
 				console.info(
 					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
@@ -913,6 +913,17 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-feature-not-allowed', this, { pluginName } );
 			}
 
+			if ( reason == 'evaluationLimit' ) {
+				/**
+				 * You have exhausted the evaluation usage limit. Restart the editor.
+				 *
+				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-evaluation-limit
+				 */
+				throw new CKEditorError( 'license-key-evaluation-limit', this );
+			}
+
 			if ( reason == 'trialLimit' ) {
 				/**
 				 * You have exhausted the trial usage limit. Restart the editor.
@@ -987,6 +998,7 @@ type LicenseErrorReason =
 	'expired' |
 	'domainLimit' |
 	'featureNotAllowed' |
+	'evaluationLimit' |
 	'trialLimit' |
 	'developmentLimit' |
 	'usageLimit' |
