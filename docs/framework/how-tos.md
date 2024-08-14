@@ -95,7 +95,6 @@ function MyPlugin(editor) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// If you're using builds, this is going to be extraPlugins property.
 		plugins: [
 			MyPlugin,
 			// Other plugins.
