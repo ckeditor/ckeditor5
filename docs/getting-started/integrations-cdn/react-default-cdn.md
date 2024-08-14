@@ -1,7 +1,8 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component | CKEditor 5 documentation
-category: react-npm
+meta-title: React rich text editor component with CDN | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the React component with CDN.
+category: react-cdn
 order: 10
 ---
 
@@ -36,61 +37,6 @@ You get ready-to-use code tailored to your needs!
 ### Setting up the project
 
 This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
-
-### Installing from npm
-
-First, install the CKEditor&nbsp;5 packages:
-
-* `ckeditor5` &ndash; package with open-source plugins and features.
-* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
-
-Depending on your configuration and chosen plugins, you may need to install the first or both packages.
-
-```bash
-npm install ckeditor5 ckeditor5-premium-features
-```
-
-Then, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
-
-```bash
-npm install @ckeditor/ckeditor5-react
-```
-
-Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source and premium plugins.
-
-```jsx
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-function App() {
-	return (
-		<CKEditor
-			editor={ ClassicEditor }
-			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: { 
-					// Mention configuration
-				},
-				initialData: '<p>Hello from CKEditor 5 in React!</p>',
-			} }
-		/>
-	);
-}
-
-export default App;
-```
-
-Remember to import the necessary style sheets. The `ckeditor5` package contains the styles for open-source features, while the `ckeditor5-premium-features` package contains the premium features styles.
 
 ## Component properties
 
@@ -133,6 +79,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
@@ -146,6 +93,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
@@ -239,8 +187,10 @@ export default App;
 
 We provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
 
-* [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
-* [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-react)
+* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
+* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-react)
+* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-react)
+* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 

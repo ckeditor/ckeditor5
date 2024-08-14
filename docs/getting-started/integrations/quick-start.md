@@ -1,13 +1,14 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 instllation | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 Installation - Quick Start with npm | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using Vanilla JS with npm or ZIP.
 category: self-hosted
 order: 20
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Quick start
+# Installing Vanilla JS CKEditor&nbsp;5 using npm or ZIP
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
@@ -38,6 +39,7 @@ import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 		toolbar: {
 			items: [
@@ -109,6 +111,7 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
 		toolbar: {
 			items: [

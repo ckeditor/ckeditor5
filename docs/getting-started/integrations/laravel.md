@@ -1,6 +1,7 @@
 ---
 category: self-hosted
-meta-title: Compatibility with Laravel | CKEditor 5 documentation
+meta-title: Compatibility with Laravel when installing from npm | CKEditor 5 documentation
+meta-description: Integrate CKEditor 5 using Laravel with npm or ZIP.
 order: 70
 menu-title: Laravel
 ---
@@ -97,6 +98,7 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` f
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',

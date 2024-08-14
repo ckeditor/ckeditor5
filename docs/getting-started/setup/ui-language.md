@@ -2,6 +2,7 @@
 category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
+meta-description: Configuring and handling the language of the editor user interface and content.
 order: 60
 modified_at: 2024-06-25
 ---
@@ -64,6 +65,7 @@ import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			Essentials,
 			Paragraph,
@@ -110,6 +112,7 @@ import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			Essentials,
 			Paragraph,
@@ -139,6 +142,7 @@ Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.l
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other con figuration options ...
 		language: {
 			// The UI will be English.
 			ui: 'en',

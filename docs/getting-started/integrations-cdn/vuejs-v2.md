@@ -1,6 +1,7 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component | CKEditor 5 documentation
+meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with CDN.
 category: cloud
 order: 40
 ---
@@ -22,7 +23,7 @@ order: 40
 Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
 
 <info-box>
-	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
+	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react-default-npm React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
 ## Quick start
