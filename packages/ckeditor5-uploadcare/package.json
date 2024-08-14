@@ -14,7 +14,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "ckeditor5": "42.0.1",
-    "@uploadcare/blocks": "0.50.1",
+    "@uploadcare/file-uploader": "1.4.0",
     "@uploadcare/upload-client": "6.14.1"
   },
   "devDependencies": {
@@ -48,6 +48,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
+    "yarn": "yarn",
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
     "build:dist": "node ../../scripts/build-package.mjs"

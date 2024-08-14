@@ -14,7 +14,7 @@ import { Command, icons, type Editor } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
-import * as LR from '@uploadcare/blocks';
+import * as UC from '@uploadcare/file-uploader';
 
 import UploadcareFormView from './ui/uploadcareformview.js';
 import type { UploadcareAssetImageDefinition, UploadcareSource } from './uploadcareconfig.js';
@@ -51,12 +51,12 @@ export default class UploadcareCommand extends Command {
 	 * Represents the DOM element associated with the Uploadcare context web components.
 	 * It delivers the Uploadcare API and emits the file events.
 	 */
-	private _ctxElement: LR.UploaderBlock | null = null;
+	private _ctxElement: UC.UploaderBlock | null = null;
 
 	/**
 	 * Represents the Uploadcare API object.
 	 */
-	private _api: LR.UploaderPublicApi | null = null;
+	private _api: UC.UploaderPublicApi | null = null;
 
 	/**
 	 * @inheritDoc
@@ -115,7 +115,7 @@ export default class UploadcareCommand extends Command {
 	 * Registers blocks, initializes configuration, context, dialog, and listeners.
 	 */
 	private _initComponents() {
-		LR.registerBlocks( LR );
+		UC.defineComponents( UC );
 
 		this._initConfig();
 		this._initCtx();
@@ -155,7 +155,7 @@ export default class UploadcareCommand extends Command {
 	private _initCtx() {
 		this._ctxElement = createElement( document, 'lr-upload-ctx-provider', {
 			'ctx-name': 'uploader'
-		} ) as LR.UploaderBlock;
+		} ) as UC.UploaderBlock;
 
 		document.body.appendChild( this._ctxElement );
 
@@ -228,7 +228,7 @@ export default class UploadcareCommand extends Command {
 			this._dialog.hide();
 		} );
 
-		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<LR.OutputCollectionState> ) => {
+		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<UC.OutputCollectionState> ) => {
 			// Whenever the `clear` button is triggered we need to re-init the flow.
 			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length ) {
 				const activity = this._type === 'local' ? 'start-from' : this._type;
