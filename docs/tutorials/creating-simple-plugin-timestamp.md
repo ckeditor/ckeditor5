@@ -53,6 +53,7 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		// Add the Timestamp plugin to config.plugins array.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
@@ -115,6 +116,7 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
 		],
