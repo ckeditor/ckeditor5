@@ -163,7 +163,8 @@ export default class DropdownMenuNestedMenuView extends View implements Focusabl
 					'ck-dropdown-menu-list__nested-menu',
 					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
-				]
+				],
+				role: 'presentation'
 			},
 
 			children: [
