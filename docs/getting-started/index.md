@@ -26,7 +26,7 @@ If you are familiar with our previous, discontinued product and would like to sw
 
 ## CKEditor&nbsp;5 framework integrations
 
-Do you to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
+Do you want to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
 
 * {@link getting-started/integrations/angular Integrate CKEditor&nbsp;5 with Angular}
 * {@link getting-started/integrations/react Integrate CKEditor&nbsp;5 with React}
