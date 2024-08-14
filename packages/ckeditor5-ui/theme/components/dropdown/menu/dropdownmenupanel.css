@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-dropdown-menu__nested-menu__panel {
+	position: absolute;
+	max-height: 314px; /* With the default settings, this is equal to 10 menu items. */
+	overflow-y: auto;
+	z-index: calc(var(--ck-z-panel) + 1);
+}
