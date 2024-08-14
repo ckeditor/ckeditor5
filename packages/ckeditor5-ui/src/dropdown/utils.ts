@@ -151,26 +151,26 @@ export function createDropdown(
  * ```ts
  * const definitions = [
  * 	{
- * 	    id: 'menu_1',
- * 	    menu: 'Menu 1',
- * 	    children: [
- * 	        {
- * 	            id: 'menu_1_a',
- * 	            label: 'Item A'
- * 	        },
- * 	        {
- * 	            id: 'menu_1_b',
- * 	            label: 'Item B'
- * 	        }
- * 	    ]
+ * 		id: 'menu_1',
+ * 		menu: 'Menu 1',
+ * 		children: [
+ * 			{
+ * 				id: 'menu_1_a',
+ * 				label: 'Item A'
+ * 			},
+ * 			{
+ * 				id: 'menu_1_b',
+ * 				label: 'Item B'
+ * 			}
+ * 		]
  * 	},
  * 	{
- * 	    id: 'top_a',
- * 	    label: 'Top Item A'
+ * 		id: 'top_a',
+ * 		label: 'Top Item A'
  * 	},
  * 	{
- * 	    id: 'top_b',
- * 	    label: 'Top Item B'
+ * 		id: 'top_b',
+ * 		label: 'Top Item B'
  * 	}
  * ];
  *
@@ -189,21 +189,33 @@ export function createDropdown(
  * @param body Body collection to which floating menu panels will be added.
  * @param definition The menu component definition.
  */
-export function addMenuToDropdown( dropdownView: DropdownView, body: BodyCollection, definition: DropdownMenuDefinition ): void {
+export function addMenuToDropdown(
+	dropdownView: DropdownView,
+	body: BodyCollection,
+	definition: DropdownMenuDefinition,
+	options: {
+		ariaLabel?: string;
+	} = {} ): void {
 	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
 
 	if ( dropdownView.isOpen ) {
-		addMenuToOpenDropdown( dropdownView, body, definition );
+		addMenuToOpenDropdown( dropdownView, options );
 	} else {
 		// Load the UI elements only after the dropdown is opened for the first time - lazy loading.
 		dropdownView.once( 'change:isOpen', () => {
-			addMenuToOpenDropdown( dropdownView, body, definition );
+			addMenuToOpenDropdown( dropdownView, options );
 		}, { priority: 'highest' } );
 	}
 }
 
-function addMenuToOpenDropdown( dropdownView: DropdownView, body: BodyCollection, definition: DropdownMenuDefinition ): void {
+function addMenuToOpenDropdown(
+	dropdownView: DropdownView,
+	options: {
+		ariaLabel?: string;
+	}
+): void {
 	const dropdownMenuRootListView = dropdownView.menuView!;
+	const t = dropdownView.locale!.t;
 
 	dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
 	dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
@@ -220,6 +232,8 @@ function addMenuToOpenDropdown( dropdownView: DropdownView, body: BodyCollection
 	for ( const menu of dropdownMenuRootListView.menus ) {
 		dropdownView.focusTracker.add( menu.panelView.element! );
 	}
+
+	dropdownMenuRootListView.ariaLabel = options.ariaLabel || t( 'Dropdown menu' );
 }
 
 /**
