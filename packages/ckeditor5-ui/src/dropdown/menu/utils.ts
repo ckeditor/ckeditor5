@@ -118,42 +118,42 @@ export type DropdownMenuButtonDefinition = {
  * ```ts
  * [
  * 	{
- * 	    id: 'menu_1',
- * 	    menu: 'Menu 1',
- * 	    children: [
- * 	        {
- * 	            id: 'menu_1_1',
- * 	            menu: 'Nested menu 1',
- * 	            children: [
- * 	                {
- * 	                    id: 'item_x',
- * 	                    label: 'Item X'
- * 	                }
- * 	            ]
- * 	        },
- * 	        {
- * 	            id: 'menu_1_2',
- * 	            menu: 'Nested menu 2',
- * 	            children: [
- * 	                {
- * 	                    id: 'item_y',
- * 	                    label: 'Item Y'
- * 	                },
- * 	                {
- * 	                    id: 'item_z',
- * 	                    label: 'Item Z'
- * 	                }
- * 	            ]
- * 	        }
- * 	    ]
+ * 		id: 'menu_1',
+ * 		menu: 'Menu 1',
+ * 		children: [
+ * 			{
+ * 				id: 'menu_1_1',
+ * 				menu: 'Nested menu 1',
+ * 				children: [
+ * 					{
+ * 						id: 'item_x',
+ * 						label: 'Item X'
+ * 					}
+ * 				]
+ * 			},
+ * 			{
+ * 				id: 'menu_1_2',
+ * 				menu: 'Nested menu 2',
+ * 				children: [
+ * 					{
+ * 						id: 'item_y',
+ * 						label: 'Item Y'
+ * 					},
+ * 					{
+ * 						id: 'item_z',
+ * 						label: 'Item Z'
+ * 					}
+ * 				]
+ * 			}
+ * 		]
  * 	},
  * 	{
- * 	    id: 'top_a',
- * 	    label: 'Top Item A'
+ * 		id: 'top_a',
+ * 		label: 'Top Item A'
  * 	},
  * 	{
- * 	    id: 'top_b',
- * 	    label: 'Top Item B'
+ * 		id: 'top_b',
+ * 		label: 'Top Item B'
  * 	}
  * ];
  * ```

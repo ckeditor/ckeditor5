@@ -465,26 +465,26 @@ const dropdownView = createDropdown( editor.locale );
 // The menu items definitions.
 const definition = [
 	{
-	    id: 'menu_1',
-	    menu: 'Menu 1',
-	    children: [
-	        {
-	            id: 'menu_1_a',
-	            label: 'Item A'
-	        },
-	        {
-	            id: 'menu_1_b',
-	            label: 'Item B'
-	        }
-	    ]
+		id: 'menu_1',
+		menu: 'Menu 1',
+		children: [
+			{
+				id: 'menu_1_a',
+				label: 'Item A'
+			},
+			{
+				id: 'menu_1_b',
+				label: 'Item B'
+			}
+		]
 	},
 	{
-	    id: 'top_a',
-	    label: 'Top Item A'
+		id: 'top_a',
+		label: 'Top Item A'
 	},
 	{
-	    id: 'top_b',
-	    label: 'Top Item B'
+		id: 'top_b',
+		label: 'Top Item B'
 	}
 ];
 
@@ -496,7 +496,7 @@ Most probably you will want to perform some action when one of the defined butto
 ```js
 dropdownView.on( 'execute', evt => {
 	const id = evt.source.id;
-	
+
 	console.log( id ); // E.g. will print "menu_1_a" when "Item A" is pressed.
 } );
 ```

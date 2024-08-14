@@ -486,7 +486,6 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 */
 	private _initFocusTracking(): void {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
 
 		let candidateDefinitions: Array<FocusableToolbarDefinition>;
 
@@ -672,6 +671,9 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		data.viewportOffset.right += configuredViewportOffset.right;
 	}
 
+	/**
+	 * Ensures that the focus tracker is aware of all views' DOM elements in the body collection.
+	 */
 	private _bindBodyCollectionWithFocusTracker() {
 		const body = this.view.body;
 

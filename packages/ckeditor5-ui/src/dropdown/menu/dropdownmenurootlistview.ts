@@ -66,7 +66,7 @@ import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
  *
  * ```js
  * rootListView.on( 'menu:execute', evt => {
- *     console.log( evt.source.id ); // E.g. will print 'menu_1_a' when 'Item A' is pressed.
+ * 	console.log( evt.source.id ); // E.g. will print 'menu_1_a' when 'Item A' is pressed.
  * } );
  * ```
  *
