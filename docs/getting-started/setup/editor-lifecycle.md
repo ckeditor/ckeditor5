@@ -1,7 +1,7 @@
 ---
 category: setup
 meta-title: Editor lifecycle | CKEditor 5 documentation
-meta-description:  Handling the editor lifecycle. With examples.
+meta-description: Handling the editor lifecycle. With examples.
 order: 20
 modified_at: 2024-06-25
 ---
