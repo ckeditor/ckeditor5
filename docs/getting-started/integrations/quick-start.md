@@ -8,7 +8,7 @@ order: 20
 
 {@snippet installation/integrations/framework-integration}
 
-# Vanilla JS quick start using npm and ZIP
+# Installing Vanilla JS CKEditor&nbsp;5 using npm or ZIP
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
