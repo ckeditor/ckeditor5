@@ -124,6 +124,10 @@ describe( 'DropdownMenuNestedMenuView', () => {
 			it( 'should have CSS classes', () => {
 				expect( menuView.template.attributes.class ).to.include.members( [ 'ck', 'ck-dropdown-menu-list__nested-menu' ] );
 			} );
+
+			it( 'should have a presentation role to keep the a11y tree clean', () => {
+				expect( menuView.template.attributes.role ).to.include.members( [ 'presentation' ] );
+			} );
 		} );
 	} );
 

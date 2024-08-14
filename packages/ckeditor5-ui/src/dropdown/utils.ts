@@ -188,6 +188,7 @@ export function createDropdown(
  * @param dropdownView A dropdown instance to which the menu component will be added.
  * @param body Body collection to which floating menu panels will be added.
  * @param definition The menu component definition.
+ * @param options.ariaLabel Label used by assistive technologies to describe the top-level menu.
  */
 export function addMenuToDropdown(
 	dropdownView: DropdownView,

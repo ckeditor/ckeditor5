@@ -1339,6 +1339,24 @@ describe( 'utils', () => {
 			expect( dropdownView.menuView ).to.be.instanceof( DropdownMenuRootListView );
 		} );
 
+		it( 'should set a default aria-label for #menuView', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.ariaLabel ).to.equal( 'Dropdown menu' );
+		} );
+
+		it( 'should allow for configuring a custom aria-label for #menuView', () => {
+			addMenuToDropdown( dropdownView, body, definition, {
+				ariaLabel: 'Custom menu dropdown'
+			} );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.ariaLabel ).to.equal( 'Custom menu dropdown' );
+		} );
+
 		it( 'should not do anything before the dropdown is opened for the first time', () => {
 			addMenuToDropdown( dropdownView, body, definition );
 
