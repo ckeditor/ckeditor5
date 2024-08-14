@@ -71,7 +71,7 @@ The `Essentials` plugin adds the `Undo` and `Redo` operations. Let's add them to
 
 ```js
 const editor = await ClassicEditor.create( element, {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph

@@ -123,7 +123,7 @@ import SimpleBox from './simplebox/simplebox';                                 /
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
 			SimpleBox                                                          // ADDED
@@ -383,7 +383,7 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';                 /
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
 			SimpleBox
@@ -811,7 +811,7 @@ The last thing you need to do is tell the editor to display the button in the to
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, SimpleBox ],
 		// Insert the "simpleBox" button into the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]

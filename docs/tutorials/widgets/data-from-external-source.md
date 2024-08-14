@@ -112,7 +112,7 @@ import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
 	} )
@@ -436,7 +436,7 @@ import ExternalDataWidgetCommand from './externaldatawidgetcommand';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 
 		// Insert the "external" button into the editor toolbar.
