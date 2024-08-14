@@ -1,7 +1,7 @@
 ---
 category: self-hosted
 meta-title: Compatibility with Laravel | CKEditor 5 documentation
-meta-description: Integrate CKEditor 5 using Laravel  with npm or ZIP.
+meta-description: Integrate CKEditor 5 using Laravel with npm or ZIP.
 order: 70
 menu-title: Laravel
 ---
