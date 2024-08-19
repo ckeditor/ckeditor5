@@ -2,6 +2,7 @@
 title: Editor toolbar
 category: setup
 meta-title: Editor toolbars | CKEditor 5 Documentation
+meta-description: Learn about configuring and handling the CKEditor 5 toolbars for the best experience and performance.
 toc-limit: 4
 order: 40
 ---
@@ -36,6 +37,7 @@ The following example may give you a general idea:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
 	.catch( error => {
@@ -311,6 +313,7 @@ When using the Decoupled editor, you will need to insert the menu bar in a desir
 ```js
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
 	.then( editor => {
@@ -356,6 +359,7 @@ To add this feature to your editor, add the `BlockToolbar` to your plugin list a
 import { BlockToolbar, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 
 BalloonEditor.create( document.querySelector( '#editor' ), {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
 	blockToolbar: [
 		'paragraph', 'heading1', 'heading2', 'heading3',
@@ -375,11 +379,11 @@ The content of the block toolbar can be defined using the {@link module:core/edi
 
 ```js
 blockToolbar: {
-  items: [
-  	'bold',
-  	'italic',
-  	'link'
-  ]
+	items: [
+		'bold',
+		'italic',
+		'link'
+	]
 }
 ```
 

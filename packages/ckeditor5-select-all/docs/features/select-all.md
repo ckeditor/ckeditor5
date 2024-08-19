@@ -35,10 +35,8 @@ import { ClassicEditor, SelectAll } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SelectAll, /* ... */ ],
-
-		// Display the "Select all" button in the toolbar.
 		toolbar: [ 'selectAll', /* ... */ ],
 	} )
 	.then( /* ... */ )

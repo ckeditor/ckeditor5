@@ -76,6 +76,7 @@ Open `src/main.js` and update the configuration of the editor:
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph,

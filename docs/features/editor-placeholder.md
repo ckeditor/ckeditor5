@@ -36,6 +36,7 @@ import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 	} )
 	.then( editor => {
@@ -55,11 +56,9 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 * to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
-import { ClassicEditor, Essentials } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, /* ... */ ],
+		// ... Other configuration options ...
 		placeholder: 'Type the content here!'
 	} )
 	.then( editor => {

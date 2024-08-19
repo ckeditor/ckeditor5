@@ -39,8 +39,12 @@ import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextPartLanguage, /* ... */ ],
 		toolbar: [ 'textPartLanguage', /* ... */ ]
+		language: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -55,8 +59,7 @@ The example below shows the configuration used for the [demo](#demo) above:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// More of editor's configuration.
-		// ...
+		// ... Other configuration options ...
 		language: {
 			textPartLanguage: [
 				{ title: 'Arabic', languageCode: 'ar' },

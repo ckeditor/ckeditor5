@@ -194,8 +194,25 @@ import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
+		table: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Table contextual toolbar
+
+Easily control your tables employing a dedicated toolbar.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
@@ -204,17 +221,15 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+
 ### Default table headers
 
 To make every inserted table have `n` number of rows and columns as table headers by default, set an optional table configuration property `defaultHeadings` as follows:
 
 ```js
-import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		// ... Other configuration options ...
 		table: {
 			defaultHeadings: { rows: 1, columns: 1 }
 		}
@@ -246,9 +261,8 @@ function DisallowNestingTables( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		extraPlugins: [ DisallowNestingTables ],
-
-		// The rest of the configuration.
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

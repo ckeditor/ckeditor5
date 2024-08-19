@@ -45,9 +45,11 @@ import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from 'ck
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
-		// More of editor's configuration.
-		// ...
+		image: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -327,9 +329,8 @@ import { ClassicEditor, Image, ImageResize } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResize, /* ... */ ],
-		// More of editor's configuration.
-		// ...
+		// ... Other configuration options ...
+		plugins: [ Image, ImageResize, /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

@@ -71,6 +71,7 @@ The `Essentials` plugin adds the `Undo` and `Redo` operations. Let's add them to
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph
@@ -89,6 +90,8 @@ const editor = await ClassicEditor.create( element, {
 After refreshing the page, the editor should have two buttons at the top. If you type something into the editor and click the "back arrow" button, your changes should be removed. Clicking the "forward arrow" button should restore those changes.
 
 The configuration object we have just updated controls the features, appearance, and behavior of the editor. If you want to change any aspect of the editor, it is most likely through this object.
+
+The `licenseKey` option is needed for the editor to run. You can learn more about it in the {@link getting-started/licensing/license-key-and-activation License key and activation} guide.
 
 ## Editor methods
 

@@ -37,7 +37,11 @@ import { ClassicEditor, Title } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Title, /* ... */ ]
+		title: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -52,7 +56,7 @@ To change the title placeholder, use the {@link module:heading/title~TitleConfig
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Title, /* ... */ ],
+		// ... Other configuration options ...
 		title: {
 			placeholder: 'My custom placeholder for the title'
 		},

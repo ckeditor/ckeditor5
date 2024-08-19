@@ -68,7 +68,11 @@ import { ClassicEditor, GeneralHtmlSupport } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ GeneralHtmlSupport, /* ... */ ],
+		htmlSupport: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -81,6 +85,7 @@ By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHt
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		htmlSupport: {
 			allow: [ /* HTML features to allow. */ ],
 			disallow: [ /* HTML features to disallow. */ ]

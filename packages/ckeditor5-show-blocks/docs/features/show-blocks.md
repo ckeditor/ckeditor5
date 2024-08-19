@@ -33,10 +33,8 @@ import { ClassicEditor, ShowBlocks } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ ShowBlocks, /* ... */ ],
-
-		// Display the "Show blocks" button in the toolbar.
 		toolbar: [ 'showBlocks', /* ... */ ],
 	} )
 	.then( /* ... */ )

@@ -20,6 +20,12 @@ import Badge, { type BadgeConfig } from '../badge/badge.js';
  * @private
  */
 export default class EvaluationBadge extends Badge {
+	private licenseTypeMessage: Record<string, string> = {
+		evaluation: 'For evaluation purposes only',
+		trial: 'For evaluation purposes only',
+		development: 'For development purposes only'
+	};
+
 	constructor( editor: Editor ) {
 		super( editor, { balloonClass: 'ck-evaluation-badge-balloon' } );
 	}
@@ -32,7 +38,7 @@ export default class EvaluationBadge extends Badge {
 		const licenseKey = editor.config.get( 'licenseKey' )!;
 		const licenseType = getLicenseTypeFromLicenseKey( licenseKey );
 
-		return !!licenseType && [ 'trial', 'development' ].includes( licenseType );
+		return Boolean( licenseType && this.licenseTypeMessage[ licenseType ] );
 	}
 
 	/**
@@ -40,10 +46,9 @@ export default class EvaluationBadge extends Badge {
 	 */
 	protected override _createBadgeContent(): View<HTMLElement> {
 		const licenseKey = this.editor.config.get( 'licenseKey' )!;
-		const licenseType = getLicenseTypeFromLicenseKey( licenseKey );
-		const label = licenseType == 'trial' ? 'For evaluation purposes only' : 'For development purposes only';
+		const licenseType = getLicenseTypeFromLicenseKey( licenseKey )!;
 
-		return new EvaluationBadgeView( this.editor.locale, label );
+		return new EvaluationBadgeView( this.editor.locale, this.licenseTypeMessage[ licenseType ] );
 	}
 
 	/**

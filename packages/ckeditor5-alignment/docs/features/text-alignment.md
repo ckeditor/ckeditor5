@@ -33,8 +33,12 @@ import { ClassicEditor, Alignment } from 'ckeditor5';
 
 ClassicEditor.
 	create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL'.
 		plugins: [ Alignment, /* ... */ ],
 		toolbar: [ 'alignment', /* ... */ ]
+		alignment: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -55,6 +59,7 @@ For example, the following editor will support two alignment options: to the lef
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		alignment: {
 			options: [ 'left', 'right' ]
 		},
@@ -81,6 +86,7 @@ The following configuration will set `.my-align-left` and `.my-align-right` to l
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		alignment: {
 			options: [
 				{ name: 'left', className: 'my-align-left' },
@@ -102,6 +108,7 @@ You can choose to use the alignment dropdown (`'alignment'`) or configure the to
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [
 			'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
 		]

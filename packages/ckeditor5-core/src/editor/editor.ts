@@ -427,30 +427,20 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
 
-			if ( licensedHosts && licensedHosts.length > 0 ) {
-				const hostname = window.location.hostname;
-				const willcards = licensedHosts
-					.filter( val => val.startsWith( '*' ) )
-					.map( val => val.substring( 1 ) );
+			if ( licensedHosts && licensedHosts.length > 0 && !checkLicensedHosts( licensedHosts ) ) {
+				blockEditor( 'domainLimit' );
 
-				const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
-				const isWillcardMatched = willcards.some( willcard => hostname.endsWith( willcard ) );
-
-				if ( !isWillcardMatched && !isHostnameMatched ) {
-					blockEditor( 'domainLimit' );
-
-					return;
-				}
+				return;
 			}
 
-			if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) && licensePayload.exp * 1000 < Date.now() ) {
 				blockEditor( 'expired' );
 
 				return;
 			}
 
-			if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
-				const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+			if ( [ 'evaluation', 'trial', 'development' ].includes( licensePayload.licenseType ) ) {
+				const licenseType: 'evaluation' | 'trial' | 'development' = licensePayload.licenseType;
 
 				console.info(
 					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
@@ -529,6 +519,21 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 					.map( key => licensePayload[ key ] );
 
 				return filteredValues as CRCData;
+			}
+
+			function checkLicensedHosts( licensedHosts: Array<string> ): boolean {
+				const { hostname } = new URL( window.location.href );
+
+				if ( licensedHosts.includes( hostname ) ) {
+					return true;
+				}
+
+				const segments = hostname.split( '.' );
+
+				return licensedHosts
+					.filter( host => host.includes( '*' ) )
+					.map( host => host.split( '.' ) )
+					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 		}
 	}
@@ -908,6 +913,17 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-feature-not-allowed', this, { pluginName } );
 			}
 
+			if ( reason == 'evaluationLimit' ) {
+				/**
+				 * You have exhausted the evaluation usage limit. Restart the editor.
+				 *
+				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-evaluation-limit
+				 */
+				throw new CKEditorError( 'license-key-evaluation-limit', this );
+			}
+
 			if ( reason == 'trialLimit' ) {
 				/**
 				 * You have exhausted the trial usage limit. Restart the editor.
@@ -982,6 +998,7 @@ type LicenseErrorReason =
 	'expired' |
 	'domainLimit' |
 	'featureNotAllowed' |
+	'evaluationLimit' |
 	'trialLimit' |
 	'developmentLimit' |
 	'usageLimit' |

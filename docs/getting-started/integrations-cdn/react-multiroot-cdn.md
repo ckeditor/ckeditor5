@@ -1,7 +1,8 @@
 ---
 menu-title: Multi-root integration
-meta-title: React rich text editor component | CKEditor 5 documentation
-category: react-npm
+meta-title: React rich text editor multi-root hook with CDN | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with CDN.
+category: react-cdn
 order: 20
 modified_at: 2024-04-25
 ---
@@ -16,12 +17,12 @@ modified_at: 2024-04-25
 	</a>
 </p>
 
-This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react in this guide}.
+This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react-default-npm in this guide}.
 
 <info-box hint>
 	The multi-root editors in React are supported since version 6.2.0 of this package.
 
-	Unlike the {@link getting-started/integrations/react default integration}, we prepared the multi-root editor integration based on the hooks and new React mechanisms.
+	Unlike the {@link getting-started/integrations/react-default-npm default integration}, we prepared the multi-root editor integration based on the hooks and new React mechanisms.
 </info-box>
 
 ## Quick start
@@ -124,7 +125,7 @@ The `useMultiRootEditor` hook returns the following values:
 
 ## Context feature
 
-The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described in the main {@link getting-started/integrations/react#context-feature React integration} guide.
+The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described in the main {@link getting-started/integrations/react-default-npm#context-feature React integration} guide.
 
 However, as the multi-root editor addresses most use cases of the context feature, consider if you need to employ it.
 
@@ -137,16 +138,6 @@ By default, the two-way data binding is enabled. It means that every change done
 
 	The recommended approach for achieving this is based on utilizing the {@link features/autosave autosave plugin}. The second approach involves providing the `onChange` callback, which is called on each editor update.
 </info-box>
-
-## How to?
-
-### Using the editor with collaboration plugins
-
-We provide several **ready-to-use integration** featuring collaborative editing with multi-root in React applications:
-
-* [CKEditor&nbsp;5 multi-root with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-editor-multi-root-for-react)
-
-It is not necessary to build applications on top of the above samples, however, they should help you get started.
 
 ## Contributing and reporting issues
 

@@ -59,7 +59,11 @@ import { ClassicEditor, WordCount } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ WordCount, /* ... */ ],
+		wordCount: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -101,7 +105,7 @@ You can execute your custom callback every time content statistics change by def
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, /* ... */ ],
+		// ... Other configuration options ...
 		wordCount: {
 			onUpdate: stats => {
 				// Prints the current content statistics.

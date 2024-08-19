@@ -39,6 +39,7 @@ import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolba
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
@@ -49,12 +50,10 @@ ClassicEditor
 
 			tableProperties: {
 				// The configuration of the TableProperties plugin.
-				// ...
 			},
 
 			tableCellProperties: {
 				// The configuration of the TableCellProperties plugin.
-				// ...
 			}
 		}
 	} )
@@ -118,8 +117,7 @@ const customColorPalette = [
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		// ... Other configuration options ...
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells',

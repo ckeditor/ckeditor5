@@ -115,6 +115,7 @@ import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
 	} )
@@ -539,6 +540,7 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 
 		// Insert the "placeholder" dropdown into the editor toolbar.
@@ -624,6 +626,7 @@ The plugin is now ready to accept the configuration. Check how this works by add
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Widget, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ],
 		placeholderConfig: {

@@ -1,13 +1,14 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 installation | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 Installation - Quick Start with CDN | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using Vanilla JS with CDN.
 category: cloud
 order: 20
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Vanilla JS Quick start
+# Installing Vanilla JS CKEditor&nbsp;5 using CDN
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
@@ -59,6 +60,7 @@ In the following script tag, import the desired plugins, add them to the `plugin
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 			toolbar: {
 				items: [
@@ -117,6 +119,7 @@ Your final page should look similar to the one below.
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: {
 						items: [
@@ -176,6 +179,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: {
 				items: [

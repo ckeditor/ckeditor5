@@ -55,8 +55,12 @@ import { ClassicEditor, HtmlEmbed } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HtmlEmbed, /* ... */ ],
 		toolbar: [ 'htmlEmbed', /* ... */ ],
+		htmlEmbed: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -73,8 +77,7 @@ However, by showing previews of the embedded HTML snippets, you expose the users
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlEmbed, /* ... */ ],
-		toolbar: [ 'htmlEmbed', /* ... */ ],
+		// ... Other configuration options ...
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: ( inputHtml ) => {

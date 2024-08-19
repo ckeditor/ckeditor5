@@ -1,6 +1,7 @@
 ---
 category: cloud
-meta-title: Compatibility with Laravel | CKEditor 5 documentation
+meta-title: Compatibility with Laravel when using CDN | CKEditor 5 documentation
+meta-description: Integrate CKEditor 5 using Laravel with CDN.
 order: 70
 menu-title: Laravel
 ---
@@ -66,13 +67,13 @@ import {
 import { SlashCommand } from 'ckeditor5-premium-features';
 
 const editorConfig = {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	toolbar: {
 		items: ['undo', 'redo', '|', 'selectAll', '|', 'bold', 'italic', '|', 'accessibilityHelp'],
 		shouldNotGroupWhenFull: false
 	},
 	placeholder: 'Type or paste your content here!',
 	plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
-	licenseKey: '<YOUR_LICENSE_KEY>',
 	mention: {
 		feeds: [
 			{

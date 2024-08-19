@@ -238,19 +238,12 @@ import { ClassicEditor, Style } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
+		toolbar: [ 'style', /* ... */ ],
 		},
 		style: {
-			definitions: [
-				// Styles definitions.
-				// ...
-			]
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
@@ -264,14 +257,7 @@ Configuring the styles feature takes two steps. First, you need to define the st
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
-		},
+		// ... Other configuration options ...
 		style: {
 			definitions: [
 				{

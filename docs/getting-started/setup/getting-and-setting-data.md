@@ -1,6 +1,7 @@
 ---
 category: setup
 meta-title: Getting and setting data | CKEditor 5 documentation
+meta-description: Deep-dive into handling data with CKEditor 5.
 order: 10
 ---
 
@@ -32,6 +33,7 @@ However, if you cannot alter the HTML or you load the data asynchronously using 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ],
 		initialData: '<p>Hello, world!</p>'
@@ -42,7 +44,7 @@ ClassicEditor
 
 The {@link module:core/editor/editorconfig~EditorConfig.initialData `initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
 
-If you are setting up the editor with integrations like {@link getting-started/integrations/react React}, consult the documentation for additional properties provided to initialize the data.
+If you are setting up the editor with integrations like {@link getting-started/integrations/react-default-npm React}, consult the documentation for additional properties provided to initialize the data.
 
 ## Getting the editor data with `getData()`
 
@@ -59,6 +61,7 @@ let editor;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ]
 	} )
@@ -130,6 +133,7 @@ This approach is **only available in the Classic editor**, and only if the edito
 
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Essentials, Paragraph, Bold, Italic ],
 				toolbar: [ 'bold', 'italic' ]
 			} )
