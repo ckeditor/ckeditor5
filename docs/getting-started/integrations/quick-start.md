@@ -41,12 +41,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-			]
-		}
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -111,13 +109,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-				'formatPainter'
-			]
-		}
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+			'formatPainter'
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
