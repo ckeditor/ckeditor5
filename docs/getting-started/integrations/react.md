@@ -129,7 +129,13 @@ import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
-	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
+	<CKEditorContext
+		context={ Context }
+		contextWatchdog={ ContextWatchdog }
+		onChangeInitializedEditors={ ( editors ) => {
+			console.info( editors.editor1?.instance, editors.editor1?.yourAdditionalData );
+		} }
+	>
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
@@ -137,6 +143,10 @@ function App() {
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
 		data='<p>Hello from the first editor working with the context!</p>'
+		contextItemMetadata={{
+			name: 'editor1',
+			yourAdditionalData: 2
+		}}
 		onReady={ ( editor ) => {
 		  // You can store the "editor" and use when it is needed.
 		  console.log( 'Editor 1 is ready to use!', editor );
@@ -169,6 +179,7 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
+* `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. This function is called with dictionary of fully initialized editors and the `contextItemMetadata.name` property set on `CKEditor` component is used as a key of such map. When `contextItemMetadata` property is not present on `CKEditor` component then it's ID will be used as a key in such dictionary. It's possible to add additional data besides `name` to `contextItemMetadata` in `CKEditor` component, that will be forwarded to the `onChangeInitializedEditors`.
 * `onReady` &ndash; A function called when the context is initialized but before the editors in the tree are set up. After this function is executed, you can track additions and removals in the context tree using the `context.editors.on('change', () => {})` method.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
   * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
