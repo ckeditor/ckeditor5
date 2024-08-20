@@ -675,8 +675,8 @@ export class AppComponent {
 	title = 'angular';
 	public Editor = ClassicEditor;
 	public config = {
-		translations: [ coreTranslations, premiumFeaturesTranslations ],
-		// More configuration options...
+		// ... Other configuration options ...
+		translations: [ coreTranslations, premiumFeaturesTranslations ]
 	}
 }
 ```
