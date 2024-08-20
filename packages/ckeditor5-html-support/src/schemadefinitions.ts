@@ -288,8 +288,8 @@ export default {
 					'$text'
 				],
 				allowIn: 'htmlDetails',
-				isBlock: false,
-				isLimit: true
+				isLimit: true,
+				isBlock: false
 			}
 		},
 		{
@@ -349,6 +349,7 @@ export default {
 			model: 'htmlHgroup',
 			view: 'hgroup',
 			modelSchema: {
+				allowIn: '$root',
 				allowChildren: [
 					'paragraph',
 					'htmlP',
@@ -359,8 +360,7 @@ export default {
 					'htmlH5',
 					'htmlH6'
 				],
-				isBlock: false,
-				allowIn: "$root"
+				isBlock: false
 			}
 		},
 		{
