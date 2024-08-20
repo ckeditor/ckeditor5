@@ -279,9 +279,17 @@ export default {
 			model: 'htmlSummary',
 			view: 'summary',
 			modelSchema: {
-				allowChildren: '$text',
+				allowChildren: [
+					'htmlH1',
+					'htmlH2',
+					'htmlH3',
+					'htmlH4',
+					'htmlH5',
+					'$text'
+				],
 				allowIn: 'htmlDetails',
-				isBlock: false
+				isBlock: false,
+				isLimit: true
 			}
 		},
 		{
@@ -342,6 +350,8 @@ export default {
 			view: 'hgroup',
 			modelSchema: {
 				allowChildren: [
+					'paragraph',
+					'htmlP',
 					'htmlH1',
 					'htmlH2',
 					'htmlH3',
@@ -349,7 +359,8 @@ export default {
 					'htmlH5',
 					'htmlH6'
 				],
-				isBlock: false
+				isBlock: false,
+				allowIn: "$root"
 			}
 		},
 		{
