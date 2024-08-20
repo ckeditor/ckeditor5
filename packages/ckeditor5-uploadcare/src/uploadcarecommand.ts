@@ -140,7 +140,7 @@ export default class UploadcareCommand extends Command {
 	private _initConfig() {
 		const configOptions = this.editor.config.get( 'uploadcare' ) || {};
 
-		this._configElement = createElement( document, 'lr-config', {
+		this._configElement = createElement( document, 'uc-config', {
 			...configOptions,
 			'ctx-name': 'uploader',
 			'sourceList': this._type,
@@ -153,7 +153,7 @@ export default class UploadcareCommand extends Command {
 	}
 
 	private _initCtx() {
-		this._ctxElement = createElement( document, 'lr-upload-ctx-provider', {
+		this._ctxElement = createElement( document, 'uc-upload-ctx-provider', {
 			'ctx-name': 'uploader'
 		} ) as UC.UploaderBlock;
 
@@ -230,7 +230,7 @@ export default class UploadcareCommand extends Command {
 
 		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<UC.OutputCollectionState> ) => {
 			// Whenever the `clear` button is triggered we need to re-init the flow.
-			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length ) {
+			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length && this._dialog.isOpen ) {
 				const activity = this._type === 'local' ? 'start-from' : this._type;
 
 				this._api!.setCurrentActivity( activity );

@@ -17,7 +17,10 @@ import '../theme/uploadcare-form.css';
 import '../theme/uploadcare-theme.css';
 
 /**
- * Uploadcare plugin that allows you to use the Uploadcare features.
+ * The Uploadcare feature, a bridge between the CKEditor 5 WYSIWYG editor and the Uploadcare file uploader.
+ *
+ * Check out the {@glink features/images/image-upload/image-upload Image upload} guide to learn about other ways to upload
+ * images into CKEditor 5.
  */
 export default class Uploadcare extends Plugin {
 	/**

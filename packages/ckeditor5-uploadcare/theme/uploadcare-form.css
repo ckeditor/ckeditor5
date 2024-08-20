@@ -37,15 +37,11 @@
 	}
 
 	/* stylelint-disable selector-type-no-unknown */
-	lr-file-uploader-inline > lr-progress-bar {
+	uc-activity-header {
 		display: none;
 	}
 
-	lr-activity-header {
-		display: none;
-	}
-
-	lr-source-list {
+	uc-source-list {
 		display: none;
 	}
 	/* stylelint-enable selector-type-no-unknown */
