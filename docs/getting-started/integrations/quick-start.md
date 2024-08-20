@@ -1,6 +1,6 @@
 ---
 menu-title: Vanilla JS
-meta-title: CKEditor 5 installation - quick start with npm or ZIP | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 installation - quick start with npm or ZIP | CKEditor 5 documentation
 meta-description: Install, integrate and configure CKEditor 5 using npm or ZIP.
 category: self-hosted
 order: 20
@@ -8,7 +8,7 @@ order: 20
 
 {@snippet installation/integrations/framework-integration}
 
-# Installing CKEditor&nbsp;5 using npm or ZIP
+# Installing Vanilla JS CKEditor&nbsp;5 using npm or ZIP
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to use it with npm or a ZIP package.
 
