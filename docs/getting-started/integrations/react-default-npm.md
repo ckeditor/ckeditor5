@@ -263,9 +263,9 @@ function App() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
+				// ... Other configuration options ...
 				translations: [ coreTranslations, premiumFeaturesTranslations ],
-				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
-				// More configuration options...
+				initialData: '<p>Hola desde CKEditor 5 en React!</p>'
 			} }
 		/>
 	);
