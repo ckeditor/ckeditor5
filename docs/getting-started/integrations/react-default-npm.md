@@ -1,14 +1,14 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component with npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using the default React component with npm or ZIP.
+meta-title: React rich text editor component (npm) | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the default React component with npm.
 category: react-npm
 order: 10
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text editor component
+# React rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -72,13 +72,9 @@ function App() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 
 					// Mention configuration
 				},
@@ -215,6 +211,7 @@ function App() {
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
+		  					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
@@ -261,15 +258,14 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// Style sheets imports...
-
 function App() {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
+				// ... Other configuration options ...
 				translations: [ coreTranslations, premiumFeaturesTranslations ],
-				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
+				initialData: '<p>Hola desde CKEditor 5 en React!</p>'
 			} }
 		/>
 	);
