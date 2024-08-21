@@ -1,7 +1,7 @@
 ---
 menu-title: Multi-root integration
 meta-title: React rich text editor multi-root hook with npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with npm or ZIP.
+meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with npm.
 category: react-npm
 order: 20
 modified_at: 2024-04-25
@@ -9,7 +9,7 @@ modified_at: 2024-04-25
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text multi-root editor hook
+# React rich text multi-root editor hook with npm
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -53,10 +53,9 @@ const App = () => {
 			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
 		},
 		config: {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Paragraph ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			},
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		}
 	};
 
