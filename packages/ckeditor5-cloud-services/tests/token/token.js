@@ -7,9 +7,12 @@
 
 import Token from '../../src/token/token.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Token', () => {
 	let requests;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		requests = [];
@@ -241,6 +244,8 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw an error if the returned token is wrapped in additional quotes', done => {
+			testUtils.sinon.stub( console, 'warn' );
+
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
@@ -258,6 +263,8 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw an error if the returned token is not a valid JWT token', done => {
+			testUtils.sinon.stub( console, 'warn' );
+
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.refreshToken()
@@ -334,6 +341,152 @@ describe( 'Token', () => {
 				.catch( error => {
 					expect( error ).to.equal( 'Custom error occurred' );
 				} );
+		} );
+
+		describe( 'refresh failure handling', () => {
+			let clock;
+
+			beforeEach( () => {
+				clock = sinon.useFakeTimers( {
+					toFake: [ 'setTimeout', 'clearTimeout' ]
+				} );
+
+				testUtils.sinon.stub( console, 'warn' );
+			} );
+
+			afterEach( () => {
+				clock.restore();
+			} );
+
+			it( 'should log a warning in the console', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise.then( () => {
+					throw new Error( 'Promise should fail' );
+				}, () => {
+					sinon.assert.calledWithMatch( console.warn, 'token-refresh-failed', { autoRefresh: false } );
+				} );
+			} );
+
+			it( 'should attempt to periodically refresh the token', async () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 2 );
+
+						requests[ 1 ].error();
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 3 );
+
+						requests[ 2 ].error();
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 4 );
+					} );
+			} );
+
+			it( 'should restore the regular refresh interval after a successfull refresh', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 2 );
+
+						requests[ 1 ].respond( 200, '', getTestTokenValue( 20 ) );
+
+						await clock.tickAsync( '05' );
+						// Switched to 10s interval because refresh was successful.
+						expect( requests.length ).to.equal( 2 );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 3 );
+
+						requests[ 2 ].respond( 200, '', getTestTokenValue( 20 ) );
+
+						await clock.tickAsync( '10' );
+						expect( requests.length ).to.equal( 4 );
+					} );
+			} );
+
+			it( 'should not auto-refresh after a failure if options.autoRefresh option is false', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 1 );
+
+						await clock.tickAsync( '10' );
+						expect( requests.length ).to.equal( 1 );
+					} );
+			} );
+
+			it( 'should clear any queued refresh upon manual refreshToken() call to avoid duplicated refreshes', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 2 );
+
+						token.refreshToken();
+						token.refreshToken();
+						token.refreshToken();
+
+						requests[ 1 ].error();
+						requests[ 2 ].error();
+						requests[ 3 ].error();
+						requests[ 4 ].error();
+
+						await clock.tickAsync( '05' );
+
+						expect( requests.length ).to.equal( 6 );
+					} );
+			} );
 		} );
 	} );
 
