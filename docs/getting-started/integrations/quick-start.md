@@ -1,7 +1,7 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 Installation - Quick Start with npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using Vanilla JS with npm or ZIP.
+meta-title: Vanilla JS CKEditor 5 installation - quick start with npm or ZIP | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using npm or ZIP.
 category: self-hosted
 order: 20
 ---
@@ -10,7 +10,7 @@ order: 20
 
 # Installing Vanilla JS CKEditor&nbsp;5 using npm or ZIP
 
-CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
+CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to use it with npm or a ZIP package.
 
 ## Using CKEditor&nbsp;5 Builder
 
@@ -41,12 +41,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-			]
-		}
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -68,7 +66,7 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 If you do not want to build your project using npm and cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
 
-1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the ZIP archive with the latest CKEditor&nbsp;5 distribution.</a>
+1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the ZIP archive</a> with the latest CKEditor&nbsp;5 distribution.
 2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
 
 Files included in the ZIP archive:
@@ -87,8 +85,6 @@ The easiest way to see the editor in action is to serve the `index.html` file vi
 <info-box warning>
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
-
-All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. It means, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ## Installing premium features
 
@@ -111,22 +107,19 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-				'formatPainter'
-			]
-		},
-		licenseKey: '<YOUR_LICENSE_KEY>'
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+			'formatPainter'
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note that to use premium features, you need to activate them with a proper license key. See the [Obtaining a license key](#obtaining-a-license-key) section.
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
@@ -140,8 +133,9 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ### Installing premium features from a ZIP file
 
-1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the ZIP archive with the latest CKEditor&nbsp;5 distribution and premium features.</a>
+1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the ZIP archive</a> with the latest CKEditor&nbsp;5 distribution and premium features.
 2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
+3. [Obtain a license key](#obtaining-a-license-key) and replace it in the editor configuration.
 
 Files in the ZIP archive:
 
@@ -158,6 +152,7 @@ Files in the ZIP archive:
     * `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
     * `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
     * `translations/` &ndash; The premium features UI translations.
+* The `ckeditor5-premium-features` directory is structured similarly to the `ckeditor5` directory. It contains equivalent files for premium features.
 * The `README.md` and `LICENSE.md` files.
 
 The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
@@ -165,8 +160,6 @@ The easiest way to see the editor in action is to serve the `index.html` file vi
 <info-box warning>
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
-
-All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. It means, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ### Obtaining a license key
 
