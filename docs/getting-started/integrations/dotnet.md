@@ -1,12 +1,12 @@
 ---
 category: self-hosted
-meta-title: Compatibility with .NET when installing from npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using .NET with npm or ZIP.
+meta-title: Compatibility with .NET using a ZIP archive | CKEditor 5 documentation
+meta-description: Integrate CKEditor 5 with .NET using a ZIP archive.
 order: 80
 menu-title: .NET
 ---
 
-# Compatibility with .NET
+# Compatibility with .NET using ZIP
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
 
@@ -26,9 +26,7 @@ For the purpose of this guide, we will use a basic ASP.NET Core project created 
 
 ## Integrating using ZIP
 
-<info-box>
-	Our new CKEditor&nbsp;5 Builder does not provide ZIP output yet &ndash; but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [on the download page](https://ckeditor.com/ckeditor-5/download/#zip).
-</info-box>
+There are two ways to acquire a ZIP archive with CKEditor&nbsp;5. You can use the mentioned [builder](https://ckeditor.com/builder/) to customize and download an editor suited to your needs. You can also use one of the generic ZIP archives [on the download page](https://ckeditor.com/ckeditor-5/download/#zip).
 
 After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `wwwroot/assets/vendor/` directory. The folder structure of your app should resemble this one.
 
