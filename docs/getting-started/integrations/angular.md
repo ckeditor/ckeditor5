@@ -1,14 +1,14 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component with npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm or ZIP.
+meta-title: Angular rich text editor component (npm) | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
 category: self-hosted
 order: 30
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component
+# Angular rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -105,7 +105,7 @@ You get ready-to-use code tailored to your needs!
 
 ### Setting up the project
 
-This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
+This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
 ### Installing from npm
 
@@ -155,11 +155,9 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
 		// mention: {
 		//     Mention configuration
 		// }
@@ -198,13 +196,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { AppComponent } from './app.component';
 
 @NgModule( {
-	declarations: [
-		AppComponent
-	],
-	imports: [
-		BrowserModule,
-		CKEditorModule
-	],
+	declarations: [ AppComponent ],
+	imports: [ BrowserModule, CKEditorModule ],
 	providers: [],
 	bootstrap: [ AppComponent ]
 } )
@@ -231,11 +224,9 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
 		// mention: {
 		//     Mention configuration
 		// }
@@ -614,6 +605,7 @@ export class AppComponent {
 
 	public Editor = DecoupledEditor;
 	public config = {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	}
@@ -683,8 +675,8 @@ export class AppComponent {
 	title = 'angular';
 	public Editor = ClassicEditor;
 	public config = {
-		translations: [ coreTranslations, premiumFeaturesTranslations ],
-		// More configuration options...
+		// ... Other configuration options ...
+		translations: [ coreTranslations, premiumFeaturesTranslations ]
 	}
 }
 ```
