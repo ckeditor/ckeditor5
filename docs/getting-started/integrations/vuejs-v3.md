@@ -1,14 +1,14 @@
 ---
 menu-title: Vue.js 3+
-meta-title: Vue.js 3+ rich text editor component | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with npm or ZIP.
+meta-title: Vue.js 3+ rich text editor component (npm) | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with npm.
 category: self-hosted
 order: 50
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Vue.js 3+ rich text editor component
+# Vue.js 3+ rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">
@@ -38,31 +38,31 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
-### Installation
+### Installing from npm
 
 Start by installing the following packages:
 
-* `ckeditor5` &ndash; contains all open-source plugins and features for CKEditor&nbsp;5.
+`ckeditor5` &ndash; contains all open-source plugins and features for CKEditor&nbsp;5.
 
-	```bash
-	npm install ckeditor5
-	```
+```bash
+npm install ckeditor5
+```
 
-* `ckeditor5-premium-features` &ndash; contains premium plugins and features for CKEditor&nbsp;5. Depending on your configuration and chosen plugins, you might not need it.
+`ckeditor5-premium-features` &ndash; contains premium plugins and features for CKEditor&nbsp;5. Depending on your configuration and chosen plugins, you might not need it.
 
-	```bash
-	npm install ckeditor5-premium-features
-	```
+```bash
+npm install ckeditor5-premium-features
+```
 
-* `@ckeditor/ckeditor5-vue` &ndash; the [CKEditor&nbsp;5 WYSIWYG editor component for Vue](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue).
+`@ckeditor/ckeditor5-vue` &ndash; the [CKEditor&nbsp;5 WYSIWYG editor component for Vue](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue).
 
-	```bash
-	npm install @ckeditor/ckeditor5-vue
-	```
+```bash
+npm install @ckeditor/ckeditor5-vue
+```
 
 With these packages installed, you now need to choose whether to install the `<ckeditor>` component globally or locally and follow the appropriate instructions below.
 
-#### Installing the `<ckeditor>` component globally
+#### Registering the `<ckeditor>` component globally
 
 To register the `<ckeditor>` component globally, you must install the CKEditor&nbsp;5 plugin for Vue.
 
@@ -109,8 +109,7 @@ export default {
 			editorConfig: {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				// Other configuration options...
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			}
 		};
 	}
@@ -153,8 +152,7 @@ export default {
 			editorConfig: {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				// Other configuration options...
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			}
 		};
 	}
@@ -454,8 +452,6 @@ import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// Style sheets imports...
-
 export default {
 	name: 'app',
 	data() {
@@ -463,11 +459,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hola desde CKEditor 5 en Vue!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [ Bold, Essentials, Italic, Paragraph ],
+				// ... Other configuration options ...
 				translations: [ coreTranslations, premiumFeaturesTranslations ]
 			}
 		};
