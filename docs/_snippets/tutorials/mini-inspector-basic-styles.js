@@ -6,7 +6,9 @@
 /* globals DecoupledEditor, MiniCKEditorInspector, console, window, document */
 
 DecoupledEditor
-	.create( document.querySelector( '#mini-inspector-basic-styles' ) )
+	.create( document.querySelector( '#mini-inspector-basic-styles' ), {
+		licenseKey: 'GPL'
+	} )
 	.then( editor => {
 		window.editor = editor;
 

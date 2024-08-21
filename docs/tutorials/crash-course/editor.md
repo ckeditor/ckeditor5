@@ -56,6 +56,7 @@ import { Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph

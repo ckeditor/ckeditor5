@@ -16,6 +16,7 @@ In the previous chapter of this tutorial, we learned that the editor is just an 
 import { Essentials, Paragraph } from 'ckeditor5';
 
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph
@@ -69,6 +70,7 @@ Then, in the `src/main.js` file, import and register this function as an editor 
 import { Highlight } from './plugin';
 
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		// Other plugins are omitted for readability - do not remove them.
 		Highlight
