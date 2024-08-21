@@ -285,6 +285,7 @@ export default {
 					'htmlH3',
 					'htmlH4',
 					'htmlH5',
+					'htmlH6',
 					'$text'
 				],
 				allowIn: 'htmlDetails',
