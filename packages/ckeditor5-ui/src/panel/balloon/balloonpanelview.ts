@@ -396,7 +396,7 @@ export default class BalloonPanelView extends View {
 			return false;
 		}
 
-		const targetElement = getDomElement( options.target );
+		let targetElement = getDomElement( options.target );
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
 
 		// Then we need to listen on scroll event of eny element in the document.
@@ -422,17 +422,25 @@ export default class BalloonPanelView extends View {
 		} );
 
 		// Hide the panel if the target element is no longer visible.
-		if ( targetElement && !this._resizeObserver ) {
-			const checkVisibility = () => {
-				// If the target element is no longer visible, hide the panel.
-				if ( !isVisible( targetElement ) ) {
-					this.unpin();
-				}
-			};
+		if ( !this._resizeObserver ) {
+			// If the target element is a text node, we need to check the parent element.
+			// It's because `ResizeObserver` accept only elements, not text nodes.
+			if ( targetElement instanceof Text ) {
+				targetElement = targetElement.parentElement;
+			}
 
-			// Element is being resized to 0x0 after it's parent became hidden,
-			// so we need to check size in order to determine if it's visible or not.
-			this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
+			if ( targetElement ) {
+				const checkVisibility = () => {
+					// If the target element is no longer visible, hide the panel.
+					if ( !isVisible( targetElement ) ) {
+						this.unpin();
+					}
+				};
+
+				// Element is being resized to 0x0 after it's parent became hidden,
+				// so we need to check size in order to determine if it's visible or not.
+				this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
+			}
 		}
 
 		return true;
