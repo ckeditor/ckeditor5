@@ -64,6 +64,8 @@ describe( 'Token', () => {
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
 			expect( token.value ).to.equal( tokenInitValue );
+
+			token.destroy();
 		} );
 
 		it( 'should fire `change:value` event if the value of the token has changed', done => {
@@ -79,6 +81,8 @@ describe( 'Token', () => {
 			token.init();
 
 			requests[ 0 ].respond( 200, '', tokenValue );
+
+			token.destroy();
 		} );
 
 		it( 'should accept the callback in the constructor', () => {
@@ -98,6 +102,8 @@ describe( 'Token', () => {
 				.then( () => {
 					expect( token.value ).to.equal( tokenValue );
 
+					token.destroy();
+
 					done();
 				} );
 
@@ -111,11 +117,13 @@ describe( 'Token', () => {
 			return token.init()
 				.then( () => {
 					expect( token.value ).to.equal( tokenValue );
+
+					token.destroy();
 				} );
 		} );
 
 		it( 'should not refresh token if autoRefresh is disabled in options', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
@@ -127,10 +135,12 @@ describe( 'Token', () => {
 			expect( requests ).to.be.empty;
 
 			clock.restore();
+
+			token.destroy();
 		} );
 
 		it( 'should refresh token with the time specified in token `exp` payload property', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
@@ -154,11 +164,13 @@ describe( 'Token', () => {
 
 			expect( requests.length ).to.equal( 5 );
 
+			token.destroy();
+
 			clock.restore();
 		} );
 
 		it( 'should refresh the token with the default time if getting token expiration time failed', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenValue = 'header.test.signature';
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
@@ -173,11 +185,13 @@ describe( 'Token', () => {
 
 			expect( requests.length ).to.equal( 2 );
 
+			token.destroy();
+
 			clock.restore();
 		} );
 
 		it( 'should refresh the token with the default time if the token payload does not contain `exp` property', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenValue = `header.${ btoa( JSON.stringify( {} ) ) }.signature`;
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
@@ -195,13 +209,15 @@ describe( 'Token', () => {
 
 			expect( requests.length ).to.equal( 3 );
 
+			token.destroy();
+
 			clock.restore();
 		} );
 	} );
 
 	describe( 'destroy', () => {
 		it( 'should stop refreshing the token', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout', 'clearTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
@@ -237,6 +253,8 @@ describe( 'Token', () => {
 				.then( newToken => {
 					expect( newToken.value ).to.equal( tokenValue );
 
+					token.destroy();
+
 					done();
 				} );
 
@@ -256,6 +274,7 @@ describe( 'Token', () => {
 				.catch( error => {
 					expect( error.constructor ).to.equal( CKEditorError );
 					expect( error ).to.match( /token-not-in-jwt-format/ );
+					token.destroy();
 					done();
 				} );
 
@@ -274,6 +293,7 @@ describe( 'Token', () => {
 				.catch( error => {
 					expect( error.constructor ).to.equal( CKEditorError );
 					expect( error ).to.match( /token-not-in-jwt-format/ );
+					token.destroy();
 					done();
 				} );
 
@@ -287,6 +307,7 @@ describe( 'Token', () => {
 			return token.refreshToken()
 				.then( newToken => {
 					expect( newToken.value ).to.equal( tokenValue );
+					token.destroy();
 				} );
 		} );
 
@@ -302,6 +323,7 @@ describe( 'Token', () => {
 			}, error => {
 				expect( error.constructor ).to.equal( CKEditorError );
 				expect( error ).to.match( /token-cannot-download-new-token/ );
+				token.destroy();
 			} );
 		} );
 
@@ -316,6 +338,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Abort/ );
+				token.destroy();
 			} );
 		} );
 
@@ -330,6 +353,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Network Error/ );
+				token.destroy();
 			} );
 		} );
 
@@ -340,6 +364,7 @@ describe( 'Token', () => {
 			token.refreshToken()
 				.catch( error => {
 					expect( error ).to.equal( 'Custom error occurred' );
+					token.destroy();
 				} );
 		} );
 
@@ -369,6 +394,7 @@ describe( 'Token', () => {
 					throw new Error( 'Promise should fail' );
 				}, () => {
 					sinon.assert.calledWithMatch( console.warn, 'token-refresh-failed', { autoRefresh: false } );
+					token.destroy();
 				} );
 			} );
 
@@ -398,6 +424,8 @@ describe( 'Token', () => {
 
 						await clock.tickAsync( '05' );
 						expect( requests.length ).to.equal( 4 );
+
+						token.destroy();
 					} );
 			} );
 
@@ -431,6 +459,8 @@ describe( 'Token', () => {
 
 						await clock.tickAsync( '10' );
 						expect( requests.length ).to.equal( 4 );
+
+						token.destroy();
 					} );
 			} );
 
@@ -453,6 +483,8 @@ describe( 'Token', () => {
 
 						await clock.tickAsync( '10' );
 						expect( requests.length ).to.equal( 1 );
+
+						token.destroy();
 					} );
 			} );
 
@@ -485,6 +517,8 @@ describe( 'Token', () => {
 						await clock.tickAsync( '05' );
 
 						expect( requests.length ).to.equal( 6 );
+
+						token.destroy();
 					} );
 			} );
 		} );
@@ -498,6 +532,8 @@ describe( 'Token', () => {
 				.then( token => {
 					expect( token.value ).to.equal( tokenValue );
 
+					token.destroy();
+
 					done();
 				} );
 
@@ -510,6 +546,8 @@ describe( 'Token', () => {
 			Token.create( 'http://token-endpoint' )
 				.then( token => {
 					expect( token._options ).to.eql( { autoRefresh: true } );
+
+					token.destroy();
 
 					done();
 				} );
