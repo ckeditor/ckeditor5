@@ -16,6 +16,7 @@ import {
 	isRange,
 	toUnit,
 	isVisible,
+	isText,
 	ResizeObserver,
 	type Locale,
 	type ObservableChangeEvent,
@@ -425,7 +426,7 @@ export default class BalloonPanelView extends View {
 		if ( !this._resizeObserver ) {
 			// If the target element is a text node, we need to check the parent element.
 			// It's because `ResizeObserver` accept only elements, not text nodes.
-			if ( targetElement && targetElement.nodeType === Node.TEXT_NODE ) {
+			if ( targetElement && isText( targetElement ) ) {
 				targetElement = targetElement.parentElement;
 			}
 

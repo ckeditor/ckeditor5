@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import isText from './istext.js';
+
 /**
  * @module utils/dom/isvisible
  */
@@ -22,7 +24,7 @@ export default function isVisible( element: Text | HTMLElement | null | undefine
 		return false;
 	}
 
-	if ( element instanceof Text ) {
+	if ( isText( element ) ) {
 		return isVisible( element.parentElement );
 	}
 
