@@ -191,7 +191,7 @@ describe( 'table utils', () => {
 			} );
 		} );
 
-		describe( 'getNormalizedDefaultCellProperties', () => {
+		describe( 'getNormalizedDefaultCellProperties()', () => {
 			it( 'should return proper default properties for cell', () => {
 				expect( getNormalizedDefaultCellProperties() ).to.deep.equal( {
 					backgroundColor: '',
