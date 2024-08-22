@@ -310,10 +310,11 @@ The button can be either:
 
 The dropdown panel exposes its {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#children children} collection which aggregates the child {@link module:ui/view~View views}. The most common views displayed in the dropdown panel are:
 
-* {@link module:ui/list/listview~ListView}
-* {@link module:ui/toolbar/toolbarview~ToolbarView}
+* {@link module:ui/list/listview~ListView} - dropdown list
+* {@link module:ui/toolbar/toolbarview~ToolbarView} - dropdown toolbar
+* {@link module:ui/dropdown/menu/dropdownmenurootlistview~DropdownMenuRootListView} - dropdown menu
 
-The framework provides a set of helpers to make the dropdown creation process easier. It is still possible to compose a custom dropdown from scratch using the base classes.
+The framework provides a set of helpers to make the dropdown creation process easier. It is still possible to compose a custom dropdown from scratch using the base classes. However, for most needs, we highly recommend using provided helper functions.
 
 The {@link module:ui/dropdown/utils~createDropdown} helper creates a {@link module:ui/dropdown/dropdownview~DropdownView} with either a {@link module:ui/button/buttonview~ButtonView} or a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}.
 
@@ -428,7 +429,6 @@ A {@link module:ui/toolbar/toolbarview~ToolbarView} can be added to a dropdown u
 ```js
 import { ButtonView, SplitButtonView, addToolbarToDropdown, createDropdown } from 'ckeditor5';
 
-
 const buttons = [];
 
 // Add a simple button to the array of toolbar items.
@@ -450,6 +450,55 @@ A common practice is making the main dropdown button {@link module:ui/dropdown/d
 dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled',
 	( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 );
+```
+
+#### Adding a menu to a dropdown
+
+A multi-level menu can be added to a dropdown using the {@link module:ui/dropdown/utils~addMenuToDropdown} helper.
+
+```js
+import { addMenuToDropdown, createDropdown } from 'ckeditor5';
+
+// The default dropdown.
+const dropdownView = createDropdown( editor.locale );
+
+// The menu items definitions.
+const definition = [
+	{
+		id: 'menu_1',
+		menu: 'Menu 1',
+		children: [
+			{
+				id: 'menu_1_a',
+				label: 'Item A'
+			},
+			{
+				id: 'menu_1_b',
+				label: 'Item B'
+			}
+		]
+	},
+	{
+		id: 'top_a',
+		label: 'Top Item A'
+	},
+	{
+		id: 'top_b',
+		label: 'Top Item B'
+	}
+];
+
+addMenuToDropdown( dropdownView, editor.body.ui.view, definition );
+```
+
+Most probably you will want to perform some action when one of the defined buttons is pressed:
+
+```js
+dropdownView.on( 'execute', evt => {
+	const id = evt.source.id;
+
+	console.log( id ); // E.g. will print "menu_1_a" when "Item A" is pressed.
+} );
 ```
 
 ### Dialogs and modals
@@ -589,7 +638,7 @@ editor.plugins.get( 'Dialog' ).show( {
 			}
 		},
 		{
-			label: 'This button will be enabled in 5...'
+			label: 'This button will be enabled in 5...',
 			withText: true,
 			onCreate: buttonView => {
 				buttonView.isEnabled = false;
@@ -745,7 +794,7 @@ You can also pass such code directly in the `show()` method call in the `onShow`
 ```js
 editor.plugins.get( 'Dialog' ).show( {
 	onShow: dialog => {
-		dialog.view!.on( 'close', ( evt, data ) => {
+		dialog.view.on( 'close', ( evt, data ) => {
 			if ( data.source === 'escKeyPress' ) {
 				evt.stop();
 			}

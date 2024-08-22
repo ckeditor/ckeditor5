@@ -10,6 +10,7 @@
 import DropdownPanelView from './dropdownpanelview.js';
 import DropdownView from './dropdownview.js';
 import DropdownButtonView from './button/dropdownbuttonview.js';
+import DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
 import ToolbarView from '../toolbar/toolbarview.js';
 import ListView from '../list/listview.js';
 import ListItemView from '../list/listitemview.js';
@@ -20,13 +21,14 @@ import ViewCollection from '../viewcollection.js';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 
-import type { default as View, UIViewRenderEvent } from '../view.js';
+import type { default as View } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type Model from '../model.js';
 import type DropdownButton from './button/dropdownbutton.js';
 import type ButtonView from '../button/buttonview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { FalsyValue } from '../template.js';
+import type BodyCollection from '../editorui/bodycollection.js';
 
 import {
 	global,
@@ -42,6 +44,7 @@ import '../../theme/components/dropdown/listdropdown.css';
 
 import ListItemGroupView from '../list/listitemgroupview.js';
 import ListItemButtonView from '../button/listitembuttonview.js';
+import type { DropdownMenuDefinition } from './menu/utils.js';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -108,6 +111,8 @@ import ListItemButtonView from '../button/listitembuttonview.js';
  *
  * @param locale The locale instance.
  * @param ButtonClassOrInstance The dropdown button view class. Needs to implement the
+ * @param behaviorOptions Attributes for the default behavior of the dropdown.
+ *
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
  * @returns The dropdown view instance.
  */
@@ -129,9 +134,107 @@ export function createDropdown(
 		buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
 	}
 
-	addDefaultBehavior( dropdownView );
+	addDefaultBehaviors( dropdownView );
 
 	return dropdownView;
+}
+
+/**
+ * Adds a menu UI component to a dropdown and sets all common behaviors and interactions between the dropdown and the menu.
+ *
+ * Use this helper to create multi-level dropdown menus that are displayed in a toolbar.
+ *
+ * Internally, it creates an instance of {@link module:ui/dropdown/menu/dropdownmenurootlistview~DropdownMenuRootListView}.
+ *
+ * Example:
+ *
+ * ```ts
+ * const definitions = [
+ * 	{
+ * 		id: 'menu_1',
+ * 		menu: 'Menu 1',
+ * 		children: [
+ * 			{
+ * 				id: 'menu_1_a',
+ * 				label: 'Item A'
+ * 			},
+ * 			{
+ * 				id: 'menu_1_b',
+ * 				label: 'Item B'
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		id: 'top_a',
+ * 		label: 'Top Item A'
+ * 	},
+ * 	{
+ * 		id: 'top_b',
+ * 		label: 'Top Item B'
+ * 	}
+ * ];
+ *
+ * const dropdownView = createDropdown( editor.locale );
+ *
+ * addMenuToDropdown( dropdownView, editor.ui.view.body, definitions );
+ * ```
+ *
+ * After using this helper, the `dropdown` will fire {@link module:ui/dropdown/dropdownview~DropdownViewEvent `execute`} event when
+ * a nested menu button is pressed.
+ *
+ * The helper will make sure that the `dropdownMenuRootListView` is lazy loaded, i.e., the menu component structure will be initialized
+ * and rendered only after the `dropdown` is opened for the first time.
+ *
+ * @param dropdownView A dropdown instance to which the menu component will be added.
+ * @param body Body collection to which floating menu panels will be added.
+ * @param definition The menu component definition.
+ * @param options.ariaLabel Label used by assistive technologies to describe the top-level menu.
+ */
+export function addMenuToDropdown(
+	dropdownView: DropdownView,
+	body: BodyCollection,
+	definition: DropdownMenuDefinition,
+	options: {
+		ariaLabel?: string;
+	} = {} ): void {
+	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+
+	if ( dropdownView.isOpen ) {
+		addMenuToOpenDropdown( dropdownView, options );
+	} else {
+		// Load the UI elements only after the dropdown is opened for the first time - lazy loading.
+		dropdownView.once( 'change:isOpen', () => {
+			addMenuToOpenDropdown( dropdownView, options );
+		}, { priority: 'highest' } );
+	}
+}
+
+function addMenuToOpenDropdown(
+	dropdownView: DropdownView,
+	options: {
+		ariaLabel?: string;
+	}
+): void {
+	const dropdownMenuRootListView = dropdownView.menuView!;
+	const t = dropdownView.locale!.t;
+
+	dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
+	dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( !isOpen ) {
+			dropdownMenuRootListView.closeMenus();
+		}
+	}, { priority: 'low' } ); // Make sure this is fired after `focusDropdownButtonOnClose` behavior.
+
+	// When `dropdownMenuRootListView` is added as a `panelView` child, it becomes rendered (`panelView` is rendered at this point).
+	dropdownView.panelView.children.add( dropdownMenuRootListView );
+
+	// Nested menu panels are added to body collection, so they are not children of the `dropdownView` from DOM perspective.
+	// Add these panels to `dropdownView` focus tracker, so they are treated like part of the `dropdownView` for focus-related purposes.
+	for ( const menu of dropdownMenuRootListView.menus ) {
+		dropdownView.focusTracker.add( menu.panelView.element! );
+	}
+
+	dropdownMenuRootListView.ariaLabel = options.ariaLabel || t( 'Dropdown menu' );
 }
 
 /**
@@ -413,7 +516,7 @@ export function focusChildOnDropdownOpen(
 /**
  * Add a set of default behaviors to dropdown view.
  */
-function addDefaultBehavior( dropdownView: DropdownView ) {
+function addDefaultBehaviors( dropdownView: DropdownView ) {
 	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
 	closeDropdownOnBlur( dropdownView );
@@ -426,18 +529,16 @@ function addDefaultBehavior( dropdownView: DropdownView ) {
  * Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
  */
 function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
-	dropdownView.on<UIViewRenderEvent>( 'render', () => {
-		clickOutsideHandler( {
-			emitter: dropdownView,
-			activator: () => dropdownView.isOpen,
-			callback: () => {
-				dropdownView.isOpen = false;
-			},
-			contextElements: () => [
-				dropdownView.element!,
-				...( dropdownView.focusTracker._elements as Set<HTMLElement> )
-			]
-		} );
+	clickOutsideHandler( {
+		emitter: dropdownView,
+		activator: () => dropdownView.isRendered && dropdownView.isOpen,
+		callback: () => {
+			dropdownView.isOpen = false;
+		},
+		contextElements: () => [
+			dropdownView.element!,
+			...dropdownView.focusTracker.elements
+		]
 	} );
 }
 
@@ -461,9 +562,11 @@ function closeDropdownOnExecute( dropdownView: DropdownView ) {
  */
 function closeDropdownOnBlur( dropdownView: DropdownView ) {
 	dropdownView.focusTracker.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
-		if ( dropdownView.isOpen && !isFocused ) {
-			dropdownView.isOpen = false;
+		if ( isFocused || !dropdownView.isOpen ) {
+			return;
 		}
+
+		dropdownView.isOpen = false;
 	} );
 }
 
@@ -498,12 +601,12 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 			return;
 		}
 
-		const element = dropdownView.panelView.element;
+		const elements = dropdownView.focusTracker.elements;
 
 		// If the dropdown was closed, move the focus back to the button (#12125).
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		if ( element && element.contains( global.document.activeElement ) ) {
+		if ( elements.some( element => element.contains( global.document.activeElement ) ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );
