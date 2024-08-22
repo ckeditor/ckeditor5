@@ -117,7 +117,6 @@ describe( 'HeadingElementSupport', () => {
 						'$text'
 					],
 					allowIn: 'htmlDetails',
-					isLimit: true,
 					isBlock: false
 				},
 				isBlock: true
