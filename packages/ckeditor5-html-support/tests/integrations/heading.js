@@ -82,7 +82,10 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
+					allowIn: '$root',
 					allowChildren: [
+						'paragraph',
+						'htmlP',
 						'htmlH1',
 						'htmlH2',
 						'htmlH3',
@@ -93,6 +96,28 @@ describe( 'HeadingElementSupport', () => {
 						'heading2',
 						'otherHeading'
 					],
+					isBlock: false
+				},
+				isBlock: true
+			} ] );
+		} );
+
+		it( 'should add heading models as allowed children of htmlSummary', () => {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'summary' ) ) ).to.deep.equal( [ {
+				model: 'htmlSummary',
+				view: 'summary',
+				modelSchema: {
+					allowChildren: [
+						'htmlH1',
+						'htmlH2',
+						'htmlH3',
+						'htmlH4',
+						'htmlH5',
+						'htmlH6',
+						'$text'
+					],
+					allowIn: 'htmlDetails',
+					isLimit: true,
 					isBlock: false
 				},
 				isBlock: true
@@ -487,7 +512,10 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
+					allowIn: '$root',
 					allowChildren: [
+						'paragraph',
+						'htmlP',
 						'htmlH1',
 						'htmlH2',
 						'htmlH3',
