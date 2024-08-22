@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import isText from './istext.js';
-
 /**
  * @module utils/dom/isvisible
  */
+
+import isText from './istext.js';
 
 /**
  * Checks whether the element is visible to the user in DOM:
