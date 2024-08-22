@@ -1,12 +1,12 @@
 ---
 category: self-hosted
-meta-title: Compatibility with .NET when installing from npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using .NET with npm or ZIP.
+meta-title: Compatibility with .NET using a ZIP archive | CKEditor 5 documentation
+meta-description: Integrate CKEditor 5 with .NET using a ZIP archive.
 order: 80
 menu-title: .NET
 ---
 
-# Compatibility with .NET
+# Compatibility with .NET using ZIP
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
 
