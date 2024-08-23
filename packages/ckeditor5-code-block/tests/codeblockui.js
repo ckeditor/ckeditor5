@@ -243,6 +243,10 @@ describe( 'CodeBlockUI', () => {
 						withText: true
 					},
 					{
+						label: 'Go',
+						withText: true
+					},
+					{
 						label: 'HTML',
 						withText: true
 					},
