@@ -396,10 +396,6 @@ describe( 'Widget', () => {
 			.returns( {} );
 
 		sinon
-			.stub( parentView, 'is' )
-			.withArgs( 'editableElement' ).returns( true );
-
-		sinon
 			.stub( view.domConverter, 'domRangeToView' )
 			.returns( {
 				start: {
