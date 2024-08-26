@@ -19,6 +19,7 @@ export default function getPositionedAncestor( element?: HTMLElement ): HTMLElem
 		return null;
 	}
 
+	// TODO ShadowRoot?
 	if ( element.offsetParent === global.document.body ) {
 		return null;
 	}

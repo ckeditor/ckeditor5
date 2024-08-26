@@ -11,7 +11,7 @@ import DomEventObserver from './domeventobserver.js';
 import type DomEventData from './domeventdata.js';
 import type ViewRange from '../range.js';
 import DataTransfer from '../datatransfer.js';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, getSelection } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine } = require( '../../dev-utils/utils.js' );
 
@@ -105,7 +105,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// For Android devices we use a fallback to the current DOM selection, Android modifies it according
 		// to the expected target ranges of input event.
 		else if ( env.isAndroid ) {
-			const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
+			const domSelection = getSelection( domEvent.target as HTMLElement )!;
 
 			targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
 

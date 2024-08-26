@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
+import { keyCodes, isText, getSelection, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 import type View from './view.js';
 import type DomEventData from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
@@ -158,7 +158,7 @@ export function injectQuirksHandling( view: View ): void {
  */
 function jumpOverInlineFiller( evt: unknown, data: DomEventData & KeystrokeInfo ) {
 	if ( data.keyCode == keyCodes.arrowleft ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( data.domTarget )!;
 
 		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
 			const domParent = domSelection.getRangeAt( 0 ).startContainer;

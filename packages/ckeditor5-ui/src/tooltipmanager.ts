@@ -187,6 +187,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
 
+		// TODO ShadowRoot
 		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );

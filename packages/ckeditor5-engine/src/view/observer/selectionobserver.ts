@@ -12,7 +12,7 @@
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 import FocusObserver from './focusobserver.js';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, getSelection } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view.js';
@@ -148,6 +148,7 @@ export default class SelectionObserver extends Observer {
 		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
 		// Add document-wide listeners only once. This method could be called for multiple editing roots.
+		// TODO ShadowRoot
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
@@ -181,7 +182,7 @@ export default class SelectionObserver extends Observer {
 				return;
 			}
 
-			this._handleSelectionChange( domDocument );
+			this._handleSelectionChange( domElement );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -254,7 +255,7 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( domDocument )!;
 
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode! ) ) {
 			return;

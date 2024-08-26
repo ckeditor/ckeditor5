@@ -22,6 +22,7 @@ export default function getAncestors( node: Node ): Array<Node> {
 	const nodes: Array<Node> = [];
 	let currentNode: Node | null = node;
 
+	// TODO ShadowRoot?
 	// We are interested in `Node`s `DocumentFragment`s only.
 	while ( currentNode && currentNode.nodeType != Node.DOCUMENT_NODE ) {
 		nodes.unshift( currentNode );

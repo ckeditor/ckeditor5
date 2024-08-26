@@ -86,6 +86,7 @@ export default class BodyCollection extends ViewCollection {
 
 		if ( !wrapper ) {
 			wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
+			// TODO ShadowRoot
 			document.body.appendChild( wrapper );
 		}
 

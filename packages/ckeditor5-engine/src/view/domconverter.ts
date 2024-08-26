@@ -32,7 +32,8 @@ import {
 	isComment,
 	isValidAttributeName,
 	first,
-	env
+	env,
+	getSelection
 } from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node.js';
@@ -1135,7 +1136,7 @@ export default class DomConverter {
 		}
 
 		// Check if DOM selection is inside editor editable element.
-		const domSelection = domEditable.ownerDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( domEditable )!;
 		const newViewSelection = this.domSelectionToView( domSelection );
 		const selectionInEditable = newViewSelection && newViewSelection.rangeCount > 0;
 
@@ -1203,7 +1204,8 @@ export default class DomConverter {
 	 * @param DOM Selection instance to check.
 	 */
 	public isDomSelectionBackward( selection: DomSelection ): boolean {
-		if ( selection.isCollapsed ) {
+		// TODO ShadowRoot have invalid isCollapsed, check first range and if this issue is not resolved in Chrome.
+		if ( selection.isCollapsed && ( !selection.rangeCount || selection.getRangeAt( 0 ).collapsed ) ) {
 			return false;
 		}
 

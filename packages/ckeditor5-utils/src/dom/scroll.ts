@@ -346,7 +346,11 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 			}
 		}
 
-		parent = parent.parentNode as HTMLElement;
+		if ( parent.parentNode instanceof ShadowRoot ) {
+			parent = parent.parentNode.host as HTMLElement;
+		} else {
+			parent = parent.parentNode as HTMLElement;
+		}
 	}
 }
 
@@ -403,7 +407,7 @@ function getParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 
 		return parent;
 	} else {
-		return elementOrRange.parentNode as HTMLElement;
+		return elementOrRange.parentNode as HTMLElement; // TODO ShadowRoot?
 	}
 }
 
