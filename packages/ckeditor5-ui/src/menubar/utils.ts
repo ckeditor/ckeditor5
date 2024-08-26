@@ -172,7 +172,12 @@ export const MenuBarBehaviors = {
 
 		menuBarView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( _, evt, isOpen ) => {
 			if ( !isOpen ) {
-				menuBarView.isFocusBorderEnabled = false;
+				// Keep the focus border if the menu bar was closed by a keyboard interaction (Esc key).
+				// The user remains in the keyboard navigation mode and can traverse the main categories.
+				// See https://github.com/ckeditor/ckeditor5/issues/16719.
+				if ( !isKeyPressed ) {
+					menuBarView.isFocusBorderEnabled = false;
+				}
 
 				// Reset the flag when the menu bar is closed, menu items tend to intercept `keyup` event
 				// and sometimes, after pressing `enter` on focused item, `isKeyPressed` stuck in `true` state.
