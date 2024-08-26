@@ -126,6 +126,16 @@ ClassicEditor
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options. Also, check out individual {@link features/index feature guides}, listing various configuration options available per feature.
 
+### Why does the editor filter out content such as styles, classes or HTML elements?
+
+CKEditor&nbsp;5 implements a custom {@link framework/architecture/editing-engine data model}. This means that the editor needs to convert every piece of loaded content to that model and then render it back to the view.
+
+Each kind of content must be handled by a plugin. For example, the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
+
+If you try to load some content unknown to the editor &ndash; without a feature loaded to handle it &ndash; the editor will drop it.
+
+If you want the editor to handle the HTML5 elements not covered by available feature plugins, you need to write plugins to support them. You can also use the {@link features/general-html-support General HTML Support (GHS)} feature. Once you do that, CKEditor&nbsp;5 will not filter anything out. However, GHS needs to be carefully and precisely configured to ensure stability and security of the implementation.
+
 ## Removing features
 
 In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
