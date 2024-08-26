@@ -78,18 +78,6 @@ If you have any documents in the DOCX format, you can convert them into HTML wit
 The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can save into a database. The default output can be also switched to {@link features/markdown GitHub-flavored Markdown} formatted text.
 
 {@img assets/img/features-output.png 800 CKEditor&nbsp;5 output features.}
-<!--
-### Productivity pack
-
-The productivity pack is a set of exclusive premium features available to holders of a CKEditor&nbsp;5 commercial license.
-
-The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon ckeditor5-collaboration/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}.
-
-{@link features/document-outline Document outline} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} make navigating large documents much easier.
-
-{@link features/format-painter Format painter} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets the users style their content in a blaze while the {@link features/case-change case change feature} {@icon ckeditor5-collaboration/theme/icons/case-change.svg Case change} lets them apply the title case to selected sentences or turn whole paragraphs into uppercase.
-
-Productivity pack also includes the {@link features/paste-from-office-enhanced enhanced paste from Office} plugin with far greater formatting support. -->
 
 ### Other productivity features
 
@@ -139,7 +127,7 @@ If you load some content unknown to any editor feature, the editor will drop it.
 
 ## Looking for more
 
-The examples mentioned here do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory. They are mentioned, for example, in the keyboard shortcuts guide.
+The examples mentioned here do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. Some end-user features are quite self-explanatory. They are mentioned, for example, in the keyboard shortcuts guide.
 
 CKEditor&nbsp;5 is in active development and we add new features to it all the time. We also work on expanding and improving the existing ones. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
 
