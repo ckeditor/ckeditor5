@@ -1,14 +1,14 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component with npm | CKEditor 5 documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with npm or ZIP.
+meta-title: Vue.js 2.x rich text editor component (npm) | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with npm.
 category: self-hosted
 order: 40
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Vue.js 2.x rich text editor component
+# Vue.js 2.x rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
@@ -17,7 +17,7 @@ order: 40
 </p>
 
 <info-box warning>
-	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
+	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 Vue.js 3+ rich text editor component} guide.
 </info-box>
 
 Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
@@ -92,13 +92,9 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				 },
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
+				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 
 					// Mention configuration
 				}
@@ -136,10 +132,9 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
+				licenseKey: '<YOUR_LICENSE_KEY>',
                 plugins: [ Bold, Essentials, Italic, Paragraph ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			}
 		};
 	}
@@ -417,8 +412,6 @@ import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// Style sheets imports...
-
 export default {
 	name: 'app',
 	data() {
@@ -426,10 +419,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hola desde CKEditor 5 en Vue 2!</p>',
 			editorConfig: {
-				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
-                plugins: [ Bold, Essentials, Italic, Paragraph ],
+				// ... Other configuration options ...
 				translations: [ coreTranslations, premiumFeaturesTranslations ]
 			}
 		};
