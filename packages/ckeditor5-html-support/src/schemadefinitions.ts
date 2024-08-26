@@ -349,7 +349,7 @@ export default {
 			model: 'htmlHgroup',
 			view: 'hgroup',
 			modelSchema: {
-				allowIn: '$container',
+				allowIn: [ '$root', '$container' ],
 				allowChildren: [
 					'paragraph',
 					'htmlP',

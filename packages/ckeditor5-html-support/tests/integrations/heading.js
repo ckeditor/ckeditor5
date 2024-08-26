@@ -82,7 +82,7 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
-					allowIn: '$container',
+					allowIn: [ '$root', '$container' ],
 					allowChildren: [
 						'paragraph',
 						'htmlP',
@@ -114,7 +114,10 @@ describe( 'HeadingElementSupport', () => {
 						'htmlH4',
 						'htmlH5',
 						'htmlH6',
-						'$text'
+						'$text',
+						'heading1',
+						'heading2',
+						'otherHeading'
 					],
 					allowIn: 'htmlDetails',
 					isBlock: false
@@ -511,7 +514,7 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
-					allowIn: '$container',
+					allowIn: [ '$root', '$container' ],
 					allowChildren: [
 						'paragraph',
 						'htmlP',
