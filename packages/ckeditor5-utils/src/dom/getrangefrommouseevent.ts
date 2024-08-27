@@ -23,22 +23,39 @@ export default function getRangeFromMouseEvent(
 		return null;
 	}
 
-	const domDoc = ( domEvent.target as HTMLElement ).ownerDocument;
+	const domTarget = domEvent.target as HTMLElement;
+	const domDoc = domTarget.ownerDocument;
+	const domRootNode = domTarget.getRootNode();
 	const x = domEvent.clientX;
 	const y = domEvent.clientY;
-	let domRange = null;
+
+	// TODO
+	// Available in Chrome 128+
+	if ( domDoc.caretPositionFromPoint && typeof domDoc.caretPositionFromPoint == 'function' ) {
+		const shadowRoot = domRootNode instanceof ShadowRoot ? domRootNode : null;
+		const caretPosition = domDoc.caretPositionFromPoint( x, y, shadowRoot ? { shadowRoots: [ domRootNode ] } : {} );
+		const domRange = domDoc.createRange();
+
+		domRange.setStart( caretPosition.offsetNode, caretPosition.offset );
+		domRange.collapse( true );
+
+		return domRange;
+	}
 
 	// Webkit & Blink.
 	if ( domDoc.caretRangeFromPoint && domDoc.caretRangeFromPoint( x, y ) ) {
-		domRange = domDoc.caretRangeFromPoint( x, y );
+		return domDoc.caretRangeFromPoint( x, y );
 	}
 
 	// FF.
-	else if ( domEvent.rangeParent ) {
-		domRange = domDoc.createRange();
+	if ( domEvent.rangeParent ) {
+		const domRange = domDoc.createRange();
+
 		domRange.setStart( domEvent.rangeParent, domEvent.rangeOffset! );
 		domRange.collapse( true );
+
+		return domRange;
 	}
 
-	return domRange;
+	return null;
 }

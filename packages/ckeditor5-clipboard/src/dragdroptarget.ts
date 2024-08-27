@@ -521,7 +521,9 @@ function findScrollableElement( domNode: HTMLElement ): HTMLElement {
 	let domElement: HTMLElement = domNode;
 
 	do {
-		domElement = domElement.parentElement!;
+		domElement = domElement.parentNode instanceof ShadowRoot ?
+			domElement.parentNode.host as HTMLElement :
+			domElement.parentElement!;
 
 		const overflow = global.window.getComputedStyle( domElement ).overflowY;
 

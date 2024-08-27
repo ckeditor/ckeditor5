@@ -21,12 +21,21 @@ export default function getSelection( node: Node ): Selection | null {
 			// TODO Does it work if in multiple nested shadows?
 			const ranges = domSelection.getComposedRanges( rootNode );
 
+			console.log( 'sel', ranges, domSelection.direction );
+
 			// TODO for now just a DOM selection wrapper
 			return {
 				rangeCount: ranges.length,
 
 				getRangeAt( index: number ) {
-					return ranges[ index ];
+					const staticRange = ranges[ index ];
+					const range = rootNode.ownerDocument.createRange();
+
+					range.setStart( staticRange.startContainer, staticRange.startOffset );
+					range.setEnd( staticRange.endContainer, staticRange.endOffset );
+
+					// Return the Range as it includes commonAncestorContainer property.
+					return range;
 				},
 
 				isCollapsed: !ranges.length || ranges[ 0 ].isCollapsed,
@@ -44,11 +53,8 @@ export default function getSelection( node: Node ): Selection | null {
 				},
 
 				setBaseAndExtent( ...args ) {
+					console.log( 'sel set base and extent' );
 					return domSelection.setBaseAndExtent( ...args );
-				},
-
-				addRange( ...args ) {
-					return domSelection.addRange( ...args );
 				}
 			} as any;
 		}

@@ -994,9 +994,11 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		const domSelection = getSelection( domRoot )!;
 		const domRange = domDocument.createRange();
 
-		domSelection.removeAllRanges();
 		domRange.selectNodeContents( container );
-		domSelection.addRange( domRange );
+		domSelection.setBaseAndExtent(
+			domRange.startContainer, domRange.startOffset,
+			domRange.endContainer, domRange.endOffset
+		);
 	}
 
 	/**
@@ -1249,6 +1251,7 @@ function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPosition
 	// To stay on the safe side, the fix being as specific as possible, it targets only the
 	// selection which is at the very end of the element and preceded by <br />.
 	if ( childAtOffset && ( childAtOffset as DomElement ).tagName == 'BR' ) {
+		// TODO ShadowRoot
 		domSelection.addRange( domSelection.getRangeAt( 0 ) );
 	}
 }
