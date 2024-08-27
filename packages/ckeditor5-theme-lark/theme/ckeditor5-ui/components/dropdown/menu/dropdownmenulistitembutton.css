@@ -22,9 +22,9 @@
 	}
 
 	/*
-		* Hovered items automatically get focused. Default focus styles look odd
-		* while moving across a huge list of items so let's get rid of them
-		*/
+	 * Hovered items automatically get focused. Default focus styles look odd
+	 * while moving across a huge list of items so let's get rid of them
+	 */
 	&:focus {
 		border-color: transparent;
 		box-shadow: none;

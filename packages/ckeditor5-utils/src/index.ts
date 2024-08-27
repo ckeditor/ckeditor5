@@ -53,6 +53,7 @@ export { default as global } from './dom/global.js';
 export { default as getAncestors } from './dom/getancestors.js';
 export { default as getDataFromElement } from './dom/getdatafromelement.js';
 export { default as getBorderWidths } from './dom/getborderwidths.js';
+export { default as getRangeFromMouseEvent } from './dom/getrangefrommouseevent.js';
 export { default as isText } from './dom/istext.js';
 export { default as Rect, type RectSource } from './dom/rect.js';
 export { default as ResizeObserver } from './dom/resizeobserver.js';
