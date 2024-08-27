@@ -8,11 +8,11 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 /*
-* All menu buttons.
-*/
-.ck.ck-dropdown-menu-list__nested-menu__button {
+ * All menu buttons.
+ */
+.ck.ck-button.ck-dropdown-menu-list__nested-menu__button {
 	width: 100%;
-	padding: var(--ck-list-button-padding);
+	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
 	border-radius: 0;
 
 	&:focus {
@@ -44,10 +44,16 @@
 
 		@mixin ck-dir ltr {
 			transform: rotate(-90deg);
+
+			/* Nudge the arrow gently to the right because its center of gravity is to the left */
+			margin-right: calc(-1 * var(--ck-spacing-small));
 		}
 
 		@mixin ck-dir rtl {
 			transform: rotate(90deg);
+
+			/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
+			margin-left: calc(-1 * var(--ck-spacing-small));
 		}
 	}
 
