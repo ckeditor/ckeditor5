@@ -1472,7 +1472,7 @@ describe( 'MenuBarView utils', () => {
 				} );
 			} );
 
-			describe( 'focusOnEnterKeyPress()', () => {
+			describe( 'openAndFocusOnEnterKeyPress()', () => {
 				it( 'should open the menu and focus its panel upon enter key press', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 					const keyEvtData = {
