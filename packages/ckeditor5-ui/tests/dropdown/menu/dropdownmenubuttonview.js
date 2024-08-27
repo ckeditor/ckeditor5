@@ -7,7 +7,7 @@
 
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
-import { ButtonView, IconView } from '../../../src/index.js';
+import { IconView, ListItemButtonView } from '../../../src/index.js';
 import DropdownMenuButtonView from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
 import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
@@ -25,7 +25,7 @@ describe( 'DropdownMenuButtonView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from ButtonView', () => {
-			expect( buttonView ).to.be.instanceOf( ButtonView );
+			expect( buttonView ).to.be.instanceOf( ListItemButtonView );
 		} );
 
 		it( 'should set #withText', () => {

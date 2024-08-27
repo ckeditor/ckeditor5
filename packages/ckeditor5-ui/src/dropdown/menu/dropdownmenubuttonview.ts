@@ -8,7 +8,7 @@
  */
 
 import IconView from '../../icon/iconview.js';
-import ButtonView from '../../button/buttonview.js';
+import ListItemButtonView from '../../button/listitembuttonview.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
@@ -18,7 +18,7 @@ import '../../../theme/components/dropdown/menu/dropdownmenubutton.css';
 /**
  * Represents a view for a dropdown menu button.
  */
-export default class DropdownMenuButtonView extends ButtonView {
+export default class DropdownMenuButtonView extends ListItemButtonView {
 	/**
 	 * An icon that displays an arrow to indicate a direction of the menu.
 	 */
