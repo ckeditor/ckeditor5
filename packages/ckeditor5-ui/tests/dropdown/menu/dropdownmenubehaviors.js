@@ -227,6 +227,51 @@ describe( 'Menu Behaviors', () => {
 				expect( menuView.isOpen ).to.be.true;
 			} );
 		} );
+
+		describe( 'openAndFocusOnEnterKeyPress()', () => {
+			beforeEach( () => {
+				rootListView = createRootListView();
+			} );
+
+			it( 'should open the menu and focus its panel upon enter key press', () => {
+				const menuView = menuViewById( 'menu_1' );
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const focusSpy = sinon.spy( menuView.panelView, 'focus' );
+
+				menuView.buttonView.focus();
+				menuView.keystrokes.press( keyEvtData );
+
+				expect( menuView.isOpen ).to.be.true;
+
+				sinon.assert.calledOnce( focusSpy );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			} );
+
+			it( 'should not intercept enter key press from anywhere but the button view', () => {
+				const menuView = menuViewById( 'menu_1' );
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const focusSpy = sinon.spy( menuView.panelView, 'focus' );
+
+				menuView.keystrokes.press( keyEvtData );
+
+				expect( menuView.isOpen ).to.be.false;
+
+				sinon.assert.notCalled( focusSpy );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+			} );
+		} );
 	} );
 
 	function createRootListView() {

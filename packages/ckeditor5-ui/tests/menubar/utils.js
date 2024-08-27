@@ -392,7 +392,7 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: true, isFocused: false, items: [
-										{ label: 'AA#1', isFocused: true },
+										{ label: 'AA#1', isFocused: false },
 										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 									] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
@@ -967,31 +967,6 @@ describe( 'MenuBarView utils', () => {
 				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
 			} );
 
-			it( 'should set proper isFocusBorderEnabled when a clicked and focused item on opened menu', () => {
-				const clock = sinon.useFakeTimers();
-
-				sinon.stub( menuBarView.element, 'matches' ).withArgs( ':focus-within' ).returns( true );
-
-				const menuA = getMenuByLabel( menuBarView, 'A' );
-
-				menuA.isOpen = true;
-
-				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
-
-				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
-
-				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
-
-				menuA.isOpen = false;
-				clock.tick( 1000 );
-
-				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
-
-				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
-
-				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
-			} );
-
 			it( 'should not clean #isFocusBorderEnabled if the menu bar was closed by an Esc key press', async () => {
 				const menuA = getMenuByLabel( menuBarView, 'A' );
 
@@ -1184,7 +1159,7 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'AA#1', isFocused: true }
+										{ label: 'AA#1', isFocused: false }
 									] }
 								]
 							}
@@ -1201,7 +1176,7 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'AA#1', isFocused: true }
+										{ label: 'AA#1', isFocused: false }
 									] }
 								]
 							}
@@ -1494,6 +1469,71 @@ describe( 'MenuBarView utils', () => {
 							}
 						]
 					);
+				} );
+			} );
+
+			describe( 'openAndFocusOnEnterKeyPress()', () => {
+				it( 'should open the menu and focus its panel upon enter key press', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.enter,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.buttonView.focus();
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'AA#1', isFocused: true }
+									] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+
+				it( 'should not intercept enter key press from anywhere but the button view', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.enter,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: false, items: [] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
 				} );
 			} );
 		} );

@@ -87,8 +87,24 @@ export const DropdownMenuBehaviors = {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			if ( menuView.isEnabled ) {
 				menuView.isOpen = true;
-				menuView.panelView.focus();
 			}
+		} );
+	},
+
+	/**
+	 * Opens the menu and focuses the panel content upon pressing the Enter key.
+	 */
+	openAndFocusOnEnterKeyPress( menuView: DropdownMenuNestedMenuView ): void {
+		menuView.keystrokes.set( 'enter', ( data, cancel ) => {
+			// Engage only for Enter key press when the button is focused. The panel can contain
+			// other UI components and features that rely on the Enter key press.
+			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
+				return;
+			}
+
+			menuView.isOpen = true;
+			menuView.panelView.focus();
+			cancel();
 		} );
 	},
 
