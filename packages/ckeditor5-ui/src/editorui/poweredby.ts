@@ -53,25 +53,8 @@ export default class PoweredBy extends Badge {
 
 		const licenseContent = parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
 
-		editor.ui.focusTracker.on( 'change:focusedElement', ( evt, data, focusedElement ) => {
-			this._updateLastFocusedEditableElement();
-
-			if ( focusedElement ) {
-				this._showBalloon();
-			}
-		} );
-
-		editor.ui.on( 'update', () => {
-			this._showBalloonThrottled();
-		} );
-	}
-
-	/**
-	 * Attempts to display the balloon with the "powered by" view.
-	 */
-	private _showBalloon(): void {
-		if ( !this._lastFocusedEditableElement ) {
-			return;
+		if ( !licenseContent ) {
+			return true;
 		}
 
 		return !licenseContent.whiteLabel;

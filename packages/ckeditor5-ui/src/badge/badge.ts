@@ -191,7 +191,6 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 		}
 
 		editor.ui.view.body.add( balloon );
-		editor.ui.focusTracker.add( balloon.element! );
 
 		return balloon;
 	}
