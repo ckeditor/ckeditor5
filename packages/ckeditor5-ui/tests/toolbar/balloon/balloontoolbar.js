@@ -21,6 +21,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -88,10 +89,12 @@ describe( 'BalloonToolbar', () => {
 			} );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		editorElement.remove();
 
-		return editor.destroy();
+		if ( editor ) {
+			await editor.destroy();
+		}
 	} );
 
 	after( () => {
@@ -822,6 +825,181 @@ describe( 'BalloonToolbar', () => {
 					return editor.destroy();
 				} );
 		} );
+	} );
+
+	describe( 'MultiRoot editor integration', () => {
+		let rootsElements, addEditableOnRootAdd;
+
+		beforeEach( async () => {
+			addEditableOnRootAdd = true;
+			rootsElements = [ ...Array( 3 ) ].reduce( ( acc, _, index ) => {
+				const rootElement = global.document.createElement( 'div' );
+
+				global.document.body.appendChild( rootElement );
+
+				return {
+					...acc,
+					[ `root-${ index }` ]: rootElement
+				};
+			}, {} );
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+
+			editor = await createMultiRootEditor();
+			balloonToolbar = editor.plugins.get( BalloonToolbar );
+		} );
+
+		afterEach( async () => {
+			Object
+				.values( rootsElements )
+				.forEach( rootElement => rootElement.remove() );
+
+			await editor.destroy();
+			editor = null;
+		} );
+
+		it( 'should create plugin instance', () => {
+			expect( balloonToolbar ).to.instanceOf( Plugin );
+			expect( balloonToolbar ).to.instanceOf( BalloonToolbar );
+			expect( balloonToolbar.toolbarView ).to.instanceof( ToolbarView );
+			expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+		} );
+
+		it( '#focusTracker should include all roots created alongside with editor', () => {
+			const clock = sinon.useFakeTimers();
+			const editables = [ ...editor.ui.getEditableElementsNames() ];
+
+			expect( editables ).to.be.length( 3 );
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			for ( const editableName of editables ) {
+				const editableElement = editor.ui.getEditableElement( editableName );
+
+				editableElement.dispatchEvent( new Event( 'focus' ) );
+				clock.tick( 50 );
+				expect( balloonToolbar.focusTracker.isFocused ).to.true;
+
+				editableElement.dispatchEvent( new Event( 'blur' ) );
+				clock.tick( 50 );
+				expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			}
+
+			clock.restore();
+		} );
+
+		it( '#focusTracker should track focus on dynamically added roots', async () => {
+			const clock = sinon.useFakeTimers();
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+
+			editor.addRoot( 'dynamicRoot' );
+
+			// Check if newly added editable is tracked in focus tracker.
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 5 );
+
+			// Check if element is added to focus tracker.
+			const editableElement = editor.ui.getEditableElement( 'dynamicRoot' );
+			expect( balloonToolbar.focusTracker._elements ).contain( editableElement );
+
+			// Watch focus and blur events.
+			editableElement.dispatchEvent( new Event( 'focus' ) );
+			clock.tick( 50 );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+
+			editableElement.dispatchEvent( new Event( 'blur' ) );
+			clock.tick( 50 );
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			editableElement.remove();
+			clock.restore();
+		} );
+
+		it( 'dynamically removed roots should be removed from #focusTracker', () => {
+			const clock = sinon.useFakeTimers();
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+
+			editor.addRoot( 'dynamicRoot' );
+			const editableElement = editor.ui.getEditableElement( 'dynamicRoot' );
+
+			// Check if newly added editable is tracked in focus tracker.
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 5 );
+
+			editor.detachRoot( 'dynamicRoot' );
+
+			// Check if element is removed from focus tracker.
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+
+			// Focus is no longer tracked.
+			editableElement.dispatchEvent( new Event( 'focus' ) );
+			clock.tick( 50 );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			clock.restore();
+		} );
+
+		it( 'should track lazy attached and detached editables', () => {
+			const clock = sinon.useFakeTimers();
+
+			addEditableOnRootAdd = false;
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+
+			editor.addRoot( 'dynamicRoot' );
+			const root = editor.model.document.getRoot( 'dynamicRoot' );
+
+			// Editable is not yet attached
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+
+			// Focus is no longer tracked.
+			const editableElement = editor.createEditable( root );
+
+			global.document.body.appendChild( editableElement );
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 5 );
+
+			// Lets test focus
+			editableElement.dispatchEvent( new Event( 'focus' ) );
+			clock.tick( 50 );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+
+			// Detach editable element
+			editor.detachEditable( root );
+			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+
+			editableElement.remove();
+			clock.restore();
+		} );
+
+		async function createMultiRootEditor() {
+			const multiRootEditor = await MultiRootEditor.create( rootsElements, {
+				plugins: [ Paragraph, Bold, Italic, BalloonToolbar ],
+				balloonToolbar: [ 'bold', 'italic' ]
+			} );
+
+			multiRootEditor.on( 'addRoot', ( evt, root ) => {
+				if ( addEditableOnRootAdd ) {
+					const domElement = multiRootEditor.createEditable( root );
+					global.document.body.appendChild( domElement );
+				}
+			} );
+
+			multiRootEditor.on( 'detachRoot', ( evt, root ) => {
+				if ( addEditableOnRootAdd ) {
+					const domElement = multiRootEditor.detachEditable( root );
+					domElement.remove();
+				}
+			} );
+
+			return multiRootEditor;
+		}
 	} );
 
 	function stubSelectionRects( rects ) {

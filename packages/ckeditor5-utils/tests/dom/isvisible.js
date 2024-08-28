@@ -80,4 +80,17 @@ describe( 'isVisible()', () => {
 
 		expect( isVisible( element ) ).to.be.false;
 	} );
+
+	it( 'should return visibility of parent element if text node is passed', () => {
+		document.body.appendChild( element );
+
+		const textNode = document.createTextNode( 'foo' );
+		element.appendChild( textNode );
+
+		expect( isVisible( textNode ) ).to.be.true;
+
+		element.style.display = 'none';
+
+		expect( isVisible( textNode ) ).to.be.false;
+	} );
 } );

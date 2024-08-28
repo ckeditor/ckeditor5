@@ -7,9 +7,12 @@
 
 import Token from '../../src/token/token.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Token', () => {
 	let requests;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		requests = [];
@@ -61,6 +64,8 @@ describe( 'Token', () => {
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
 			expect( token.value ).to.equal( tokenInitValue );
+
+			token.destroy();
 		} );
 
 		it( 'should fire `change:value` event if the value of the token has changed', done => {
@@ -76,6 +81,8 @@ describe( 'Token', () => {
 			token.init();
 
 			requests[ 0 ].respond( 200, '', tokenValue );
+
+			token.destroy();
 		} );
 
 		it( 'should accept the callback in the constructor', () => {
@@ -95,6 +102,8 @@ describe( 'Token', () => {
 				.then( () => {
 					expect( token.value ).to.equal( tokenValue );
 
+					token.destroy();
+
 					done();
 				} );
 
@@ -108,11 +117,13 @@ describe( 'Token', () => {
 			return token.init()
 				.then( () => {
 					expect( token.value ).to.equal( tokenValue );
+
+					token.destroy();
 				} );
 		} );
 
 		it( 'should not refresh token if autoRefresh is disabled in options', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
@@ -124,10 +135,12 @@ describe( 'Token', () => {
 			expect( requests ).to.be.empty;
 
 			clock.restore();
+
+			token.destroy();
 		} );
 
 		it( 'should refresh token with the time specified in token `exp` payload property', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
@@ -151,11 +164,13 @@ describe( 'Token', () => {
 
 			expect( requests.length ).to.equal( 5 );
 
+			token.destroy();
+
 			clock.restore();
 		} );
 
 		it( 'should refresh the token with the default time if getting token expiration time failed', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenValue = 'header.test.signature';
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
@@ -170,11 +185,13 @@ describe( 'Token', () => {
 
 			expect( requests.length ).to.equal( 2 );
 
+			token.destroy();
+
 			clock.restore();
 		} );
 
 		it( 'should refresh the token with the default time if the token payload does not contain `exp` property', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenValue = `header.${ btoa( JSON.stringify( {} ) ) }.signature`;
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
@@ -192,13 +209,15 @@ describe( 'Token', () => {
 
 			expect( requests.length ).to.equal( 3 );
 
+			token.destroy();
+
 			clock.restore();
 		} );
 	} );
 
 	describe( 'destroy', () => {
 		it( 'should stop refreshing the token', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout', 'clearTimeout' ] } );
+			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
@@ -234,6 +253,8 @@ describe( 'Token', () => {
 				.then( newToken => {
 					expect( newToken.value ).to.equal( tokenValue );
 
+					token.destroy();
+
 					done();
 				} );
 
@@ -241,6 +262,8 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw an error if the returned token is wrapped in additional quotes', done => {
+			testUtils.sinon.stub( console, 'warn' );
+
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
@@ -251,6 +274,7 @@ describe( 'Token', () => {
 				.catch( error => {
 					expect( error.constructor ).to.equal( CKEditorError );
 					expect( error ).to.match( /token-not-in-jwt-format/ );
+					token.destroy();
 					done();
 				} );
 
@@ -258,6 +282,8 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw an error if the returned token is not a valid JWT token', done => {
+			testUtils.sinon.stub( console, 'warn' );
+
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.refreshToken()
@@ -267,6 +293,7 @@ describe( 'Token', () => {
 				.catch( error => {
 					expect( error.constructor ).to.equal( CKEditorError );
 					expect( error ).to.match( /token-not-in-jwt-format/ );
+					token.destroy();
 					done();
 				} );
 
@@ -280,6 +307,7 @@ describe( 'Token', () => {
 			return token.refreshToken()
 				.then( newToken => {
 					expect( newToken.value ).to.equal( tokenValue );
+					token.destroy();
 				} );
 		} );
 
@@ -295,6 +323,7 @@ describe( 'Token', () => {
 			}, error => {
 				expect( error.constructor ).to.equal( CKEditorError );
 				expect( error ).to.match( /token-cannot-download-new-token/ );
+				token.destroy();
 			} );
 		} );
 
@@ -309,6 +338,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Abort/ );
+				token.destroy();
 			} );
 		} );
 
@@ -323,6 +353,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Network Error/ );
+				token.destroy();
 			} );
 		} );
 
@@ -333,7 +364,163 @@ describe( 'Token', () => {
 			token.refreshToken()
 				.catch( error => {
 					expect( error ).to.equal( 'Custom error occurred' );
+					token.destroy();
 				} );
+		} );
+
+		describe( 'refresh failure handling', () => {
+			let clock;
+
+			beforeEach( () => {
+				clock = sinon.useFakeTimers( {
+					toFake: [ 'setTimeout', 'clearTimeout' ]
+				} );
+
+				testUtils.sinon.stub( console, 'warn' );
+			} );
+
+			afterEach( () => {
+				clock.restore();
+			} );
+
+			it( 'should log a warning in the console', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise.then( () => {
+					throw new Error( 'Promise should fail' );
+				}, () => {
+					sinon.assert.calledWithMatch( console.warn, 'token-refresh-failed', { autoRefresh: false } );
+					token.destroy();
+				} );
+			} );
+
+			it( 'should attempt to periodically refresh the token', async () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 2 );
+
+						requests[ 1 ].error();
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 3 );
+
+						requests[ 2 ].error();
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 4 );
+
+						token.destroy();
+					} );
+			} );
+
+			it( 'should restore the regular refresh interval after a successfull refresh', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 2 );
+
+						requests[ 1 ].respond( 200, '', getTestTokenValue( 20 ) );
+
+						await clock.tickAsync( '05' );
+						// Switched to 10s interval because refresh was successful.
+						expect( requests.length ).to.equal( 2 );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 3 );
+
+						requests[ 2 ].respond( 200, '', getTestTokenValue( 20 ) );
+
+						await clock.tickAsync( '10' );
+						expect( requests.length ).to.equal( 4 );
+
+						token.destroy();
+					} );
+			} );
+
+			it( 'should not auto-refresh after a failure if options.autoRefresh option is false', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 1 );
+
+						await clock.tickAsync( '10' );
+						expect( requests.length ).to.equal( 1 );
+
+						token.destroy();
+					} );
+			} );
+
+			it( 'should clear any queued refresh upon manual refreshToken() call to avoid duplicated refreshes', () => {
+				const tokenInitValue = getTestTokenValue();
+				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
+				const promise = token.refreshToken();
+
+				requests[ 0 ].error();
+
+				return promise
+					.then( async () => {
+						throw new Error( 'Promise should fail' );
+					} )
+					.catch( async err => {
+						expect( err ).to.match( /Network Error/ );
+
+						await clock.tickAsync( '05' );
+						expect( requests.length ).to.equal( 2 );
+
+						token.refreshToken();
+						token.refreshToken();
+						token.refreshToken();
+
+						requests[ 1 ].error();
+						requests[ 2 ].error();
+						requests[ 3 ].error();
+						requests[ 4 ].error();
+
+						await clock.tickAsync( '05' );
+
+						expect( requests.length ).to.equal( 6 );
+
+						token.destroy();
+					} );
+			} );
 		} );
 	} );
 
@@ -344,6 +531,8 @@ describe( 'Token', () => {
 			Token.create( 'http://token-endpoint', { autoRefresh: false } )
 				.then( token => {
 					expect( token.value ).to.equal( tokenValue );
+
+					token.destroy();
 
 					done();
 				} );
@@ -357,6 +546,8 @@ describe( 'Token', () => {
 			Token.create( 'http://token-endpoint' )
 				.then( token => {
 					expect( token._options ).to.eql( { autoRefresh: true } );
+
+					token.destroy();
 
 					done();
 				} );

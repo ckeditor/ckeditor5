@@ -301,7 +301,11 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.instagram.com/p/foo',
 								'www.instagram.com/p/foo',
-								'instagram.com/p/foo'
+								'instagram.com/p/foo',
+
+								'https://www.instagram.com/reel/Foo/',
+								'www.instagram.com/reel/Foo/',
+								'instagram.com/reel/Foo/'
 							] );
 						} );
 
@@ -309,7 +313,11 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.twitter.com/foo/bar',
 								'www.twitter.com/foo/bar',
-								'twitter.com/foo/bar'
+								'twitter.com/foo/bar',
+
+								'https://www.x.com/foo/bar',
+								'www.x.com/foo/bar',
+								'x.com/foo/bar'
 							] );
 						} );
 

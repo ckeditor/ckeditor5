@@ -6,7 +6,7 @@
 /* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { global, keyCodes, Locale } from '@ckeditor/ckeditor5-utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -23,13 +23,14 @@ import {
 	createDropdown,
 	addToolbarToDropdown,
 	addListToDropdown,
-	focusChildOnDropdownOpen
+	focusChildOnDropdownOpen,
+	addMenuToDropdown
 } from '../../src/dropdown/utils.js';
 import ListItemView from '../../src/list/listitemview.js';
 import ListSeparatorView from '../../src/list/listseparatorview.js';
 import ListView from '../../src/list/listview.js';
 import ViewCollection from '../../src/viewcollection.js';
-import { ListItemGroupView } from '../../src/index.js';
+import { BodyCollection, DropdownMenuRootListView, ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {
 	let locale, dropdownView;
@@ -37,7 +38,7 @@ describe( 'utils', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = { t: langString => langString };
+		locale = new Locale();
 	} );
 
 	describe( 'createDropdown()', () => {
@@ -118,7 +119,9 @@ describe( 'utils', () => {
 				} );
 
 				afterEach( () => {
-					dropdownView.element.remove();
+					if ( dropdownView.element ) {
+						dropdownView.element.remove();
+					}
 				} );
 
 				it( 'listens to view#isOpen and reacts to DOM events (valid target)', () => {
@@ -1289,6 +1292,192 @@ describe( 'utils', () => {
 			function getListViewDomButton( listView ) {
 				return listView.children.first.element;
 			}
+		} );
+	} );
+
+	describe( 'addMenuToDropdown()', () => {
+		let dropdownView, body, definition;
+
+		beforeEach( () => {
+			body = new BodyCollection();
+			dropdownView = createDropdown( locale );
+			definition = [
+				{
+					id: 'menu_1',
+					menu: 'Menu 1',
+					children: [
+						{
+							id: 'menu_1_1',
+							label: 'Item 1'
+						},
+						{
+							id: 'menu_1_2',
+							label: 'Item 2'
+						},
+						{
+							id: 'menu_1_3',
+							menu: 'Menu 3',
+							children: [
+								{
+									id: 'menu_1_3_1',
+									label: 'Item 1'
+								}
+							]
+						}
+					]
+				}
+			];
+		} );
+
+		afterEach( () => {
+			body.destroy();
+		} );
+
+		it( 'should set DropdownView#menuView', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			expect( dropdownView.menuView ).to.be.instanceof( DropdownMenuRootListView );
+		} );
+
+		it( 'should set a default aria-label for #menuView', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.ariaLabel ).to.equal( 'Dropdown menu' );
+		} );
+
+		it( 'should allow for configuring a custom aria-label for #menuView', () => {
+			addMenuToDropdown( dropdownView, body, definition, {
+				ariaLabel: 'Custom menu dropdown'
+			} );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.ariaLabel ).to.equal( 'Custom menu dropdown' );
+		} );
+
+		it( 'should not do anything before the dropdown is opened for the first time', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			sinon.spy( dropdownView.menuView, 'render' );
+
+			expect( dropdownView.panelView.children.length ).to.equal( 0 );
+			expect( dropdownView.menuView.isRendered ).to.be.false;
+
+			// Rendering the dropdown itself does not change anything.
+			dropdownView.render();
+
+			expect( dropdownView.panelView.children.length ).to.equal( 0 );
+			expect( dropdownView.menuView.render.called ).to.be.false;
+			expect( dropdownView.menuView.isRendered ).to.be.false;
+		} );
+
+		it( 'should render dropdown menu just once, after dropdown is opened first time', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			sinon.spy( dropdownView.menuView, 'render' );
+
+			dropdownView.render();
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.panelView.children.length ).to.equal( 1 );
+			expect( dropdownView.menuView.render.calledOnce ).to.be.true;
+
+			dropdownView.isOpen = false;
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.panelView.children.length ).to.equal( 1 );
+			expect( dropdownView.menuView.render.calledOnce ).to.be.true;
+		} );
+
+		it( 'should focus dropdown menu view after dropdown is opened', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			dropdownView.render();
+
+			sinon.spy( dropdownView.menuView, 'focus' );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.focus.calledOnce ).to.be.true;
+
+			dropdownView.isOpen = false;
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.focus.calledTwice ).to.be.true;
+		} );
+
+		it( 'should delegate menu:execute event from menu to dropdown execute', () => {
+			const spy = sinon.spy();
+			dropdownView.on( 'execute', spy );
+
+			addMenuToDropdown( dropdownView, body, definition );
+
+			dropdownView.render();
+			dropdownView.isOpen = true;
+
+			dropdownView.menuView.fire( 'menu:execute' );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should close menus when dropdown is closed', () => {
+			addMenuToDropdown( dropdownView, body, definition );
+
+			sinon.spy( dropdownView.menuView, 'closeMenus' );
+
+			dropdownView.render();
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.menuView.closeMenus.calledOnce ).to.be.false;
+
+			dropdownView.isOpen = false;
+
+			expect( dropdownView.menuView.closeMenus.calledOnce ).to.be.true;
+		} );
+
+		it( 'dropdown should stay focused and open when nested menus are focused', async () => {
+			// Note that nested menus are in body collection, so they are outside of dropdown DOM.
+			// That's why this requirement is not obvious.
+			addMenuToDropdown( dropdownView, body, definition );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			expect( dropdownView.focusTracker.isFocused ).to.be.false;
+
+			dropdownView.isOpen = true;
+			dropdownView.buttonView.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( dropdownView.focusTracker.isFocused ).to.be.true;
+
+			const menu = dropdownView.menuView.menus[ 0 ];
+			const nestedMenu = dropdownView.menuView.menus[ 1 ];
+
+			menu.isOpen = true;
+			nestedMenu.isOpen = true;
+
+			dropdownView.buttonView.element.dispatchEvent( new Event( 'blur' ) );
+			nestedMenu.listView.items.get( 0 ).element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( nestedMenu.focusTracker.isFocused ).to.be.true;
+			expect( dropdownView.focusTracker.isFocused ).to.be.true;
+			expect( dropdownView.isOpen ).to.be.true;
+			expect( menu.isOpen ).to.be.true;
+			expect( nestedMenu.isOpen ).to.be.true;
+
+			dropdownView.element.remove();
+		} );
+
+		it( 'should correctly add the menu to an open dropdown', () => {
+			dropdownView.render();
+			dropdownView.isOpen = true;
+
+			addMenuToDropdown( dropdownView, body, definition );
+
+			expect( dropdownView.panelView.children.length ).to.equal( 1 );
+			expect( dropdownView.menuView.isRendered ).to.be.true;
 		} );
 	} );
 
