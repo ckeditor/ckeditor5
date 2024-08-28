@@ -11,7 +11,7 @@ import TooltipManager from '../../src/tooltipmanager.js';
 import PoweredBy from '../../src/editorui/poweredby.js';
 import EvaluationBadge from '../../src/editorui/evaluationbadge.js';
 import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
-import { EditorUIView, InlineEditableUIView, MenuBarView } from '../../src/index.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src/index.js';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -21,6 +21,19 @@ import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core
 
 /* global document, console */
 
+class MyEditorUI extends EditorUI {
+	constructor( editor ) {
+		super( editor );
+
+		this.view = new EditorUIView( editor.locale );
+	}
+
+	destroy() {
+		this.view.destroy();
+		super.destroy();
+	}
+}
+
 describe( 'EditorUI', () => {
 	let editor, ui;
 
@@ -28,7 +41,7 @@ describe( 'EditorUI', () => {
 
 	beforeEach( () => {
 		editor = new Editor();
-		editor.ui = ui = new EditorUI( editor );
+		editor.ui = ui = new MyEditorUI( editor );
 	} );
 
 	afterEach( () => {
@@ -202,7 +215,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should register the editable element under a name', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			ui.setEditableElement( 'main', element );
 
@@ -210,7 +223,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'puts a reference to the editor instance in domElement#ckeditorInstance', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			ui.setEditableElement( 'main', element );
 
@@ -218,7 +231,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'does not override a reference to the editor instance in domElement#ckeditorInstance', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			element.ckeditorInstance = 'foo';
 
@@ -273,7 +286,7 @@ describe( 'EditorUI', () => {
 
 	describe( 'getEditableElement()', () => {
 		it( 'should return editable element (default root name)', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 			const editableMock = { name: 'main', element: document.createElement( 'div' ) };
 
 			ui.setEditableElement( editableMock.name, editableMock.element );
@@ -282,7 +295,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should return editable element (custom root name)', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 			const editableMock1 = { name: 'root1', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
@@ -294,7 +307,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should return null if editable with specified name does not exist', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			expect( ui.getEditableElement() ).to.be.undefined;
 		} );
@@ -304,7 +317,7 @@ describe( 'EditorUI', () => {
 		let ui, editableMock;
 
 		beforeEach( () => {
-			ui = new EditorUI( editor );
+			ui = new MyEditorUI( editor );
 			const element = document.createElement( 'div' );
 			editableMock = { name: 'root1', element };
 
@@ -354,7 +367,7 @@ describe( 'EditorUI', () => {
 
 	describe( 'getEditableElementsNames()', () => {
 		it( 'should return iterable object of names', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 			const editableMock1 = { name: 'main', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
@@ -367,7 +380,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should return empty array if no editables', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			expect( ui.getEditableElementsNames() ).to.be.empty;
 		} );
@@ -375,7 +388,7 @@ describe( 'EditorUI', () => {
 
 	describe( '_editableElements()', () => {
 		it( 'should warn about deprecation', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 			const stub = testUtils.sinon.stub( console, 'warn' );
 
 			expect( ui._editableElements ).to.be.instanceOf( Map );
@@ -389,7 +402,7 @@ describe( 'EditorUI', () => {
 				.withArgs( 'ui.viewportOffset' )
 				.returns( { top: 200 } );
 
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledOnce( stub );
@@ -404,7 +417,7 @@ describe( 'EditorUI', () => {
 
 			const consoleStub = testUtils.sinon.stub( console, 'warn' );
 
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
@@ -413,7 +426,7 @@ describe( 'EditorUI', () => {
 
 	describe( 'extendMenuBar()', () => {
 		it( 'should add element to array', () => {
-			const ui = new EditorUI( editor );
+			const ui = new MyEditorUI( editor );
 
 			expect( ui._extraMenuBarElements ).to.have.lengthOf( 0 );
 
@@ -518,7 +531,7 @@ describe( 'EditorUI', () => {
 				let locale, toolbar;
 
 				beforeEach( () => {
-					ui = new EditorUI( editor );
+					ui = new MyEditorUI( editor );
 					locale = { t: val => val };
 					toolbar = new ToolbarView( locale );
 				} );
@@ -661,7 +674,7 @@ describe( 'EditorUI', () => {
 
 				it( 'should do nothing if no toolbars were registered', () => {
 					const editor = new Editor();
-					const ui = editor.ui = new EditorUI( editor );
+					const ui = editor.ui = new MyEditorUI( editor );
 					const editingArea = document.createElement( 'div' );
 					document.body.appendChild( editingArea );
 
@@ -1266,5 +1279,40 @@ describe( 'EditorUI', () => {
 				stopPropagation: sinon.spy()
 			} );
 		}
+	} );
+
+	describe( 'bind body collection with editor focus tracker', () => {
+		it( 'on ready event add views elements inside body collection to focus tracker', () => {
+			const view = new View();
+			view.setTemplate( { tag: 'div' } );
+
+			ui.view.body.add( view );
+
+			sinon.spy( ui.focusTracker, 'add' );
+
+			ui.fire( 'ready' );
+
+			expect( view.element ).not.to.be.undefined;
+			expect( ui.focusTracker.add.calledWithExactly( view.element ) ).to.be.true;
+		} );
+
+		it( 'after body event, add and remove views elements as they are added', () => {
+			const view = new View();
+			view.setTemplate( { tag: 'div' } );
+
+			ui.fire( 'ready' );
+
+			sinon.spy( ui.focusTracker, 'add' );
+			sinon.spy( ui.focusTracker, 'remove' );
+
+			ui.view.body.add( view );
+
+			expect( view.element ).not.to.be.undefined;
+			expect( ui.focusTracker.add.calledWithExactly( view.element ) ).to.be.true;
+
+			ui.view.body.remove( view );
+
+			expect( ui.focusTracker.remove.calledWithExactly( view.element ) ).to.be.true;
+		} );
 	} );
 } );

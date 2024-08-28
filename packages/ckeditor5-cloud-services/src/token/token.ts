@@ -9,15 +9,17 @@
 
 /* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
-import { ObservableMixin, CKEditorError } from 'ckeditor5/src/utils.js';
+import { ObservableMixin, CKEditorError, logWarning } from 'ckeditor5/src/utils.js';
 import type { TokenUrl } from '../cloudservicesconfig.js';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };
-const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;
+const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000; // 1 hour
+const TOKEN_FAILED_REFRESH_TIMEOUT_TIME = 5000; // 5 seconds
 
 /**
- * Class representing the token used for communication with CKEditor Cloud Services.
- * Value of the token is retrieving from the specified URL and is refreshed every 1 hour by default.
+ * The class representing the token used for communication with CKEditor Cloud Services.
+ * The value of the token is retrieved from the specified URL and refreshed every 1 hour by default.
+ * If the token retrieval fails, the token will automatically retry in 5 seconds intervals.
  */
 export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	/**
@@ -36,8 +38,14 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	private _refresh: () => Promise<string>;
 
+	/**
+	 * Cached token options.
+	 */
 	private _options: { initValue?: string; autoRefresh: boolean };
 
+	/**
+	 * `setTimeout()` id for a token refresh when {@link module:cloud-services/token/token~TokenOptions auto refresh} is enabled.
+	 */
 	private _tokenRefreshTimeout?: ReturnType<typeof setTimeout>;
 
 	/**
@@ -99,19 +107,55 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Refresh token method. Useful in a method form as it can be override in tests.
+	 * Refresh token method. Useful in a method form as it can be overridden in tests.
+	 *
+	 * This method will be invoked periodically based on the token expiry date after first call to keep the token up-to-date
+	 * (requires {@link module:cloud-services/token/token~TokenOptions auto refresh option} to be set).
+	 *
+	 * If the token refresh fails, the method will retry in 5 seconds intervals until success or the token gets
+	 * {@link #destroy destroyed}.
 	 */
 	public refreshToken(): Promise<InitializedToken> {
+		const autoRefresh = this._options.autoRefresh;
+
 		return this._refresh()
 			.then( value => {
 				this._validateTokenValue( value );
 				this.set( 'value', value );
 
-				if ( this._options.autoRefresh ) {
+				if ( autoRefresh ) {
 					this._registerRefreshTokenTimeout();
 				}
 
 				return this as InitializedToken;
+			} )
+			.catch( err => {
+				/**
+				 * You will see this warning when the CKEditor {@link module:cloud-services/token/token~Token token} could not be refreshed.
+				 * This may be a result of a network error, a token endpoint (server) error, or an invalid
+				 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl token URL configuration}.
+				 *
+				 * If this warning repeats, please make sure that the configuration is correct and that the token
+				 * endpoint is up and running. {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl Learn more}
+				 * about token configuration.
+				 *
+				 * **Note:** If the token's {@link module:cloud-services/token/token~TokenOptions auto refresh option} is enabled,
+				 * attempts to refresh will be made until success or token's
+				 * {@link module:cloud-services/token/token~Token#destroy destruction}.
+				 *
+				 * @error token-refresh-failed
+				 * @param autoRefresh Whether the token will keep auto refreshing.
+				 */
+				logWarning( 'token-refresh-failed', { autoRefresh } );
+
+				// If the refresh failed, keep trying to refresh the token. Failing to do so will eventually
+				// lead to the disconnection from the RTC service and the editing session (and potential data loss
+				// if the user keeps editing).
+				if ( autoRefresh ) {
+					this._registerRefreshTokenTimeout( TOKEN_FAILED_REFRESH_TIMEOUT_TIME );
+				}
+
+				throw err;
 			} );
 	}
 
@@ -151,8 +195,8 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Registers a refresh token timeout for the time taken from token.
 	 */
-	private _registerRefreshTokenTimeout() {
-		const tokenRefreshTimeoutTime = this._getTokenRefreshTimeoutTime();
+	private _registerRefreshTokenTimeout( timeoutTime?: number ) {
+		const tokenRefreshTimeoutTime = timeoutTime || this._getTokenRefreshTimeoutTime();
 
 		clearTimeout( this._tokenRefreshTimeout );
 

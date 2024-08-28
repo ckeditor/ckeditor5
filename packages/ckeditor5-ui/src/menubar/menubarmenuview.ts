@@ -173,6 +173,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 			MenuBarMenuBehaviors.openOnButtonClick( this );
 			MenuBarMenuBehaviors.openOnArrowRightKey( this );
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
+			MenuBarMenuBehaviors.openAndFocusOnEnterKeyPress( this );
 			MenuBarMenuBehaviors.closeOnParentClose( this );
 		}
 	}

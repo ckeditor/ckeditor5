@@ -39,7 +39,7 @@ You get ready-to-use code tailored to your needs!
 
 ## CKEditor&nbsp;5 framework integrations
 
-Do you to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
+Do you want to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
 
 * Integrate CKEditor&nbsp;5 with Angular using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm/ZIP}
 * Integrate CKEditor&nbsp;5 with React using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm/ZIP}
