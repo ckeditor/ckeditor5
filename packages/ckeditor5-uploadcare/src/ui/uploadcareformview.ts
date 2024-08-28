@@ -7,8 +7,10 @@
  * @module uploadcare/ui/uploadcareformview
  */
 
-import { type Locale, FocusTracker } from 'ckeditor5/src/utils.js';
+import { type Locale } from 'ckeditor5/src/utils.js';
 import { View } from 'ckeditor5/src/ui.js';
+
+import '../../theme/uploadcare-form.css';
 
 /**
  * A class representing the form view of the Uploadcare feature.

@@ -14,6 +14,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
 
 import Uploadcare from '../../src/uploadcare.js';
+import UploadcareImageEdit from '../../src/uploadcareimageedit.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -27,7 +28,8 @@ ClassicEditor
 			ImageUpload,
 			ImageInsert,
 			ImageResize,
-			Uploadcare
+			Uploadcare,
+			UploadcareImageEdit
 		],
 		menuBar: { isVisible: true },
 		toolbar: [
@@ -47,7 +49,16 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:wrapText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'uploadcareImageEdit'
+			]
 		},
 		table: {
 			contentToolbar: [

@@ -10,6 +10,9 @@
 import type { Locale } from 'ckeditor5/src/utils.js';
 import { UploadcareSource } from '../uploadcareconfig.js';
 
+/**
+ * @internal
+ */
 export function getTranslation( locale: Locale, id: UploadcareSource ): { text: string; shortText: string } {
 	const t = locale.t;
 

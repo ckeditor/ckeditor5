@@ -18,7 +18,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 *
 		 * Read more in {@link module:uploadcare/uploadcareconfig~UploadcareConfig}.
 		 */
-		ckbox?: UploadcareConfig;
+		uploadcare?: UploadcareConfig;
 	}
 
 	interface PluginsMap {

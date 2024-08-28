@@ -14,7 +14,7 @@ import { Command, icons, type Editor } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
-import * as UC from '@uploadcare/file-uploader';
+import type * as UC from '@uploadcare/file-uploader';
 
 import UploadcareFormView from './ui/uploadcareformview.js';
 import type { UploadcareAssetImageDefinition, UploadcareSource } from './uploadcareconfig.js';
@@ -38,25 +38,40 @@ export default class UploadcareCommand extends Command {
 
 	/**
 	 * The choosen source type.
+	 *
+	 * @internal
 	 */
 	private _type: null | UploadcareSource;
 
 	/**
 	 * The DOM element that represents the Uploadcare config web component.
 	 * It is used to pass the initial configuration.
+	 *
+	 * @internal
 	 */
 	private _configElement: Element | null = null;
 
 	/**
 	 * Represents the DOM element associated with the Uploadcare context web components.
 	 * It delivers the Uploadcare API and emits the file events.
+	 *
+	 * @internal
 	 */
 	private _ctxElement: UC.UploaderBlock | null = null;
 
 	/**
 	 * Represents the Uploadcare API object.
+	 *
+	 * @internal
 	 */
 	private _api: UC.UploaderPublicApi | null = null;
+
+	/**
+	 * The view which is rendered in the dialog.
+	 *
+	 * @internal
+	 */
+	private _formView: UploadcareFormView | null = null;
 
 	/**
 	 * @inheritDoc
@@ -115,8 +130,6 @@ export default class UploadcareCommand extends Command {
 	 * Registers blocks, initializes configuration, context, dialog, and listeners.
 	 */
 	private _initComponents() {
-		UC.defineComponents( UC );
-
 		this._initConfig();
 		this._initCtx();
 		this._initDialog();
@@ -129,10 +142,6 @@ export default class UploadcareCommand extends Command {
 	private _reinitFlow() {
 		this._api!.doneFlow();
 		this._configElement!.setAttribute( 'source-list', this._type );
-
-		if ( this._dialog.isOpen ) {
-			this._dialog.hide();
-		}
 
 		this._initDialog();
 	}
@@ -165,16 +174,21 @@ export default class UploadcareCommand extends Command {
 	private _initDialog() {
 		const { locale } = this.editor;
 
-		const form = new UploadcareFormView( locale );
+		// TODO: check if it is possible to omit this reinit.
+		// When the form view is not reinitialized after closing and reopening the dialog,
+		// the Uploadcare component cannot be reinitialized and remains empty.
+		if ( !this._dialog.isOpen ) {
+			this._formView = new UploadcareFormView( locale );
+		}
 
 		this._dialog.show( {
 			id: 'uploadCare',
 			icon: icons.imageUpload,
 			title: getTranslation( locale, this._type! ).text,
-			content: form,
+			content: this._formView,
 			position: DialogViewPosition.EDITOR_TOP_CENTER,
 			onShow: () => {
-				form.focus();
+				this._formView.focus();
 			},
 			onHide: () => {
 				this._close();
@@ -183,7 +197,7 @@ export default class UploadcareCommand extends Command {
 	}
 
 	/**
-	 * Clears the current state and removes the created elements.
+	 * Clears the current state.
 	 */
 	private _close() {
 		this._api!.removeAllFiles();
@@ -193,7 +207,7 @@ export default class UploadcareCommand extends Command {
 
 	/**
 	 * Initializes various event listeners for the events, because all functionality
-	 * of the `uploadcare` is event-based.
+	 * of the Uploadcare is event-based.
 	 */
 	private _initListeners() {
 		const editor = this.editor;

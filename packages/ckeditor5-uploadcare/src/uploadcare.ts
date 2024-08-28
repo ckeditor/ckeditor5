@@ -12,9 +12,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import UploadcareUI from './uploadcareui.js';
 import UploadcareEditing from './uploadcareediting.js';
 
-import '@uploadcare/file-uploader/web/uc-file-uploader-inline.min.css';
-import '../theme/uploadcare-form.css';
-import '../theme/uploadcare-theme.css';
+import * as UC from '@uploadcare/file-uploader';
 
 /**
  * The Uploadcare feature, a bridge between the CKEditor 5 WYSIWYG editor and the Uploadcare file uploader.
@@ -44,5 +42,7 @@ export default class Uploadcare extends Plugin {
 		super( editor );
 
 		editor.config.define( 'uploadcare.sourceList', [ 'local', 'url' ] );
+
+		UC.defineComponents( UC );
 	}
 }

@@ -21,6 +21,9 @@ import oneDriveIcon from '../theme/icons/onedrive.svg';
 import { UploadcareSource } from './uploadcareconfig.js';
 import { getTranslation } from './utils/common-translations.js';
 
+import '@uploadcare/file-uploader/web/uc-file-uploader-inline.min.css';
+import '../theme/uploadcare-theme.css';
+
 type SourceDefinition = {
 	icon: any;
 	type: UploadcareSource;

@@ -65,7 +65,7 @@ export default class UploadcareUploadAdapter extends Plugin {
 }
 
 /**
- * Upload adapter for CKBox.
+ * Upload adapter for Uploadcare.
  */
 class Adapter implements UploadAdapter {
 	/**
