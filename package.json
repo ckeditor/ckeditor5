@@ -142,7 +142,7 @@
     "lint-staged": "^12.0.0",
     "listr2": "^6.5.0",
     "minimatch": "^5.1.0",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.8",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.7",
     "nyc": "^15.0.1",
@@ -162,7 +162,7 @@
     "umberto": "^4.2.6",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
-    "webpack": "^5.58.1"
+    "webpack": "^5.94.0"
   },
   "engines": {
     "node": ">=18.0.0"
