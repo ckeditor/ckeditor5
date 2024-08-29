@@ -666,9 +666,20 @@ function getElementFromMouseEvent( view: EditingView, domEventData: DomEventData
 		return null;
 	}
 
-	// Click after a widget tend to return position at the end of the editable element
-	// so use the node before it if range is at the end of a parent.
-	const viewNode = viewPosition.parent.is( 'editableElement' ) && viewPosition.isAtEnd && viewPosition.nodeBefore || viewPosition.parent;
+	let viewNode = viewPosition.parent;
+
+	if ( viewPosition.parent.is( 'editableElement' ) ) {
+		if ( viewPosition.isAtEnd && viewPosition.nodeBefore ) {
+			// Click after a widget tend to return position at the end of the editable element
+			// so use the node before it if range is at the end of a parent.
+			viewNode = viewPosition.nodeBefore as ViewElement;
+		} else if ( viewPosition.isAtStart && viewPosition.nodeAfter ) {
+			// Click before a widget tend to return position at the start of the editable element
+			// so use the node after it if range is at the start of a parent.
+			// See more: https://github.com/ckeditor/ckeditor5/issues/16992
+			viewNode = viewPosition.nodeAfter as ViewElement;
+		}
+	}
 
 	if ( viewNode.is( '$text' ) ) {
 		return viewNode.parent as ViewElement;
