@@ -62,12 +62,10 @@ In the following script tag, import the desired plugins, add them to the `plugin
 		.create( document.querySelector( '#editor' ), {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-				]
-			}
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+			]
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -121,12 +119,10 @@ Your final page should look similar to the one below.
 				.create( document.querySelector( '#editor' ), {
 					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-						]
-					}
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+					]
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -142,7 +138,6 @@ Just like with open-source features, start by attaching a link to style sheets. 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
@@ -181,13 +176,11 @@ In the following script tag, import the desired plugins and add them to the `plu
 		.create( document.querySelector( '#editor' ), {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-					'formatPainter'
-				]
-			},
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			],
 			licenseKey: '<YOUR_LICENSE_KEY>'
 		} )
 		.then( /* ... */ )
@@ -213,7 +206,6 @@ Your final page should look similar to the one below.
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CKEditor 5 - Quick start CDN</title>
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-		<!-- If you are using premium features: -->
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 	</head>
 	<body>
@@ -246,12 +238,10 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
-						]
-					},
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+					],
 					licenseKey: '<YOUR_LICENSE_KEY>'
 				} )
 				.then( /* ... */ )
