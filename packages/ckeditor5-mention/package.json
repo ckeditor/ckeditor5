@@ -35,7 +35,6 @@
     "@ckeditor/ckeditor5-theme-lark": "43.0.0",
     "@ckeditor/ckeditor5-undo": "43.0.0",
     "@ckeditor/ckeditor5-widget": "43.0.0",
-    "lodash-es": "^4.17.21",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
