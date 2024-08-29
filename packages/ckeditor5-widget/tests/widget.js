@@ -380,7 +380,7 @@ describe( 'Widget', () => {
 		expect( focusSpy ).to.be.called;
 	} );
 
-	it( 'should focus if clicked node that is at the end', () => {
+	it( 'should focus widget if clicked node that is at the end and parent contenteditable is selected', () => {
 		setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
 
 		const parentView = viewDocument.getRoot().getChild( 0 );
@@ -402,6 +402,38 @@ describe( 'Widget', () => {
 					isAtEnd: true,
 					parent: parentView,
 					nodeBefore: widgetView
+				}
+			} );
+
+		const focusSpy = sinon.stub( View.prototype, 'focus' ).returns( true );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		expect( focusSpy ).to.be.called;
+	} );
+
+	it( 'should focus widget if clicked node that is at the start and parent contenteditable is selected', () => {
+		setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
+
+		const parentView = viewDocument.getRoot().getChild( 0 );
+		const widgetView = parentView.getChild( 0 );
+
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( parentView ),
+			preventDefault: sinon.spy()
+		} );
+
+		sinon
+			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.returns( {} );
+
+		sinon
+			.stub( view.domConverter, 'domRangeToView' )
+			.returns( {
+				start: {
+					isAtStart: true,
+					parent: parentView,
+					nodeAfter: widgetView
 				}
 			} );
 
