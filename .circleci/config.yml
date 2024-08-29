@@ -38,6 +38,7 @@ commands:
 jobs:
   generate_configuration:
     machine: true
+    resource_class: xlarge
     parameters:
       isNightly:
         type: boolean
