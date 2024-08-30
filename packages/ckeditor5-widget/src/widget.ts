@@ -658,7 +658,7 @@ function getElementFromMouseEvent( view: EditingView, domEventData: DomEventData
 	} else {
 		// Fallback to create range on target element. It happens frequently on Safari browser.
 		// See more: https://github.com/ckeditor/ckeditor5/issues/16978
-		viewRange = view.createRangeIn( domEventData.target );
+		viewRange = view.createRange( view.createPositionAt( domEventData.target, 0 ) );
 	}
 
 	if ( !viewRange ) {
