@@ -9,8 +9,7 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "sourceEditing",
-					"iconPath": "theme/icons/source-editing.svg"
+					"name": "sourceEditing"
 				}
 			]
 		}
