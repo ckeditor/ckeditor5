@@ -7,3 +7,5 @@ declare module '*.svg' {
 	const content: string;
 	export default content;
 }
+
+declare module 'ace-builds/src-noconflict/ace.js' {}
