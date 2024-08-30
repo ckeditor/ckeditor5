@@ -234,7 +234,7 @@ jobs:
 
   notify_ci_failure:
     machine: true
-    resource_class: xlarge
+    resource_class: medium
     parameters:
       hideAuthor:
         type: string
