@@ -781,6 +781,12 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 		label: 'View',
 		groups: [
 			{
+				groupId: 'sourceEditingEnhanced',
+				items: [
+					'menuBar:sourceEditingEnhanced'
+				]
+			},
+			{
 				groupId: 'sourceEditing',
 				items: [
 					'menuBar:sourceEditing'
