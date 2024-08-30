@@ -11,8 +11,18 @@ modified_at: 2024-07-31
 <info-box>
 	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
-	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
+	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v43.1.0
+
+_Released on September 4, 2024._
+
+### Table and cell border settings update
+
+The user interface of tables now clearly indicates the default border settings, allowing you to set “no borders” (None) for tables and cells without any additional configuration.
+
+⚠️ In some cases this update may lead to data changes in the tables’ HTML markup when the editor loads them. Visually, nothing will change, and the experience will be the same.
 
 ## Update to CKEditor&nbsp;5 v43.0.0
 
