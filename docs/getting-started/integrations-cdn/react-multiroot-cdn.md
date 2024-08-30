@@ -38,50 +38,133 @@ npm install ckeditor5 @ckeditor/ckeditor5-react
 Use the `useMultiRootEditor` hook inside your project:
 
 ```tsx
-// App.jsx / App.tsx
+import React from "react";
+import { useMultiRootEditor, withCKCloud } from "@ckeditor/ckeditor5-react";
+import {
+  useMultiRootEditor,
+  withCKEditorCloud,
+  type MultiRootHookProps,
+  type WithCKEditorCloudHocProps,
+} from "@ckeditor/ckeditor5-react";
 
-import { MultiRootEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
-import { useMultiRootEditor } from '@ckeditor/ckeditor5-react';
+// import type { EventInfo, ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
-import 'ckeditor5/ckeditor5.css';
+type EditorDemoProps = WithCKEditorCloudHocProps & {
+  data: Record<string, string>;
+};
 
-const App = () => {
-	const editorProps = {
-		editor: MultiRootEditor,
-		data: {
-			intro: '<h1>React multi-root editor</h1>',
-			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
-		},
-		config: {
-			plugins: [ Essentials, Bold, Italic, Paragraph ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			},
-		}
-	};
+const withCKCloud = withCKEditorCloud({
+  cloud: {
+    version: "43.0.0",
+    languages: ["de"],
+    premium: true,
+  },
 
-	const {
-		editor,
-		toolbarElement,
-		editableElements,
-		data,
-		setData,
-		attributes,
-		setAttributes
-	} = useMultiRootEditor( editorProps );
+  // Optional:
+  renderError: (error) => <div>Error!</div>,
 
-	return (
-		<div className="App">
-			<h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
+  // Optional:
+  renderLoader: () => <div>Loading...</div>,
+});
 
-			{ toolbarElement }
+const MultiRootEditorDemo = withCKCloud(
+  ({ data, cloud }: EditorDemoProps): ReactNode => {
+    const {
+      MultiRootEditor: MultiRootEditorBase,
+      CloudServices,
+      Essentials,
+      CKFinderUploadAdapter,
+      Autoformat,
+      Bold,
+      Italic,
+      BlockQuote,
+      CKBox,
+      CKFinder,
+      EasyImage,
+      Heading,
+      Image,
+      ImageCaption,
+      ImageStyle,
+      ImageToolbar,
+      ImageUpload,
+      Indent,
+      Link,
+      List,
+      MediaEmbed,
+      Paragraph,
+      PasteFromOffice,
+      PictureEditing,
+      Table,
+      TableToolbar,
+      TextTransformation,
+    } = cloud.CKEditor;
 
-			{ editableElements }
-		</div>
-	);
-}
+    class MultiRootEditor extends MultiRootEditorBase {
+      public static override builtinPlugins = [
+        Essentials,
+        CKFinderUploadAdapter,
+        Autoformat,
+        Bold,
+        Italic,
+        BlockQuote,
+        CKBox,
+        CKFinder,
+        CloudServices,
+        EasyImage,
+        Heading,
+        Image,
+        ImageCaption,
+        ImageStyle,
+        ImageToolbar,
+        ImageUpload,
+        Indent,
+        Link,
+        List,
+        MediaEmbed,
+        Paragraph,
+        PasteFromOffice,
+        PictureEditing,
+        TextTransformation,
+      ];
 
-export default App;
+      public static override defaultConfig = {
+        toolbar: {
+          items: [
+            "undo",
+            "redo",
+            "|",
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "|",
+            "link",
+            "uploadImage",
+            "blockQuote",
+            "mediaEmbed",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "outdent",
+            "indent",
+          ],
+        },
+      };
+    }
+
+    const { toolbarElement, editableElements } = useMultiRootEditor({
+      editor: MultiRootEditor,
+      data,
+    });
+
+    return (
+      <div>
+        {toolbarElement}
+        {editableElements}
+      </div>
+    );
+  }
+);
 ```
 
 ## Hook properties
