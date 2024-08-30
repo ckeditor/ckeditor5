@@ -46,8 +46,10 @@ describe( 'Widget', () => {
 
 				model.schema.register( 'widget', {
 					inheritAllFrom: '$block',
-					isObject: true
+					isObject: true,
+					allowIn: [ '$root', 'div', 'editable' ]
 				} );
+
 				model.schema.extend( 'paragraph', {
 					allowIn: 'div'
 				} );
@@ -266,12 +268,12 @@ describe( 'Widget', () => {
 		expect( focusSpy ).not.to.be.called;
 	} );
 
-	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
-		setModelData( model, '<paragraph>Hello</paragraph>' );
+	it( 'should use `createRangeIn` fallback if extracting range from mouse event is not possible', () => {
+		setModelData( model, '<editable><widget></widget></editable>' );
 
-		const paragraphView = viewDocument.getRoot().getChild( 0 );
+		const editableView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( paragraphView ),
+			target: view.domConverter.mapViewToDom( editableView ),
 			preventDefault: sinon.spy()
 		} );
 
@@ -279,11 +281,45 @@ describe( 'Widget', () => {
 			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
 			.returns( null );
 
+		// Expect to execute `createRangeIn` in hope to find the range.
+		// Let's assume it won't find it and return null.
+		const createRangeSpy = sinon
+			.spy( editor.editing.view, 'createRangeIn' )
+			.withArgs( editableView );
+
+		const focusSpy = sinon.spy( View.prototype, 'focus' );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		expect( createRangeSpy ).to.be.calledOnce;
+		expect( focusSpy ).to.be.calledOnce;
+	} );
+
+	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
+		setModelData( model, '<widget><nested></nested></widget>' );
+
+		const widgetView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( widgetView ),
+			preventDefault: sinon.spy()
+		} );
+
+		sinon
+			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.returns( null );
+
+		// Expect to execute `createRangeIn` in hope to find the range.
+		// Let's assume it won't find it and return null.
+		const createRangeStub = sinon
+			.stub( editor.editing.view, 'createRangeIn' )
+			.withArgs( widgetView )
+			.returns( null );
+
 		sinon
 			.stub( view.domConverter, 'domRangeToView' )
 			.returns( {
 				start: {
-					parent: paragraphView
+					parent: widgetView
 				}
 			} );
 
@@ -291,6 +327,7 @@ describe( 'Widget', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
+		expect( createRangeStub ).to.be.calledOnce;
 		expect( focusSpy ).not.to.be.called;
 	} );
 
