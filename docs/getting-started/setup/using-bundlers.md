@@ -44,24 +44,24 @@ const sourceMap = true; // Change depending on your needs.
 const minify = true; // Change depending on your needs.
 
 export default defineConfig( {
-  // Other options are omitted for better readability.
-  plugins: [
-    commonjs( {
-      sourceMap,
-      defaultIsModuleExports: true
-    } ),
-    nodeResolve( {
-      browser: true,
-      preferBuiltins: false
-    } ),
-    json(),
-    css( {
-      minify
-    } ),
-    minify && terser( {
-      sourceMap
-    } )
-  ]
+	// Other options are omitted for better readability.
+	plugins: [
+		commonjs( {
+			sourceMap,
+			defaultIsModuleExports: true
+		} ),
+		nodeResolve( {
+			browser: true,
+			preferBuiltins: false
+		} ),
+		json(),
+		css( {
+			minify
+		} ),
+		minify && terser( {
+			sourceMap
+		} )
+	]
 } );
 ```
 
@@ -86,30 +86,28 @@ const sourceMap = true; // Change depending on your needs.
 const minify = true; // Change depending on your needs.
 
 module.exports = {
-  // Other options are omitted for better readability.
-  optimization: {
-    minimize: minify,
-    minimizer: [
-      new TerserPlugin(),
-      new CssMinimizerPlugin()
-    ]
-  },
-
-  plugins: [
-    new MiniCssExtractPlugin()
-  ],
-
-  module: {
-    rules: [
-      {
-        test: /\.css$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader'
-        ]
-      }
-    ]
-  }
+	// Other options are omitted for better readability.
+	optimization: {
+		minimize: minify,
+		minimizer: [
+			new TerserPlugin(),
+			new CssMinimizerPlugin()
+		]
+	},
+	plugins: [
+		new MiniCssExtractPlugin()
+	],
+	module: {
+		rules: [
+			{
+				test: /\.css$/i,
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader'
+				]
+			}
+		]
+	}
 };
 ```
 
