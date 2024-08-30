@@ -24,7 +24,7 @@ import TableBorderWidthCommand from './commands/tableborderwidthcommand.js';
 import TableWidthCommand from './commands/tablewidthcommand.js';
 import TableHeightCommand from './commands/tableheightcommand.js';
 import TableAlignmentCommand from './commands/tablealignmentcommand.js';
-import { getNormalizedDefaultProperties } from '../utils/table-properties.js';
+import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
 const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
@@ -71,9 +71,12 @@ export default class TablePropertiesEditing extends Plugin {
 
 		editor.config.define( 'table.tableProperties.defaultProperties', {} );
 
-		const defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' )!, {
-			includeAlignmentProperty: true
-		} );
+		const defaultTableProperties = getNormalizedDefaultTableProperties(
+			editor.config.get( 'table.tableProperties.defaultProperties' )!,
+			{
+				includeAlignmentProperty: true
+			}
+		);
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion, {

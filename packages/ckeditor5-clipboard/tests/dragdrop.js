@@ -2436,7 +2436,8 @@ describe( 'Drag and Drop', () => {
 		const eventData = prepareEventData( model.document.selection.getLastPosition(), domTarget );
 
 		viewDocument.fire( 'mousedown', {
-			...eventData
+			...eventData,
+			preventDefault
 		} );
 
 		viewDocument.fire( 'dragstart', {

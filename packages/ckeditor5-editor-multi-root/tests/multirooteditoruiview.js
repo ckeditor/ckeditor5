@@ -119,11 +119,50 @@ describe( 'MultiRootEditorUIView', () => {
 				testView.destroy();
 			} );
 
-			it( 'is given an accessible aria label', () => {
+			it( 'creates an editing root with the default aria-label', () => {
 				view.render();
 
 				expect( fooViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: foo' );
 				expect( barViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: bar' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (string format)', () => {
+				const editingView = new EditingView();
+				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
+				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
+				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], {
+					label: 'Foo'
+				} );
+
+				view.editables.foo.name = 'foo';
+				view.editables.bar.name = 'bar';
+				view.render();
+
+				expect( fooViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( barViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (object format)', () => {
+				const editingView = new EditingView();
+				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
+				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
+				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], 	{
+					label: {
+						foo: 'Foo',
+						bar: 'Bar'
+					}
+				} );
+
+				view.editables.foo.name = 'foo';
+				view.editables.bar.name = 'bar';
+				view.render();
+
+				expect( fooViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( barViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Bar' );
 
 				view.destroy();
 			} );
@@ -173,6 +212,19 @@ describe( 'MultiRootEditorUIView', () => {
 			view.render();
 
 			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: new' );
+
+			view.destroy();
+		} );
+
+		it( 'new editable is given an accessible aria label (custom)', () => {
+			const newViewRoot = createRoot( editingView.document, 'div', 'new' );
+
+			view.createEditable( 'new', undefined, 'Custom label' );
+			view.editables.new.name = 'new';
+
+			view.render();
+
+			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
 
 			view.destroy();
 		} );

@@ -108,10 +108,40 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.editable.isRendered ).to.be.false;
 			} );
 
-			it( 'is given an accessible aria label', () => {
+			it( 'creates an editing root with the default aria-label', () => {
 				view.render();
 
 				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (string format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new InlineEditorUIView( locale, editingView, undefined, {
+					label: 'Foo'
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (object format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new InlineEditorUIView( locale, editingView, undefined, {
+					label: {
+						main: 'Foo'
+					}
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
 
 				view.destroy();
 			} );

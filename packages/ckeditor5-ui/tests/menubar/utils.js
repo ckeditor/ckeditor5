@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, KeyboardEvent */
+/* global document, Event, KeyboardEvent, MouseEvent */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
@@ -392,7 +392,7 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: true, isFocused: false, items: [
-										{ label: 'AA#1', isFocused: true },
+										{ label: 'AA#1', isFocused: false },
 										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 									] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
@@ -967,29 +967,41 @@ describe( 'MenuBarView utils', () => {
 				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
 			} );
 
-			it( 'should set proper isFocusBorderEnabled when a clicked and focused item on opened menu', () => {
-				const clock = sinon.useFakeTimers();
-
-				sinon.stub( menuBarView.element, 'matches' ).withArgs( ':focus-within' ).returns( true	);
-
+			it( 'should not clean #isFocusBorderEnabled if the menu bar was closed by an Esc key press', async () => {
 				const menuA = getMenuByLabel( menuBarView, 'A' );
 
-				menuA.isOpen = true;
+				menuA.buttonView.focus();
 
-				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				await wait( 10 );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
 
-				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
+				await wait( 100 );
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+				expect( menuBarView.isOpen ).to.be.true;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.esc } ) );
+				await wait( 10 );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.esc } ) );
 
 				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+				expect( menuBarView.isOpen ).to.be.false;
+			} );
 
-				menuA.isOpen = false;
-				clock.tick( 1000 );
+			it( 'should clean #isFocusBorderEnabled if the menu bar was closed without use of a keyboard', async () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.buttonView.element.dispatchEvent( new MouseEvent( 'click' ) );
+
+				await wait( 10 );
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				expect( menuBarView.isOpen ).to.be.true;
+
+				menuA.buttonView.element.dispatchEvent( new MouseEvent( 'click' ) );
+				await wait( 10 );
 
 				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
-
-				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
-
-				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				expect( menuBarView.isOpen ).to.be.false;
 			} );
 		} );
 	} );
@@ -1147,7 +1159,7 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'AA#1', isFocused: true }
+										{ label: 'AA#1', isFocused: false }
 									] }
 								]
 							}
@@ -1164,7 +1176,7 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'AA#1', isFocused: true }
+										{ label: 'AA#1', isFocused: false }
 									] }
 								]
 							}
@@ -1457,6 +1469,71 @@ describe( 'MenuBarView utils', () => {
 							}
 						]
 					);
+				} );
+			} );
+
+			describe( 'openAndFocusOnEnterKeyPress()', () => {
+				it( 'should open the menu and focus its panel upon enter key press', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.enter,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.buttonView.focus();
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'AA#1', isFocused: true }
+									] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+
+				it( 'should not intercept enter key press from anywhere but the button view', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.enter,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: false, items: [] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
 				} );
 			} );
 		} );

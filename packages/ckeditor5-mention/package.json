@@ -35,10 +35,9 @@
     "@ckeditor/ckeditor5-theme-lark": "43.0.0",
     "@ckeditor/ckeditor5-undo": "43.0.0",
     "@ckeditor/ckeditor5-widget": "43.0.0",
-    "lodash": "^4.17.15",
     "typescript": "5.0.4",
-    "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",

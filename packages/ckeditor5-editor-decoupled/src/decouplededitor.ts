@@ -81,7 +81,8 @@ export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Ed
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, {
 			editableElement: this.sourceElement,
-			shouldToolbarGroupWhenFull
+			shouldToolbarGroupWhenFull,
+			label: this.config.get( 'label' )
 		} );
 
 		this.ui = new DecoupledEditorUI( this, view );

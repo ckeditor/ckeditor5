@@ -203,6 +203,53 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
+		it( 'should convert li with a checkbox and a paragraph ( when checked )', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox" checked="checked">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should convert nested li with a checkbox and a paragraph ( when checked )', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<ul>' +
+							'<li>' +
+								'<input type="checkbox" checked="checked">' +
+								'<p>foo</p>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a01" listType="todo"></paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should not convert nested li if it was already consumed', () => {
+			editor.data.upcastDispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+			}, { priority: 'highest' } );
+
+			editor.setData(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox" checked="checked">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+		} );
+
 		it( 'should convert li with a checkbox and two paragraphs', () => {
 			testUpcast(
 				'<ul>' +

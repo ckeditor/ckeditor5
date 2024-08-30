@@ -34,7 +34,6 @@ import {
 const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
 import '../../theme/components/menubar/menubar.css';
-import type EditorUI from '../editorui/editorui.js';
 
 /**
  * The application menu bar component. It brings a set of top-level menus (and sub-menus) that can be used
