@@ -36,7 +36,7 @@ Then, you need to attach the script with the JavaScript code.
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 ```
 
-The included script exposes the global variable named `CKEDITOR`. You can use object destructuring below to access the editor class and plugins.
+The included script exposes the global variable named `CKEDITOR`. You can use object destructuring shown below to access the editor class and plugins.
 
 ```js
 const {
@@ -135,7 +135,7 @@ Then, you need to attach the script tags with the JavaScript code. Similar to st
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 ```
 
-Both included scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use object destructuring below to access the editor class and plugins. Open-source and premium features are in the respective global variables.
+Both included scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use object destructuring shown below to access the editor class and plugins. Open-source and premium features are in the respective global variables.
 
 ```html
 <script>
@@ -222,7 +222,7 @@ A simple HTML page with the CKEditor may look like the one below.
 
 ### Obtaining a license key
 
-To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the premium features.
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
 You can also [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/licensing/license-key-and-activation License key and activation} guide.
 
