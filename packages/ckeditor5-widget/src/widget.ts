@@ -282,6 +282,11 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
+		// If target is null abort.
+		if ( !element ) {
+			return;
+		}
+
 		// If triple click should select entire paragraph.
 		if ( domEventData.domEvent.detail >= 3 ) {
 			if ( this._selectBlockContent( element ) ) {
@@ -655,7 +660,7 @@ function getElementFromMouseEvent( view: EditingView, domEventData: DomEventData
 
 	if ( domRange ) {
 		viewRange = view.domConverter.domRangeToView( domRange );
-	} else if ( domEventData.target ) {
+	} else {
 		// Fallback to create range in target element. It happens frequently on Safari browser.
 		// See more: https://github.com/ckeditor/ckeditor5/issues/16978
 		viewRange = view.createRange( view.createPositionAt( domEventData.target, 0 ) );

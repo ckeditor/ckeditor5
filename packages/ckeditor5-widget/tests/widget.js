@@ -295,6 +295,31 @@ describe( 'Widget', () => {
 		expect( focusSpy ).to.be.calledOnce;
 	} );
 
+	it( 'should not crash and not focus anything if event target is null', () => {
+		setModelData( model, '<editable><widget></widget></editable>' );
+
+		const editableView = viewDocument.getRoot().getChild( 0 );
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( editableView ),
+			preventDefault: sinon.spy()
+		} );
+
+		// Lets simulate that the other plugin overrides the target to null.
+		editor.plugins.get( Widget ).listenTo(
+			viewDocument, 'mousedown',
+			( eventInfo, domEventData ) => {
+				sinon.stub( domEventData, 'target' ).get( () => null );
+			},
+			{
+				priority: 'high'
+			}
+		);
+
+		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		viewDocument.fire( 'mousedown', domEventDataMock );
+		expect( focusSpy ).not.to.be.called;
+	} );
+
 	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
 		setModelData( model, '<widget><nested></nested></widget>' );
 
