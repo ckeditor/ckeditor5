@@ -282,8 +282,7 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
-		// Some plugins might listen to the same event and override the target by setting it to null.
-		// Drag and drop might be one of such plugins that could set the target to null.
+		// Some of DOM elements have no view element representation so it may be null.
 		if ( !element ) {
 			return;
 		}
