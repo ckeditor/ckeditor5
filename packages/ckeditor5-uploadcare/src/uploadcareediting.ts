@@ -27,6 +27,7 @@ export default class UploadcareEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
+		// TODO: check if 'PictureEditing' is needed.
 		return [ UploadcareUploadAdapter ] as const;
 	}
 

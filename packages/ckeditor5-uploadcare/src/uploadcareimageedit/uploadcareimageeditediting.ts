@@ -7,7 +7,7 @@
  * @module uploadcare/uploadcareimageedit/uploadcareimageeditediting
  */
 
-import { PendingActions, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import UploadcareImageEditCommand from './uploadcareimageeditcommand.js';
 import UploadcareEditing from '../uploadcareediting.js';
@@ -27,7 +27,7 @@ export default class UploadcareImageEditEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ UploadcareEditing, PendingActions, Notification, 'ImageUtils', 'ImageEditing' ] as const;
+		return [ UploadcareEditing, Notification, 'ImageUtils', 'ImageEditing' ] as const;
 	}
 
 	/**

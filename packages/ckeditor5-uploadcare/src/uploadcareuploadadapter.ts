@@ -32,7 +32,7 @@ export default class UploadcareUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ FileRepository, UploadcareEditing ] as const;
+		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, UploadcareEditing ] as const;
 	}
 
 	/**
