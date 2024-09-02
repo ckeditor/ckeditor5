@@ -20,9 +20,9 @@ _Released on September 4, 2024._
 
 ### Table and cell border settings update
 
-The user interface of tables now clearly indicates the default border settings, allowing you to set “no borders” (None) for tables and cells without any additional configuration.
+The tables' user interface now clearly indicates the default border settings. It allows users to set “no borders” (None) for tables and cells without any additional configuration.
 
-⚠️ In some cases this update may lead to data changes in the tables’ HTML markup when the editor loads them. Visually, nothing will change, and the experience will be the same.
+⚠️ In some cases this update may lead to data changes in the tables’ HTML markup when the editor loads them. However, visually nothing will change, and the experience will be the same.
 
 ## Update to CKEditor&nbsp;5 v43.0.0
 
