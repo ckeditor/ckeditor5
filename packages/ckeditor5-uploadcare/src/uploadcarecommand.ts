@@ -37,7 +37,7 @@ export default class UploadcareCommand extends Command {
 	private _dialog!: Dialog;
 
 	/**
-	 * The choosen source type.
+	 * The chosen source type.
 	 *
 	 * @internal
 	 */
@@ -52,8 +52,8 @@ export default class UploadcareCommand extends Command {
 	private _configElement: Element | null = null;
 
 	/**
-	 * Represents the DOM element associated with the Uploadcare context web components.
-	 * It delivers the Uploadcare API and emits the file events.
+	 * Represents the DOM element associated with the Uploadcare context web component.
+	 * It delivers the Uploadcare API and emits the events.
 	 *
 	 * @internal
 	 */
@@ -126,8 +126,7 @@ export default class UploadcareCommand extends Command {
 	}
 
 	/**
-	 * Initializes the necessary components.
-	 * Registers blocks, initializes configuration, context, dialog, and listeners.
+	 * Initializes the necessary components: config, context, dialog, and listeners.
 	 */
 	private _initComponents() {
 		this._initConfig();

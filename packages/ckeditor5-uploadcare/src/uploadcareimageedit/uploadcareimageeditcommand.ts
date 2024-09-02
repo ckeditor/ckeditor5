@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, AbortController, URL, window */
+/* globals document, AbortController */
 
 /**
  * @module uploadcare/uploadcareimageedit/uploadcareimageeditcommand
  */
 
-import { Command, PendingActions, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 import UploadcareImageEditFormView from './ui/uploadcareimageeditformview.js';
