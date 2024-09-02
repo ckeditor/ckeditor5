@@ -90,6 +90,11 @@ export default class BodyCollection extends ViewCollection {
 			document.body.appendChild( wrapper );
 		}
 
+		// TODO ShadowRoot (this won't work for closed shadow root)
+		if ( wrapper.shadowRoot ) {
+			wrapper = wrapper.shadowRoot;
+		}
+
 		wrapper.appendChild( this._bodyCollectionContainer );
 	}
 

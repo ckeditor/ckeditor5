@@ -42,6 +42,8 @@ export default function clickOutsideHandler(
 
 		// Check if `composedPath` is `undefined` in case the browser does not support native shadow DOM.
 		// Can be removed when all supported browsers support native shadow DOM.
+		// TODO ShadowRoot This won't work for closed shadow root.
+		//  We probably should listen to all shadow roots we know of and have access to.
 		const path = typeof domEvt.composedPath == 'function' ? domEvt.composedPath() : [];
 
 		const contextElementsList = typeof contextElements == 'function' ? contextElements() : contextElements;

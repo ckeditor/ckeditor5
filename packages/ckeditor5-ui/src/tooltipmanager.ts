@@ -129,6 +129,11 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 */
 	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
 
+	/**
+	 * TODO
+	 */
+	private _shadowRoots = new Set<ShadowRoot>();
+
 	private readonly _watchdogExcluded!: true;
 
 	/**
@@ -187,15 +192,15 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
 
-		// TODO ShadowRoot
 		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
 		this.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
 		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
+
+		// TODO ShadowRoot
+		this._addMouseEnterLeaveListeners( global.document );
 
 		// Because this class is a singleton, its only instance is shared across all editors and connects them through the reference.
 		// This causes issues with the ContextWatchdog. When an error is thrown in one editor, the watchdog traverses the references
@@ -229,8 +234,24 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			this.balloonPanelView.destroy();
 			this.stopListening();
 
+			this._shadowRoots.clear();
+
 			TooltipManager._instance = null;
 		}
+	}
+
+	public registerShadowRoot( node: ShadowRoot ): void {
+		if ( this._shadowRoots.has( node ) ) {
+			return;
+		}
+
+		this._shadowRoots.add( node );
+		this._addMouseEnterLeaveListeners( node );
+	}
+
+	private _addMouseEnterLeaveListeners( node: Document | ShadowRoot ): void {
+		this.listenTo( node, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+		this.listenTo( node, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 	}
 
 	/**

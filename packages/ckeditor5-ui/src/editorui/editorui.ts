@@ -161,6 +161,12 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.once<EditorUIReadyEvent>( 'ready', () => {
 			this._bindBodyCollectionWithFocusTracker();
 
+			// TODO ShadowRoot This must register all shadow roots the editor is touching
+			// TODO how should we handle nested shadow roots?
+			for ( const element of this.focusTracker.elements ) {
+				this.tooltipManager.registerShadowRoot( element.getRootNode() );
+			}
+
 			this.isReady = true;
 		} );
 

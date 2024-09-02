@@ -9,6 +9,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 const editorShadow = document.querySelector( '#editor-wrapper' ).attachShadow( { mode: 'open' } );
+const bodyCollectionWrapperShadow = document.querySelector( '.ck-body-wrapper' ).attachShadow( { mode: 'open' } );
+
 const editorElement = document.createElement( 'div' );
 
 editorShadow.appendChild( editorElement );
@@ -17,7 +19,11 @@ for ( const sheet of document.styleSheets ) {
 	if ( sheet.ownerNode?.dataset?.cke ) {
 		const shadowSheet = new CSSStyleSheet();
 		shadowSheet.replaceSync( sheet.ownerNode.textContent );
+
 		editorShadow.adoptedStyleSheets = [ shadowSheet ];
+		bodyCollectionWrapperShadow.adoptedStyleSheets = [ shadowSheet ];
+
+		// sheet.disabled = true;
 		break;
 	}
 }
