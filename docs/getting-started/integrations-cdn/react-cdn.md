@@ -53,39 +53,39 @@ import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-  const cloud = useCKEditorCloud( {
-    version: "43.0.0",
-  } );
+	const cloud = useCKEditorCloud( {
+		version: "43.0.0",
+	} );
 
-  if ( cloud.status === "error" ) {
-    return <div>Error!</div>;
-  }
+	if ( cloud.status === "error" ) {
+		return <div>Error!</div>;
+	}
 
-  if ( cloud.status === "loading" ) {
-    return <div>Loading...</div>;
-  }
+	if ( cloud.status === "loading" ) {
+		eturn <div>Loading...</div>;
+	}
 
-  const {
-    ClassicEditor: ClassicEditorBase,
-    Bold,
-    Essentials,
-    Italic,
-    Paragraph,
-    Undo,
-  } = cloud.CKEditor;
+	const {
+		ClassicEditor: ClassicEditorBase,
+		Bold,
+		Essentials,
+		Italic,
+		Paragraph,
+		Undo,
+	} = cloud.CKEditor;
 
-  return (
-    <CKEditor
-      editor={ClassicEditorBase}
-      data={"<p>Hello world!!!</p>"}
-      config={{
-        toolbar: {
-          items: ["undo", "redo", "|", "bold", "italic"],
-        },
-        plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-      }}
-    />
-  );
+	return (
+		<CKEditor
+			editor={ClassicEditorBase}
+			data={"<p>Hello world!!!</p>"}
+			config={{
+			toolbar: {
+				items: ["undo", "redo", "|", "bold", "italic"],
+			},
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			}}
+		/>
+	);
 };
 ```
 
@@ -96,52 +96,52 @@ import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-  const cloud = useCKEditorCloud({
-    version: "43.0.0",
-    premium: true,
-  });
+	const cloud = useCKEditorCloud({
+		version: "43.0.0",
+		premium: true,
+	});
 
-  if ( cloud.status === "error" ) {
-    return <div>Error!</div>;
-  }
+	if ( cloud.status === "error" ) {
+		return <div>Error!</div>;
+	}
 
-  if ( cloud.status === "loading" ) {
-    return <div>Loading...</div>;
-  }
+	if ( cloud.status === "loading" ) {
+		return <div>Loading...</div>;
+	}
 
-  const {
-    ClassicEditor: ClassicEditorBase,
-    Bold,
-    Essentials,
-    Italic,
-    Mention,
-    Paragraph,
-    Undo,
-  } = cloud.CKEditor;
+	const {
+		ClassicEditor: ClassicEditorBase,
+		Bold,
+		Essentials,
+		Italic,
+		Mention,
+		Paragraph,
+		Undo,
+	} = cloud.CKEditor;
 
-  const { SlashCommand } = cloud.CKEditorPremiumFeatures!;
+	const { SlashCommand } = cloud.CKEditorPremiumFeatures!;
 
-  return (
-    <CKEditor
-      editor={ClassicEditorBase}
-      data={"<p>Hello world!!!</p>"}
-      config={{
-        licenseKey: "<YOUR_LICENSE_KEY>",
-        toolbar: {
-          items: ["undo", "redo", "|", "bold", "italic"],
-        },
-        plugins: [
-          Bold,
-          Essentials,
-          Italic,
-          Mention,
-          Paragraph,
-          Undo,
-          SlashCommand,
-        ],
-      }}
-    />
-  );
+	return (
+		<CKEditor
+			editor={ClassicEditorBase}
+			data={"<p>Hello world!!!</p>"}
+			config={{
+			licenseKey: "<YOUR_LICENSE_KEY>",
+			toolbar: {
+				items: ["undo", "redo", "|", "bold", "italic"],
+			},
+			plugins: [
+				Bold,
+				Essentials,
+				Italic,
+				Mention,
+				Paragraph,
+				Undo,
+				SlashCommand,
+			],
+			}}
+		/>
+	);
 };
 ```
 
@@ -154,61 +154,61 @@ import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-  const cloud = useCKEditorCloud({
-    version: "43.0.0",
-    ckbox: {
-      version: "2.5.1",
-      // Optional - it's already 'lark' by default.
-      theme: "lark",
-    },
-  });
+	const cloud = useCKEditorCloud({
+	version: "43.0.0",
+	ckbox: {
+		version: "2.5.1",
+		// Optional - it's already 'lark' by default.
+		theme: "lark",
+	},
+	});
 
-  if (cloud.status === "error") {
-    return <div>Error!</div>;
-  }
+	if (cloud.status === "error") {
+		return <div>Error!</div>;
+	}
 
-  if (cloud.status === "loading") {
-    return <div>Loading...</div>;
-  }
+	if (cloud.status === "loading") {
+		return <div>Loading...</div>;
+	}
 
-  const {
-    ClassicEditor: ClassicEditorBase,
-    Bold,
-    Essentials,
-    Italic,
-    Mention,
-    Paragraph,
-    Undo,
-    CKBox,
-    CKBoxImageEdit,
-  } = cloud.CKEditor;
+	const {
+		ClassicEditor: ClassicEditorBase,
+		Bold,
+		Essentials,
+		Italic,
+		Mention,
+		Paragraph,
+		Undo,
+		CKBox,
+		CKBoxImageEdit,
+	} = cloud.CKEditor;
 
-  return (
-    <CKEditor
-      editor={ClassicEditorBase}
-      data={"<p>Hello world!!!</p>"}
-      config={{
-        toolbar: {
-          items: ["undo", "redo", "|", "bold", "italic"],
-        },
-        plugins: [
-          Bold,
-          Essentials,
-          Italic,
-          Mention,
-          Paragraph,
-          Undo,
-          CKBox,
-          CKBoxImageEdit,
-        ],
-        ckbox: {
-          tokenUrl: "https://api.ckbox.io/token/demo",
-          forceDemoLabel: true,
-          allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
-        },
-      }}
-    />
-  );
+	return (
+		<CKEditor
+			editor={ClassicEditorBase}
+			data={"<p>Hello world!!!</p>"}
+			config={{
+			toolbar: {
+				items: ["undo", "redo", "|", "bold", "italic"],
+			},
+			plugins: [
+				Bold,
+				Essentials,
+				Italic,
+				Mention,
+				Paragraph,
+				Undo,
+				CKBox,
+				CKBoxImageEdit,
+			],
+			ckbox: {
+				tokenUrl: "https://api.ckbox.io/token/demo",
+				forceDemoLabel: true,
+				allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
+			},
+			}}
+		/>
+	);
 };
 ```
 
@@ -228,44 +228,44 @@ import React from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
-  const cloud = useCKEditorCloud( {
-    version: '43.0.0',
-    plugins: {
-      // New one, example: local UMD plugins
-      Plugin1: async () => import( './your-local-import.umd.js' ),
+	const cloud = useCKEditorCloud( {
+		version: '43.0.0',
+		plugins: {
+			// New one, example: local UMD plugins
+			Plugin1: async () => import( './your-local-import.umd.js' ),
 
-      // New one, example: local external imports
-      // Additional bundler configuration must be used, like this one:
-      // https://github.com/crcong/vite-plugin-externals
-      Plugin11: async () => import( './your-local-import' ) as unknown as Promise<Your_Type>,
+			// New one, example: local external imports
+			// Additional bundler configuration must be used, like this one:
+			// https://github.com/crcong/vite-plugin-externals
+			Plugin11: async () => import( './your-local-import' ) as unknown as Promise<Your_Type>,
 
-      // New one, example: CDN 3rd party
-      Plugin2: [
-        'https://cdn.example.com/plugin2.js',
-        'https://cdn.example.com/plugin2.css'
-      ],
+			// New one, example: CDN 3rd party
+			Plugin2: [
+			'https://cdn.example.com/plugin2.js',
+			'https://cdn.example.com/plugin2.css'
+			],
 
-      // Old one, verbose for more advanced plugins. It's still available.
-      Plugin3: {
-        scripts: [ 'https://cdn.example.com/plugin3.js' ],
-        stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
+			// Old one, verbose for more advanced plugins. It's still available.
+			Plugin3: {
+			scripts: [ 'https://cdn.example.com/plugin3.js' ],
+			stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
 
-        // Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
-        checkPluginLoaded: () => ( window as any ).Plugin3
-      }
-    }
-  } );
+			// Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
+			checkPluginLoaded: () => ( window as any ).Plugin3
+			}
+		}
+	} );
 
-  if ( cloud.status === 'error' ) {
-    return <div>Error!</div>;
-  }
+	if ( cloud.status === 'error' ) {
+		return <div>Error!</div>;
+	}
 
-  if ( cloud.status === 'loading' ) {
-    return <div>Loading...</div>;
-  }
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
 
-  const { Plugin1, Plugin2, /* More plugins... */ } = cloud.loadedPlugins;
-  // ...
+	const { Plugin1, Plugin2, /* More plugins... */ } = cloud.loadedPlugins;
+	// ...
 };
 ```
 
@@ -303,128 +303,128 @@ import React from 'react';
 import { CKEditor, CKEditorContext, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 export const CKEditorCloudContextDemo = (): JSX.Element => {
-  const cloud = useCKEditorCloud( {
-    version: '43.0.0'
-  } );
+	const cloud = useCKEditorCloud( {
+		version: '43.0.0'
+	} );
 
-  if ( cloud.status === 'error' ) {
-    console.error( cloud );
-    return <div>Error!</div>;
-  }
+	if ( cloud.status === 'error' ) {
+		console.error( cloud );
+		return <div>Error!</div>;
+	}
 
-  if ( cloud.status === 'loading' ) {
-    return <div>Loading...</div>;
-  }
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
 
-  const { ClassicEditor } = cloud.CKEditor;
+	const { ClassicEditor } = cloud.CKEditor;
 
-  return (
-    <CKEditorContext
-      context={ ClassicEditor.Context }
-      contextWatchdog={ ClassicEditor.ContextWatchdog }
-      onChangeInitializedEditors={ editors => {
-        console.log( 'Initialized editors:', editors );
-      } }
-    >
-      <CKEditorNestedInstanceDemo
-        name='editor1'
-        content='<p>Editor 1</p>'
-      />
+	return (
+		<CKEditorContext
+			context={ ClassicEditor.Context }
+			contextWatchdog={ ClassicEditor.ContextWatchdog }
+			onChangeInitializedEditors={ editors => {
+				console.log( 'Initialized editors:', editors );
+			} }
+		>
+			<CKEditorNestedInstanceDemo
+				name='editor1'
+				content='<p>Editor 1</p>'
+			/>
 
-      <br />
+			<br />
 
-      <CKEditorNestedInstanceDemo
-        name='editor2'
-        content='<p>Editor 2</p>'
-      />
-    </CKEditorContext>
-  );
+			<CKEditorNestedInstanceDemo
+				name='editor2'
+				content='<p>Editor 2</p>'
+			/>
+		</CKEditorContext>
+	);
 };
 
 function CKEditorNestedInstanceDemo( { name, content }: { name: string; content?: string } ): JSX.Element {
-  const cloud = useCKEditorCloud( {
-    version: '43.0.0',
-    premium: true
-  } );
+	const cloud = useCKEditorCloud( {
+		version: '43.0.0',
+		premium: true
+	} );
 
-  if ( cloud.status === 'error' ) {
-    console.error( cloud );
-    return <div>Error!</div>;
-  }
+	if ( cloud.status === 'error' ) {
+		console.error( cloud );
+		return <div>Error!</div>;
+	}
 
-  if ( cloud.status === 'loading' ) {
-    return <div>Loading...</div>;
-  }
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
 
-  const { CKEditor: CK } = cloud;
+	const { CKEditor: CK } = cloud;
 
-  return (
-    <CKEditor
-      contextItemMetadata={{
-        name
-      }}
-      editor={ CK.ClassicEditor }
-      data={ content }
-      config={{
-        plugins: [
-          CK.Essentials,
-          CK.CKFinderUploadAdapter,
-          CK.Autoformat,
-          CK.Bold,
-          CK.Italic,
-          CK.BlockQuote,
-          CK.CKBox,
-          CK.CKFinder,
-          CK.CloudServices,
-          CK.EasyImage,
-          CK.Heading,
-          CK.Image,
-          CK.ImageCaption,
-          CK.ImageStyle,
-          CK.ImageToolbar,
-          CK.ImageUpload,
-          CK.Indent,
-          CK.IndentBlock,
-          CK.Link,
-          CK.List,
-          CK.MediaEmbed,
-          CK.Paragraph,
-          CK.PasteFromOffice,
-          CK.PictureEditing,
-          CK.Table,
-          CK.TableToolbar,
-          CK.TextTransformation,
-          CK.Base64UploadAdapter
-        ],
-        toolbar: {
-          items: [
-            'undo', 'redo',
-            '|', 'heading',
-            '|', 'bold', 'italic',
-            '|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-            '|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-          ]
-        },
-        image: {
-          toolbar: [
-            'imageStyle:inline',
-            'imageStyle:block',
-            'imageStyle:side',
-            '|',
-            'toggleImageCaption',
-            'imageTextAlternative'
-          ]
-        },
-        table: {
-          contentToolbar: [
-            'tableColumn',
-            'tableRow',
-            'mergeTableCells'
-          ]
-        }
-      }}
-    />
-  );
+	return (
+		<CKEditor
+			contextItemMetadata={{
+				name
+			}}
+			editor={ CK.ClassicEditor }
+			data={ content }
+			config={{
+			plugins: [
+				CK.Essentials,
+				CK.CKFinderUploadAdapter,
+				CK.Autoformat,
+				CK.Bold,
+				CK.Italic,
+				CK.BlockQuote,
+				CK.CKBox,
+				CK.CKFinder,
+				CK.CloudServices,
+				CK.EasyImage,
+				CK.Heading,
+				CK.Image,
+				CK.ImageCaption,
+				CK.ImageStyle,
+				CK.ImageToolbar,
+				CK.ImageUpload,
+				CK.Indent,
+				CK.IndentBlock,
+				CK.Link,
+				CK.List,
+				CK.MediaEmbed,
+				CK.Paragraph,
+				CK.PasteFromOffice,
+				CK.PictureEditing,
+				CK.Table,
+				CK.TableToolbar,
+				CK.TextTransformation,
+				CK.Base64UploadAdapter
+			],
+			toolbar: {
+				items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				]
+			},
+			image: {
+				toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+				]
+			},
+			table: {
+				contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+				]
+			}
+			}}
+		/>
+	);
 }
 ```
 
@@ -533,38 +533,38 @@ import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-  const cloud = useCKEditorCloud({
-	version: "43.0.0",
-	translations: [ "de" ]
-  });
+	const cloud = useCKEditorCloud({
+		version: "43.0.0",
+		translations: [ "de" ]
+	});
 
-  if (cloud.status === "error") {
-    return <div>Error!</div>;
-  }
+	if (cloud.status === "error") {
+		return <div>Error!</div>;
+	}
 
-  if (cloud.status === "loading") {
-    return <div>Loading...</div>;
-  }
+	if (cloud.status === "loading") {
+		return <div>Loading...</div>;
+	}
 
-  const {
-    ClassicEditor: ClassicEditorBase,
-    Bold,
-    Essentials,
-    Italic,
-    Paragraph,
-    Undo,
-  } = cloud.CKEditor;
+	const {
+		ClassicEditor: ClassicEditorBase,
+		Bold,
+		Essentials,
+		Italic,
+		Paragraph,
+		Undo,
+	} = cloud.CKEditor;
 
-  return (
-    <CKEditor
-      editor={ClassicEditorBase}
-      data={"<p>Hello world!!!</p>"}
-      config={{
-        toolbar: [ "undo", "redo", "|", "bold", "italic" ],
-        plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-      }}
-    />
-  );
+	return (
+		<CKEditor
+			editor={ClassicEditorBase}
+			data={"<p>Hello world!!!</p>"}
+			config={{
+				toolbar: [ "undo", "redo", "|", "bold", "italic" ],
+				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			}}
+		/>
+	);
 };
 ```
 
