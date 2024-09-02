@@ -1,11 +1,12 @@
 ---
 category: setup
 meta-title: Using bundlers | CKEditor 5 documentation
+menu-title: Using bundlers
 order: 130
 modified_at: 2024-08-30
 ---
 
-# Using bundlers to bundle CKEditor&nbsp;5
+# Using bundlers to bundle the editor.
 
 This guide will show you how to configure popular bundlers like **Vite**, **esbuild**, **Rollup**, and **webpack** to build applications using CKEditor&nbsp;5. Showing how to set up or use these bundlers is not the goal of this guide.
 
@@ -111,6 +112,6 @@ module.exports = {
 };
 ```
 
-Some setups and meta-frameworks based on webpack (such as Next.js), may use `babel-loader` to transpile JavaScript to a lower version. If the version of `babel-loader`, `@babel/core`, and `@babel/preset-env` are recent enough, you should be able to use CKEditor&nbsp;5 without any additional configuration. However, projects using older versions of these packages may encounter the `Module parse failed: Unexpected token` error. It is caused by some ES2022 features that CKEditor&nbsp;5 uses, such as native class properties. To address this issue, you need to add the [`@babel/plugin-proposal-class-properties`](https://babeljs.io/docs/babel-plugin-transform-class-properties) plugin to your Babel configuration.
+Some setups and meta-frameworks based on webpack (such as Next.js), may use a `babel-loader` to transpile JavaScript to a lower version. If the version of `babel-loader`, `@babel/core`, and `@babel/preset-env` are recent enough, you should be able to use CKEditor&nbsp;5 without any additional configuration. However, projects using older versions of these packages may encounter the `Module parse failed: Unexpected token` error. It is caused by some ES2022 features that CKEditor&nbsp;5 uses, such as native class properties. You need to add the [`@babel/plugin-proposal-class-properties`](https://babeljs.io/docs/babel-plugin-transform-class-properties) plugin to your Babel configuration to address this issue.
 
 However, to avoid similar issues when CKEditor&nbsp;5 starts using other modern features in the future, we recommend updating `babel-loader`, `@babel/core`, and `@babel/preset-env` to the latest possible versions.
