@@ -79,9 +79,13 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ## Installing CKEditor&nbsp;5 from CDN
 
-CDN is an alternative method of running CKEditor&nbsp;5. You can start using it in just a few steps and with a few tags.
+CDN is an alternative method of running CKEditor&nbsp;5 that you can start using in just a few steps.
 
-Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+You have two options to choose from. You can either use ES Modules build with imports similar to the npm setup or UMD build with global variable. The former is more modern, but the latter has better compatibility with older development environments.
+
+### CDN with imports
+
+Start by adding a link to editor style sheet. It contains all styles for the editor's UI and content. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -144,6 +148,9 @@ Lastly, add a tag for the editor to attach to.
 
 Your final page should look similar to the one below.
 
+<details>
+<summary>Final build</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -193,6 +200,108 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
+</details>
+
+### CDN with global variables
+
+If you prefer to use global variables instead of ES modules, you can use the UMD build from CDN.
+
+Start by adding a link to editor style sheet. It contains all styles for the editor's UI and content. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+
+```html
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+```
+
+Then, add the script with the JavaScript code. It registers a global variable called `CKEDITOR` that you can use to access the editor and its plugins.
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+```
+
+In the following script tag, get the editor class and desired plugins from the `CKEDITOR` object and add them to the `plugins` array. Add toolbar items where applicable.
+
+```html
+<script>
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} = CKEDITOR;
+
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+			toolbar: {
+				items: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+				]
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+</script>
+```
+
+Lastly, add a tag for the editor to attach to.
+
+```html
+<div id="editor">
+	<p>Hello from CKEditor 5!</p>
+</div>
+```
+
+Your final page should look similar to the one below.
+
+<details>
+<summary>Final build</summary>
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
+
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+
+		<script>
+			const {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} = CKEDITOR;
+
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+					toolbar: {
+						items: [
+							'undo', 'redo', '|', 'bold', 'italic', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+						]
+					}
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
+</html>
+```
+</details>
 
 ## Installing CKEditor&nbsp;5 from a ZIP file
 
@@ -269,12 +378,14 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ### Installing premium features from CDN
 
-Just like with open-source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
+Just like with open-source features, you can choose between using ES Modules build with imports or UMD build with global variables. However, because these methods should not be mixed, you should use the same method as for the open-source features.
+
+#### CDN with imports
+
+Start by adding links to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
@@ -336,6 +447,9 @@ Lastly, add a tag for the editor to attach to.
 
 Your final page should look similar to the one below.
 
+<details>
+<summary>Final build</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -391,6 +505,117 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
+</details>
+
+#### CDN with global variables
+
+Start by adding links to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+
+```html
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+```
+
+Then, add the scripts with the JavaScript code. They registers global variables called `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES` that you can use to access the editor and its plugins.
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+```
+
+Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the final section of this guide.
+
+In the following script tag, get the editor class and desired plugins from the `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES` objects and add them to the `plugins` array. Add toolbar items where applicable.
+
+```html
+<script>
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} = CKEDITOR;
+	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: {
+				items: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+					'formatPainter'
+				]
+			},
+			licenseKey: '<YOUR_LICENSE_KEY>'
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+</script>
+```
+
+Lastly, add a tag for the editor to attach to.
+
+```html
+<div id="editor">
+	<p>Hello from CKEditor 5!</p>
+</div>
+```
+
+Your final page should look similar to the one below.
+
+<details>
+<summary>Final build</summary>
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
+
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+
+		<script>
+			const {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} = CKEDITOR;
+			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+					toolbar: {
+						items: [
+							'undo', 'redo', '|', 'bold', 'italic', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+						]
+					},
+					licenseKey: '<YOUR_LICENSE_KEY>'
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
+</html>
+```
+</details>
 
 ### Installing premium features from a ZIP file
 
