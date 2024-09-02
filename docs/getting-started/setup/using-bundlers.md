@@ -24,10 +24,10 @@ Similarly, you need no special configuration to bundle CKEditor&nbsp;5 with rece
 
 To bundle CKEditor&nbsp;5 with Rollup, you need to install the following plugins:
 
-1. `@rollup/plugin-node-resolve` &ndash; to allow Rollup to resolve dependencies.
-2. `@rollup/plugin-commonjs` &ndash; to convert CommonJS modules to ES6.
-3. `rollup-plugin-import-css` or `rollup-plugin-styles` &ndash; to allow Rollup to handle CSS files.
-4. `@rollup/plugin-json` &ndash; to allow Rollup to handle JSON files.
+1. `@rollup/plugin-commonjs` &ndash; to convert CommonJS modules to ES6.
+2. `@rollup/plugin-node-resolve` &ndash; to allow Rollup to resolve dependencies.
+3. `@rollup/plugin-json` &ndash; to allow Rollup to handle JSON files.
+4. `rollup-plugin-import-css` or `rollup-plugin-styles` &ndash; to allow Rollup to handle CSS files.
 5. `@rollup/plugin-terser` &ndash; to minify the output.
 
 Here is an example `rollup.config.js` file:
@@ -35,11 +35,11 @@ Here is an example `rollup.config.js` file:
 ```js
 // rollup.config.js
 import { defineConfig } from 'rollup';
-import json from '@rollup/plugin-json';
-import terser from '@rollup/plugin-terser';
-import css from 'rollup-plugin-import-css';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import json from '@rollup/plugin-json';
+import css from 'rollup-plugin-import-css';
+import terser from '@rollup/plugin-terser';
 
 const sourceMap = true; // Change depending on your needs.
 const minify = true; // Change depending on your needs.
@@ -79,9 +79,9 @@ Here is an example `webpack.config.js` file:
 ```js
 // webpack.config.js
 const path = require( 'path' );
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
+const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 const sourceMap = true; // Change depending on your needs.
 const minify = true; // Change depending on your needs.
