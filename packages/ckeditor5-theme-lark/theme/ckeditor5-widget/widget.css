@@ -53,7 +53,7 @@
 
 		/**
 		 * Focus border should not be applied to table cells because it overrides the default table cell border color.
-		 * In other words - in some scenarios, the part of the table cell border is blue, which is not expected behavior
+		 * In other words - in some scenarios, the part of the table cell border has focus color style, which is not expected behavior
 		 * because it should be the same as the table cell border color.
 		 */
 		&:not(td, th) {
