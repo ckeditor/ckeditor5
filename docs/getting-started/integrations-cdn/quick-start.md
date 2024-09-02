@@ -26,55 +26,42 @@ Start by attaching a link to style sheets. They contain all styles for the edito
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 ```
 
-Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
-
-```html
-<script type="importmap">
-	{
-		"imports": {
-			"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-			"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
-		}
-	}
-</script>
-```
-
-Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier.
-
-<info-box warning>
-	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+<info-box>
+	If you do not want to use the global variables presented below, you can continue from here and use an alternative, [more advanced setup with import maps](#advanced-setup-with-import-maps).
 </info-box>
 
-In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
+Then, you need to attach the script with the JavaScript code.
 
 ```html
-<script type="module">
-	import {
-		ClassicEditor,
-		Essentials,
-		Bold,
-		Italic,
-		Font,
-		Paragraph
-	} from 'ckeditor5';
-
-	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-				]
-			}
-		} )
-		.then( /* ... */ )
-		.catch( /* ... */ );
-</script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 ```
 
-Lastly, add a tag for the editor to attach to.
+The included script exposes the global variable named `CKEDITOR`. You can use object destructuring shown below to access the editor class and plugins.
+
+```js
+const {
+	ClassicEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} = CKEDITOR;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Lastly, add a tag for the editor to attach to. Ensure the query selector matches the HTML element ID (or class).
 
 ```html
 <div id="editor">
@@ -82,71 +69,166 @@ Lastly, add a tag for the editor to attach to.
 </div>
 ```
 
-Your final page should look similar to the one below.
+A simple HTML page with the CKEditor may look like the one below.
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CKEditor 5 - Quick start CDN</title>
-		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-	</head>
-	<body>
-		<div id="editor">
-			<p>Hello from CKEditor 5!</p>
-		</div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CKEditor 5 - Quick start CDN</title>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+    </head>
+    <body>
+        <div id="editor">
+            <p>Hello from CKEditor 5!</p>
+        </div>
+        
+        <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.umd.js"></script>
 
-		<script type="importmap">
-			{
-				"imports": {
-					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
-				}
-			}
-		</script>
+        <script>
+            const {
+                ClassicEditor,
+                Essentials,
+                Bold,
+                Italic,
+                Font,
+                Paragraph
+            } = CKEDITOR;
 
-		<script type="module">
-			import {
-				ClassicEditor,
-				Essentials,
-				Bold,
-				Italic,
-				Font,
-				Paragraph
-			} from 'ckeditor5';
-
-			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-						]
-					}
-				} )
-				.then( /* ... */ )
-				.catch( /* ... */ );
-		</script>
-	</body>
+            ClassicEditor
+                .create( document.querySelector( '#editor' ), {
+                    licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+                    plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+                    toolbar: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                    ]
+                } )
+                .then( /* ... */ )
+                .catch( /* ... */ );
+        </script>
+    </body>
 </html>
 ```
 
 ## Installing premium features from CDN
 
-Just like with open-source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
+Just like with open-source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
-Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
+<info-box>
+	If you do not want to use the global variables presented below, you can continue from here and use an alternative, [more advanced setup with import maps](#advanced-setup-with-import-maps).
+</info-box>
+
+Then, you need to attach the script tags with the JavaScript code. Similar to style sheets, there are separate scripts for open-source and premium plugins.
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+```
+
+Both included scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use object destructuring shown below to access the editor class and plugins. Open-source and premium features are in the respective global variables.
+
+```html
+<script>
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} = CKEDITOR;
+	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>',
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			]
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+</script>
+```
+
+Lastly, add a tag for the editor to attach to. Ensure the query selector matches the HTML element ID (or class).
+
+```html
+<div id="editor">
+	<p>Hello from CKEditor 5!</p>
+</div>
+```
+
+A simple HTML page with the CKEditor may look like the one below.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CKEditor 5 - Quick start CDN</title>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+    </head>
+    <body>
+        <div id="editor">
+            <p>Hello from CKEditor 5!</p>
+        </div>
+        
+        <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.umd.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+
+        <script>
+            const {
+                ClassicEditor,
+                Essentials,
+                Bold,
+                Italic,
+                Font,
+                Paragraph
+            } = CKEDITOR;
+            const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+            ClassicEditor
+                .create( document.querySelector( '#editor' ), {
+                    licenseKey: '<YOUR_LICENSE_KEY>',
+                    plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+                    toolbar: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                        'formatPainter'
+                    ]
+                } )
+                .then( /* ... */ )
+                .catch( /* ... */ );
+        </script>
+    </body>
+</html>
+```
+
+### Obtaining a license key
+
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features).
+
+You can also [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/licensing/license-key-and-activation License key and activation} guide.
+
+## Advanced setup with import maps
+
+To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5` or `ckeditor5-premium-features`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins. Open source and premium plugins have their respective specifiers. Add mapping for premium features only if you use them.
 
 ```html
 <script type="importmap">
@@ -161,7 +243,11 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the final section of this guide.
+Once you have added the import map, you can access the editor and its plugins using the defined specifiers. Now, you can use standard imports from the `ckeditor5` and `ckeditor5-premium-features` packages. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [Obtaining a license key](#obtaining-a-license-key) section.
+
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
 
 In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
@@ -181,26 +267,14 @@ In the following script tag, import the desired plugins and add them to the `plu
 		.create( document.querySelector( '#editor' ), {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-					'formatPainter'
-				]
-			},
-			licenseKey: '<YOUR_LICENSE_KEY>'
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+			]
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
 </script>
-```
-
-Lastly, add a tag for the editor to attach to.
-
-```html
-<div id="editor">
-	<p>Hello from CKEditor 5!</p>
-</div>
 ```
 
 Your final page should look similar to the one below.
@@ -213,7 +287,6 @@ Your final page should look similar to the one below.
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CKEditor 5 - Quick start CDN</title>
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-		<!-- If you are using premium features: -->
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 	</head>
 	<body>
@@ -245,14 +318,12 @@ Your final page should look similar to the one below.
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
-						]
-					},
-					licenseKey: '<YOUR_LICENSE_KEY>'
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+					]
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -260,12 +331,6 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
-
-### Obtaining a license key
-
-To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the premium features.
-
-You can also [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/licensing/license-key-and-activation License key and activation} guide.
 
 ## Next steps
 
