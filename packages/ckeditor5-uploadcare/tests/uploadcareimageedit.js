@@ -6,21 +6,17 @@
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import { Image, ImageUpload, ImageInsert, ImageUploadProgress } from '@ckeditor/ckeditor5-image';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
-import CKBoxImageEdit from '../src/ckboximageedit.js';
-import CKBoxImageEditEditing from '../src/ckboximageedit/ckboximageeditediting.js';
-import CKBoxImageEditUI from '../src/ckboximageedit/ckboximageeditui.ts';
+import UploadcareImageEdit from '../src/uploadcareimageedit.js';
+import UploadcareImageEditEditing from '../src/uploadcareimageedit/uploadcareimageeditediting.js';
+import UploadcareImageEditUI from '../src/uploadcareimageedit/uploadcareimageeditui.ts';
 
-describe( 'CKBoxImageEdit', () => {
+describe( 'UploadcareImageEdit', () => {
 	it( 'should be correctly named', () => {
-		expect( CKBoxImageEdit.pluginName ).to.equal( 'CKBoxImageEdit' );
+		expect( UploadcareImageEdit.pluginName ).to.equal( 'UploadcareImageEdit' );
 	} );
 
 	describe( 'init()', () => {
@@ -35,12 +31,11 @@ describe( 'CKBoxImageEdit', () => {
 					Paragraph,
 					Heading,
 					Essentials,
-					LinkEditing,
-					PictureEditing,
-					ImageUploadEditing,
+					Image,
+					ImageUpload,
+					ImageInsert,
 					ImageUploadProgress,
-					CloudServices,
-					CKBoxImageEdit
+					UploadcareImageEdit
 				]
 			} );
 		} );
@@ -50,25 +45,25 @@ describe( 'CKBoxImageEdit', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should load CKBoxImageEdit plugin', () => {
-			const CKBoxImageEditPlugin = editor.plugins.get( 'CKBoxImageEdit' );
+		it( 'should load UploadcareImageEdit plugin', () => {
+			const UploadcareImageEditPlugin = editor.plugins.get( 'UploadcareImageEdit' );
 
-			expect( CKBoxImageEditPlugin ).to.be.an.instanceof( CKBoxImageEdit );
+			expect( UploadcareImageEditPlugin ).to.be.an.instanceof( UploadcareImageEdit );
 		} );
 
 		it( 'should have proper "requires" value', () => {
-			expect( CKBoxImageEdit.requires ).to.deep.equal( [
-				CKBoxImageEditEditing,
-				CKBoxImageEditUI
+			expect( UploadcareImageEdit.requires ).to.deep.equal( [
+				UploadcareImageEditEditing,
+				UploadcareImageEditUI
 			] );
 		} );
 
-		it( 'should load CKBoxImageEditEditing plugin', () => {
-			expect( editor.plugins.get( CKBoxImageEditEditing ) ).to.instanceOf( CKBoxImageEditEditing );
+		it( 'should load UploadcareImageEditEditing plugin', () => {
+			expect( editor.plugins.get( UploadcareImageEditEditing ) ).to.instanceOf( UploadcareImageEditEditing );
 		} );
 
-		it( 'should load CKBoxImageEditUI plugin', () => {
-			expect( editor.plugins.get( CKBoxImageEditUI ) ).to.instanceOf( CKBoxImageEditUI );
+		it( 'should load UploadcareImageEditUI plugin', () => {
+			expect( editor.plugins.get( UploadcareImageEditUI ) ).to.instanceOf( UploadcareImageEditUI );
 		} );
 	} );
 } );
