@@ -17,8 +17,6 @@ import {
 	type UploadResponse
 } from 'ckeditor5/src/upload.js';
 
-import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-
 import { uploadFile, type UploadcareFile } from '@uploadcare/upload-client';
 
 import UploadcareEditing from './uploadcareediting.js';
@@ -74,11 +72,6 @@ class Adapter implements UploadAdapter {
 	public loader: FileLoader;
 
 	/**
-	 * CKEditor Cloud Services access token.
-	 */
-	public token: InitializedToken;
-
-	/**
 	 * The editor instance.
 	 */
 	public editor: Editor;
@@ -107,6 +100,7 @@ class Adapter implements UploadAdapter {
 		const file = ( await this.loader.file )!;
 
 		return uploadFile( file, {
+			// TODO: replace public key with config value.
 			publicKey: '532fdaa30fa803cef431',
 			store: 'auto',
 			signal: this.controller.signal
