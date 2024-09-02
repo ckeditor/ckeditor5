@@ -51,7 +51,7 @@ msgstr "Выпадающая панель инструментов"
 
 msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
 msgid "Dropdown menu"
-msgstr ""
+msgstr "Раскрывающееся меню"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

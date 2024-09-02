@@ -51,7 +51,7 @@ msgstr "Dropdown-Liste Werkzeugleiste"
 
 msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
 msgid "Dropdown menu"
-msgstr ""
+msgstr "Dropdown-Menü"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

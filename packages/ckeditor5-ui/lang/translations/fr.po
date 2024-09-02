@@ -51,7 +51,7 @@ msgstr "Barre d'outils dans un menu déroulant"
 
 msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
 msgid "Dropdown menu"
-msgstr ""
+msgstr "Menu déroulant"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
