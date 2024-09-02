@@ -123,22 +123,22 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ClassicEditorBase}
-			data={"<p>Hello world!!!</p>"}
+			editor={ ClassicEditorBase }
+			data={ "<p>Hello world!!!</p>" }
 			config={{
-			licenseKey: "<YOUR_LICENSE_KEY>",
-			toolbar: {
-				items: ["undo", "redo", "|", "bold", "italic"],
-			},
-			plugins: [
-				Bold,
-				Essentials,
-				Italic,
-				Mention,
-				Paragraph,
-				Undo,
-				SlashCommand,
-			],
+				licenseKey: "<YOUR_LICENSE_KEY>",
+				toolbar: {
+					items: [ "undo", "redo", "|", "bold", "italic" ],
+				},
+				plugins: [
+					Bold,
+					Essentials,
+					Italic,
+					Mention,
+					Paragraph,
+					Undo,
+					SlashCommand,
+				],
 			}}
 		/>
 	);
@@ -188,24 +188,24 @@ const CKEditorDemo = () => {
 			editor={ClassicEditorBase}
 			data={"<p>Hello world!!!</p>"}
 			config={{
-			toolbar: {
-				items: ["undo", "redo", "|", "bold", "italic"],
-			},
-			plugins: [
-				Bold,
-				Essentials,
-				Italic,
-				Mention,
-				Paragraph,
-				Undo,
-				CKBox,
-				CKBoxImageEdit,
-			],
-			ckbox: {
-				tokenUrl: "https://api.ckbox.io/token/demo",
-				forceDemoLabel: true,
-				allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
-			},
+				toolbar: {
+					items: ["undo", "redo", "|", "bold", "italic"],
+				},
+				plugins: [
+					Bold,
+					Essentials,
+					Italic,
+					Mention,
+					Paragraph,
+					Undo,
+					CKBox,
+					CKBoxImageEdit,
+				],
+				ckbox: {
+					tokenUrl: "https://api.ckbox.io/token/demo",
+					forceDemoLabel: true,
+					allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
+				},
 			}}
 		/>
 	);
@@ -241,17 +241,17 @@ const CKEditorDemo = () => {
 
 			// New one, example: CDN 3rd party
 			Plugin2: [
-			'https://cdn.example.com/plugin2.js',
-			'https://cdn.example.com/plugin2.css'
+				'https://cdn.example.com/plugin2.js',
+				'https://cdn.example.com/plugin2.css'
 			],
 
 			// Old one, verbose for more advanced plugins. It's still available.
 			Plugin3: {
-			scripts: [ 'https://cdn.example.com/plugin3.js' ],
-			stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
+				scripts: [ 'https://cdn.example.com/plugin3.js' ],
+				stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
 
-			// Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
-			checkPluginLoaded: () => ( window as any ).Plugin3
+				// Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
+				checkPluginLoaded: () => ( window as any ).Plugin3
 			}
 		}
 	} );
@@ -366,62 +366,62 @@ function CKEditorNestedInstanceDemo( { name, content }: { name: string; content?
 			editor={ CK.ClassicEditor }
 			data={ content }
 			config={{
-			plugins: [
-				CK.Essentials,
-				CK.CKFinderUploadAdapter,
-				CK.Autoformat,
-				CK.Bold,
-				CK.Italic,
-				CK.BlockQuote,
-				CK.CKBox,
-				CK.CKFinder,
-				CK.CloudServices,
-				CK.EasyImage,
-				CK.Heading,
-				CK.Image,
-				CK.ImageCaption,
-				CK.ImageStyle,
-				CK.ImageToolbar,
-				CK.ImageUpload,
-				CK.Indent,
-				CK.IndentBlock,
-				CK.Link,
-				CK.List,
-				CK.MediaEmbed,
-				CK.Paragraph,
-				CK.PasteFromOffice,
-				CK.PictureEditing,
-				CK.Table,
-				CK.TableToolbar,
-				CK.TextTransformation,
-				CK.Base64UploadAdapter
-			],
-			toolbar: {
-				items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-				]
-			},
-			image: {
-				toolbar: [
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
-				]
-			},
-			table: {
-				contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-				]
-			}
+				plugins: [
+					CK.Essentials,
+					CK.CKFinderUploadAdapter,
+					CK.Autoformat,
+					CK.Bold,
+					CK.Italic,
+					CK.BlockQuote,
+					CK.CKBox,
+					CK.CKFinder,
+					CK.CloudServices,
+					CK.EasyImage,
+					CK.Heading,
+					CK.Image,
+					CK.ImageCaption,
+					CK.ImageStyle,
+					CK.ImageToolbar,
+					CK.ImageUpload,
+					CK.Indent,
+					CK.IndentBlock,
+					CK.Link,
+					CK.List,
+					CK.MediaEmbed,
+					CK.Paragraph,
+					CK.PasteFromOffice,
+					CK.PictureEditing,
+					CK.Table,
+					CK.TableToolbar,
+					CK.TextTransformation,
+					CK.Base64UploadAdapter
+				],
+				toolbar: {
+					items: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'bold', 'italic',
+					'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+					]
+				},
+				image: {
+					toolbar: [
+					'imageStyle:inline',
+					'imageStyle:block',
+					'imageStyle:side',
+					'|',
+					'toggleImageCaption',
+					'imageTextAlternative'
+					]
+				},
+				table: {
+					contentToolbar: [
+					'tableColumn',
+					'tableRow',
+					'mergeTableCells'
+					]
+				}
 			}}
 		/>
 	);
@@ -478,7 +478,9 @@ function App() {
 	if ( cloud.status === 'loading' ) {
 		return <div>Loading...</div>;
 	}
+
 	const { DecoupledEditor, Bold, Italic, Paragraph, Essentials } = cloud.CKEditor;
+
 	return (
 		<div>
 			<div ref={ editorToolbarRef }></div>
@@ -538,11 +540,11 @@ const CKEditorDemo = () => {
 		translations: [ "de" ]
 	});
 
-	if (cloud.status === "error") {
+	if ( cloud.status === "error" ) {
 		return <div>Error!</div>;
 	}
 
-	if (cloud.status === "loading") {
+	if ( cloud.status === "loading" ) {
 		return <div>Loading...</div>;
 	}
 
@@ -557,8 +559,8 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ClassicEditorBase}
-			data={"<p>Hello world!!!</p>"}
+			editor={ ClassicEditorBase }
+			data={ "<p>Hello world!!!</p>" }
 			config={{
 				toolbar: [ "undo", "redo", "|", "bold", "italic" ],
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
