@@ -1,6 +1,6 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component via CDN | CKEditor 5 documentation
+meta-title: React rich text editor component with CDN | CKEditor 5 documentation
 meta-description: Install, integrate and configure CKEditor 5 using the React component with CDN.
 category: react-cdn
 order: 10
@@ -8,7 +8,7 @@ order: 10
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text editor component via CDN
+# React rich text editor component in CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -22,11 +22,11 @@ This guide explains how to integrate CKEditor5 into your React application using
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
 </info-box>
 
-## Quick start with CKEditor 5 React and CDN
+## Quick start
 
 ### Using CKEditor&nbsp;5 Builder
 
-The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. The Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
 
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
@@ -36,7 +36,7 @@ You get ready-to-use code tailored to your needs!
 
 ### Setting up the project
 
-This guide assumes you have a ready React project. If not, you can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
+This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
 
 ### Installing from npm
 
@@ -46,23 +46,23 @@ Install the `@ckeditor/ckeditor5-react` package:
 npm install @ckeditor/ckeditor5-react
 ```
 
-Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source.
+Use the `<CKEditor>` component inside your project. The below example shows how to use the component with the open-source plugins.
 
 ```js
 import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud({
+	const cloud = useCKEditorCloud( {
 		version: "43.0.0",
-	});
+	} );
 
-	if (cloud.status === "error") {
+	if ( cloud.status === "error" ) {
 		return <div>Error!</div>;
 	}
 
-	if (cloud.status === "loading") {
-		return <div>Loading...</div>;
+	if ( cloud.status === "loading" ) {
+		eturn <div>Loading...</div>;
 	}
 
 	const {
@@ -70,7 +70,6 @@ const CKEditorDemo = () => {
 		Bold,
 		Essentials,
 		Italic,
-		Mention,
 		Paragraph,
 		Undo,
 	} = cloud.CKEditor;
@@ -80,17 +79,17 @@ const CKEditorDemo = () => {
 			editor={ClassicEditorBase}
 			data={"<p>Hello world!!!</p>"}
 			config={{
-				toolbar: {
-					items: ["undo", "redo", "|", "bold", "italic"],
-				},
-				plugins: [Bold, Essentials, Italic, Mention, Paragraph, Undo],
+			toolbar: {
+				items: ["undo", "redo", "|", "bold", "italic"],
+			},
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			}}
 		/>
 	);
 };
 ```
 
-In the case of premium plugins, you need to set the `premium` property to `true` in the `useCKEditorCloud` configuration, and provide your license key in the `CKEditor` configuration.
+To use premium plugins, set the `premium` property to `true` in the `useCKEditorCloud` configuration and provide your license key in the `CKEditor` configuration.
 
 ```js
 import React from "react";
@@ -102,11 +101,11 @@ const CKEditorDemo = () => {
 		premium: true,
 	});
 
-	if (cloud.status === "error") {
+	if ( cloud.status === "error" ) {
 		return <div>Error!</div>;
 	}
 
-	if (cloud.status === "loading") {
+	if ( cloud.status === "loading" ) {
 		return <div>Loading...</div>;
 	}
 
@@ -127,19 +126,19 @@ const CKEditorDemo = () => {
 			editor={ClassicEditorBase}
 			data={"<p>Hello world!!!</p>"}
 			config={{
-				licenseKey: "<YOUR_LICENSE_KEY>",
-				toolbar: {
-					items: ["undo", "redo", "|", "bold", "italic"],
-				},
-				plugins: [
-					Bold,
-					Essentials,
-					Italic,
-					Mention,
-					Paragraph,
-					Undo,
-					SlashCommand,
-				],
+			licenseKey: "<YOUR_LICENSE_KEY>",
+			toolbar: {
+				items: ["undo", "redo", "|", "bold", "italic"],
+			},
+			plugins: [
+				Bold,
+				Essentials,
+				Italic,
+				Mention,
+				Paragraph,
+				Undo,
+				SlashCommand,
+			],
 			}}
 		/>
 	);
@@ -148,7 +147,7 @@ const CKEditorDemo = () => {
 
 ### Usage with CKBox
 
-To use `CKBox` you need to specify the version and theme (optionally) in the `useCKEditorCloud` configuration. Also remember about actual plugin configuration inside `<CKEditor/>` component.
+To use `CKBox`, specify the version and theme (optionally) in the `useCKEditorCloud` configuration. Also, remember about the actual plugin configuration inside `<CKEditor/>` component.
 
 ```js
 import React from "react";
@@ -156,12 +155,12 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
-		version: "43.0.0",
-		ckbox: {
-			version: "2.5.1",
-			// Optional, by default it's already 'lark':
-			theme: "lark",
-		},
+	version: "43.0.0",
+	ckbox: {
+		version: "2.5.1",
+		// Optional - it's already 'lark' by default.
+		theme: "lark",
+	},
 	});
 
 	if (cloud.status === "error") {
@@ -189,24 +188,24 @@ const CKEditorDemo = () => {
 			editor={ClassicEditorBase}
 			data={"<p>Hello world!!!</p>"}
 			config={{
-				toolbar: {
-					items: ["undo", "redo", "|", "bold", "italic"],
-				},
-				plugins: [
-					Bold,
-					Essentials,
-					Italic,
-					Mention,
-					Paragraph,
-					Undo,
-					CKBox,
-					CKBoxImageEdit,
-				],
-				ckbox: {
-					tokenUrl: "https://api.ckbox.io/token/demo",
-					forceDemoLabel: true,
-					allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
-				},
+			toolbar: {
+				items: ["undo", "redo", "|", "bold", "italic"],
+			},
+			plugins: [
+				Bold,
+				Essentials,
+				Italic,
+				Mention,
+				Paragraph,
+				Undo,
+				CKBox,
+				CKBoxImageEdit,
+			],
+			ckbox: {
+				tokenUrl: "https://api.ckbox.io/token/demo",
+				forceDemoLabel: true,
+				allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
+			},
 			}}
 		/>
 	);
@@ -217,10 +216,10 @@ const CKEditorDemo = () => {
 
 There are various ways to use external plugins. Here is a list of them:
 
-* **Local UMD Plugins:** Dynamically import local UMD modules using import() syntax.
-* **Local External Imports:** Load external plugins locally using additional bundler configurations (such as Vite).
-* **CDN 3rd Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
-* **Verbose Configuration:** Advanced plugin loading with options to specify both script and style sheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
+- **Local UMD Plugins:** Dynamically import local UMD modules using the `import()` syntax.
+- **Local External Imports:** Load external plugins locally using additional bundler configurations (e.g., Vite).
+- **CDN 3rd Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
+- **Verbose Configuration:** Advanced plugin loading with options to specify both script and stylesheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
 
 Here is an example:
 
@@ -242,17 +241,17 @@ const CKEditorDemo = () => {
 
 			// New one, example: CDN 3rd party
 			Plugin2: [
-				'https://cdn.example.com/plugin2.js',
-				'https://cdn.example.com/plugin2.css'
+			'https://cdn.example.com/plugin2.js',
+			'https://cdn.example.com/plugin2.css'
 			],
 
 			// Old one, verbose for more advanced plugins. It's still available.
 			Plugin3: {
-				scripts: [ 'https://cdn.example.com/plugin3.js' ],
-				stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
+			scripts: [ 'https://cdn.example.com/plugin3.js' ],
+			stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
 
-				// Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
-				checkPluginLoaded: () => ( window as any ).Plugin3
+			// Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
+			checkPluginLoaded: () => ( window as any ).Plugin3
 			}
 		}
 	} );
@@ -265,7 +264,7 @@ const CKEditorDemo = () => {
 		return <div>Loading...</div>;
 	}
 
-	const { Plugin1, Plugin2, ... } = cloud.loadedPlugins;
+	const { Plugin1, Plugin2, /* More plugins... */ } = cloud.loadedPlugins;
 	// ...
 };
 ```
@@ -287,8 +286,8 @@ The `<CKEditor>` component supports the following properties:
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 * `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
-	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-	* `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
+* `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+* `willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
@@ -367,62 +366,62 @@ function CKEditorNestedInstanceDemo( { name, content }: { name: string; content?
 			editor={ CK.ClassicEditor }
 			data={ content }
 			config={{
-				plugins: [
-					CK.Essentials,
-					CK.CKFinderUploadAdapter,
-					CK.Autoformat,
-					CK.Bold,
-					CK.Italic,
-					CK.BlockQuote,
-					CK.CKBox,
-					CK.CKFinder,
-					CK.CloudServices,
-					CK.EasyImage,
-					CK.Heading,
-					CK.Image,
-					CK.ImageCaption,
-					CK.ImageStyle,
-					CK.ImageToolbar,
-					CK.ImageUpload,
-					CK.Indent,
-					CK.IndentBlock,
-					CK.Link,
-					CK.List,
-					CK.MediaEmbed,
-					CK.Paragraph,
-					CK.PasteFromOffice,
-					CK.PictureEditing,
-					CK.Table,
-					CK.TableToolbar,
-					CK.TextTransformation,
-					CK.Base64UploadAdapter
-				],
-				toolbar: {
-					items: [
-						'undo', 'redo',
-						'|', 'heading',
-						'|', 'bold', 'italic',
-						'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-						'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-					]
-				},
-				image: {
-					toolbar: [
-						'imageStyle:inline',
-						'imageStyle:block',
-						'imageStyle:side',
-						'|',
-						'toggleImageCaption',
-						'imageTextAlternative'
-					]
-				},
-				table: {
-					contentToolbar: [
-						'tableColumn',
-						'tableRow',
-						'mergeTableCells'
-					]
-				}
+			plugins: [
+				CK.Essentials,
+				CK.CKFinderUploadAdapter,
+				CK.Autoformat,
+				CK.Bold,
+				CK.Italic,
+				CK.BlockQuote,
+				CK.CKBox,
+				CK.CKFinder,
+				CK.CloudServices,
+				CK.EasyImage,
+				CK.Heading,
+				CK.Image,
+				CK.ImageCaption,
+				CK.ImageStyle,
+				CK.ImageToolbar,
+				CK.ImageUpload,
+				CK.Indent,
+				CK.IndentBlock,
+				CK.Link,
+				CK.List,
+				CK.MediaEmbed,
+				CK.Paragraph,
+				CK.PasteFromOffice,
+				CK.PictureEditing,
+				CK.Table,
+				CK.TableToolbar,
+				CK.TextTransformation,
+				CK.Base64UploadAdapter
+			],
+			toolbar: {
+				items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				]
+			},
+			image: {
+				toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+				]
+			},
+			table: {
+				contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+				]
+			}
 			}}
 		/>
 	);
@@ -438,8 +437,8 @@ The `CKEditorContext` component supports the following properties:
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
-	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-	* `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
+* `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+* `willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
 	An example build that exposes both context and classic editor can be found in the [CKEditor&nbsp;5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
@@ -456,21 +455,22 @@ import { useEffect, useRef, useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 function App() {
- const cloud = useCKEditorCloud( {
+	const cloud = useCKEditorCloud( {
 		version: '43.0.0'
 	} );
 
-		const editorToolbarRef = useRef( null );
-		const [ isMounted, setMounted ] = useState( false );
+	const editorToolbarRef = useRef( null );
+	const [ isMounted, setMounted ] = useState( false );
 
-		useEffect( () => {
-				setMounted( true );
+	useEffect( () => {
+		setMounted( true );
 
-				return () => {
-						setMounted( false );
-				};
-		}, [] );
- if ( cloud.status === 'error' ) {
+		return () => {
+			setMounted( false );
+		};
+	}, [] );
+
+	if ( cloud.status === 'error' ) {
 		console.error( cloud );
 		return <div>Error!</div>;
 	}
@@ -478,34 +478,34 @@ function App() {
 	if ( cloud.status === 'loading' ) {
 		return <div>Loading...</div>;
 	}
-		const { DecoupledEditor, Bold, Italic, Paragraph, Essentials } = cloud.CKEditor;
-		return (
-				<div>
-						<div ref={ editorToolbarRef }></div>
-						<div>
-								{ isMounted && (
-										<CKEditor
-												editor={ DecoupledEditor }
-												data='<p>Hello from CKEditor 5 decoupled editor!</p>'
-												config={ {
-														plugins: [ Bold, Italic, Paragraph, Essentials ],
-														toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-												} }
-												onReady={ ( editor ) => {
-														if ( editorToolbarRef.current ) {
-																editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
-														}
-												}}
-												onAfterDestroy={ ( editor ) => {
-														if ( editorToolbarRef.current ) {
-																Array.from( editorToolbarRef.current.children ).forEach( child => child.remove() );
-														}
-												}}
-										/>
-								) }
-						</div>
-				</div>
-		);
+	const { DecoupledEditor, Bold, Italic, Paragraph, Essentials } = cloud.CKEditor;
+	return (
+		<div>
+			<div ref={ editorToolbarRef }></div>
+			<div>
+				{ isMounted && (
+					<CKEditor
+						editor={ DecoupledEditor }
+						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
+						config={ {
+							plugins: [ Bold, Italic, Paragraph, Essentials ],
+							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+						} }
+						onReady={ ( editor ) => {
+							if ( editorToolbarRef.current ) {
+								editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
+							}
+						}}
+						onAfterDestroy={ ( editor ) => {
+							if ( editorToolbarRef.current ) {
+								Array.from( editorToolbarRef.current.children ).forEach( child => child.remove() );
+							}
+						}}
+					/>
+				) }
+			</div>
+		</div>
+	);
 }
 
 export default App;
@@ -535,7 +535,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
 		version: "43.0.0",
-	translations: [ "de" ]
+		translations: [ "de" ]
 	});
 
 	if (cloud.status === "error") {
@@ -551,7 +551,6 @@ const CKEditorDemo = () => {
 		Bold,
 		Essentials,
 		Italic,
-		Mention,
 		Paragraph,
 		Undo,
 	} = cloud.CKEditor;
@@ -561,10 +560,8 @@ const CKEditorDemo = () => {
 			editor={ClassicEditorBase}
 			data={"<p>Hello world!!!</p>"}
 			config={{
-				toolbar: {
-					items: ["undo", "redo", "|", "bold", "italic"],
-				},
-				plugins: [Bold, Essentials, Italic, Mention, Paragraph, Undo],
+				toolbar: [ "undo", "redo", "|", "bold", "italic" ],
+				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			}}
 		/>
 	);

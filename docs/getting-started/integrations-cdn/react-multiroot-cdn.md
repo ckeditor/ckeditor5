@@ -47,8 +47,6 @@ import {
   type WithCKEditorCloudHocProps,
 } from "@ckeditor/ckeditor5-react";
 
-// import type { EventInfo, ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
-
 type EditorDemoProps = WithCKEditorCloudHocProps & {
   data: Record<string, string>;
 };
