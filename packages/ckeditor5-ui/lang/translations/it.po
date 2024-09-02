@@ -51,7 +51,7 @@ msgstr "Barra degli strumenti del menu a discesa"
 
 msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
 msgid "Dropdown menu"
-msgstr ""
+msgstr "Menu a discesa"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

@@ -51,7 +51,7 @@ msgstr "Barra d'eines desplegable"
 
 msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
 msgid "Dropdown menu"
-msgstr ""
+msgstr "Menú desplegable"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
