@@ -624,23 +624,22 @@ export class StylesProcessor {
 	 * @param styles Object holding normalized styles.
 	 */
 	public getStyleNames( styles: Styles ): Array<string> {
+		const styleNamesKeysSet = new Set<string>();
+
 		// Find all extractable styles that have a value.
-		const expandedStyleNames = Array.from( this._consumables.keys() ).filter( name => {
+		for ( const name of this._consumables.keys() ) {
 			const style = this.getNormalized( name, styles );
 
-			if ( style && typeof style == 'object' ) {
-				return Object.keys( style ).length;
+			if ( style && ( typeof style != 'object' || Object.keys( style ).length ) ) {
+				styleNamesKeysSet.add( name );
 			}
-
-			return style;
-		} );
+		}
 
 		// For simple styles (for example `color`) we don't have a map of those styles
 		// but they are 1 to 1 with normalized object keys.
-		const styleNamesKeysSet = new Set( [
-			...expandedStyleNames,
-			...Object.keys( styles )
-		] );
+		for ( const name of Object.keys( styles ) ) {
+			styleNamesKeysSet.add( name );
+		}
 
 		return Array.from( styleNamesKeysSet );
 	}

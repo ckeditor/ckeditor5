@@ -80,7 +80,17 @@ export default class NodeList implements Iterable<Node> {
 	public getNodeStartOffset( node: Node ): number | null {
 		const index = this.getNodeIndex( node );
 
-		return index === null ? null : this._nodes.slice( 0, index ).reduce( ( sum, node ) => sum + node.offsetSize, 0 );
+		if ( index === null ) {
+			return null;
+		}
+
+		let sum = 0;
+
+		for ( let i = 0; i < index; i++ ) {
+			sum += this._nodes[ i ].offsetSize;
+		}
+
+		return sum;
 	}
 
 	/**
