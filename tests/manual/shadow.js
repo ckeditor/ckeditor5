@@ -18,12 +18,12 @@ editorShadow.appendChild( editorElement );
 for ( const sheet of document.styleSheets ) {
 	if ( sheet.ownerNode?.dataset?.cke ) {
 		const shadowSheet = new CSSStyleSheet();
-		shadowSheet.replaceSync( sheet.ownerNode.textContent );
+		shadowSheet.replaceSync( sheet.ownerNode.textContent.replace( /:root/g, ':host' ) );
 
 		editorShadow.adoptedStyleSheets = [ shadowSheet ];
 		bodyCollectionWrapperShadow.adoptedStyleSheets = [ shadowSheet ];
 
-		// sheet.disabled = true;
+		sheet.disabled = true;
 		break;
 	}
 }
