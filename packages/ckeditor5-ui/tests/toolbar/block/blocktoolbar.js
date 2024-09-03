@@ -393,6 +393,16 @@ describe( 'BlockToolbar', () => {
 				sinon.assert.calledOnce( focusSpy );
 			} );
 
+			it( 'should hide the #panelView and do not focus the editable when isEnabled became false', () => {
+				blockToolbar.panelView.isVisible = true;
+				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				blockToolbar.buttonView.isEnabled = false;
+
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
+				sinon.assert.notCalled( spy );
+			} );
+
 			it( 'should hide the #panelView and focus the editable on #execute event when panel was visible', () => {
 				blockToolbar.panelView.isVisible = true;
 				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );

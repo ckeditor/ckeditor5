@@ -648,10 +648,8 @@ And then, link the method in the template:
 
 We provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
 
-* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
-* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
-* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
-* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
+* [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+* [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-angular)
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
@@ -691,6 +689,19 @@ export class AppComponent {
 ```
 
 For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+<info-box warning>
+There is a known issue related to the localization in Angular 17. Read more in the [known issues section](#known-issues) below.
+</info-box>
+
+## Known issues
+
+The `moduleResolution` option of the TypeScript configuration determines the algorithm for finding and resolving modules from `node_modules`. In Angular 17, the option is set to `node` by default. This option prevents type declaration for editor translations from being correctly loaded. To fix it, you have several options:
+
+* You can set the `moduleResolution` option to `bundler`. It is the recommended setting in TypeScript 5.0+ for applications that use a bundler. And it is a recommended way of fixing this problem. You can check other solutions below for lower TypeScript versions.
+* You can tell the TypeScript compiler to suppress the problem using the `// @ts-expect-error` comment above the imported translations.
+* You can update Angular to version 18, where the `moduleResolution` option is set to `bundler`  by default.
+* You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the config.
 
 ## Contributing and reporting issues
 

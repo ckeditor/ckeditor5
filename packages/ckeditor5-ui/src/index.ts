@@ -55,6 +55,13 @@ export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonv
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview.js';
 export * from './dropdown/utils.js';
 
+export * from './dropdown/menu/utils.js';
+export { default as DropdownMenuNestedMenuView } from './dropdown/menu/dropdownmenunestedmenuview.js';
+export { default as DropdownMenuRootListView } from './dropdown/menu/dropdownmenurootlistview.js';
+export { default as DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
+export { default as DropdownMenuListItemView } from './dropdown/menu/dropdownmenulistitemview.js';
+export { default as DropdownMenuListItemButtonView } from './dropdown/menu/dropdownmenulistitembuttonview.js';
+
 export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editorui/editorui.js';
 export { default as EditorUIView } from './editorui/editoruiview.js';
 export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview.js';
@@ -81,6 +88,7 @@ export { default as TextareaView, type TextareaViewUpdateEvent } from './textare
 export { default as IframeView } from './iframe/iframeview.js';
 
 export { default as LabelView } from './label/labelview.js';
+
 export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview.js';
 export * from './labeledfield/utils.js';
 
@@ -94,7 +102,7 @@ export { default as Notification } from './notification/notification.js';
 
 export { default as ViewModel } from './model.js';
 export { default as BalloonPanelView } from './panel/balloon/balloonpanelview.js';
-export { default as ContextualBalloon } from './panel/balloon/contextualballoon.js';
+export { default as ContextualBalloon, type ContextualBalloonGetPositionOptionsEvent } from './panel/balloon/contextualballoon.js';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview.js';
 
 export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview.js';

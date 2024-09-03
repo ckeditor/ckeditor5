@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/*
+ * List item buttons.
+ */
+.ck-button.ck-dropdown-menu-list__nested-menu__item__button {
+	border-radius: 0;
+
+	& > .ck-spinner-container,
+	& > .ck-spinner-container .ck-spinner {
+		/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */
+		--ck-toolbar-spinner-size: 20px;
+	}
+
+	& > .ck-spinner-container {
+		/* These margins are the same as for .ck-icon. */
+		margin-left: calc(-1 * var(--ck-spacing-small));
+		margin-right: var(--ck-spacing-small);
+	}
+
+	/*
+	 * Hovered items automatically get focused. Default focus styles look odd
+	 * while moving across a huge list of items so let's get rid of them
+	 */
+	&:focus {
+		border-color: transparent;
+		box-shadow: none;
+
+		&:not(.ck-on) {
+			background: var(--ck-color-button-default-hover-background);
+		}
+	}
+}
