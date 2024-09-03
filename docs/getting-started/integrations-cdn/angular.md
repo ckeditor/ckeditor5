@@ -152,7 +152,11 @@ or a shared parent component's property
 	// ...
 } )
 export class MyComponent {
-	public editorData = '<p>Hello, world!</p>';
+	public editorData;
+
+	private _setupEditor( cloud ) {
+	 	this.editorData = '<p>Hello, world!</p>';
+	}
 	// ...
 }
 ```
@@ -180,8 +184,11 @@ Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–
 	// ...
 } )
 export class MyComponent {
-	public isDisabled = false;
+	public isDisabled;
 	// ...
+	private _setupEditor( cloud ) {
+	 	this.isDisabled = false;
+	}
 	toggleDisabled() {
 		this.isDisabled = !this.isDisabled
 	}
@@ -204,6 +211,7 @@ An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `Conte
 
 ```ts
 import CKSource from 'path/to/custom/build';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
 const Context = CKSource.Context;
 const Editor = CKSource.Editor;
@@ -213,12 +221,23 @@ const ContextWatchdog = CKSource.ContextWatchdog;
 	// ...
 } )
 export class MyComponent {
-	public editor = Editor;
+	public editor;
 	public watchdog: any;
-	public ready = false;
+	public ready;
 
 	ngOnInit() {
+		loadCKEditorCloud({
+			version: '43.0.0',
+		}).then( this._setupEditor.bind( this ) );
+	}
+	private _setupEditor( cloud ) {
+		const {
+			ClassicEditor
+		} = cloud.CKEditor;
 		const contextConfig = {};
+ 
+		this.Editor = ClassicEditor;
+		this.ready = false;
 
 		this.watchdog = new ContextWatchdog( Context );
 
@@ -247,10 +266,14 @@ If the `watchdog` property is not used, {@link module:watchdog/editorwatchdog~Ed
 	// ...
 } )
 export class MyComponent {
-	public myWatchdogConfig = {
-		crashNumberLimit: 5,
-		// ...
-	};
+	public myWatchdogConfig;
+
+	private _setupEditor( cloud ) {
+		this.myWatchdogConfig = {
+			crashNumberLimit: 5,
+			// ...
+		};
+	}
 	// ...
 }
 ```
@@ -295,7 +318,15 @@ import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 	// ...
 } )
 export class MyComponent {
-	public Editor = ClassicEditor;
+	public Editor;
+
+	private _setupEditor( cloud ) {
+		const {
+			ClassicEditor
+		} = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+	}
 
 	public onChange( { editor }: ChangeEvent ) {
 		const data = editor.getData();
@@ -326,7 +357,7 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 
 ## CDN
 
-To use CKEditor with cdn you need to import `loadCKEditorCloud` and call it inside `ngOnInit` with provided `version` in configuration.
+To use CKEditor with cdn you need to import `loadCKEditorCloud` and call it inside `ngOnInit` with provided `version` in the configuration.
 
 ```js
 import { Component } from '@angular/core';
@@ -471,9 +502,13 @@ Create some model in your component to share with the editor:
 	// ...
 } )
 export class MyComponent {
-	public model = {
-		editorData: '<p>Hello, world!</p>'
-	};
+	public model;
+
+	private _setupEditor( cloud ) {
+		this.model = {
+			editorData: '<p>Hello, world!</p>'
+		};
+	}
 	// ...
 }
 ```
@@ -546,9 +581,15 @@ To display {@link features/editor-placeholder the placeholder} in the main edita
 	// ...
 } )
 export class MyComponent {
-	public config = {
-		placeholder: 'Type the content here!'
+	public config;
+
+	private _setupEditor( cloud ) {
+		// ...
+		this.config = {
+			placeholder: 'Type the content here!'
+		}
 	}
+	
 }
 ```
 
