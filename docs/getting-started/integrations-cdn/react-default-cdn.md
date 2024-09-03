@@ -287,9 +287,8 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 The `<useCKEditorCloud>` component supports the following properties:
 
 * `version` (required) &ndash; The version of CKEditor Cloud Services to use.
-* `languages` &ndash; The languages to load.
+* `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
 * `premium` &ndash; If `true` then the premium features will be loaded.
-* `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
 * `ckbox` &ndash; CKBox bundle configuration.
 * `plugins` &ndash; Additional resources to load.
 
