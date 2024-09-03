@@ -513,7 +513,7 @@ Range.prototype.getClientRects = () => ({
 });
 ```
 
-These mocks are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing and cover only the initialization and rendering of the editor.
+These mocks are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
 
 ## Contributing and reporting issues
 
