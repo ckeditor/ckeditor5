@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 import UploadcareCommand from './uploadcarecommand.js';
 import UploadcareUploadAdapter from './uploadcareuploadadapter.js';
@@ -28,7 +29,7 @@ export default class UploadcareEditing extends Plugin {
 	 */
 	public static get requires() {
 		// TODO: check if 'PictureEditing' is needed.
-		return [ UploadcareUploadAdapter ] as const;
+		return [ UploadcareUploadAdapter, Dialog ] as const;
 	}
 
 	/**

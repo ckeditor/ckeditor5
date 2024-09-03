@@ -7,7 +7,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { Image, ImageInsert, ImageUpload } from '@ckeditor/ckeditor5-image';
-import UploadcareImageEdit from '../src/uploadcareimageedit.js';
+import { Dialog } from '@ckeditor/ckeditor5-ui';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
@@ -31,7 +31,7 @@ describe( 'UploadcareEditing', () => {
 				ImageUpload,
 				ImageInsert,
 				ImageUploadProgress,
-				UploadcareImageEdit
+				UploadcareEditing
 			]
 		} );
 	} );
@@ -49,8 +49,8 @@ describe( 'UploadcareEditing', () => {
 		expect( editor.plugins.get( UploadcareEditing ) ).to.be.instanceOf( UploadcareEditing );
 	} );
 
-	it( 'should load link and picture features', () => {
-		expect( UploadcareEditing.requires ).to.deep.equal( [ UploadcareUploadAdapter ] );
+	it( 'should load the upload adapter', () => {
+		expect( UploadcareEditing.requires ).to.deep.equal( [ UploadcareUploadAdapter, Dialog ] );
 	} );
 
 	it( 'should register the "uploadcare" command', () => {
