@@ -9,7 +9,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
 
-const editorShadow = document.querySelector( '#editor-wrapper' ).attachShadow( { mode: 'open' } );
+const editorComponent = document.querySelector( '#editor-component' );
+
+const editorShadow = editorComponent.attachShadow( { mode: 'open', delegatesFocus: true } );
 const bodyCollectionWrapperShadow = document.querySelector( '.ck-body-wrapper' ).attachShadow( { mode: 'open' } );
 
 const editorElement = document.createElement( 'div' );
@@ -28,6 +30,13 @@ for ( const sheet of document.styleSheets ) {
 		break;
 	}
 }
+
+// This requires delegatesFocus: true
+editorComponent.addEventListener( 'focus', () => window.editor.focus() );
+
+document.querySelector( 'button#focus-editor' ).addEventListener( 'click', () => {
+	editorComponent.focus();
+} );
 
 ClassicEditor
 	.create( editorElement, {

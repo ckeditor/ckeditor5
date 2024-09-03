@@ -134,7 +134,7 @@ export default class DragDropBlockToolbar extends Plugin {
 		let target = document.elementFromPoint( clientX, clientY );
 
 		// TODO ShadowRoot - this is a workaround, works this way only in open shadow root
-		if ( target && target.shadowRoot ) {
+		if ( target && target.shadowRoot && target.shadowRoot.elementFromPoint ) {
 			target = target.shadowRoot.elementFromPoint( clientX, clientY );
 		}
 
