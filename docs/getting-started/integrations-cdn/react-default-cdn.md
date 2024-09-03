@@ -38,13 +38,19 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
 
-### Installing from npm
+### Installing react component from npm
 
 Install the `@ckeditor/ckeditor5-react` package:
 
 ```bash
 npm install @ckeditor/ckeditor5-react
 ```
+
+The `useCKEditorCloud` hook is responsible for returning information that:
+
+- CKEditor is still being downloaded from the CDN with status = "loading".
+- An error occurred during the download when status = "error", then further information is returned in the error field.
+- Returning the editor in the data field and its dependencies when status = "success".
 
 Use the `<CKEditor>` component inside your project. The below example shows how to use the component with the open-source plugins.
 
@@ -66,7 +72,7 @@ const CKEditorDemo = () => {
 	}
 
 	const {
-		ClassicEditor: ClassicEditorBase,
+		ClassicEditor,
 		Bold,
 		Essentials,
 		Italic,
@@ -76,7 +82,7 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ClassicEditorBase}
+			editor={ClassicEditor}
 			data={"<p>Hello world!!!</p>"}
 			config={{
 			toolbar: {
@@ -110,7 +116,7 @@ const CKEditorDemo = () => {
 	}
 
 	const {
-		ClassicEditor: ClassicEditorBase,
+		ClassicEditor,
 		Bold,
 		Essentials,
 		Italic,
@@ -123,7 +129,7 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ ClassicEditorBase }
+			editor={ ClassicEditor }
 			data={ "<p>Hello world!!!</p>" }
 			config={{
 				licenseKey: "<YOUR_LICENSE_KEY>",
@@ -172,7 +178,7 @@ const CKEditorDemo = () => {
 	}
 
 	const {
-		ClassicEditor: ClassicEditorBase,
+		ClassicEditor,
 		Bold,
 		Essentials,
 		Italic,
@@ -185,7 +191,7 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ClassicEditorBase}
+			editor={ClassicEditor}
 			data={"<p>Hello world!!!</p>"}
 			config={{
 				toolbar: {
@@ -231,28 +237,12 @@ const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
 		version: '43.0.0',
 		plugins: {
-			// New one, example: local UMD plugins
-			Plugin1: async () => import( './your-local-import.umd.js' ),
-
-			// New one, example: local external imports
-			// Additional bundler configuration must be used, like this one:
-			// https://github.com/crcong/vite-plugin-externals
-			Plugin11: async () => import( './your-local-import' ) as unknown as Promise<Your_Type>,
-
-			// New one, example: CDN 3rd party
-			Plugin2: [
+			PluginUMD: async () => import( './your-local-import.umd.js' ),
+			PluginLocalImport: async () => import( './your-local-import' ),
+			PluginThirdParty: [
 				'https://cdn.example.com/plugin2.js',
 				'https://cdn.example.com/plugin2.css'
-			],
-
-			// Old one, verbose for more advanced plugins. It's still available.
-			Plugin3: {
-				scripts: [ 'https://cdn.example.com/plugin3.js' ],
-				stylesheets: [ 'https://cdn.example.com/plugin3.css' ],
-
-				// Optional, if it's not passed then the type of `Plugin3` will be picked from `Window`
-				checkPluginLoaded: () => ( window as any ).Plugin3
-			}
+			]
 		}
 	} );
 
@@ -294,6 +284,15 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 
+The `<useCKEditorCloud>` component supports the following properties:
+
+* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
+* `languages` &ndash; The languages to load.
+* `premium` &ndash; If `true` then the premium features will be loaded.
+* `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
+* `ckbox` &ndash; CKBox bundle configuration.
+* `plugins` &ndash; Additional resources to load.
+
 ## Context feature
 
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
@@ -302,13 +301,12 @@ The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckedit
 import React from 'react';
 import { CKEditor, CKEditorContext, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
-export const CKEditorCloudContextDemo = (): JSX.Element => {
+export const CKEditorCloudContextDemo = () => {
 	const cloud = useCKEditorCloud( {
 		version: '43.0.0'
 	} );
 
 	if ( cloud.status === 'error' ) {
-		console.error( cloud );
 		return <div>Error!</div>;
 	}
 
@@ -341,7 +339,7 @@ export const CKEditorCloudContextDemo = (): JSX.Element => {
 	);
 };
 
-function CKEditorNestedInstanceDemo( { name, content }: { name: string; content?: string } ): JSX.Element {
+function CKEditorNestedInstanceDemo( { name, content } ) {
 	const cloud = useCKEditorCloud( {
 		version: '43.0.0',
 		premium: true
@@ -356,45 +354,45 @@ function CKEditorNestedInstanceDemo( { name, content }: { name: string; content?
 		return <div>Loading...</div>;
 	}
 
-	const { CKEditor: CK } = cloud;
+	const { CKEditor: CKEDITOR } = cloud;
 
 	return (
 		<CKEditor
 			contextItemMetadata={{
 				name
 			}}
-			editor={ CK.ClassicEditor }
+			editor={ CKEDITOR.ClassicEditor }
 			data={ content }
 			config={{
 				plugins: [
-					CK.Essentials,
-					CK.CKFinderUploadAdapter,
-					CK.Autoformat,
-					CK.Bold,
-					CK.Italic,
-					CK.BlockQuote,
-					CK.CKBox,
-					CK.CKFinder,
-					CK.CloudServices,
-					CK.EasyImage,
-					CK.Heading,
-					CK.Image,
-					CK.ImageCaption,
-					CK.ImageStyle,
-					CK.ImageToolbar,
-					CK.ImageUpload,
-					CK.Indent,
-					CK.IndentBlock,
-					CK.Link,
-					CK.List,
-					CK.MediaEmbed,
-					CK.Paragraph,
-					CK.PasteFromOffice,
-					CK.PictureEditing,
-					CK.Table,
-					CK.TableToolbar,
-					CK.TextTransformation,
-					CK.Base64UploadAdapter
+					CKEDITOR.Essentials,
+					CKEDITOR.CKFinderUploadAdapter,
+					CKEDITOR.Autoformat,
+					CKEDITOR.Bold,
+					CKEDITOR.Italic,
+					CKEDITOR.BlockQuote,
+					CKEDITOR.CKBox,
+					CKEDITOR.CKFinder,
+					CKEDITOR.CloudServices,
+					CKEDITOR.EasyImage,
+					CKEDITOR.Heading,
+					CKEDITOR.Image,
+					CKEDITOR.ImageCaption,
+					CKEDITOR.ImageStyle,
+					CKEDITOR.ImageToolbar,
+					CKEDITOR.ImageUpload,
+					CKEDITOR.Indent,
+					CKEDITOR.IndentBlock,
+					CKEDITOR.Link,
+					CKEDITOR.List,
+					CKEDITOR.MediaEmbed,
+					CKEDITOR.Paragraph,
+					CKEDITOR.PasteFromOffice,
+					CKEDITOR.PictureEditing,
+					CKEDITOR.Table,
+					CKEDITOR.TableToolbar,
+					CKEDITOR.TextTransformation,
+					CKEDITOR.Base64UploadAdapter
 				],
 				toolbar: {
 					items: [
@@ -537,7 +535,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
 		version: "43.0.0",
-		translations: [ "de" ]
+		languages: [ "de" ]
 	});
 
 	if ( cloud.status === "error" ) {
