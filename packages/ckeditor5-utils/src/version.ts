@@ -24,138 +24,162 @@ declare global {
 /* istanbul ignore next -- @preserve */
 if ( globalThis.CKEDITOR_VERSION ) {
 	/**
-	 * The best solution to avoid this error is migrating your CKEditor&nbsp;5 instance to
-	 * {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}.
+	 * This error is thrown when, due to a mistake in the way CKEditor&nbsp;5 was installed,
+	 * imported, or initialized, some of its modules were evaluated and executed twice.
+	 * Duplicate modules inevitably lead to runtime errors and increased bundle size.
 	 *
-	 * Mentioned below are predefined builds, which are a deprecated installation method. The solutions
-	 * provided are kept here for legacy support only.
+	 * # Check dependency versions
 	 *
-	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some
-	 * of its modules were duplicated (evaluated and executed twice). Module duplication leads to inevitable runtime
-	 * errors.
+	 * First, make sure that you use the latest version of all CKEditor&nbsp;5 dependencies.
+	 * Depending on the installation method you used, you should check the versions of the `ckeditor5`,
+	 * `ckeditor5-premium-features`, or `@ckeditor/ckeditor5-<NAME>` packages. If you cannot update
+	 * to the latest version, then make sure that all the CKEditor&nbsp;5 packages are installed
+	 * in the exact same version.
 	 *
-	 * There are many situations in which some modules can be loaded twice. In the worst case scenario,
-	 * you may need to check your project for each of these issues and fix them all.
+	 * If you use third-party plugins, make sure to update them too. If they are not compatible
+	 * with the version of CKEditor&nbsp;5 you use, you may need to downgrade CKEditor&nbsp;5 packages
+	 * (which we do not recommend), ask the author of said plugin to upgrade the dependencies,
+	 * or forking their project and update it yourself.
 	 *
-	 * # Trying to add a plugin to an existing build
+	 * # Check imports
 	 *
-	 * If you import an existing CKEditor 5 build and a plugin like this:
+	 * The next step is to look at how you import CKEditor&nbsp;5 into your project.
 	 *
-	 * ```ts
-	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+	 * **The {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
+	 * are designed to prevent module duplication, so if you are not using them yet, you should consider
+	 * updating your project**. However, for backwards compatibility, a number of legacy installation methods
+	 * are still supported, and mixing them can result in module duplication.
+	 *
+	 * These are the most common import methods of the CKEditor&nbsp;5 packages.
+	 *
+	 * - **NIM (New installation methods)** &ndash; Imports from the `ckeditor5` and `ckeditor5-premium-features` packages.
+	 * - **Optimized build** for the new installation methods &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>/dist/index.js`.
+	 * - **Predefined builds** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-build-<NAME>` packages.
+	 * - **Default imports** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>` packages (default export).
+	 * - **`src`** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>/src/*`.
+	 * - **DLL builds** (legacy) &ndash; Imports from the `ckeditor5/build/<NAME>` and `@ckeditor/ckeditor5-<NAME>/build/*`.
+	 *
+	 * The best way to avoid duplicate modules is to not mix these installation methods. For example, if you use imports
+	 * specific to the optimized build, you should use them for all CKEditor&nbsp;5 packages. In addition, since
+	 * the Predefined and DLL builds already include the core of the editor, they cannot be used with other types of imports.
+	 *
+	 * This is a matrix showing which installation methods are compatible with each other:
+	 *
+	 * |                  | NIM | Optimized build | Predefined builds | Default imports | `src` | DLL builds |
+	 * |------------------|-----|-----------------|-------------------|-----------------|-------|------------|
+	 * | NIM              | ✅  | ✅              | ❌                | ❌              | ❌    | ❌         |
+	 * | Optimized builds | ✅  | ✅              | ❌                | ❌              | ❌    | ❌         |
+	 * | Predefined build | ❌  | ❌              | ✅                | ❌              | ❌    | ❌         |
+	 * | Default imports  | ❌  | ❌              | ❌                | ✅              | ✅    | ❌         |
+	 * | `src`            | ❌  | ❌              | ❌                | ✅              | ✅    | ❌         |
+	 * | DLL builds       | ❌  | ❌              | ❌                | ❌              | ❌    | ✅         |
+	 *
+	 * If you use any third-party plugins, then make sure the way you import them is compatible with
+	 * the way you import CKEditor&nbsp;5.
+	 *
+	 * <details>
+	 * <summary>New installation methods and optimized builds</summary>
+	 *
+	 * If you are using the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods},
+	 * you should only import code from the `ckeditor5` and `ckeditor5-premium-features` packages.
+	 * Do not import code from the `@ckeditor/ckeditor5-<NAME>` packages unless you follow
+	 * the {@glink getting-started/setup/optimizing-build-size Optimizing build size} guide and the imports from
+	 * the `@ckeditor/ckeditor5-<NAME>` packages end with `/dist/index.js`.
+	 *
+	 * If you are using a CDN, make sure that some files are not included twice in your project.
+	 *
+	 * Examples:
+	 *
+	 * ```js
+	 * import { ClassicEditor, Highlight } from 'ckeditor5'; // ✅
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ✅
+	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ❌
+	 * import '@ckeditor/ckeditor5-highlight/build/highlight.js'; // ❌
+	 * ```
+	 * </details>
+	 *
+	 * <details>
+	 * <summary>(Legacy) Predefined builds</summary>
+	 *
+	 * If you are using the {@glink getting-started/legacy/installation-methods/predefined-builds Predefined builds},
+	 * you cannot import any additional plugins. This is because the predefined builds already include the editor core
+	 * and selected plugins. Importing additional plugins will cause some modules to be bundled and loaded twice.
+	 *
+	 * Examples:
+	 *
+	 * ```js
+	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // ✅
+	 * import { Highlight } from 'ckeditor5'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ❌
+	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight'; // ❌
+	 * import '@ckeditor/ckeditor5-highlight/build/highlight'; // ❌
 	 * ```
 	 *
-	 * Then your project loads some CKEditor 5 packages twice. How does it happen?
+	 * If you are missing some features from the
+	 * {@glink getting-started/legacy/installation-methods/predefined-builds#plugins-included-in-the-predefined-builds list of plugins},
+	 * you should switch to the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
+	 * which do not have this limitation.
+	 * If you cannot migrate to the new installation methods, you can try the
+	 * {@glink getting-started/legacy/installation-methods/predefined-builds#superbuild superbuild} instead,
+	 * which contains all the editor features.
+	 * </details>
 	 *
-	 * The build package contains a file which is already compiled with webpack. This means
-	 * that it contains all the necessary code from e.g. `@ckeditor/ckeditor5-engine` and `@ckeditor/ckeditor5-utils`.
+	 * <details>
+	 * <summary>(Legacy) Default imports and `src` imports</summary>
 	 *
-	 * However, the `Highlight` plugin imports some of the modules from these packages, too. If you ask webpack to
-	 * build such a project, you will end up with the modules being included (and run) twice &ndash; first, because they are
-	 * included inside the build package, and second, because they are required by the `Highlight` plugin.
+	 * If you are using the {@glink getting-started/legacy/installation-methods/quick-start-other legacy customized installation}
+	 * method, you should only import code from the `@ckeditor/ckeditor5-<NAME>` packages. While it is possible to import code from
+	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
+	 * methods more difficult.
 	 *
-	 * Therefore, **you must never add plugins to an existing build** unless your plugin has no dependencies.
+	 * If you use this installation method, you should not import code from the `ckeditor5`, `ckeditor5-premium-features`,
+	 * or `@ckeditor/ckeditor5-build-<NAME>` packages.
 	 *
-	 * Adding plugins to a build is done by taking the source version of this build (so, before it was built with webpack)
-	 * and adding plugins there. In this situation, webpack will know that it only needs to load each plugin once.
+	 * Examples:
 	 *
-	 * # Confused an editor build with an editor implementation
-	 *
-	 * This scenario is very similar to the previous one, but has a different origin.
-	 *
-	 * Let's assume that you wanted to use CKEditor 5 from source.
-	 *
-	 * The correct way to do so is to import an editor and plugins and run them together like this:
-	 *
-	 * ```ts
-	 * import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-	 *
-	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
-	 * 		toolbar: [ 'bold', 'italic' ]
-	 * 	} )
-	 * 	.then( editor => {
-	 * 		console.log( 'Editor was initialized', editor );
-	 * 	} )
-	 * 	.catch( error => {
-	 * 		console.error( error.stack );
-	 * 	} );
+	 * ```js
+	 * import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'; // ✅
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ✅
+	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ✅ (not recommended)
+	 * import { Highlight } from 'ckeditor5'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ❌
+	 * import '@ckeditor/ckeditor5-highlight/build/highlight'; // ❌
 	 * ```
+	 * </details>
 	 *
-	 * However, you might have mistakenly imported a build instead of the source `ClassicEditor`. In this case
-	 * your imports will look like this:
+	 * <details>
+	 * <summary>(Legacy) DLL builds</summary>
 	 *
-	 * ```ts
-	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 * If you are using the {@glink getting-started/legacy/advanced/alternative-setups/dll-builds legacy DLL builds},
+	 * you should not import any non-DLL modules.
+	 *
+	 * Examples:
+	 *
+	 * ```js
+	 * import 'ckeditor5/build/ckeditor5-dll.js';// ✅
+	 * import '@ckeditor/ckeditor5-editor-classic/build/editor-classic.js';// ✅
+	 * import '@ckeditor/ckeditor5-highlight/build/highlight.js';// ✅
+	 * import { Highlight } from 'ckeditor5'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ❌
+	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ❌
 	 * ```
+	 * </details>
 	 *
-	 * This creates the same situation as in the previous section because you use a build together with source plugins.
+	 * # Reinstall `node_modules`
 	 *
-	 * Remember: `@ckeditor/ckeditor5-build-*` packages contain editor builds and `@ckeditor/ckeditor5-editor-*` contain source editors.
+	 * Usually, npm and other package managers deduplicates all packages so, for example, `ckeditor5` is only installed once
+	 * in `node_modules/`. However, it is known to fail to do so from time to time.
 	 *
-	 * # Loading two or more builds on one page
+	 * To rule out this possibility, you can try the following:
 	 *
-	 * If you use CKEditor 5 builds, you might have loaded two (or more) `ckeditor.js` files on one web page.
-	 * Check your web page for duplicated `<script>` elements or make sure your page builder/bundler includes CKEditor only once.
-	 *
-	 * If you want to use two different types of editors at once, see the
-	 * {@glink getting-started/legacy/advanced/using-two-editors "Using two different editors"}
-	 * section.
-	 *
-	 * # Using outdated packages
-	 *
-	 * Building CKEditor 5 from source requires using multiple npm packages. These packages have their dependencies
-	 * to other packages. If you use the latest version of, for example, `@ckeditor/ckeditor5-editor-classic` with
-	 * an outdated version of `@ckeditor/ckeditor5-image`, npm or yarn will need to install two different versions of
-	 * `@ckeditor/ckeditor5-core` because `@ckeditor/ckeditor5-editor-classic` and `@ckeditor/ckeditor5-image` may require
-	 * different versions of the core package.
-	 *
-	 * The solution to this issue is to update all packages to their latest version. We recommend
-	 * using tools like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates) which simplify this process.
-	 *
-	 * # Conflicting version of dependencies
-	 *
-	 * This is a special case of the previous scenario. If you use CKEditor 5 with some third-party plugins,
-	 * it may happen that even if you use the latest versions of the official packages and the latest version of
-	 * these third-party packages, there will be a conflict between some of their dependencies.
-	 *
-	 * Such a problem can be resolved by either downgrading CKEditor 5 packages (which we do not recommend) or
-	 * asking the author of the third-party package to upgrade its depdendencies (or forking their project and doing this yourself).
-	 *
-	 * **Note:** All official CKEditor 5 packages (excluding integrations and `ckeditor5-dev-*` packages) are released in the
-	 * same major version. This means that in the `x.y.z` version, the `x` is the same for all packages. This is the simplest way to check
-	 * whether you use packages coming from the same CKEditor 5 version. You can read more about versioning in the
-	 * {@glink updating/versioning-policy Versioning policy} guide.
-	 *
-	 * # Packages were duplicated in `node_modules`
-	 *
-	 * In some situations, especially when calling `npm install` multiple times, it may happen
-	 * that npm will not correctly "deduplicate" packages.
-	 *
-	 * Normally, npm deduplicates all packages so, for example, `@ckeditor/ckeditor5-core` is installed only once in `node_modules/`.
-	 * However, it is known to fail to do so from time to time.
-	 *
-	 * We recommend checking if any of the steps listed below help:
-	 *
-	 * * `rm -rf node_modules && npm install` to make sure you have a clean `node_modules/` directory. This step
-	 * is known to help in most cases.
-	 * * If you use `yarn.lock` or `package-lock.json`, remove it before `npm install`.
-	 * * Check whether all CKEditor 5 packages are up to date and reinstall them
-	 * if you changed anything (`rm -rf node_modules && npm install`).
-	 *
-	 * If all packages are correct and compatible with each other, the steps above are known to help. If not, you may
-	 * try to check with `npm ls` how many times packages like `@ckeditor/ckeditor5-core`, `@ckeditor/ckeditor5-engine` and
-	 *`@ckeditor/ckeditor5-utils` are installed. If more than once, verify which package causes that.
+	 * 1. Remove the `node_modules` directory.
+	 * 2. Remove the `package-lock.json`, `yarn.lock`, or `pnpm-lock.yaml` files (depending on the package manager used).
+	 * 3. Run `npm install` to reinstall all packages.
+	 * 4. Run `npm ls` to check how many times packages like `@ckeditor/ckeditor5-core` are installed.
+	 * If they are installed more than once, verify which package causes that.
 	 *
 	 * @error ckeditor-duplicated-modules
 	 */
