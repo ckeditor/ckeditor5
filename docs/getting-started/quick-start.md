@@ -81,7 +81,7 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 CDN is an alternative method of running CKEditor&nbsp;5 that you can start using in just a few steps.
 
-You have two options to choose from. You can either use ES Modules build with imports similar to the npm setup or UMD build with global variable. The former is more modern, but the latter has better compatibility with older development environments.
+You have two options to choose from. You can either use an ES Modules build with imports similar to the npm setup or UMD build with global variable. The former is more modern, but the latter offers better compatibility with older development environments.
 
 ### CDN with imports
 
@@ -206,7 +206,7 @@ Your final page should look similar to the one below.
 
 If you prefer to use global variables instead of ES modules, you can use the UMD build from CDN.
 
-Start by adding a link to editor style sheet. It contains all styles for the editor's UI and content. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+Start by adding a link to the editor style sheet. It contains all styles for the editor's UI and content. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -246,7 +246,7 @@ In the following script tag, get the editor class and desired plugins from the `
 </script>
 ```
 
-Lastly, add a tag for the editor to attach to.
+Finally, add a tag for the editor to attach to.
 
 ```html
 <div id="editor">
@@ -364,7 +364,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the [final section of this guide](#obtaining-a-license-key)
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
@@ -378,18 +378,18 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ### Installing premium features from CDN
 
-Just like with open-source features, you can choose between using ES Modules build with imports or UMD build with global variables. However, because these methods should not be mixed, you should use the same method as for the open-source features.
+Just like with open-source features, you can choose between using ES Modules build with imports or UMD build with global variables. However, these methods should not be mixed. You should use the same method for both the open-source and premium features.
 
 #### CDN with imports
 
-Start by adding links to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+Start by adding links to style sheets. They contain all styles for the editor's UI and content. They come in two separate style sheets &ndash; for open-source and premium plugins. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
-Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
+Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows you to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. Use this browser feature to share an editor engine code between plugins.
 
 ```html
 <script type="importmap">
@@ -404,7 +404,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the final section of this guide.
+Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [final section of this guide](#obtaining-a-license-key)
 
 In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
@@ -509,7 +509,7 @@ Your final page should look similar to the one below.
 
 #### CDN with global variables
 
-Start by adding links to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+Start by adding links to style sheets. They contain all styles for the editor's UI and content. The styles come in two separate style sheets &ndash; for open-source and premium plugins. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -523,7 +523,7 @@ Then, add the scripts with the JavaScript code. They registers global variables 
 <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 ```
 
-Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the final section of this guide.
+Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [final section of this guide](#obtaining-a-license-key).
 
 In the following script tag, get the editor class and desired plugins from the `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES` objects and add them to the `plugins` array. Add toolbar items where applicable.
 
