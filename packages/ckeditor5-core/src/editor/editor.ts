@@ -307,7 +307,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			 * It is strongly recommended to define a sanitize function that will clean up the input HTML
 			 * in order to avoid XSS vulnerability.
 			 *
-			 * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
+			 * For a detailed overview, check the {@glink getting-started/setup/html-security "HTML security"} guide.
 			 *
 			 * @error provide-sanitize-function
 			 */
