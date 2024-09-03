@@ -293,16 +293,16 @@ import { userEvent } from '@testing-library/user-event';
 import { DecoupledEditor, Essentials, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-global.window.scrollTo = jest.fn();
+window.scrollTo = jest.fn();
 
-global.window.ResizeObserver = class ResizeObserver {
+window.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
 };
 
 for (const key of ['InputEvent', 'KeyboardEvent']) {
-  global.window[key].prototype.getTargetRanges = () => {
+  window[key].prototype.getTargetRanges = () => {
     const range = new StaticRange({
       startContainer: document.body.querySelector('.ck-editor__editable p')!,
       startOffset: 0,

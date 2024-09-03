@@ -400,7 +400,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
 	import CKEditor from '@ckeditor/ckeditor5-vue';
-	
+
 	import 'ckeditor5/ckeditor5.css';
 
 	export default {
@@ -475,6 +475,45 @@ export default {
 ```
 
 For more information, refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+### Potential issues with Jest testing
+
+Jest is the default test runner used by many Vue apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it is apparently sufficient for standard apps, it is not able to polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+
+A better approach to test the component inside a fully-fledged web browser, implementing a complete DOM, is to use [`jest-puppeteer`](https://github.com/smooth-code/jest-puppeteer).
+
+If this is not possible, you can use the following mocks to make the tests pass:
+
+```ts
+window.scrollTo = jest.fn();
+
+window.ResizeObserver = class ResizeObserver {
+	observe() {}
+	unobserve() {}
+	disconnect() {}
+};
+
+for (const key of ['InputEvent', 'KeyboardEvent']) {
+	window[key].prototype.getTargetRanges = () => {
+		const range = new StaticRange({
+			startContainer: document.body.querySelector('.ck-editor__editable p')!,
+			startOffset: 0,
+			endContainer: document.body.querySelector('.ck-editor__editable p')!,
+			endOffset: 0,
+		});
+
+		return [range];
+	};
+}
+
+Range.prototype.getClientRects = () => ({
+	item: () => null,
+	length: 0,
+	[Symbol.iterator]: function* () {},
+});
+```
+
+These mocks are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing and cover only the initialization and rendering of the editor.
 
 ## Contributing and reporting issues
 
