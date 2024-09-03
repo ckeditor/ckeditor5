@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-core": "43.0.0",
     "@ckeditor/ckeditor5-engine": "43.0.0",
     "ckeditor5": "43.0.0",
-    "@uploadcare/file-uploader": "1.5.0",
+    "@uploadcare/file-uploader": "1.6.0",
     "@uploadcare/upload-client": "6.14.1"
   },
   "devDependencies": {
