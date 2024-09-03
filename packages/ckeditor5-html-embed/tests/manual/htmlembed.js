@@ -50,16 +50,16 @@ async function startEnabledPreviewsMode( config ) {
 	await reloadEditor( {
 		...config,
 		htmlEmbed: {
-			showPreviews: true,
-			sanitizeHtml( rawHtml ) {
-				const config = getSanitizeHtmlConfig( sanitizeHtml.defaults );
-				const cleanHtml = sanitizeHtml( rawHtml, config );
+			showPreviews: true
+		},
+		sanitizeHtml( rawHtml ) {
+			const config = getSanitizeHtmlConfig( sanitizeHtml.defaults );
+			const cleanHtml = sanitizeHtml( rawHtml, config );
 
-				return {
-					html: cleanHtml,
-					hasChanged: rawHtml !== cleanHtml
-				};
-			}
+			return {
+				html: cleanHtml,
+				hasChanged: rawHtml !== cleanHtml
+			};
 		}
 	} );
 }

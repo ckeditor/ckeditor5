@@ -213,9 +213,9 @@ const config = {
 		}
 	},
 	htmlEmbed: {
-		showPreviews: true,
-		sanitizeHtml: html => ( { html, hasChange: false } )
+		showPreviews: true
 	},
+	sanitizeHtml: html => ( { html, hasChange: false } ),
 	list: {
 		properties: {
 			styles: true,
