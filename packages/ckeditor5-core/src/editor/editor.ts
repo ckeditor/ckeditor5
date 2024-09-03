@@ -304,7 +304,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.config.define( 'sanitizeHtml', function( rawHtml ) {
 			/**
 			 * One of the editor features directly inserts unsanitized HTML code into the editor.
-			 * It is strongly recommended to define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
+			 * It is strongly recommended to define a sanitize function that will clean up the input HTML
+			 * in order to avoid XSS vulnerability.
 			 *
 			 * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
 			 *
