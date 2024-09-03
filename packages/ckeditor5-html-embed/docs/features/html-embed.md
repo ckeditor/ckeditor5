@@ -94,6 +94,8 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+Read more about the security aspect of this feature in the {@glink getting-started/setup/html-security "HTML security"} guide.
+
 ### Content Security Policy
 
 To further strenghten the security, in addition to using a {@link module:core/editor/editorconfig~EditorConfig#sanitizeHtml HTML sanitizer}, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts. See the dedicated {@link getting-started/setup/csp Content Security Policy guide} for details.
