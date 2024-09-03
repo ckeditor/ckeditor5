@@ -18,7 +18,7 @@ If you configure the HTML embed feature to {@link features/html-embed#content-pr
 
 This, in turn, is a plain security risk (especially in HTML embed feature, where user can input any content). The HTML provided by the user might be mistakenly copied from a malicious website. It could also end up in the user's clipboard (as it would usually be copied and pasted) by any other means.
 
-You can instruct some advanced users to never use the HTML code from untrusted sources. However, in most cases, it is highly recommended to secure the system by configuring the HTML embed feature to use an HTML sanitizer and, optionally, by setting strict {@link getting-started/setup/csp Content Security Policy (CSP) rules}.
+You can instruct some advanced users to never use the HTML code from untrusted sources. However, in most cases, it is highly recommended to secure the editor by setting an HTML sanitizer and, optionally, by setting strict {@link getting-started/setup/csp Content Security Policy (CSP) rules}.
 
 <info-box>
 	The tricky part is that some HTML snippets require executing JavaScript to render any meaningful previews (for example, Facebook embeds). Some, in turn, do not make sense to execute (like analytics code).
