@@ -107,6 +107,16 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
+### Installing Angular component from npm
+
+Then, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+
+```bash
+npm install @ckeditor/ckeditor5-angular
+```
+
+The following setup differs depending on the type of components you use.
+
 ## Supported `@Input` properties
 
 The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text editor component for Angular:
@@ -314,6 +324,142 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
 
+## CDN
+
+To use CKEditor with cdn you need to import `loadCKEditorCloud` and call it inside `ngOnInit` with provided `version` in configuration.
+
+```js
+import { Component } from '@angular/core';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+
+@Component({
+	selector: 'app-simple-cdn-usage',
+	templateUrl: './simple-cdn-usage.component.html',
+})
+export class SimpleCdnUsageComponent {
+	public Editor = null;
+
+	public config = null;
+
+	public editorData = `<p>Getting used to an entirely different culture can be challenging.
+	While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person.
+	You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>`;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud({
+			version: '43.0.0',
+		}).then(this.setupEditor.bind(this));
+	}
+
+	private _setupEditor(cloud: CKEditorCloudResult) {
+		const {
+			ClassicEditor,
+			Essentials,
+			CKFinderUploadAdapter,
+			Autoformat,
+			Bold,
+			Italic,
+			BlockQuote,
+			CKBox,
+			CKFinder,
+			CloudServices,
+			EasyImage,
+			Heading,
+			Image,
+			ImageCaption,
+			ImageStyle,
+			ImageToolbar,
+			ImageUpload,
+			Indent,
+			Link,
+			List,
+			MediaEmbed,
+			Paragraph,
+			PasteFromOffice,
+			PictureEditing,
+			Table,
+			TableToolbar,
+			TextTransformation,
+		} = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			plugins: [
+				Essentials,
+				CKFinderUploadAdapter,
+				Autoformat,
+				Bold,
+				Italic,
+				BlockQuote,
+				CKBox,
+				CKFinder,
+				CloudServices,
+				EasyImage,
+				Heading,
+				Image,
+				ImageCaption,
+				ImageStyle,
+				ImageToolbar,
+				ImageUpload,
+				Indent,
+				Link,
+				List,
+				MediaEmbed,
+				Paragraph,
+				PasteFromOffice,
+				PictureEditing,
+				Table,
+				TableToolbar,
+				TextTransformation,
+			],
+			toolbar: {
+			items: [
+				'undo',
+				'redo',
+				'|',
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'|',
+				'link',
+				'uploadImage',
+				'insertTable',
+				'blockQuote',
+				'mediaEmbed',
+				'|',
+				'bulletedList',
+				'numberedList',
+				'outdent',
+				'indent',
+			],
+			},
+			image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative',
+			],
+			},
+			table: {
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+			},
+		};
+	}
+}
+```
+
+The `<loadCKEditorCloud>` component supports the following properties:
+
+* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
+* `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
+* `premium` &ndash; If `true` then the premium features will be loaded.
+* `ckbox` &ndash; CKBox bundle configuration.
+* `plugins` &ndash; Additional resources to load.
+
 ## Integration with `ngModel`
 
 The component implements the [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor) interface and works with the `ngModel`. Here is how to use it:
@@ -445,8 +591,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+import { CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
 @Component( {
 	selector: 'app-root',
@@ -459,12 +604,25 @@ import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'cked
 export class AppComponent {
 	title = 'angular';
 
-	public Editor = DecoupledEditor;
-	public config = {
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+	public ngOnInit(): void {
+		loadCKEditorCloud({
+			version: '43.0.0'
+		}).then(this.setupEditor.bind(this));
 	}
-	public onReady( editor: DecoupledEditor ): void {
+	private _setupEditor( cloud ) {
+		const {
+			DecoupledEditor,
+			Essentials,
+			Paragraph,
+		} = cloud.CKEditor;
+
+		this.Editor = DecoupledEditor;
+		this.config = {
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+		};
+	}
+	public onReady( editor ) {
 		const element = editor.ui.getEditableElement()!;
 		const parent = element.parentElement!;
 
@@ -507,38 +665,44 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 CKEditor 5 supports multiple UI languages, and so does the official Angular component. Follow the instructions below to translate CKEditor 5 in your Angular application.
 
-Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
-
 ```ts
-// app.component.ts
+import { Component } from '@angular/core';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
-import { Component, ViewEncapsulation } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor } from 'ckeditor5';
-// More imports...
+@Component({
+	selector: 'app-simple-cdn-usage',
+	templateUrl: './simple-cdn-usage.component.html',
+})
+export class SimpleCdnUsageComponent {
+	public Editor = null;
 
-import coreTranslations from 'ckeditor5/translations/es.js';
-import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
+	public config = null;
 
-@Component( {
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: [ './app.component.css' ],
-	encapsulation: ViewEncapsulation.None
-	imports: [ CKEditorModule ],
-	standalone: true
-} )
-export class AppComponent {
-	title = 'angular';
-	public Editor = ClassicEditor;
-	public config = {
-		translations: [ coreTranslations, premiumFeaturesTranslations ],
-		// More configuration options...
+	public editorData = `<p>Getting used to an entirely different culture can be challenging.
+	While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person.
+	You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>`;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud({
+			version: '43.0.0',
+			languages: [ 'pl' ]
+		}).then(this.setupEditor.bind(this));
+	}
+
+	private _setupEditor(cloud) {
+		const {
+			ClassicEditor,
+			Essentials,
+			Paragraph,
+		} = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			plugins: [ Essentials, Paragraph ]
+		};
 	}
 }
 ```
-
-For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ## Contributing and reporting issues
 
