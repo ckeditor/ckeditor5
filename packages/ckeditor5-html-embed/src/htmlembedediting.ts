@@ -40,8 +40,9 @@ export default class HtmlEmbedEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		const sanitizeCallback = editor.config.get( 'htmlEmbed.sanitizeHtml' ) ||
-			function( rawHtml ) {
+		editor.config.define( 'htmlEmbed', {
+			showPreviews: false,
+			sanitizeHtml: rawHtml => {
 				/**
 				 * When using the HTML embed feature with the `htmlEmbed.showPreviews=true` option, it is strongly recommended to
 				 * define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
@@ -56,10 +57,8 @@ export default class HtmlEmbedEditing extends Plugin {
 					html: rawHtml,
 					hasChanged: false
 				};
-			};
-
-		editor.config.define( 'sanitizeHtml', sanitizeCallback );
-		editor.config.define( 'htmlEmbed.showPreviews', false );
+			}
+		} );
 	}
 
 	/**
@@ -87,8 +86,7 @@ export default class HtmlEmbedEditing extends Plugin {
 		const t = editor.t;
 		const view = editor.editing.view;
 		const widgetButtonViewReferences = this._widgetButtonViewReferences;
-		const showPreviews = editor.config.get( 'htmlEmbed.showPreviews' )!;
-		const sanitizeHtml = editor.config.get( 'sanitizeHtml' )!;
+		const htmlEmbedConfig: HtmlEmbedConfig = editor.config.get( 'htmlEmbed' )!;
 
 		// Destroy UI buttons created for widgets that have been removed from the view document (e.g. in the previous conversion).
 		// This prevents unexpected memory leaks from UI views.
@@ -204,13 +202,13 @@ export default class HtmlEmbedEditing extends Plugin {
 				};
 
 				state = {
-					showPreviews,
+					showPreviews: htmlEmbedConfig.showPreviews,
 					isEditable: false,
 					getRawHtmlValue: () => modelElement.getAttribute( 'value' ) as string || ''
 				};
 
 				props = {
-					sanitizeHtml,
+					sanitizeHtml: htmlEmbedConfig.sanitizeHtml,
 					textareaPlaceholder: t( 'Paste raw HTML here...' ),
 
 					onEditClick() {
