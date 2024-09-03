@@ -68,6 +68,7 @@ export default class DragDropBlockToolbar extends Plugin {
 			const element = blockToolbar.buttonView.element!;
 
 			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
+			// TODO ShadowRoot
 			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
@@ -125,10 +126,17 @@ export default class DragDropBlockToolbar extends Plugin {
 			return;
 		}
 
+		const view = this.editor.editing.view;
+
 		const clientX = domEvent.clientX + ( this.editor.locale.contentLanguageDirection == 'ltr' ? 100 : -100 );
 		const clientY = domEvent.clientY;
-		const target = document.elementFromPoint( clientX, clientY );
-		const view = this.editor.editing.view;
+
+		let target = document.elementFromPoint( clientX, clientY );
+
+		// TODO ShadowRoot - this is a workaround, works this way only in open shadow root
+		if ( target && target.shadowRoot ) {
+			target = target.shadowRoot.elementFromPoint( clientX, clientY );
+		}
 
 		if ( !target || !target.closest( '.ck-editor__editable' ) ) {
 			return;

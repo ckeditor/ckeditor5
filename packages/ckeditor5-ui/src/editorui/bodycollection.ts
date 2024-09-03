@@ -109,6 +109,7 @@ export default class BodyCollection extends ViewCollection {
 			this._bodyCollectionContainer.remove();
 		}
 
+		// TODO ShadowRoot
 		const wrapper = document.querySelector( '.ck-body-wrapper' );
 
 		if ( wrapper && wrapper.childElementCount == 0 ) {

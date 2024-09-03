@@ -96,6 +96,7 @@ export default class AriaLiveAnnouncer {
 
 		if ( !this.view ) {
 			this.view = new AriaLiveAnnouncerView( editor.locale );
+			// TODO ShadowRoot - make sure that it can announce if it's inside a shadow root
 			editor.ui.view.body.add( this.view );
 		}
 

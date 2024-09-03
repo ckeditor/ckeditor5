@@ -669,6 +669,7 @@ export default class DragDrop extends Plugin {
 				style: 'position: fixed; left: -999999px;'
 			} );
 
+			// TODO ShadowRoot
 			global.document.body.appendChild( this._previewContainer );
 		} else if ( this._previewContainer.firstElementChild ) {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild );

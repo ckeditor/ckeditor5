@@ -201,6 +201,7 @@ export default class CKBoxCommand extends Command {
 				return;
 			}
 
+			// TODO ShadowRoot
 			this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 			document.body.appendChild( this._wrapper );
 

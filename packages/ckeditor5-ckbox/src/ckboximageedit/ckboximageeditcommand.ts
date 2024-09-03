@@ -108,6 +108,7 @@ export default class CKBoxImageEditCommand extends Command {
 			return;
 		}
 
+		// TODO ShadowRoot
 		const wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 
 		this._wrapper = wrapper;

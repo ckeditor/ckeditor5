@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
 
 const editorShadow = document.querySelector( '#editor-wrapper' ).attachShadow( { mode: 'open' } );
 const bodyCollectionWrapperShadow = document.querySelector( '.ck-body-wrapper' ).attachShadow( { mode: 'open' } );
@@ -30,7 +31,7 @@ for ( const sheet of document.styleSheets ) {
 
 ClassicEditor
 	.create( editorElement, {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, BlockToolbar ],
 		toolbar: [
 			'heading',
 			'|',
@@ -48,6 +49,16 @@ ClassicEditor
 			'mediaEmbed',
 			'undo',
 			'redo'
+		],
+		blockToolbar: [
+			'heading',
+			'|',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed'
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]

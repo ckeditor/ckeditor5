@@ -141,6 +141,7 @@ export default class ColorPickerView extends View {
 		this.on( 'change:_hexColor', () => {
 			// Update the selected color in the color picker palette when it's not focused.
 			// It means the user typed the color in the input.
+			// TODO ShadowRoot
 			if ( document.activeElement !== this.picker ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
