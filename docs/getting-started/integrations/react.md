@@ -277,6 +277,98 @@ export default App;
 
 For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
+### Potential issues with Jest testing
+
+Jest is the default test runner used by many React apps. Unfortunately, Jest does not use a real browser – instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it's apparently sufficient for standard apps, it's not able to polyfill all the DOM APIs that CKEditor 5 requires.
+
+A better approach to test the component inside a fully-fledged web browser, implementing a complete DOM, is to use [`jest-puppeteer`](https://github.com/smooth-code/jest-puppeteer).
+
+If this is not possible, you can use the following mock snippet:
+
+```tsx
+import React, { useRef } from 'react';
+import { render, waitFor, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+
+import { DecoupledEditor, Essentials, Paragraph } from 'ckeditor5';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+
+global.window.scrollTo = jest.fn();
+
+global.window.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+for (const key of ['InputEvent', 'KeyboardEvent']) {
+  global.window[key].prototype.getTargetRanges = () => {
+    const range = new StaticRange({
+      startContainer: document.body.querySelector('.ck-editor__editable p')!,
+      startOffset: 0,
+      endContainer: document.body.querySelector('.ck-editor__editable p')!,
+      endOffset: 0,
+    });
+
+    return [range];
+  };
+}
+
+Range.prototype.getClientRects = () => ({
+  item: () => null,
+  length: 0,
+  [Symbol.iterator]: function* () {},
+});
+
+const SomeComponent = ({ value, onChange }) => {
+  const editorRef = useRef();
+
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        padding: 10,
+      }}
+    >
+      <CKEditor
+        editor={DecoupledEditor}
+        config={{
+          plugins: [Essentials, Paragraph],
+        }}
+        onReady={(editor) => {
+          editorRef.current = editor;
+        }}
+        data={value}
+        onChange={() => {
+          onChange(editorRef.current?.getData());
+        }}
+      />
+    </div>
+  );
+};
+
+it('renders', async () => {
+  render(<SomeComponent value="this is some content" />);
+
+  await waitFor(() => expect(screen.getByText(/some content/)).toBeTruthy());
+});
+
+it('updates', async () => {
+  const onChange = jest.fn();
+  render(<SomeComponent value="this is some content" onChange={onChange} />);
+
+  await waitFor(() => expect(screen.getByText(/some content/)).toBeTruthy());
+
+  await userEvent.click(document.querySelector('[contenteditable="true"]'));
+
+  userEvent.keyboard('more stuff');
+
+  await waitFor(() => expect(onChange).toHaveBeenCalled());
+});
+```
+
+The mocks above test only two basic scenarios, and it is likely that more will need to be added, which may change with each version of the editor.
+
 ## Contributing and reporting issues
 
 The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).
