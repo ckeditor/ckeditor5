@@ -166,9 +166,9 @@ function initEditor() {
 				}
 			},
 			htmlEmbed: {
-				showPreviews: true,
-				sanitizeHtml: html => ( { html, hasChange: false } )
-			}
+				showPreviews: true
+			},
+			sanitizeHtml: html => ( { html, hasChange: false } )
 		} )
 		.then( editor => {
 			window.memoryTestEditor = editor;

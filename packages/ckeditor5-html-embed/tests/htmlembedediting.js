@@ -85,32 +85,35 @@ describe( 'HtmlEmbedEditing', () => {
 			} );
 		} );
 
-		describe( 'config.sanitizeHtml', () => {
-			let sanitizeHtml;
+		describe( 'htmlEmbed.sanitizeHtml', () => {
+			it( 'should override the default sanitizer from `config.sanitizeHtml` if provided and log the warning', async () => {
+				testUtils.createSinonSandbox();
 
-			beforeEach( () => {
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
 				sinon.stub( console, 'warn' );
-				sanitizeHtml = editor.config.get( 'sanitizeHtml' );
-			} );
 
-			it( 'should return an input string (without any modifications)', () => {
-				expect( sanitizeHtml( 'foo' ) ).to.deep.equal( {
-					html: 'foo',
-					hasChanged: false
-				} );
-			} );
+				const editor = await ClassicTestEditor
+					.create( element, {
+						plugins: [ HtmlEmbedEditing ],
+						htmlEmbed: {
+							showPreviews: true,
+							// The default sanitize function without `console.warn`.
+							sanitizeHtml: input => ( { html: input, hasChanged: false } )
+						}
+					} );
+				const configuredSanitizer = editor.config.get( 'htmlEmbed.sanitizeHtml' );
 
-			it( 'should return an object with cleaned html and a note whether something has changed', () => {
-				const unsafeHtml = '<img src="data:/xxx,<script>void</script>" onload="void;">';
+				configuredSanitizer( 'foo' );
 
-				expect( sanitizeHtml( unsafeHtml ).html ).to.deep.equal( unsafeHtml );
-			} );
-
-			it( 'should display a warning when using the default sanitizer', () => {
-				sanitizeHtml( 'foo' );
-
+				// Only the warning about the deprecated option should be logged.
 				expect( console.warn.callCount ).to.equal( 1 );
-				expect( console.warn.firstCall.args[ 0 ] ).to.equal( 'html-embed-provide-sanitize-function' );
+				expect( console.warn.firstCall.args[ 0 ] ).to.equal(
+					'The `htmlEmbed.sanitizeHtml` configuration option is deprecated. Use the `sanitizeHtml` option instead.'
+				);
+
+				await editor.destroy();
+				element.remove();
 			} );
 		} );
 	} );
@@ -694,9 +697,9 @@ describe( 'HtmlEmbedEditing', () => {
 					.create( element, {
 						plugins: [ HtmlEmbedEditing ],
 						htmlEmbed: {
-							showPreviews: true,
-							sanitizeHtml
-						}
+							showPreviews: true
+						},
+						sanitizeHtml
 					} )
 					.then( newEditor => {
 						editor = newEditor;

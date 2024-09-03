@@ -11,6 +11,7 @@ import {
 	Config,
 	CKEditorError,
 	ObservableMixin,
+	logWarning,
 	type Locale,
 	type LocaleTranslate,
 	type ObservableChangeEvent
@@ -300,6 +301,23 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.config = new Config<EditorConfig>( rest, defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
+		this.config.define( 'sanitizeHtml', function( rawHtml ) {
+			/**
+			 * One of the editor features directly inserts unsanitized HTML code into the editor.
+			 * It is strongly recommended to define a sanitize function that will clean up the input HTML
+			 * in order to avoid XSS vulnerability.
+			 *
+			 * For a detailed overview, check the {@glink getting-started/setup/html-security "HTML security"} guide.
+			 *
+			 * @error provide-sanitize-function
+			 */
+			logWarning( 'provide-sanitize-function' );
+
+			return {
+				html: rawHtml,
+				hasChanged: false
+			};
+		} );
 
 		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 

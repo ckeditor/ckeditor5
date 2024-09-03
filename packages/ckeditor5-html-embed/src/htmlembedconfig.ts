@@ -32,8 +32,7 @@ export interface HtmlEmbedConfig {
 	 * The function responsible for sanitizing the HTML needs to be specified in
 	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml()`}.
 	 *
-	 * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
-	 * the {@glink features/html/html-embed HTML embed} feature guide.
+	 * Read more about the security aspect of this feature in the {@glink getting-started/setup/html-security "HTML security"} guide.
 	 */
 	showPreviews?: boolean;
 
