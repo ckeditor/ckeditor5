@@ -1,14 +1,14 @@
 ---
 category: cloud
-meta-title: Compatibility with Laravel when using CDN | CKEditor 5 documentation
+meta-title: Using CKEditor 5 with Laravel and CDN | CKEditor 5 documentation
 meta-description: Integrate CKEditor 5 with Laravel using CDN.
 order: 70
 menu-title: Laravel
 ---
 
-# Compatibility with Laravel using CDN
+# Using CKEditor&nbsp;5 with Laravel and CDN
 
-As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
+As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
 ## Using CKEditor&nbsp;5 Builder
 
@@ -24,7 +24,7 @@ You get ready-to-use code tailored to your needs!
 
 This guide assume you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
 
-## Integrating from CDN
+## Using from CDN
 
 The folder structure of the created project should resemble the one below:
 
@@ -81,29 +81,31 @@ First, modify the `welcome.blade.php` file in the `resources/views` director
 
 Both previously attached scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use them to access the editor class and plugins. In our example, we use object destructuring (JavaScript feature) to access the editor class from the open-source global variable with a basic set of plugins. You can access premium plugins from the other variable the same way. Then, we pass the whole configuration to the `create()` method. Be aware that you need a proper {@link getting-started/licensing/license-key-and-activation license key} to use premium features.
 
-```js
-const {
-    ClassicEditor,
-    Essentials,
-    Bold,
-    Italic,
-    Font,
-    Paragraph
-} = CKEDITOR;
-const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+```html
+<script>
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} = CKEDITOR;
+	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-        plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-        toolbar: [
-            'undo', 'redo', '|', 'bold', 'italic', '|',
-            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-            'formatPainter'
-        ]
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			]
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+</script>
 ```
 
 Now, we need to put our script in the previous template. We need to put the script under the `<div>` element, so the editor can attach to it. Your final template should look like this:
