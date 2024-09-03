@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, setTimeout, console */
+/* globals document, window, setTimeout */
 
 import Editor from '../../src/editor/editor.js';
 import Context from '../../src/context.js';
@@ -216,30 +216,6 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			sinon.assert.calledWith( spy, editor.editing.view.document );
-		} );
-
-		describe( 'should define a pass-by sanitizing function which', () => {
-			let sanitizeHtml, editor;
-
-			beforeEach( () => {
-				sinon.stub( console, 'warn' );
-				editor = new TestEditor();
-				sanitizeHtml = editor.config.get( 'sanitizeHtml' );
-			} );
-
-			it( 'should return an input string (without any modifications)', () => {
-				expect( sanitizeHtml( 'foo' ) ).to.deep.equal( {
-					html: 'foo',
-					hasChanged: false
-				} );
-			} );
-
-			it( 'should display a warning when using the default sanitizer', () => {
-				sanitizeHtml( 'foo' );
-
-				expect( console.warn.callCount ).to.equal( 1 );
-				expect( console.warn.firstCall.args[ 0 ] ).to.equal( 'provide-sanitize-function' );
-			} );
 		} );
 	} );
 

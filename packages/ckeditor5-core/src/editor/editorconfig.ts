@@ -827,8 +827,8 @@ export interface EditorConfig {
 	 *
 	 * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
 	 *
-	 * Read more about the security aspect of this feature in the {@glink getting-started/setup/html-security "HTML security"}
-	 * guide.
+	 * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
+	 * the {@glink features/html/html-embed HTML embed} feature guide.
 	 *
 	 * The function receives the input HTML (as a string), and should return an object
 	 * that matches the {@link module:core/editor/editorconfig~SanitizedOutput} interface.
@@ -858,7 +858,7 @@ export interface EditorConfig {
 	 * * {@glink features/merge-fields Merge fields}
 	 *   (when {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#previewHtmlValues `previewHtmlValues`} flag is set).
 	 */
-	sanitizeHtml?: HtmlSanitizationCallback;
+	sanitizeHtml?: ( html: string ) => SanitizedOutput;
 
 	/**
 	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies
@@ -1078,6 +1078,3 @@ export interface SanitizedOutput {
 	 */
 	hasChanged: boolean;
 }
-
-// Workaround for the issue with TypeDoc not recognizing the `( html: string ) => SanitizedOutput` as a proper callable type.
-export type HtmlSanitizationCallback = ( html: string ) => SanitizedOutput;
