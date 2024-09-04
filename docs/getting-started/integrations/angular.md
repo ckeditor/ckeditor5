@@ -705,7 +705,7 @@ The `moduleResolution` option of the TypeScript configuration determines the alg
 
 ### Potential issues with Jest testing
 
-Jest is the default test runner used by many Vue apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it is apparently sufficient for standard apps, it is not able to polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+Jest is the default test runner used by many Angular apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it is apparently sufficient for standard apps, it is not able to polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
 
 A better approach to test the component inside a fully-fledged web browser, implementing a complete DOM, is to use [`jest-puppeteer`](https://github.com/smooth-code/jest-puppeteer).
 
