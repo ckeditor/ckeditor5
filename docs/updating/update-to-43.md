@@ -20,7 +20,7 @@ _Released on September 5, 2024._
 
 ### Reverted recently introduced `config.sanitizeHtml`
 
-In v43.0.0 we made a decision to move `config.htmlEmbed.sanitizeHtml` to a top-level property `config.sanitizeHtml`, so it could be used by multiple features (HTML embed, merge fields, and possibly other in future).
+In v43.0.0 we made a decision to move {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} to a top-level property `config.sanitizeHtml`, so it could be used by multiple features (HTML embed, merge fields, and possibly other in future).
 
 However, we realized that it was a wrong decision to expose such a sensitive property in a top-level configuration property. We are worried that integrators may be confused and incorrectly assume that this callback would sanitize the entire output from CKEditor. Therefore, we decided to revert that change, so the sanitization callback is related strictly with the features that use it.
 
