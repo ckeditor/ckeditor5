@@ -31,14 +31,14 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * # Check dependency versions
 	 *
 	 * First, make sure that you use the latest version of all CKEditor&nbsp;5 dependencies.
-	 * Depending on the installation method you used, you should check the versions of the `ckeditor5`,
+	 * Depending on the installation method, you should check the versions of the `ckeditor5`,
 	 * `ckeditor5-premium-features`, or `@ckeditor/ckeditor5-<NAME>` packages. If you cannot update
-	 * to the latest version, make sure that all the CKEditor&nbsp;5 packages are
-	 * in the exact same version.
+	 * to the latest version, ensure that all the CKEditor&nbsp;5 packages are
+	 * in the same version.
 	 *
-	 * If you use third-party plugins, make sure to update them, too. If they are not compatible
+	 * If you use third-party plugins, make sure to update them, too. If they are incompatible
 	 * with the version of CKEditor&nbsp;5 you use, you may need to downgrade the CKEditor&nbsp;5 packages
-	 * (which we do not recommend). Ask the author of said plugin to upgrade the dependencies,
+	 * (which we do not recommend). Ask the plugin's author to upgrade the dependencies,
 	 * or fork their project and update it yourself.
 	 *
 	 * # Check imports
@@ -47,8 +47,8 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 *
 	 * **The {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
 	 * are designed to prevent module duplication, so if you are not using them yet, you should consider
-	 * updating your project**. However, for backwards compatibility, a number of legacy installation methods
-	 * is still supported, and mixing them may result in module duplication.
+	 * updating your project**. However, several legacy installation methods are still supported for backward 
+	 * compatibility, and mixing them may result in module duplication.
 	 *
 	 * These are the most common import methods of the CKEditor&nbsp;5 packages.
 	 *
@@ -59,11 +59,11 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * - **`src`** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>/src/*`.
 	 * - **DLL builds** (legacy) &ndash; Imports from the `ckeditor5/build/<NAME>` and `@ckeditor/ckeditor5-<NAME>/build/*`.
 	 *
-	 * The best way to avoid duplicate modules is to not mix these installation methods. For example, if you use imports
+	 * The best way to avoid duplicate modules is to avoid mixing these installation methods. For example, if you use imports
 	 * specific to the optimized build, you should use them for all CKEditor&nbsp;5 packages. In addition, since
 	 * the Predefined and DLL builds already include the core of the editor, they cannot be used with other types of imports.
 	 *
-	 * This is a matrix showing which installation methods are compatible with each other:
+	 * Here is a matrix showing which installation methods are compatible with each other:
 	 *
 	 * |                  | NIM | Optimized build | Predefined builds | Default imports | `src` | DLL builds |
 	 * |------------------|-----|-----------------|-------------------|-----------------|-------|------------|
@@ -80,13 +80,13 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <details>
 	 * <summary>New installation methods and optimized builds</summary>
 	 *
-	 * If you are using the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods},
+	 * If you use the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods},
 	 * you should only import code from the `ckeditor5` and `ckeditor5-premium-features` packages.
 	 * Do not import code from the `@ckeditor/ckeditor5-<NAME>` packages unless you follow
 	 * the {@glink getting-started/setup/optimizing-build-size Optimizing build size} guide and the imports from
 	 * the `@ckeditor/ckeditor5-<NAME>` packages end with `/dist/index.js`.
 	 *
-	 * If you are using a CDN, make sure that some files are not included twice in your project.
+	 * If you use a CDN, ensure that some files are not included twice in your project.
 	 *
 	 * Examples:
 	 *
@@ -102,9 +102,9 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <details>
 	 * <summary>(Legacy) Predefined builds</summary>
 	 *
-	 * If you are using the {@glink getting-started/legacy/installation-methods/predefined-builds Predefined builds},
-	 * you cannot import any additional plugins. This is because the predefined builds already include the editor core
-	 * and selected plugins. Importing additional plugins will cause some modules to be bundled and loaded twice.
+	 * If you use the {@glink getting-started/legacy/installation-methods/predefined-builds Predefined builds},
+	 * you cannot import any additional plugins. These builds already include the editor's core
+	 * and selected plugins and importing additional ones will cause some modules to be bundled and loaded twice.
 	 *
 	 * Examples:
 	 *
@@ -121,16 +121,16 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * {@glink getting-started/legacy/installation-methods/predefined-builds#plugins-included-in-the-predefined-builds list of plugins},
 	 * you should switch to the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
 	 * which do not have this limitation.
-	 * If you cannot migrate to the new installation methods, you can try the
-	 * {@glink getting-started/legacy/installation-methods/predefined-builds#superbuild superbuild} instead,
-	 * which contains all the editor features.
+	 * If you cannot migrate to the new installation methods, try the
+	 * {@glink getting-started/legacy/installation-methods/predefined-builds#superbuild superbuild} instead.
+	 * This build contains all the editor features.
 	 * </details>
 	 *
 	 * <details>
 	 * <summary>(Legacy) Default imports and `src` imports</summary>
 	 *
-	 * If you are using the {@glink getting-started/legacy/installation-methods/quick-start-other legacy customized installation}
-	 * method, you should only import code from the `@ckeditor/ckeditor5-<NAME>` packages. While it is possible to import code from
+	 * If you use the {@glink getting-started/legacy/installation-methods/quick-start-other legacy customized installation}
+	 * method, you should only import code from the `@ckeditor/ckeditor5-<NAME>` packages. While you can import code from
 	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
 	 * methods more difficult.
 	 *
@@ -170,8 +170,8 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 *
 	 * # Reinstall `node_modules`
 	 *
-	 * Usually, npm and other package managers deduplicates all packages so, for example, `ckeditor5` is only installed once
-	 * in `node_modules/`. However, it is known to fail to do so from time to time.
+	 * Usually, npm and other package managers deduplicate all packages - for example, `ckeditor5` is only installed once
+	 * in `node_modules/`. However, it is known to fail to do so occasionally.
 	 *
 	 * To rule out this possibility, you can try the following:
 	 *
