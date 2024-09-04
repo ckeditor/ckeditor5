@@ -282,9 +282,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( 'sanitizeHtml' in config ) {
 			/**
-			 * Configuration property `config.sanitizeHtml()` was removed in CKEditor version 43.1.0 and is no longer supported.
+			 * Configuration property `config.sanitizeHtml` was removed in CKEditor version 43.1.0 and is no longer supported.
 			 *
-			 * Please use `config.htmlEmbed.sanitizeHtml()` and/or `config.mergeFields.sanitizeHtml()` instead.
+			 * Please use `config.htmlEmbed.sanitizeHtml` and/or `config.mergeFields.sanitizeHtml` instead.
 			 *
 			 * @error editor-config-sanitizehtml-not-supported
 			 */
