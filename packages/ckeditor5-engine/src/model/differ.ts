@@ -372,8 +372,21 @@ export default class Differ {
 			buffered = { newMarkerData, oldMarkerData };
 
 			this._changedMarkers.set( markerName, buffered );
+
+			// console.log( '------------------ bufferMarkerChange setting',
+			// 	JSON.stringify( buffered.newMarkerData.range?.toJSON() || null ),
+			// 	JSON.stringify( buffered.oldMarkerData?.range?.toJSON() || null )
+			// );
 		} else {
 			buffered.newMarkerData = newMarkerData;
+			// console.log( '------------------ bufferMarkerChange updating',
+			// 	JSON.stringify( buffered.newMarkerData.range?.toJSON() || null ),
+			// 	JSON.stringify( buffered.oldMarkerData?.range?.toJSON() || null )
+			// );
+
+			// if ( JSON.stringify( buffered.newMarkerData.range?.toJSON() ) === '{"start":{"root":"main","path":[1,2],"stickiness":"toNext"},"end":{"root":"main","path":[2,1],"stickiness":"toPrevious"}}' ) {
+			// 	debugger;
+			// }
 		}
 
 		if ( buffered.oldMarkerData.range == null && newMarkerData.range == null ) {

@@ -17,6 +17,7 @@ import {
 	type Range,
 	NoOperation
 } from '@ckeditor/ckeditor5-engine';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /**
  * Base class for the undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
@@ -189,6 +190,12 @@ export default abstract class BaseCommand extends Command {
 		// We will process each operation from `batchToUndo`, in reverse order. If there were operations A, B and C in undone batch,
 		// we need to revert them in reverse order, so first C' (reversed C), then B', then A'.
 		for ( const operationToUndo of operationsToUndo ) {
+			console.log( 'Undoing an operation', stringifyOperation( operationToUndo ) );
+			console.log( 'Current $graveyard {', `"${ getData( model, { rootName: '$graveyard' } ) }" }` );
+
+			// if ( operationsToUndo.indexOf( operationToUndo ) === 4 ) {
+			// 	debugger;
+			// }
 			const nextBaseVersion = operationToUndo.baseVersion! + 1;
 			const historyOperations = Array.from( document.history.getOperations( nextBaseVersion ) );
 
@@ -214,6 +221,8 @@ export default abstract class BaseCommand extends Command {
 					operation = new NoOperation( operation.baseVersion );
 				}
 
+				console.log( 'By a reversed', stringifyOperation( operation ) );
+
 				// Before applying, add the operation to the `undoingBatch`.
 				undoingBatch.addOperation( operation );
 				model.applyOperation( operation );
@@ -222,6 +231,19 @@ export default abstract class BaseCommand extends Command {
 			}
 		}
 	}
+}
+
+function stringifyOperation( operation: Operation ) {
+	const json = operation.toJSON();
+	const className = json.__className;
+
+	delete json.__className;
+	delete json.baseVersion;
+	delete json.createdAt;
+	delete json.wasUndone;
+	delete json.shouldReceiveAttributes;
+
+	return `${ className } ${ JSON.stringify( json, null, 2 ).split( '\n' ).join( '\t\n' ) }`;
 }
 
 /**

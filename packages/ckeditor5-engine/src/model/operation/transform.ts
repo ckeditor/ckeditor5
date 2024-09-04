@@ -333,6 +333,10 @@ export function transformSets(
 		// Get "current" operation `a`.
 		const opA = operationsA[ i ];
 
+		// if ( opA.type == 'marker' && JSON.stringify( opA.newRange.start.path ) === '[1,2]' && JSON.stringify( opA.newRange.end.path ) === '[2,0]' ) {
+		// 	debugger;
+		// }
+
 		// For the "current" operation `a`, get the index of the next operation `b` to transform by.
 		const indexB = nextTransformIndex.get( opA )!;
 
@@ -1126,6 +1130,8 @@ setTransformation( MarkerOperation, InsertOperation, ( a, b ) => {
 		a.newRange = a.newRange._getTransformedByInsertOperation( b )[ 0 ];
 	}
 
+	logOperation( a, 'InsertOperation' );
+
 	return [ a ];
 } );
 
@@ -1138,6 +1144,8 @@ setTransformation( MarkerOperation, MarkerOperation, ( a, b, context ) => {
 		}
 	}
 
+	logOperation( a, 'MarkerOperation' );
+
 	return [ a ];
 } );
 
@@ -1149,6 +1157,8 @@ setTransformation( MarkerOperation, MergeOperation, ( a, b ) => {
 	if ( a.newRange ) {
 		a.newRange = a.newRange._getTransformedByMergeOperation( b );
 	}
+
+	logOperation( a, 'MergeOperation' );
 
 	return [ a ];
 } );
@@ -1177,6 +1187,8 @@ setTransformation( MarkerOperation, MoveOperation, ( a, b, context ) => {
 
 		a.newRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
 	}
+
+	logOperation( a, 'MoveOperation' );
 
 	return [ a ];
 } );
@@ -1210,8 +1222,32 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 		a.newRange = a.newRange._getTransformedBySplitOperation( b );
 	}
 
+	logOperation( a, 'SplitOperation' );
+
 	return [ a ];
 } );
+
+function logOperation( o: MarkerOperation, byWhat: string ) {
+	return;
+
+	let { oldRange, newRange } = o.toJSON();
+
+	if ( oldRange ) {
+		const { start: { path: oldStart }, end: { path: oldEnd } } = oldRange;
+
+		oldRange = { start: oldStart, end: oldEnd };
+	}
+
+	if ( newRange ) {
+		const { start: { path: newStart }, end: { path: newEnd } } = newRange;
+
+		newRange = { start: newStart, end: newEnd };
+	}
+
+	console.log( 'MarkerOperation, ' + byWhat,
+		JSON.stringify( { oldRange, newRange } )
+	);
+}
 
 // -----------------------
 
