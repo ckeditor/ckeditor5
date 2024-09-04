@@ -17,7 +17,7 @@ import {
 	type UploadResponse
 } from 'ckeditor5/src/upload.js';
 
-import { uploadFile, type UploadcareFile } from '@uploadcare/upload-client';
+import { uploadFile, type UploadcareFile, type FileFromOptions } from '@uploadcare/upload-client';
 
 import UploadcareEditing from './uploadcareediting.js';
 
@@ -91,17 +91,31 @@ class Adapter implements UploadAdapter {
 	}
 
 	/**
+	 * Wrapper for the `uploadFile` function.
+	 *
+	 * This wrapper was created because the original `uploadFile` function in the
+	 * `@uploadcare/upload-client` module has a property descriptor with `configurable: false`.
+	 * Due to this, we cannot stub or replace the original function in tests.
+	 *
+	 * @internal
+	 */
+	/* istanbul ignore next -- @preserve */
+	private _uploadFile( file: File, options: FileFromOptions ): Promise<UploadcareFile> {
+		return uploadFile( file, options );
+	}
+
+	/**
 	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 */
 	public async upload(): Promise<UploadResponse> {
 		const t = this.editor.t;
+		const publicKey = this.editor.config.get( 'uploadcare.pubKey' ) as string;
 		const file = ( await this.loader.file )!;
 
-		return uploadFile( file, {
-			// TODO: replace public key with config value.
-			publicKey: '532fdaa30fa803cef431',
+		return this._uploadFile( file, {
+			publicKey,
 			store: 'auto',
 			signal: this.controller.signal
 		} )
