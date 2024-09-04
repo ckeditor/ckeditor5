@@ -47,7 +47,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 *
 	 * **The {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
 	 * are designed to prevent module duplication, so if you are not using them yet, you should consider
-	 * updating your project**. However, several legacy installation methods are still supported for backward 
+	 * updating your project**. However, several legacy installation methods are still supported for backward
 	 * compatibility, and mixing them may result in module duplication.
 	 *
 	 * These are the most common import methods of the CKEditor&nbsp;5 packages.
