@@ -303,7 +303,12 @@ export default class UploadcareCommand extends Command {
 		const editor = this.editor;
 
 		editor.execute( 'insertImage', {
-			source: asset.url
+			source: [
+				{
+					src: asset.url,
+					ucImageId: asset.id
+				}
+			]
 		} );
 	}
 }

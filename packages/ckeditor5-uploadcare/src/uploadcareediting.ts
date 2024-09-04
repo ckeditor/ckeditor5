@@ -8,7 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { Dialog } from 'ckeditor5/src/ui.js';
+import { type ViewElement } from 'ckeditor5/src/engine.js';
+import { type DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
+
+import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
 
 import UploadcareCommand from './uploadcarecommand.js';
 import UploadcareUploadAdapter from './uploadcareuploadadapter.js';
@@ -39,5 +43,62 @@ export default class UploadcareEditing extends Plugin {
 		const editor = this.editor;
 
 		editor.commands.add( 'uploadcare', new UploadcareCommand( editor ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		this._initSchema();
+		this._initConversion();
+	}
+
+	/**
+	 * Extends the schema to allow the `ucImageId` attributes for images.
+	 */
+	private _initSchema() {
+		const editor = this.editor;
+		const schema = editor.model.schema;
+
+		if ( schema.isRegistered( 'imageBlock' ) ) {
+			schema.extend( 'imageBlock', { allowAttributes: [ 'ucImageId' ] } );
+		}
+	}
+
+	/**
+	 * Configures the upcast and downcast conversions for the `ucImageId` attributes.
+	 */
+	private _initConversion() {
+		const editor = this.editor;
+
+		// Convert `ucImageId` => `data-uc-image-id`.
+		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+			model: 'ucImageId',
+			view: 'data-uc-image-id'
+		} );
+
+		// Convert `data-uc-image-id` => `ucImageId`.
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			model: {
+				key: 'ucImageId',
+				value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'data-uc-image-id' )
+			},
+			view: {
+				attributes: {
+					'data-uc-image-id': /[a-zA-Z0-9\\-]+/
+				}
+			}
+		} );
+
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
+		if ( replaceImageSourceCommand ) {
+			this.listenTo<DecoratedMethodEvent<ReplaceImageSourceCommand, 'cleanupImage'>>(
+				replaceImageSourceCommand,
+				'cleanupImage',
+				( _, [ writer, image ] ) => {
+					writer.removeAttribute( 'ucImageId', image );
+				}
+			);
+		}
 	}
 }
