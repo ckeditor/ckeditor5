@@ -88,7 +88,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 *
 	 * If you use a CDN, ensure that some files are not included twice in your project.
 	 *
-	 * Examples:
+	 * Examples of valid and invalid import paths:
 	 *
 	 * ```js
 	 * import { ClassicEditor, Highlight } from 'ckeditor5'; // ✅
@@ -106,7 +106,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * you cannot import any additional plugins. These builds already include the editor's core
 	 * and selected plugins and importing additional ones will cause some modules to be bundled and loaded twice.
 	 *
-	 * Examples:
+	 * Examples of valid and invalid import paths:
 	 *
 	 * ```js
 	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // ✅
@@ -137,7 +137,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * If you use this installation method, you should not import code from the `ckeditor5`, `ckeditor5-premium-features`,
 	 * or `@ckeditor/ckeditor5-build-<NAME>` packages.
 	 *
-	 * Examples:
+	 * Examples of valid and invalid import paths:
 	 *
 	 * ```js
 	 * import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'; // ✅
@@ -155,7 +155,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * If you are using the {@glink getting-started/legacy/advanced/alternative-setups/dll-builds legacy DLL builds},
 	 * you should not import any non-DLL modules.
 	 *
-	 * Examples:
+	 * Examples of valid and invalid import paths:
 	 *
 	 * ```js
 	 * import 'ckeditor5/build/ckeditor5-dll.js';// ✅
