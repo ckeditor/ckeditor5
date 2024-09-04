@@ -45,7 +45,7 @@ The folder structure of the created project should resemble the one below:
 └── ...
 ```
 
-First, modify the `Index.cshtml` file in the `Pages` directory to include the CKEditor 5 scripts and styles. All necessary scripts and links are in the HTML snippet below. You can copy and paste them into your template. Open-source and premium features are in separate files, so there are different tags for both types of plugins. Add tags for premium features only if you use them.
+First, modify the `Index.cshtml` file in the `Pages` directory to include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and links are in the HTML snippet below. You can copy and paste them into your template. Open-source and premium features are in separate files, so there are different tags for both types of plugins. Add tags for premium features only if you use them.
 
 ```html
 @page
@@ -104,7 +104,7 @@ ClassicEditor
     .catch( /* ... */ );
 ```
 
-Now, we need to put our script in the previous template. We need to put the script under the `<div>` element, so the editor can attach to it. Your final template should look like this:
+Now, we need to put our script in the previous template. We put it under the `<div>` element, so the editor can attach to it. Your final template should look like this:
 
 ```html
 @page
