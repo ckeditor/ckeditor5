@@ -33,13 +33,13 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * First, make sure that you use the latest version of all CKEditor&nbsp;5 dependencies.
 	 * Depending on the installation method you used, you should check the versions of the `ckeditor5`,
 	 * `ckeditor5-premium-features`, or `@ckeditor/ckeditor5-<NAME>` packages. If you cannot update
-	 * to the latest version, then make sure that all the CKEditor&nbsp;5 packages are installed
+	 * to the latest version, make sure that all the CKEditor&nbsp;5 packages are
 	 * in the exact same version.
 	 *
-	 * If you use third-party plugins, make sure to update them too. If they are not compatible
-	 * with the version of CKEditor&nbsp;5 you use, you may need to downgrade CKEditor&nbsp;5 packages
-	 * (which we do not recommend), ask the author of said plugin to upgrade the dependencies,
-	 * or forking their project and update it yourself.
+	 * If you use third-party plugins, make sure to update them, too. If they are not compatible
+	 * with the version of CKEditor&nbsp;5 you use, you may need to downgrade the CKEditor&nbsp;5 packages
+	 * (which we do not recommend). Ask the author of said plugin to upgrade the dependencies,
+	 * or fork their project and update it yourself.
 	 *
 	 * # Check imports
 	 *
@@ -48,11 +48,11 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * **The {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
 	 * are designed to prevent module duplication, so if you are not using them yet, you should consider
 	 * updating your project**. However, for backwards compatibility, a number of legacy installation methods
-	 * are still supported, and mixing them can result in module duplication.
+	 * is still supported, and mixing them may result in module duplication.
 	 *
 	 * These are the most common import methods of the CKEditor&nbsp;5 packages.
 	 *
-	 * - **NIM (New installation methods)** &ndash; Imports from the `ckeditor5` and `ckeditor5-premium-features` packages.
+	 * - **New installation methods (NIM)** &ndash; Imports from the `ckeditor5` and `ckeditor5-premium-features` packages.
 	 * - **Optimized build** for the new installation methods &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>/dist/index.js`.
 	 * - **Predefined builds** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-build-<NAME>` packages.
 	 * - **Default imports** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>` packages (default export).
@@ -74,7 +74,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * | `src`            | ❌  | ❌              | ❌                | ✅              | ✅    | ❌         |
 	 * | DLL builds       | ❌  | ❌              | ❌                | ❌              | ❌    | ✅         |
 	 *
-	 * If you use any third-party plugins, then make sure the way you import them is compatible with
+	 * If you use any third-party plugins, make sure the way you import them is compatible with
 	 * the way you import CKEditor&nbsp;5.
 	 *
 	 * <details>
