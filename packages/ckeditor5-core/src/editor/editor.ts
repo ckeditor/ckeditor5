@@ -286,7 +286,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			 *
 			 * Please use `config.htmlEmbed.sanitizeHtml()` and/or `config.mergeFields.sanitizeHtml()` instead.
 			 */
-			throw new CKEditorError( 'editor-config-sanitizeHtml-not-supported' );
+			throw new CKEditorError( 'editor-config-sanitizehtml-not-supported' );
 		}
 
 		const constructor = this.constructor as typeof Editor;

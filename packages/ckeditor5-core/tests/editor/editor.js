@@ -222,7 +222,7 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { sanitizeHtml: () => {} } );
-			}, 'editor-config-sanitizeHtml-not-supported' );
+			}, 'editor-config-sanitizehtml-not-supported' );
 		} );
 	} );
 
