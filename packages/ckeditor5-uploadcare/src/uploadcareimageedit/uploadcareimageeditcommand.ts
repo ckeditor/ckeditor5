@@ -125,6 +125,10 @@ export default class UploadcareImageEditCommand extends Command {
 
 			this._dialog.hide();
 		} );
+
+		imageEditor.addEventListener( 'cancel', () => {
+			this._dialog.hide();
+		} );
 	}
 
 	/**
