@@ -40,16 +40,25 @@ export default class HtmlEmbedEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		const sanitizeCallback = editor.config.get( 'htmlEmbed.sanitizeHtml' );
+		editor.config.define( 'htmlEmbed', {
+			showPreviews: false,
+			sanitizeHtml: rawHtml => {
+				/**
+				 * When using the HTML embed feature with the `config.htmlEmbed.showPreviews` set to `true`, it is strongly recommended to
+				 * define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
+				 *
+				 * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
+				 *
+				 * @error html-embed-provide-sanitize-function
+				 */
+				logWarning( 'html-embed-provide-sanitize-function' );
 
-		// Overwrite the new sanitization function property if the deprecated one is explicitly provided.
-		if ( sanitizeCallback ) {
-			logWarning( 'The `htmlEmbed.sanitizeHtml` configuration option is deprecated. Use the `sanitizeHtml` option instead.' );
-
-			editor.config.set( 'sanitizeHtml', sanitizeCallback );
-		}
-
-		editor.config.define( 'htmlEmbed.showPreviews', false );
+				return {
+					html: rawHtml,
+					hasChanged: false
+				};
+			}
+		} );
 	}
 
 	/**
@@ -77,8 +86,7 @@ export default class HtmlEmbedEditing extends Plugin {
 		const t = editor.t;
 		const view = editor.editing.view;
 		const widgetButtonViewReferences = this._widgetButtonViewReferences;
-		const showPreviews = editor.config.get( 'htmlEmbed.showPreviews' )!;
-		const sanitizeHtml = editor.config.get( 'sanitizeHtml' )!;
+		const htmlEmbedConfig: HtmlEmbedConfig = editor.config.get( 'htmlEmbed' )!;
 
 		// Destroy UI buttons created for widgets that have been removed from the view document (e.g. in the previous conversion).
 		// This prevents unexpected memory leaks from UI views.
@@ -194,13 +202,13 @@ export default class HtmlEmbedEditing extends Plugin {
 				};
 
 				state = {
-					showPreviews,
+					showPreviews: htmlEmbedConfig.showPreviews,
 					isEditable: false,
 					getRawHtmlValue: () => modelElement.getAttribute( 'value' ) as string || ''
 				};
 
 				props = {
-					sanitizeHtml,
+					sanitizeHtml: htmlEmbedConfig.sanitizeHtml,
 					textareaPlaceholder: t( 'Paste raw HTML here...' ),
 
 					onEditClick() {

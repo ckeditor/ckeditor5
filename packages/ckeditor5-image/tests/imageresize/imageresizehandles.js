@@ -1064,9 +1064,9 @@ describe( 'ImageResizeHandles', () => {
 			editor = await createEditor( {
 				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, HtmlEmbedEditing ],
 				htmlEmbed: {
-					showPreviews: true
-				},
-				sanitizeHtml: input => ( { html: input, hasChanged: false } )
+					showPreviews: true,
+					sanitizeHtml: input => ( { html: input, hasChanged: false } )
+				}
 			} );
 
 			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );

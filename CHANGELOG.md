@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [43.1.0](https://github.com/ckeditor/ckeditor5/compare/v43.0.0...v43.1.0) (September 4, 2024)
+## [43.1.0](https://github.com/ckeditor/ckeditor5/compare/v43.0.0...v43.1.0) (September 5, 2024)
 
 We are happy to announce the release of CKEditor 5 v43.1.0.
 
@@ -20,6 +20,8 @@ The full list of enhancements can be found below.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
+* **Reverted `config.sanitizeHtml`.** In v43.0.0 we made a decision to move `config.htmlEmbed.sanitizeHtml` to a top-level property `config.sanitizeHtml`. However, we realized that it was a wrong decision to expose such a sensitive property in a top-level configuration property. Starting with v43.1.0 you should again use `config.htmlEmbed.sanitizeHtml` and/or `config.mergeFields.sanitizeHtml`. The editor will throw an error if `config.sanitizeHtml` is used. See the {@link  
+updating/update-to-43#reverted-recently-introduced-configsanitizehtml migration guide} for additional context behind this decision.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The structure and presentation of the list of AI commands in the toolbar have changed (a flat filtered list is now a nested menu). Additionally, if your integration customizes this user interface, please ensure your integration code is up-to-date.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The default `[aria-label]` provided by `InlineEditableUIView` is now `'Rich Text Editor. Editing area: [root name]'` (previously: `'Editor editing area: [root name]'`). You can use the `options.label` constructor property to adjust the label.
 
@@ -55,6 +57,9 @@ The full list of enhancements can be found below.
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant pre-defined commands toolbar dropdown will now use a new nested menu component instead of the flat list component.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Moved <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> and <kbd>Esc</kbd> key handling code from individual features to the `Annotations` plugin to simplify the logic.
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Reverted recent change to move `config.htmlEmbed.sanitizeHtml` to a top-level config property (`config.sanitizeHtml`). `config.sanitizeHtml` is no longer available and using it will throw an error.
+* **[html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed)**: Reverted recent change to move `config.htmlEmbed.sanitizeHtml` to a top-level config property (`config.sanitizeHtml`). Starting from v43.1.0 `config.htmlEmbed.sanitizeHtml` is no longer deprecated.
+* **[merge-fields](https://www.npmjs.com/package/@ckeditor/ckeditor5-merge-fields)**: Introduced `config.mergeFields.sanitizeHtml` config property. Use it instead of `config.sanitizeHtml`. `config.sanitizeHtml` is no longer available and using it will throw an error.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Moved <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> and <kbd>Esc</kbd> key handling code from individual features to the `Annotations` plugin to simplify the logic.
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: The package exports now the `TextTransformationConfig` type. ([commit](https://github.com/ckeditor/ckeditor5/commit/0d8adcef6eaf79fd35cc2647159ceeedd9e1a0d8))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/c394fd71229002ff813a16fdb78ec1e9ca6985da))

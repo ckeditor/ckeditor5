@@ -16,7 +16,17 @@ modified_at: 2024-07-31
 
 ## Update to CKEditor&nbsp;5 v43.1.0
 
-_Released on September 4, 2024._
+_Released on September 5, 2024._
+
+### Reverted recently introduced `config.sanitizeHtml`
+
+In v43.0.0 we made a decision to move {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} to a top-level property `config.sanitizeHtml`, so it could be used by multiple features (HTML embed, merge fields, and possibly other in future).
+
+However, we realized that it was a wrong decision to expose such a sensitive property in a top-level configuration property. We are worried that integrators may be confused and incorrectly assume that this callback would sanitize the entire output from CKEditor. Therefore, we decided to revert that change, so the sanitization callback is related strictly with the features that use it.
+
+Starting with v43.1.0, you should again use {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} and newly introduced {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#sanitizeHtml `config.mergeFields.sanitizeHtml`}. The editor will throw an error if `config.sanitizeHtml` is used.
+
+Note: CKEditor&nbsp;5, by default, prevents execution of scripts in the editor content, while the content is being edited inside the editor. However, there are features (such as General HTML support or HTML embed) that can be configured to make CKEditor&nbsp;5 produce HTML output that contains executable scripts. Please remember, that CKEditor&nbsp;5 is a frontend component working in a browser. As an integrator, it is your responsibility to sanitize the content before it is displayed on your website or on other potentially vulnerable medium.
 
 ### Table and cell border settings update
 

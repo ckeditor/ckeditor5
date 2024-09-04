@@ -97,9 +97,9 @@ const config = {
 	},
 	placeholder: 'Type the content here!',
 	htmlEmbed: {
-		showPreviews: true
+		showPreviews: true,
+		sanitizeHtml: html => ( { html, hasChange: false } )
 	},
-	sanitizeHtml: html => ( { html, hasChange: false } ),
 	menuBar: {
 		isVisible: true
 	}

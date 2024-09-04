@@ -32,25 +32,52 @@ export interface HtmlEmbedConfig {
 	 * The function responsible for sanitizing the HTML needs to be specified in
 	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml()`}.
 	 *
-	 * Read more about the security aspect of this feature in the {@glink getting-started/setup/html-security "HTML security"} guide.
+	 * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
+	 * the {@glink features/html/html-embed HTML embed} feature guide.
 	 */
 	showPreviews?: boolean;
 
 	/**
-	 * Callback used to sanitize the HTML provided by the user when generating previews of it in the editor.
+	 * Callback used to sanitize the HTML provided by the user in HTML embed widget when it is previewed inside the editor.
 	 *
-	 * **This config property was deprecated. Use {@link module:core/editor/editorconfig~EditorConfig#sanitizeHtml `config.sanitizeHtml`}
-	 * instead.**
+	 * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
 	 *
-	 * @deprecated
+	 * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
+	 * the {@glink features/html/html-embed HTML embed} feature guide.
+	 *
+	 * The function receives the input HTML (as a string), and should return an object
+	 * that matches the {@link module:html-embed/htmlembedconfig~HtmlEmbedSanitizeOutput} interface.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 *   .create( editorElement, {
+	 *     htmlEmbed: {
+	 *       showPreviews: true,
+	 *       sanitizeHtml( inputHtml ) {
+	 *         // Strip unsafe elements and attributes, e.g.:
+	 *         // the `<script>` elements and `on*` attributes.
+	 *         const outputHtml = sanitize( inputHtml );
+	 *
+	 *         return {
+	 *           html: outputHtml,
+	 *           // true or false depending on whether the sanitizer stripped anything.
+	 *           hasChanged: ...
+	 *         };
+	 *       },
+	 *     }
+	 *   } )
+	 *   .then( ... )
+	 *   .catch( ... );
+	 * ```
+	 *
+	 * **Note:** The function is used only when the feature
+	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews is configured to render previews}.
 	 */
 	sanitizeHtml?: ( html: string ) => HtmlEmbedSanitizeOutput;
 }
 
 /**
  * An object returned by the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml} function.
- *
- * @deprecated
  */
 export interface HtmlEmbedSanitizeOutput {
 
