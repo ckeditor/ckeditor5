@@ -16,7 +16,7 @@ order: 10
 	</a>
 </p>
 
-This guide explains how to integrate CKEditor5 into your React application using CDN.
+This guide explains how to integrate CKEditor&nbsp;5 into your React application using CDN.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
