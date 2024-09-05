@@ -12,23 +12,15 @@ This guide will help you migrate CKEditor 5 from an NPM-based installation to a 
 
 ## Prerequisites
 
-If you are using framework like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/) or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file. This means that the HTML file with proper scripts and styles will be send to the browser, so you can use the classical approach to install CKEditor&nbsp;5.
+If you are using frameworks like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/), or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file and follow the classical approach to install CKEditor&nbsp;5.
 
-However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/) and you are not using official integrations, you may need to follow different steps for migrating CKEditor&nbsp;5 from NPM to CDN. In this case, you can use the lazy injection of CKEditor&nbsp;5. It is a way to automatically inject the CKEditor&nbsp;5 script into your HTML file when the editor is needed.
+However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/), and you are not using official integrations, you may need to follow different steps to migrate CKEditor&nbsp;5 from NPM to CDN. In this case, you can utilize the lazy injection of CKEditor&nbsp;5 since you cannot directly modify the head section.
 
 ## Classical approach
 
-The classical approach to installing CKEditor 5 involves modification of the HTML head section to include the CKEditor&nbsp;5 script from the CDN. The editor is then initialized using the `window.CKEDITOR` global variable.
+The classical approach to installing CKEditor&nbsp;5 involves modification of the HTML head section to include the CKEditor&nbsp;5 script from the CDN. The editor is then initialized using the `window.CKEDITOR` global variable.
 
-### Step 1: Remove CKEditor&nbsp;5 NPM Packages
-
-First, you need to uninstall CKEditor&nbsp;5 packages from your project. Open your terminal and run the following command:
-
-```bash
-npm uninstall ckeditor5 ckeditor5-premium-features
-```
-
-### Step 2: Update Your HTML File
+### Step 1: Update Your HTML File
 
 Next, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. Add the following script and stylesheet tag inside the `<head>` section of your HTML file:
 
@@ -53,18 +45,9 @@ Next, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. 
 </html>
 ```
 
-### Step 3: Remove CKEditor&nbsp;5 Imports from JavaScript
+### Step 2: Replace CKEditor&nbsp;5 imports with `window.CKEDITOR`
 
-If you have any CKEditor 5 imports in your JavaScript files, remove them. For example, remove lines like:
-
-```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
-```
-
-### Step 4: Initialize CKEditor&nbsp;5 Using CDN
-
-Since the CKEditor&nbsp;5 script is now included via the CDN, you can access the `ClassicEditor` object directly in your JavaScript file using the `window.CKEDITOR` global variable. Here is an example of migrating the CKEditor&nbsp;5 initialization code:
+Since the CKEditor&nbsp;5 script is now included via the CDN, you can access the `ClassicEditor` object directly in your JavaScript file using the `window.CKEDITOR` global variable. It means that `import` statements are no longer needed and you can remove them from your JavaScript files. Here is an example of migrating the CKEditor&nbsp;5 initialization code:
 
 **Before:**
 
@@ -103,7 +86,14 @@ First, install the `@ckeditor/ckeditor5-integrations-common` package using the f
 npm install @ckeditor/ckeditor5-integrations-common
 ```
 
-### Step 2: Update Your JavaScript File
+### Step 2: Replace CKEditor&nbsp;5 Imports
+
+If you have any CKEditor 5 imports in your JavaScript files, remove them. For example, remove lines like:
+
+```javascript
+import { ClassicEditor, ... } from 'ckeditor5';
+import { EasyImage, ... } from 'ckeditor5-premium-features';
+```
 
 Next, update your JavaScript file to use the `loadCKEditorCloud` function from the `@ckeditor/ckeditor5-integrations-common` package. Here is an example of migrating the CKEditor&nbsp;5 initialization code:
 
