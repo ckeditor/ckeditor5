@@ -6,7 +6,6 @@
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Image, ImageUploadEditing, ImageUploadProgress } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -32,8 +31,7 @@ describe( 'UploadcareImageEditUI', () => {
 					Image,
 					ImageUploadEditing,
 					ImageUploadProgress,
-					Paragraph,
-					CloudServices
+					Paragraph
 				],
 				uploadcare: {
 					pubKey: 'KEY'

@@ -151,8 +151,6 @@ export default class UploadcareUI extends Plugin {
 		switch ( type ) {
 			case UploadcareSource.Local:
 				return 'upload';
-			case UploadcareSource.URL:
-				return 'url';
 			default:
 				return 'assetManager';
 		}
