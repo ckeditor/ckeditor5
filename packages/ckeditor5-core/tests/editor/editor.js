@@ -217,6 +217,13 @@ describe( 'Editor', () => {
 
 			sinon.assert.calledWith( spy, editor.editing.view.document );
 		} );
+
+		it( 'should throw if `config.sanitizeHtml` is passed', () => {
+			expectToThrowCKEditorError( () => {
+				// eslint-disable-next-line no-new
+				new TestEditor( { sanitizeHtml: () => {} } );
+			}, 'editor-config-sanitizehtml-not-supported' );
+		} );
 	} );
 
 	describe( 'context integration', () => {

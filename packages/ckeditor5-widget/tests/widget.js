@@ -46,8 +46,10 @@ describe( 'Widget', () => {
 
 				model.schema.register( 'widget', {
 					inheritAllFrom: '$block',
-					isObject: true
+					isObject: true,
+					allowIn: [ '$root', 'div', 'editable' ]
 				} );
+
 				model.schema.extend( 'paragraph', {
 					allowIn: 'div'
 				} );
@@ -266,12 +268,12 @@ describe( 'Widget', () => {
 		expect( focusSpy ).not.to.be.called;
 	} );
 
-	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
-		setModelData( model, '<paragraph>Hello</paragraph>' );
+	it( 'should use `createRange` fallback if extracting range from mouse event is not possible', () => {
+		setModelData( model, '<editable><widget></widget></editable>' );
 
-		const paragraphView = viewDocument.getRoot().getChild( 0 );
+		const editableView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( paragraphView ),
+			target: view.domConverter.mapViewToDom( editableView ),
 			preventDefault: sinon.spy()
 		} );
 
@@ -279,11 +281,77 @@ describe( 'Widget', () => {
 			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
 			.returns( null );
 
+		// Expect to execute `createRangeIn` in hope to find the range.
+		// Let's assume it won't find it and return null.
+		const createPositionAtSpy = sinon
+			.spy( editor.editing.view, 'createPositionAt' )
+			.withArgs( editableView, 0 );
+
+		const focusSpy = sinon.spy( View.prototype, 'focus' );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		expect( createPositionAtSpy ).to.be.calledOnce;
+		expect( focusSpy ).to.be.calledOnce;
+	} );
+
+	it( 'should not crash and not focus anything if event target is null', () => {
+		setModelData( model, '<editable><widget></widget></editable>' );
+
+		const editableView = viewDocument.getRoot().getChild( 0 );
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( editableView ),
+			preventDefault: sinon.spy()
+		} );
+
+		// Lets simulate that the other plugin overrides the target to null.
+		editor.plugins.get( Widget ).listenTo(
+			viewDocument, 'mousedown',
+			( eventInfo, domEventData ) => {
+				sinon.stub( domEventData, 'target' ).get( () => null );
+			},
+			{
+				priority: 'high'
+			}
+		);
+
+		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		viewDocument.fire( 'mousedown', domEventDataMock );
+		expect( focusSpy ).not.to.be.called;
+	} );
+
+	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
+		setModelData( model, '<widget><nested></nested></widget>' );
+
+		const widgetView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const target = view.domConverter.mapViewToDom( widgetView );
+
+		const domEventDataMock = new DomEventData( view, {
+			target,
+			preventDefault: sinon.spy()
+		} );
+
+		sinon
+			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.returns( null );
+
+		// Expect to execute `createRangeIn` in hope to find the range.
+		// Let's assume it won't find it and return null.
+		const position = editor.editing.view.createPositionAt( target, 0 );
+		const createRangeStub = sinon
+			.stub( editor.editing.view, 'createPositionAt' )
+			.returns( position );
+
+		sinon
+			.stub( editor.editing.view, 'createRange' )
+			.withArgs( position )
+			.returns( null );
+
 		sinon
 			.stub( view.domConverter, 'domRangeToView' )
 			.returns( {
 				start: {
-					parent: paragraphView
+					parent: widgetView
 				}
 			} );
 
@@ -291,6 +359,7 @@ describe( 'Widget', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
+		expect( createRangeStub ).to.be.calledOnce;
 		expect( focusSpy ).not.to.be.called;
 	} );
 
@@ -380,7 +449,7 @@ describe( 'Widget', () => {
 		expect( focusSpy ).to.be.called;
 	} );
 
-	it( 'should focus if clicked node that is at the end', () => {
+	it( 'should focus widget if clicked node that is at the end and parent contenteditable is selected', () => {
 		setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
 
 		const parentView = viewDocument.getRoot().getChild( 0 );
@@ -402,6 +471,38 @@ describe( 'Widget', () => {
 					isAtEnd: true,
 					parent: parentView,
 					nodeBefore: widgetView
+				}
+			} );
+
+		const focusSpy = sinon.stub( View.prototype, 'focus' ).returns( true );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		expect( focusSpy ).to.be.called;
+	} );
+
+	it( 'should focus widget if clicked node that is at the start and parent contenteditable is selected', () => {
+		setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
+
+		const parentView = viewDocument.getRoot().getChild( 0 );
+		const widgetView = parentView.getChild( 0 );
+
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( parentView ),
+			preventDefault: sinon.spy()
+		} );
+
+		sinon
+			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.returns( {} );
+
+		sinon
+			.stub( view.domConverter, 'domRangeToView' )
+			.returns( {
+				start: {
+					isAtStart: true,
+					parent: parentView,
+					nodeAfter: widgetView
 				}
 			} );
 
