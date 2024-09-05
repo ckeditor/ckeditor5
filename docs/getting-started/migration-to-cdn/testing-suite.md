@@ -14,7 +14,9 @@ This guide will help you migrate CKEditor&nbsp;5 testing suite from an NPM-based
 
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
 
-## Step 1: Remove CKEditor&nbsp;5 imports
+## Migration steps
+
+### Step 1: Remove CKEditor&nbsp;5 imports
 
 If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
 
@@ -23,7 +25,7 @@ import { ClassicEditor, ... } from 'ckeditor5';
 import { EasyImage, ... } from 'ckeditor5-premium-features';
 ```
 
-## Step 2: Update your test files to use CDN
+### Step 2: Update your test files to use CDN
 
 **Before:**
 
@@ -55,7 +57,7 @@ it( 'ClassicEditor test', () => {
 } );
 ```
 
-## Step 3 (Optional): Clean up the head entries before each test
+### Step 3 (Optional): Clean up the head entries before each test
 
 If you are using a testing suite that does not clean up the head entries before each test, you may need to do it manually. This is important because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file and you need to ensure that the head section is clean before each test.
 
