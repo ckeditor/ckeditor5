@@ -109,13 +109,13 @@ This guide assumes you already have a Angular project. To create such a project,
 
 ### Installing Angular component from npm
 
-Then, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+Install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install @ckeditor/ckeditor5-angular
 ```
 
-The following setup differs depending on the type of components you use.
+This setup differs depending on the type of components you use.
 
 ## Supported `@Input` properties
 
@@ -357,7 +357,7 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 
 ## CDN
 
-To use CKEditor with cdn you need to import `loadCKEditorCloud` and call it inside `ngOnInit` with provided `version` in the configuration.
+To use CKEditor&nbsp;5 with CDN you need to import `loadCKEditorCloud` and call it inside `ngOnInit` with `version` provided in the configuration.
 
 ```js
 import { Component } from '@angular/core';
