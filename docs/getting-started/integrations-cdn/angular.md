@@ -357,16 +357,16 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 
 ## CDN
 
-To use CKEditor&nbsp;5 with CDN you need to import `loadCKEditorCloud` and call it inside `ngOnInit` with `version` provided in the configuration.
+To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
 
 ```js
 import { Component } from '@angular/core';
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
-@Component({
+@Component( {
 	selector: 'app-simple-cdn-usage',
 	templateUrl: './simple-cdn-usage.component.html',
-})
+} )
 export class SimpleCdnUsageComponent {
 	public Editor = null;
 
@@ -379,10 +379,10 @@ export class SimpleCdnUsageComponent {
 	public ngOnInit(): void {
 		loadCKEditorCloud({
 			version: '43.0.0',
-		}).then(this.setupEditor.bind(this));
+		}).then( this.setupEditor.bind( this ) );
 	}
 
-	private _setupEditor(cloud: CKEditorCloudResult) {
+	private _setupEditor (cloud: CKEditorCloudResult ) {
 		const {
 			ClassicEditor,
 			Essentials,
@@ -444,39 +444,39 @@ export class SimpleCdnUsageComponent {
 				TextTransformation,
 			],
 			toolbar: {
-			items: [
-				'undo',
-				'redo',
-				'|',
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'|',
-				'link',
-				'uploadImage',
-				'insertTable',
-				'blockQuote',
-				'mediaEmbed',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'outdent',
-				'indent',
-			],
+				items: [
+					'undo',
+					'redo',
+					'|',
+					'heading',
+					'|',
+					'bold',
+					'italic',
+					'|',
+					'link',
+					'uploadImage',
+					'insertTable',
+					'blockQuote',
+					'mediaEmbed',
+					'|',
+					'bulletedList',
+					'numberedList',
+					'outdent',
+					'indent',
+				],
 			},
 			image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative',
-			],
+				toolbar: [
+					'imageStyle:inline',
+					'imageStyle:block',
+					'imageStyle:side',
+					'|',
+					'toggleImageCaption',
+					'imageTextAlternative',
+				],
 			},
 			table: {
-			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			},
 		};
 	}
@@ -646,9 +646,9 @@ export class AppComponent {
 	title = 'angular';
 
 	public ngOnInit(): void {
-		loadCKEditorCloud({
+		loadCKEditorCloud( {
 			version: '43.0.0'
-		}).then(this.setupEditor.bind(this));
+		} ).then( this.setupEditor.bind( this ) );
 	}
 	private _setupEditor( cloud ) {
 		const {
