@@ -53,7 +53,7 @@ type EditorDemoProps = WithCKEditorCloudHocProps & {
 
 const withCKCloud = withCKEditorCloud({
   cloud: {
-    version: "43.0.0",
+    version: "{@var ckeditor5-version}",
     languages: ["de"],
     premium: true,
   },

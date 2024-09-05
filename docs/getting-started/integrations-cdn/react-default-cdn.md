@@ -48,9 +48,9 @@ npm install @ckeditor/ckeditor5-react
 
 The `useCKEditorCloud` hook is responsible for returning information that:
 
-- CKEditor is still being downloaded from the CDN with status = "loading".
-- An error occurred during the download when status = "error", then further information is returned in the error field.
-- Returning the editor in the data field and its dependencies when status = "success".
+* CKEditor is still being downloaded from the CDN with status = "loading".
+* An error occurred during the download when status = "error", then further information is returned in the error field.
+* Returning the editor in the data field and its dependencies when status = "success".
 
 Use the `<CKEditor>` component inside your project. The below example shows how to use the component with the open-source plugins.
 
@@ -60,7 +60,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
-		version: "43.0.0",
+		version: "{@var ckeditor5-version}",
 	} );
 
 	if ( cloud.status === "error" ) {
@@ -103,7 +103,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
-		version: "43.0.0",
+		version: "{@var ckeditor5-version}",
 		premium: true,
 	});
 
@@ -161,7 +161,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
-	version: "43.0.0",
+	version: "{@var ckeditor5-version}",
 	ckbox: {
 		version: "2.5.1",
 		// Optional - it's already 'lark' by default.
@@ -223,9 +223,9 @@ const CKEditorDemo = () => {
 There are various ways to use external plugins. Here is a list of them:
 
 - **Local UMD Plugins:** Dynamically import local UMD modules using the `import()` syntax.
-- **Local External Imports:** Load external plugins locally using additional bundler configurations (e.g., Vite).
+- **Local External Imports:** Load external plugins locally using additional bundler configurations (such as Vite).
 - **CDN 3rd Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
-- **Verbose Configuration:** Advanced plugin loading with options to specify both script and stylesheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
+- **Verbose Configuration:** Advanced plugin loading with options to specify both script and style sheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
 
 Here is an example:
 
@@ -235,7 +235,7 @@ import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
-		version: '43.0.0',
+		version: '{@var ckeditor5-version}',
 		plugins: {
 			PluginUMD: async () => import( './your-local-import.umd.js' ),
 			PluginLocalImport: async () => import( './your-local-import' ),
@@ -302,7 +302,7 @@ import { CKEditor, CKEditorContext, useCKEditorCloud } from '@ckeditor/ckeditor5
 
 export const CKEditorCloudContextDemo = () => {
 	const cloud = useCKEditorCloud( {
-		version: '43.0.0'
+		version: '{@var ckeditor5-version}'
 	} );
 
 	if ( cloud.status === 'error' ) {
@@ -340,7 +340,7 @@ export const CKEditorCloudContextDemo = () => {
 
 function CKEditorNestedInstanceDemo( { name, content } ) {
 	const cloud = useCKEditorCloud( {
-		version: '43.0.0',
+		version: '{@var ckeditor5-version}',
 		premium: true
 	} );
 
@@ -453,7 +453,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 function App() {
 	const cloud = useCKEditorCloud( {
-		version: '43.0.0'
+		version: '{@var ckeditor5-version}'
 	} );
 
 	const editorToolbarRef = useRef( null );
@@ -533,7 +533,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
-		version: "43.0.0",
+		version: "{@var ckeditor5-version}",
 		languages: [ "de" ]
 	});
 
