@@ -67,7 +67,7 @@ describe( 'UploadcareEditing', () => {
 
 	describe( 'schema', () => {
 		it( 'should extend the schema rules for block image', () => {
-			expect( schema.checkAttribute( [ '$root', 'imageBlock' ], 'ucImageId' ) ).to.be.true;
+			expect( schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadcareImageId' ) ).to.be.true;
 		} );
 	} );
 
@@ -83,7 +83,7 @@ describe( 'UploadcareEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
-						'ucImageId="mock-uc-image-id">' +
+						'uploadcareImageId="mock-uc-image-id">' +
 					'</imageBlock>'
 				);
 			} );
@@ -193,18 +193,18 @@ describe( 'UploadcareEditing', () => {
 			} );
 		} );
 
-		it( 'should remove ucImageId attribute on image replace', () => {
+		it( 'should remove uploadcareImageId attribute on image replace', () => {
 			setModelData( model, `[<imageBlock
-				ucImageId="mock-uc-image-id"
+				uploadcareImageId="mock-uc-image-id"
 			></imageBlock>]` );
 
 			const element = model.document.selection.getSelectedElement();
 
-			expect( element.getAttribute( 'ucImageId' ) ).to.equal( 'mock-uc-image-id' );
+			expect( element.getAttribute( 'uploadcareImageId' ) ).to.equal( 'mock-uc-image-id' );
 
 			replaceImageSourceCommand.execute( { source: 'bar/foo.jpg' } );
 
-			expect( element.getAttribute( 'ucImageId' ) ).to.be.undefined;
+			expect( element.getAttribute( 'uploadcareImageId' ) ).to.be.undefined;
 		} );
 	} );
 } );

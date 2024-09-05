@@ -54,33 +54,33 @@ export default class UploadcareEditing extends Plugin {
 	}
 
 	/**
-	 * Extends the schema to allow the `ucImageId` attributes for images.
+	 * Extends the schema to allow the `uploadcareImageId` attributes for images.
 	 */
 	private _initSchema() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
 		if ( schema.isRegistered( 'imageBlock' ) ) {
-			schema.extend( 'imageBlock', { allowAttributes: [ 'ucImageId' ] } );
+			schema.extend( 'imageBlock', { allowAttributes: [ 'uploadcareImageId' ] } );
 		}
 	}
 
 	/**
-	 * Configures the upcast and downcast conversions for the `ucImageId` attributes.
+	 * Configures the upcast and downcast conversions for the `uploadcareImageId` attributes.
 	 */
 	private _initConversion() {
 		const editor = this.editor;
 
-		// Convert `ucImageId` => `data-uc-image-id`.
+		// Convert `uploadcareImageId` => `data-uc-image-id`.
 		editor.conversion.for( 'downcast' ).attributeToAttribute( {
-			model: 'ucImageId',
+			model: 'uploadcareImageId',
 			view: 'data-uc-image-id'
 		} );
 
-		// Convert `data-uc-image-id` => `ucImageId`.
+		// Convert `data-uc-image-id` => `uploadcareImageId`.
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
-				key: 'ucImageId',
+				key: 'uploadcareImageId',
 				value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'data-uc-image-id' )
 			},
 			view: {
@@ -96,7 +96,7 @@ export default class UploadcareEditing extends Plugin {
 				replaceImageSourceCommand,
 				'cleanupImage',
 				( _, [ writer, image ] ) => {
-					writer.removeAttribute( 'ucImageId', image );
+					writer.removeAttribute( 'uploadcareImageId', image );
 				}
 			);
 		}

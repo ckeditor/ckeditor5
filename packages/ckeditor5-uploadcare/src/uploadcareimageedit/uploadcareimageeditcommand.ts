@@ -144,7 +144,7 @@ export default class UploadcareImageEditCommand extends Command {
 			editor.execute( 'insertImage', {
 				source: {
 					src: cdnUrl,
-					ucImageId: element.getAttribute( 'ucImageId' )
+					uploadcareImageId: element.getAttribute( 'uploadcareImageId' )
 				}
 			} );
 

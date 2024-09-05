@@ -306,7 +306,7 @@ export default class UploadcareCommand extends Command {
 			source: [
 				{
 					src: asset.url,
-					ucImageId: asset.id
+					uploadcareImageId: asset.id
 				}
 			]
 		} );
