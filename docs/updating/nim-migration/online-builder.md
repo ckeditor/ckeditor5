@@ -17,7 +17,7 @@ If you do not want a build process, you can either use our CDN build or download
 
 ## CDN build
 
-The CDN build is a good option to quickly add CKEditor&nbsp;5 to your website without installing any dependencies or setting up a build process. We recommend using our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to customize the build to your needs. Then, in the `Installation` section of the Builder, you can select the `Cloud (CDN)` option to learn how to add the editor to your website.
+The CDN build is a good option to quickly add CKEditor&nbsp;5 to your website without installing any dependencies or setting up a build process. We recommend using our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) to customize the build to your needs. Then, in the `Installation` section of the Builder, you can select the `Cloud (CDN)` option to learn how to add the editor to your website.
 
 ## ZIP archive
 
@@ -25,7 +25,7 @@ If you do not want to have a build process or use our CDN build, you can downloa
 
 ## npm package
 
-If you decide to use the npm package, you can either use our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to create a new build, or you can update your existing project from the legacy Online Builder. **We recommend using the new interactive Builder**, but if you want to keep your existing build, you can follow the steps below.
+If you decide to use the npm package, you can either use our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) to create a new build, or you can update your existing project from the legacy Online Builder. **We recommend using the new interactive Builder**, but if you want to keep your existing build, you can follow the steps below.
 
 1. Follow the steps in the {@link updating/nim-migration/customized-builds Migrating from customized builds} guide.
 
