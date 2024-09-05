@@ -476,7 +476,7 @@ export default {
 
 For more information, refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
-### Potential issues with Jest testing
+### Jest testing
 
 Jest is the default test runner used by many Vue apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it is apparently sufficient for standard apps, it is not able to polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
 
@@ -513,7 +513,7 @@ beforeAll( () => {
 } );
 ```
 
-These mocks should be placed before the tests that use CKEditor&nbsp;5. They are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
+These mocks should be placed before the tests that use CKEditor&nbsp;5. They are imperfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Remember that they are not a replacement for proper browser testing.
 
 ## Contributing and reporting issues
 

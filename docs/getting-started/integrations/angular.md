@@ -703,7 +703,7 @@ The `moduleResolution` option of the TypeScript configuration determines the alg
 * You can update Angular to version 18, where the `moduleResolution` option is set to `bundler`  by default.
 * You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the config.
 
-### Potential issues with Jest testing
+### Jest testing
 
 You can use Jest as a test runner in Angular apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
 
