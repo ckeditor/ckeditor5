@@ -712,35 +712,37 @@ A better approach to test the component inside a fully-fledged web browser, impl
 If this is not possible, you can use the following mocks to make the tests pass:
 
 ```ts
-window.scrollTo = jest.fn();
+beforeAll( () => {
+	window.scrollTo = jest.fn();
 
-window.ResizeObserver = class ResizeObserver {
-	observe() {}
-	unobserve() {}
-	disconnect() {}
-};
-
-for (const key of ['InputEvent', 'KeyboardEvent']) {
-	window[key].prototype.getTargetRanges = () => {
-		const range = new StaticRange({
-			startContainer: document.body.querySelector('.ck-editor__editable p')!,
-			startOffset: 0,
-			endContainer: document.body.querySelector('.ck-editor__editable p')!,
-			endOffset: 0,
-		});
-
-		return [range];
+	window.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
 	};
-}
 
-Range.prototype.getClientRects = () => ({
-	item: () => null,
-	length: 0,
-	[Symbol.iterator]: function* () {},
-});
+	for (const key of ['InputEvent', 'KeyboardEvent']) {
+		window[key].prototype.getTargetRanges = () => {
+			const range = new StaticRange({
+				startContainer: document.body.querySelector('.ck-editor__editable p'),
+				startOffset: 0,
+				endContainer: document.body.querySelector('.ck-editor__editable p'),
+				endOffset: 0,
+			});
+
+			return [range];
+		};
+	}
+
+	Range.prototype.getClientRects = () => ({
+		item: () => null,
+		length: 0,
+		[Symbol.iterator]: function* () {},
+	});
+} );
 ```
 
-These mocks are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
+These mocks should be placed before the tests that use CKEditor&nbsp;5. They are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
 
 ## Contributing and reporting issues
 

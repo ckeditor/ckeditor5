@@ -293,59 +293,61 @@ import { userEvent } from '@testing-library/user-event';
 import { DecoupledEditor, Essentials, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-window.scrollTo = jest.fn();
+beforeAll( () => {
+	window.scrollTo = jest.fn();
 
-window.ResizeObserver = class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
+	window.ResizeObserver = class ResizeObserver {
+	observe() {}
+	unobserve() {}
+	disconnect() {}
+	};
 
-for (const key of ['InputEvent', 'KeyboardEvent']) {
-  window[key].prototype.getTargetRanges = () => {
-    const range = new StaticRange({
-      startContainer: document.body.querySelector('.ck-editor__editable p')!,
-      startOffset: 0,
-      endContainer: document.body.querySelector('.ck-editor__editable p')!,
-      endOffset: 0,
-    });
+	for (const key of ['InputEvent', 'KeyboardEvent']) {
+	window[key].prototype.getTargetRanges = () => {
+		const range = new StaticRange({
+		startContainer: document.body.querySelector('.ck-editor__editable p'),
+		startOffset: 0,
+		endContainer: document.body.querySelector('.ck-editor__editable p'),
+		endOffset: 0,
+		});
 
-    return [range];
-  };
-}
+		return [range];
+	};
+	}
 
-Range.prototype.getClientRects = () => ({
-  item: () => null,
-  length: 0,
-  [Symbol.iterator]: function* () {},
-});
+	Range.prototype.getClientRects = () => ({
+	item: () => null,
+	length: 0,
+	[Symbol.iterator]: function* () {},
+	});
 
-const SomeComponent = ({ value, onChange }) => {
-  const editorRef = useRef();
+	const SomeComponent = ({ value, onChange }) => {
+	const editorRef = useRef();
 
-  return (
-    <div
-      style={{
-        border: '1px solid black',
-        padding: 10,
-      }}
-    >
-      <CKEditor
-        editor={DecoupledEditor}
-        config={{
-          plugins: [Essentials, Paragraph],
-        }}
-        onReady={(editor) => {
-          editorRef.current = editor;
-        }}
-        data={value}
-        onChange={() => {
-          onChange(editorRef.current?.getData());
-        }}
-      />
-    </div>
-  );
-};
+	return (
+		<div
+		style={{
+			border: '1px solid black',
+			padding: 10,
+		}}
+		>
+		<CKEditor
+			editor={DecoupledEditor}
+			config={{
+			plugins: [Essentials, Paragraph],
+			}}
+			onReady={(editor) => {
+			editorRef.current = editor;
+			}}
+			data={value}
+			onChange={() => {
+			onChange(editorRef.current?.getData());
+			}}
+		/>
+		</div>
+	);
+	};
+} );
 
 it('renders', async () => {
   render(<SomeComponent value="this is some content" />);
