@@ -281,8 +281,6 @@ For more information, please refer to the {@link getting-started/setup/ui-langua
 
 Jest is the default test runner used by many React apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it is apparently sufficient for standard apps, it is not able to polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
 
-A better approach to test the component inside a fully-fledged web browser, implementing a complete DOM, is to use [`jest-puppeteer`](https://github.com/smooth-code/jest-puppeteer).
-
 If this is not possible, you can use the following mock snippet:
 
 ```jsx
