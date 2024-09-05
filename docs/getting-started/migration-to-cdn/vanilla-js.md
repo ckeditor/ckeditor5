@@ -22,7 +22,7 @@ The classical approach to installing CKEditor&nbsp;5 involves modification of th
 
 ### Step 1: Update Your HTML File
 
-Next, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. Add the following script and stylesheet tag inside the `<head>` section of your HTML file:
+First, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. Add the following script and stylesheet tag inside the `<head>` section of your HTML file:
 
 ```html
 <!DOCTYPE html>
