@@ -449,7 +449,7 @@
 							"name": "Cloud (CDN)",
 							"id": "cloud",
 							"slug": "cloud",
-							"order": 30,
+							"order": 10,
 							"categories": [
 								{
 									"name": "React",
@@ -464,7 +464,7 @@
 							"name": "Self-hosted (npm/ZIP)",
 							"id": "self-hosted",
 							"slug": "self-hosted",
-							"order": 40,
+							"order": 20,
 							"categories": [
 								{
 									"name": "React",
@@ -474,6 +474,12 @@
 									"order": 30
 								}
 							]
+						},
+						{
+							"name": "Migrations (WIP name)",
+							"id": "migrations",
+							"slug": "migrations",
+							"order": 30
 						}
 					]
 				},

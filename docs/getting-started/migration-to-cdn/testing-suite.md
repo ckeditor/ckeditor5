@@ -2,8 +2,8 @@
 menu-title: Migrate testing suite from NPM to CDN in Vanilla JS
 meta-title: Vanilla JS CKEditor 5 - migrate testing suite from NPM to CDN | CKEditor 5 documentation
 meta-description: Migrate CKEditor 5 testing suite from NPM to CDN in a few simple steps. Learn how to install CKEditor 5 testing suite in your project using the CDN.
-category: cloud
-order: 22
+category: migrations
+order: 20
 ---
 
 # Migrating CKEditor&nbsp;5 testing suite from NPM to CDN
@@ -75,4 +75,4 @@ beforeEach( () => {
 } );
 ```
 
-Code above will remove all CKEditor&nbsp;5 CDN scripts, stylesheets and Window objects from the head section of your HTML file before each test.
+Code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets and Window objects from the head section of your HTML file before each test.

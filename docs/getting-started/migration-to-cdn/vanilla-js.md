@@ -2,8 +2,8 @@
 menu-title: Migrate from NPM to CDN in Vanilla JS
 meta-title: Vanilla JS CKEditor 5 - migrate from NPM to CDN | CKEditor 5 documentation
 meta-description: Migrate CKEditor 5 from NPM to CDN in a few simple steps. Learn how to install CKEditor 5 in your project using the CDN.
-category: cloud
-order: 21
+category: migrations
+order: 10
 ---
 
 # Migrating CKEditor&nbsp;5 from NPM to CDN
@@ -22,7 +22,7 @@ The classical approach to installing CKEditor&nbsp;5 involves modification of th
 
 ### Step 1: Update Your HTML File
 
-First, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. Add the following script and stylesheet tag inside the `<head>` section of your HTML file:
+First, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. Add the following script and style sheet tag inside the `<head>` section of your HTML file:
 
 ```html
 <!DOCTYPE html>
