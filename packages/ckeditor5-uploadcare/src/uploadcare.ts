@@ -19,6 +19,8 @@ declare global {
 	interface HTMLElementTagNameMap {
 		'uc-config': HTMLElement;
 		'uc-upload-ctx-provider': UC.UploaderBlock;
+		'uc-file-uploader-inline': UC.FileUploaderInline;
+		'uc-cloud-image-editor': UC.CloudImageEditor;
 	}
 }
 

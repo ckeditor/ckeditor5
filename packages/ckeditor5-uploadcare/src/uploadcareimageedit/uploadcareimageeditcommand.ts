@@ -116,7 +116,7 @@ export default class UploadcareImageEditCommand extends Command {
 	}
 
 	private _prepareListeners( state: ProcessingState ) {
-		const imageEditor = document.querySelector( 'uc-cloud-image-editor' ) as UC.CloudImageEditor;
+		const imageEditor = document.querySelector( 'uc-cloud-image-editor' )!;
 
 		imageEditor.addEventListener( 'apply', ( evt: CustomEvent<UC.OutputFileEntry> ) => {
 			this._replaceImage( state.element, evt.detail );
