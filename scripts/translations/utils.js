@@ -74,7 +74,7 @@ function parseArguments( args ) {
 }
 
 /**
- * Returns absolute paths to CKEditor 5 sources. Files located in the `src/lib/` directory are excluded.
+ * Returns absolute paths to CKEditor 5 sources. Files located in the `src/lib/` directory and TypeScript declaration files are excluded.
  *
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
@@ -92,7 +92,8 @@ function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
 
 	return patterns.map( item => glob.sync( item, globOptions ) )
 		.flat()
-		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) );
+		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) )
+		.filter( srcPath => !srcPath.endsWith( '.d.ts' ) );
 }
 
 /**

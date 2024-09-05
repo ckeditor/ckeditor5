@@ -73,7 +73,8 @@ export default class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Edit
 
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull,
-			useMenuBar: menuBarConfig.isVisible
+			useMenuBar: menuBarConfig.isVisible,
+			label: this.config.get( 'label' )
 		} );
 
 		this.ui = new ClassicEditorUI( this, view );

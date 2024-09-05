@@ -1107,6 +1107,35 @@ describe( 'BalloonPanelView', () => {
 					expect( view._resizeObserver ).to.be.null;
 				} );
 
+				it( 'should watch parent element visibility changes if target is text node', () => {
+					const resizeCallbackRef = createResizeObserverCallbackRef();
+					const textNode = target.appendChild(
+						document.createTextNode( 'Hello World' )
+					);
+
+					const range = document.createRange();
+					range.setStart( textNode, 1 );
+					range.setEnd( textNode, 8 );
+
+					view.pin( { target: range, limiter } );
+					clock.tick( 100 );
+
+					expect( view.isVisible ).to.be.true;
+
+					// It's still visible, nothing changed.
+					resizeCallbackRef.current( [ { target } ] );
+					clock.tick( 100 );
+					expect( view.isVisible ).to.be.true;
+
+					// Hide the target and force call resize callback.
+					target.style.display = 'none';
+					resizeCallbackRef.current( [ { target } ] );
+
+					// It should be hidden now.
+					clock.tick( 100 );
+					expect( view.isVisible ).to.be.false;
+				} );
+
 				function createResizeObserverCallbackRef() {
 					const resizeCallbackRef = { current: null };
 

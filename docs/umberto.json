@@ -365,7 +365,8 @@
 		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
 		"features/toolbar/menubar.html": "getting-started/setup/menubar.html",
 		"examples/builds-custom/bottom-toolbar-editor.html": "examples/framework/bottom-toolbar-editor.html",
-		"examples/how-tos.html": "framework/how-tos.html"
+		"examples/how-tos.html": "framework/how-tos.html",
+		"examples/framework/content-placeholder.html": "features/merge-fields.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",

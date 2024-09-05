@@ -146,8 +146,10 @@ describe( 'BalloonEditor', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			if ( editor.state !== 'destroyed' ) {
+				await editor.destroy();
+			}
 		} );
 
 		it( 'creates an instance which inherits from the BalloonEditor', () => {
@@ -274,6 +276,106 @@ describe( 'BalloonEditor', () => {
 				)
 				.then( done )
 				.catch( done );
+		} );
+
+		describe( 'configurable editor label (aria-label)', () => {
+			it( 'should be set to the defaut value if not configured', () => {
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Rich Text Editor. Editing area: main'
+				);
+			} );
+
+			it( 'should support the string format', async () => {
+				await editor.destroy();
+
+				editor = await BalloonEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					label: 'Custom label'
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Custom label'
+				);
+			} );
+
+			it( 'should support object format', async () => {
+				await editor.destroy();
+
+				editor = await BalloonEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					label: {
+						main: 'Custom label'
+					}
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Custom label'
+				);
+			} );
+
+			it( 'should keep an existing value from the source DOM element', async () => {
+				await editor.destroy();
+
+				editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
+				const newEditor = await BalloonEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ]
+				} );
+
+				expect( newEditor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Keep value' ).to.equal(
+					'Pre-existing value'
+				);
+
+				await newEditor.destroy();
+
+				expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+			} );
+
+			it( 'should override the existing value from the source DOM element', async () => {
+				await editor.destroy();
+
+				editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
+				editor = await BalloonEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					label: 'Custom label'
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					'Custom label'
+				);
+
+				await editor.destroy();
+
+				expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+			} );
+
+			it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
+				await editor.destroy();
+
+				editor = await BalloonEditor.create( '<p>Initial data</p>', {
+					plugins: [ Paragraph, Bold ]
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					'Rich Text Editor. Editing area: main'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
+				await editor.destroy();
+
+				editor = await BalloonEditor.create( '<p>Initial data</p>', {
+					plugins: [ Paragraph, Bold ],
+					label: 'Custom label'
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					'Custom label'
+				);
+
+				await editor.destroy();
+			} );
 		} );
 	} );
 
