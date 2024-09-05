@@ -85,10 +85,10 @@ const CKEditorDemo = () => {
 			editor={ClassicEditor}
 			data={"<p>Hello world!!!</p>"}
 			config={{
-			toolbar: {
-				items: ["undo", "redo", "|", "bold", "italic"],
-			},
-			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+				toolbar: {
+					items: ["undo", "redo", "|", "bold", "italic"],
+				},
+				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			}}
 		/>
 	);
