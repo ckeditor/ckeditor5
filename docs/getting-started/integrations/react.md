@@ -291,7 +291,7 @@ import { userEvent } from '@testing-library/user-event';
 import { DecoupledEditor, Essentials, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-beforeAll(() => {
+beforeAll( () => {
 	window.scrollTo = jest.fn();
 
 	window.ResizeObserver = class ResizeObserver {
@@ -300,74 +300,74 @@ beforeAll(() => {
 		disconnect() {}
 	};
 
-	for (const key of ['InputEvent', 'KeyboardEvent']) {
-		window[key].prototype.getTargetRanges = () => {
-			const range = new StaticRange({
-				startContainer: document.body.querySelector('.ck-editor__editable p'),
+	for ( const key of [ 'InputEvent', 'KeyboardEvent' ] ) {
+		window[ key ].prototype.getTargetRanges = () => {
+			const range = new StaticRange( {
+				startContainer: document.body.querySelector( '.ck-editor__editable p' ),
 				startOffset: 0,
-				endContainer: document.body.querySelector('.ck-editor__editable p'),
-				endOffset: 0,
-			});
+				endContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				endOffset: 0
+			} );
 
-			return [range];
+			return [ range ];
 		};
 	}
 
-	Range.prototype.getClientRects = () => ({
+	Range.prototype.getClientRects = () => ( {
 		item: () => null,
 		length: 0,
-		[Symbol.iterator]: function* () {},
-	});
+		[ Symbol.iterator ]: function* () {}
+	} );
+} );
 
-	const SomeComponent = ({ value, onChange }) => {
-		const editorRef = useRef();
+const SomeComponent = ( { value, onChange } ) => {
+	const editorRef = useRef();
 
-		return (
-			<div
-				style={{
-					border: '1px solid black',
-					padding: 10,
+	return (
+		<div
+			style={{
+				border: '1px solid black',
+				padding: 10,
+			}}
+		>
+			<CKEditor
+				editor={ DecoupledEditor }
+				config={{
+					plugins: [ Essentials, Paragraph ],
 				}}
-			>
-				<CKEditor
-					editor={DecoupledEditor}
-					config={{
-						plugins: [Essentials, Paragraph],
-					}}
-					onReady={(editor) => {
-						editorRef.current = editor;
-					}}
-					data={value}
-					onChange={() => {
-						onChange(editorRef.current?.getData());
-					}}
-				/>
-			</div>
-		);
-	};
-});
+				onReady={ (editor) => {
+					editorRef.current = editor;
+				} }
+				data={ value }
+				onChange={ () => {
+					onChange( editorRef.current?.getData() );
+				} }
+			/>
+		</div>
+	);
+};
 
-it('renders', async () => {
-	render(<SomeComponent value="this is some content" />);
+it( 'renders', async () => {
+	render( <SomeComponent value="this is some content" /> );
 
-	await waitFor(() => expect(screen.getByText(/some content/)).toBeTruthy());
-});
+	await waitFor( () => expect( screen.getByText( /some content/ ) ).toBeTruthy());
+} );
 
-it('updates', async () => {
+it( 'updates', async () => {
 	const onChange = jest.fn();
-	render(<SomeComponent value="this is some content" onChange={onChange} />);
+	render( <SomeComponent value="this is some content" onChange={onChange} /> );
 
-	await waitFor(() => expect(screen.getByText(/some content/)).toBeTruthy());
+	await waitFor( () => expect( screen.getByText( /some content/ ) ).toBeTruthy() );
 
-	await userEvent.click(document.querySelector('[contenteditable="true"]'));
+	await userEvent.click( document.querySelector( '[contenteditable="true"]' ) );
 
-	userEvent.keyboard('more stuff');
+	userEvent.keyboard( 'more stuff' );
 
-	await waitFor(() => expect(onChange).toHaveBeenCalled());
-});
+	await waitFor( () => expect( onChange ).toHaveBeenCalled() );
+} );
 ```
 
-The mocks presented above only test two basic scenarios, and it is likely that more will need to be added, which may change with each version of the editor.
+The mocks presented above only test two basic scenarios, and more will likely need to be added, which may change with each version of the editor.
 
 ## Contributing and reporting issues
 

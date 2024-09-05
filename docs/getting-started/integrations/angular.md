@@ -705,12 +705,12 @@ The `moduleResolution` option of the TypeScript configuration determines the alg
 
 ### Potential issues with Jest testing
 
-Jest is the default test runner used by many Angular apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js with the use of JSDOM. JSDOM is not a complete DOM implementation and while it is apparently sufficient for standard apps, it is not able to polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+You can use Jest as a test runner in Angular apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
 
 If this is not possible, you can use the following mocks to make the tests pass:
 
 ```javascript
-beforeAll(() => {
+beforeAll( () => {
 	window.scrollTo = jest.fn();
 
 	window.ResizeObserver = class ResizeObserver {
@@ -719,28 +719,28 @@ beforeAll(() => {
 		disconnect() {}
 	};
 
-	for (const key of ['InputEvent', 'KeyboardEvent']) {
-		window[key].prototype.getTargetRanges = () => {
-			const range = new StaticRange({
-				startContainer: document.body.querySelector('.ck-editor__editable p'),
+	for ( const key of [ 'InputEvent', 'KeyboardEvent' ] ) {
+		window[ key ].prototype.getTargetRanges = () => {
+			const range = new StaticRange( {
+				startContainer: document.body.querySelector( '.ck-editor__editable p' ),
 				startOffset: 0,
-				endContainer: document.body.querySelector('.ck-editor__editable p'),
-				endOffset: 0,
-			});
+				endContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				endOffset: 0
+			} );
 
-			return [range];
+			return [ range ];
 		};
 	}
 
-	Range.prototype.getClientRects = () => ({
+	Range.prototype.getClientRects = () => ( {
 		item: () => null,
 		length: 0,
-		[Symbol.iterator]: function* () {},
-	});
-});
+		[ Symbol.iterator ]: function* () {}
+	} );
+} );
 ```
 
-These mocks should be placed before the tests that use CKEditor&nbsp;5. They are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
+These mocks should be placed before the tests that use CKEditor&nbsp;5. They are imperfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
 
 ## Contributing and reporting issues
 
