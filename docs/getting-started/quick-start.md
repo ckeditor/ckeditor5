@@ -81,11 +81,11 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 CDN is an alternative method of running CKEditor&nbsp;5 that you can start using in just a few steps.
 
-You have two options to choose from. You can either use an ES Modules build with imports similar to the npm setup or UMD build with global variable. The former is more modern, but the latter offers better compatibility with older development environments.
+You have two options to choose from. You can use an ES Modules build with imports similar to the npm setup or UMD build with a global variable. The former is more modern, but the latter offers better compatibility with older development environments.
 
 ### CDN with imports
 
-Start by adding a link to editor style sheet. It contains all styles for the editor's UI and content. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
+Start by adding a link to the editor style sheet. It contains all styles for the editor's UI and content. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -234,12 +234,10 @@ In the following script tag, get the editor class and desired plugins from the `
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-			toolbar: {
-				items: [
+			toolbar: [
 					'undo', 'redo', '|', 'bold', 'italic', '|',
 					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
 				]
-			}
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -378,7 +376,7 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ### Installing premium features from CDN
 
-Just like with open-source features, you can choose between using ES Modules build with imports or UMD build with global variables. However, these methods should not be mixed. You should use the same method for both the open-source and premium features.
+Just like with open-source features, you can choose between using an ES Modules build with imports or a UMD build with global variables. However, these methods should not be mixed. You should use the same method for both the open-source and premium features.
 
 #### CDN with imports
 
