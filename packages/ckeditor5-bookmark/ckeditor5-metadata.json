@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Bookmark",
+			"className": "Bookmark",
+			"description": "Allows to insert a bookmark into the content. // TODO",
+			"docs": "features/bookmark.html",
+			"path": "src/bookmark.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "bookmark",
+					"iconPath": "theme/icons/bookmark.svg"
+				}
+			]
+		}
+	]
+}
