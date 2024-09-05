@@ -12,7 +12,7 @@ This guide will help you migrate CKEditor 5 from an NPM-based installation to a 
 
 ## Prerequisites
 
-Make sure that you can modify the HTML head section of your project on server side. If you are using framework like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/) or [Ruby on Rails](https://rubyonrails.org/) and in other MPA frameworks, you can modify the head section in the main layout file. This means that you can use the classical approach to install CKEditor 5.
+Make sure that you can modify the HTML head section of your project on server side. If you are using framework like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/) or [Ruby on Rails](https://rubyonrails.org/) or any other MPA framework, you can modify the head section in the main layout file. This means that the HTML file with proper scripts and styles will be send to the client side, so you can use the classical approach to install CKEditor&nbsp;5.
 
 However if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/) or [Svelte](https://svelte.dev/), you should use the lazy injection approach to install CKEditor&nbsp;5 because it makes no sense to load the CKEditor&nbsp;5 script in the head section of the HTML file before entering the editor page.
 
