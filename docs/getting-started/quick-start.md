@@ -21,7 +21,7 @@ You have a few methods to choose from:
 
 ## Using CKEditor&nbsp;5 Builder
 
-Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
 
 * editor type,
 * the features you need,
