@@ -8,9 +8,10 @@
  */
 
 import { type Locale } from 'ckeditor5/src/utils.js';
-import { View } from 'ckeditor5/src/ui.js';
+import { Template, View } from 'ckeditor5/src/ui.js';
 
 import '../../../theme/uploadcare-form.css';
+import type UploadcareImageEditCommand from '../uploadcareimageeditcommand.js';
 
 /**
  * A class representing the form view of the Uploadcare image edit feature.
@@ -19,8 +20,10 @@ export default class UploadcareImageEditFormView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, cdnUrl: string ) {
+	constructor( locale: Locale, parentCommand: UploadcareImageEditCommand ) {
 		super( locale );
+
+		const bind = Template.bind( parentCommand, parentCommand );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -35,11 +38,17 @@ export default class UploadcareImageEditFormView extends View {
 			},
 			children: [
 				{
+					text: bind.to( 'imageStatus', status => status )
+				},
+				{
+					text: bind.to( 'imageUploadProgress', progress => ` ${ progress }%` )
+				},
+				{
 					tag: 'uc-cloud-image-editor',
 					attributes: {
 						class: [ 'uc-light', 'ck-uploadcare-theme' ],
 						'ctx-name': 'image-edit',
-						'cdn-url': cdnUrl
+						'cdn-url': bind.to( 'imageSrc', src => src )
 					}
 				}
 			]
