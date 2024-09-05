@@ -8,13 +8,13 @@ order: 21
 
 # Migrating CKEditor&nbsp;5 from NPM to CDN
 
-This guide will help you migrate CKEditor 5 from an NPM-based installation to a CDN-based installation using Vanilla JS. This approach simplifies the setup process and reduces the bundle size of your application.
+This guide will help you migrate CKEditor 5 from an NPM-based installation to a CDN-based installation using Vanilla JS.
 
 ## Prerequisites
 
-Make sure that you can modify the HTML head section of your project on server side. If you are using framework like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/) or [Ruby on Rails](https://rubyonrails.org/) or any other MPA framework, you can modify the head section in the main layout file. This means that the HTML file with proper scripts and styles will be send to the client side, so you can use the classical approach to install CKEditor&nbsp;5.
+Make sure that you can modify the HTML head section of your project on server side. If you are using framework like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/) or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file. This means that the HTML file with proper scripts and styles will be send to the client side, so you can use the classical approach to install CKEditor&nbsp;5.
 
-However if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/) or [Svelte](https://svelte.dev/), you should use the lazy injection approach to install CKEditor&nbsp;5 because it makes no sense to load the CKEditor&nbsp;5 script in the head section of the HTML file before entering the editor page.
+However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/) and you are not using official integrations, you may need to follow different steps for migrating CKEditor 5 from NPM to CDN. In this case, you can use the lazy injection of CKEditor&nbsp;5.
 
 ## Classical approach
 
