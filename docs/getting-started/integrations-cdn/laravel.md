@@ -1,14 +1,14 @@
 ---
 category: cloud
-meta-title: Compatibility with Laravel when using CDN | CKEditor 5 documentation
-meta-description: Integrate CKEditor 5 using Laravel with CDN.
+meta-title: Using CKEditor 5 with Laravel and CDN | CKEditor 5 documentation
+meta-description: Integrate CKEditor 5 with Laravel using CDN.
 order: 70
 menu-title: Laravel
 ---
 
-# Compatibility with Laravel
+# Using CKEditor&nbsp;5 with Laravel and CDN
 
-As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
+As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
 ## Using CKEditor&nbsp;5 Builder
 
@@ -24,9 +24,9 @@ You get ready-to-use code tailored to your needs!
 
 This guide assume you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
 
-## Integrating from CDN
+## Using from CDN
 
-Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `public` directory in your app. Your folder structure should resemble this one:
+The folder structure of the created project should resemble the one below:
 
 ```plain
 ├── app
@@ -34,9 +34,6 @@ Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file 
 ├── config
 ├── database
 ├── public
-│   ├── assets
-|      ├── vendor
-|          └── ckeditor5.js
 │   ├── .htaccess
 │   ├── favicon.ico
 │   ├── index.php
@@ -49,80 +46,123 @@ Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file 
 └── ...
 ```
 
-Inside the file, paste the JavaScript code from CKEditor&nbsp;5 Builder. The code will differ depending on your chosen preset and features. But it should look similar to this:
-
-```js
-import {
-	ClassicEditor,
-	AccessibilityHelp,
-	Autosave,
-	Bold,
-	Essentials,
-	Italic,
-	Mention,
-	Paragraph,
-	SelectAll,
-	Undo
-} from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-const editorConfig = {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-	toolbar: {
-		items: ['undo', 'redo', '|', 'selectAll', '|', 'bold', 'italic', '|', 'accessibilityHelp'],
-		shouldNotGroupWhenFull: false
-	},
-	placeholder: 'Type or paste your content here!',
-	plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
-	mention: {
-		feeds: [
-			{
-				marker: '@',
-				feed: [
-					/* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
-				]
-			}
-		]
-	},
-	initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
-};
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), editorConfig )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-```
-
-Then, modify the `welcome.blade.php` file in the `resources/views` directory to include the CKEditor&nbsp;5 scripts. All necessary scripts and links are in the HTML snippet from CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:
+First, modify the `welcome.blade.php` file in the `resources/views` directory to include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and links are in the HTML snippet below. You can copy and paste them into your template. Open-source and premium features are in separate files, so there are different tags for both types of plugins. Add tags for premium features only if you use them.
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>CKE5 in Laravel</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>CKEditor 5 - Quick start CDN</title>
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+	<!-- Add if you use premium features. -->
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
-	<script type="importmap">
-		{
-			"imports": {
-				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
-				"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
-				"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
-			}
-		}
-	</script>
-	<script type="module" src="{{ URL::asset('assets/vendor/ckeditor5.js') }}"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+	<!--  -->
+	<style>
+	.main-container {
+		width: 795px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+    </style>
 </head>
 <body>
-	<div id="editor"></div>
+	<div class="main-container">
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
+    </div>
 </body>
 </html>
 ```
 
-Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
+Both previously attached scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use them to access the editor class and plugins. In our example, we use object destructuring (JavaScript feature) to access the editor class from the open-source global variable with a basic set of plugins. You can access premium plugins from the other variable the same way. Then, we pass the whole configuration to the `create()` method. Be aware that you need a proper {@link getting-started/licensing/license-key-and-activation license key} to use premium features.
+
+```html
+<script>
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} = CKEDITOR;
+	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			]
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+</script>
+```
+
+Now, we need to put our script in the previous template. We need to put the script under the `<div>` element, so the editor can attach to it. Your final template should look like this:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKEditor 5 - Quick start CDN</title>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.umd.js"></script>
+    <!-- Add if you use premium features. -->
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/43.0.0/ckeditor5-premium-features.css" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5-premium-features.umd.js"></script>
+	<!--  -->
+	<style>
+		.main-container {
+			width: 795px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+    </style>
+</head>
+<body>
+    <div class="main-container">
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
+    </div>
+    <script>
+        const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Font,
+			Paragraph
+		} = CKEDITOR;
+		const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+		ClassicEditor
+			.create( document.querySelector( '#editor' ), {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+				toolbar: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+					'formatPainter'
+				]
+			} )
+			.then( /* ... */ )
+			.catch( /* ... */ );
+    </script>
+</body>
+</html>
+```
+
+Finally, in the root directory of your Laravel project, run `php artisan serve` to see the editor in action.
