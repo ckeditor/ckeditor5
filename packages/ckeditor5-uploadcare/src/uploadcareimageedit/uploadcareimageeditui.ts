@@ -37,19 +37,15 @@ export default class UploadcareImageEditUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'uploadcareImageEdit', locale => {
 			const command = editor.commands.get( 'uploadcareImageEdit' )!;
-			const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
 			const view = new ButtonView( locale );
 			const t = locale.t;
 
 			view.set( {
 				icon: uploadcareImageEditIcon,
-				tooltip: true
+				tooltip: true,
+				label: t( 'Edit image' )
 			} );
 
-			view.bind( 'label' ).to( uploadImageCommand, 'isAccessAllowed', isAccessAllowed => isAccessAllowed ?
-				t( 'Edit image' ) :
-				t( 'You have no image editing permissions.' )
-			);
 			view.bind( 'isOn' ).to( command, 'isEnabled' );
 			view.bind( 'isEnabled' ).to( command );
 

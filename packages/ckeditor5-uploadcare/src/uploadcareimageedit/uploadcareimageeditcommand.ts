@@ -60,8 +60,12 @@ export default class UploadcareImageEditCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		// TODO
-		this.isEnabled = true;
+		// TODO: improve this logic.
+		const editor = this.editor;
+
+		const selectedElement = editor.model.document.selection.getSelectedElement();
+
+		this.isEnabled = !!selectedElement;
 	}
 
 	/**
@@ -83,7 +87,7 @@ export default class UploadcareImageEditCommand extends Command {
 			this._initConfig();
 		}
 
-		this._initDialog( imageElement!.getAttribute( 'src' ) as string );
+		this._initDialog( imageElement.getAttribute( 'src' ) as string );
 		this._prepareListeners( processingState );
 	}
 
@@ -126,6 +130,12 @@ export default class UploadcareImageEditCommand extends Command {
 
 		imageEditor.addEventListener( 'cancel', () => {
 			this._dialog.hide();
+		} );
+
+		// Clean up after the editor is destroyed.
+		this.listenTo( this.editor, 'destroy', () => {
+			this._configElement!.remove();
+			this._configElement = null;
 		} );
 	}
 
