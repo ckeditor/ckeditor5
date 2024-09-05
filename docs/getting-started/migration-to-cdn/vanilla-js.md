@@ -8,7 +8,7 @@ order: 21
 
 # Migrating CKEditor&nbsp;5 from NPM to CDN
 
-This guide will help you migrate CKEditor 5 from an NPM-based installation to a CDN-based installation using Vanilla JS. CDN-based installations can simplify the setup process by providing bundler agnostic way to lazy initialization of CKEditor&nbsp;5 scripts and styles injection, which reduce complexity in the project setup.
+This guide will help you migrate CKEditor 5 from an NPM-based installation to a CDN-based installation. CDN-based installations can simplify the setup process by providing bundler agnostic way to lazy initialization of CKEditor&nbsp;5 scripts and styles injection, which reduce complexity in the project setup.
 
 ## Prerequisites
 
