@@ -50,7 +50,7 @@ export default class UploadcareImageEditUI extends Plugin {
 				t( 'Edit image' ) :
 				t( 'You have no image editing permissions.' )
 			);
-			view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
+			view.bind( 'isOn' ).to( command, 'isEnabled' );
 			view.bind( 'isEnabled' ).to( command );
 
 			// Execute the command.

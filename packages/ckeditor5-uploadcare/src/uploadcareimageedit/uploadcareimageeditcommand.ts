@@ -13,11 +13,9 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 import UploadcareImageEditFormView from './ui/uploadcareimageeditformview.js';
+import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
 
 import type * as UC from '@uploadcare/file-uploader';
-
-import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
-import type { UploadcareSource } from '../uploadcareconfig.js';
 
 import uploadcareImageEditIcon from '../../theme/icons/uploadcare-image-edit.svg';
 
@@ -69,7 +67,7 @@ export default class UploadcareImageEditCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	public override execute( type: UploadcareSource ): void {
+	public override execute(): void {
 		if ( !this.isEnabled ) {
 			return;
 		}
@@ -92,7 +90,7 @@ export default class UploadcareImageEditCommand extends Command {
 	private _initConfig() {
 		this._configElement = createElement( document, 'uc-config', {
 			'ctx-name': 'image-edit',
-			'removeCopyright': true,
+			'removeCopyright': 'true',
 			'localeName': this.editor.locale.contentLanguage
 		} );
 
@@ -118,7 +116,7 @@ export default class UploadcareImageEditCommand extends Command {
 	}
 
 	private _prepareListeners( state: ProcessingState ) {
-		const imageEditor = document.querySelector( 'uc-cloud-image-editor' );
+		const imageEditor = document.querySelector( 'uc-cloud-image-editor' ) as UC.CloudImageEditor;
 
 		imageEditor.addEventListener( 'apply', ( evt: CustomEvent<UC.OutputFileEntry> ) => {
 			this._replaceImage( state.element, evt.detail );

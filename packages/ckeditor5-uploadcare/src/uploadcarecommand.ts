@@ -41,7 +41,7 @@ export default class UploadcareCommand extends Command {
 	 *
 	 * @internal
 	 */
-	private _type: null | UploadcareSource;
+	private _type: null | UploadcareSource = null;
 
 	/**
 	 * The DOM element that represents the Uploadcare config web component.
@@ -140,7 +140,7 @@ export default class UploadcareCommand extends Command {
 	 */
 	private _reinitFlow() {
 		this._api!.doneFlow();
-		this._configElement!.setAttribute( 'source-list', this._type );
+		this._configElement!.setAttribute( 'source-list', this._type! );
 
 		this._initDialog();
 	}
@@ -151,9 +151,9 @@ export default class UploadcareCommand extends Command {
 		this._configElement = createElement( document, 'uc-config', {
 			...configOptions,
 			'ctx-name': 'uploader',
-			'sourceList': this._type,
-			'imgOnly': true,
-			'removeCopyright': true,
+			'sourceList': `${ this._type }`,
+			'imgOnly': 'true',
+			'removeCopyright': 'true',
 			'localeName': this.editor.locale.contentLanguage
 		} );
 
@@ -163,7 +163,7 @@ export default class UploadcareCommand extends Command {
 	private _initCtx() {
 		this._ctxElement = createElement( document, 'uc-upload-ctx-provider', {
 			'ctx-name': 'uploader'
-		} ) as UC.UploaderBlock;
+		} );
 
 		document.body.appendChild( this._ctxElement );
 
@@ -184,10 +184,10 @@ export default class UploadcareCommand extends Command {
 			id: 'uploadCare',
 			icon: icons.imageUpload,
 			title: getTranslation( locale, this._type! ).text,
-			content: this._formView,
+			content: this._formView!,
 			position: DialogViewPosition.EDITOR_TOP_CENTER,
 			onShow: () => {
-				this._formView.focus();
+				this._formView!.focus();
 			},
 			onHide: () => {
 				this._close();

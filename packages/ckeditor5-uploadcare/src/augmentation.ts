@@ -9,6 +9,10 @@ import type {
 	UploadcareCommand,
 	UploadcareConfig
 } from './index.js';
+import type UploadcareImageEditCommand from './uploadcareimageedit/uploadcareimageeditcommand.js';
+import type UploadcareImageEdit from './uploadcareimageedit.js';
+import type UploadcareImageEditEditing from './uploadcareimageedit/uploadcareimageeditediting.js';
+import type UploadcareImageEditUI from './uploadcareimageedit/uploadcareimageeditui.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -24,9 +28,13 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Uploadcare.pluginName ]: Uploadcare;
 		[ UploadcareEditing.pluginName ]: UploadcareEditing;
+		[ UploadcareImageEdit.pluginName ]: UploadcareImageEdit;
+		[ UploadcareImageEditEditing.pluginName ]: UploadcareImageEditEditing;
+		[ UploadcareImageEditUI.pluginName ]: UploadcareImageEditUI;
 	}
 
 	interface CommandsMap {
 		uploadcare: UploadcareCommand;
+		uploadcareImageEdit: UploadcareImageEditCommand;
 	}
 }

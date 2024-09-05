@@ -55,7 +55,7 @@ export default class UploadcareUI extends Plugin {
 
 		const uploadSources = this._normalizeConfigSourceList( editor.config.get( 'uploadcare.sourceList' ) as Array<UploadcareSource> );
 
-		const groupedSources: Record<string, Array<SourceDefinition>> = uploadSources.reduce( ( acc, source ) => {
+		const groupedSources = uploadSources.reduce( ( acc, source ) => {
 			const key = this._getIntegrationKey( source.type );
 
 			if ( !acc[ key ] ) {
@@ -65,7 +65,7 @@ export default class UploadcareUI extends Plugin {
 			acc[ key ].push( source );
 
 			return acc;
-		}, {} );
+		}, {} as Record<string, Array<SourceDefinition>> );
 
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
 			Object.entries( groupedSources ).forEach( ( [ type, sources ] ) => {
@@ -163,7 +163,7 @@ export default class UploadcareUI extends Plugin {
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
 		ButtonClass: T,
-		type: string
+		type: UploadcareSource
 	): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
