@@ -171,8 +171,10 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			if ( editor.state !== 'destroyed' ) {
+				await editor.destroy();
+			}
 		} );
 
 		it( 'creates an instance which inherits from the ClassicEditor', () => {
@@ -266,6 +268,71 @@ describe( 'ClassicEditor', () => {
 
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			} );
+
+			describe( 'configurable editor label (aria-label)', () => {
+				it( 'should be set to the defaut value if not configured', () => {
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Rich Text Editor. Editing area: main'
+					);
+				} );
+
+				it( 'should support the string format', async () => {
+					await editor.destroy();
+
+					editor = await ClassicEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						label: 'Custom label'
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Custom label'
+					);
+				} );
+
+				it( 'should support object format', async () => {
+					await editor.destroy();
+
+					editor = await ClassicEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						label: {
+							main: 'Custom label'
+						}
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Custom label'
+					);
+				} );
+
+				it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
+					await editor.destroy();
+
+					editor = await ClassicEditor.create( '<p>Initial data</p>', {
+						plugins: [ Paragraph, Bold ]
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+						'Rich Text Editor. Editing area: main'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
+					await editor.destroy();
+
+					editor = await ClassicEditor.create( '<p>Initial data</p>', {
+						plugins: [ Paragraph, Bold ],
+						label: 'Custom label'
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+						'Custom label'
+					);
+
+					await editor.destroy();
+				} );
 			} );
 		} );
 	} );

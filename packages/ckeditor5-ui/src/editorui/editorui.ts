@@ -16,13 +16,13 @@ import AriaLiveAnnouncer from '../arialiveannouncer.js';
 
 import type EditorUIView from './editoruiview.js';
 import type ToolbarView from '../toolbar/toolbarview.js';
-import type { UIViewRenderEvent } from '../view.js';
+import type { default as View, UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
 	isVisible,
 	FocusTracker,
-	type EventInfo
+	type EventInfo, type CollectionAddEvent, type CollectionRemoveEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
@@ -159,6 +159,8 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
+			this._bindBodyCollectionWithFocusTracker();
+
 			this.isReady = true;
 		} );
 
@@ -484,7 +486,6 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 */
 	private _initFocusTracking(): void {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
 
 		let candidateDefinitions: Array<FocusableToolbarDefinition>;
 
@@ -668,6 +669,25 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		data.viewportOffset.bottom += configuredViewportOffset.bottom;
 		data.viewportOffset.left += configuredViewportOffset.left;
 		data.viewportOffset.right += configuredViewportOffset.right;
+	}
+
+	/**
+	 * Ensures that the focus tracker is aware of all views' DOM elements in the body collection.
+	 */
+	private _bindBodyCollectionWithFocusTracker() {
+		const body = this.view.body;
+
+		for ( const view of body ) {
+			this.focusTracker.add( view.element! );
+		}
+
+		body.on<CollectionAddEvent<View>>( 'add', ( evt, view ) => {
+			this.focusTracker.add( view.element! );
+		} );
+
+		body.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
+			this.focusTracker.remove( view.element! );
+		} );
 	}
 }
 

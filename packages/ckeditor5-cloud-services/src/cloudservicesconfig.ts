@@ -88,6 +88,9 @@ export interface CloudServicesConfig {
 	 * 	} )
 	 * ```
 	 *
+	 * If the request to the token endpoint fails, the editor will call the token request function every 5 seconds in attempt
+	 * to refresh the token.
+	 *
 	 * You can find more information about token endpoints in the
 	 * {@glink @cs guides/easy-image/quick-start#create-token-endpoint Cloud Services - Quick start}
 	 * and {@glink @cs developer-resources/security/token-endpoint Cloud Services - Token endpoint} documentation.

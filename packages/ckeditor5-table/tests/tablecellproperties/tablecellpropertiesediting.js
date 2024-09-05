@@ -89,14 +89,24 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast border shorthand', () => {
+				it( 'should not upcast border values which are same as default', () => {
 					editor.setData( '<table><tr><td style="border:1px solid #f00">foo</td></tr></table>' );
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
-					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
-					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast border shorthand', () => {
+					editor.setData( '<table><tr><td style="border:2px dashed #f00">foo</td></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'dashed' );
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '2px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -116,21 +126,21 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
-					editor.setData( '<table><tr><td style="border-width:1px">foo</td></tr></table>' );
+					editor.setData( '<table><tr><td style="border-width:3px">foo</td></tr></table>' );
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '3px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
-					editor.setData( '<table><tr><td style="border-top:1px solid #f00">foo</td></tr></table>' );
+					editor.setData( '<table><tr><td style="border-top:2px double #f00">foo</td></tr></table>' );
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, null, null );
-					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'double', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '2px', null, null, null );
 				} );
 
 				it( 'should upcast border-right shorthand', () => {
