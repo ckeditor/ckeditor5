@@ -54,12 +54,10 @@ import 'ckeditor5/ckeditor5.css';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-			]
-		}
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -126,12 +124,10 @@ In the following script tag, import the desired plugins, add them to the `plugin
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-				]
-			}
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+			]
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -147,9 +143,6 @@ Lastly, add a tag for the editor to attach to.
 ```
 
 Your final page should look similar to the one below.
-
-<details>
-<summary>Final build</summary>
 
 ```html
 <!DOCTYPE html>
@@ -187,12 +180,10 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-						]
-					}
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+					]
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -200,7 +191,6 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
-</details>
 
 ### CDN with global variables
 
@@ -235,9 +225,9 @@ In the following script tag, get the editor class and desired plugins from the `
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 			toolbar: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-				]
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+			]
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -253,9 +243,6 @@ Finally, add a tag for the editor to attach to.
 ```
 
 Your final page should look similar to the one below.
-
-<details>
-<summary>Final build</summary>
 
 ```html
 <!DOCTYPE html>
@@ -286,12 +273,10 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-						]
-					}
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+					]
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -299,7 +284,6 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
-</details>
 
 ## Installing CKEditor&nbsp;5 from a ZIP file
 
@@ -349,13 +333,11 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-				'formatPainter'
-			]
-		},
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+			'formatPainter'
+		],
 		licenseKey: '<YOUR_LICENSE_KEY>'
 	} )
 	.then( /* ... */ )
@@ -421,13 +403,11 @@ In the following script tag, import the desired plugins, add them to the `plugin
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-					'formatPainter'
-				]
-			},
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			],
 			licenseKey: '<YOUR_LICENSE_KEY>'
 		} )
 		.then( /* ... */ )
@@ -444,9 +424,6 @@ Lastly, add a tag for the editor to attach to.
 ```
 
 Your final page should look similar to the one below.
-
-<details>
-<summary>Final build</summary>
 
 ```html
 <!DOCTYPE html>
@@ -489,12 +466,10 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
-						]
-					},
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+					],
 					licenseKey: '<YOUR_LICENSE_KEY>'
 				} )
 				.then( /* ... */ )
@@ -503,7 +478,6 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
-</details>
 
 #### CDN with global variables
 
@@ -540,13 +514,11 @@ In the following script tag, get the editor class and desired plugins from the `
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-			toolbar: {
-				items: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-					'formatPainter'
-				]
-			},
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			],
 			licenseKey: '<YOUR_LICENSE_KEY>'
 		} )
 		.then( /* ... */ )
@@ -564,7 +536,6 @@ Lastly, add a tag for the editor to attach to.
 
 Your final page should look similar to the one below.
 
-<details>
 <summary>Final build</summary>
 
 ```html
@@ -599,12 +570,10 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-					toolbar: {
-						items: [
-							'undo', 'redo', '|', 'bold', 'italic', '|',
-							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
-						]
-					},
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+					],
 					licenseKey: '<YOUR_LICENSE_KEY>'
 				} )
 				.then( /* ... */ )
@@ -613,7 +582,6 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
-</details>
 
 ### Installing premium features from a ZIP file
 
