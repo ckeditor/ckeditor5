@@ -484,7 +484,7 @@ A better approach to test the component inside a fully-fledged web browser, impl
 
 If this is not possible, you can use the following mocks to make the tests pass:
 
-```ts
+```javascript
 beforeAll( () => {
 	window.scrollTo = jest.fn();
 
@@ -512,7 +512,7 @@ beforeAll( () => {
 		length: 0,
 		[Symbol.iterator]: function* () {},
 	});
-	} );
+} );
 ```
 
 These mocks should be placed before the tests that use CKEditor&nbsp;5. They are not perfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
