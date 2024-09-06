@@ -482,7 +482,7 @@ You can use Jest as a test runner in Vue apps. Unfortunately, Jest does not use 
 
 For testing CKEditor&nbsp;5, it is recommended to use testing frameworks that utilize a real browser and provide a complete DOM implementation. Some popular options include:
 
-* [Vitest](https://vitest.netlify.app/)
+* [Vitest](https://vitest.dev/)
 * [Playwright](https://playwright.dev/)
 * [Cypress](https://www.cypress.io/)
 
