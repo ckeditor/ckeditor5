@@ -17,19 +17,17 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 describe( 'BookmarkEditing', () => {
 	let editor, element, model;
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor
+		editor = await ClassicTestEditor
 			.create( element, {
 				language: 'en',
 				plugins: [ BookmarkEditing, Enter, Paragraph, Undo, Link ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
 			} );
+
+		model = editor.model;
 	} );
 
 	afterEach( () => {
