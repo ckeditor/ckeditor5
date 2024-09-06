@@ -21,11 +21,4 @@ export default class Bookmark extends Plugin {
 	public static get pluginName() {
 		return 'Bookmark' as const;
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	// public static get requires() {
-	// 	return [ BookmarkEditing, BookmarkUI ] as const;
-	// }
 }
