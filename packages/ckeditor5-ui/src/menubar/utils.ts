@@ -567,7 +567,8 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				items: [
  * 					'menuBar:link',
  * 					'menuBar:comment',
- * 					'menuBar:insertMergeField'
+ * 					'menuBar:insertMergeField',
+ * 					'menuBar:bookmark'
  * 				]
  * 			},
  * 			{
@@ -824,7 +825,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				items: [
 					'menuBar:link',
 					'menuBar:comment',
-					'menuBar:insertMergeField'
+					'menuBar:insertMergeField',
+					'menuBar:bookmark'
 				]
 			},
 			{

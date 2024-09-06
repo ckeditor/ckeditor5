@@ -17,20 +17,26 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
+import Bookmark from '../../src/bookmark.js';
+
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
-			EasyImage, CloudServices, ImageInsert, Heading
+			EasyImage, CloudServices, ImageInsert, Heading, Bookmark
 		],
 		toolbar: [
+			'bookmark', '|',
 			'undo', 'redo', '|',
 			'insertImage', 'insertTable', '|',
 			'heading', 'link'
 		],
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		menuBar: {
+			isVisible: true
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
