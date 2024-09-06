@@ -79,7 +79,7 @@ Code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets and Window 
 
 ### Slow test execution
 
-If you notice that your tests are running slower after migrating to the CDN, it may be caused by the browser downloading the CKEditor&nbsp;5 script each time the test is executed. While it is not recommended to disable the head cleanup before each test, you may disable it if you notice a significant slowdown in your test execution and your code handles the CKEditor&nbsp;5 script async injection properly.
+If you notice that your tests are running slower after migrating to CDN, it may be caused by the browser downloading the CKEditor&nbsp;5 script each time the test is executed. While it is not recommended to disable the head cleanup before each test, you may disable it if you notice a significant slowdown in your test execution and your code handles the CKEditor&nbsp;5 script async injection properly.
 
 ### Script injection issues
 
