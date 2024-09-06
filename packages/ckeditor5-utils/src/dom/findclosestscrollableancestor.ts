@@ -17,10 +17,12 @@ import global from './global.js';
  */
 export default function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
 	let element = domElement.parentElement;
+
 	if ( !element ) {
 		return null;
 	}
 
+	// TODO: ShadowRoot
 	while ( element.tagName != 'BODY' ) {
 		const overflow = element.style.overflowY || global.window.getComputedStyle( element ).overflowY;
 

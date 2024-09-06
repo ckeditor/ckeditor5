@@ -303,7 +303,6 @@ export default class DropdownMenuNestedMenuView extends View implements Focusabl
 			keystrokes.listenTo( panelView.element! );
 			panelView.pin( {
 				positions: this._panelPositions,
-				// TODO ShadowRoot
 				limiter: global.document.body,
 				element: panelView.element!,
 				target: buttonView.element!,

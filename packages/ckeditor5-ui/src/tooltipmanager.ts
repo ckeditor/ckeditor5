@@ -192,6 +192,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
 
+		// TODO ShadowRoot - make sure those events propagate to parent shadow DOM
 		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 
 		this.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );

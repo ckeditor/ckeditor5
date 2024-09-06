@@ -1095,6 +1095,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			const domSelection = doc.getSelection()!;
 
 			if ( domSelection.rangeCount ) {
+				// TODO ShadowRoot - the activeElement of the closest ShadowRoot?
 				const activeDomElement = doc.activeElement!;
 				const viewElement = this.domConverter.mapDomToView( activeDomElement as DomElement );
 

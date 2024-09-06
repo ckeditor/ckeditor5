@@ -1091,7 +1091,8 @@ export default class DomConverter {
 	public focus( viewEditable: EditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
 
-		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
+		// TODO ShadowRoot
+		if ( domEditable && domEditable.getRootNode().activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
 			const scrollPositions: Array<[ number, number ]> = [];
@@ -1850,7 +1851,7 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 
 	while ( node ) {
 		callback( node );
-		node = node.parentElement;
+		node = node.parentElement; // TODO ShadowRoot
 	}
 }
 

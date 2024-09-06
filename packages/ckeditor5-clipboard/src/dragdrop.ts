@@ -670,6 +670,8 @@ export default class DragDrop extends Plugin {
 			} );
 
 			// TODO ShadowRoot
+			//  - can we append it to the body collection?
+			//  - is the preview generated correctly in the Shadow DOM
 			global.document.body.appendChild( this._previewContainer );
 		} else if ( this._previewContainer.firstElementChild ) {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild );

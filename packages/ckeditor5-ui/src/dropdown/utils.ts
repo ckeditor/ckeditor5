@@ -606,8 +606,8 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 		// If the dropdown was closed, move the focus back to the button (#12125).
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		// TODO ShadowRoot
-		if ( elements.some( element => element.contains( global.document.activeElement ) ) ) {
+		// TODO ShadowRoot - the activeElement is valid for the closest ShadowRoot
+		if ( elements.some( element => element.getRootNode().activeElement && element.contains( element.getRootNode().activeElement ) ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );

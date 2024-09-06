@@ -521,6 +521,8 @@ function findScrollableElement( domNode: HTMLElement ): HTMLElement {
 	let domElement: HTMLElement = domNode;
 
 	do {
+		// TODO ShadowRoot
+		//  - use helper for easier parent element access
 		domElement = domElement.parentNode instanceof ShadowRoot ?
 			domElement.parentNode.host as HTMLElement :
 			domElement.parentElement!;
