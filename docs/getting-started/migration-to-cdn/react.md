@@ -1,0 +1,318 @@
+---
+menu-title: Migrate React testing suite from NPM to CDN
+meta-title: React CKEditor 5 - migrate testing suite from NPM to CDN | CKEditor 5 documentation
+meta-description: Migrate React CKEditor 5 testing suite from NPM to CDN in a few simple steps. Learn how to install React CKEditor 5 testing suite in your project using the CDN.
+category: migrations
+order: 20
+---
+
+# Migrating CKEditor&nbsp;5 React testing suite from NPM to CDN
+
+This guide will help you migrate CKEditor&nbsp;5 React testing suite from an NPM-based installation to a CDN-based installation.
+
+## Prerequisites
+
+Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
+
+## Migration steps
+
+### Migrate `CKEditor` component
+
+#### Step 1: Remove CKEditor&nbsp;5 imports
+
+If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
+
+```javascript
+import { ClassicEditor, ... } from 'ckeditor5';
+import { EasyImage, ... } from 'ckeditor5-premium-features';
+```
+
+#### Step 2: Use `useCKEditorCloud` hook to load CKEditor&nbsp;5 from CDN
+
+`useCKEditorCloud` is a hook that allows you to load CKEditor&nbsp;5 from the CDN. It returns an object with the `CKEditor` and `CKEditorPremiumFeatures` properties. Here is an example of migrating the basic CKEditor&nbsp;5 React component:
+
+**Before:**
+
+```jsx
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { SlashCommand } from 'ckeditor5-premium-features';
+
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+
+function App() {
+    return (
+        <CKEditor
+            editor={ ClassicEditor }
+            config={ {
+                toolbar: {
+                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+                },
+                plugins: [
+                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+                ],
+                licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+                mention: {
+                    // Mention configuration
+                },
+                initialData: '<p>Hello from CKEditor 5 in React!</p>',
+            } }
+        />
+    );
+}
+
+export default App;
+```
+
+**After:**
+
+```jsx
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+
+function App() {
+	// Load CKEditor 5 from the CKEditor Cloud, using the `useCKEditorCloud` hook.
+	// It'll inject the CKEditor 5 scripts and styles into your document head and after
+	// successful loading, it'll return the `CKEditor` and `CKEditorPremiumFeatures` objects.
+	const cloud = useCKEditorCloud( {
+		version: '{@var ckeditor5-version}', // Required. The version of CKEditor 5 to load.
+		premium: true // Optional. Set to `true` if you want to use premium features.
+	} );
+
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
+
+	if ( cloud.status === 'error' ) {
+		console.error( cloud.error );
+
+		return <div>Error!</div>;
+	}
+
+	// Pick the CKEditor 5 plugins you want to use.
+	const {
+		ClassicEditor, Bold, Essentials, Italic,
+		Mention, Paragraph, SlashCommand, Undo
+	} = cloud.CKEditor;
+
+	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			config={ {
+				toolbar: {
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+				plugins: [
+					Bold,
+					Essentials,
+					Italic,
+					Mention,
+					Paragraph,
+					SlashCommand,
+					Undo
+				],
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				initialData: '<p>Hello from CKEditor 5 in React!</p>',
+			} }
+		/>
+	);
+}
+```
+
+#### Step 3 (Optional): Migrate the CKEditor&nbsp;5 React testing suite
+
+If you have any tests that use CKEditor&nbsp;5 objects, you need to update them to use the `useCKEditorCloud` hook. Here is an example of migrating a test that uses the `ClassicEditor` object:
+
+**Before:**
+
+```javascript
+import { ClassicEditor, ... } from 'ckeditor5';
+import { EasyImage, ... } from 'ckeditor5-premium-features';
+
+it( 'ClassicEditor test', () => {
+	render(
+		<CKEditor
+			editor={ ClassicEditor }
+			// ... other props
+		/>
+	);
+} );
+```
+
+**After:**
+
+```javascript
+import { useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+
+let cloud;
+
+beforeEach( async () => {
+	cloud = await useCKEditorCloud( {
+		version: '{@var ckeditor5-version}',
+	} );
+} );
+
+it( 'ClassicEditor test', () => {
+	const { ClassicEditor } = cloud.CKEditor;
+
+	render(
+		<CKEditor
+			editor={ ClassicEditor }
+			// ... other props
+		/>
+	);
+
+	// Rest of your test.
+} );
+```
+
+#### Step 4 (Optional): Clean up the head entries before each test
+
+The `useCKEditorCloud` hook under the hood injects the CKEditor&nbsp;5 scripts and styles into your document head. If you are using a testing suite that does not clean up the head entries before each test, you may need to do it manually. This is important because the `useCKEditorCloud` hook might reuse the same head entries for each test, which can lead to skipping `loading` state and directly going to the `success` state. It may cause some tests that rely on the `loading` state to fail.
+
+However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser will need to download the CKEditor&nbsp;5 script each time. In most cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
+
+Here is an example of how you can clean up the head entries before each test:
+
+```javascript
+import { removeAllCkCdnResources } from '@ckeditor/ckeditor5-integrations-common/test-utils';
+
+beforeEach( () => {
+	removeAllCkCdnResources();
+} );
+```
+
+The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Window objects from the head section of your HTML file before each test making sure that the `useCKEditorCloud` hook will inject the CKEditor&nbsp;5 scripts and styles again.
+
+### Migrate `CKEditorContext` component
+
+#### Step 1: Remove CKEditor&nbsp;5 Context imports
+
+If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
+
+```javascript
+import { ClassicEditor, ... } from 'ckeditor5';
+import { EasyImage, ... } from 'ckeditor5-premium-features';
+```
+
+#### Step 2: Use `useCKEditorCloud` hook to load CKEditor&nbsp;5 Context from CDN
+
+If you are using the `CKEditorContext` component, you need to update it to use the `useCKEditorCloud` hook. Here is an example of migrating the `CKEditorContext` component:
+
+**Before:**
+
+```jsx
+import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
+import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
+
+import 'ckeditor5/ckeditor5.css';
+
+function App() {
+  return (
+	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the first editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 1 is ready to use!', editor );
+		} }
+	  />
+
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the second editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 2 is ready to use!', editor );
+		} }
+	  />
+	</CKEditorContext>
+  );
+}
+
+export default App;
+```
+
+**After:**
+
+```javascript
+import { CKEditor, CKEditorContext, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+
+function App() {
+	// Load CKEditor 5 from the CKEditor Cloud, using the `useCKEditorCloud` hook.
+	// It'll inject the CKEditor 5 scripts and styles into your document head and after
+	// successful loading, it'll return the `CKEditor` and `CKEditorPremiumFeatures` objects.
+	const cloud = useCKEditorCloud( {
+		version: '{@var ckeditor5-version}', // Required. The version of CKEditor 5 to load.
+		premium: true // Optional. Set to `true` if you want to use premium features.
+	} );
+
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
+
+	if ( cloud.status === 'error' ) {
+		console.error( cloud.error );
+
+		return <div>Error!</div>;
+	}
+
+	// Pick the CKEditor 5 plugins you want to use.
+	const {
+		ClassicEditor, Bold, Essentials, Italic, Paragraph,
+		Context, ContextWatchdog
+	} = cloud.CKEditor;
+
+	return (
+		<CKEditorContext
+			context={ Context }
+			contextWatchdog={ ContextWatchdog }
+		>
+			<CKEditor
+				editor={ ClassicEditor }
+				config={ {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					plugins: [ Essentials, Bold, Italic, Paragraph ],
+					toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				} }
+				data='<p>Hello from the first editor working with the context!</p>'
+				onReady={ ( editor ) => {
+					// You can store the "editor" and use when it is needed.
+					console.log( 'Editor 1 is ready to use!', editor );
+				} }
+			/>
+
+			<CKEditor
+				editor={ ClassicEditor }
+				config={ {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					plugins: [ Essentials, Bold, Italic, Paragraph ],
+					toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				} }
+				data='<p>Hello from the second editor working with the context!</p>'
+				onReady={ ( editor ) => {
+					// You can store the "editor" and use when it is needed.
+					console.log( 'Editor 2 is ready to use!', editor );
+				} }
+			/>
+		</CKEditorContext>
+	);
+}
+```
+
+#### Next steps
+
+Now that you have migrated your CKEditor&nbsp;5 React Context integration to use the CDN, you can continue with the next steps such as migration testing suite. It's identical to the steps described in the previous section.

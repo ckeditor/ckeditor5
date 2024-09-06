@@ -68,8 +68,6 @@ Here is an example of how you can clean up the head entries before each test:
 ```javascript
 import { removeAllCkCdnResources } from '@ckeditor/ckeditor5-integrations-common/test-utils';
 
-let cloud;
-
 beforeEach( () => {
 	removeAllCkCdnResources();
 } );
