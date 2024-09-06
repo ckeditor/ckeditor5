@@ -380,7 +380,8 @@
 		"features/productivity-pack.html": "features/index.html",
 		"features/images/image-upload/easy-image.html": "features/images/image-upload/image-upload.html",
 		"getting-started/installation/react/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
-		"getting-started/installation/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html"
+		"getting-started/installation/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html",
+		"examples/framework/content-placeholder.html": "features/merge-fields.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",

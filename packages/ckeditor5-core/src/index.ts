@@ -25,8 +25,7 @@ export type {
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
-	UiConfig,
-	SanitizedOutput
+	UiConfig
 } from './editor/editorconfig.js';
 
 export { default as attachToForm } from './editor/utils/attachtoform.js';
