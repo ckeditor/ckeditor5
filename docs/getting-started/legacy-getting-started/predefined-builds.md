@@ -130,7 +130,7 @@ In your HTML page add an element that CKEditor&nbsp;5 should replace:
 Load the classic editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/classic/ckeditor.js"></script>
 ```
 
 Alternatively, you may install CKEditor&nbsp;5 from `npm`:
@@ -161,7 +161,7 @@ Full code example:
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Classic editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/classic/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Classic editor</h1>
@@ -198,7 +198,7 @@ In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 Load the inline editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/inline/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/inline/ckeditor.js"></script>
 ```
 
 Alternatively, you may install CKEditor&nbsp;5 from `npm`:
@@ -229,7 +229,7 @@ Full code example:
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Inline editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/inline/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/inline/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Inline editor</h1>
@@ -264,7 +264,7 @@ In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 Load the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/balloon/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/balloon/ckeditor.js"></script>
 ```
 
 Alternatively, you may install CKEditor&nbsp;5 from `npm`:
@@ -295,7 +295,7 @@ Full example:
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Balloon editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/balloon/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/balloon/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Balloon editor</h1>
@@ -330,7 +330,7 @@ In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 Load the balloon block editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/balloon-block/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/balloon-block/ckeditor.js"></script>
 ```
 
 Alternatively, you may install CKEditor&nbsp;5 from `npm`:
@@ -363,7 +363,7 @@ Full code example:
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Balloon block editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/balloon-block/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/balloon-block/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Balloon editor</h1>
@@ -392,7 +392,7 @@ To try it out online, check the {@link examples/builds/document-editor document 
 Load the document editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/decoupled-document/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/decoupled-document/ckeditor.js"></script>
 ```
 
 Alternatively, you may install CKEditor&nbsp;5 from `npm`:
@@ -432,7 +432,7 @@ Full code example:
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Document editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/decoupled-document/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/decoupled-document/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Document editor</h1>
@@ -480,7 +480,7 @@ In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 Load the multi-root editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/multi-root/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/multi-root/ckeditor.js"></script>
 ```
 
 Alternatively, you may install CKEditor&nbsp;5 from `npm`:
@@ -630,7 +630,7 @@ Full code example:
 	</div>
 </div>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/multi-root/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/multi-root/ckeditor.js"></script>
 <script>
 	MultiRootEditor
 		.create( {
