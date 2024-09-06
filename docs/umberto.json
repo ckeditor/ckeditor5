@@ -475,12 +475,6 @@
 									"order": 30
 								}
 							]
-						},
-						{
-							"name": "Migrations (WIP name)",
-							"id": "migrations",
-							"slug": "migrations",
-							"order": 110
 						}
 					]
 				},
@@ -812,16 +806,22 @@
 			"slug": "updating",
 			"categories": [
 				{
+					"name": "Migrations (WIP name)",
+					"id": "migrations",
+					"slug": "migrations",
+					"order": 10
+				},
+				{
 					"name": "New installation methods",
 					"id": "nim-migration",
 					"slug": "nim-migration",
-					"order": 10
+					"order": 20
 				},
 				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
 					"slug": "ckeditor4",
-					"order": 20
+					"order": 30
 				},
 				{
 					"name": "Update guides",
