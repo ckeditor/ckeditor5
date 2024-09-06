@@ -76,3 +76,17 @@ beforeEach( () => {
 ```
 
 Code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets and Window objects from the head section of your HTML file before each test.
+
+## Known issues
+
+### Slow test execution
+
+If you notice that your tests are running slower after migrating to the CDN, it may be caused by the browser downloading the CKEditor&nbsp;5 script each time the test is executed. While it is not recommended to disable the head cleanup before each test, you may disable it if you notice a significant slowdown in your test execution and your code handles the CKEditor&nbsp;5 script async injection properly.
+
+### Script injection issues
+
+If you notice that the CKEditor&nbsp;5 script is not injected properly, ensure that your testing suite uses a real browser environment for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser. Consider using tools like:
+
+* [Vitest](https://vitest.dev/)
+* [Playwright](https://playwright.dev/)
+* [Cypress](https://www.cypress.io/)
