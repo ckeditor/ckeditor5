@@ -4,11 +4,13 @@
  */
 
 import type {
-	Bookmark
+	Bookmark,
+	BookmarkEditing
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Bookmark.pluginName ]: Bookmark;
+		[ BookmarkEditing.pluginName ]: BookmarkEditing;
 	}
 }
