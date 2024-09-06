@@ -281,7 +281,15 @@ For more information, please refer to the {@link getting-started/setup/ui-langua
 
 Jest is the default test runner used by many React apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
 
-If this is not possible, you can use the following mock snippet:
+For testing CKEditor&nbsp;5, it is recommended to use testing frameworks that utilize a real browser and provide a complete DOM implementation. Some popular options include:
+
+* [Vitest](https://vitest.netlify.app/)
+* [Playwright](https://playwright.dev/)
+* [Cypress](https://www.cypress.io/)
+
+These frameworks offer better support for testing CKEditor&nbsp;5 and provide a more accurate representation of how the editor behaves in a real browser environment.
+
+If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
 
 ```jsx
 import React, { useRef } from 'react';
