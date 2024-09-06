@@ -189,7 +189,7 @@ export default class UploadcareImageEditCommand extends Command {
 	private _prepareListeners( state: ProcessingState ) {
 		const imageEditor = document.querySelector( 'uc-cloud-image-editor' ) as UC.CloudImageEditor;
 
-		imageEditor.addEventListener( 'apply', ( evt: CustomEvent<UC.OutputFileEntry> ) => {
+		imageEditor.addEventListener<any>( 'apply', ( evt: CustomEvent<UC.OutputFileEntry> ) => {
 			this._replaceImage( state.element, evt.detail ); // @TODO no image id in the event, either we gat it from the URL or ???
 
 			this._dialog.hide();

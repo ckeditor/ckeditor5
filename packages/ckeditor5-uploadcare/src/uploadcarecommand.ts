@@ -10,14 +10,14 @@
  */
 
 import type { Writer } from 'ckeditor5/src/engine.js';
-import { Command, icons, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor, icons } from 'ckeditor5/src/core.js';
 import { createElement } from 'ckeditor5/src/utils.js';
 import { Dialog, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 import type * as UC from '@uploadcare/file-uploader';
 
 import UploadcareFormView from './ui/uploadcareformview.js';
-import type { UploadcareAssetImageDefinition, UploadcareSource } from './uploadcareconfig.js';
+import { UploadcareSource, type UploadcareAssetImageDefinition } from './uploadcareconfig.js';
 import { getTranslation } from './utils/common-translations.js';
 
 /**
@@ -241,12 +241,16 @@ export default class UploadcareCommand extends Command {
 			this._dialog.hide();
 		} );
 
-		this._ctxElement!.addEventListener( 'change', ( evt: CustomEvent<UC.OutputCollectionState> ) => {
+		this._ctxElement!.addEventListener<any>( 'change', ( evt: CustomEvent<UC.OutputCollectionState> ) => {
 			// Whenever the `clear` button is triggered we need to re-init the flow.
 			if ( evt.detail.status === 'idle' && !evt.detail.allEntries.length && this._dialog.isOpen ) {
-				const activity = this._type === 'local' ? 'start-from' : this._type;
-
-				this._api!.setCurrentActivity( activity );
+				// In the case of the `local` source, we do not want to trigger `initFlow` because it would open the native
+				// file selection dialog. For other sources, we call `initFlow` to continue with the regular process.
+				if ( this._type === UploadcareSource.Local ) {
+					this._api!.setCurrentActivity( UploadcareSource.Local );
+				} else {
+					this._api!.initFlow();
+				}
 			}
 		} );
 

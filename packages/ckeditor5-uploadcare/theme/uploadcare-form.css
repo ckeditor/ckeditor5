@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-uploadcare-form-view-width: 650px;
+	--ck-uploadcare-form-view-width: 700px;
 	--ck-uploadcare-external-source-view-height: 350px;
 }
 
@@ -34,6 +34,11 @@
 
 	.uc-viewport {
 		height: var(--ck-uploadcare-external-source-view-height);
+	}
+
+	.uc-cancel-btn {
+		visibility: hidden;
+		pointer-events: none;
 	}
 
 	/* stylelint-disable selector-type-no-unknown */
