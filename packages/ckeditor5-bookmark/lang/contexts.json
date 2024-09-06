@@ -1,3 +1,4 @@
 {
-	"Bookmark": "The label of the bookmark toolbar button."
+	"Insert bookmark": "The label of the bookmark toolbar button.",
+	"Bookmark": "The Feature that provide an anchor with unique name that user can use to link to."
 }
