@@ -14,7 +14,7 @@ import bookmarkIcon from '../theme/icons/bookmark.svg';
 import '../theme/bookmark.css';
 
 /**
- * The UI plugin of the bookamrk feature.
+ * The UI plugin of the bookmark feature.
  *
  * It registers the `'bookmark'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * which inserts the `bookmark` element upon selection.
@@ -63,14 +63,14 @@ export default class BookmarkUI extends Plugin {
 			icon: bookmarkIcon
 		} );
 
-		// TODO: when `bookamrk` command will be done, this should be uncomment.
+		// TODO: when `bookmark` command will be done, this should be uncomment.
 
 		// view.bind( 'isEnabled' ).to( command );
 		// view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
 
 		// Execute the command.
 		this.listenTo( view, 'execute', () => {
-			// TODO: when `bookamrk` command will be done, this should be uncomment.
+			// TODO: when `bookmark` command will be done, this should be uncomment.
 
 			// editor.execute( 'bookmark' );
 			editor.editing.view.focus();
