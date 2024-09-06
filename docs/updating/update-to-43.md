@@ -18,6 +18,10 @@ modified_at: 2024-07-31
 
 _Released on September 5, 2024._
 
+For the entire list of changes introduced in version 43.1.0, see the [release notes for CKEditor&nbsp;5 v43.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0).
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v43.1.0.
+
 ### Reverted recently introduced `config.sanitizeHtml`
 
 In v43.0.0 we made a decision to move {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} to a top-level property `config.sanitizeHtml`, so it could be used by multiple features (HTML embed, merge fields, and possibly other in future).

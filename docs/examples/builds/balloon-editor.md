@@ -12,7 +12,7 @@ classes: main__content--no-toc
 The balloon editor type lets you create your content directly in its target location with the help of a balloon toolbar that appears next to the selected editable document element.
 
 <info-box hint>
-	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-balloon) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-balloon) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
 
 {@snippet examples/balloon-editor}
