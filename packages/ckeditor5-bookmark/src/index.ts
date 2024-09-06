@@ -8,5 +8,6 @@
  */
 
 export { default as Bookmark } from './bookmark.js';
+export { default as BookmarkEditing } from './bookmarkediting.js';
 
 import './augmentation.js';
