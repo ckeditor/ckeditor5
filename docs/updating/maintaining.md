@@ -17,7 +17,7 @@ CKEditor&nbsp;5 should be {@link updating/updating-ckeditor-5 updated frequently
 
 ### Use Builder to add plugins
 
-Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, it is easier and safer to use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
+Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, it is easier and safer to use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
 
 ## Safety
 

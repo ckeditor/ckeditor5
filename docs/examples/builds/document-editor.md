@@ -14,7 +14,7 @@ The editor in this example is a feature–rich preset focused on rich text editi
 See the {@link framework/document-editor tutorial} to learn how to create this kind of an editor (and similar) with a custom UI layout on top of {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
 
 <info-box hint>
-	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-document) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-document) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
 
 {@snippet examples/document-editor}

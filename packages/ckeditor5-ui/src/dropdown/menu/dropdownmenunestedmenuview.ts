@@ -245,6 +245,7 @@ export default class DropdownMenuNestedMenuView extends View implements Focusabl
 	 */
 	private _attachBehaviors(): void {
 		DropdownMenuBehaviors.openOnButtonClick( this );
+		DropdownMenuBehaviors.openAndFocusOnEnterKeyPress( this );
 		DropdownMenuBehaviors.openOnArrowRightKey( this );
 		DropdownMenuBehaviors.closeOnEscKey( this );
 		DropdownMenuBehaviors.closeOnArrowLeftKey( this );

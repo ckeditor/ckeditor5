@@ -95,6 +95,7 @@ commands:
 jobs:
   cke5_manual:
     machine: true
+    resource_class: xlarge
     steps:
       - checkout_command
       - halt_if_short_flow
@@ -109,6 +110,7 @@ jobs:
 
   cke5_validators:
     machine: true
+    resource_class: xlarge
     steps:
       - checkout_command
       - bootstrap_repository_command
@@ -148,6 +150,7 @@ jobs:
 
   cke5_coverage:
     machine: true
+    resource_class: xlarge
     steps:
       - community_verification_command
       - checkout_command
@@ -171,6 +174,7 @@ jobs:
 
   cke5_trigger_release_process:
     machine: true
+    resource_class: xlarge
     steps:
       - community_verification_command
       - checkout_command
@@ -198,6 +202,7 @@ jobs:
 
   cke5_trigger_uber_ci:
     machine: true
+    resource_class: xlarge
     steps:
       - community_verification_command
       - checkout_command
@@ -208,6 +213,7 @@ jobs:
 
   release_prepare:
     machine: true
+    resource_class: xlarge
     steps:
       - checkout_command
       - halt_if_short_flow
@@ -228,6 +234,7 @@ jobs:
 
   notify_ci_failure:
     machine: true
+    resource_class: medium
     parameters:
       hideAuthor:
         type: string
@@ -246,6 +253,7 @@ jobs:
 
   stale_bot:
     machine: true
+    resource_class: xlarge
     steps:
       - checkout_command
       - bootstrap_repository_command
