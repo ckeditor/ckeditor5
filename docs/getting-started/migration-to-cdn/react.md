@@ -1,14 +1,14 @@
 ---
-menu-title: Migrate React testing suite from NPM to CDN
-meta-title: React CKEditor 5 - migrate testing suite from NPM to CDN | CKEditor 5 documentation
-meta-description: Migrate React CKEditor 5 testing suite from NPM to CDN in a few simple steps. Learn how to install React CKEditor 5 testing suite in your project using the CDN.
+menu-title: Migrate React integration from NPM to CDN
+meta-title: React CKEditor 5 - migrate integration from NPM to CDN | CKEditor 5 documentation
+meta-description: Migrate React CKEditor 5 integration from NPM to CDN in a few simple steps. Learn how to install React CKEditor 5 integration in your project using the CDN.
 category: migrations
 order: 20
 ---
 
-# Migrating CKEditor&nbsp;5 React testing suite from NPM to CDN
+# Migrating CKEditor&nbsp;5 React integration from NPM to CDN
 
-This guide will help you migrate CKEditor&nbsp;5 React testing suite from an NPM-based installation to a CDN-based installation.
+This guide will help you migrate CKEditor&nbsp;5 React integration from an NPM-based installation to a CDN-based installation.
 
 ## Prerequisites
 
