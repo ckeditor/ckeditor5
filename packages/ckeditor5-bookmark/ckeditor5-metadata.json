@@ -3,7 +3,7 @@
 		{
 			"name": "Bookmark",
 			"className": "Bookmark",
-			"description": "Allows to insert a bookmark into the content. // TODO",
+			"description": "Allows to insert a bookmark into the content to provide fast access to important sections.",
 			"docs": "features/bookmark.html",
 			"path": "src/bookmark.js",
 			"uiComponents": [

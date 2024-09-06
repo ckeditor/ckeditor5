@@ -5,8 +5,7 @@ CKEditor&nbsp;5 bookmark feature
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-## TODO
-This package contains the bookmark feature for CKEditor&nbsp;5. It allows to manage the bookmarks across the content of editor.
+This package contains the bookmark feature for CKEditor&nbsp;5. It allows to add and manage the bookmarks attached to the content of editor for fast access and more efficient content creation.
 
 ## Demo
 
