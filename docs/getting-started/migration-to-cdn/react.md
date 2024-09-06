@@ -188,7 +188,7 @@ The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Wi
 
 ### Migrate `CKEditorContext` component
 
-#### Step 1: Remove CKEditor&nbsp;5 Context imports
+#### Step 1: Remove CKEditor&nbsp;5 imports
 
 If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
 
@@ -316,3 +316,123 @@ function App() {
 #### Next steps
 
 Now that you have migrated your CKEditor&nbsp;5 React Context integration to use the CDN, you can continue with the next steps such as migration testing suite. It's identical to the steps described in the previous section.
+
+### Migrate `useMultiRootEditor` hook
+
+#### Step 1: Remove CKEditor&nbsp;5 imports
+
+If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
+
+```javascript
+import { ClassicEditor, ... } from 'ckeditor5';
+import { EasyImage, ... } from 'ckeditor5-premium-features';
+```
+
+#### Step 2: Use `withCKEditorCloud` HOC to load CKEditor&nbsp;5 from CDN
+
+If you are using the `useMultiRootEditor` hook, you need to update it to use the `withCKEditorCloud` HOC. Here is an example of migrating the `useMultiRootEditor` hook:
+
+**Before:**
+
+```jsx
+import { MultiRootEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { useMultiRootEditor } from '@ckeditor/ckeditor5-react';
+
+import 'ckeditor5/ckeditor5.css';
+
+const App = () => {
+    const editorProps = {
+        editor: MultiRootEditor,
+        data: {
+            intro: '<h1>React multi-root editor</h1>',
+            content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
+        },
+        config: {
+            plugins: [ Essentials, Bold, Italic, Paragraph ],
+            toolbar: {
+                items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+            },
+        }
+    };
+
+    const {
+        editor,
+        toolbarElement,
+        editableElements,
+        data,
+        setData,
+        attributes,
+        setAttributes
+    } = useMultiRootEditor( editorProps );
+
+    return (
+        <div className="App">
+            <h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
+
+            { toolbarElement }
+
+            { editableElements }
+        </div>
+    );
+}
+
+export default App;
+```
+
+**After:**
+
+```jsx
+import { withCKEditorCloud } from '@ckeditor/ckeditor5-react';
+
+const withCKCloud = withCKEditorCloud( {
+	cloud: {
+		// Configuration is identical as in the `useCKEditorCloud` hook.
+		version: '43.0.0',
+		languages: [ 'en', 'de' ]
+	}
+} );
+
+const App = withCKCloud( ( { cloud } ) => {
+	const {
+		MultiRootEditor,
+		Bold,
+		Essentials,
+		Italic,
+		Paragraph
+	} = cloud.CKEditor;
+
+	const editorProps = {
+		editor: MultiRootEditor,
+		data: {
+			intro: '<h1>React multi-root editor</h1>',
+			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
+		},
+		config: {
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			},
+		}
+	};
+
+	const {
+		editor,
+		toolbarElement,
+		editableElements,
+		data,
+		setData,
+		attributes,
+		setAttributes
+	} = useMultiRootEditor( editorProps );
+
+	return (
+		<div className="App">
+			<h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
+
+			{ toolbarElement }
+
+			{ editableElements }
+		</div>
+	);
+} );
+```
