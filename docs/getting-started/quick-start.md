@@ -21,7 +21,7 @@ You have a few methods to choose from:
 
 ## Using CKEditor&nbsp;5 Builder
 
-Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
 
 * editor type,
 * the features you need,
@@ -344,7 +344,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the [final section of this guide](#obtaining-a-license-key)
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, as described in the [final section of this guide](#obtaining-a-license-key).
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
@@ -384,7 +384,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [final section of this guide](#obtaining-a-license-key)
+Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as described in the [final section of this guide](#obtaining-a-license-key).
 
 In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
@@ -495,7 +495,7 @@ Then, add the scripts with the JavaScript code. They registers global variables 
 <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 ```
 
-Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [final section of this guide](#obtaining-a-license-key).
+Please note, that to use premium features, you need to activate them with a proper license key, as described in the [final section of this guide](#obtaining-a-license-key).
 
 In the following script tag, get the editor class and desired plugins from the `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES` objects and add them to the `plugins` array. Add toolbar items where applicable.
 
