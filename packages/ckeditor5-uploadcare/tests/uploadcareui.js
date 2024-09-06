@@ -155,7 +155,7 @@ describe( 'UploadcareUI', () => {
 			],
 			toolbar: [ 'uploadcare' ],
 			uploadcare: {
-				pubKey: 'KEY',
+				pubkey: 'KEY',
 				sourceList: [ 'url' ],
 				...uploadcareProps
 			}

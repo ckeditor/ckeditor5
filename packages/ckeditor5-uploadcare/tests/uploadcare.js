@@ -34,7 +34,7 @@ describe( 'Uploadcare', () => {
 				Uploadcare
 			],
 			uploadcare: {
-				pubKey: 'KEY'
+				pubkey: 'KEY'
 			}
 		} );
 	} );

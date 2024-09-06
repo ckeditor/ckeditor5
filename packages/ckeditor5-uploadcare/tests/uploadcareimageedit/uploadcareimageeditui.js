@@ -34,7 +34,7 @@ describe( 'UploadcareImageEditUI', () => {
 					Paragraph
 				],
 				uploadcare: {
-					pubKey: 'KEY'
+					pubkey: 'KEY'
 				}
 			} )
 			.then( newEditor => {

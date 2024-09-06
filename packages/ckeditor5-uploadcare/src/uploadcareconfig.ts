@@ -13,13 +13,13 @@ import type * as UC from '@uploadcare/file-uploader';
  * The configuration of the {@link module:uploadcare/uploadcare~Uploadcare Uploadcare feature}.
  *
  * The minimal configuration for the Uploadcare feature requires providing the
- * {@link module:uploadcare/uploadcareconfig~UploadcareConfig#tokenUrl `config.uploadcare.pubKey`}:
+ * {@link module:uploadcare/uploadcareconfig~UploadcareConfig#tokenUrl `config.uploadcare.pubkey`}:
  *
  * ```ts
  * ClassicEditor
  *  .create( editorElement, {
  *      uploadcare: {
- *          pubKey: 'YOUR_PUBLIC_KEY'
+ *          pubkey: 'YOUR_PUBLIC_KEY'
  *      }
  *  } )
  *  .then( ... )
@@ -38,7 +38,7 @@ import type * as UC from '@uploadcare/file-uploader';
  *              'instagram',
  *              'gdrive'
  *          ],
- *          pubKey: 'YOUR_PUBLIC_KEY'
+ *          pubkey: 'YOUR_PUBLIC_KEY'
  *      }
  *  } )
  *  .then( ... )

@@ -111,7 +111,7 @@ class Adapter implements UploadAdapter {
 	 */
 	public async upload(): Promise<UploadResponse> {
 		const t = this.editor.t;
-		const publicKey = this.editor.config.get( 'uploadcare.pubKey' ) as string;
+		const publicKey = this.editor.config.get( 'uploadcare.pubkey' ) as string;
 		const file = ( await this.loader.file )!;
 
 		return this._uploadFile( file, {

@@ -46,7 +46,7 @@ describe( 'UploadcareUploadAdapter', () => {
 					UploadcareUploadAdapter
 				],
 				uploadcare: {
-					pubKey: 'KEY'
+					pubkey: 'KEY'
 				}
 			} )
 			.then( newEditor => {
@@ -135,7 +135,7 @@ describe( 'UploadcareUploadAdapter', () => {
 						UploadcareUploadAdapter
 					],
 					uploadcare: {
-						pubKey: 'KEY'
+						pubkey: 'KEY'
 					}
 				} );
 
@@ -300,7 +300,7 @@ describe( 'UploadcareUploadAdapter', () => {
 						UploadcareUploadAdapter
 					],
 					uploadcare: {
-						pubKey: 'KEY',
+						pubkey: 'KEY',
 						ignoreDataId: true
 					}
 				} );
