@@ -450,7 +450,7 @@
 							"name": "Cloud (CDN)",
 							"id": "cloud",
 							"slug": "cloud",
-							"order": 30,
+							"order": 10,
 							"categories": [
 								{
 									"name": "React",
@@ -465,7 +465,7 @@
 							"name": "Self-hosted (npm/ZIP)",
 							"id": "self-hosted",
 							"slug": "self-hosted",
-							"order": 40,
+							"order": 20,
 							"categories": [
 								{
 									"name": "React",
@@ -806,16 +806,22 @@
 			"slug": "updating",
 			"categories": [
 				{
+					"name": "Migrations from npm to CDN",
+					"id": "migrations",
+					"slug": "migrations",
+					"order": 10
+				},
+				{
 					"name": "New installation methods",
 					"id": "nim-migration",
 					"slug": "nim-migration",
-					"order": 10
+					"order": 20
 				},
 				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
 					"slug": "ckeditor4",
-					"order": 20
+					"order": 30
 				},
 				{
 					"name": "Update guides",
