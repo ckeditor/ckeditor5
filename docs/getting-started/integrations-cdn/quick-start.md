@@ -12,9 +12,7 @@ order: 20
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
-## Using CKEditor&nbsp;5 Builder
-
-Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
+{@snippet getting-started/use-builder}
 
 ## Installing CKEditor&nbsp;5 from CDN
 
