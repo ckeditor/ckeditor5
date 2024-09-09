@@ -57,13 +57,13 @@ it( 'ClassicEditor test', () => {
 } );
 ```
 
-### Step 3 (Optional): Clean up the head entries before each test
+### Step 3 (Optional): Clean up the document head entries before each test
 
-If you are using a testing suite that does not clean up the head entries before each test, you may need to do it manually. This is important because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file and you need to ensure that the head section is clean before each test.
+If you are using a testing suite that does not Clean up the document head entries before each test, you may need to do it manually. This is important because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file and you need to ensure that the head section is clean before each test.
 
 However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser will need to download the CKEditor&nbsp;5 script each time. In most of the cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
 
-Here is an example of how you can clean up the head entries before each test:
+Here is an example of how you can Clean up the document head entries before each test:
 
 ```javascript
 import { removeAllCkCdnResources } from '@ckeditor/ckeditor5-integrations-common/test-utils';
