@@ -28,15 +28,7 @@ Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;
 
 ## Quick start
 
-### Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor 5 in your Vue application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
+{@snippet getting-started/use-builder}
 
 ### Installing from npm
 
