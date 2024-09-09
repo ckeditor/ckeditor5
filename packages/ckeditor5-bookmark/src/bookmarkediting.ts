@@ -82,7 +82,7 @@ export default class BookmarkEditing extends Plugin {
 					class: 'ck-bookmark'
 				}, [ this._createBookmarkUIElement( writer ) ] );
 
-				containerElement.getFillerOffset = () => null;
+				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
 
 				return toWidget( containerElement, writer, {
 					label: ` ${ t( 'Bookmark' ) } ${ id }`
@@ -92,7 +92,7 @@ export default class BookmarkEditing extends Plugin {
 	}
 
 	/**
-	 * Creates a UI element for the bookmark representation in editing view.
+	 * Creates a UI element for the `bookmark` representation in editing view.
 	 */
 	private _createBookmarkUIElement( writer: DowncastWriter ): ViewUIElement {
 		return writer.createUIElement( 'span', { class: 'ck-bookmark__icon' }, function( domDocument ) {

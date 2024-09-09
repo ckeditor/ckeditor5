@@ -15,20 +15,18 @@
 	&.ck-widget {
 		outline: none;
 
-		& svg {
-			& .ck-icon__fill {
-				transition: fill var(--ck-bookmark-icon-animation-duration) var(--ck-bookmark-icon-animation-curve);
-			}
+		& .ck-bookmark__icon .ck-icon__fill {
+			transition: fill var(--ck-bookmark-icon-animation-duration) var(--ck-bookmark-icon-animation-curve);
 		}
 
 		&:hover {
-			svg .ck-icon__fill {
+			& .ck-bookmark__icon .ck-icon__fill {
 				fill: var(--ck-bookmark-icon-hover-fill-color);
 			}
 		}
 
 		&.ck-widget_selected {
-			svg .ck-icon__fill {
+			.ck-bookmark__icon .ck-icon__fill {
 				fill: var(--ck-bookmark-icon-selected-fill-color);
 			}
 		}

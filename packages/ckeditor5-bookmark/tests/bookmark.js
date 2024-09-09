@@ -5,6 +5,7 @@
 
 import Bookmark from '../src/bookmark.js';
 import BookmarkUI from '../src/bookmarkui.js';
+import BookmarkEditing from '../src/bookmarkediting.js';
 
 describe( 'Bookmark', () => {
 	it( 'should be correctly named', () => {
@@ -13,6 +14,7 @@ describe( 'Bookmark', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( Bookmark.requires ).to.deep.equal( [
+			BookmarkEditing,
 			BookmarkUI
 		] );
 	} );
