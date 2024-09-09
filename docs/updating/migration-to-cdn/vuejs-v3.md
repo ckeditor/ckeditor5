@@ -39,7 +39,7 @@ Replace the CKEditor&nbsp;5 NPM package imports with the CDN script imports and 
 
 **Before:**
 
-```vue
+```html
 <template>
 	<h2>Using CKEditor 5 from NPM in Vue 3</h2>
 
@@ -82,7 +82,7 @@ const config = reactive( {
 
 **After:**
 
-```vue
+```html
 <template>
 	<h2>Using CKEditor 5 from NPM in Vue 3</h2>
   	<ckeditor
