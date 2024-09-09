@@ -51,7 +51,8 @@ ClassicEditor
 			}
 		},
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Timestamp ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'timestamp' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'timestamp' ],
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

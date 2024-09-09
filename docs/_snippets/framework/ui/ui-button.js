@@ -68,7 +68,8 @@ document.querySelector( '.ui-button' ).append( toolbarButtons.element );
 
 ClassicEditor
 	.create( document.querySelector( '#ui-button-editor' ), {
-		plugins: [ Essentials ]
+		plugins: [ Essentials ],
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		this.tooltipManager = new TooltipManager( editor );

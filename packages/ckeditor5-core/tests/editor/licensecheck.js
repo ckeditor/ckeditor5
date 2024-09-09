@@ -36,10 +36,11 @@ describe( 'Editor - license check', () => {
 	} );
 
 	describe( 'license key verification', () => {
-		let showErrorStub;
+		let showErrorStub, consoleInfoStub;
 
 		beforeEach( () => {
 			showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
+			consoleInfoStub = sinon.stub( console, 'info' );
 		} );
 
 		describe( 'required fields in the license key', () => {
@@ -305,13 +306,10 @@ describe( 'Editor - license check', () => {
 		} );
 
 		describe( 'evaluation/trial check', () => {
-			let consoleInfoSpy;
-
 			const licenseTypes = [ 'evaluation', 'trial' ];
 
 			beforeEach( () => {
 				sinon.useFakeTimers( { now: Date.now() } );
-				consoleInfoSpy = sinon.spy( console, 'info' );
 			} );
 
 			afterEach( () => {
@@ -371,9 +369,9 @@ describe( 'Editor - license check', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, licenseType + 'Limit' );
 					expect( editor.isReadOnly ).to.be.true;
-					sinon.assert.calledOnce( consoleInfoSpy );
+					sinon.assert.calledOnce( consoleInfoStub );
 					sinon.assert.calledWith(
-						consoleInfoSpy,
+						consoleInfoStub,
 						`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
 						'Make sure you will not use it in the production environment.'
 					);
@@ -405,11 +403,8 @@ describe( 'Editor - license check', () => {
 		} );
 
 		describe( 'development license', () => {
-			let consoleInfoSpy;
-
 			beforeEach( () => {
 				sinon.useFakeTimers( { now: Date.now() } );
-				consoleInfoSpy = sinon.spy( console, 'info' );
 			} );
 
 			afterEach( () => {
@@ -424,8 +419,8 @@ describe( 'Editor - license check', () => {
 				const editor = new TestEditor( { licenseKey } );
 
 				expect( editor.isReadOnly ).to.be.false;
-				sinon.assert.calledOnce( consoleInfoSpy );
-				sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
+				sinon.assert.calledOnce( consoleInfoStub );
+				sinon.assert.calledWith( consoleInfoStub, 'You are using the development version of CKEditor 5 with ' +
 				'limited usage. Make sure you will not use it in the production environment.' );
 			} );
 
