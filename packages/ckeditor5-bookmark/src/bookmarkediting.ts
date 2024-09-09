@@ -63,9 +63,13 @@ export default class BookmarkEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'bookmark',
 			view: ( modelElement, { writer } ) => {
-				return writer.createEmptyElement( 'a', {
+				const emptyElement = writer.createEmptyElement( 'a', {
 					'id': modelElement.getAttribute( 'bookmarkId' )
 				} );
+
+				emptyElement.getFillerOffset = () => null;
+
+				return emptyElement;
 			}
 		} );
 
@@ -91,7 +95,7 @@ export default class BookmarkEditing extends Plugin {
 	 * Creates a UI element for the bookmark representation in editing view.
 	 */
 	private _createBookmarkUIElement( writer: DowncastWriter ): ViewUIElement {
-		return writer.createUIElement( 'span', {}, function( domDocument ) {
+		return writer.createUIElement( 'span', { class: 'ck-bookmark__icon' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
 			const icon = new IconView();
