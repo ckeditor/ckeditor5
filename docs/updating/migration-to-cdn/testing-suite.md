@@ -8,11 +8,11 @@ order: 20
 
 # Migrating CKEditor&nbsp;5 testing suite from npm to CDN
 
-This guide will help you migrate CKEditor&nbsp;5 testing suite from an NPM-based installation to a CDN-based installation.
+This guide will help you migrate the CKEditor&nbsp;5 testing suite from an NPM-based installation to a CDN-based one.
 
 ## Prerequisites
 
-Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
+Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN script injection might not be recognized properly in such environments.
 
 ## Migration steps
 
@@ -30,7 +30,7 @@ import { AIAdapter, ... } from 'ckeditor5-premium-features';
 **Before:**
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
 
 it( 'ClassicEditor test', () => {
 	// Your test that use CKEditor 5 object.
@@ -59,11 +59,11 @@ it( 'ClassicEditor test', () => {
 
 ### Step 3 (Optional): Clean up the document head entries before each test
 
-If you are using a testing suite that does not Clean up the document head entries before each test, you may need to do it manually. This is important because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file and you need to ensure that the head section is clean before each test.
+If you use a testing suite that does not clean up the document head entries before each test, you may need to do it manually. It is essential because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file, and you need to ensure that the head section is clean before each test.
 
-However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser will need to download the CKEditor&nbsp;5 script each time. In most of the cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
+However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser needs to download the CKEditor&nbsp;5 script each time. In most cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
 
-Here is an example of how you can Clean up the document head entries before each test:
+Here is an example of how you can clean up the document head entries before each test:
 
 ```javascript
 import { removeAllCkCdnResources } from '@ckeditor/ckeditor5-integrations-common/test-utils';
@@ -73,7 +73,7 @@ beforeEach( () => {
 } );
 ```
 
-Code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets and Window objects from the head section of your HTML file before each test.
+The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Window objects from the head section of your HTML file before each test.
 
 ## Known issues
 
@@ -83,7 +83,7 @@ If you notice that your tests are running slower after migrating to CDN, it may 
 
 ### Script injection issues
 
-If you notice that the CKEditor&nbsp;5 script is not injected properly, ensure that your testing suite uses a real browser environment for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser. Consider using tools like:
+If you notice that the CKEditor&nbsp;5 script is not injected properly, ensure that your testing suite uses a real browser environment for testing. If you use `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser. Consider using tools like:
 
 * [Vitest](https://vitest.dev/)
 * [Playwright](https://playwright.dev/)

@@ -8,7 +8,7 @@ order: 50
 
 # Migrating Angular CKEditor&nbsp;5 integration from npm to CDN
 
-This guide will help you migrate Angular CKEditor&nbsp;5 integration from an NPM-based installation to a CDN-based installation.
+This guide will help you migrate Angular CKEditor&nbsp;5 integration from an NPM-based installation to a CDN-based one.
 
 ## Prerequisites
 
@@ -18,9 +18,9 @@ Remove the existing CKEditor&nbsp;5 packages from your project. If you are using
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the CKEditor&nbsp;5 Angular integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/angular Angular} documentation.
+Upgrade the CKEditor&nbsp;5 Angular integration to the latest version. You can find it in the {@link getting-started/integrations-cdn/angular Angular integration} documentation.
 
-Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
+Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN script injection might not be recognized properly in such environments.
 
 ## Migration steps
 
@@ -29,8 +29,8 @@ Ensure that your testing suite uses real web browser environments for testing. I
 If you have any CKEditor&nbsp;5 imports in your Angular components, remove them. For example, remove lines like:
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 ```
 
 ### Step 2: Update your Angular components to use CDN
@@ -95,7 +95,7 @@ export class AppComponent {
 		loadCKEditorCloud( {
 			version: '43.0.0'
 		} )
-			.then( this._setupEditor.bind( this ) );
+		.then( this._setupEditor.bind( this ) );
 	}
 
 	private _setupEditor( cloud ) {
@@ -119,10 +119,11 @@ export class AppComponent {
 // app.component.html
 
 <ckeditor
-	*ngIf="Editor"
-	[editor]="Editor"
-	[config]="config"
-	...
+    *ngIf="Editor"
+    [editor]="Editor"
+    [config]="config"
+    <!-- ... -->
+>
 </ckeditor>
 ```
 
@@ -133,7 +134,7 @@ If you have any tests that use CKEditor&nbsp;5 objects, you need to update them 
 **Before:**
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
 
 it( 'ClassicEditor test', () => {
 	// Your test that uses the CKEditor 5 object.
@@ -154,7 +155,7 @@ beforeEach( async () => {
 } );
 
 it( 'ClassicEditor test', () => {
-	const { ClassicEditor, ... } = cloud.CKEditor;
+    const { ClassicEditor, /* ... other imports */ } = cloud.CKEditor;
 
 	// Your test that uses the CKEditor 5 object.
 } );
@@ -162,9 +163,9 @@ it( 'ClassicEditor test', () => {
 
 ### Step 4 (Optional): Clean up the document head entries before each test
 
-If you are using a testing suite that does not clean up the document head entries before each test, you may need to do it manually. This is important because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file and you need to ensure that the head section is clean before each test.
+If you use a testing suite that does not clean up the document head entries before each test, you may need to do it manually. It is essential because the CKEditor&nbsp;5 CDN script will inject the editor into the head section of your HTML file and, you need to ensure that the head section is clean before each test.
 
-However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser will need to download the CKEditor&nbsp;5 script each time. In most of the cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
+However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser needs to download the CKEditor&nbsp;5 script each time. In most cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
 
 Here is an example of how you can Clean up the document head entries before each test:
 

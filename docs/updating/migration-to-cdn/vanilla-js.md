@@ -12,9 +12,9 @@ This guide will help you migrate CKEditor&nbsp;5 from an NPM-based installation 
 
 ## Prerequisites
 
-If you are using frameworks like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/), or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file and follow the traditional HTML integration to install CKEditor&nbsp;5.
+If you use frameworks like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/), or [Ruby on Rails](https://rubyonrails.org/), modify the head section in the main layout file and follow the traditional HTML integration to install CKEditor&nbsp;5.
 
-However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/), and you are not using official integrations, you may need to follow different steps to migrate CKEditor&nbsp;5 from npm to CDN. In this case, you can utilize the lazy injection of CKEditor&nbsp;5 since you cannot directly modify the head section.
+However, if you use SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/) and do not use official integrations, you may need to follow different steps to migrate CKEditor&nbsp;5 from npm to CDN. In this case, you can utilize the lazy injection of CKEditor&nbsp;5 since you cannot directly modify the head section.
 
 ## Traditional HTML integration
 
@@ -53,7 +53,7 @@ Since the CKEditor&nbsp;5 script is now included via the CDN, you can access the
 
 ```javascript
 import { ClassicEditor } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 
 ClassicEditor
 	.create( document.querySelector('#editor'), {
@@ -69,6 +69,7 @@ ClassicEditor
 
 ```javascript
 const { ClassicEditor } = window.CKEDITOR;
+const { AIAdapter, /* ... other imports */ } = window.CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
 	.create( document.querySelector('#editor'), {
@@ -127,4 +128,4 @@ const { ClassicEditor } = await loadCKEditorCloud( {
 
 ## Conclusion
 
-By following these steps, you have successfully migrated CKEditor&nbsp;5 from an NPM-based installation to a CDN-based installation using Vanilla JS. This approach simplifies the setup process and can help improve the performance of your application by reducing the bundle size.
+Following these steps, you successfully migrated CKEditor&nbsp;5 from an NPM-based installation to a CDN-based installation using Vanilla JS. This approach simplifies the setup process and can help improve the performance of your application by reducing the bundle size.

@@ -8,7 +8,7 @@ order: 40
 
 # Migrating Vue 3+ CKEditor&nbsp;5 integration from npm to CDN
 
-This guide will help you migrate Vue 3 CKEditor&nbsp;5 integration from an NPM-based installation to a CDN-based installation.
+This guide will help you migrate Vue 3 CKEditor&nbsp;5 integration from an NPM-based installation to a CDN-based one.
 
 ## Prerequisites
 
@@ -18,9 +18,9 @@ Remove the existing CKEditor&nbsp;5 packages from your project. If you are using
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the CKEditor&nbsp;5 Vue 3 integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/vuejs-v3 Vue 3} documentation.
+Upgrade the CKEditor&nbsp;5 Vue 3 integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/vuejs-v3 Vue 3 integration} documentation.
 
-Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
+Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN script injection might not be recognized properly in such environments.
 
 ## Migration steps
 
@@ -29,8 +29,8 @@ Ensure that your testing suite uses real web browser environments for testing. I
 If you have any CKEditor&nbsp;5 imports in your Vue components, remove them. For example, remove lines like:
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { ClassicEditor, /* ... other imports */  } from 'ckeditor5';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 ```
 
 ### Step 2: Update your Vue components to use CDN
@@ -137,7 +137,7 @@ If you have any tests that use CKEditor&nbsp;5 objects, you need to update them 
 **Before:**
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
 
 it( 'ClassicEditor test', () => {
 	// Your test that uses the CKEditor 5 object.
@@ -148,7 +148,7 @@ it( 'ClassicEditor test', () => {
 
 ```javascript
 // It may be counterintuitive that in tests you need to use `loadCKEditorCloud` instead of `useCKEditorCloud`.
-// The reason for this is that `useCKEditorCloud` is a composable and can only be used in Vue components,
+// The reason for this is that `useCKEditorCloud` is composable and can only be used in Vue components,
 // while tests are typically written as functions in testing suites. Therefore, in tests, you should use
 // the `loadCKEditorCloud` function to load CKEditor 5 from the CKEditor Cloud and obtain the necessary
 // CKEditor 5 objects. This allows you to properly test your CKEditor 5 integration without any issues.
@@ -172,9 +172,9 @@ it( 'ClassicEditor test', () => {
 
 #### Step 4 (Optional): Clean up the document head entries before each test
 
-The `useCKEditorCloud` composable under the hood injects the CKEditor&nbsp;5 scripts and styles into your document head. If you are using a testing suite that does not Clean up the document head entries before each test, you may need to do it manually. This is important because the `useCKEditorCloud` composable might reuse the same head entries for each test, which can lead to skipping `loading` state and directly going to the `success` state. It may cause some tests that rely on the `loading` state to fail.
+The `useCKEditorCloud` composable under the hood injects the CKEditor&nbsp;5 scripts and styles into your document head. If you use a testing suite that does not Clean up the document head entries before each test, you may need to do it manually. This is important because the `useCKEditorCloud` composable might reuse the same head entries for each test, which can lead to skipping the `loading` state and directly going to the `success` state. It may cause some tests that rely on the `loading` state to fail.
 
-However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser will need to download the CKEditor&nbsp;5 script each time. In most cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
+However, there is one downside to this approach. Cleaning up the head entries before each test may slow down the test execution because the browser needs to download the CKEditor&nbsp;5 script each time. In most cases, this should not be a problem, but if you notice that your tests are running slower, you may need to consider other solutions.
 
 Here is an example of how you can Clean up the document head entries before each test:
 
@@ -186,4 +186,4 @@ beforeEach( () => {
 } );
 ```
 
-The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Window objects from the head section of your HTML file before each test making sure that the `useCKEditorCloud` composable will inject the CKEditor&nbsp;5 scripts and styles again.
+The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Window objects from the head section of your HTML file before each test, making sure that the `useCKEditorCloud` composable will inject the CKEditor&nbsp;5 scripts and styles again.
