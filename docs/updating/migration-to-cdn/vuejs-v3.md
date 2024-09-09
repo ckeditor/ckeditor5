@@ -18,7 +18,7 @@ Remove the existing CKEditor&nbsp;5 packages from your project. If you are using
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the CKEditor&nbsp;5 Vue 3 integration to the latest version. You can find the latest version in the [CKEditor&nbsp;5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/frameworks/vuejs-v3.html) documentation.
+Upgrade the CKEditor&nbsp;5 Vue 3 integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/vuejs-v3 Vue 3} documentation.
 
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
 

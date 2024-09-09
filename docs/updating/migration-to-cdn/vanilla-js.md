@@ -20,7 +20,7 @@ However, if you are using SPA frameworks like [React](https://reactjs.org/), [An
 
 The classical approach to installing CKEditor&nbsp;5 involves modification of the HTML head section to include the CKEditor&nbsp;5 script from the CDN. The editor is then initialized using the `window.CKEDITOR` global variable.
 
-### Step 1: Update Your HTML File
+### Step 1: Update your HTML file
 
 First, update your HTML file to include the CKEditor&nbsp;5 script from the CDN. Add the following script and style sheet tag inside the `<head>` section of your HTML file:
 
@@ -56,7 +56,10 @@ import { ClassicEditor } from 'ckeditor5';
 import { EasyImage, ... } from 'ckeditor5-premium-features';
 
 ClassicEditor
-	.create( document.querySelector('#editor') )
+	.create( document.querySelector('#editor'), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		// ... other configuration
+	} )
 	.catch( error => {
 		console.error(error);
 	} );
@@ -68,7 +71,10 @@ ClassicEditor
 const { ClassicEditor } = window.CKEDITOR;
 
 ClassicEditor
-	.create( document.querySelector('#editor') )
+	.create( document.querySelector('#editor'), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		// ... other configuration
+	} )
 	.catch( error => {
 		console.error(error);
 	} );

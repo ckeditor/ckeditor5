@@ -18,7 +18,7 @@ Remove the existing CKEditor&nbsp;5 packages from your project. If you are using
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the CKEditor&nbsp;5 Angular integration to the latest version. You can find the latest version in the [CKEditor&nbsp;5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/frameworks/angular.html) documentation.
+Upgrade the CKEditor&nbsp;5 Angular integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/angular Angular} documentation.
 
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
 
@@ -63,9 +63,7 @@ export class AppComponent {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		// ... Other configuration ....
 	}
 }
 ```
@@ -93,6 +91,7 @@ export class AppComponent {
 	public config;
 
 	public ngOnInit() {
+		// ADDED
 		loadCKEditorCloud( {
 			version: '43.0.0'
 		} )
@@ -110,9 +109,7 @@ export class AppComponent {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-			// mention: {
-			//     Mention configuration
-			// }
+			// ... Other configuration ....
 		}
 	}
 }
