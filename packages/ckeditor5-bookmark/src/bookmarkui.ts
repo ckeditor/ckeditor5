@@ -54,7 +54,6 @@ export default class BookmarkUI extends Plugin {
 	private _createButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const command = editor.commands.get( 'bookmark' )!;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const t = locale.t;
 
@@ -63,16 +62,8 @@ export default class BookmarkUI extends Plugin {
 			icon: bookmarkIcon
 		} );
 
-		// TODO: when `bookmark` command will be done, this should be uncomment.
-
-		// view.bind( 'isEnabled' ).to( command );
-		// view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
-
 		// Execute the command.
 		this.listenTo( view, 'execute', () => {
-			// TODO: when `bookmark` command will be done, this should be uncomment.
-
-			// editor.execute( 'bookmark' );
 			editor.editing.view.focus();
 		} );
 

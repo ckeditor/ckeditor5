@@ -75,49 +75,11 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			// TODO: uncomment after command implementation.
-
-			// const executeSpy = testUtils.sinon.stub( editor, 'execute' );
 			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
 
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
-
-			// TODO: uncomment after command implementation.
-
-			// sinon.assert.calledOnceWithExactly( executeSpy, featureName );
-			// sinon.assert.callOrder( executeSpy, focusSpy );
-		} );
-
-		// TODO: unskip after command implementation.
-		it.skip( `should bind #isEnabled to ${ featureName } command`, () => {
-			const command = editor.commands.get( featureName );
-
-			expect( button.isOn ).to.be.false;
-
-			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
-
-			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
-		} );
-
-		// TODO: unskip after command implementation.
-		it.skip( `should bind #isOn to ${ featureName } command`, () => {
-			const command = editor.commands.get( featureName );
-
-			command.value = false;
-			command.isEnabled = true;
-			expect( button.isOn ).to.be.false;
-
-			command.value = true;
-			command.isEnabled = true;
-			expect( button.isOn ).to.be.true;
-
-			command.value = true;
-			command.isEnabled = false;
-			expect( button.isOn ).to.be.false;
 		} );
 	}
 } );
