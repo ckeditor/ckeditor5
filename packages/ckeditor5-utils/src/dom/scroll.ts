@@ -10,6 +10,7 @@
 import isRange from './isrange.js';
 import Rect from './rect.js';
 import isText from './istext.js';
+import getParentOrHostElement from './getparentorhostelement.js';
 
 type IfTrue<T> = T extends true ? true : never;
 
@@ -346,11 +347,7 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 			}
 		}
 
-		if ( parent.parentNode instanceof ShadowRoot ) {
-			parent = parent.parentNode.host as HTMLElement;
-		} else {
-			parent = parent.parentNode as HTMLElement;
-		}
+		parent = getParentOrHostElement( parent ) as HTMLElement;
 	}
 }
 
@@ -407,7 +404,8 @@ function getParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 
 		return parent;
 	} else {
-		return elementOrRange.parentNode as HTMLElement; // TODO ShadowRoot?
+		// TODO ShadowRoot - should this look outside the shadow DOM?
+		return getParentOrHostElement( elementOrRange ) as HTMLElement;
 	}
 }
 

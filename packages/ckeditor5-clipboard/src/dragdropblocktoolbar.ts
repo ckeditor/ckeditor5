@@ -69,8 +69,7 @@ export default class DragDropBlockToolbar extends Plugin {
 
 			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
 
-			// TODO ShadowRoot
-			//  - those events will propagate across the shadow DOM boundary (bubbles and composed flags set)
+			// TODO ShadowRoot - those events will propagate across the shadow DOM boundary (bubbles and composed flags set)
 			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );

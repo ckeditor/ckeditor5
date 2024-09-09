@@ -7,13 +7,15 @@
  * @module utils/dom/getselection
  */
 
+import isShadowRoot from './isshadowroot.js';
+
 /**
  * TODO
  */
 export default function getSelection( node: Node ): Selection | null {
 	const rootNode = node.getRootNode();
 
-	if ( rootNode instanceof ShadowRoot ) {
+	if ( isShadowRoot( rootNode ) ) {
 		// Safari & current spec.
 		const domSelection = rootNode.ownerDocument.defaultView!.getSelection()!;
 

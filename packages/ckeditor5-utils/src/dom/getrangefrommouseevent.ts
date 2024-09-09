@@ -7,6 +7,8 @@
  * @module utils/dom/getrangefrommouseevent
  */
 
+import isShadowRoot from './isshadowroot.js';
+
 /**
  * Returns a DOM range from a given point specified by a mouse event.
  *
@@ -32,7 +34,7 @@ export default function getRangeFromMouseEvent(
 	// TODO
 	// Available in Chrome 128+
 	if ( domDoc.caretPositionFromPoint && typeof domDoc.caretPositionFromPoint == 'function' ) {
-		const shadowRoot = domRootNode instanceof ShadowRoot ? domRootNode : null;
+		const shadowRoot = isShadowRoot( domRootNode ) ? domRootNode : null;
 		const caretPosition = domDoc.caretPositionFromPoint( x, y, shadowRoot ? { shadowRoots: [ domRootNode ] } : {} );
 		const domRange = domDoc.createRange();
 

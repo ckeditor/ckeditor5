@@ -17,6 +17,9 @@ import getAncestors from './getancestors.js';
  * @returns Lowest common ancestor of both nodes or `null` if nodes do not have a common ancestor.
  */
 export default function getCommonAncestor( nodeA: Node, nodeB: Node ): Node | null {
+	// TODO ShadowRoot
+	//  - this is scoped inside a shadow DOM as getAncestors() helper
+	//  - this helper is not used in the editor code
 	const ancestorsA = getAncestors( nodeA );
 	const ancestorsB = getAncestors( nodeB );
 

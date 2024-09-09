@@ -13,6 +13,7 @@ import getBorderWidths from './getborderwidths.js';
 import isText from './istext.js';
 import getPositionedAncestor from './getpositionedancestor.js';
 import global from './global.js';
+import getParentOrHostElement from './getparentorhostelement.js';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -316,7 +317,8 @@ export default class Rect {
 				)
 			) {
 				child = parent;
-				parent = parent.parentNode; // TODO ShadowRoot?
+				// TODO ShadowRoot
+				parent = getParentOrHostElement( parent );
 				continue;
 			}
 
@@ -334,7 +336,8 @@ export default class Rect {
 			}
 
 			child = parent;
-			parent = parent.parentNode; // TODO ShadowRoot?
+			// TODO ShadowRoot
+			parent = getParentOrHostElement( parent );
 		}
 
 		return visibleRect;
