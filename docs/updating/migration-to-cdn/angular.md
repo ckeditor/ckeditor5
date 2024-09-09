@@ -26,7 +26,7 @@ Ensure that your testing suite uses real web browser environments for testing. I
 
 ### Step 1: Remove CKEditor&nbsp;5 imports
 
-If you have any CKEditor 5 imports in your Angular components, remove them. For example, remove lines like:
+If you have any CKEditor&nbsp;5 imports in your Angular components, remove them. For example, remove lines like:
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';

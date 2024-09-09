@@ -8,7 +8,7 @@ order: 10
 
 # Migrating CKEditor&nbsp;5 from npm to CDN
 
-This guide will help you migrate CKEditor 5 from an NPM-based installation to a CDN-based installation. CDN-based installations can simplify the setup process by providing bundler agnostic way to lazy initialization of CKEditor&nbsp;5 scripts and styles injection, which reduce complexity in the project setup.
+This guide will help you migrate CKEditor&nbsp;5 from an NPM-based installation to a CDN-based installation. CDN-based installations can simplify the setup process by providing bundler agnostic way to lazy initialization of CKEditor&nbsp;5 scripts and styles injection, which reduce complexity in the project setup.
 
 ## Prerequisites
 
@@ -82,7 +82,7 @@ ClassicEditor
 
 ## Using lazy injection of CKEditor&nbsp;5
 
-If you prefer to automatically inject the CKEditor&nbsp;5 script into your HTML file, you can migrate your project using the `@ckeditor/ckeditor5-integrations-common` package. This package provides a `loadCKEditorCloud` function that automatically injects the CKEditor 5 scripts and styles into your HTML file. It may be useful when your project uses a bundler like Webpack or Rollup and you cannot modify your head section directly.
+If you prefer to automatically inject the CKEditor&nbsp;5 script into your HTML file, you can migrate your project using the `@ckeditor/ckeditor5-integrations-common` package. This package provides a `loadCKEditorCloud` function that automatically injects the CKEditor&nbsp;5 scripts and styles into your HTML file. It may be useful when your project uses a bundler like Webpack or Rollup and you cannot modify your head section directly.
 
 ### Step 1: Install the `@ckeditor/ckeditor5-integrations-common` Package
 
@@ -94,7 +94,7 @@ npm install @ckeditor/ckeditor5-integrations-common
 
 ### Step 2: Replace CKEditor&nbsp;5 Imports
 
-If you have any CKEditor 5 imports in your JavaScript files, remove them. For example, remove lines like:
+If you have any CKEditor&nbsp;5 imports in your JavaScript files, remove them. For example, remove lines like:
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';

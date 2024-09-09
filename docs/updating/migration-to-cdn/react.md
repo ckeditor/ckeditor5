@@ -28,7 +28,7 @@ Ensure that your testing suite uses real web browser environments for testing. I
 
 #### Step 1: Remove CKEditor&nbsp;5 imports
 
-If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
+If you have any CKEditor&nbsp;5 imports in your test files, remove them. For example, remove lines like:
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
@@ -204,7 +204,7 @@ The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Wi
 
 #### Step 1: Remove CKEditor&nbsp;5 imports
 
-If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
+If you have any CKEditor&nbsp;5 imports in your test files, remove them. For example, remove lines like:
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
@@ -335,7 +335,7 @@ Now that you have migrated your CKEditor&nbsp;5 React Context integration to use
 
 #### Step 1: Remove CKEditor&nbsp;5 imports
 
-If you have any CKEditor 5 imports in your test files, remove them. For example, remove lines like:
+If you have any CKEditor&nbsp;5 imports in your test files, remove them. For example, remove lines like:
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
