@@ -12,6 +12,14 @@ This guide will help you migrate CKEditor&nbsp;5 React integration from an NPM-b
 
 ## Prerequisites
 
+Remove the CKEditor&nbsp;5 NPM packages from your project:
+
+```bash
+npm uninstall ckeditor5 ckeditor5-premium-features
+```
+
+Upgrade the CKEditor&nbsp;5 React integration to the latest version. You can find the latest version on the [CKEditor&nbsp;5 CDN](https://cdn.ckeditor.com/).
+
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
 
 ## Migration steps
@@ -144,12 +152,12 @@ it( 'ClassicEditor test', () => {
 **After:**
 
 ```javascript
-import { useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
 
 let cloud;
 
 beforeEach( async () => {
-	cloud = await useCKEditorCloud( {
+	cloud = await loadCKEditorCloud( {
 		version: '{@var ckeditor5-version}',
 	} );
 } );
