@@ -12,13 +12,13 @@ This guide will help you migrate Vue 3 CKEditor&nbsp;5 integration from an NPM-b
 
 ## Prerequisites
 
-Remove the existing Vue 3 CKEditor&nbsp;5 integration from your project. If you are using the NPM-based installation, you can remove it by running the following command:
+Remove the existing CKEditor&nbsp;5 packages from your project. If you are using the NPM-based installation, you can remove it by running the following command:
 
 ```bash
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the Vue 3 CKEditor&nbsp;5 integration to the latest version by following the [Upgrade guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/upgrade/).
+Upgrade the CKEditor&nbsp;5 Vue 3 integration to the latest version. You can find the latest version in the [CKEditor&nbsp;5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/frameworks/vuejs-v3.html) documentation.
 
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
 
