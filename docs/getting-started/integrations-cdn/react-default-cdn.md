@@ -8,7 +8,7 @@ order: 10
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text editor component in CDN
+# React rich text editor component (CDN)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -16,7 +16,7 @@ order: 10
 	</a>
 </p>
 
-This guide explains how to integrate CKEditor&nbsp;5 into your React application using CDN.
+React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components. This guide explains how to integrate CKEditor&nbsp;5 into your React application using CDN.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
@@ -48,11 +48,11 @@ npm install @ckeditor/ckeditor5-react
 
 The `useCKEditorCloud` hook is responsible for returning information that:
 
-* CKEditor is still being downloaded from the CDN with status = "loading".
-* An error occurred during the download when status = "error", then further information is returned in the error field.
-* Returning the editor in the data field and its dependencies when status = "success".
+* The editor is still downloading from the CDN with the `status = "loading"`.
+* An error occurred during the download when `status = "error"`. Further information is in the error field.
+* About the editor in the data field and its dependencies when `status = "success"`.
 
-Use the `<CKEditor>` component inside your project. The below example shows how to use the component with the open-source plugins.
+Use the `<CKEditor>` component inside your project. The below example shows how to use it with the open-source plugins.
 
 ```js
 import React from "react";
@@ -68,7 +68,7 @@ const CKEditorDemo = () => {
 	}
 
 	if ( cloud.status === "loading" ) {
-		eturn <div>Loading...</div>;
+		return <div>Loading...</div>;
 	}
 
 	const {
@@ -82,14 +82,14 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ClassicEditor}
-			data={"<p>Hello world!!!</p>"}
-			config={{
+			editor={ ClassicEditor }
+			data={ "<p>Hello world!!!</p>" }
+			config={ {
 				toolbar: {
-					items: ["undo", "redo", "|", "bold", "italic"],
+					items: [ "undo", "redo", "|", "bold", "italic" ],
 				},
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-			}}
+			} }
 		/>
 	);
 };
@@ -102,10 +102,10 @@ import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud({
+	const cloud = useCKEditorCloud( {
 		version: "{@var ckeditor5-version}",
 		premium: true,
-	});
+	} );
 
 	if ( cloud.status === "error" ) {
 		return <div>Error!</div>;
@@ -131,7 +131,7 @@ const CKEditorDemo = () => {
 		<CKEditor
 			editor={ ClassicEditor }
 			data={ "<p>Hello world!!!</p>" }
-			config={{
+			config={ {
 				licenseKey: "<YOUR_LICENSE_KEY>",
 				toolbar: {
 					items: [ "undo", "redo", "|", "bold", "italic" ],
@@ -145,7 +145,7 @@ const CKEditorDemo = () => {
 					Undo,
 					SlashCommand,
 				],
-			}}
+			} }
 		/>
 	);
 };
@@ -160,20 +160,20 @@ import React from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud({
-	version: "{@var ckeditor5-version}",
-	ckbox: {
-		version: "2.5.1",
-		// Optional - it's already 'lark' by default.
-		theme: "lark",
-	},
-	});
+	const cloud = useCKEditorCloud( {
+		version: "{@var ckeditor5-version}",
+		ckbox: {
+			version: "2.5.1",
+			// Optional - it's already 'lark' by default.
+			theme: "lark",
+		},
+	} );
 
-	if (cloud.status === "error") {
+	if ( cloud.status === "error" ) {
 		return <div>Error!</div>;
 	}
 
-	if (cloud.status === "loading") {
+	if ( cloud.status === "loading" ) {
 		return <div>Loading...</div>;
 	}
 
@@ -191,11 +191,11 @@ const CKEditorDemo = () => {
 
 	return (
 		<CKEditor
-			editor={ClassicEditor}
-			data={"<p>Hello world!!!</p>"}
-			config={{
+			editor={ ClassicEditor }
+			data={ "<p>Hello world!!!</p>" }
+			config={ {
 				toolbar: {
-					items: ["undo", "redo", "|", "bold", "italic"],
+					items: [ "undo", "redo", "|", "bold", "italic" ],
 				},
 				plugins: [
 					Bold,
@@ -210,9 +210,9 @@ const CKEditorDemo = () => {
 				ckbox: {
 					tokenUrl: "https://api.ckbox.io/token/demo",
 					forceDemoLabel: true,
-					allowExternalImagesEditing: [/^data:/, /^i.imgur.com\//, "origin"],
+					allowExternalImagesEditing: [ /^data:/, /^i.imgur.com\//, "origin" ],
 				},
-			}}
+			} }
 		/>
 	);
 };
@@ -222,10 +222,10 @@ const CKEditorDemo = () => {
 
 There are various ways to use external plugins. Here is a list of them:
 
-- **Local UMD Plugins:** Dynamically import local UMD modules using the `import()` syntax.
-- **Local External Imports:** Load external plugins locally using additional bundler configurations (such as Vite).
-- **CDN 3rd Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
-- **Verbose Configuration:** Advanced plugin loading with options to specify both script and style sheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
+* **Local UMD Plugins:** Dynamically import local UMD modules using the `import()` syntax.
+* **Local External Imports:** Load external plugins locally using additional bundler configurations (such as Vite).
+* **CDN 3rd Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
+* **Verbose Configuration:** Advanced plugin loading with options to specify both script and style sheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
 
 Here is an example:
 
@@ -240,8 +240,8 @@ const CKEditorDemo = () => {
 			PluginUMD: async () => import( './your-local-import.umd.js' ),
 			PluginLocalImport: async () => import( './your-local-import' ),
 			PluginThirdParty: [
-				'https://cdn.example.com/plugin2.js',
-				'https://cdn.example.com/plugin2.css'
+				'https://cdn.example.com/plugin3.js',
+				'https://cdn.example.com/plugin3.css'
 			]
 		}
 	} );
@@ -254,7 +254,7 @@ const CKEditorDemo = () => {
 		return <div>Loading...</div>;
 	}
 
-	const { Plugin1, Plugin2, /* More plugins... */ } = cloud.loadedPlugins;
+	const { PluginUMD, PluginLocalImport, PluginThirdParty } = cloud.loadedPlugins;
 	// ...
 };
 ```
@@ -276,8 +276,8 @@ The `<CKEditor>` component supports the following properties:
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 * `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
-* `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-* `willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
+* `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during or after the editor/context initialization).
+* `willEditorRestart` &ndash; When `true`, it means the editor component will restart itself.
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
@@ -294,7 +294,7 @@ The `<useCKEditorCloud>` component supports the following properties:
 
 ## Context feature
 
-The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
+The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful to use with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
 
 ```jsx
 import React from 'react';
@@ -357,12 +357,12 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 
 	return (
 		<CKEditor
-			contextItemMetadata={{
+			contextItemMetadata={ {
 				name
-			}}
+			} }
 			editor={ CKEDITOR.ClassicEditor }
 			data={ content }
-			config={{
+			config={ {
 				plugins: [
 					CKEDITOR.Essentials,
 					CKEDITOR.CKFinderUploadAdapter,
@@ -419,7 +419,7 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 					'mergeTableCells'
 					]
 				}
-			}}
+			} }
 		/>
 	);
 }
@@ -435,7 +435,7 @@ The `CKEditorContext` component supports the following properties:
 * `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. It receives a dictionary of fully initialized editors, where the key is the value of the `contextItemMetadata.name` property set on the `CKEditor` component. The editor's ID is the key if the `contextItemMetadata` property is absent. Additional data can be added to the `contextItemMetadata` in the `CKEditor` component, which will be passed to the `onChangeInitializedEditors` function.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
-* `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+* `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during or after the editor/context initialization).
 * `willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
