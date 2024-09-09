@@ -12,13 +12,13 @@ This guide will help you migrate CKEditor 5 from an NPM-based installation to a 
 
 ## Prerequisites
 
-If you are using frameworks like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/), or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file and follow the classical approach to install CKEditor&nbsp;5.
+If you are using frameworks like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/), or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file and follow the traditional html integration to install CKEditor&nbsp;5.
 
 However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/), and you are not using official integrations, you may need to follow different steps to migrate CKEditor&nbsp;5 from NPM to CDN. In this case, you can utilize the lazy injection of CKEditor&nbsp;5 since you cannot directly modify the head section.
 
-## Classical approach
+## Traditional HTML integration
 
-The classical approach to installing CKEditor&nbsp;5 involves modification of the HTML head section to include the CKEditor&nbsp;5 script from the CDN. The editor is then initialized using the `window.CKEDITOR` global variable.
+The traditional html integration to installing CKEditor&nbsp;5 involves modification of the HTML head section to include the CKEditor&nbsp;5 script from the CDN. The editor is then initialized using the `window.CKEDITOR` global variable.
 
 ### Step 1: Update your HTML file
 
