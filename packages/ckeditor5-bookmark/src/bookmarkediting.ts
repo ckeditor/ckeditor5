@@ -96,8 +96,11 @@ export default class BookmarkEditing extends Plugin {
 
 			const icon = new IconView();
 
-			// TODO fillcolor management
-			icon.set( 'content', bookmarkIcon );
+			icon.set( {
+				content: bookmarkIcon,
+				isColorInherited: false
+			} );
+
 			icon.render();
 
 			domElement.appendChild( icon.element! );
