@@ -1,6 +1,6 @@
 ---
 menu-title: Angular
-meta-title: Vue CKEditor 5 - migrate integration from NPM to CDN | CKEditor 5 documentation
+meta-title: Angular CKEditor 5 - migrate integration from NPM to CDN | CKEditor 5 documentation
 meta-description: Migrate Angular CKEditor 5 integration from NPM to CDN in a few simple steps. Learn how to install Angular CKEditor 5 integration in your project using the CDN.
 category: migrations
 order: 50
@@ -26,7 +26,7 @@ Ensure that your testing suite uses real web browser environments for testing. I
 
 ### Step 1: Remove CKEditor&nbsp;5 imports
 
-If you have any CKEditor 5 imports in your Vue components, remove them. For example, remove lines like:
+If you have any CKEditor 5 imports in your Angular components, remove them. For example, remove lines like:
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
