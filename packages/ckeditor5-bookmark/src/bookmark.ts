@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import BookmarkUI from './bookmarkui.js';
 
 /**
  * The bookmark feature.
@@ -20,5 +21,12 @@ export default class Bookmark extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'Bookmark' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ BookmarkUI ] as const;
 	}
 }

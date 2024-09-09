@@ -4,9 +4,16 @@
  */
 
 import Bookmark from '../src/bookmark.js';
+import BookmarkUI from '../src/bookmarkui.js';
 
 describe( 'Bookmark', () => {
 	it( 'should be correctly named', () => {
 		expect( Bookmark.pluginName ).to.equal( 'Bookmark' );
+	} );
+
+	it( 'should have proper "requires" value', () => {
+		expect( Bookmark.requires ).to.deep.equal( [
+			BookmarkUI
+		] );
 	} );
 } );
