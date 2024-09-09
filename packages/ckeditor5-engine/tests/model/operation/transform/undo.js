@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Client, expectClients, clearBuffer } from './utils.js';
+import { Client, expectClients, syncClients, clearBuffer } from './utils.js';
 
 import DocumentFragment from '../../../../src/model/documentfragment.js';
 import Element from '../../../../src/model/element.js';
@@ -777,5 +777,51 @@ describe( 'transform', () => {
 		john.undo();
 
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+	} );
+
+	// https://github.com/cksource/ckeditor5-commercial/issues/4371.
+	it( 'add paragraphs and marker, remove marker, undo on both clients', async () => {
+		const kate = await Client.get( 'kate' );
+
+		kate.setData( '<paragraph>[]</paragraph>' );
+		john.setData( '<paragraph>[]</paragraph>' );
+
+		syncClients();
+
+		kate._processExecute( 'insertText', { text: 'A' } );
+		kate._processExecute( 'insertText', { text: 'B' } );
+		kate._processExecute( 'insertText', { text: 'C' } );
+		kate._processExecute( 'enter' );
+		kate._processExecute( 'insertText', { text: 'X' } );
+		kate._processExecute( 'insertText', { text: 'Y' } );
+		kate._processExecute( 'insertText', { text: 'Z' } );
+		kate.setSelection( [ 0, 1 ], [ 1, 2 ] );
+		kate.setMarker( 'm1' );
+
+		syncClients();
+		expectClients( '<paragraph>A<m1:start></m1:start>BC</paragraph><paragraph>XY<m1:end></m1:end>Z</paragraph>' );
+
+		john.setSelection( [ 0, 1 ], [ 1, 2 ] );
+		john.delete();
+
+		syncClients();
+		expectClients( '<paragraph>A<m1:start></m1:start>Z</paragraph>' );
+
+		kate.undo();
+
+		syncClients();
+		expectClients( '<paragraph>AZ</paragraph>' );
+
+		kate.undo();
+
+		syncClients();
+		expectClients( '<paragraph>A</paragraph>' );
+
+		john.undo();
+
+		syncClients();
+		expectClients( '<paragraph>A<m1:start></m1:start>BC</paragraph><paragraph>XY<m1:end></m1:end></paragraph>' );
+
+		return kate.destroy();
 	} );
 } );

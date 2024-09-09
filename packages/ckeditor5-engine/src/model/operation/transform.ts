@@ -373,6 +373,9 @@ export function transformSets(
 		operationsB.splice( indexB, 1, ...newOpsB );
 	}
 
+	handlePartialMarkerOperations( operationsA );
+	handlePartialMarkerOperations( operationsB );
+
 	if ( options.padWithNoOps ) {
 		// If no-operations padding is enabled, count how many extra `a` and `b` operations were generated.
 		const brokenOperationsACount = operationsA.length - data.originalOperationsACount;
@@ -524,6 +527,9 @@ class ContextFactory {
 					const range = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
 
 					if ( opA.splitPosition.hasSameParentAs( opB.sourcePosition ) && range.containsPosition( opA.splitPosition ) ) {
+						// TODO: Potential bug -- we are saving offset value directly and it is not later updated during OT.
+						// TODO: This may cause a bug it here was an non-undone operation that may have impacted this offset.
+						// TODO: Similar error was with MarkerOperation relations, where full path was saved and never updated.
 						const howMany = range.end.offset - opA.splitPosition.offset;
 						const offset = opA.splitPosition.offset - range.start.offset;
 
@@ -564,22 +570,7 @@ class ContextFactory {
 				return;
 			}
 
-			if ( opB instanceof MoveOperation ) {
-				const movedRange = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
-
-				const affectedLeft = movedRange.containsPosition( markerRange.start ) ||
-					movedRange.start.isEqual( markerRange.start );
-
-				const affectedRight = movedRange.containsPosition( markerRange.end ) ||
-					movedRange.end.isEqual( markerRange.end );
-
-				if ( ( affectedLeft || affectedRight ) && !movedRange.containsRange( markerRange ) ) {
-					this._setRelation( opA, opB, {
-						side: affectedLeft ? 'left' : 'right',
-						path: affectedLeft ? markerRange.start.path.slice() : markerRange.end.path.slice()
-					} );
-				}
-			} else if ( opB instanceof MergeOperation ) {
+			if ( opB instanceof MergeOperation ) {
 				const wasInLeftElement = markerRange.start.isEqual( opB.targetPosition );
 				const wasStartBeforeMergedElement = markerRange.start.isEqual( opB.deletionPosition );
 				const wasEndBeforeMergedElement = markerRange.end.isEqual( opB.deletionPosition );
@@ -745,6 +736,62 @@ function updateBaseVersions( operations: ReadonlyArray<Operation>, baseVersion: 
 function padWithNoOps( operations: Array<Operation>, howMany: number ) {
 	for ( let i = 0; i < howMany; i++ ) {
 		operations.push( new NoOperation( 0 ) );
+	}
+}
+
+/**
+ * Transformed operations set may include marker operations which were broken into multiple marker operations during transformation.
+ * It represents marker range being broken into multiple pieces as the transformation was processed. Each partial marker operation is
+ * a piece of the original marker range.
+ *
+ * These partial marker operations ("marker range pieces") should be "glued" together if, after transformations, the ranges ended up
+ * next to each other.
+ *
+ * If the ranges did not end up next to each other, then partial marker operations should be discarded, as the marker range cannot
+ * be broken into two pieces.
+ *
+ * There is always one "reference" marker operation (the original operation) and there may be some partial marker operations. Partial
+ * marker operations have base version set to `-1`. If the `operations` set includes partial marker operations, then they are always
+ * after the original marker operation.
+ *
+ * See also `MarkerOperation` x `MoveOperation` transformation.
+ *
+ * @param operations
+ */
+function handlePartialMarkerOperations( operations: Array<Operation> ) {
+	const markerOps: Map<string, { op: MarkerOperation, ranges: Array<Range> }> = new Map();
+
+	for ( let i = 0; i < operations.length; i++ ) {
+		const op = operations[ i ];
+
+		if ( !( op instanceof MarkerOperation ) ) {
+			continue;
+		}
+
+		if ( op.baseVersion !== -1 ) {
+			markerOps.set( op.name, {
+				op,
+				ranges: op.newRange ? [ op.newRange ] : []
+			} );
+		} else {
+			if ( op.newRange ) {
+				// `markerOps.get( op.name )` must exist because original marker operation is always before partial marker operations.
+				// If the original marker operation was changed to `NoOperation`, then the partial marker operations would be changed
+				// to `NoOperation` as well, so this is not a case.
+				markerOps.get( op.name )!.ranges.push( op.newRange );
+			}
+
+			operations.splice( i, 1 );
+			i--;
+		}
+	}
+
+	for ( const { op, ranges } of markerOps.values() ) {
+		if ( ranges.length ) {
+			op.newRange = Range._createFromRanges( ranges );
+		} else {
+			op.newRange = null;
+		}
 	}
 }
 
@@ -1153,32 +1200,51 @@ setTransformation( MarkerOperation, MergeOperation, ( a, b ) => {
 	return [ a ];
 } );
 
-setTransformation( MarkerOperation, MoveOperation, ( a, b, context ) => {
+setTransformation( MarkerOperation, MoveOperation, ( a, b ) => {
+	const result = [ a ];
+
 	if ( a.oldRange ) {
 		a.oldRange = Range._createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
 	}
 
 	if ( a.newRange ) {
-		if ( context.abRelation ) {
-			const aNewRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
+		// In many simple cases the marker range will be kept integral after the transformation. For example, if some nodes
+		// were inserted before the range, or into the range, then the marker range is not broken into two.
+		//
+		// However, if some nodes are taken out of the range and moved somewhere else, or are moved into the range, then the marker
+		// range is "broken" into two or three pieces, and these pieces must be transformed and updated separately.
+		//
+		// When the marker range is transformed by move operation, as a result we get an array with one (simple case) or multiple
+		// ("broken range" case) ranges.
+		const ranges = a.newRange._getTransformedByMoveOperation( b );
 
-			if ( context.abRelation.side == 'left' && b.targetPosition.isEqual( a.newRange.start ) ) {
-				( a.newRange as any ).end = aNewRange.end;
-				( a.newRange.start as any ).path = context.abRelation.path;
+		a.newRange = ranges[ 0 ];
 
-				return [ a ];
-			} else if ( context.abRelation.side == 'right' && b.targetPosition.isEqual( a.newRange.end ) ) {
-				( a.newRange as any ).start = aNewRange.start;
-				( a.newRange.end as any ).path = context.abRelation.path;
+		// If there are multiple ranges, we will create separate marker operations for each piece of the original marker range.
+		// Since they will be marker operations, they will be processed through the transformation process.
+		//
+		// However, we cannot create multiple ranges for the same marker (for the same marker name). A marker has only one range.
+		// So, we cannot really have multiple marker operations for the same marker. We will keep the track of the separate marker
+		// operations to see, if after all transformations, the marker pieces are next to each other or not. If so, we will glue
+		// them together to the original marker operation (`a`). If not, we will discard them. These extra operations will never
+		// be executed, as they will only exist temporarily during the transformation process.
+		//
+		// We will call these additional marker operations "partial marker operations" and we will mark them with negative base version.
+		//
+		// See also `handlePartialMarkerOperations()`.
+		//
+		for ( let i = 1; i < ranges.length; i++ ) {
+			const op = a.clone();
 
-				return [ a ];
-			}
+			op.oldRange = null;
+			op.newRange = ranges[ i ];
+			op.baseVersion = -1;
+
+			result.push( op );
 		}
-
-		a.newRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
 	}
 
-	return [ a ];
+	return result;
 } );
 
 setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
@@ -1194,6 +1260,8 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 				( a.newRange as any ).start = Position._createAt( b.insertionPosition );
 			} else if ( a.newRange.start.isEqual( b.splitPosition ) && !context.abRelation.wasInLeftElement ) {
 				( a.newRange as any ).start = Position._createAt( b.moveTargetPosition );
+			} else {
+				( a.newRange as any ).start = aNewRange.start;
 			}
 
 			if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasInRightElement ) {
