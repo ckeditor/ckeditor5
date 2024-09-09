@@ -41,126 +41,126 @@ Use the `useMultiRootEditor` hook inside your project:
 import React from "react";
 import { useMultiRootEditor, withCKCloud } from "@ckeditor/ckeditor5-react";
 import {
-  useMultiRootEditor,
-  withCKEditorCloud,
-  type MultiRootHookProps,
-  type WithCKEditorCloudHocProps,
+	useMultiRootEditor,
+	withCKEditorCloud,
+	type MultiRootHookProps,
+	type WithCKEditorCloudHocProps,
 } from "@ckeditor/ckeditor5-react";
 
 type EditorDemoProps = WithCKEditorCloudHocProps & {
-  data: Record<string, string>;
+	data: Record<string, string>;
 };
 
-const withCKCloud = withCKEditorCloud({
-  cloud: {
-    version: "{@var ckeditor5-version}",
-    languages: ["de"],
-    premium: true,
-  },
+const withCKCloud = withCKEditorCloud( {
+	cloud: {
+		version: "{@var ckeditor5-version}",
+		languages: [ "de" ],
+		premium: true,
+	},
 
-  // Optional:
-  renderError: (error) => <div>Error!</div>,
+	// Optional:
+	renderError: ( error ) => <div>Error!</div>,
 
-  // Optional:
-  renderLoader: () => <div>Loading...</div>,
-});
+	// Optional:
+	renderLoader: () => <div>Loading...</div>,
+} );
 
 const MultiRootEditorDemo = withCKCloud(
-  ({ data, cloud }: EditorDemoProps): ReactNode => {
-    const {
-      MultiRootEditor: MultiRootEditorBase,
-      CloudServices,
-      Essentials,
-      CKFinderUploadAdapter,
-      Autoformat,
-      Bold,
-      Italic,
-      BlockQuote,
-      CKBox,
-      CKFinder,
-      EasyImage,
-      Heading,
-      Image,
-      ImageCaption,
-      ImageStyle,
-      ImageToolbar,
-      ImageUpload,
-      Indent,
-      Link,
-      List,
-      MediaEmbed,
-      Paragraph,
-      PasteFromOffice,
-      PictureEditing,
-      Table,
-      TableToolbar,
-      TextTransformation,
-    } = cloud.CKEditor;
+	( { data, cloud }: EditorDemoProps ): ReactNode => {
+	const {
+		MultiRootEditor: MultiRootEditorBase,
+		CloudServices,
+		Essentials,
+		CKFinderUploadAdapter,
+		Autoformat,
+		Bold,
+		Italic,
+		BlockQuote,
+		CKBox,
+		CKFinder,
+		EasyImage,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		Link,
+		List,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		PictureEditing,
+		Table,
+		TableToolbar,
+		TextTransformation,
+	} = cloud.CKEditor;
 
-    class MultiRootEditor extends MultiRootEditorBase {
-      public static override builtinPlugins = [
-        Essentials,
-        CKFinderUploadAdapter,
-        Autoformat,
-        Bold,
-        Italic,
-        BlockQuote,
-        CKBox,
-        CKFinder,
-        CloudServices,
-        EasyImage,
-        Heading,
-        Image,
-        ImageCaption,
-        ImageStyle,
-        ImageToolbar,
-        ImageUpload,
-        Indent,
-        Link,
-        List,
-        MediaEmbed,
-        Paragraph,
-        PasteFromOffice,
-        PictureEditing,
-        TextTransformation,
-      ];
+	class MultiRootEditor extends MultiRootEditorBase {
+		public static override builtinPlugins = [
+			Essentials,
+			CKFinderUploadAdapter,
+			Autoformat,
+			Bold,
+			Italic,
+			BlockQuote,
+			CKBox,
+			CKFinder,
+			CloudServices,
+			EasyImage,
+			Heading,
+			Image,
+			ImageCaption,
+			ImageStyle,
+			ImageToolbar,
+			ImageUpload,
+			Indent,
+			Link,
+			List,
+			MediaEmbed,
+			Paragraph,
+			PasteFromOffice,
+			PictureEditing,
+			TextTransformation,
+		];
 
-      public static override defaultConfig = {
-        toolbar: {
-          items: [
-            "undo",
-            "redo",
-            "|",
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "|",
-            "link",
-            "uploadImage",
-            "blockQuote",
-            "mediaEmbed",
-            "|",
-            "bulletedList",
-            "numberedList",
-            "outdent",
-            "indent",
-          ],
-        },
-      };
-    }
+		public static override defaultConfig = {
+			toolbar: {
+				items: [
+					"undo",
+					"redo",
+					"|",
+					"heading",
+					"|",
+					"bold",
+					"italic",
+					"|",
+					"link",
+					"uploadImage",
+					"blockQuote",
+					"mediaEmbed",
+					"|",
+					"bulletedList",
+					"numberedList",
+					"outdent",
+					"indent",
+				],
+			},
+		};
+		}
 
-    const { toolbarElement, editableElements } = useMultiRootEditor({
-      editor: MultiRootEditor,
-      data,
-    });
+		const { toolbarElement, editableElements } = useMultiRootEditor( {
+			editor: MultiRootEditor,
+			data,
+		} );
 
-    return (
-      <div>
-        {toolbarElement}
-        {editableElements}
-      </div>
-    );
+		return (
+			<div>
+				{ toolbarElement }
+				{ editableElements }
+			</div>
+		);
   }
 );
 ```
