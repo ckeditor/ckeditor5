@@ -147,7 +147,13 @@ it( 'ClassicEditor test', () => {
 **After:**
 
 ```javascript
-import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
+// It may be counterintuitive that in tests you need to use `loadCKEditorCloud` instead of `useCKEditorCloud`.
+// The reason for this is that `useCKEditorCloud` is a composable and can only be used in Vue components,
+// while tests are typically written as functions in testing suites. Therefore, in tests, you should use
+// the `loadCKEditorCloud` function to load CKEditor 5 from the CKEditor Cloud and obtain the necessary
+// CKEditor 5 objects. This allows you to properly test your CKEditor 5 integration without any issues.
+
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
 let cloud;
 

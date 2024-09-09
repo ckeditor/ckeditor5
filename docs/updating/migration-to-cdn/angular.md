@@ -143,7 +143,7 @@ it( 'ClassicEditor test', () => {
 **After:**
 
 ```javascript
-import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
 let cloud;
 
