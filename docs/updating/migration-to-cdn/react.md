@@ -32,7 +32,7 @@ If you have any CKEditor 5 imports in your test files, remove them. For example,
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 #### Step 2: Use `useCKEditorCloud` hook to load CKEditor&nbsp;5 from CDN
@@ -137,7 +137,7 @@ If you have any tests that use CKEditor&nbsp;5 objects, you need to update them 
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 
 it( 'ClassicEditor test', () => {
 	render(
@@ -202,7 +202,7 @@ If you have any CKEditor 5 imports in your test files, remove them. For example,
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 #### Step 2: Use `useCKEditorCloud` hook to load CKEditor&nbsp;5 Context from CDN
@@ -333,7 +333,7 @@ If you have any CKEditor 5 imports in your test files, remove them. For example,
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 #### Step 2: Use `withCKEditorCloud` HOC to load CKEditor&nbsp;5 from CDN

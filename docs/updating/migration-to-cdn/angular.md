@@ -30,7 +30,7 @@ If you have any CKEditor 5 imports in your Angular components, remove them. For 
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 ### Step 2: Update your Angular components to use CDN

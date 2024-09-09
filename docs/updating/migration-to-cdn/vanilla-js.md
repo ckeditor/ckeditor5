@@ -53,7 +53,7 @@ Since the CKEditor&nbsp;5 script is now included via the CDN, you can access the
 
 ```javascript
 import { ClassicEditor } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 
 ClassicEditor
 	.create( document.querySelector('#editor'), {
@@ -98,7 +98,7 @@ If you have any CKEditor 5 imports in your JavaScript files, remove them. For ex
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 Next, update your JavaScript file to use the `loadCKEditorCloud` function from the `@ckeditor/ckeditor5-integrations-common` package. Here is an example of migrating the CKEditor&nbsp;5 initialization code:

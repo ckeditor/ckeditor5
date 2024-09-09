@@ -30,7 +30,7 @@ If you have any CKEditor 5 imports in your Vue components, remove them. For exam
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 ### Step 2: Update your Vue components to use CDN

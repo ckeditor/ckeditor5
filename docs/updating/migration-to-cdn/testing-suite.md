@@ -22,7 +22,7 @@ If you have any CKEditor 5 imports in your test files, remove them. For example,
 
 ```javascript
 import { ClassicEditor, ... } from 'ckeditor5';
-import { EasyImage, ... } from 'ckeditor5-premium-features';
+import { AIAdapter, ... } from 'ckeditor5-premium-features';
 ```
 
 ### Step 2: Update your test files to use CDN
