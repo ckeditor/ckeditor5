@@ -1,12 +1,12 @@
 ---
 menu-title: React
-meta-title: React CKEditor 5 - migrate integration from NPM to CDN | CKEditor 5 documentation
-meta-description: Migrate React CKEditor 5 integration from NPM to CDN in a few simple steps. Learn how to install React CKEditor 5 integration in your project using the CDN.
+meta-title: React CKEditor 5 - migrate integration from npm to CDN | CKEditor 5 documentation
+meta-description: Migrate React CKEditor 5 integration from npm to CDN in a few simple steps. Learn how to install React CKEditor 5 integration in your project using the CDN.
 category: migrations
 order: 30
 ---
 
-# Migrating CKEditor&nbsp;5 React integration from NPM to CDN
+# Migrating CKEditor&nbsp;5 React integration from npm to CDN
 
 This guide will help you migrate CKEditor&nbsp;5 React integration from an NPM-based installation to a CDN-based installation.
 

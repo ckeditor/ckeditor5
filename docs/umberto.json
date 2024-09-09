@@ -806,7 +806,7 @@
 			"slug": "updating",
 			"categories": [
 				{
-					"name": "Migrations (WIP name)",
+					"name": "Migrations from npm to CDN",
 					"id": "migrations",
 					"slug": "migrations",
 					"order": 10

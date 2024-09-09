@@ -1,12 +1,12 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 - migrate from NPM to CDN | CKEditor 5 documentation
-meta-description: Migrate CKEditor 5 from NPM to CDN in a few simple steps. Learn how to install CKEditor 5 in your project using the CDN.
+meta-title: Vanilla JS CKEditor 5 - migrate from npm to CDN | CKEditor 5 documentation
+meta-description: Migrate CKEditor 5 from npm to CDN in a few simple steps. Learn how to install CKEditor 5 in your project using the CDN.
 category: migrations
 order: 10
 ---
 
-# Migrating CKEditor&nbsp;5 from NPM to CDN
+# Migrating CKEditor&nbsp;5 from npm to CDN
 
 This guide will help you migrate CKEditor 5 from an NPM-based installation to a CDN-based installation. CDN-based installations can simplify the setup process by providing bundler agnostic way to lazy initialization of CKEditor&nbsp;5 scripts and styles injection, which reduce complexity in the project setup.
 
@@ -14,7 +14,7 @@ This guide will help you migrate CKEditor 5 from an NPM-based installation to a 
 
 If you are using frameworks like [Laravel](https://laravel.com/), [Symfony](https://symfony.com/), or [Ruby on Rails](https://rubyonrails.org/), you can modify the head section in the main layout file and follow the traditional html integration to install CKEditor&nbsp;5.
 
-However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/), and you are not using official integrations, you may need to follow different steps to migrate CKEditor&nbsp;5 from NPM to CDN. In this case, you can utilize the lazy injection of CKEditor&nbsp;5 since you cannot directly modify the head section.
+However, if you are using SPA frameworks like [React](https://reactjs.org/), [Angular](https://angular.io/), [Vue.js](https://vuejs.org/), or [Svelte](https://svelte.dev/), and you are not using official integrations, you may need to follow different steps to migrate CKEditor&nbsp;5 from npm to CDN. In this case, you can utilize the lazy injection of CKEditor&nbsp;5 since you cannot directly modify the head section.
 
 ## Traditional HTML integration
 
