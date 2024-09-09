@@ -16,19 +16,13 @@ order: 50
 	</a>
 </p>
 
-Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
+CKEditor&nbsp;5 has an official Vue integration that you can use to add rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-<info-box hint>
-	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
+This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
 ## Quick start
 
 {@snippet getting-started/use-builder}
-
-### Setting up the project
-
-This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
 ### Installing from npm
 
@@ -52,76 +46,15 @@ npm install ckeditor5-premium-features
 npm install @ckeditor/ckeditor5-vue
 ```
 
-With these packages installed, you now need to choose whether to install the `<ckeditor>` component globally or locally and follow the appropriate instructions below.
-
-#### Registering the `<ckeditor>` component globally
-
-To register the `<ckeditor>` component globally, you must install the CKEditor&nbsp;5 plugin for Vue.
-
-If you are using a plain Vue project, you should find the file where the `createApp` function is called and register the `CkeditorPlugin` plugin with the [`use()` method](https://vuejs.org/api/application.html#app-use).
-
-```js
-import { createApp } from 'vue';
-import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
-import App from './App.vue';
-
-createApp( App )
-	.use( CkeditorPlugin )
-	.mount( '#app' );
-```
-
-If you are using Nuxt.js, you can follow the [Nuxt.js documentation](https://nuxt.com/docs/guide/directory-structure/plugins#vue-plugins) to get access to the `use()` method and register this plugin.
-
-Now you can use the `<ckeditor>` component in any of your Vue components. The following example shows a single file component with open source and premium plugins.
+With these packages installed, create a new Vue component called `Editor.vue`. It will use the `<ckeditor>` component to run the editor. The following example shows a single file component with open source and premium CKEditor&nbsp;5 plugins.
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor
-			v-model="editorData"
-			:editor="editor"
-			:config="editorConfig"
-		/>
-	</div>
-</template>
-
-<script>
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-export default {
-	name: 'app',
-	data() {
-		return {
-			editor: ClassicEditor,
-			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
-			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			}
-		};
-	}
-};
-</script>
-```
-
-#### Using the `<ckeditor>` component locally
-
-If you do not want to enable the CKEditor&nbsp;5 component globally, you can import the `Ckeditor` component from the `@ckeditor/ckeditor5-vue` package directly into the Vue component where you want to use it, and add it to the `components` object.
-
-```html
-<template>
-	<div id="app">
-		<ckeditor
-			v-model="editorData"
-			:editor="editor"
-			:config="editorConfig"
-		/>
-	</div>
+	<ckeditor
+		v-model="data"
+		:editor="editor"
+		:config="config"
+	/>
 </template>
 
 <script>
@@ -133,15 +66,15 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
-	name: 'app',
+	name: 'Editor',
 	components: {
 		Ckeditor
 	},
 	data() {
 		return {
 			editor: ClassicEditor,
-			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
-			editorConfig: {
+			data: '<p>Hello from CKEditor 5 in Vue!</p>',
+			config: {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
@@ -150,6 +83,24 @@ export default {
 	}
 };
 </script>
+```
+
+Now you can import and use the `Editor.vue` component anywhere in your application.
+
+```html
+<template>
+	<Editor />
+</template>
+```
+
+If you use Nuxt.js with server-side rendering enabled, remember to wrap the `<Editor>` component in the `<ClientOnly>` component to avoid issues with the editor calling browser-specific APIs on the server.
+
+```html
+<template>
+	<ClientOnly>
+		<Editor />
+	</ClientOnly>
+</template>
 ```
 
 ## Component directives
