@@ -966,7 +966,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		// Other ranges will be stuck to that range, if possible.
 		const ref = ranges[ 0 ];
 
-		// 2. Sort all the ranges so it's easier to process them.
+		// 2. Sort all the ranges, so it's easier to process them.
 		ranges.sort( ( a, b ) => {
 			return a.start.isAfter( b.start ) ? 1 : -1;
 		} );
@@ -975,21 +975,18 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		const refIndex = ranges.indexOf( ref );
 
 		// 4. At this moment we don't need the original range.
-		// We are going to modify the result and we need to return a new instance of Range.
+		// We are going to modify the result, and we need to return a new instance of Range.
 		// We have to create a copy of the reference range.
 		const result = new this( ref.start, ref.end );
 
 		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
-		if ( refIndex > 0 ) {
-			// eslint-disable-next-line no-constant-condition
-			for ( let i = refIndex - 1; true; i++ ) {
-				if ( ranges[ i ].end.isEqual( result.start ) ) {
-					( result as any ).start = Position._createAt( ranges[ i ].start );
-				} else {
-					// If ranges are not starting/ending at the same position there is no point in looking further.
-					break;
-				}
+		for ( let i = refIndex - 1; i >= 0; i-- ) {
+			if ( ranges[ i ].end.isEqual( result.start ) ) {
+				( result as any ).start = Position._createAt( ranges[ i ].start );
+			} else {
+				// If ranges are not starting/ending at the same position there is no point in looking further.
+				break;
 			}
 		}
 

@@ -251,6 +251,13 @@ describe( 'Range', () => {
 				expect( range.start.offset ).to.equal( 2 );
 				expect( range.end.offset ).to.equal( 9 );
 			} );
+
+			it( 'should combine ranges with reference range #2 - multiple backwards', () => {
+				const range = Range._createFromRanges( makeRanges( root, 4, 6, 3, 4, 2, 3, 6, 7, 1, 2 ) );
+
+				expect( range.start.offset ).to.equal( 1 );
+				expect( range.end.offset ).to.equal( 7 );
+			} );
 		} );
 	} );
 
