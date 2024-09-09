@@ -17,17 +17,13 @@ describe( 'BookmarkUI', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = global.document.createElement( 'div' );
 		global.document.body.appendChild( element );
 
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ BookmarkUI ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ BookmarkUI ]
+		} );
 	} );
 
 	afterEach( () => {
