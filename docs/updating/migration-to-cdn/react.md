@@ -18,7 +18,7 @@ Remove the existing CKEditor&nbsp;5 packages from your project. If you are using
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the CKEditor&nbsp;5 React integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/react React} documentation.
+Upgrade the CKEditor&nbsp;5 React integration to the latest version. You can find the latest version in the {@link getting-started/integrations-cdn/react-default-cdn React} documentation.
 
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN scripts injection might be not recognized properly in such environments.
 
@@ -329,7 +329,7 @@ function App() {
 
 #### Next steps
 
-Now that you have migrated your CKEditor&nbsp;5 React Context integration to use the CDN, you can continue with the next steps such as migration testing suite. It's identical to the steps described in the previous section.
+Now that you have migrated your CKEditor&nbsp;5 React Context integration to use the CDN, you can continue with the next steps such as migration testing suite. It is identical to the steps described in the previous section.
 
 ### Migrate `useMultiRootEditor` hook
 
