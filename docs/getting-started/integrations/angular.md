@@ -90,9 +90,9 @@ Because of the breaking changes in the Angular library output format, the `@cked
 
 All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
-## Quick start
-
 {@snippet getting-started/use-builder}
+
+## Quick start
 
 ### Setting up the project
 
