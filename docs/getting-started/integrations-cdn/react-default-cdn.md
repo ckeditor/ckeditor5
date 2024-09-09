@@ -48,26 +48,26 @@ npm install @ckeditor/ckeditor5-react
 
 The `useCKEditorCloud` hook is responsible for returning information that:
 
-* The editor is still downloading from the CDN with the `status = "loading"`.
-* An error occurred during the download when `status = "error"`. Further information is in the error field.
-* About the editor in the data field and its dependencies when `status = "success"`.
+* The editor is still downloading from the CDN with the `status = 'loading'`.
+* An error occurred during the download when `status = 'error'`. Further information is in the error field.
+* About the editor in the data field and its dependencies when `status = 'success'`.
 
 Use the `<CKEditor>` component inside your project. The below example shows how to use it with the open-source plugins.
 
 ```js
-import React from "react";
-import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
+import React from 'react';
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
-		version: "{@var ckeditor5-version}",
+		version: '{@var ckeditor5-version}',
 	} );
 
-	if ( cloud.status === "error" ) {
+	if ( cloud.status === 'error' ) {
 		return <div>Error!</div>;
 	}
 
-	if ( cloud.status === "loading" ) {
+	if ( cloud.status === 'loading' ) {
 		return <div>Loading...</div>;
 	}
 
@@ -83,10 +83,11 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
-			data={ "<p>Hello world!!!</p>" }
+			data={ '<p>Hello world!!!</p>' }
 			config={ {
+				licenseKey: 'GPL',
 				toolbar: {
-					items: [ "undo", "redo", "|", "bold", "italic" ],
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			} }
@@ -98,20 +99,20 @@ const CKEditorDemo = () => {
 To use premium plugins, set the `premium` property to `true` in the `useCKEditorCloud` configuration and provide your license key in the `CKEditor` configuration.
 
 ```js
-import React from "react";
-import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
+import React from 'react';
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
-		version: "{@var ckeditor5-version}",
+		version: '{@var ckeditor5-version}',
 		premium: true,
 	} );
 
-	if ( cloud.status === "error" ) {
+	if ( cloud.status === 'error' ) {
 		return <div>Error!</div>;
 	}
 
-	if ( cloud.status === "loading" ) {
+	if ( cloud.status === 'loading' ) {
 		return <div>Loading...</div>;
 	}
 
@@ -130,11 +131,11 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
-			data={ "<p>Hello world!!!</p>" }
+			data={ '<p>Hello world!!!</p>' }
 			config={ {
-				licenseKey: "<YOUR_LICENSE_KEY>",
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: {
-					items: [ "undo", "redo", "|", "bold", "italic" ],
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
 				plugins: [
 					Bold,
@@ -156,24 +157,24 @@ const CKEditorDemo = () => {
 To use `CKBox`, specify the version and theme (optionally) in the `useCKEditorCloud` configuration. Also, remember about the actual plugin configuration inside `<CKEditor/>` component.
 
 ```js
-import React from "react";
-import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
+import React from 'react';
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
-		version: "{@var ckeditor5-version}",
+		version: '{@var ckeditor5-version}',
 		ckbox: {
-			version: "2.5.1",
+			version: '2.5.1',
 			// Optional - it's already 'lark' by default.
-			theme: "lark",
+			theme: 'lark',
 		},
 	} );
 
-	if ( cloud.status === "error" ) {
+	if ( cloud.status === 'error' ) {
 		return <div>Error!</div>;
 	}
 
-	if ( cloud.status === "loading" ) {
+	if ( cloud.status === 'loading' ) {
 		return <div>Loading...</div>;
 	}
 
@@ -192,10 +193,10 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
-			data={ "<p>Hello world!!!</p>" }
+			data={ '<p>Hello world!!!</p>' }
 			config={ {
 				toolbar: {
-					items: [ "undo", "redo", "|", "bold", "italic" ],
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
 				plugins: [
 					Bold,
@@ -208,9 +209,9 @@ const CKEditorDemo = () => {
 					CKBoxImageEdit,
 				],
 				ckbox: {
-					tokenUrl: "https://api.ckbox.io/token/demo",
+					tokenUrl: 'https://api.ckbox.io/token/demo',
 					forceDemoLabel: true,
-					allowExternalImagesEditing: [ /^data:/, /^i.imgur.com\//, "origin" ],
+					allowExternalImagesEditing: [ /^data:/, /^i.imgur.com\//, 'origin' ],
 				},
 			} }
 		/>
@@ -529,20 +530,20 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 Pass the language you need into the `translations` array inside the configuration in the `useCKEditorCloud`.
 
 ```js
-import React from "react";
-import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
+import React from 'react';
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
-		version: "{@var ckeditor5-version}",
-		languages: [ "de" ]
+		version: '{@var ckeditor5-version}',
+		languages: [ 'de' ]
 	});
 
-	if ( cloud.status === "error" ) {
+	if ( cloud.status === 'error' ) {
 		return <div>Error!</div>;
 	}
 
-	if ( cloud.status === "loading" ) {
+	if ( cloud.status === 'loading' ) {
 		return <div>Loading...</div>;
 	}
 
@@ -558,9 +559,9 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditorBase }
-			data={ "<p>Hello world!!!</p>" }
+			data={ '<p>Hello world!!!</p>' }
 			config={{
-				toolbar: [ "undo", "redo", "|", "bold", "italic" ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			}}
 		/>
