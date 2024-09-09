@@ -42,24 +42,24 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 function App() {
-    return (
-        <CKEditor
-            editor={ ClassicEditor }
-            config={ {
-                toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
-                plugins: [
-                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-                ],
-                licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-                mention: {
-                    // Mention configuration
-                },
-                initialData: '<p>Hello from CKEditor 5 in React!</p>',
-            } }
-        />
-    );
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			config={ {
+				toolbar: {
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+				plugins: [
+					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+				],
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				mention: {
+					// Mention configuration
+				},
+				initialData: '<p>Hello from CKEditor 5 in React!</p>',
+			} }
+		/>
+	);
 }
 
 export default App;
@@ -215,28 +215,28 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
-		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		  plugins: [ Essentials, Bold, Italic, Paragraph ],
-		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
 		data='<p>Hello from the first editor working with the context!</p>'
 		onReady={ ( editor ) => {
-		  // You can store the "editor" and use when it is needed.
-		  console.log( 'Editor 1 is ready to use!', editor );
+			// You can store the "editor" and use when it is needed.
+			console.log( 'Editor 1 is ready to use!', editor );
 		} }
 	  />
 
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
-		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		  plugins: [ Essentials, Bold, Italic, Paragraph ],
-		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
 		data='<p>Hello from the second editor working with the context!</p>'
 		onReady={ ( editor ) => {
-		  // You can store the "editor" and use when it is needed.
-		  console.log( 'Editor 2 is ready to use!', editor );
+			// You can store the "editor" and use when it is needed.
+			console.log( 'Editor 2 is ready to use!', editor );
 		} }
 	  />
 	</CKEditorContext>
@@ -341,39 +341,36 @@ import { useMultiRootEditor } from '@ckeditor/ckeditor5-react';
 import 'ckeditor5/ckeditor5.css';
 
 const App = () => {
-    const editorProps = {
-        editor: MultiRootEditor,
-        data: {
-            intro: '<h1>React multi-root editor</h1>',
-            content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
-        },
-        config: {
-            plugins: [ Essentials, Bold, Italic, Paragraph ],
-            toolbar: {
-                items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-            },
-        }
-    };
+	const editorProps = {
+		editor: MultiRootEditor,
+		data: {
+			intro: '<h1>React multi-root editor</h1>',
+			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
+		},
+		config: {
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			},
+		}
+	};
 
-    const {
-        editor,
-        toolbarElement,
-        editableElements,
-        data,
-        setData,
-        attributes,
-        setAttributes
-    } = useMultiRootEditor( editorProps );
+	const {
+		editor,
+		toolbarElement,
+		editableElements,
+		data,
+		setData,
+		attributes,
+		setAttributes
+	} = useMultiRootEditor( editorProps );
 
-    return (
-        <div className="App">
-            <h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
-
-            { toolbarElement }
-
-            { editableElements }
-        </div>
-    );
+	return (
+		<div className="App">
+			{ toolbarElement }
+			{ editableElements }
+		</div>
+	);
 }
 
 export default App;
@@ -384,12 +381,27 @@ export default App;
 ```jsx
 import { withCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
+/**
+ * The `withCKEditorCloud` HOC allows you to load CKEditor 5 from the CKEditor Cloud and inject loaded data
+ * as `cloud` property into your component. Configuration of the `cloud` passed to `withCKEditorCloud` is
+ * the same as for the `useCKEditorCloud` hook and you can specify the version of CKEditor 5 to load and
+ * optionally enable premium features.
+ */
 const withCKCloud = withCKEditorCloud( {
 	cloud: {
-		// Configuration is identical as in the `useCKEditorCloud` hook.
 		version: '43.0.0',
 		languages: [ 'en', 'de' ]
-	}
+	},
+
+	// Optional. Render error when loading CKEditor 5 from the CKEditor Cloud fails.
+	renderError: ( error ) => {
+		console.error( error );
+
+		return <div>Error!</div>;
+	},
+
+	// Optional: Render loading state when CKEditor 5 is being loaded from the CKEditor Cloud.
+	renderLoader: () => <div>Loading...</div>,
 } );
 
 const App = withCKCloud( ( { cloud } ) => {
@@ -427,10 +439,7 @@ const App = withCKCloud( ( { cloud } ) => {
 
 	return (
 		<div className="App">
-			<h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
-
 			{ toolbarElement }
-
 			{ editableElements }
 		</div>
 	);
