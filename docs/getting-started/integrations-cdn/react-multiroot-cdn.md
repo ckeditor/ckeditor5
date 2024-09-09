@@ -37,19 +37,9 @@ npm install ckeditor5 @ckeditor/ckeditor5-react
 
 Use the `useMultiRootEditor` hook inside your project:
 
-```tsx
+```jsx
 import React from "react";
-import { useMultiRootEditor, withCKCloud } from "@ckeditor/ckeditor5-react";
-import {
-	useMultiRootEditor,
-	withCKEditorCloud,
-	type MultiRootHookProps,
-	type WithCKEditorCloudHocProps,
-} from "@ckeditor/ckeditor5-react";
-
-type EditorDemoProps = WithCKEditorCloudHocProps & {
-	data: Record<string, string>;
-};
+import { useMultiRootEditor, withCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 const withCKCloud = withCKEditorCloud( {
 	cloud: {
@@ -66,39 +56,10 @@ const withCKCloud = withCKEditorCloud( {
 } );
 
 const MultiRootEditorDemo = withCKCloud(
-	( { data, cloud }: EditorDemoProps ): ReactNode => {
-	const {
-		MultiRootEditor: MultiRootEditorBase,
-		CloudServices,
-		Essentials,
-		CKFinderUploadAdapter,
-		Autoformat,
-		Bold,
-		Italic,
-		BlockQuote,
-		CKBox,
-		CKFinder,
-		EasyImage,
-		Heading,
-		Image,
-		ImageCaption,
-		ImageStyle,
-		ImageToolbar,
-		ImageUpload,
-		Indent,
-		Link,
-		List,
-		MediaEmbed,
-		Paragraph,
-		PasteFromOffice,
-		PictureEditing,
-		Table,
-		TableToolbar,
-		TextTransformation,
-	} = cloud.CKEditor;
-
-	class MultiRootEditor extends MultiRootEditorBase {
-		public static override builtinPlugins = [
+	( { data, cloud } ) => {
+		const {
+			MultiRootEditor: MultiRootEditorBase,
+			CloudServices,
 			Essentials,
 			CKFinderUploadAdapter,
 			Autoformat,
@@ -107,7 +68,6 @@ const MultiRootEditorDemo = withCKCloud(
 			BlockQuote,
 			CKBox,
 			CKFinder,
-			CloudServices,
 			EasyImage,
 			Heading,
 			Image,
@@ -123,31 +83,59 @@ const MultiRootEditorDemo = withCKCloud(
 			PasteFromOffice,
 			PictureEditing,
 			TextTransformation,
-		];
+		} = cloud.CKEditor;
 
-		public static override defaultConfig = {
-			toolbar: {
-				items: [
-					"undo",
-					"redo",
-					"|",
-					"heading",
-					"|",
-					"bold",
-					"italic",
-					"|",
-					"link",
-					"uploadImage",
-					"blockQuote",
-					"mediaEmbed",
-					"|",
-					"bulletedList",
-					"numberedList",
-					"outdent",
-					"indent",
-				],
-			},
-		};
+		class MultiRootEditor extends MultiRootEditorBase {
+			static builtinPlugins = [
+				Essentials,
+				CKFinderUploadAdapter,
+				Autoformat,
+				Bold,
+				Italic,
+				BlockQuote,
+				CKBox,
+				CKFinder,
+				CloudServices,
+				EasyImage,
+				Heading,
+				Image,
+				ImageCaption,
+				ImageStyle,
+				ImageToolbar,
+				ImageUpload,
+				Indent,
+				Link,
+				List,
+				MediaEmbed,
+				Paragraph,
+				PasteFromOffice,
+				PictureEditing,
+				TextTransformation,
+			];
+
+			static defaultConfig = {
+				toolbar: {
+					items: [
+						"undo",
+						"redo",
+						"|",
+						"heading",
+						"|",
+						"bold",
+						"italic",
+						"|",
+						"link",
+						"uploadImage",
+						"blockQuote",
+						"mediaEmbed",
+						"|",
+						"bulletedList",
+						"numberedList",
+						"outdent",
+						"indent",
+					],
+				},
+			};
 		}
 
 		const { toolbarElement, editableElements } = useMultiRootEditor( {
@@ -161,7 +149,7 @@ const MultiRootEditorDemo = withCKCloud(
 				{ editableElements }
 			</div>
 		);
-  }
+	}
 );
 ```
 
