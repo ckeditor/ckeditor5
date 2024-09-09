@@ -131,7 +131,7 @@ function App() {
 
 #### Step 3 (Optional): Migrate the CKEditor&nbsp;5 React testing suite
 
-If you have any tests that use CKEditor&nbsp;5 objects, you need to update them to use the `useCKEditorCloud` hook. Here is an example of migrating a test that uses the `ClassicEditor` object:
+If you have any tests that use CKEditor&nbsp;5 objects, you need to update them to use the  `loadCKEditorCloud` function. Here is an example of migrating a test that uses the `ClassicEditor` object:
 
 **Before:**
 
