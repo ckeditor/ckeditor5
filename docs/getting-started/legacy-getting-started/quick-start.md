@@ -32,7 +32,7 @@ Let us run a classic editor build as an example. In your HTML page add an elemen
 Load the classic editor build (here a [CDN](https://cdn.ckeditor.com/) location is used).
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 ```
 
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method to display the editor.
@@ -57,7 +57,7 @@ A full web page with embedded CKEditor&nbsp;5 from this example would look like 
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Classic editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Classic editor</h1>
@@ -131,10 +131,10 @@ In this example, you remove the premium collaboration features and several other
 			The "super-build" of CKEditor&nbsp;5 served via CDN contains a large set of plugins and multiple editor types.
 			See https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
 		-->
-		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
 		<!--
 			Uncomment to load the Spanish translation
-			<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/translations/es.js"></script>
+			<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/translations/es.js"></script>
 		-->
 		<script>
 			// This sample still does not showcase all CKEditor&nbsp;5 features (!)
