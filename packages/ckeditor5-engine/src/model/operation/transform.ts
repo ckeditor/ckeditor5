@@ -755,6 +755,7 @@ function padWithNoOps( operations: Array<Operation>, howMany: number ) {
  * after the original marker operation.
  *
  * See also `MarkerOperation` x `MoveOperation` transformation.
+ * See also https://github.com/ckeditor/ckeditor5/pull/17071.
  *
  * @param operations
  */
@@ -1232,6 +1233,7 @@ setTransformation( MarkerOperation, MoveOperation, ( a, b ) => {
 		// We will call these additional marker operations "partial marker operations" and we will mark them with negative base version.
 		//
 		// See also `handlePartialMarkerOperations()`.
+		// See also https://github.com/ckeditor/ckeditor5/pull/17071.
 		//
 		for ( let i = 1; i < ranges.length; i++ ) {
 			const op = a.clone();
