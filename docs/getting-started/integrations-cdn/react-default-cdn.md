@@ -156,7 +156,13 @@ const CKEditorDemo = () => {
 };
 ```
 
-With the configuration in place, you can use the above `<CKEditorDemo />` elements as any other React component.
+With the configuration in place, you can use the above elements as any other React component.
+
+```html
+<App>
+	<CKEditorDemo />
+</App>
+```
 
 ### Using the component with CKBox
 
@@ -533,7 +539,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
-Pass the language you need into the `translations` array inside the configuration in the `useCKEditorCloud`.
+Pass the languages you need into the `languages` array inside the configuration of the `useCKEditorCloud` hook.
 
 ```js
 import React from 'react';
