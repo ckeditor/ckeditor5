@@ -13,7 +13,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { ViewUIElement } from '@ckeditor/ckeditor5-engine';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -166,13 +165,13 @@ describe( 'BookmarkEditing', () => {
 			expect( bookmarkWidget.hasClass( 'ck-bookmark' ) ).to.be.true;
 			expect( bookmarkWidget.childCount ).to.equal( 1 );
 
-			const UIElement = bookmarkWidget.getChild( 0 );
+			const iconContainer = bookmarkWidget.getChild( 0 );
 
-			expect( UIElement ).to.be.instanceof( ViewUIElement );
-			expect( UIElement.isEmpty ).to.be.true;
+			expect( iconContainer.is( 'uiElement' ) ).to.be.true;
+			expect( iconContainer.isEmpty ).to.be.true;
 
-			expect( bookmarkWidget.getFillerOffset() ).to.equal( null );
 			expect( bookmarkWidget.getFillerOffset ).is.a( 'function' );
+			expect( bookmarkWidget.getFillerOffset() ).to.equal( null );
 		} );
 
 		it( 'should not add any filler', () => {
