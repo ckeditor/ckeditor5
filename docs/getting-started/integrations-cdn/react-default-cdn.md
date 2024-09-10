@@ -38,7 +38,7 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
 
-### Installing React component from npm
+### Installing the React component from npm
 
 Install the `@ckeditor/ckeditor5-react` package:
 
@@ -51,6 +51,8 @@ The `useCKEditorCloud` hook is responsible for returning information that:
 * The editor is still downloading from the CDN with the `status = 'loading'`.
 * An error occurred during the download when `status = 'error'`. Further information is in the error field.
 * About the editor in the data field and its dependencies when `status = 'success'`.
+
+### Using the component
 
 Use the `<CKEditor>` component inside your project. The below example shows how to use it with the open-source plugins.
 
@@ -95,6 +97,8 @@ const CKEditorDemo = () => {
 	);
 };
 ```
+
+### Using the component with premium plugins
 
 To use premium plugins, set the `premium` property to `true` in the `useCKEditorCloud` configuration and provide your license key in the `CKEditor` configuration.
 
@@ -152,7 +156,9 @@ const CKEditorDemo = () => {
 };
 ```
 
-### Usage with CKBox
+With the configuration in place, you can use the above `<CKEditorDemo />` elements as any other React component.
+
+### Using the component with CKBox
 
 To use `CKBox`, specify the version and theme (optionally) in the `useCKEditorCloud` configuration. Also, remember about the actual plugin configuration inside `<CKEditor/>` component.
 
@@ -219,7 +225,7 @@ const CKEditorDemo = () => {
 };
 ```
 
-### Usage with external plugins
+### Using the component with external plugins
 
 There are various ways to use external plugins. Here is a list of them:
 
