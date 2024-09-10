@@ -34,17 +34,19 @@ describe( 'viewToPlainText()', () => {
 		);
 	} );
 
-	it( 'should not put empty line before or after the element with `dataPipeline:transparentRendering` property', () => {
-		const viewString = 'Abc <container:h1>Header</container:h1> xyz';
-		const expectedText = 'Abc Header xyz';
+	for ( const property of [ 'transparentRendering', 'noNewLinePaddingOnPaste' ] ) {
+		it( `should not put empty line before or after the element with \`dataPipeline:${ property }\` property`, () => {
+			const viewString = 'Abc <container:h1>Header</container:h1> xyz';
+			const expectedText = 'Abc Header xyz';
 
-		const view = parseView( viewString );
-		view.getChild( 1 )._setCustomProperty( 'dataPipeline:transparentRendering', true );
+			const view = parseView( viewString );
+			view.getChild( 1 )._setCustomProperty( `dataPipeline:${ property }`, true );
 
-		const text = viewToPlainText( view );
+			const text = viewToPlainText( view );
 
-		expect( text ).to.equal( expectedText );
-	} );
+			expect( text ).to.equal( expectedText );
+		} );
+	}
 
 	it( 'should turn a soft break into a single empty line', () => {
 		testViewToPlainText(

@@ -87,13 +87,24 @@ function newLinePadding(
 	}
 
 	// Do not add padding around the elements that won't be rendered.
-	if (
-		element.is( 'element' ) && element.getCustomProperty( 'dataPipeline:transparentRendering' ) ||
-		previous.is( 'element' ) && previous.getCustomProperty( 'dataPipeline:transparentRendering' )
-	) {
+	if ( isNewLinePaddingDisabled( element ) || isNewLinePaddingDisabled( previous ) ) {
 		return '';
 	}
 
 	// Add empty lines between container elements.
 	return '\n\n';
+}
+
+/**
+ * Returns `true` if the new line padding should be disabled for the given element.
+ */
+function isNewLinePaddingDisabled( element: ViewElement ): boolean {
+	if ( !element.is( 'element' ) ) {
+		return false;
+	}
+
+	return !!(
+		element.getCustomProperty( 'dataPipeline:transparentRendering' ) ||
+		element.getCustomProperty( 'dataPipeline:noNewLinePaddingOnPaste' )
+	);
 }

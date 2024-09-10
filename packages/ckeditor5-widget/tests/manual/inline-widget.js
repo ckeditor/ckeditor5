@@ -78,6 +78,8 @@ class InlineWidget extends Plugin {
 			const widgetElement = writer.createContainerElement( 'placeholder' );
 			const viewText = writer.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
+			// It prevents adding new line padding after the widget element during data downcast in the clipboard pipeline.
+			writer.setCustomProperty( 'dataPipeline:noNewLinePaddingOnPaste', true, widgetElement );
 			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
