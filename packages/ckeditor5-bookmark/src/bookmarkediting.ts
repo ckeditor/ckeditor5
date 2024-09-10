@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { Widget, toWidget } from 'ckeditor5/src/widget.js';
+import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
@@ -23,13 +23,6 @@ export default class BookmarkEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'BookmarkEditing' as const;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get requires() {
-		return [ Widget ] as const;
 	}
 
 	/**
