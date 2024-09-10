@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-bookmark-icon-default-fill-color: hsl(0, 0%, 0%);
+	--ck-bookmark-icon-default-fill-color: var(--ck-color-text);
 	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
 	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
