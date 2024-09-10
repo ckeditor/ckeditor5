@@ -54,7 +54,10 @@ export default class BookmarkEditing extends Plugin {
 		const { conversion, t } = editor;
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'bookmark',
+			model: {
+				name: 'bookmark',
+				attributes: [ 'bookmarkId' ]
+			},
 			view: ( modelElement, { writer } ) => {
 				const emptyElement = writer.createEmptyElement( 'a', {
 					'id': modelElement.getAttribute( 'bookmarkId' )
@@ -67,7 +70,10 @@ export default class BookmarkEditing extends Plugin {
 		} );
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'bookmark',
+			model: {
+				name: 'bookmark',
+				attributes: [ 'bookmarkId' ]
+			},
 			view: ( modelElement, { writer } ) => {
 				const id = modelElement.getAttribute( 'bookmarkId' );
 				const containerElement = writer.createContainerElement( 'a', {
