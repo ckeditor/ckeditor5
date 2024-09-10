@@ -107,7 +107,7 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
-### Installing Angular component from npm
+### Installing the Angular component from npm
 
 Install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
@@ -115,7 +115,61 @@ Install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.n
 npm install @ckeditor/ckeditor5-angular
 ```
 
-This setup differs depending on the type of components you use.
+### Using the Angular component
+
+To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
+
+```js
+import { Component } from '@angular/core';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+
+@Component( {
+	selector: 'app-simple-cdn-usage',
+	templateUrl: './simple-cdn-usage.component.html',
+} )
+export class SimpleCdnUsageComponent {
+	Editor = null;
+
+	config = null;
+
+	editorData = '<p>Hello world!</p>';
+
+	ngOnInit() {
+		loadCKEditorCloud({
+			version: '{@var ckeditor5-version}',
+			premium: true
+		}).then( this.setupEditor.bind( this ) );
+	}
+
+	_setupEditor ( cloud ) {
+		const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Mention
+		} = cloud.CKEditor;
+
+		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention, SlashCommand ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			}
+		};
+	}
+}
+```
+
+The `<loadCKEditorCloud>` component supports the following properties:
+
+* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
+* `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
+* `premium` &ndash; If `true` then the premium features will be loaded.
+* `ckbox` &ndash; CKBox bundle configuration.
+* `plugins` &ndash; Additional resources to load.
 
 ## Supported `@Input` properties
 
@@ -230,6 +284,7 @@ export class MyComponent {
 			version: '43.0.0',
 		}).then( this._setupEditor.bind( this ) );
 	}
+
 	private _setupEditor( cloud ) {
 		const {
 			ClassicEditor
@@ -354,142 +409,6 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 <info-box>
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
-
-## CDN
-
-To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
-
-```js
-import { Component } from '@angular/core';
-import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
-
-@Component( {
-	selector: 'app-simple-cdn-usage',
-	templateUrl: './simple-cdn-usage.component.html',
-} )
-export class SimpleCdnUsageComponent {
-	public Editor = null;
-
-	public config = null;
-
-	public editorData = `<p>Getting used to an entirely different culture can be challenging.
-	While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person.
-	You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>`;
-
-	public ngOnInit(): void {
-		loadCKEditorCloud({
-			version: '43.0.0',
-		}).then( this.setupEditor.bind( this ) );
-	}
-
-	private _setupEditor (cloud: CKEditorCloudResult ) {
-		const {
-			ClassicEditor,
-			Essentials,
-			CKFinderUploadAdapter,
-			Autoformat,
-			Bold,
-			Italic,
-			BlockQuote,
-			CKBox,
-			CKFinder,
-			CloudServices,
-			EasyImage,
-			Heading,
-			Image,
-			ImageCaption,
-			ImageStyle,
-			ImageToolbar,
-			ImageUpload,
-			Indent,
-			Link,
-			List,
-			MediaEmbed,
-			Paragraph,
-			PasteFromOffice,
-			PictureEditing,
-			Table,
-			TableToolbar,
-			TextTransformation,
-		} = cloud.CKEditor;
-
-		this.Editor = ClassicEditor;
-		this.config = {
-			plugins: [
-				Essentials,
-				CKFinderUploadAdapter,
-				Autoformat,
-				Bold,
-				Italic,
-				BlockQuote,
-				CKBox,
-				CKFinder,
-				CloudServices,
-				EasyImage,
-				Heading,
-				Image,
-				ImageCaption,
-				ImageStyle,
-				ImageToolbar,
-				ImageUpload,
-				Indent,
-				Link,
-				List,
-				MediaEmbed,
-				Paragraph,
-				PasteFromOffice,
-				PictureEditing,
-				Table,
-				TableToolbar,
-				TextTransformation,
-			],
-			toolbar: {
-				items: [
-					'undo',
-					'redo',
-					'|',
-					'heading',
-					'|',
-					'bold',
-					'italic',
-					'|',
-					'link',
-					'uploadImage',
-					'insertTable',
-					'blockQuote',
-					'mediaEmbed',
-					'|',
-					'bulletedList',
-					'numberedList',
-					'outdent',
-					'indent',
-				],
-			},
-			image: {
-				toolbar: [
-					'imageStyle:inline',
-					'imageStyle:block',
-					'imageStyle:side',
-					'|',
-					'toggleImageCaption',
-					'imageTextAlternative',
-				],
-			},
-			table: {
-				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
-			},
-		};
-	}
-}
-```
-
-The `<loadCKEditorCloud>` component supports the following properties:
-
-* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
-* `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
-* `premium` &ndash; If `true` then the premium features will be loaded.
-* `ckbox` &ndash; CKBox bundle configuration.
-* `plugins` &ndash; Additional resources to load.
 
 ## Integration with `ngModel`
 
