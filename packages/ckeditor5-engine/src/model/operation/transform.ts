@@ -759,7 +759,7 @@ function padWithNoOps( operations: Array<Operation>, howMany: number ) {
  * @param operations
  */
 function handlePartialMarkerOperations( operations: Array<Operation> ) {
-	const markerOps: Map<string, { op: MarkerOperation, ranges: Array<Range> }> = new Map();
+	const markerOps: Map<string, { op: MarkerOperation; ranges: Array<Range> }> = new Map();
 
 	for ( let i = 0; i < operations.length; i++ ) {
 		const op = operations[ i ];
