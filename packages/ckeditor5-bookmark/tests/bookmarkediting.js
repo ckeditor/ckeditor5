@@ -70,6 +70,50 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 		} );
+
+		it( 'should properly downcast bookmark with text before', () => {
+			setModelData( model, '<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'Example text' +
+					'<a id="foo"></a>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark with text after', () => {
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<a id="foo"></a>' +
+					'Example text' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark with surrounded text', () => {
+			setModelData( model, '<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'Example' +
+					'<a id="foo"></a>' +
+					'text' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark within a heading', () => {
+			setModelData( model, '<heading1><bookmark bookmarkId="foo"></bookmark></heading1>' );
+
+			expect( editor.getData() ).to.equal(
+				'<h2>' +
+					'<a id="foo"></a>' +
+				'</h2>'
+			);
+		} );
 	} );
 
 	describe( 'editingDowncast', () => {
