@@ -38,7 +38,7 @@ You get ready-to-use code tailored to your needs!
 
 This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
 
-### Installing react component from npm
+### Installing React component from npm
 
 Install the `@ckeditor/ckeditor5-react` package:
 
@@ -83,7 +83,7 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
-			data={ '<p>Hello world!!!</p>' }
+			data={ '<p>Hello world!</p>' }
 			config={ {
 				licenseKey: 'GPL',
 				toolbar: {
@@ -131,7 +131,7 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
-			data={ '<p>Hello world!!!</p>' }
+			data={ '<p>Hello world!</p>' }
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: {
@@ -193,7 +193,7 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
-			data={ '<p>Hello world!!!</p>' }
+			data={ '<p>Hello world!</p>' }
 			config={ {
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
@@ -225,7 +225,7 @@ There are various ways to use external plugins. Here is a list of them:
 
 * **Local UMD Plugins:** Dynamically import local UMD modules using the `import()` syntax.
 * **Local External Imports:** Load external plugins locally using additional bundler configurations (such as Vite).
-* **CDN 3rd Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
+* **CDN Third-Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
 * **Verbose Configuration:** Advanced plugin loading with options to specify both script and style sheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
 
 Here is an example:
@@ -238,8 +238,8 @@ const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
 		version: '{@var ckeditor5-version}',
 		plugins: {
-			PluginUMD: async () => import( './your-local-import.umd.js' ),
-			PluginLocalImport: async () => import( './your-local-import' ),
+			PluginUMD: async () => await import( './your-local-import.umd.js' ),
+			PluginLocalImport: async () => await import( './your-local-import' ),
 			PluginThirdParty: [
 				'https://cdn.example.com/plugin3.js',
 				'https://cdn.example.com/plugin3.css'
@@ -396,28 +396,28 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 				],
 				toolbar: {
 					items: [
-					'undo', 'redo',
-					'|', 'heading',
-					'|', 'bold', 'italic',
-					'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+						'undo', 'redo',
+						'|', 'heading',
+						'|', 'bold', 'italic',
+						'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+						'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 					]
 				},
 				image: {
 					toolbar: [
-					'imageStyle:inline',
-					'imageStyle:block',
-					'imageStyle:side',
-					'|',
-					'toggleImageCaption',
-					'imageTextAlternative'
+						'imageStyle:inline',
+						'imageStyle:block',
+						'imageStyle:side',
+						'|',
+						'toggleImageCaption',
+						'imageTextAlternative'
 					]
 				},
 				table: {
 					contentToolbar: [
-					'tableColumn',
-					'tableRow',
-					'mergeTableCells'
+						'tableColumn',
+						'tableRow',
+						'mergeTableCells'
 					]
 				}
 			} }
@@ -559,7 +559,7 @@ const CKEditorDemo = () => {
 	return (
 		<CKEditor
 			editor={ ClassicEditorBase }
-			data={ '<p>Hello world!!!</p>' }
+			data={ '<p>Hello world!</p>' }
 			config={{
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
