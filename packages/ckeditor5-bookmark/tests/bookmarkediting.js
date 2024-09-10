@@ -128,6 +128,46 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly downcast bookmark with text before', () => {
+			setModelData( model, '<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'Example text' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark with text after', () => {
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+					'Example text' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark with surrounded text', () => {
+			setModelData( model, '<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'Example' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+					'text' +
+				'</p>'
+			);
+		} );
+
 		it( 'should properly downcast bookmark inside heading', () => {
 			setModelData( model, '<heading1><bookmark bookmarkId="foo"></bookmark></heading1>' );
 
