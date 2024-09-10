@@ -21,7 +21,8 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	type PositionOptions
+	type PositionOptions,
+	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../../theme/components/panel/balloonrotator.css';
@@ -153,6 +154,8 @@ export default class ContextualBalloon extends Plugin {
 
 			return null;
 		};
+
+		this.decorate( 'getPositionOptions' );
 
 		this.set( 'visibleView', null );
 		this.set( '_numberOfStacks', 0 );
@@ -320,8 +323,33 @@ export default class ContextualBalloon extends Plugin {
 			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
 
-		this.view.pin( this._getBalloonPosition()! );
+		this.view.pin( this.getPositionOptions()! );
 		this._fakePanelsView!.updatePosition();
+	}
+
+	/**
+	 * Returns position options of the last view in the stack.
+	 * This keeps the balloon in the same position when the view is changed.
+	 */
+	public getPositionOptions(): Partial<PositionOptions> | undefined {
+		let position = Array.from( this._visibleStack.values() ).pop()!.position;
+
+		if ( position ) {
+			// Use the default limiter if none has been specified.
+			if ( !position.limiter ) {
+				// Don't modify the original options object.
+				position = Object.assign( {}, position, {
+					limiter: this.positionLimiter
+				} );
+			}
+
+			// Don't modify the original options object.
+			position = Object.assign( {}, position, {
+				viewportOffsetConfig: this.editor.ui.viewportOffset
+			} );
+		}
+
+		return position;
 	}
 
 	/**
@@ -357,7 +385,6 @@ export default class ContextualBalloon extends Plugin {
 		this._view = new BalloonPanelView( this.editor.locale );
 
 		this.editor.ui.view.body.add( this._view );
-		this.editor.ui.focusTracker.add( this._view.element! );
 
 		this._rotatorView = this._createRotatorView();
 		this._fakePanelsView = this._createFakePanelsView();
@@ -495,39 +522,21 @@ export default class ContextualBalloon extends Plugin {
 
 		this._rotatorView!.showView( view );
 		this.visibleView = view;
-		this.view.pin( this._getBalloonPosition()! );
+		this.view.pin( this.getPositionOptions()! );
 		this._fakePanelsView!.updatePosition();
 
 		if ( singleViewMode ) {
 			this._singleViewMode = true;
 		}
 	}
-
-	/**
-	 * Returns position options of the last view in the stack.
-	 * This keeps the balloon in the same position when the view is changed.
-	 */
-	private _getBalloonPosition() {
-		let position = Array.from( this._visibleStack.values() ).pop()!.position;
-
-		if ( position ) {
-			// Use the default limiter if none has been specified.
-			if ( !position.limiter ) {
-				// Don't modify the original options object.
-				position = Object.assign( {}, position, {
-					limiter: this.positionLimiter
-				} );
-			}
-
-			// Don't modify the original options object.
-			position = Object.assign( {}, position, {
-				viewportOffsetConfig: this.editor.ui.viewportOffset
-			} );
-		}
-
-		return position;
-	}
 }
+
+/**
+ * An event fired when the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} is about to get the position of the balloon.
+ *
+ * @eventName ~ContextualBalloon#getPositionOptions
+ */
+export type ContextualBalloonGetPositionOptionsEvent = DecoratedMethodEvent<ContextualBalloon, 'getPositionOptions'>;
 
 /**
  * The configuration of the view.

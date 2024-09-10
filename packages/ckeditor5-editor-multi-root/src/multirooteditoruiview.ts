@@ -57,6 +57,8 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	 * @param options.shouldToolbarGroupWhenFull When set to `true` enables automatic items grouping
 	 * in the main {@link module:editor-multi-root/multirooteditoruiview~MultiRootEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
+	 * @param options.label When set, this value will be used as an accessible `aria-label` of the
+	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view} elements.
 	 */
 	constructor(
 		locale: Locale,
@@ -65,6 +67,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		options: {
 			editableElements?: Record<string, HTMLElement>;
 			shouldToolbarGroupWhenFull?: boolean;
+			label?: string | Record<string, string>;
 		} = {}
 	) {
 		super( locale );
@@ -82,8 +85,13 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		// Create `InlineEditableUIView` instance for each editable.
 		for ( const editableName of editableNames ) {
 			const editableElement = options.editableElements ? options.editableElements[ editableName ] : undefined;
+			let { label } = options;
 
-			this.createEditable( editableName, editableElement );
+			if ( typeof label === 'object' ) {
+				label = label[ editableName ];
+			}
+
+			this.createEditable( editableName, editableElement, label );
 		}
 
 		this.editable = Object.values( this.editables )[ 0 ];
@@ -121,15 +129,12 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	 *
 	 * @param editableName The name for the editable.
 	 * @param editableElement DOM element for which the editable should be created.
+	 * @param label The accessible editable label used by assistive technologies.
 	 * @returns The created editable instance.
 	 */
-	public createEditable( editableName: string, editableElement?: HTMLElement ): InlineEditableUIView {
-		const t = this.locale.t;
-
+	public createEditable( editableName: string, editableElement?: HTMLElement, label?: string ): InlineEditableUIView {
 		const editable = new InlineEditableUIView( this.locale, this._editingView, editableElement, {
-			label: editable => {
-				return t( 'Rich Text Editor. Editing area: %0', editable.name! );
-			}
+			label
 		} );
 
 		this.editables[ editableName ] = editable;

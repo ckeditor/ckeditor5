@@ -70,5 +70,12 @@ export default class HeadingElementSupport extends Plugin {
 				allowChildren: headerModels
 			}
 		} );
+
+		dataSchema.extendBlockElement( {
+			model: 'htmlSummary',
+			modelSchema: {
+				allowChildren: headerModels
+			}
+		} );
 	}
 }

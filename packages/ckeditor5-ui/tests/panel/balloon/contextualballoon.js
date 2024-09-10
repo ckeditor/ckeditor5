@@ -211,6 +211,60 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
+	describe( 'getPositionOptions()', () => {
+		beforeEach( () => {
+			sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+			sinon.stub( balloon.view, 'pin' ).returns( {} );
+		} );
+
+		it( 'should return undefined if last element from visible stack has no position', () => {
+			balloon.add( {
+				view: viewA
+			} );
+
+			expect( balloon.getPositionOptions() ).to.be.undefined;
+		} );
+
+		it( 'should return position of the last visible stack element', () => {
+			balloon.add( {
+				view: viewA,
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			expect( balloon.getPositionOptions() ).to.be.deep.equal( {
+				limiter: balloon.positionLimiter,
+				target: 'fake',
+				viewportOffsetConfig: {
+					top: 0
+				}
+			} );
+		} );
+
+		it( 'should attach limiter to the position of element from the last visible stack if it\'s not present', () => {
+			balloon.add( {
+				view: viewA,
+				position: {
+					target: 'blank'
+				}
+			} );
+
+			expect( balloon.getPositionOptions().limiter ).to.be.equal( balloon.positionLimiter );
+		} );
+
+		it( 'should attach viewportOffsetConfig to the position of element from the last visible stack if it\'s not present', () => {
+			balloon.add( {
+				view: viewA,
+				position: {
+					target: 'blank'
+				}
+			} );
+
+			expect( balloon.getPositionOptions().viewportOffsetConfig ).to.be.equal( editor.ui.viewportOffset );
+		} );
+	} );
+
 	describe( 'add()', () => {
 		beforeEach( () => {
 			stubBalloonPanelView();

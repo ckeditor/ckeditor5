@@ -18,13 +18,15 @@ import {
 	type Element,
 	type Node,
 	type ViewDocumentArrowKeyEvent,
-	type ViewDocumentFragment,
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
 	type Schema,
 	type Position,
+	type EditingView,
 	type ViewDocumentTabEvent,
-	type ViewDocumentKeyDownEvent
+	type ViewDocumentKeyDownEvent,
+	type ViewNode,
+	type ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -33,6 +35,7 @@ import {
 	env,
 	keyCodes,
 	getLocalizedArrowKeyCodeDirection,
+	getRangeFromMouseEvent,
 	type EventInfo,
 	type KeystrokeInfo
 } from '@ckeditor/ckeditor5-utils';
@@ -279,6 +282,11 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
+		// Some of DOM elements have no view element representation so it may be null.
+		if ( !element ) {
+			return;
+		}
+
 		// If triple click should select entire paragraph.
 		if ( domEventData.domEvent.detail >= 3 ) {
 			if ( this._selectBlockContent( element ) ) {
@@ -288,17 +296,25 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		// Do nothing for single or double click inside nested editable.
-		if ( isInsideNestedEditable( element ) ) {
-			return;
-		}
-
 		// If target is not a widget element - check if one of the ancestors is.
 		if ( !isWidget( element ) ) {
-			element = element.findAncestor( isWidget );
+			const editableOrWidgetElement = findClosestEditableOrWidgetAncestor( element );
 
-			if ( !element ) {
+			if ( !editableOrWidgetElement ) {
 				return;
+			}
+
+			if ( isWidget( editableOrWidgetElement ) ) {
+				element = editableOrWidgetElement;
+			} else {
+				// Pick view range from the point where the mouse was clicked.
+				const clickTargetFromPoint = getElementFromMouseEvent( view, domEventData );
+
+				if ( clickTargetFromPoint && isWidget( clickTargetFromPoint ) ) {
+					element = clickTargetFromPoint;
+				} else {
+					return;
+				}
 			}
 		}
 
@@ -612,25 +628,74 @@ export default class Widget extends Plugin {
 }
 
 /**
- * Returns `true` when element is a nested editable or is placed inside one.
+ * Finds the closest ancestor element that is either an editable element or a widget.
+ *
+ * @param element The element from which to start searching.
+ * @returns The closest ancestor element that is either an editable element or a widget, or null if none is found.
  */
-function isInsideNestedEditable( element: ViewElement ) {
-	let currentElement: ViewElement | ViewDocumentFragment | null = element;
+function findClosestEditableOrWidgetAncestor( element: ViewElement ): ViewElement | null {
+	let currentElement: ViewElement | null = element;
 
 	while ( currentElement ) {
-		if ( currentElement.is( 'editableElement' ) && !currentElement.is( 'rootElement' ) ) {
-			return true;
+		if ( currentElement.is( 'editableElement' ) || isWidget( currentElement ) ) {
+			return currentElement;
 		}
 
-		// Click on nested widget should select it.
-		if ( isWidget( currentElement ) ) {
-			return false;
-		}
-
-		currentElement = currentElement.parent;
+		currentElement = currentElement.parent as ViewElement | null;
 	}
 
-	return false;
+	return null;
+}
+
+/**
+ * Retrieves the ViewElement associated with a mouse event in the editing view.
+ *
+ * @param view The editing view.
+ * @param domEventData The DOM event data containing the mouse event.
+ * @returns The ViewElement associated with the mouse event, or null if not found.
+ */
+function getElementFromMouseEvent( view: EditingView, domEventData: DomEventData<MouseEvent> ): ViewElement | null {
+	const domRange = getRangeFromMouseEvent( domEventData.domEvent );
+	let viewRange: ViewRange | null = null;
+
+	if ( domRange ) {
+		viewRange = view.domConverter.domRangeToView( domRange );
+	} else {
+		// Fallback to create range in target element. It happens frequently on Safari browser.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/16978
+		viewRange = view.createRange( view.createPositionAt( domEventData.target, 0 ) );
+	}
+
+	if ( !viewRange ) {
+		return null;
+	}
+
+	const viewPosition = viewRange.start;
+
+	if ( !viewPosition.parent ) {
+		return null;
+	}
+
+	let viewNode = viewPosition.parent;
+
+	if ( viewPosition.parent.is( 'editableElement' ) ) {
+		if ( viewPosition.isAtEnd && viewPosition.nodeBefore ) {
+			// Click after a widget tend to return position at the end of the editable element
+			// so use the node before it if range is at the end of a parent.
+			viewNode = viewPosition.nodeBefore as ViewNode;
+		} else if ( viewPosition.isAtStart && viewPosition.nodeAfter ) {
+			// Click before a widget tend to return position at the start of the editable element
+			// so use the node after it if range is at the start of a parent.
+			// See more: https://github.com/ckeditor/ckeditor5/issues/16992
+			viewNode = viewPosition.nodeAfter as ViewNode;
+		}
+	}
+
+	if ( viewNode.is( '$text' ) ) {
+		return viewNode.parent as ViewElement;
+	}
+
+	return viewNode as ViewElement;
 }
 
 /**
