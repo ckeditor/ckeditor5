@@ -61,7 +61,7 @@ export default {
 			data: '<p>Hello world!</p>',
 			config: {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
-				toolbar: [ 'heading', '|', 'bold', 'italic' ]
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			}
 		}
 	},
@@ -75,7 +75,6 @@ export default {
 				ClassicEditor,
 				Paragraph,
 				Essentials,
-				Heading,
 				Bold,
 				Italic,
 				Mention
@@ -87,7 +86,6 @@ export default {
 				static builtinPlugins = [
 					Essentials,
 					Paragraph,
-					Heading,
 					Bold,
 					Italic,
 					Mention,
@@ -102,7 +100,7 @@ export default {
 
 In the above example, the `useCKEditorCloud` helper is used to load the editor code and plugins from CDN. The `premium` option is set to also load premium plugins. For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} page.
 
-Now you can import and use the `Editor.vue` component anywhere in your application.
+Now, you can import and use the `Editor.vue` component anywhere in your application.
 
 ```html
 <template>

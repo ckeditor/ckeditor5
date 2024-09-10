@@ -46,7 +46,7 @@ npm install ckeditor5-premium-features
 npm install @ckeditor/ckeditor5-vue
 ```
 
-With these packages installed, create a new Vue component called `Editor.vue`. It will use the `<ckeditor>` component to run the editor. The following example shows a single file component with open source and premium CKEditor&nbsp;5 plugins.
+With these packages installed, create a new Vue component called `Editor.vue`. It will use the `<ckeditor>` component to run the editor. The following example shows a single file component with open-source and premium CKEditor&nbsp;5 plugins.
 
 ```html
 <template>
@@ -85,7 +85,7 @@ export default {
 </script>
 ```
 
-Now you can import and use the `Editor.vue` component anywhere in your application.
+Now, you can import and use the `Editor.vue` component anywhere in your application.
 
 ```html
 <template>
