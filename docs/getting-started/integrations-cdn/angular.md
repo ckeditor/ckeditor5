@@ -8,7 +8,7 @@ order: 30
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component
+# Angular rich text editor component (CDN)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -624,33 +624,31 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
-CKEditor 5 supports multiple UI languages, and so does the official Angular component. Follow the instructions below to translate CKEditor 5 in your Angular application.
+CKEditor 5 supports multiple UI languages, and so does the official Angular component. To translate the editor, pass the languages you need into the `languages` array inside the configuration of the `useCKEditorCloud` hook.
 
 ```ts
 import { Component } from '@angular/core';
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
-@Component({
+@Component( {
 	selector: 'app-simple-cdn-usage',
 	templateUrl: './simple-cdn-usage.component.html',
-})
+} )
 export class SimpleCdnUsageComponent {
 	public Editor = null;
 
 	public config = null;
 
-	public editorData = `<p>Getting used to an entirely different culture can be challenging.
-	While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person.
-	You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>`;
+	public editorData = '<p>Hello world!</p>';
 
 	public ngOnInit(): void {
-		loadCKEditorCloud({
-			version: '43.0.0',
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}',
 			languages: [ 'pl' ]
-		}).then(this.setupEditor.bind(this));
+		} ).then( this.setupEditor.bind( this ) );
 	}
 
-	private _setupEditor(cloud) {
+	private _setupEditor( cloud ) {
 		const {
 			ClassicEditor,
 			Essentials,
