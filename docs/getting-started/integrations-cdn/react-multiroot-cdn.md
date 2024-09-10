@@ -9,7 +9,7 @@ modified_at: 2024-04-25
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text multi-root editor hook
+# React rich text multi-root editor hook with CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
