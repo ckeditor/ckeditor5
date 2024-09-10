@@ -190,6 +190,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			initialized: false
 		};
 
+		// TODO ShadowRoot - cycling toolbars does not work correctly
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		editor.ui.addToolbar( toolbarView, {
 			isContextual: true,
