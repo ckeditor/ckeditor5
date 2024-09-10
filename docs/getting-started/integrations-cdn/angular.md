@@ -119,7 +119,7 @@ npm install @ckeditor/ckeditor5-angular
 
 To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
 
-```js
+```ts
 import { Component } from '@angular/core';
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
@@ -128,20 +128,20 @@ import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 	templateUrl: './simple-cdn-usage.component.html',
 } )
 export class SimpleCdnUsageComponent {
-	Editor = null;
+	public Editor = null;
 
-	config = null;
+	public config = null;
 
-	editorData = '<p>Hello world!</p>';
+	public editorData = '<p>Hello world!</p>';
 
-	ngOnInit() {
-		loadCKEditorCloud({
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
 			version: '{@var ckeditor5-version}',
 			premium: true
-		}).then( this.setupEditor.bind( this ) );
+		} ).then( this.setupEditor.bind( this ) );
 	}
 
-	_setupEditor ( cloud ) {
+	private _setupEditor ( cloud: CKEditorCloudResult ) {
 		const {
 			ClassicEditor,
 			Essentials,
@@ -154,6 +154,7 @@ export class SimpleCdnUsageComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention, SlashCommand ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
@@ -163,7 +164,7 @@ export class SimpleCdnUsageComponent {
 }
 ```
 
-The `<loadCKEditorCloud>` component supports the following properties:
+The `<loadCKEditorCloud>` function supports the following properties:
 
 * `version` (required) &ndash; The version of CKEditor Cloud Services to use.
 * `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
