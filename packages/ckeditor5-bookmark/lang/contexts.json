@@ -1,4 +1,4 @@
 {
 	"Bookmark": "The label of the bookmark toolbar button.",
-	"Bookmark name": "The accessibility label of the bookmark name."
+	"bookmark widget": "The label for the bookmark widget."
 }

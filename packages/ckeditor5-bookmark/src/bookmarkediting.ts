@@ -77,9 +77,9 @@ export default class BookmarkEditing extends Plugin {
 
 				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
 
-				return toWidget( containerElement, writer, {
-					label: ` ${ t( 'Bookmark name' ) } ${ id }`
-				} );
+				const labelCreator = () => `${ id } ${ t( 'bookmark widget' ) }`;
+
+				return toWidget( containerElement, writer, { label: labelCreator } );
 			}
 		} );
 	}

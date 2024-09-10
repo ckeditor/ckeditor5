@@ -19,6 +19,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
 describe( 'BookmarkEditing', () => {
 	let editor, element, model, view, converter;
@@ -157,6 +158,9 @@ describe( 'BookmarkEditing', () => {
 
 			// Get the `bookmark` widget.
 			const bookmarkWidget = view.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			expect( isWidget( bookmarkWidget ) ).to.be.true;
+			expect( getLabel( bookmarkWidget ) ).to.equal( 'foo bookmark widget' );
 
 			expect( bookmarkWidget.name ).to.equal( 'a' );
 			expect( bookmarkWidget.hasClass( 'ck-bookmark' ) ).to.be.true;
