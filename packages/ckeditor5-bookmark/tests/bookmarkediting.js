@@ -13,7 +13,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { DomConverter, StylesProcessor, ViewDocument, ViewUIElement } from '@ckeditor/ckeditor5-engine';
+import { ViewUIElement } from '@ckeditor/ckeditor5-engine';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -21,7 +21,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'BookmarkEditing', () => {
-	let editor, element, model, view, viewDocument, converter;
+	let editor, element, model, view, converter;
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -35,8 +35,7 @@ describe( 'BookmarkEditing', () => {
 
 		model = editor.model;
 		view = editor.editing.view;
-		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = view.domConverter;
 	} );
 
 	afterEach( () => {
@@ -175,7 +174,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should not add any filler', () => {
 			setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
-			const element = editor.editing.view.document.selection.getSelectedElement();
+			const element = view.document.selection.getSelectedElement();
 			const domElement = converter.viewToDom( element );
 
 			expect( domElement.outerHTML ).to.equal(
