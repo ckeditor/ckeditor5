@@ -130,7 +130,7 @@ const CKEditorDemo = () => {
 		Undo,
 	} = cloud.CKEditor;
 
-	const { SlashCommand } = cloud.CKEditorPremiumFeatures!;
+	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
 
 	return (
 		<CKEditor
