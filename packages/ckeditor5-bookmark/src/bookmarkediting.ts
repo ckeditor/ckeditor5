@@ -10,9 +10,9 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
+import type { ViewUIElement, DowncastWriter } from 'ckeditor5/src/engine.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
-import type { ViewUIElement, DowncastWriter } from 'ckeditor5/src/engine.js';
 
 /**
  * The bookmark editing plugin.
