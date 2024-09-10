@@ -21,9 +21,9 @@ React lets you build user interfaces out of individual pieces called components.
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
 </info-box>
 
-## Quick start
-
 {@snippet getting-started/use-builder}
+
+## Quick start
 
 ### Setting up the project
 
