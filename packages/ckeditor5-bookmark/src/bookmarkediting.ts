@@ -63,7 +63,7 @@ export default class BookmarkEditing extends Plugin {
 					'id': modelElement.getAttribute( 'bookmarkId' )
 				} );
 
-				emptyElement.getFillerOffset = () => null;
+				// `getFillerOffset` is not needed to set here, because `emptyElement` has already covered it.
 
 				return emptyElement;
 			}
