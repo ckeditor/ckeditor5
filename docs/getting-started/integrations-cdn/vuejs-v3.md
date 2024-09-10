@@ -55,7 +55,7 @@ export default {
 	data() {
 		return {
 			cloud: useCKEditorCloud( {
-				version: '43.0.0',
+				version: '{@var ckeditor5-version}',
 				premium: true
 			} ),
 			data: '<p>Hello world!</p>',
@@ -99,6 +99,8 @@ export default {
 }
 </script>
 ```
+
+In the above example, the `useCKEditorCloud` helper is used to load the editor code and plugins from CDN. The `premium` option is set to also load premium plugins. For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} page.
 
 Now you can import and use the `Editor.vue` component anywhere in your application.
 
