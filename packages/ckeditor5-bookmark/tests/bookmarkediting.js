@@ -113,6 +113,26 @@ describe( 'BookmarkEditing', () => {
 				'</h2>'
 			);
 		} );
+
+		it( 'should properly change `bookmarkId` attribute of existing bookmark', () => {
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>'
+			);
+
+			editor.model.change(
+				writer => writer.setAttribute( 'bookmarkId', 'bar', writer.model.document.getRoot().getChild( 0 ).getChild( 0 ) )
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'editingDowncast', () => {
@@ -177,6 +197,30 @@ describe( 'BookmarkEditing', () => {
 						'<span class="ck-bookmark__icon"></span>' +
 					'</a>' +
 				'</h2>'
+			);
+		} );
+
+		it( 'should properly change `bookmarkId` attribute of existing bookmark', () => {
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+				'</p>'
+			);
+
+			editor.model.change(
+				writer => writer.setAttribute( 'bookmarkId', 'bar', writer.model.document.getRoot().getChild( 0 ).getChild( 0 ) )
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="bar">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+				'</p>'
 			);
 		} );
 
