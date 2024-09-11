@@ -39,8 +39,9 @@ describe( 'BookmarkEditing', () => {
 		converter = view.domConverter;
 	} );
 
-	afterEach( () => {
-		return editor.destroy().then( () => element.remove() );
+	afterEach( async () => {
+		element.remove();
+		await editor.destroy();
 	} );
 
 	it( 'defines plugin name', () => {
