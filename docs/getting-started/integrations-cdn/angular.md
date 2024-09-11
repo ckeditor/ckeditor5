@@ -112,8 +112,7 @@ npm install @ckeditor/ckeditor5-angular
 To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
 
 ```ts
-import { Component } from '@angular/core';
-import { loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-integrations-common';
+import { Component, loadCKEditorCloud, CKEditorCloudResult } from '@angular/core';
 import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
 @Component( {
@@ -122,7 +121,7 @@ import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ck
 	styleUrls: ['./app.component.css'],
 } )
 export class SimpleCdnUsageComponent {
-	public Editor: ClassicEditor | null = null;
+	public Editor: typeof ClassicEditor | null = null;
 
 	public config: EditorConfig | null = null;
 
@@ -161,7 +160,7 @@ export class SimpleCdnUsageComponent {
 The `<loadCKEditorCloud>` function supports the following properties:
 
 * `version` (required) &ndash; The version of CKEditor Cloud Services to use.
-* `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
+* `translations` &ndash; The translations to load. English language ('en') should not be passed because it is already bundled in.
 * `premium` &ndash; If `true` then the premium features will be loaded.
 * `ckbox` &ndash; CKBox bundle configuration.
 * `plugins` &ndash; Additional resources to load.
@@ -276,7 +275,7 @@ export class MyComponent {
 
 	ngOnInit() {
 		loadCKEditorCloud({
-			version: '43.0.0',
+			version: '{@var ckeditor5-version}',
 		}).then( this._setupEditor.bind( this ) );
 	}
 
@@ -285,7 +284,7 @@ export class MyComponent {
 			ClassicEditor
 		} = cloud.CKEditor;
 		const contextConfig = {};
- 
+
 		this.Editor = ClassicEditor;
 		this.ready = false;
 
@@ -503,7 +502,7 @@ export class MyComponent {
 			placeholder: 'Type the content here!'
 		}
 	}
-	
+
 }
 ```
 
@@ -618,7 +617,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
-CKEditor 5 supports multiple UI languages, and so does the official Angular component. To translate the editor, pass the languages you need into the `languages` array inside the configuration of the `useCKEditorCloud` hook.
+CKEditor 5 supports multiple UI languages, and so does the official Angular component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `useCKEditorCloud` hook.
 
 ```ts
 import { Component } from '@angular/core';
@@ -638,7 +637,7 @@ export class SimpleCdnUsageComponent {
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
 			version: '{@var ckeditor5-version}',
-			languages: [ 'pl' ]
+			translations: [ 'pl' ]
 		} ).then( this.setupEditor.bind( this ) );
 	}
 
