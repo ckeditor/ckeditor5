@@ -53,8 +53,8 @@ export default class BookmarkEditing extends Plugin {
 		const { editor } = this;
 		const { conversion, t } = editor;
 
-		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => this.upcastMatcher( element ) );
-		editor.editing.view.domConverter.registerInlineObjectMatcher( element => this.upcastMatcher( element ) );
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element ) );
+		editor.editing.view.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element, false ) );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: {
@@ -93,7 +93,7 @@ export default class BookmarkEditing extends Plugin {
 		} );
 
 		conversion.for( 'upcast' ).elementToElement( {
-			view: element => this.upcastMatcher( element ),
+			view: element => upcastMatcher( element ),
 			model: ( viewElement, { writer } ) => {
 				const bookmarkId = viewElement.getAttribute( 'id' );
 
@@ -123,22 +123,25 @@ export default class BookmarkEditing extends Plugin {
 			return domElement;
 		} );
 	}
+}
 
-	private upcastMatcher( element: ViewElement ) {
-		const isAnchorElement = element.name === 'a';
+/**
+ * TODO
+ */
+function upcastMatcher( element: ViewElement, dataPipeline: boolean = true ) {
+	const isAnchorElement = element.name === 'a';
 
-		if ( !isAnchorElement ) {
-			return null;
-		}
-
-		const hasIdAttribute = element.hasAttribute( 'id' );
-		const hasHrefAttribute = element.hasAttribute( 'href' );
-		const isEmpty = element.isEmpty;
-
-		if ( !hasIdAttribute || hasHrefAttribute || !isEmpty ) {
-			return null;
-		}
-
-		return { name: true, attributes: [ 'id' ] };
+	if ( !isAnchorElement ) {
+		return null;
 	}
+
+	const hasIdAttribute = element.hasAttribute( 'id' );
+	const hasHrefAttribute = element.hasAttribute( 'href' );
+	const isEmpty = element.isEmpty;
+
+	if ( !hasIdAttribute || hasHrefAttribute || dataPipeline && !isEmpty ) {
+		return null;
+	}
+
+	return { name: true, attributes: [ 'id' ] };
 }

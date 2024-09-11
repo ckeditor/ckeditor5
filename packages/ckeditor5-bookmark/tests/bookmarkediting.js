@@ -202,19 +202,31 @@ describe( 'BookmarkEditing', () => {
 		} );
 
 		it( 'should properly downcast bookmark with text and space before', () => {
-			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>' );
+			setModelData( model, '<paragraph>text[ ]<bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			// The setModelData() is stripping a whitespace before the bookmark element so we need to inject it manually.
+			// editor.model.change( writer => {
+			// 	writer.insert( ' ', editor.model.document.selection.getFirstPosition() );
+			// } );
 
 			const paragraph = editor.editing.view.document.getRoot();
-
 			const domParagraph = converter.viewToDom( paragraph );
 
-			expect( domParagraph.innerHTML ).to.equal(
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<p>' +
 					'text' +
 					' ' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
 					'</a>' +
+				'</p>'
+			);
+
+			expect( domParagraph.innerHTML ).to.equal(
+				'<p>' +
+					'text' +
+					' ' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo"></a>' +
 				'</p>'
 			);
 		} );
