@@ -15,6 +15,7 @@
   "dependencies": {
     "ckeditor5": "43.1.0",
     "@ckeditor/ckeditor5-core": "43.1.0",
+    "@ckeditor/ckeditor5-widget": "43.1.0",
     "@ckeditor/ckeditor5-ui": "43.1.0"
   },
   "devDependencies": {
@@ -22,6 +23,7 @@
     "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
     "@ckeditor/ckeditor5-easy-image": "43.1.0",
     "@ckeditor/ckeditor5-editor-classic": "43.1.0",
+    "@ckeditor/ckeditor5-engine": "43.1.0",
     "@ckeditor/ckeditor5-enter": "43.1.0",
     "@ckeditor/ckeditor5-heading": "43.1.0",
     "@ckeditor/ckeditor5-image": "43.1.0",
