@@ -101,10 +101,10 @@ export default class BookmarkEditing extends Plugin {
 					}
 
 					const hasIdAttribute = element.hasAttribute( 'id' );
-					const hasNotHrefAttribute = !element.hasAttribute( 'href' );
+					const hasHrefAttribute = element.hasAttribute( 'href' );
 					const isEmpty = element.isEmpty;
 
-					if ( !hasIdAttribute || !hasNotHrefAttribute || !isEmpty ) {
+					if ( !hasIdAttribute || hasHrefAttribute || !isEmpty ) {
 						return null;
 					}
 
