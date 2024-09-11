@@ -335,7 +335,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, as described in the [final section of this guide](#obtaining-a-license-key).
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note that to use premium features, you need to activate them with a proper license key, as described in the [final section of this guide](#obtaining-a-license-key).
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
