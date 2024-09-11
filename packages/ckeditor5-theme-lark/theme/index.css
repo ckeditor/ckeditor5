@@ -55,6 +55,7 @@
 @import "./ckeditor5-editor-classic/classiceditor.css";
 
 /* Plugins */
+@import "./ckeditor5-bookmark/bookmark.css";
 @import "./ckeditor5-clipboard/clipboard.css";
 @import "./ckeditor5-code-block/codeblock.css";
 @import "./ckeditor5-engine/placeholder.css";

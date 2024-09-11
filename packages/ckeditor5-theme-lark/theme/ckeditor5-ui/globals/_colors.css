@@ -26,6 +26,12 @@
 	--ck-color-shadow-drop-active:								hsla(0, 0%, 0%, 0.2);
 	--ck-color-shadow-inner: 									hsla(0, 0%, 0%, 0.1);
 
+	/* -- Bookmark -------------------------------------------------------------------------------- */
+
+	--ck-color-bookmark-default:									hsl(240, 100%, 47%);
+	--ck-color-bookmark-selected-background:						hsla(201, 100%, 56%, 0.1);
+	--ck-color-bookmark-fake-selection:								hsla(201, 100%, 56%, 0.3);
+
 	/* -- Buttons ------------------------------------------------------------------------------- */
 
 	--ck-color-button-default-background: 						transparent;
