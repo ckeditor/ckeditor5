@@ -89,6 +89,7 @@ describe( 'BookmarkEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<p>' +
 					'text' +
+					' ' +
 					'<a id="foo"></a>' +
 				'</p>'
 			);
@@ -111,6 +112,7 @@ describe( 'BookmarkEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<p>' +
 					'<a id="foo"></a>' +
+					' ' +
 					'text' +
 				'</p>'
 			);
@@ -136,6 +138,7 @@ describe( 'BookmarkEditing', () => {
 					'text' +
 					' ' +
 					'<a id="foo"></a>' +
+					' ' +
 					'text' +
 				'</p>'
 			);
@@ -203,6 +206,7 @@ describe( 'BookmarkEditing', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<p>' +
+					' ' +
 					'text' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -232,6 +236,7 @@ describe( 'BookmarkEditing', () => {
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
 					'</a>' +
+					' ' +
 					'text' +
 				'</p>'
 			);
@@ -261,6 +266,7 @@ describe( 'BookmarkEditing', () => {
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
 					'</a>' +
+					' ' +
 					'text' +
 				'</p>'
 			);
