@@ -231,6 +231,22 @@ describe( 'PageBreakEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak><section><$text foo="true">Foo</$text></section>' );
 			} );
+
+			for ( const direction of [ 'after', 'before' ] ) {
+				it( `should consume page-break and page-break-${ direction } styles`, () => {
+					const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+						const testMatch = match => conversionApi.consumable.test( data.viewItem, match );
+
+						expect( testMatch( { classes: [ 'page-break' ] } ) ).to.be.false;
+						expect( testMatch( { styles: [ `page-break-${ direction }` ] } ) ).to.be.false;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:div', upcastCheck, { priority: 'lowest' } );
+
+					editor.setData( `<div class="page-break" style="page-break-${ direction }:always;"></div>` );
+					expect( upcastCheck ).to.be.calledOnce;
+				} );
+			}
 		} );
 	} );
 

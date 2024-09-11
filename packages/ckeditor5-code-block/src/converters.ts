@@ -196,6 +196,7 @@ export function dataViewToModelCodeBlockInsertion(
 			const language = classesToLanguages[ className ];
 
 			if ( language ) {
+				consumable.consume( viewCodeElement, { classes: [ className ] } );
 				writer.setAttribute( 'language', language, codeBlock );
 				break;
 			}

@@ -12,6 +12,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
@@ -47,9 +48,10 @@ ClassicEditor
 			ExtendHTMLSupport,
 			Italic,
 			Paragraph,
-			Strikethrough
+			Strikethrough,
+			RemoveFormat
 		],
-		toolbar: [ 'codeBlock', '|', 'bold', 'italic', 'strikethrough' ]
+		toolbar: [ 'codeBlock', '|', 'removeFormat', 'bold', 'italic', 'strikethrough' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

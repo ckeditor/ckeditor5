@@ -234,12 +234,39 @@ export default class StylesMap {
 	 * @param name Style name.
 	 */
 	public remove( name: string ): void {
-		const path = toPath( name );
+		// Remove of style using lodash's unset and path generated from style name might not work
+		// if style has custom extractor specified.
+		//
+		// For example:
+		// 	* `border-top-color` might be extracted from `border.color.top` path.
+		//	* `border-left` uses `getBorderPositionExtractor( 'left' )` which returns `border.left` path.
+		//
+		// So if we want to remove `border-top-color` we need to remove `border.color.top` path instead of `border.top.color`.
+		// We need to use custom extractor that is defined as plain string path to obtain correct path.
+		// It'll not work for extractors that are functions, however it's not a problem because they are not deterministic
+		// and might return values generated from different paths.
+		const extractor = this._styleProcessor.getExtractor( name );
+		const path = toPath( typeof extractor === 'string' ? extractor : name );
 
 		unset( this._styles, path );
 		delete this._styles[ name ];
 
 		this._cleanEmptyObjectsOnPath( path );
+
+		// Some styles might be related to others. For example:
+		//
+		//	* `border-left` is related to `border-left-color`, `border-left-style`, `border-left-width`.
+		//	* `margin` is related to `margin-top`, `margin-right`, `margin-bottom`, `margin-left`.
+		//
+		// When removing a style we should also remove all related styles that are longer than the removed one.
+		// It prevents situations where `.toString()` method would return `margin` style computed from `margin-top`, `margin-right`, ...
+		// but it's not possible to remove such `margin` style because it's not set directly, so to remove it we need to
+		// remove all related styles.
+		for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
+			if ( relatedName.length > name.length ) {
+				this.remove( relatedName );
+			}
+		}
 	}
 
 	/**
@@ -767,6 +794,13 @@ export class StylesProcessor {
 	 */
 	public setExtractor( name: string, callbackOrPath: Extractor ): void {
 		this._extractors.set( name, callbackOrPath );
+	}
+
+	/**
+	 * Returns an extractor callback for a style property.
+	 */
+	public getExtractor( name: string ): Extractor | undefined {
+		return this._extractors.get( name );
 	}
 
 	/**

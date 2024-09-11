@@ -684,7 +684,10 @@ export default {
 			model: 'htmlA',
 			view: 'a',
 			priority: 5,
-			coupledAttribute: 'linkHref'
+			coupledAttribute: 'linkHref',
+			attributeProperties: {
+				isFormatting: true
+			}
 		},
 		{
 			model: 'htmlStrong',

@@ -104,7 +104,17 @@ export default class PageBreakEditing extends Plugin {
 						return null;
 					}
 
-					return { name: true };
+					return {
+						name: true,
+						styles: [
+							...( hasPageBreakBefore ? [ 'page-break-before' ] : [] ),
+							...( hasPageBreakAfter ? [ 'page-break-after' ] : [] )
+						],
+
+						...element.hasClass( 'page-break' ) && {
+							classes: [ 'page-break' ]
+						}
+					};
 				},
 				model: 'pageBreak',
 

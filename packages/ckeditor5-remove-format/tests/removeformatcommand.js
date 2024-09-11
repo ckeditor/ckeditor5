@@ -3,9 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import RemoveFormatCommand from '../src/removeformatcommand.js';
 import Command from '@ckeditor/ckeditor5-core/src/command.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall.js';
 import {
 	getData,
 	setData
@@ -171,6 +178,103 @@ describe( 'RemoveFormatCommand', () => {
 
 		generateTypicalUseCases( cases, {
 			beforeAssert: () => command.execute()
+		} );
+	} );
+
+	describe( 'GHS integration', () => {
+		let editorElement, dataFilter;
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, LinkEditing, GeneralHtmlSupport, SelectAll ]
+			} );
+
+			command = new RemoveFormatCommand( editor );
+			model = editor.model;
+			editor.commands.add( 'removeFormat', command );
+			dataFilter = editor.plugins.get( 'DataFilter' );
+
+			for ( const name of [ 'p', 'a' ] ) {
+				dataFilter.allowElement( name );
+				dataFilter.allowAttributes( { name, styles: true } );
+				dataFilter.allowAttributes( { name, classes: true } );
+				dataFilter.allowAttributes( { name, attributes: true } );
+			}
+		} );
+
+		it( 'should remove formatting with selected container element containing custom styles', () => {
+			model.schema.register( 'htmlDiv', { inheritAllFrom: '$container' } );
+			editor.conversion.elementToElement( { model: 'htmlDiv', view: 'div' } );
+
+			dataFilter.allowElement( 'div' );
+			dataFilter.allowAttributes( { name: 'div', styles: true } );
+
+			editor.setData( '<p>A</p><div style="color: red">foo bar</div><p>B</p>' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( model.document.getRoot(), [ 0 ] ),
+					writer.createPositionFromPath( model.document.getRoot(), [ 2 ] )
+				) );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>A</p><div style="color:red;"><p>foo bar</p></div><p>B</p>' );
+
+			editor.execute( 'removeFormat' );
+
+			expect( editor.getData() ).to.equal( '<p>A</p><div><p>foo bar</p></div><p>B</p>' );
+		} );
+
+		it( 'should remove formatting with selected paragraph containing custom styles', () => {
+			editor.setData( '<p style="color: red">foo bar</p>' );
+			expect( editor.getData() ).to.equal( '<p style="color:red;">foo bar</p>' );
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'removeFormat' );
+
+			expect( editor.getData() ).to.equal( '<p>foo bar</p>' );
+		} );
+
+		it( 'should keep custom attributes after removing custom formatting', () => {
+			editor.setData( '<p style="color: red" data-abc="123">foo bar</p>' );
+			expect( editor.getData() ).to.equal( '<p style="color:red;" data-abc="123">foo bar</p>' );
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'removeFormat' );
+
+			expect( editor.getData() ).to.equal( '<p data-abc="123">foo bar</p>' );
+		} );
+
+		it( 'should remove formatting with selected paragraph containing custom classes', () => {
+			editor.setData( '<p class="foo bar">foo bar</p>' );
+			expect( editor.getData() ).to.equal( '<p class="foo bar">foo bar</p>' );
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'removeFormat' );
+
+			expect( editor.getData() ).to.equal( '<p>foo bar</p>' );
+		} );
+
+		it( 'should remove formatting from styled anchors', () => {
+			editor.setData( '<a href="https://example.com" style="color: red">foo</a>' );
+			expect( editor.getData() ).to.equal(
+				'<p><a style="color:red;" href="https://example.com">foo</a></p>'
+			);
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'removeFormat' );
+
+			expect( editor.getData() ).to.equal( '<p><a href="https://example.com">foo</a></p>' );
+		} );
+
+		afterEach( async () => {
+			editorElement.remove();
+			await editor.destroy();
 		} );
 	} );
 

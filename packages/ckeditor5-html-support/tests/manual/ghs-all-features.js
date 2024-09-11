@@ -56,6 +56,8 @@ ClassicEditor
 		toolbar: [
 			'sourceEditing',
 			'|',
+			'RemoveFormat',
+			'|',
 			'heading',
 			'|',
 			'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
@@ -72,9 +74,7 @@ ClassicEditor
 			'|',
 			'pageBreak', 'horizontalLine',
 			'|',
-			'undo', 'redo',
-			'|',
-			'RemoveFormat'
+			'undo', 'redo'
 		],
 		htmlSupport: {
 			allow: [

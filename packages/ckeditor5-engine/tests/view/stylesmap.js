@@ -24,9 +24,12 @@ describe( 'StylesMap', () => {
 			path: 'foo.top',
 			value
 		} ) );
+
 		stylesProcessor.setReducer( 'foo', getBoxSidesValueReducer( 'foo' ) );
 
+		addBorderRules( stylesProcessor );
 		addMarginRules( stylesProcessor );
+
 		stylesMap = new StylesMap( stylesProcessor );
 	} );
 
@@ -252,6 +255,45 @@ describe( 'StylesMap', () => {
 			stylesMap.remove( 'text-align' );
 
 			expect( stylesMap.toString() ).to.equal( '' );
+		} );
+
+		it( 'should remove related rules by parent rule', () => {
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			expect( stylesMap.toString() ).to.equal( 'border-left:2px solid red;' );
+
+			stylesMap.remove( 'border-left' );
+
+			expect( stylesMap.toString() ).to.equal( '' );
+		} );
+
+		it( 'should remove multiple css attributes by parent css attribute', () => {
+			stylesMap.set( 'border', 'orange' );
+			stylesMap.set( 'border-right-color', 'purple' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			expect( stylesMap.toString() ).to.equal(
+				[
+					'border-bottom-color:orange;',
+					'border-left:2px solid red;',
+					'border-right-color:purple;',
+					'border-top-color:orange;'
+				].join( '' )
+			);
+
+			stylesMap.remove( 'border-left' );
+
+			expect( stylesMap.toString() ).to.equal(
+				[
+					'border-bottom-color:orange;',
+					'border-right-color:purple;',
+					'border-top-color:orange;'
+				].join( '' )
+			);
 		} );
 	} );
 

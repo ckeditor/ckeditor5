@@ -1483,6 +1483,17 @@ describe( 'CodeBlockEditing', () => {
 			);
 		} );
 
+		it( 'should consume language class during upcast', () => {
+			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'language-plaintext' ] } ) ).to.be.false;
+			} );
+
+			editor.data.upcastDispatcher.on( 'element:code', upcastCheck, { priority: 'lowest' } );
+			editor.setData( '<pre><code class="language-plaintext">baz</code></pre>' );
+
+			expect( upcastCheck ).to.be.calledOnce;
+		} );
+
 		describe( 'config.codeBlock.languages', () => {
 			it( 'should be respected when upcasting', () => {
 				return ClassicTestEditor.create(

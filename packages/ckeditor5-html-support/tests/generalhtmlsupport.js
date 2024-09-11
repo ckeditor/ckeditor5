@@ -6,6 +6,7 @@
 /* global document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { GeneralHtmlSupport } from '../src/index.js';
 
 describe( 'GeneralHtmlSupport', () => {
@@ -16,7 +17,7 @@ describe( 'GeneralHtmlSupport', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ GeneralHtmlSupport ]
+			plugins: [ Paragraph, GeneralHtmlSupport ]
 		} );
 
 		dataSchema = editor.plugins.get( 'DataSchema' );
@@ -27,6 +28,37 @@ describe( 'GeneralHtmlSupport', () => {
 		element.remove();
 
 		await editor.destroy();
+	} );
+
+	describe( 'getGhsAttributesForElement', () => {
+		let dataFilter;
+
+		beforeEach( () => {
+			dataFilter = editor.plugins.get( 'DataFilter' );
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+		} );
+
+		it( 'should return map of attributes for block elements', () => {
+			editor.setData( '<p style="color: red" data-abc="123">foo bar</p>' );
+
+			const paragraph = editor.model.document.getRoot().getChild( 0 );
+			const attributes = generalHtmlSupport.getGhsAttributesForElement( paragraph );
+
+			expect( attributes.size ).to.equal( 1 );
+			expect( attributes.get( 'htmlPAttributes' ) ).to.deep.equal( {
+				styles: {
+					color: 'red'
+				},
+				attributes: {
+					'data-abc': '123'
+				}
+			} );
+		} );
 	} );
 
 	describe( 'getGhsAttributeNameForElement()', () => {

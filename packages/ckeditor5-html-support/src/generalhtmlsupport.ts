@@ -23,7 +23,8 @@ import ListElementSupport from './integrations/list.js';
 import CustomElementSupport from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
 import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
-import { getHtmlAttributeName, modifyGhsAttribute } from './utils.js';
+import { getHtmlAttributeName, isGHSAttributeName, modifyGhsAttribute, type GHSViewAttributes } from './utils.js';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 
@@ -74,6 +75,25 @@ export default class GeneralHtmlSupport extends Plugin {
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
+	}
+
+	/**
+	 * Iterates over the attributes of a given item or selection and returns a map of GHS attributes.
+	 *
+	 * @internal
+	 * @param item The item or selection to get GHS attributes from.
+	 * @returns A map of GHS attributes.
+	 */
+	public getGhsAttributesForElement( item: Item | DocumentSelection ): Map<string, GHSViewAttributes> {
+		return Array
+			.from( item.getAttributes() )
+			.reduce( ( acc, [ attributeName, attributeValue ] ) => {
+				if ( isGHSAttributeName( attributeName ) ) {
+					acc.set( attributeName, attributeValue as GHSViewAttributes );
+				}
+
+				return acc;
+			}, new Map<string, GHSViewAttributes>() );
 	}
 
 	/**
