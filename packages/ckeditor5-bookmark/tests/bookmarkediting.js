@@ -16,7 +16,7 @@ import { Link } from '@ckeditor/ckeditor5-link';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
@@ -27,11 +27,12 @@ describe( 'BookmarkEditing', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		editor = await ClassicTestEditor
-			.create( element, {
-				language: 'en',
-				plugins: [ BookmarkEditing, Enter, Image, Heading, Paragraph, Undo, Link ]
-			} );
+		const config = {
+			language: 'en',
+			plugins: [ BookmarkEditing, Enter, Image, Heading, Paragraph, Undo, Link ]
+		};
+
+		editor = await createEditor( element, config );
 
 		model = editor.model;
 		view = editor.editing.view;
@@ -275,4 +276,100 @@ describe( 'BookmarkEditing', () => {
 			expect( domElement.children.length ).to.equal( 1 );
 		} );
 	} );
+
+	describe( 'upcast', () => {
+		it( 'should properly upcast bookmark', () => {
+			editor.setData( '<p><a id="foo"></a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+			);
+		} );
+
+		it( 'should properly upcast bookmark with text before', () => {
+			editor.setData( '<p>Example text<a id="foo"></a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>'
+			);
+		} );
+
+		it( 'should properly upcast bookmark with text after', () => {
+			editor.setData( '<p><a id="foo"></a>Example text</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>'
+			);
+		} );
+
+		it( 'should properly upcast bookmark surrounded with text after', () => {
+			editor.setData( '<p>Example<a id="foo"></a>text</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>'
+			);
+		} );
+
+		it( 'should not upcast anchor with id and with text inside', () => {
+			editor.setData( '<p><a id="foo">foobar</a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foobar</paragraph>'
+			);
+		} );
+
+		it( 'should not upcast anchor with id and href attribute and without text inside', () => {
+			editor.setData( '<p><a id="foo" href="www.ckeditor.com"></a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph></paragraph>'
+			);
+		} );
+
+		it( 'should not upcast anchor with id and href attribute and with text inside', () => {
+			editor.setData( '<p><a id="foo" href="www.ckeditor.com">foobar</a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text linkHref="www.ckeditor.com">foobar</$text></paragraph>'
+			);
+		} );
+
+		it( 'should not upcast `p` with `id` attribute to a bookmark', () => {
+			editor.setData( '<p id="foo"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph></paragraph>'
+			);
+		} );
+
+		it( 'should not upcast `p` with `id` attribute and text inside to a bookmark', () => {
+			editor.setData( '<p id="foo">bar</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>bar</paragraph>'
+			);
+		} );
+
+		it( 'should not upcast `h2` with `id` attribute to a bookmark', () => {
+			editor.setData( '<h2 id="foo"></h2>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<heading1></heading1>'
+			);
+		} );
+
+		it( 'should not upcast `h2` with `id` attribute and text inside to a bookmark', () => {
+			editor.setData( '<h2 id="foo">bar</h2>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<heading1>bar</heading1>'
+			);
+		} );
+	} );
 } );
+
+async function createEditor( element, config ) {
+	const editor = await ClassicTestEditor.create( element, config );
+
+	return editor;
+}
