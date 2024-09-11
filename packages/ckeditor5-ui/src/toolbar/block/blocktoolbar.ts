@@ -289,6 +289,15 @@ export default class BlockToolbar extends Plugin {
 			}
 		} );
 
+		// Hide the panelView when the buttonView is disabled. `isEnabled` flag might be changed when
+		// user scrolls the viewport and the button is no longer visible. In such case, the panel should be hidden
+		// otherwise it will be displayed in the wrong place.
+		this.listenTo<ObservableChangeEvent<boolean>>( buttonView, 'change:isEnabled', ( evt, name, isEnabled ) => {
+			if ( !isEnabled && this.panelView.isVisible ) {
+				this._hidePanel( false );
+			}
+		} );
+
 		editor.ui.view.body.add( buttonView );
 
 		return buttonView;

@@ -24,15 +24,7 @@ React lets you build user interfaces out of individual pieces called components.
 
 ## Quick start
 
-### Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
+{@snippet getting-started/use-builder}
 
 ### Setting up the project
 
@@ -75,7 +67,7 @@ function App() {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: { 
+				mention: {
 					// Mention configuration
 				},
 				initialData: '<p>Hello from CKEditor 5 in React!</p>',
@@ -168,6 +160,7 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
+* `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. It receives a dictionary of fully initialized editors, where the key is the value of the `contextItemMetadata.name` property set on the `CKEditor` component. The editor's ID is the key if the `contextItemMetadata` property is absent. Additional data can be added to the `contextItemMetadata` in the `CKEditor` component, which will be passed to the `onChangeInitializedEditors` function.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
   * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
@@ -193,7 +186,7 @@ import 'ckeditor5/ckeditor5.css';
 function App() {
 	const editorToolbarRef = useRef( null );
 	const [ isMounted, setMounted ] = useState( false );
-	
+
 	useEffect( () => {
 		setMounted( true );
 
@@ -216,7 +209,7 @@ function App() {
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
 						onReady={ ( editor ) => {
-							if ( editorToolbarRef.current ) { 
+							if ( editorToolbarRef.current ) {
 								editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
 							}
 						}}
@@ -275,6 +268,106 @@ export default App;
 ```
 
 For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+### Jest testing
+
+Jest is the default test runner used by many React apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+
+For testing CKEditor&nbsp;5, it is recommended to use testing frameworks that utilize a real browser and provide a complete DOM implementation. Some popular options include:
+
+* [Vitest](https://vitest.dev/)
+* [Playwright](https://playwright.dev/)
+* [Cypress](https://www.cypress.io/)
+
+These frameworks offer better support for testing CKEditor&nbsp;5 and provide a more accurate representation of how the editor behaves in a real browser environment.
+
+If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
+
+```jsx
+import React, { useRef } from 'react';
+import { render, waitFor, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+
+import { DecoupledEditor, Essentials, Paragraph } from 'ckeditor5';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+
+beforeAll( () => {
+	window.scrollTo = jest.fn();
+
+	window.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+
+	for ( const key of [ 'InputEvent', 'KeyboardEvent' ] ) {
+		window[ key ].prototype.getTargetRanges = () => {
+			const range = new StaticRange( {
+				startContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				startOffset: 0,
+				endContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				endOffset: 0
+			} );
+
+			return [ range ];
+		};
+	}
+
+	Range.prototype.getClientRects = () => ( {
+		item: () => null,
+		length: 0,
+		[ Symbol.iterator ]: function* () {}
+	} );
+} );
+
+const SomeComponent = ( { value, onChange } ) => {
+	const editorRef = useRef();
+
+	return (
+		<div
+			style={{
+				border: '1px solid black',
+				padding: 10,
+			}}
+		>
+			<CKEditor
+				editor={ DecoupledEditor }
+				config={{
+					plugins: [ Essentials, Paragraph ],
+				}}
+				onReady={ (editor) => {
+					editorRef.current = editor;
+				} }
+				data={ value }
+				onChange={ () => {
+					onChange( editorRef.current?.getData() );
+				} }
+			/>
+		</div>
+	);
+};
+
+it( 'renders', async () => {
+	render( <SomeComponent value="this is some content" /> );
+
+	await waitFor( () => expect( screen.getByText( /some content/ ) ).toBeTruthy());
+} );
+
+it( 'updates', async () => {
+	const onChange = jest.fn();
+	render( <SomeComponent value="this is some content" onChange={onChange} /> );
+
+	await waitFor( () => expect( screen.getByText( /some content/ ) ).toBeTruthy() );
+
+	await userEvent.click( document.querySelector( '[contenteditable="true"]' ) );
+
+	userEvent.keyboard( 'more stuff' );
+
+	await waitFor( () => expect( onChange ).toHaveBeenCalled() );
+} );
+```
+
+The mocks presented above only test two basic scenarios, and more will likely need to be added, which may change with each version of the editor.
 
 ## Contributing and reporting issues
 
