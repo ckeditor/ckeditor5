@@ -37,8 +37,8 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 
 	**Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed media embed} and {@link features/paste-from-office paste from Word} features.
 * `style-src 'self' 'unsafe-inline'`:
-	* The `self` directive allows loading styles from the site's own domain. From v42.0.0 editor {@link getting-started/setup/css distributes its stylesheets}. If you need to load styles from some other domain add it explicitly: `style-src https://trusted-styles.example.com;`.
-	* The directive `unsafe-inline` is required to make the styles of certain features work properly. For instance, you are going to need it if you want to enable such editor features as {@link features/font font} or {@link features/text-alignment text alignment} or any other feature that uses inline `style="..."` attributes in the content.
+	* The `self` directive allows to load styles from the site's own domain. Since v42.0.0, the editor {@link getting-started/setup/css distributes its stylesheets}. If you need to load styles from some other domain, add them explicitly: `style-src https://trusted-styles.example.com;`.
+	* The directive `unsafe-inline` is required to make the styles of certain features work properly. For instance, you are going to need it if you want to enable such editor features as {@link features/font font} or {@link features/text-alignment text alignment} or any other feature that uses the inline `style="..."` attributes in the content.
 * `frame-src *`: Necessary for the {@link features/media-embed media embed} feature to load media with previews (containing `<iframe>`).
 
 	**Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.
