@@ -121,24 +121,26 @@ To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` func
 
 ```ts
 import { Component } from '@angular/core';
-import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+import { loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-integrations-common';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
 @Component( {
-	selector: 'app-simple-cdn-usage',
-	templateUrl: './simple-cdn-usage.component.html',
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
 } )
 export class SimpleCdnUsageComponent {
-	public Editor = null;
+	public Editor: ClassicEditor | null = null;
 
-	public config = null;
+	public config: EditorConfig | null = null;
 
 	public editorData = '<p>Hello world!</p>';
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
-			version: '{@var ckeditor5-version}',
+			version: '43.0.0',
 			premium: true
-		} ).then( this.setupEditor.bind( this ) );
+		} ).then( this._setupEditor.bind( this ) );
 	}
 
 	private _setupEditor ( cloud: CKEditorCloudResult ) {
@@ -147,15 +149,15 @@ export class SimpleCdnUsageComponent {
 			Essentials,
 			Bold,
 			Italic,
+			Paragraph,
+			Undo,
 			Mention
 		} = cloud.CKEditor;
-
-		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
 
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention, SlashCommand ],
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			}
