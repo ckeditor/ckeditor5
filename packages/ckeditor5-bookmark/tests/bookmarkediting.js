@@ -83,6 +83,17 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly downcast bookmark with and space text before', () => {
+			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'text' +
+					'<a id="foo"></a>' +
+				'</p>'
+			);
+		} );
+
 		it( 'should properly downcast bookmark with text after', () => {
 			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>' );
 
@@ -94,12 +105,36 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly downcast bookmark with space and text after', () => {
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<a id="foo"></a>' +
+					'text' +
+				'</p>'
+			);
+		} );
+
 		it( 'should properly downcast bookmark with surrounded text', () => {
 			setModelData( model, '<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>' );
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
 					'Example' +
+					'<a id="foo"></a>' +
+					'text' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark with surrounded text with spaces before and after bookmark', () => {
+			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark> text</paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'text' +
+					' ' +
 					'<a id="foo"></a>' +
 					'text' +
 				'</p>'
@@ -163,6 +198,19 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly downcast bookmark with text with space before', () => {
+			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'text' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+				'</p>'
+			);
+		} );
+
 		it( 'should properly downcast bookmark with text after', () => {
 			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>' );
 
@@ -176,12 +224,40 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly downcast bookmark with text with space after', () => {
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+					'text' +
+				'</p>'
+			);
+		} );
+
 		it( 'should properly downcast bookmark with surrounded text', () => {
 			setModelData( model, '<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>' );
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<p>' +
 					'Example' +
+					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
+						'<span class="ck-bookmark__icon"></span>' +
+					'</a>' +
+					'text' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly downcast bookmark with surrounded text with spaces before and after bookmark', () => {
+			setModelData( model, '<paragraph>Example <bookmark bookmarkId="foo"></bookmark> text</paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p>' +
+					'Example' +
+					' ' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
 					'</a>' +
@@ -295,6 +371,14 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly convert an `a` with `id` attribute with text before with space', () => {
+			editor.setData( '<p>text <a id="foo"></a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>text<bookmark bookmarkId="foo"></bookmark></paragraph>'
+			);
+		} );
+
 		it( 'should properly convert an `a` with `id` attribute with text after', () => {
 			editor.setData( '<p><a id="foo"></a>Example text</p>' );
 
@@ -303,11 +387,27 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
+		it( 'should properly convert an `a` with `id` attribute with text after with space', () => {
+			editor.setData( '<p><a id="foo"></a> text</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><bookmark bookmarkId="foo"></bookmark>text</paragraph>'
+			);
+		} );
+
 		it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
 			editor.setData( '<p>Example<a id="foo"></a>text</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>'
+			);
+		} );
+
+		it( 'should properly convert an `a` with `id` attribute text with spaces before and after', () => {
+			editor.setData( '<p>Example <a id="foo"></a> text</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>Example <bookmark bookmarkId="foo"></bookmark>text</paragraph>'
 			);
 		} );
 

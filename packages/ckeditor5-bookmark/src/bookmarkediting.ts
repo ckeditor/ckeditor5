@@ -53,69 +53,66 @@ export default class BookmarkEditing extends Plugin {
 		const { editor } = this;
 		const { conversion, t } = editor;
 
-		conversion.for( 'dataDowncast' )
-			.elementToElement( {
-				model: {
-					name: 'bookmark',
-					attributes: [ 'bookmarkId' ]
-				},
-				view: ( modelElement, { writer } ) => {
-					const emptyElement = writer.createEmptyElement( 'a', {
-						'id': modelElement.getAttribute( 'bookmarkId' )
-					} );
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: {
+				name: 'bookmark',
+				attributes: [ 'bookmarkId' ]
+			},
+			view: ( modelElement, { writer } ) => {
+				const emptyElement = writer.createEmptyElement( 'a', {
+					'id': modelElement.getAttribute( 'bookmarkId' )
+				} );
 
-					// `getFillerOffset` is not needed to set here, because `emptyElement` has already covered it.
+				// `getFillerOffset` is not needed to set here, because `emptyElement` has already covered it.
 
-					return emptyElement;
+				return emptyElement;
+			}
+		} );
+
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: {
+				name: 'bookmark',
+				attributes: [ 'bookmarkId' ]
+			},
+			view: ( modelElement, { writer } ) => {
+				const id = modelElement.getAttribute( 'bookmarkId' );
+				const containerElement = writer.createContainerElement( 'a', {
+					id,
+					class: 'ck-bookmark'
+				}, [ this._createBookmarkUIElement( writer ) ] );
+
+				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
+
+				const labelCreator = () => `${ id } ${ t( 'bookmark widget' ) }`;
+
+				return toWidget( containerElement, writer, { label: labelCreator } );
+			}
+		} );
+
+		conversion.for( 'upcast' ).elementToElement( {
+			view: element => {
+				const isAnchorElement = element.name === 'a';
+
+				if ( !isAnchorElement ) {
+					return null;
 				}
-			} );
 
-		conversion.for( 'editingDowncast' )
-			.elementToElement( {
-				model: {
-					name: 'bookmark',
-					attributes: [ 'bookmarkId' ]
-				},
-				view: ( modelElement, { writer } ) => {
-					const id = modelElement.getAttribute( 'bookmarkId' );
-					const containerElement = writer.createContainerElement( 'a', {
-						id,
-						class: 'ck-bookmark'
-					}, [ this._createBookmarkUIElement( writer ) ] );
+				const hasIdAttribute = element.hasAttribute( 'id' );
+				const hasHrefAttribute = element.hasAttribute( 'href' );
+				const isEmpty = element.isEmpty;
 
-					// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
-
-					const labelCreator = () => `${ id } ${ t( 'bookmark widget' ) }`;
-
-					return toWidget( containerElement, writer, { label: labelCreator } );
+				if ( !hasIdAttribute || hasHrefAttribute || !isEmpty ) {
+					return null;
 				}
-			} );
 
-		conversion.for( 'upcast' )
-			.elementToElement( {
-				view: element => {
-					const isAnchorElement = element.name === 'a';
+				return { name: true };
+			},
+			model: ( viewElement, { writer } ) => {
+				const bookmarkId = viewElement.getAttribute( 'id' );
 
-					if ( !isAnchorElement ) {
-						return null;
-					}
-
-					const hasIdAttribute = element.hasAttribute( 'id' );
-					const hasHrefAttribute = element.hasAttribute( 'href' );
-					const isEmpty = element.isEmpty;
-
-					if ( !hasIdAttribute || hasHrefAttribute || !isEmpty ) {
-						return null;
-					}
-
-					return { name: true };
-				},
-				model: ( viewElement, { writer } ) => {
-					const bookmarkId = viewElement.getAttribute( 'id' );
-
-					return writer.createElement( 'bookmark', { bookmarkId } );
-				}
-			} );
+				return writer.createElement( 'bookmark', { bookmarkId } );
+			}
+		} );
 	}
 
 	/**
