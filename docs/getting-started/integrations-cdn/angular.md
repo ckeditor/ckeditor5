@@ -91,9 +91,9 @@ Because of the breaking changes in the Angular library output format, the `@cked
 
 All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
-## Quick start
-
 {@snippet getting-started/use-builder}
+
+## Quick start
 
 ### Setting up the project
 
@@ -101,15 +101,15 @@ This guide assumes you already have a Angular project. To create such a project,
 
 ### Installing the Angular component from npm
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+First, install the official shared utils for CKEditorr&nbsp;5 integrations:
 
 ```bash
-npm install @ckeditor/ckeditor5-angular
+npm install @ckeditor/ckeditor5-integrations-common
 ```
 
 ### Using the Angular component
 
-To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
+Then, to use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function and call it inside `ngOnInit` with the `version` provided in the configuration.
 
 ```ts
 import { Component, loadCKEditorCloud, CKEditorCloudResult } from '@angular/core';
@@ -129,7 +129,7 @@ export class SimpleCdnUsageComponent {
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
-			version: '43.0.0',
+			version: '{@var ckeditor5-version}',
 			premium: true
 		} ).then( this._setupEditor.bind( this ) );
 	}
@@ -560,9 +560,10 @@ export class AppComponent {
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
-			version: '43.0.0'
+			version: '{@var ckeditor5-version}'
 		} ).then( this.setupEditor.bind( this ) );
 	}
+
 	private _setupEditor( cloud ) {
 		const {
 			DecoupledEditor,
@@ -576,6 +577,7 @@ export class AppComponent {
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
 	}
+
 	public onReady( editor ) {
 		const element = editor.ui.getEditableElement()!;
 		const parent = element.parentElement!;
