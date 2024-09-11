@@ -105,7 +105,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 ### Customizable user experience
 
-Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your preset or remove them with the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
+Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your preset or remove them with the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
@@ -126,7 +126,7 @@ If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link upda
 We present each rich-text editor feature on a separate page. It includes one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
 
 <info-box>
-	**In most feature demos the number of features enabled is limited** to make the exposed piece of functionality stand out more, as shown in the screenshots above. But in your CKEditor&nbsp;5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. You can achieve this by using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	**In most feature demos the number of features enabled is limited** to make the exposed piece of functionality stand out more, as shown in the screenshots above. But in your CKEditor&nbsp;5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. You can achieve this by using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
 
 ## Why does the editor filter out content (styles, classes, elements)

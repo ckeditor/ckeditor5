@@ -14,7 +14,7 @@ The inline editor type lets you create your content directly in its target locat
 In this example the {@link features/images-styles image styles} configuration was changed to enable left- and right-aligned images.
 
 <info-box hint>
-	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-inline) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-inline) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
 
 {@snippet examples/inline-editor}
