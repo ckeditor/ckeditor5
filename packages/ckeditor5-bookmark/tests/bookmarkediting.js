@@ -83,7 +83,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should properly downcast bookmark with and space text before', () => {
+		it( 'should properly downcast bookmark with text and space before', () => {
 			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
 			expect( editor.getData() ).to.equal(
@@ -198,7 +198,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should properly downcast bookmark with text with space before', () => {
+		it( 'should properly downcast bookmark with text and space before', () => {
 			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -224,7 +224,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should properly downcast bookmark with text with space after', () => {
+		it( 'should properly downcast bookmark with space and text after', () => {
 			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>' );
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -375,7 +375,7 @@ describe( 'BookmarkEditing', () => {
 			editor.setData( '<p>text <a id="foo"></a></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>text<bookmark bookmarkId="foo"></bookmark></paragraph>'
+				'<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>'
 			);
 		} );
 
@@ -391,7 +391,7 @@ describe( 'BookmarkEditing', () => {
 			editor.setData( '<p><a id="foo"></a> text</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><bookmark bookmarkId="foo"></bookmark>text</paragraph>'
+				'<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>'
 			);
 		} );
 
@@ -407,7 +407,7 @@ describe( 'BookmarkEditing', () => {
 			editor.setData( '<p>Example <a id="foo"></a> text</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>Example <bookmark bookmarkId="foo"></bookmark>text</paragraph>'
+				'<paragraph>Example <bookmark bookmarkId="foo"></bookmark> text</paragraph>'
 			);
 		} );
 

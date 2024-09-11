@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
-import type { ViewUIElement, DowncastWriter } from 'ckeditor5/src/engine.js';
+import { type ViewUIElement, type DowncastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -53,6 +53,9 @@ export default class BookmarkEditing extends Plugin {
 		const { editor } = this;
 		const { conversion, t } = editor;
 
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => this.upcastMatcher( element ) );
+		editor.editing.view.domConverter.registerInlineObjectMatcher( element => this.upcastMatcher( element ) );
+
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: {
 				name: 'bookmark',
@@ -90,23 +93,7 @@ export default class BookmarkEditing extends Plugin {
 		} );
 
 		conversion.for( 'upcast' ).elementToElement( {
-			view: element => {
-				const isAnchorElement = element.name === 'a';
-
-				if ( !isAnchorElement ) {
-					return null;
-				}
-
-				const hasIdAttribute = element.hasAttribute( 'id' );
-				const hasHrefAttribute = element.hasAttribute( 'href' );
-				const isEmpty = element.isEmpty;
-
-				if ( !hasIdAttribute || hasHrefAttribute || !isEmpty ) {
-					return null;
-				}
-
-				return { name: true };
-			},
+			view: element => this.upcastMatcher( element ),
 			model: ( viewElement, { writer } ) => {
 				const bookmarkId = viewElement.getAttribute( 'id' );
 
@@ -135,5 +122,23 @@ export default class BookmarkEditing extends Plugin {
 
 			return domElement;
 		} );
+	}
+
+	private upcastMatcher( element: ViewElement ) {
+		const isAnchorElement = element.name === 'a';
+
+		if ( !isAnchorElement ) {
+			return null;
+		}
+
+		const hasIdAttribute = element.hasAttribute( 'id' );
+		const hasHrefAttribute = element.hasAttribute( 'href' );
+		const isEmpty = element.isEmpty;
+
+		if ( !hasIdAttribute || hasHrefAttribute || !isEmpty ) {
+			return null;
+		}
+
+		return { name: true, attributes: [ 'id' ] };
 	}
 }
