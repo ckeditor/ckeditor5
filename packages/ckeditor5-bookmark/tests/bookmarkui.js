@@ -187,7 +187,7 @@ describe( 'BookmarkUI', () => {
 				expect( updateSpy ).to.be.calledOnce;
 			} );
 
-			it( 'should show error form status if passed empty link', () => {
+			it( 'should show error form status if passed invalid ID', () => {
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.bookmarkView.formView;
 
@@ -202,7 +202,7 @@ describe( 'BookmarkUI', () => {
 				expect( formView.idInputView.errorText ).to.be.equal( 'Spaces not allowed in ID.' );
 			} );
 
-			it( 'should reset error form status after filling empty link', () => {
+			it( 'should reset error form status after filling invalid ID', () => {
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.bookmarkView.formView;
 
@@ -261,8 +261,7 @@ describe( 'BookmarkUI', () => {
 				sinon.assert.calledTwice( spy );
 			} );
 
-			// https://github.com/ckeditor/ckeditor5-link/issues/113
-			it( 'updates the position of the panel – creating a new link, then the selection moved', () => {
+			it( 'updates the position of the panel – creating a new bookmark, then the selection moved', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._showUI();
@@ -289,7 +288,7 @@ describe( 'BookmarkUI', () => {
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.bookmarkView.formView;
 
-				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				bookmarkUIFeature._showUI();
 
@@ -701,7 +700,7 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showUI();
 
-				// Some view precedes the link UI in the balloon.
+				// Some view precedes the bookmark UI in the balloon.
 				balloon.add( { view: viewMock } );
 				editor.keystrokes.press( keyEvtData );
 
@@ -727,7 +726,7 @@ describe( 'BookmarkUI', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
-			it( 'should hide the UI when link is in not currently visible stack', () => {
+			it( 'should hide the UI when bookmark is in not currently visible stack', () => {
 				const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideUI' );
 
 				balloon.add( {
@@ -737,7 +736,7 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showUI();
 
-				// Be sure any of link view is not currently visible/
+				// Be sure any of bookmark view is not currently visible/
 				expect( balloon.visibleView ).to.not.equal( formView );
 
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );

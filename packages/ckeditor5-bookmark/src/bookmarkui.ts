@@ -15,11 +15,12 @@ import {
 	clickOutsideHandler
 } from 'ckeditor5/src/ui.js';
 
+import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import type { BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
+
+import BookmarkView from './ui/bookmarkview.js';
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 import '../theme/bookmark.css';
-import { type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
-import BookmarkView from './ui/bookmarkview.js';
-import type { PositionOptions } from 'ckeditor5/src/utils.js';
 
 const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
 
@@ -127,7 +128,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
+	 * Creates the {@link module:bookmark/ui/bookmarkview~BookmarkView} instance.
 	 */
 	private _createFormView(): BookmarkView {
 		const editor = this.editor;
@@ -145,7 +146,6 @@ export default class BookmarkUI extends Plugin {
 		const bookmarkView = new BookmarkView( editor.locale, validators );
 		const formView = bookmarkView.formView;
 
-		// Execute link command after clicking the "Insert" button.
 		this.listenTo( formView, 'submit', () => {
 			if ( formView.isValid() ) {
 				this._closeFormView();
@@ -167,11 +167,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Closes the form view. Decides whether the balloon should be hidden completely or if the action view should be shown. This is
-	 * decided upon the link command value (which has a value if the document selection is in the link).
-	 *
-	 * Additionally, if any {@link module:link/linkconfig~LinkConfig#decorators} are defined in the editor configuration, the state of
-	 * switch buttons responsible for manual decorator handling is restored.
+	 * Closes the form view. Decides whether the balloon should be hidden completely.
 	 */
 	private _closeFormView(): void {
 		this._hideUI();
@@ -180,7 +176,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
-	 * See {@link #_addFormView}, {@link #_addActionsView}.
+	 * See {@link #_addFormView}.
 	 */
 	private _hideUI(): void {
 		if ( !this._isUIInPanel ) {
@@ -296,7 +292,7 @@ export default class BookmarkUI extends Plugin {
 			this._createViews();
 		}
 
-		// Show visual selection on a text without a link when the contextual balloon is displayed.
+		// Show visual selection on a text when the contextual balloon is displayed.
 		this._showFakeVisualSelection();
 		this._addFormView();
 
@@ -315,8 +311,8 @@ export default class BookmarkUI extends Plugin {
 
 		const update = () => {
 			if ( this._isUIVisible ) {
-				// If still in a link element, simply update the position of the balloon.
-				// If there was no link (e.g. inserting one), the balloon must be moved
+				// If still in a bookmark element, simply update the position of the balloon.
+				// If there was no bookmark (e.g. inserting one), the balloon must be moved
 				// to the new position in the editing view (a new native DOM range).
 				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
@@ -329,9 +325,6 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
 	 * to the target element or selection.
-	 *
-	 * If the selection is collapsed and inside a link element, the panel will be attached to the
-	 * entire link element. Otherwise, it will be attached to the selection.
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> | undefined {
 		const view = this.editor.editing.view;
@@ -355,7 +348,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Displays a fake visual selection when the contextual balloon is displayed.
 	 *
-	 * This adds a 'link-ui' marker into the document that is rendered as a highlight on selected text fragment.
+	 * This adds a 'bookmark-ui' marker into the document that is rendered as a highlight on selected text fragment.
 	 */
 	private _showFakeVisualSelection(): void {
 		const model = this.editor.model;
