@@ -3,14 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-'use strict';
-
 /* eslint-env node */
 
-const { builds } = require( '@ckeditor/ckeditor5-dev-utils' );
-const webpack = require( 'webpack' );
+import path from 'path';
+import { fileURLToPath } from 'url';
+import module from 'module';
+import { builds } from '@ckeditor/ckeditor5-dev-utils';
+import webpack from 'webpack';
 
-module.exports = builds.getDllPluginWebpackConfig( webpack, {
+const require = module.createRequire( import.meta.url );
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
+
+export default builds.getDllPluginWebpackConfig( webpack, {
 	themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
 	packagePath: __dirname,
 	manifestPath: require.resolve( 'ckeditor5/build/ckeditor5-dll.manifest.json' ),
