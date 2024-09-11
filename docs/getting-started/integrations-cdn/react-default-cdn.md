@@ -300,7 +300,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 The `<useCKEditorCloud>` component supports the following properties:
 
 * `version` (required) &ndash; The version of CKEditor Cloud Services to use.
-* `languages` &ndash; The languages to load. English language ('en') should not be passed because it is already bundled in.
+* `translations` &ndash; The translations to load. English language ('en') should not be passed because it is already bundled in.
 * `premium` &ndash; If `true` then the premium features will be loaded.
 * `ckbox` &ndash; CKBox bundle configuration.
 * `plugins` &ndash; Additional resources to load.
@@ -539,7 +539,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
-Pass the languages you need into the `languages` array inside the configuration of the `useCKEditorCloud` hook.
+Pass the translations you need into the `translations` array inside the configuration of the `useCKEditorCloud` hook.
 
 ```js
 import React from 'react';
@@ -548,7 +548,7 @@ import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud({
 		version: '{@var ckeditor5-version}',
-		languages: [ 'de' ]
+		translations: [ 'de' ]
 	});
 
 	if ( cloud.status === 'error' ) {
