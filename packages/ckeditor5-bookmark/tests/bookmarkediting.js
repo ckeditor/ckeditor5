@@ -278,7 +278,7 @@ describe( 'BookmarkEditing', () => {
 	} );
 
 	describe( 'upcast', () => {
-		it( 'should properly upcast bookmark', () => {
+		it( 'should properly convert an `a` with `id` attribute', () => {
 			editor.setData( '<p><a id="foo"></a></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -286,7 +286,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should properly upcast bookmark with text before', () => {
+		it( 'should properly convert an `a` with `id` attribute with text before', () => {
 			editor.setData( '<p>Example text<a id="foo"></a></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -294,7 +294,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should properly upcast bookmark with text after', () => {
+		it( 'should properly convert an `a` with `id` attribute with text after', () => {
 			editor.setData( '<p><a id="foo"></a>Example text</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -302,7 +302,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should properly upcast bookmark surrounded with text after', () => {
+		it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
 			editor.setData( '<p>Example<a id="foo"></a>text</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -310,7 +310,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast anchor with id and with text inside', () => {
+		it( 'should not convert an `a` with `id` attribute and with text inside', () => {
 			editor.setData( '<p><a id="foo">foobar</a></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -318,7 +318,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast anchor with id and href attribute and without text inside', () => {
+		it( 'should not convert an `a` with `id` and `href` attribute and without text inside', () => {
 			editor.setData( '<p><a id="foo" href="www.ckeditor.com"></a></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -326,7 +326,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast anchor with id and href attribute and with text inside', () => {
+		it( 'should not convert `a` with `id` and `href` attribute and with text inside', () => {
 			editor.setData( '<p><a id="foo" href="www.ckeditor.com">foobar</a></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -334,7 +334,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast `p` with `id` attribute to a bookmark', () => {
+		it( 'should not convert `p` with `id` attribute', () => {
 			editor.setData( '<p id="foo"></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -342,7 +342,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast `p` with `id` attribute and text inside to a bookmark', () => {
+		it( 'should not convert `p` with `id` attribute and text inside', () => {
 			editor.setData( '<p id="foo">bar</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -350,7 +350,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast `h2` with `id` attribute to a bookmark', () => {
+		it( 'should not convert `h2` with `id` attribute', () => {
 			editor.setData( '<h2 id="foo"></h2>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -358,7 +358,7 @@ describe( 'BookmarkEditing', () => {
 			);
 		} );
 
-		it( 'should not upcast `h2` with `id` attribute and text inside to a bookmark', () => {
+		it( 'should not convert `h2` with `id` attribute and text inside', () => {
 			editor.setData( '<h2 id="foo">bar</h2>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
