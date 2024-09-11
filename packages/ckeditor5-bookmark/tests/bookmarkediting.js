@@ -204,10 +204,14 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with text and space before', () => {
 			setModelData( model, '<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			const paragraph = editor.editing.view.document.getRoot();
+
+			const domParagraph = converter.viewToDom( paragraph );
+
+			expect( domParagraph.innerHTML ).to.equal(
 				'<p>' +
-					' ' +
 					'text' +
+					' ' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
 					'</a>' +
