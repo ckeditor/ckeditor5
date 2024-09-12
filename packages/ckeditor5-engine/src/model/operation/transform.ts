@@ -1969,14 +1969,17 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				let gyMoveSource = b.graveyardPosition.clone();
 				let splitNodesMoveSource = b.targetPosition._getTransformedByMergeOperation( b );
 
-				if ( a.howMany > 1 ) {
-					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, a.targetPosition, 0 ) );
+				// `a.targetPosition` points to graveyard, so it was probably affected by `b` (which moved merged element to the graveyard).
+				const aTarget = a.targetPosition.getTransformedByOperation( b );
 
-					gyMoveSource = gyMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
-					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
+				if ( a.howMany > 1 ) {
+					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, aTarget, 0 ) );
+
+					gyMoveSource = gyMoveSource._getTransformedByMove( a.sourcePosition, aTarget, a.howMany - 1 );
+					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, aTarget, a.howMany - 1 );
 				}
 
-				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, a.targetPosition );
+				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, aTarget );
 				const gyMove = new MoveOperation( gyMoveSource, 1, gyMoveTarget, 0 );
 
 				const splitNodesMoveTargetPath = gyMove.getMovedRangeStart().path.slice();
