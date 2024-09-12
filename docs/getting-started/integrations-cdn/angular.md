@@ -127,7 +127,7 @@ import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ck
 	standalone: true
 } )
 export class AppComponent {
-	public Editor: typeof ClassicEditor | undefined = undefined;
+	public Editor: typeof ClassicEditor | null = null;
 
 	public config: EditorConfig | null = null;
 
@@ -575,7 +575,7 @@ import { DecoupledEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/
 export class AppComponent {
 	title = 'angular';
 
-	public Editor: typeof DecoupledEditor | undefined = undefined;
+	public Editor: typeof DecoupledEditor | null = null;
 
 	public config: EditorConfig | null = null;
 
@@ -659,7 +659,7 @@ import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ck
 	standalone: true
 } )
 export class AppComponent {
-	public Editor: typeof ClassicEditor | undefined = undefined;
+	public Editor: typeof ClassicEditor | null = null;
 
 	public config: EditorConfig | null = null;
 
