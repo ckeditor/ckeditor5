@@ -323,7 +323,7 @@ export default class ClipboardPipeline extends Plugin {
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
-				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
+				data.dataTransfer.setData( 'text/plain', viewToPlainText( editor.editing.view.domConverter, data.content ) );
 			}
 
 			if ( data.method == 'cut' ) {

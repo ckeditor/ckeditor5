@@ -766,7 +766,7 @@ export default class DomConverter {
 
 			if ( viewChild !== null ) {
 				// Whitespace cleaning before entering a block element (between block elements).
-				if ( this._isBlockViewElement( viewChild ) ) {
+				if ( this.isBlockViewElement( viewChild ) ) {
 					this._processDomInlineNodes( domElement, inlineNodes, options );
 				}
 
@@ -1163,6 +1163,13 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
+	 */
+	public isBlockViewElement( node: ViewNode ): boolean {
+		return node.is( 'element' ) && this.blockElements.includes( node.name );
+	}
+
+	/**
 	 * Checks if the node is an instance of the block filler for this DOM converter.
 	 *
 	 * ```ts
@@ -1443,7 +1450,7 @@ export default class DomConverter {
 				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
 					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
 
-					if ( !this._isBlockViewElement( viewElement ) ) {
+					if ( !this.isBlockViewElement( viewElement ) ) {
 						inlineNodes.push( viewElement );
 					}
 
@@ -1741,13 +1748,6 @@ export default class DomConverter {
 	 */
 	private _isBlockDomElement( node: DomNode ): boolean {
 		return this.isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
-	}
-
-	/**
-	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
-	 */
-	private _isBlockViewElement( node: ViewNode ): boolean {
-		return node.is( 'element' ) && this.blockElements.includes( node.name );
 	}
 
 	/**

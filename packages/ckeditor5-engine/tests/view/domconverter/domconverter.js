@@ -18,6 +18,7 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
 import ViewPosition from '../../../src/view/position.js';
 import ViewRange from '../../../src/view/range.js';
 import { ViewText } from '@ckeditor/ckeditor5-engine';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
@@ -423,6 +424,33 @@ describe( 'DomConverter', () => {
 				expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
 			} );
 		} );
+	} );
+
+	describe( 'isBlockViewElement()', () => {
+		const blockElements = [
+			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
+			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
+			'hgroup', 'legend', 'li', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'summary', 'table', 'tbody',
+			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
+		];
+
+		const inlineElements = [ 'span', 'i', 'b', 'strong', 'a' ];
+
+		for ( const elementName of blockElements ) {
+			it( `should return true for <${ elementName }>`, () => {
+				const view = parseView( `<${ elementName }></${ elementName }>` );
+
+				expect( converter.isBlockViewElement( view ) ).to.be.true;
+			} );
+		}
+
+		for ( const elementName of inlineElements ) {
+			it( `should return false for <${ elementName }>`, () => {
+				const view = parseView( `<${ elementName }></${ elementName }>` );
+
+				expect( converter.isBlockViewElement( view ) ).to.be.false;
+			} );
+		}
 	} );
 
 	describe( 'shouldRenderAttribute()', () => {

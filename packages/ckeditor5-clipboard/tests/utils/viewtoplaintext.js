@@ -3,14 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { DomConverter, StylesProcessor, ViewDocument } from '@ckeditor/ckeditor5-engine';
 import viewToPlainText from '../../src/utils/viewtoplaintext.js';
 
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'viewToPlainText()', () => {
+	let converter;
+
+	beforeEach( () => {
+		const viewDocument = new ViewDocument( new StylesProcessor() );
+
+		converter = new DomConverter( viewDocument );
+	} );
+
 	function testViewToPlainText( viewString, expectedText ) {
 		const view = parseView( viewString );
-		const text = viewToPlainText( view );
+		const text = viewToPlainText( converter, view );
 
 		expect( text ).to.equal( expectedText );
 	}
@@ -34,6 +43,13 @@ describe( 'viewToPlainText()', () => {
 		);
 	} );
 
+	it( 'should not put empty line between inline container elements', () => {
+		testViewToPlainText(
+			'<container:strong>Foo</container:strong><container:strong>Bar</container:strong>',
+			'FooBar'
+		);
+	} );
+
 	it( 'should not put empty line before or after the element with `dataPipeline:transparentRendering` property', () => {
 		const viewString = 'Abc <container:h1>Header</container:h1> xyz';
 		const expectedText = 'Abc Header xyz';
@@ -41,7 +57,7 @@ describe( 'viewToPlainText()', () => {
 		const view = parseView( viewString );
 		view.getChild( 1 )._setCustomProperty( 'dataPipeline:transparentRendering', true );
 
-		const text = viewToPlainText( view );
+		const text = viewToPlainText( converter, view );
 
 		expect( text ).to.equal( expectedText );
 	} );

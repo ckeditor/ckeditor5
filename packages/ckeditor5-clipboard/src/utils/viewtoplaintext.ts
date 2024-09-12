@@ -7,7 +7,7 @@
  * @module clipboard/utils/viewtoplaintext
  */
 
-import type { ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
+import type { DomConverter, ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
 
 // Elements which should not have empty-line padding.
 // Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
@@ -19,10 +19,14 @@ const listElements = [ 'ol', 'ul' ];
 /**
  * Converts {@link module:engine/view/item~Item view item} and all of its children to plain text.
  *
+ * @param converter The converter instance.
  * @param viewItem View item to convert.
  * @returns Plain text representation of `viewItem`.
  */
-export default function viewToPlainText( viewItem: ViewItem | ViewDocumentFragment ): string {
+export default function viewToPlainText(
+	converter: DomConverter,
+	viewItem: ViewItem | ViewDocumentFragment
+): string {
 	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {
 		return viewItem.data;
 	}
@@ -44,7 +48,7 @@ export default function viewToPlainText( viewItem: ViewItem | ViewDocumentFragme
 	let prev: ViewElement | null = null;
 
 	for ( const child of ( viewItem as ViewElement | ViewDocumentFragment ).getChildren() ) {
-		text += newLinePadding( child as ViewElement, prev ) + viewToPlainText( child );
+		text += newLinePadding( converter, child as ViewElement, prev ) + viewToPlainText( converter, child );
 		prev = child as ViewElement;
 	}
 
@@ -55,6 +59,7 @@ export default function viewToPlainText( viewItem: ViewItem | ViewDocumentFragme
  * Returns new line padding to prefix the given elements with.
  */
 function newLinePadding(
+	converter: DomConverter,
 	element: ViewElement,
 	previous: ViewElement | null
 ): string {
@@ -91,6 +96,11 @@ function newLinePadding(
 		element.is( 'element' ) && element.getCustomProperty( 'dataPipeline:transparentRendering' ) ||
 		previous.is( 'element' ) && previous.getCustomProperty( 'dataPipeline:transparentRendering' )
 	) {
+		return '';
+	}
+
+	if ( !converter.isBlockViewElement( previous ) && !converter.isBlockViewElement( element ) ) {
+		// Don't add padding between non-block elements.
 		return '';
 	}
 
