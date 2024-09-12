@@ -1,5 +1,5 @@
 {
-	"Bookmark": "The label of the bookmark toolbar button.",
+	"Bookmark": "The label of the bookmark toolbar button. Also, a bookmark form header.",
 	"Insert": "The button which inserts bookmark before selection.",
 	"Add bookmark name": "The label of input where ID of the bookmark should be provided.",
 	"Enter the bookmark name without spaces.": "The description of bookmark input.",

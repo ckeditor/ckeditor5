@@ -19,8 +19,6 @@ import {
 } from 'ckeditor5/src/utils.js';
 import BookmarkFormView, { type BookmarkFormValidatorCallback } from './bookmarkformview.js';
 
-import '../../theme/bookmark.css';
-
 /**
  * The bookmark form view controller class.
  *
@@ -56,11 +54,13 @@ export default class BookmarkView extends View {
 		this.children = this.createCollection();
 
 		this.formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
-		this._formHeader = new FormHeaderView( locale, {
-			label: this.t!( 'Bookmark' )
-		} );
 
+		const t = this.t!;
 		const classList = [ 'ck', 'ck-bookmark-view' ];
+
+		this._formHeader = new FormHeaderView( locale, {
+			label: t( 'Bookmark' )
+		} );
 
 		this.children.add( this._formHeader );
 		this.children.add( this.formView );

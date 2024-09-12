@@ -9,10 +9,6 @@
 	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
 	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
-	--ck-color-insert-button-background: var(--ck-color-base-action);
-	--ck-color-insert-button-hover-background: hsl(104, 53%, 40%);
-	--ck-color-insert-button-active-background: hsl(104, 53%, 40%);
-	--ck-color-insert-button-disabled-background: hsl(104, 44%, 58%);
 }
 
 .ck-bookmark {
@@ -38,20 +34,6 @@
 		&.ck-widget_selected,
 		&.ck-widget_selected:hover {
 			outline: none;
-		}
-	}
-}
-
-.ck-bookmark-form {
-	display: flex;
-
-	& .ck-button-insert {
-		background-color: var(--ck-color-insert-button-background);
-		color: hsl(0, 0%, 100%);
-		max-height: 30px;
-		
-		&:hover {
-			background-color: var(--ck-color-insert-button-hover-background) !important;
 		}
 	}
 }

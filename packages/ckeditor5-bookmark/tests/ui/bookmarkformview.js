@@ -42,7 +42,7 @@ describe( 'BookmarkFormView', () => {
 			expect( view.idInputView ).to.be.instanceOf( View );
 			expect( view.insertButtonView ).to.be.instanceOf( View );
 
-			expect( view.insertButtonView.element.classList.contains( 'ck-button-insert' ) ).to.be.true;
+			expect( view.insertButtonView.element.classList.contains( 'ck-button-action' ) ).to.be.true;
 
 			expect( view.children.get( 0 ) ).to.equal( view.idInputView );
 			expect( view.children.get( 1 ) ).to.equal( view.insertButtonView );

@@ -28,6 +28,7 @@ import {
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/bookmark.css';
+import '../../theme/bookmarkform.css';
 
 /**
  * The bookmark form view controller class.
@@ -90,7 +91,7 @@ export default class BookmarkFormView extends View {
 
 		this._validators = validators;
 		this.idInputView = this._createIdInput();
-		this.insertButtonView = this._createButton( t( 'Insert bookmark' ), 'ck-button-insert', 'submit' );
+		this.insertButtonView = this._createButton( t( 'Insert' ), 'ck-button-action', 'submit' );
 		this.insertButtonView.type = 'submit';
 		this.children = this._createFormChildren();
 
