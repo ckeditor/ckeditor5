@@ -10,7 +10,7 @@
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
 }
 
-.ck.ck-dropdown-menu__nested-menu__panel {
+.ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
 	@mixin ck-drop-shadow;
 
 	background: var(--ck-color-dropdown-panel-background);
