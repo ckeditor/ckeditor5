@@ -186,11 +186,11 @@ export class AppComponent {
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
 			version: '{@var ckeditor5-version}',
-			premiumr: true
+			premium: true
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
-	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}', premium: true }> ) {
 		const {
 			ClassicEditor,
 			Essentials,
