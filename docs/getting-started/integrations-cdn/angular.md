@@ -8,7 +8,7 @@ order: 30
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component
+# Angular rich text editor component (CDN)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -91,13 +91,151 @@ Because of the breaking changes in the Angular library output format, the `@cked
 
 All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
-## Quick start
-
 {@snippet getting-started/use-builder}
+
+## Quick start
 
 ### Setting up the project
 
 This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
+
+### Installing the Angular component from npm
+
+First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+
+```bash
+npm install @ckeditor/ckeditor5-angular
+```
+
+### Using the component
+
+To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function. Then, call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration.
+
+```ts
+// app.component.ts
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+	imports: [ CommonModule, CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	public Editor: typeof ClassicEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}'
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
+		const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Paragraph,
+			Undo
+		} = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			licenseKey: 'GPL',
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			}
+		};
+	}
+}
+```
+
+### Using the component with premium plugins
+
+To use premium plugins, set the premium property to `true` in the `loadCKEditorCloud` function configuration and provide your license key in the CKEditor configuration.
+
+```ts
+// app.component.ts
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+	imports: [ CommonModule, CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	public Editor: typeof ClassicEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}',
+			premium: true
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}', premium: true }> ) {
+		const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Paragraph,
+			Undo,
+			Mention
+		} = cloud.CKEditor;
+
+		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>',
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention, SlashCommand ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			}
+		};
+	}
+}
+```
+
+Finally, use the `<ckeditor>` tag in the template to run the rich text editor. The usage is the same regardless of the plugin configuration.
+
+```html
+<!-- app.component.html -->
+
+<ckeditor
+	*ngIf="( Editor && config )"
+	data="<p>Hello, world!</p>"
+	[editor]="Editor"
+	[config]="config"
+>
+</ckeditor>
+```
+
+The `<loadCKEditorCloud>` function supports the following properties:
+
+* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
+* `translations` &ndash; The translations to load. English language ('en') should not be passed because it is already bundled in.
+* `premium` &ndash; If `true` then the premium features will be loaded.
+* `ckbox` &ndash; CKBox bundle configuration.
+* `plugins` &ndash; Additional resources to load.
 
 ## Supported `@Input` properties
 
@@ -134,7 +272,11 @@ or a shared parent component's property
 	// ...
 } )
 export class MyComponent {
-	public editorData = '<p>Hello, world!</p>';
+	public editorData;
+
+	private _setupEditor( cloud ) {
+	 	this.editorData = '<p>Hello, world!</p>';
+	}
 	// ...
 }
 ```
@@ -162,8 +304,11 @@ Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–
 	// ...
 } )
 export class MyComponent {
-	public isDisabled = false;
+	public isDisabled;
 	// ...
+	private _setupEditor( cloud ) {
+	 	this.isDisabled = false;
+	}
 	toggleDisabled() {
 		this.isDisabled = !this.isDisabled
 	}
@@ -186,6 +331,7 @@ An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `Conte
 
 ```ts
 import CKSource from 'path/to/custom/build';
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 
 const Context = CKSource.Context;
 const Editor = CKSource.Editor;
@@ -195,12 +341,24 @@ const ContextWatchdog = CKSource.ContextWatchdog;
 	// ...
 } )
 export class MyComponent {
-	public editor = Editor;
+	public editor;
 	public watchdog: any;
-	public ready = false;
+	public ready;
 
 	ngOnInit() {
+		loadCKEditorCloud({
+			version: '{@var ckeditor5-version}',
+		}).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor( cloud ) {
+		const {
+			ClassicEditor
+		} = cloud.CKEditor;
 		const contextConfig = {};
+
+		this.Editor = ClassicEditor;
+		this.ready = false;
 
 		this.watchdog = new ContextWatchdog( Context );
 
@@ -229,10 +387,14 @@ If the `watchdog` property is not used, {@link module:watchdog/editorwatchdog~Ed
 	// ...
 } )
 export class MyComponent {
-	public myWatchdogConfig = {
-		crashNumberLimit: 5,
-		// ...
-	};
+	public myWatchdogConfig;
+
+	private _setupEditor( cloud ) {
+		this.myWatchdogConfig = {
+			crashNumberLimit: 5,
+			// ...
+		};
+	}
 	// ...
 }
 ```
@@ -277,7 +439,15 @@ import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 	// ...
 } )
 export class MyComponent {
-	public Editor = ClassicEditor;
+	public Editor;
+
+	private _setupEditor( cloud ) {
+		const {
+			ClassicEditor
+		} = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+	}
 
 	public onChange( { editor }: ChangeEvent ) {
 		const data = editor.getData();
@@ -317,9 +487,13 @@ Create some model in your component to share with the editor:
 	// ...
 } )
 export class MyComponent {
-	public model = {
-		editorData: '<p>Hello, world!</p>'
-	};
+	public model;
+
+	private _setupEditor( cloud ) {
+		this.model = {
+			editorData: '<p>Hello, world!</p>'
+		};
+	}
 	// ...
 }
 ```
@@ -392,9 +566,15 @@ To display {@link features/editor-placeholder the placeholder} in the main edita
 	// ...
 } )
 export class MyComponent {
-	public config = {
-		placeholder: 'Type the content here!'
+	public config;
+
+	private _setupEditor( cloud ) {
+		// ...
+		this.config = {
+			placeholder: 'Type the content here!'
+		}
 	}
+
 }
 ```
 
@@ -436,27 +616,50 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 ```ts
 // app.component.ts
 
-import { Component, ViewEncapsulation } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+import { DecoupledEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
 @Component( {
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: [ './app.component.css' ],
-	encapsulation: ViewEncapsulation.None
-	imports: [ CKEditorModule ],
+	imports: [ CommonModule, CKEditorModule ],
 	standalone: true
 } )
 export class AppComponent {
 	title = 'angular';
 
-	public Editor = DecoupledEditor;
-	public config = {
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+	public Editor: typeof DecoupledEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}'
+		} ).then( this._setupEditor.bind( this ) );
 	}
-	public onReady( editor: DecoupledEditor ): void {
+
+	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}>) {
+		const {
+			DecoupledEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Paragraph,
+			Undo
+		} = cloud.CKEditor;
+
+		this.Editor = DecoupledEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+		};
+	}
+
+	public onReady( editor: DecoupledEditor ) {
 		const element = editor.ui.getEditableElement()!;
 		const parent = element.parentElement!;
 
@@ -468,20 +671,19 @@ export class AppComponent {
 }
 ```
 
-Import the needed CSS style sheet:
-
-```css
-/* app.component.css */
-
-@import 'ckeditor5/ckeditor5.css';
-```
-
 And then, link the method in the template:
 
 ```html
 <!-- app.component.html -->
 
-<ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
+<ckeditor
+  *ngIf="Editor && config"
+  data="<p>Hello, world!</p>"
+  [editor]="Editor"
+  [config]="config"
+  (ready)="onReady($event)"
+>
+</ckeditor>
 ```
 
 ### Using the editor with collaboration plugins
@@ -497,40 +699,54 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
-CKEditor 5 supports multiple UI languages, and so does the official Angular component. Follow the instructions below to translate CKEditor 5 in your Angular application.
-
-Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
+CKEditor 5 supports multiple UI languages, and so does the official Angular component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `loadCKEditorCloud` function.
 
 ```ts
-// app.component.ts
-
-import { Component, ViewEncapsulation } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor } from 'ckeditor5';
-// More imports...
-
-import coreTranslations from 'ckeditor5/translations/es.js';
-import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
 @Component( {
 	selector: 'app-root',
 	templateUrl: './app.component.html',
-	styleUrls: [ './app.component.css' ],
-	encapsulation: ViewEncapsulation.None
-	imports: [ CKEditorModule ],
+	styleUrls: ['./app.component.css'],
+	imports: [ CommonModule, CKEditorModule ],
 	standalone: true
 } )
 export class AppComponent {
-	title = 'angular';
-	public Editor = ClassicEditor;
-	public config = {
-		translations: [ coreTranslations, premiumFeaturesTranslations ],
-		// More configuration options...
+	public Editor: typeof ClassicEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}',
+			translations: [ 'pl' ]
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
+		const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Paragraph,
+			Undo
+		} = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			}
+		};
 	}
 }
 ```
-
-For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ## Contributing and reporting issues
 
