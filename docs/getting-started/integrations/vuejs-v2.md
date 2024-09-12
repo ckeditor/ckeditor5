@@ -21,13 +21,9 @@ order: 40
 
 Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
 
-<info-box>
-	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
-</info-box>
+{@snippet getting-started/use-builder}
 
 ## Quick start
-
-{@snippet getting-started/use-builder}
 
 ### Installing from npm
 
