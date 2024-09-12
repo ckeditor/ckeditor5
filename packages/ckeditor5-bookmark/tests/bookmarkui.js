@@ -199,7 +199,7 @@ describe( 'BookmarkUI', () => {
 
 				formView.fire( 'submit' );
 
-				expect( formView.idInputView.errorText ).to.be.equal( 'Spaces not allowed in ID.' );
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
 			} );
 
 			it( 'should reset error form status after filling invalid ID', () => {
@@ -213,7 +213,7 @@ describe( 'BookmarkUI', () => {
 				formView.idInputView.fieldView.value = 'id 1';
 
 				formView.fire( 'submit' );
-				expect( formView.idInputView.errorText ).to.be.equal( 'Spaces not allowed in ID.' );
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
 
 				formView.idInputView.fieldView.value = 'id_1';
 				formView.fire( 'submit' );
@@ -231,7 +231,7 @@ describe( 'BookmarkUI', () => {
 				formView.idInputView.fieldView.value = 'id 1';
 
 				formView.fire( 'submit' );
-				expect( formView.idInputView.errorText ).to.be.equal( 'Spaces not allowed in ID.' );
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
 
 				bookmarkUIFeature._hideUI();
 				bookmarkUIFeature._showUI();

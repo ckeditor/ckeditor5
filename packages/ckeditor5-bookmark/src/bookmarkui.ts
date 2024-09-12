@@ -136,7 +136,7 @@ export default class BookmarkUI extends Plugin {
 		const validators: Array<BookmarkFormValidatorCallback> = [
 			form => {
 				if ( form.id && /\s/.test( form.id ) ) {
-					return t( 'Spaces not allowed in ID.' );
+					return t( 'Bookmark name cannot contain space characters.' );
 				}
 
 				return undefined;

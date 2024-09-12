@@ -48,7 +48,7 @@ export default class BookmarkView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param locale The localization services instance.
-	 * @param validators  Form validators used by {@link #isValid}.
+	 * @param validators Form validators used by {@link #isValid}.
 	 */
 	constructor( locale: Locale, validators: Array<BookmarkFormValidatorCallback> ) {
 		super( locale );

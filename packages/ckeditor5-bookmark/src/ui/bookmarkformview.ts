@@ -90,7 +90,7 @@ export default class BookmarkFormView extends View {
 
 		this._validators = validators;
 		this.idInputView = this._createIdInput();
-		this.insertButtonView = this._createButton( t( 'Insert' ), 'ck-button-insert', 'submit' );
+		this.insertButtonView = this._createButton( t( 'Insert bookmark' ), 'ck-button-insert', 'submit' );
 		this.insertButtonView.type = 'submit';
 		this.children = this._createFormChildren();
 
@@ -208,8 +208,8 @@ export default class BookmarkFormView extends View {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.fieldView.inputMode = 'id';
-		labeledInput.label = t( 'Bookmark ID' );
-		labeledInput.infoText = t( 'Provide bookmark ID.' );
+		labeledInput.label = t( 'Add bookmark name' );
+		labeledInput.infoText = t( 'Enter the bookmark name without spaces.' );
 
 		return labeledInput;
 	}
