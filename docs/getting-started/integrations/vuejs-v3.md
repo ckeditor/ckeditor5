@@ -20,9 +20,9 @@ CKEditor&nbsp;5 has an official Vue integration that you can use to add rich tex
 
 This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
-## Quick start
-
 {@snippet getting-started/use-builder}
+
+## Quick start
 
 ### Installing from npm
 
