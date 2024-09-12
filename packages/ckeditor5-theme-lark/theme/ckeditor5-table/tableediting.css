@@ -16,12 +16,21 @@
 		 * So do not use `@mixin ck-focus-ring;` here, or any other border styles.
 		 * See more: https://github.com/ckeditor/ckeditor5/issues/16979
 		 */
-		&.ck-editor__nested-editable.ck-editor__nested-editable_focused,
-		&.ck-editor__nested-editable:focus {
-			/* A very slight background to highlight the focused cell */
+		&:has(.ck-editor__nested-editable.ck-editor__nested-editable_focused),
+		&:has(.ck-editor__nested-editable:focus) {
 			background: var(--ck-color-selector-focused-cell-background);
 			outline: 1px solid var(--ck-color-focus-border);
 			outline-offset: -1px; /* progressive enhancement - no IE support */
+			box-shadow: none;
+
+			& .ck-editor__nested-editable.ck-editor__nested-editable_focused,
+			& .ck-editor__nested-editable:focus {
+				/* A very slight background to highlight the focused cell */
+				background: none;
+				border: 0;
+				box-shadow: none;
+			}
+
 		}
 	}
 }

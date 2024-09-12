@@ -857,7 +857,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				const viewWriter = conversionApi.writer;
 
 				viewWriter.insert(
-					viewWriter.createPositionAt( viewElement!, 'end' ),
+					viewWriter.createPositionAt( viewElement!.getChild( 0 )!, 'end' ),
 					viewWriter.createUIElement( 'div', { class: 'ck-table-column-resizer' } )
 				);
 			}, { priority: 'lowest' } );
