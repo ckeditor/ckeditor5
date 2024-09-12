@@ -61,7 +61,7 @@ The options accepted by the `loadCKEditorCloud` function are described in {@link
 The `loadCKEditorCloud` function (and `useCKEditorCloud` functions which are small wrappers around it) accepts an object with the following properties:
 
 * `version` (required) &ndash; The version of CKEditor&nbsp;5 and premium features (if `premium` option is set to `true`) to load.
-* `translations` (optional) &ndash; An array of translations codes to load translations for.
+* `translations` (optional) &ndash; An array of language codes to load translations for.
 * `premium` (optional) &ndash; A boolean value that indicates whether to load premium plugins. <sup>[1]</sup>
 * `ckbox` (optional) &ndash; Configuration for loading CKBox integration. <sup>[1]</sup>
 * `plugins` (optional) &ndash; Configuration for loading additional plugins. The object should have the global plugin name as keys and the plugin configuration as values. <sup>[1]</sup>

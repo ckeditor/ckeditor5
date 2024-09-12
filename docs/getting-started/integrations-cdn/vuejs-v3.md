@@ -44,57 +44,49 @@ Once the integration is installed, create a new Vue component called `Editor.vue
 	/>
 </template>
 
-<script>
+<script setup>
+import { ref, markRaw, computed } from 'vue';
 import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
-export default {
-	name: 'Editor',
-	components: {
-		Ckeditor
-	},
-	data() {
-		return {
-			cloud: useCKEditorCloud( {
-				version: '{@var ckeditor5-version}',
-				premium: true
-			} ),
-			data: '<p>Hello world!</p>',
-			config: {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			}
-		}
-	},
-	computed: {
-		editor() {
-			if ( !this.cloud.data ) {
-				return null;
-			}
+const cloud = useCKEditorCloud( {
+	version: '{@var ckeditor5-version}',
+	premium: true
+} );
 
-			const {
-				ClassicEditor,
-				Paragraph,
-				Essentials,
-				Bold,
-				Italic,
-				Mention
-			} = this.cloud.data.CKEditor;
+const data = ref( '<p>Hello world!</p>' );
 
-			const { SlashCommand } = this.cloud.data.CKEditorPremiumFeatures;
+const config = markRaw( {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+} );
 
-			return class Editor extends ClassicEditor {
-				static builtinPlugins = [
-					Essentials,
-					Paragraph,
-					Bold,
-					Italic,
-					Mention,
-					SlashCommand
-				];
-			};
-		}
+const editor = computed( () => {
+	if ( !cloud.data.value ) {
+		return null;
 	}
-}
+
+	const {
+		ClassicEditor,
+		Paragraph,
+		Essentials,
+		Bold,
+		Italic,
+		Mention
+	} = cloud.data.value.CKEditor;
+
+	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+
+	return class Editor extends ClassicEditor {
+		static builtinPlugins = [
+			Essentials,
+			Paragraph,
+			Bold,
+			Italic,
+			Mention,
+			SlashCommand
+		];
+	};
+} );
 </script>
 ```
 
@@ -126,25 +118,8 @@ This directive specifies the editor to be used by the component. It must directl
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor :editor="editor" />
-	</div>
+	<ckeditor :editor="editor" />
 </template>
-
-<script>
-	import { ClassicEditor } from 'ckeditor5';
-
-	export default {
-		name: 'app',
-		data() {
-			return {
-				editor: ClassicEditor,
-
-				// ...
-			};
-		}
-	};
-</script>
 ```
 
 ### `tag-name`
@@ -165,36 +140,28 @@ A [standard directive](https://v3.vuejs.org/guide/component-basics.html#using-v-
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor :editor="editor" v-model="editorData" />
-		<button @click="emptyEditor">Empty the editor</button>
+	<ckeditor :editor="editor" v-model="data" />
+	<button @click="emptyEditor">Empty the editor</button>
 
-		<h2>Editor data</h2>
-		<code>{{ editorData }}</code>
-	</div>
+	<h2>Editor data</h2>
+	<code>{{ data }}</code>
 </template>
 
-<script>
-	import { ClassicEditor } from 'ckeditor5';
+<script setup>
+import { ref } from 'vue';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
-	export default {
-		name: 'app',
-		data() {
-			return {
-				editor: ClassicEditor,
-				editorData: '<p>Content of the editor.</p>'
-			};
-		},
-		methods: {
-			emptyEditor() {
-				this.editorData = '';
-			}
-		}
-	};
+// Editor loading and configuration is skipped for brevity.
+
+const data = ref( '<p>Hello world!</p>' );
+
+function emptyEditor() {
+	data.value = '';
+}
 </script>
 ```
 
-In the above example, the `editorData` property will be updated automatically as the user types and the content changes. It can also be used to change (as in `emptyEditor()`) or set the initial content of the editor.
+In the above example, the `data` property will be updated automatically as the user types and the content changes. It can also be used to change (as in `emptyEditor()`) or set the initial content of the editor.
 
 If you only want to execute an action when the editor data changes, use the [`input`](#input) event.
 
@@ -204,23 +171,16 @@ Allows a one–way data binding that sets the content of the editor. Unlike [`v-
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor :editor="editor" :model-value="editorData" />
-	</div>
+	<ckeditor :editor="editor" :model-value="data" />
 </template>
 
-<script>
-	import { ClassicEditor } from 'ckeditor5';
+<script setup>
+import { ref } from 'vue';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
-	export default {
-		name: 'app',
-		data() {
-			return {
-				editor: ClassicEditor,
-				editorData: '<p>Content of the editor.</p>'
-			};
-		}
-	};
+// Editor loading and configuration is skipped for brevity.
+
+const data = ref( '<p>Hello world!</p>' );
 </script>
 ```
 
@@ -228,29 +188,23 @@ To execute an action when the editor data changes, use the [`input`](#input) eve
 
 ### `config`
 
-Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor.
+Specifies the {@link module:core/editor/config~config configuration} of the editor.
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor :editor="editor" :config="editorConfig" />
-	</div>
+	<ckeditor :editor="editor" :config="config" />
 </template>
 
-<script>
-	import { ClassicEditor } from 'ckeditor5';
+<script setup>
+import { markRaw } from 'vue';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
-	export default {
-		name: 'app',
-		data() {
-			return {
-				editor: ClassicEditor,
-				editorConfig: {
-					toolbar: [ 'bold', 'italic', '|', 'link' ]
-				}
-			};
-		}
-	};
+// Editor loading and configuration is skipped for brevity.
+
+const config = markRaw( {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+} );
 </script>
 ```
 
@@ -262,24 +216,16 @@ It sets the initial read–only state of the editor and changes it during its li
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor :editor="editor" :disabled="editorDisabled" />
-	</div>
+	<ckeditor :editor="editor" :disabled="disabled" />
 </template>
 
-<script>
-	import { ClassicEditor } from 'ckeditor5';
+<script setup>
+import { ref } from 'vue';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
-	export default {
-		name: 'app',
-		data() {
-			return {
-				editor: ClassicEditor,
-				// This editor will be read–only when created.
-				editorDisabled: true
-			};
-		}
-	};
+// Editor loading and configuration is skipped for brevity.
+
+const disabled = ref( true );
 </script>
 ```
 
@@ -292,7 +238,18 @@ The reason for introducing this option is performance issues in large documents.
 This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
 ```html
-<ckeditor :editor="editor" :disableTwoWayDataBinding="true" />
+<template>
+	<ckeditor :editor="editor" :disableTwoWayDataBinding="disableTwoWayDataBinding" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+
+// Editor loading and configuration is skipped for brevity.
+
+const disableTwoWayDataBinding = ref( true );
+</script>
 ```
 
 ## Component events
@@ -349,35 +306,50 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 ```html
 <template>
-	<div id="app">
-		<ckeditor :editor="editor" @ready="onReady" />
-	</div>
+    <ckeditor
+			v-if="editor"
+			v-model="data"
+			:editor="editor"
+			@ready="onReady"
+		/>
 </template>
 
-<script>
-	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-	import CKEditor from '@ckeditor/ckeditor5-vue';
-	
-	import 'ckeditor5/ckeditor5.css';
+<script setup>
+import { ref, computed } from 'vue';
+import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
-	export default {
-		name: 'app',
-		data() {
-			return {
-				editor: DecoupledEditor,
-				// ...
-			};
-		},
-		methods: {
-			onReady( editor )  {
-				// Insert the toolbar before the editable area.
-				editor.ui.getEditableElement().parentElement.insertBefore(
-					editor.ui.view.toolbar.element,
-					editor.ui.getEditableElement()
-				);
-			}
-		}
-	};
+const cloud = useCKEditorCloud( {
+    version: '{@var ckeditor5-version}'
+} );
+
+const data = ref( '<p>Hello world!</p>' );
+
+const editor = computed( () => {
+    if ( !cloud.data.value ) {
+        return null;
+    }
+
+    const {
+        DecoupledEditor,
+        Paragraph,
+        Essentials
+    } = cloud.data.value.CKEditor;
+
+    return class Editor extends DecoupledEditor {
+        static builtinPlugins = [
+            Essentials,
+            Paragraph
+        ];
+    };
+} );
+
+function onReady( editor ) {
+    // Insert the toolbar before the editable area.
+    editor.ui.getEditableElement().parentElement.insertBefore(
+        editor.ui.view.toolbar.element,
+        editor.ui.getEditableElement()
+    );
+}
 </script>
 ```
 
@@ -388,50 +360,6 @@ We provide a **ready-to-use integration** featuring collaborative editing in a V
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
 
 It is not mandatory to build applications on top of the above sample, however, it should help you get started.
-
-### Localization
-
-CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue component. Follow the instructions below to translate CKEditor&nbsp;5 in your Vue application.
-
-Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `editorConfig` prop in the component:
-
-```html
-<template>
-	<div id="app">
-		<ckeditor :editor="editor" v-model="editorData" :config="editorConfig" />
-	</div>
-</template>
-
-<script>
-import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
-// More imports...
-
-import coreTranslations from 'ckeditor5/translations/es.js';
-import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
-
-// Style sheets imports...
-
-export default {
-	name: 'app',
-	data() {
-		return {
-			editor: ClassicEditor,
-			editorData: '<p>Hola desde CKEditor 5 en Vue!</p>',
-			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [ Bold, Essentials, Italic, Paragraph ],
-				translations: [ coreTranslations, premiumFeaturesTranslations ]
-			}
-		};
-	}
-};
-</script>
-```
-
-For more information, refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ## Contributing and reporting issues
 
