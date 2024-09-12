@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
-import { type ViewUIElement, type DowncastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -54,6 +54,9 @@ export default class BookmarkEditing extends Plugin {
 		const { conversion, t } = editor;
 
 		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element ) );
+
+		// Register an inline object matcher so that bookmarks <a>s are correctly recognized as inline elements in editing pipeline.
+		// This prevents converting spaces around bookmarks to `&nbsp;`s.
 		editor.editing.view.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element, false ) );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
@@ -126,7 +129,8 @@ export default class BookmarkEditing extends Plugin {
 }
 
 /**
- * TODO
+ * A helper function to match an `anchor` element which must contain `id` attribute but without `href` attribute,
+ * also element must be empty when matcher is execute in data pipeline so it can be upcasted to a `bookmark`.
  */
 function upcastMatcher( element: ViewElement, dataPipeline: boolean = true ) {
 	const isAnchorElement = element.name === 'a';
