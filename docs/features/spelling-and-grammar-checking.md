@@ -11,7 +11,7 @@ badges: [ premium ]
 [WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. Spelling, grammar, and punctuation suggestions appear on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
 
 <info-box>
-	Unlock this feature with a CKEditor Paid Plan. [Select the Plan](https://ckeditor.com/pricing/) that provides access to all the premium features you need.
+	This is a premium add-on that is a part of CKEditor Custom Plan, and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). [Choose the Custom Plan](https://ckeditor.com/pricing/) to enable it.
 </info-box>
 
 ## Demo

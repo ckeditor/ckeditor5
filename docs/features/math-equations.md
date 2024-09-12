@@ -10,7 +10,7 @@ badges: [ premium ]
 [MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor&nbsp;5 content.
 
 <info-box>
-	Unlock this feature with a CKEditor Paid Plan. [Select the Plan](https://ckeditor.com/pricing/) that provides access to all the premium features you need.
+	This is a premium add-on that is a part of CKEditor Custom Plan, and delivered by our partner, [Wiris](https://www.wiris.com/en/). [Choose the Custom Plan](https://ckeditor.com/pricing/) to enable it.
 </info-box>
 
 ## Demo
