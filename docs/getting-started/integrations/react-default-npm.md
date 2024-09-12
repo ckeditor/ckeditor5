@@ -16,21 +16,13 @@ order: 10
 	</a>
 </p>
 
-React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components. This guide explains how to integrate CKEditor&nbsp;5 into your React application using npm.
+CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
+This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 {@snippet getting-started/use-builder}
 
 ## Quick start
-
-### Setting up the project
-
-This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
-
-### Installing from npm
 
 First, install the CKEditor&nbsp;5 packages:
 

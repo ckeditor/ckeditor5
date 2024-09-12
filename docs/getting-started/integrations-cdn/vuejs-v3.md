@@ -20,7 +20,6 @@ CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich t
 
 This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
