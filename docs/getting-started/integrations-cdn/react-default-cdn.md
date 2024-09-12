@@ -16,37 +16,21 @@ order: 10
 	</a>
 </p>
 
-React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components. This guide explains how to integrate CKEditor&nbsp;5 into your React application using CDN.
+CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the CDN distribution of the CKEditor&nbsp;5.
 
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
-
-## Quick start
+This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 {@snippet getting-started/use-builder}
 
-### Setting up the project
+## Quick start
 
-This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
-
-### Installing the React component from npm
-
-Install the `@ckeditor/ckeditor5-react` package:
+Start by installing the React integration for CKEditor&nbsp;5 from npm:
 
 ```bash
 npm install @ckeditor/ckeditor5-react
 ```
 
-The `useCKEditorCloud` hook is responsible for returning information that:
-
-* The editor is still downloading from the CDN with the `status = 'loading'`.
-* An error occurred during the download when `status = 'error'`. Further information is in the error field.
-* About the editor in the data field and its dependencies when `status = 'success'`.
-
-### Using the component
-
-Use the `<CKEditor>` component inside your project. The below example shows how to use it with the open-source plugins.
+Once the integration is installed, create a new React component called `Editor.jsx`. It will use the `useCKEditorCloud` helper to load the editor code from the CDN and the `<CKEditor>` component to run it, both of which come from the above package. The following example shows a component with open source and premium CKEditor&nbsp;5 plugins.
 
 ```js
 import React from 'react';
@@ -55,6 +39,7 @@ import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 const CKEditorDemo = () => {
 	const cloud = useCKEditorCloud( {
 		version: '{@var ckeditor5-version}',
+		premium: true
 	} );
 
 	if ( cloud.status === 'error' ) {
@@ -67,59 +52,11 @@ const CKEditorDemo = () => {
 
 	const {
 		ClassicEditor,
-		Bold,
-		Essentials,
-		Italic,
 		Paragraph,
-		Undo,
-	} = cloud.CKEditor;
-
-	return (
-		<CKEditor
-			editor={ ClassicEditor }
-			data={ '<p>Hello world!</p>' }
-			config={ {
-				licenseKey: 'GPL',
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-			} }
-		/>
-	);
-};
-```
-
-### Using the component with premium plugins
-
-To use premium plugins, set the `premium` property to `true` in the `useCKEditorCloud` configuration and provide your license key in the `CKEditor` configuration.
-
-```js
-import React from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
-
-const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud( {
-		version: '{@var ckeditor5-version}',
-		premium: true,
-	} );
-
-	if ( cloud.status === 'error' ) {
-		return <div>Error!</div>;
-	}
-
-	if ( cloud.status === 'loading' ) {
-		return <div>Loading...</div>;
-	}
-
-	const {
-		ClassicEditor,
-		Bold,
 		Essentials,
+		Bold,
 		Italic,
-		Mention,
-		Paragraph,
-		Undo,
+		Mention
 	} = cloud.CKEditor;
 
 	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
@@ -129,142 +66,20 @@ const CKEditorDemo = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
-				plugins: [
-					Bold,
-					Essentials,
-					Italic,
-					Mention,
-					Paragraph,
-					Undo,
-					SlashCommand,
-				],
+				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
 			} }
 		/>
 	);
 };
 ```
 
-With the configuration in place, you can use the above elements as any other React component.
+In the above example, the `useCKEditorCloud` helper is used to load the editor code and plugins from CDN. The `premium` option is set to also load premium plugins. For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} page.
 
-```html
-<App>
-	<CKEditorDemo />
-</App>
-```
-
-### Using the component with CKBox
-
-To use `CKBox`, specify the version and theme (optionally) in the `useCKEditorCloud` configuration. Also, remember about the actual plugin configuration inside `<CKEditor/>` component.
-
-```js
-import React from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
-
-const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud( {
-		version: '{@var ckeditor5-version}',
-		ckbox: {
-			version: '2.5.1',
-			// Optional - it's already 'lark' by default.
-			theme: 'lark',
-		},
-	} );
-
-	if ( cloud.status === 'error' ) {
-		return <div>Error!</div>;
-	}
-
-	if ( cloud.status === 'loading' ) {
-		return <div>Loading...</div>;
-	}
-
-	const {
-		ClassicEditor,
-		Bold,
-		Essentials,
-		Italic,
-		Mention,
-		Paragraph,
-		Undo,
-		CKBox,
-		CKBoxImageEdit,
-	} = cloud.CKEditor;
-
-	return (
-		<CKEditor
-			editor={ ClassicEditor }
-			data={ '<p>Hello world!</p>' }
-			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold,
-					Essentials,
-					Italic,
-					Mention,
-					Paragraph,
-					Undo,
-					CKBox,
-					CKBoxImageEdit,
-				],
-				ckbox: {
-					tokenUrl: 'https://api.ckbox.io/token/demo',
-					forceDemoLabel: true,
-					allowExternalImagesEditing: [ /^data:/, /^i.imgur.com\//, 'origin' ],
-				},
-			} }
-		/>
-	);
-};
-```
-
-### Using the component with external plugins
-
-There are various ways to use external plugins. Here is a list of them:
-
-* **Local UMD Plugins:** Dynamically import local UMD modules using the `import()` syntax.
-* **Local External Imports:** Load external plugins locally using additional bundler configurations (such as Vite).
-* **CDN Third-Party Plugins:** Load JavaScript and CSS files from a CDN by specifying the URLs.
-* **Verbose Configuration:** Advanced plugin loading with options to specify both script and style sheet URLs, along with an optional `checkPluginLoaded` function to verify the plugin has been correctly loaded into the global scope.
-
-Here is an example:
-
-```js
-import React from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
-
-const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud( {
-		version: '{@var ckeditor5-version}',
-		plugins: {
-			PluginUMD: async () => await import( './your-local-import.umd.js' ),
-			PluginLocalImport: async () => await import( './your-local-import' ),
-			PluginThirdParty: [
-				'https://cdn.example.com/plugin3.js',
-				'https://cdn.example.com/plugin3.css'
-			]
-		}
-	} );
-
-	if ( cloud.status === 'error' ) {
-		return <div>Error!</div>;
-	}
-
-	if ( cloud.status === 'loading' ) {
-		return <div>Loading...</div>;
-	}
-
-	const { PluginUMD, PluginLocalImport, PluginThirdParty } = cloud.loadedPlugins;
-	// ...
-};
-```
-
-### Component properties
+## Component properties
 
 The `<CKEditor>` component supports the following properties:
 

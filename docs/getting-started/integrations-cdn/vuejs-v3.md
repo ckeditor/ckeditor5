@@ -20,11 +20,10 @@ CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich t
 
 This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
-## Quick start
 
 {@snippet getting-started/use-builder}
 
-### Installing and configuring the Vue integration
+## Quick start
 
 Start by installing the Vue integration for CKEditor&nbsp;5 from npm:
 
@@ -32,7 +31,7 @@ Start by installing the Vue integration for CKEditor&nbsp;5 from npm:
 npm install @ckeditor/ckeditor5-vue
 ```
 
-Once the integration is installed, create a new Vue component called `Editor.vue`. It will use the `useCKEditorCloud` helper to load the editor code from CDN and the `<ckeditor>` component to run it. The following example shows a single file component with open source and premium CKEditor&nbsp;5 plugins.
+Once the integration is installed, create a new Vue component called `Editor.vue`. It will use the `useCKEditorCloud` helper to load the editor code from the CDN and the `<ckeditor>` component to run it, both of which come from the above package. The following example shows a single file component with open source and premium CKEditor&nbsp;5 plugins.
 
 ```html
 <template>

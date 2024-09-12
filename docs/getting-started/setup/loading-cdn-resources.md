@@ -65,6 +65,7 @@ The `loadCKEditorCloud` function (and `useCKEditorCloud` functions which are sma
 * `premium` (optional) &ndash; A boolean value that indicates whether to load premium plugins. <sup>[1]</sup>
 * `ckbox` (optional) &ndash; Configuration for loading CKBox integration. <sup>[1]</sup>
 * `plugins` (optional) &ndash; Configuration for loading additional plugins. The object should have the global plugin name as keys and the plugin configuration as values. <sup>[1]</sup>
+* `injectedHtmlElementsAttributes` (optional) &ndash; An object with attributes that will be added to the `<script>` and `<link>` tags that are injected into the page. This can be used to add attributes like `integrity` or `crossorigin` to the tags. By default, it is set to `{ crossorigin: 'anonymous' }`.
 
 <info-box info>
 [1] Using this option will result in additional network requests for JavaScript and CSS assets. Make sure to only use this option when you need it.
