@@ -107,7 +107,7 @@ First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https:
 npm install @ckeditor/ckeditor5-angular
 ```
 
-### Using the Angular component
+### Using the component
 
 To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function. Then, call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration.
 
@@ -133,7 +133,7 @@ export class AppComponent {
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
-			version: '43.0.0'
+			version: '{@var ckeditor5-version}'
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
@@ -149,7 +149,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: 'GPL',
 			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
@@ -159,7 +159,63 @@ export class AppComponent {
 }
 ```
 
-Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
+### Using the component with premium plugins
+
+To use premium plugins, set the premium property to `true` in the `loadCKEditorCloud` function configuration and provide your license key in the CKEditor configuration.
+
+```ts
+// app.component.ts
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+	imports: [ CommonModule, CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	public Editor: typeof ClassicEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}',
+			premiumr: true
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor ( cloud: CKEditorCloudResult ) {
+		const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Paragraph,
+			Undo,
+			Mention
+		} = cloud.CKEditor;
+
+		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>',
+			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention, SlashCommand ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+			}
+		};
+	}
+}
+```
+
+Finally, use the `<ckeditor>` tag in the template to run the rich text editor. The usage is the same regardless of the plugin configuration.
 
 ```html
 <!-- app.component.html -->
