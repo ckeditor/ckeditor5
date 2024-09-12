@@ -16,7 +16,7 @@ order: 10
 	</a>
 </p>
 
-React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components.
+React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components. This guide explains how to integrate CKEditor&nbsp;5 into your React application using npm.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.

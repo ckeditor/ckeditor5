@@ -321,7 +321,8 @@ ClassicEditor
 			}
 		},
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Abbreviation ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'abbreviation' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'abbreviation' ],
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

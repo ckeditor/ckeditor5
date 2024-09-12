@@ -28,7 +28,7 @@ The following CKEditor&nbsp;5 builds are currently available:
 
 ## Basic information
 
-Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features. A [full list of plugins available in each build](#list-of-plugins-included-in-the-ckeditor-5-predefined-builds) can be found in a later part of this guide.
+Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features. A [full list of plugins available in each build](#plugins-included-in-the-predefined-builds) can be found in a later part of this guide.
 
 ### When NOT to use predefined builds?
 
@@ -676,7 +676,7 @@ The superbuild, available instantly from the CDN, is a pre-configured package th
 
  To learn how to use the superbuild, refer to the {@link getting-started/legacy-getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start guide}.
 
-## List of plugins included in the CKEditor&nbsp;5 predefined builds
+## Plugins included in the predefined builds
 
 The table below presents the list of all plugins included in various builds. <!-- update each release -->
 
