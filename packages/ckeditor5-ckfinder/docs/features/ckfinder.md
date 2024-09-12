@@ -13,10 +13,8 @@ badges: [ premium ]
 
 The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.
 
-<info-box info>
-	This is a premium feature and you need a license for it on top of your CKEditor&nbsp;5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
-
-	You can also sign up for the [CKEditor Premium Features 14-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+<info-box>
+	Unlock this feature with a CKEditor Paid Plan. [Sign up for a free trial](https://portal.ckeditor.com/checkout?plan=free), or [select the Plan](https://ckeditor.com/pricing/) that provides access to all the premium features you need.
 </info-box>
 
 ## Demos
