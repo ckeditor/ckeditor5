@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-engine": "43.1.0",
     "@ckeditor/ckeditor5-enter": "43.1.0",
     "@ckeditor/ckeditor5-heading": "43.1.0",
+    "@ckeditor/ckeditor5-html-support": "43.1.0",
     "@ckeditor/ckeditor5-image": "43.1.0",
     "@ckeditor/ckeditor5-link": "43.1.0",
     "@ckeditor/ckeditor5-paragraph": "43.1.0",

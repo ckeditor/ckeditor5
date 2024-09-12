@@ -13,6 +13,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -23,6 +24,7 @@ import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 describe( 'BookmarkEditing', () => {
 	// eslint-disable-next-line max-len
 	const domUIElement = '<span class="ck-bookmark__icon"><svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 20 20"><path class="ck-icon__fill" d="m11.333 2 .19 2.263a5.899 5.899 0 0 1 1.458.604L14.714 3.4 16.6 5.286l-1.467 1.733c.263.452.468.942.605 1.46L18 8.666v2.666l-2.263.19a5.899 5.899 0 0 1-.604 1.458l1.467 1.733-1.886 1.886-1.733-1.467a5.899 5.899 0 0 1-1.46.605L11.334 18H8.667l-.19-2.263a5.899 5.899 0 0 1-1.458-.604L5.286 16.6 3.4 14.714l1.467-1.733a5.899 5.899 0 0 1-.604-1.458L2 11.333V8.667l2.262-.189a5.899 5.899 0 0 1 .605-1.459L3.4 5.286 5.286 3.4l1.733 1.467a5.899 5.899 0 0 1 1.46-.605L8.666 2h2.666zM10 6.267a3.733 3.733 0 1 0 0 7.466 3.733 3.733 0 0 0 0-7.466z"></path></svg></span>';
+
 	let editor, element, model, view, converter;
 
 	beforeEach( async () => {
@@ -482,6 +484,54 @@ describe( 'BookmarkEditing', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<heading1>bar</heading1>'
 			);
+		} );
+
+		describe( 'with GHS enabled', () => {
+			let element, editor, model;
+			beforeEach( async () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				const config = {
+					language: 'en',
+					plugins: [ BookmarkEditing, Enter, Image, Heading, Paragraph, Undo, Link, GeneralHtmlSupport ],
+					htmlSupport: {
+						allow: [
+							{
+								name: /^.*$/,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					}
+				};
+
+				editor = await createEditor( element, config );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				element.remove();
+				await editor.destroy();
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute', () => {
+				editor.setData( '<p><a id="foo"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should not convert an `a` with `id` attribute and with text inside', () => {
+				editor.setData( '<p><a id="foo">foobar</a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><$text htmlA="{"attributes":{"id":"foo"}}">foobar</$text></paragraph>'
+				);
+			} );
 		} );
 	} );
 } );
