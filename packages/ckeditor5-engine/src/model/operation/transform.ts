@@ -1414,7 +1414,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	const removedRange = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( b.type == 'remove' && !context.bWasUndone && !context.forceWeakRemove ) {
+	if ( b.type == 'remove' && !context.bWasUndone ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return [ new NoOperation( 0 ) ];
 		}
