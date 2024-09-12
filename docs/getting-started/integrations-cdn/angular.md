@@ -137,7 +137,7 @@ export class AppComponent {
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
-	private _setupEditor ( cloud: CKEditorCloudResult ) {
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
 		const {
 			ClassicEditor,
 			Essentials,
@@ -190,7 +190,7 @@ export class AppComponent {
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
-	private _setupEditor ( cloud: CKEditorCloudResult ) {
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
 		const {
 			ClassicEditor,
 			Essentials,
@@ -641,7 +641,7 @@ export class AppComponent {
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
-	private _setupEditor( cloud: CKEditorCloudResult) {
+	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}>) {
 		const {
 			DecoupledEditor,
 			Essentials,
@@ -726,7 +726,7 @@ export class AppComponent {
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
-	private _setupEditor ( cloud: CKEditorCloudResult ) {
+	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
 		const {
 			ClassicEditor,
 			Essentials,
