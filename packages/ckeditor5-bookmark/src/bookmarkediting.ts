@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
-import type { ViewUIElement, DowncastWriter } from 'ckeditor5/src/engine.js';
+import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -53,6 +53,12 @@ export default class BookmarkEditing extends Plugin {
 		const { editor } = this;
 		const { conversion, t } = editor;
 
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element ) );
+
+		// Register an inline object matcher so that bookmarks <a>s are correctly recognized as inline elements in editing pipeline.
+		// This prevents converting spaces around bookmarks to `&nbsp;`s.
+		editor.editing.view.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element, false ) );
+
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: {
 				name: 'bookmark',
@@ -69,7 +75,7 @@ export default class BookmarkEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: {
 				name: 'bookmark',
 				attributes: [ 'bookmarkId' ]
@@ -86,6 +92,15 @@ export default class BookmarkEditing extends Plugin {
 				const labelCreator = () => `${ id } ${ t( 'bookmark widget' ) }`;
 
 				return toWidget( containerElement, writer, { label: labelCreator } );
+			}
+		} );
+
+		conversion.for( 'upcast' ).elementToElement( {
+			view: element => upcastMatcher( element ),
+			model: ( viewElement, { writer } ) => {
+				const bookmarkId = viewElement.getAttribute( 'id' );
+
+				return writer.createElement( 'bookmark', { bookmarkId } );
 			}
 		} );
 	}
@@ -111,4 +126,30 @@ export default class BookmarkEditing extends Plugin {
 			return domElement;
 		} );
 	}
+}
+
+/**
+ * A helper function to match an `anchor` element which must contain `id` attribute but without `href` attribute,
+ * also element must be empty when matcher is execute in data pipeline so it can be upcasted to a `bookmark`.
+ *
+ * @param element The element to be checked.
+ * @param dataPipeline When set to `true` matcher is executed in data pipeline, checks if `element` is empty;
+ * in editing pipeline it's not empty because it contains the `UIElement`.
+ */
+function upcastMatcher( element: ViewElement, dataPipeline: boolean = true ) {
+	const isAnchorElement = element.name === 'a';
+
+	if ( !isAnchorElement ) {
+		return null;
+	}
+
+	const hasIdAttribute = element.hasAttribute( 'id' );
+	const hasHrefAttribute = element.hasAttribute( 'href' );
+	const isEmpty = element.isEmpty;
+
+	if ( !hasIdAttribute || hasHrefAttribute || dataPipeline && !isEmpty ) {
+		return null;
+	}
+
+	return { name: true, attributes: [ 'id' ] };
 }
