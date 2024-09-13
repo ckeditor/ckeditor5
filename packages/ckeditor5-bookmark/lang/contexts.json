@@ -1,8 +1,8 @@
 {
 	"Bookmark": "The label of the bookmark toolbar button. Also, a bookmark form header.",
 	"Insert": "The button which inserts bookmark before selection.",
-	"Add bookmark name": "The label of input where ID of the bookmark should be provided.",
+	"Add bookmark name": "The label of input where name of the bookmark should be provided.",
 	"Enter the bookmark name without spaces.": "The description of bookmark input.",
-	"Bookmark name cannot contain space characters.": "The error message. Displayed when provided ID includes spaces.",
+	"Bookmark name cannot contain space characters.": "The error message. Displayed when provided name includes spaces.",
 	"bookmark widget": "The label for the bookmark widget."
 }

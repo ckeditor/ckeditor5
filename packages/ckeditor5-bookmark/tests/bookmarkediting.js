@@ -267,8 +267,10 @@ describe( 'BookmarkEditing', () => {
 			expect( domElement.outerHTML ).to.equal(
 				'<a class="ck-bookmark ck-widget ck-widget_selected" id="foo" contenteditable="false">' +
 					'<span class="ck-bookmark__icon">' +
-					// eslint-disable-next-line max-len
-					'<svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 20 20"><path class="ck-icon__fill" d="m11.333 2 .19 2.263a5.899 5.899 0 0 1 1.458.604L14.714 3.4 16.6 5.286l-1.467 1.733c.263.452.468.942.605 1.46L18 8.666v2.666l-2.263.19a5.899 5.899 0 0 1-.604 1.458l1.467 1.733-1.886 1.886-1.733-1.467a5.899 5.899 0 0 1-1.46.605L11.334 18H8.667l-.19-2.263a5.899 5.899 0 0 1-1.458-.604L5.286 16.6 3.4 14.714l1.467-1.733a5.899 5.899 0 0 1-.604-1.458L2 11.333V8.667l2.262-.189a5.899 5.899 0 0 1 .605-1.459L3.4 5.286 5.286 3.4l1.733 1.467a5.899 5.899 0 0 1 1.46-.605L8.666 2h2.666zM10 6.267a3.733 3.733 0 1 0 0 7.466 3.733 3.733 0 0 0 0-7.466z"></path></svg>' +
+						'<svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 20 20" fill="none">\n' +
+							// eslint-disable-next-line max-len
+							'<path d="M4.5 16.9343V3C4.5 2.44772 4.94771 2 5.5 2H14.5C15.0523 2 15.5 2.44772 15.5 3V16.9343C15.5 17.3579 15.0062 17.5896 14.6804 17.3188L10.3196 13.6942C10.1344 13.5402 9.86565 13.5402 9.6804 13.6942L5.3196 17.3188C4.99382 17.5896 4.5 17.3579 4.5 16.9343Z" stroke="#333333" stroke-width="1.5"></path>\n' +
+						'</svg>' +
 					'</span>' +
 				'</a>' );
 

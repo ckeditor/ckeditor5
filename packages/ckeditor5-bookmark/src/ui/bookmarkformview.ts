@@ -16,7 +16,8 @@ import {
 	createLabeledInputText,
 	submitHandler,
 	type InputTextView,
-	type FocusableView
+	type FocusableView,
+	FormHeaderView
 } from 'ckeditor5/src/ui.js';
 import {
 	FocusTracker,
@@ -62,6 +63,11 @@ export default class BookmarkFormView extends View {
 	public readonly children: ViewCollection;
 
 	/**
+	 * The form view without heading.
+	 */
+	private _formView: View;
+
+	/**
 	 * An array of form validators used by {@link #isValid}.
 	 */
 	private readonly _validators: Array<BookmarkFormValidatorCallback>;
@@ -93,7 +99,8 @@ export default class BookmarkFormView extends View {
 		this.idInputView = this._createIdInput();
 		this.insertButtonView = this._createButton( t( 'Insert' ), 'ck-button-action', 'submit' );
 		this.insertButtonView.type = 'submit';
-		this.children = this._createFormChildren();
+		this._formView = this._createFormView();
+		this.children = this._createViewChildren();
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -108,10 +115,10 @@ export default class BookmarkFormView extends View {
 			}
 		} );
 
-		const classList = [ 'ck', 'ck-bookmark-form', 'ck-responsive-form' ];
+		const classList = [ 'ck', 'ck-bookmark-view' ];
 
 		this.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 
 			attributes: {
 				class: classList,
@@ -159,6 +166,46 @@ export default class BookmarkFormView extends View {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
+	}
+
+	/**
+	 * Creates form view with input and button.
+	 */
+	private _createFormView() {
+		const view = new View( this.locale );
+
+		const classList = [ 'ck', 'ck-bookmark-form', 'ck-responsive-form' ];
+		const children = this._createFormChildren();
+
+		view.setTemplate( {
+			tag: 'form',
+
+			attributes: {
+				class: classList,
+
+				// https://github.com/ckeditor/ckeditor5-link/issues/90
+				tabindex: '-1'
+			},
+
+			children
+		} );
+
+		return view;
+	}
+
+	/**
+	 * Creates header and form view.
+	 */
+	private _createViewChildren() {
+		const children = this.createCollection();
+		const t = this.t!;
+
+		children.add( new FormHeaderView( this.locale, {
+			label: t( 'Bookmark' )
+		} ) );
+		children.add( this._formView );
+
+		return children;
 	}
 
 	/**

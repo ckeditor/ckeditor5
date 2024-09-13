@@ -5,12 +5,13 @@
 
 /* globals document, Event */
 
-import BookmarkInsertFormView from '../../src/ui/bookmarkformview.js';
+import BookmarkFormView from '../../src/ui/bookmarkformview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -20,7 +21,7 @@ describe( 'BookmarkFormView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new BookmarkInsertFormView( { t: val => val } );
+		view = new BookmarkFormView( { t: val => val } );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -33,9 +34,15 @@ describe( 'BookmarkFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-bookmark-form' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-bookmark-view' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
+		it( 'should create form element from template', () => {
+			expect( view._formView.element.classList.contains( 'ck' ) ).to.true;
+			expect( view._formView.element.classList.contains( 'ck-bookmark-form' ) ).to.true;
+			expect( view._formView.element.classList.contains( 'ck-responsive-form' ) ).to.true;
+			expect( view._formView.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'should create child views', () => {
@@ -44,8 +51,13 @@ describe( 'BookmarkFormView', () => {
 
 			expect( view.insertButtonView.element.classList.contains( 'ck-button-action' ) ).to.be.true;
 
-			expect( view.children.get( 0 ) ).to.equal( view.idInputView );
-			expect( view.children.get( 1 ) ).to.equal( view.insertButtonView );
+			const formHeader = new FormHeaderView( { t: val => val } );
+
+			expect( formHeader ).to.be.instanceOf( View );
+			expect( view._formView ).to.be.instanceOf( View );
+
+			expect( view.children.get( 0 ) ).to.be.instanceOf( FormHeaderView );
+			expect( view.children.get( 1 ) ).to.equal( view._formView );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -80,11 +92,11 @@ describe( 'BookmarkFormView', () => {
 
 		describe( 'template', () => {
 			it( 'has id input view', () => {
-				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view.idInputView );
+				expect( view._formView.template.children[ 0 ].get( 0 ) ).to.equal( view.idInputView );
 			} );
 
 			it( 'has button views', () => {
-				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view.insertButtonView );
+				expect( view._formView.template.children[ 0 ].get( 1 ) ).to.equal( view.insertButtonView );
 			} );
 		} );
 	} );
@@ -98,7 +110,7 @@ describe( 'BookmarkFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			const view = new BookmarkInsertFormView( { t: () => {} } );
+			const view = new BookmarkFormView( { t: () => {} } );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
@@ -111,7 +123,7 @@ describe( 'BookmarkFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new BookmarkInsertFormView( { t: () => {} } );
+			const view = new BookmarkFormView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
@@ -166,7 +178,7 @@ describe( 'BookmarkFormView', () => {
 
 	describe( 'isValid()', () => {
 		it( 'should reset error after successful validation', () => {
-			const view = new BookmarkInsertFormView( { t: () => {} }, [
+			const view = new BookmarkFormView( { t: () => {} }, [
 				() => undefined
 			] );
 
@@ -175,7 +187,7 @@ describe( 'BookmarkFormView', () => {
 		} );
 
 		it( 'should display first error returned from validators list', () => {
-			const view = new BookmarkInsertFormView( { t: () => {} }, [
+			const view = new BookmarkFormView( { t: () => {} }, [
 				() => undefined,
 				() => 'Foo bar',
 				() => 'Another error'
@@ -187,7 +199,7 @@ describe( 'BookmarkFormView', () => {
 
 		it( 'should pass view reference as argument to validator', () => {
 			const validatorSpy = sinon.spy();
-			const view = new BookmarkInsertFormView( { t: () => {} }, [ validatorSpy ] );
+			const view = new BookmarkFormView( { t: () => {} }, [ validatorSpy ] );
 
 			view.isValid();
 
@@ -258,3 +270,43 @@ describe( 'BookmarkFormView', () => {
 		} );
 	} );
 } );
+
+// import BookmarkView from '../../src/ui/bookmarkview.js';
+// import View from '@ckeditor/ckeditor5-ui/src/view.js';
+// import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview.js'
+// import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
+// describe.skip( 'BookmarkView', () => {
+// 	let view;
+
+// 	testUtils.createSinonSandbox();
+
+// 	beforeEach( () => {
+// 		view = new BookmarkView( { t: val => val } );
+// 		view.render();
+// 		document.body.appendChild( view.element );
+// 	} );
+
+// 	afterEach( () => {
+// 		view.element.remove();
+// 		view.destroy();
+// 	} );
+
+// 	describe( 'constructor()', () => {
+// 		it( 'should create element from template', () => {
+// 			expect( view.element.classList.contains( 'ck' ) ).to.true;
+// 			expect( view.element.classList.contains( 'ck-bookmark-view' ) ).to.true;
+// 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+// 		} );
+
+// 		it( 'should create child views', () => {
+// 			const formHeader = new FormHeaderView( { t: val => val } );
+
+// 			expect( formHeader ).to.be.instanceOf( View );
+// 			expect( view.formView ).to.be.instanceOf( View );
+
+// 			expect( view.children.get( 0 ) ).to.be.instanceOf( FormHeaderView );
+// 			expect( view.children.get( 1 ) ).to.equal( view.formView );
+// 		} );
+// 	} );
+// } );

@@ -11,14 +11,15 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
+	CssTransitionDisablerMixin,
 	MenuBarMenuListItemButtonView,
-	clickOutsideHandler
+	clickOutsideHandler,
+	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
 
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
-import type { BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
+import BookmarkFormView, { type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
 
-import BookmarkView from './ui/bookmarkview.js';
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 import '../theme/bookmark.css';
 
@@ -48,7 +49,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * The form view displayed inside the balloon.
 	 */
-	public bookmarkView: BookmarkView | null = null;
+	public formView: BookmarkFormView & ViewWithCssTransitionDisabler | null = null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -130,9 +131,10 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Creates the {@link module:bookmark/ui/bookmarkview~BookmarkView} instance.
 	 */
-	private _createFormView(): BookmarkView {
+	private _createFormView(): BookmarkFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
-		const t = editor.locale.t;
+		const locale = editor.locale;
+		const t = locale.t;
 		const validators: Array<BookmarkFormValidatorCallback> = [
 			form => {
 				if ( form.id && /\s/.test( form.id ) ) {
@@ -143,8 +145,7 @@ export default class BookmarkUI extends Plugin {
 			}
 		];
 
-		const bookmarkView = new BookmarkView( editor.locale, validators );
-		const formView = bookmarkView.formView;
+		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
 
 		this.listenTo( formView, 'submit', () => {
 			if ( formView.isValid() ) {
@@ -163,7 +164,7 @@ export default class BookmarkUI extends Plugin {
 			cancel();
 		} );
 
-		return bookmarkView;
+		return formView;
 	}
 
 	/**
@@ -205,12 +206,12 @@ export default class BookmarkUI extends Plugin {
 		if ( this._isFormInPanel ) {
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
-			this.bookmarkView!.formView!.insertButtonView.focus();
+			this.formView!.insertButtonView.focus();
 
 			// Reset the ID field to update the state of the submit button.
-			this.bookmarkView!.formView!.idInputView.fieldView.reset();
+			this.formView!.idInputView.fieldView.reset();
 
-			this._balloon.remove( this.bookmarkView! );
+			this._balloon.remove( this.formView! );
 
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
@@ -224,7 +225,7 @@ export default class BookmarkUI extends Plugin {
 	 * Creates views.
 	 */
 	private _createViews() {
-		this.bookmarkView = this._createFormView();
+		this.formView = this._createFormView();
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
@@ -245,7 +246,7 @@ export default class BookmarkUI extends Plugin {
 
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
-			emitter: this.bookmarkView!,
+			emitter: this.formView!,
 			activator: () => this._isUIInPanel,
 			contextElements: () => [ this._balloon.view.element! ],
 			callback: () => this._hideUI()
@@ -256,7 +257,7 @@ export default class BookmarkUI extends Plugin {
 	 * Adds the {@link #bookmarkView} to the {@link #_balloon}.
 	 */
 	private _addFormView(): void {
-		if ( !this.bookmarkView ) {
+		if ( !this.formView ) {
 			this._createViews();
 		}
 
@@ -264,22 +265,22 @@ export default class BookmarkUI extends Plugin {
 			return;
 		}
 
-		this.bookmarkView!.formView!.disableCssTransitions();
-		this.bookmarkView!.formView!.resetFormStatus();
+		this.formView!.disableCssTransitions();
+		this.formView!.resetFormStatus();
 
 		this._balloon.add( {
-			view: this.bookmarkView!,
+			view: this.formView!,
 			position: this._getBalloonPositionData()
 		} );
 
-		this.bookmarkView!.formView!.idInputView.fieldView.value = '';
+		this.formView!.idInputView.fieldView.value = '';
 
 		// Select input when form view is currently visible.
-		if ( this._balloon.visibleView === this.bookmarkView ) {
-			this.bookmarkView!.formView!.idInputView.fieldView.select();
+		if ( this._balloon.visibleView === this.formView ) {
+			this.formView!.idInputView.fieldView.select();
 		}
 
-		this.bookmarkView!.formView!.enableCssTransitions();
+		this.formView!.enableCssTransitions();
 	}
 
 	/**
@@ -288,7 +289,7 @@ export default class BookmarkUI extends Plugin {
 	 * @internal
 	 */
 	public _showUI(): void {
-		if ( !this.bookmarkView ) {
+		if ( !this.formView ) {
 			this._createViews();
 		}
 
@@ -398,7 +399,7 @@ export default class BookmarkUI extends Plugin {
 	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon}.
 	 */
 	private get _isFormInPanel(): boolean {
-		return !!this.bookmarkView && this._balloon.hasView( this.bookmarkView );
+		return !!this.formView && this._balloon.hasView( this.formView );
 	}
 
 	/**
@@ -415,6 +416,6 @@ export default class BookmarkUI extends Plugin {
 	private get _isUIVisible(): boolean {
 		const visibleView = this._balloon.visibleView;
 
-		return !!this.bookmarkView && visibleView == this.bookmarkView;
+		return !!this.formView && visibleView == this.formView;
 	}
 }

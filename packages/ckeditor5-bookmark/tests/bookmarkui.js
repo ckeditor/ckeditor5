@@ -13,7 +13,7 @@ import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import BookmarkInsertView from '../src/ui/bookmarkview.js';
+import BookmarkFormView from '../src/ui/bookmarkformview.js';
 
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -25,7 +25,7 @@ import BookmarkUI from '../src/bookmarkui.js';
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
 describe( 'BookmarkUI', () => {
-	let editor, element, button, balloon, bookmarkUIFeature, bookmarkView, formView;
+	let editor, element, button, balloon, bookmarkUIFeature, formView;
 
 	testUtils.createSinonSandbox();
 
@@ -59,8 +59,8 @@ describe( 'BookmarkUI', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );
 
-	it( 'should not create #bookmarkView', () => {
-		expect( bookmarkUIFeature.bookmarkView ).to.be.null;
+	it( 'should not create #formView', () => {
+		expect( bookmarkUIFeature.formView ).to.be.null;
 	} );
 
 	describe( 'the "bookmark" toolbar button', () => {
@@ -114,12 +114,12 @@ describe( 'BookmarkUI', () => {
 			editor.editing.view.document.isFocused = true;
 		} );
 
-		it( 'should create #bookmarkView', () => {
+		it( 'should create #formView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._showUI();
 
-			expect( bookmarkUIFeature.bookmarkView ).to.be.instanceOf( BookmarkInsertView );
+			expect( bookmarkUIFeature.formView ).to.be.instanceOf( BookmarkFormView );
 		} );
 
 		it( 'should not throw if the UI is already visible', () => {
@@ -132,17 +132,17 @@ describe( 'BookmarkUI', () => {
 			} ).to.not.throw();
 		} );
 
-		it( 'should add #bookmarkView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
+		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._showUI();
-			bookmarkView = bookmarkUIFeature.bookmarkView;
+			formView = bookmarkUIFeature.formView;
 
 			const expectedRange = getMarkersRange( editor );
 
-			expect( balloon.visibleView ).to.equal( bookmarkView );
+			expect( balloon.visibleView ).to.equal( formView );
 			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: bookmarkView,
+				view: formView,
 				position: {
 					target: sinon.match( isRange )
 				}
@@ -151,17 +151,17 @@ describe( 'BookmarkUI', () => {
 			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
 		} );
 
-		it( 'should add #bookmarkView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
+		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
 			// (#7926)
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			bookmarkUIFeature._showUI();
-			bookmarkView = bookmarkUIFeature.bookmarkView;
+			formView = bookmarkUIFeature.formView;
 
 			const expectedRange = getMarkersRange( editor );
 
-			expect( balloon.visibleView ).to.equal( bookmarkView );
+			expect( balloon.visibleView ).to.equal( formView );
 			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: bookmarkView,
+				view: formView,
 				position: {
 					target: sinon.match( isRange )
 				}
@@ -174,7 +174,7 @@ describe( 'BookmarkUI', () => {
 				const updateSpy = sinon.spy( editor.ui, 'update' );
 
 				bookmarkUIFeature._createViews();
-				formView = bookmarkUIFeature.bookmarkView.formView;
+				formView = bookmarkUIFeature.formView;
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 
@@ -189,7 +189,7 @@ describe( 'BookmarkUI', () => {
 
 			it( 'should show error form status if passed invalid ID', () => {
 				bookmarkUIFeature._createViews();
-				formView = bookmarkUIFeature.bookmarkView.formView;
+				formView = bookmarkUIFeature.formView;
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 
@@ -204,7 +204,7 @@ describe( 'BookmarkUI', () => {
 
 			it( 'should reset error form status after filling invalid ID', () => {
 				bookmarkUIFeature._createViews();
-				formView = bookmarkUIFeature.bookmarkView.formView;
+				formView = bookmarkUIFeature.formView;
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 
@@ -223,7 +223,7 @@ describe( 'BookmarkUI', () => {
 
 			it( 'should reset form status on show', () => {
 				bookmarkUIFeature._createViews();
-				formView = bookmarkUIFeature.bookmarkView.formView;
+				formView = bookmarkUIFeature.formView;
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 				bookmarkUIFeature._showUI();
@@ -286,7 +286,7 @@ describe( 'BookmarkUI', () => {
 
 			it( 'not update the position when is in not visible stack', () => {
 				bookmarkUIFeature._createViews();
-				formView = bookmarkUIFeature.bookmarkView.formView;
+				formView = bookmarkUIFeature.formView;
 
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
@@ -542,21 +542,21 @@ describe( 'BookmarkUI', () => {
 				editor.editing.view.document.isFocused = true;
 			} );
 
-			it( 'should create #bookmarkView', () => {
+			it( 'should create #formView', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
 
-				expect( bookmarkUIFeature.bookmarkView ).to.be.instanceOf( BookmarkInsertView );
+				expect( bookmarkUIFeature.formView ).to.be.instanceOf( BookmarkFormView );
 			} );
 
 			it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
-				bookmarkView = bookmarkUIFeature.bookmarkView;
+				formView = bookmarkUIFeature.formView;
 
-				expect( balloon.visibleView ).to.equal( bookmarkView );
+				expect( balloon.visibleView ).to.equal( formView );
 			} );
 
 			it( 'should implement the CSS transition disabling feature', () => {
@@ -564,7 +564,7 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._addFormView();
 
-				expect( bookmarkUIFeature.bookmarkView.formView.disableCssTransitions ).to.be.a( 'function' );
+				expect( bookmarkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
 			} );
 		} );
 
@@ -572,15 +572,15 @@ describe( 'BookmarkUI', () => {
 			beforeEach( () => {
 				bookmarkUIFeature._showUI();
 
-				bookmarkView = bookmarkUIFeature.bookmarkView;
+				formView = bookmarkUIFeature.formView;
 			} );
 
 			it( 'should remove the UI from the balloon', () => {
-				expect( balloon.hasView( bookmarkView ) ).to.be.true;
+				expect( balloon.hasView( formView ) ).to.be.true;
 
 				bookmarkUIFeature._hideUI();
 
-				expect( balloon.hasView( bookmarkView ) ).to.be.false;
+				expect( balloon.hasView( formView ) ).to.be.false;
 			} );
 
 			it( 'should focus the `editable` by default', () => {
@@ -644,10 +644,10 @@ describe( 'BookmarkUI', () => {
 		describe( 'keyboard support', () => {
 			beforeEach( () => {
 				// Make sure that forms are lazy initiated.
-				expect( bookmarkUIFeature.bookmarkView ).to.be.null;
+				expect( bookmarkUIFeature.formView ).to.be.null;
 
 				bookmarkUIFeature._createViews();
-				bookmarkView = bookmarkUIFeature.bookmarkView;
+				formView = bookmarkUIFeature.formView;
 			} );
 
 			it( 'should hide the UI after Esc key press (from editor) and not focus the editable', () => {
@@ -674,7 +674,7 @@ describe( 'BookmarkUI', () => {
 				};
 
 				bookmarkUIFeature._createViews();
-				formView = bookmarkUIFeature.bookmarkView.formView;
+				formView = bookmarkUIFeature.formView;
 
 				bookmarkUIFeature._showUI();
 				bookmarkUIFeature._removeFormView();
@@ -711,10 +711,10 @@ describe( 'BookmarkUI', () => {
 		describe( 'mouse support', () => {
 			beforeEach( () => {
 				// Make sure that forms are lazy initiated.
-				expect( bookmarkUIFeature.bookmarkView ).to.be.null;
+				expect( bookmarkUIFeature.formView ).to.be.null;
 
 				bookmarkUIFeature._createViews();
-				bookmarkView = bookmarkUIFeature.bookmarkView;
+				formView = bookmarkUIFeature.formView;
 			} );
 
 			it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
