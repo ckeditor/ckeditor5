@@ -279,7 +279,7 @@ export default class BookmarkFormView extends View {
 /**
  * Callback used by {@link ~BookmarkFormView} to check if passed form value is valid.
  *
- * 	* If `undefined` is returned, it is assumed that the form value is correct and there is no error.
- * 	* If string is returned, it is assumed that the form value is incorrect and the returned string is displayed in the error label
+ * If `undefined` is returned, it is assumed that the form value is correct and there is no error.
+ * If string is returned, it is assumed that the form value is incorrect and the returned string is displayed in the error label
  */
 export type BookmarkFormValidatorCallback = ( form: BookmarkFormView ) => string | undefined;

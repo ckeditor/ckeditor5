@@ -174,7 +174,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Removes the {@link #formView} from the {@link #_balloon}.
+	 * Removes the {@link #bookmarkView} from the {@link #_balloon}.
 	 *
 	 * See {@link #_addFormView}.
 	 */
@@ -199,7 +199,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Removes the {@link #formView} from the {@link #_balloon}.
+	 * Removes the {@link #bookmarkView} from the {@link #_balloon}.
 	 */
 	private _removeFormView(): void {
 		if ( this._isFormInPanel ) {
@@ -232,7 +232,7 @@ export default class BookmarkUI extends Plugin {
 
 	/**
 	 * Attaches actions that control whether the balloon panel containing the
-	 * {@link #formView} is visible or not.
+	 * {@link #bookmarkView} is visible or not.
 	 */
 	private _enableUserBalloonInteractions(): void {
 		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
@@ -253,7 +253,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Adds the {@link #formView} to the {@link #_balloon}.
+	 * Adds the {@link #bookmarkView} to the {@link #_balloon}.
 	 */
 	private _addFormView(): void {
 		if ( !this.bookmarkView ) {
@@ -283,7 +283,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Shows the correct UI type. It is either {@link #formView}.
+	 * Shows the correct UI type. It is either {@link #bookmarkView}.
 	 *
 	 * @internal
 	 */
@@ -395,21 +395,21 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon}.
 	 */
 	private get _isFormInPanel(): boolean {
 		return !!this.bookmarkView && this._balloon.hasView( this.bookmarkView );
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
 		return this._isFormInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
 	private get _isUIVisible(): boolean {
