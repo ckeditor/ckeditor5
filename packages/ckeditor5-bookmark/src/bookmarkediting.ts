@@ -131,6 +131,10 @@ export default class BookmarkEditing extends Plugin {
 /**
  * A helper function to match an `anchor` element which must contain `id` attribute but without `href` attribute,
  * also element must be empty when matcher is execute in data pipeline so it can be upcasted to a `bookmark`.
+ *
+ * @param element The element to be checked.
+ * @param dataPipeline When set to `true` matcher is executed in data pipeline, checks if `element` is empty;
+ * in editing pipeline it's not empty because it contains the `UIElement`.
  */
 function upcastMatcher( element: ViewElement, dataPipeline: boolean = true ) {
 	const isAnchorElement = element.name === 'a';
