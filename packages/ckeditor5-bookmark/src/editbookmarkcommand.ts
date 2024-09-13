@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { DocumentSelection } from 'ckeditor5/src/engine.js';
+import type { Selection, DocumentSelection } from 'ckeditor5/src/engine.js';
 
 /**
  * The edit bookmark command. It is used by the {@link module:bookmark/bookmark~Bookmark bookmark plugin}.
@@ -28,15 +28,8 @@ export default class EditBookmarkCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectedBookmarkElement = getSelectedBookmarkModelWidget( selection );
 
-		// // A check for any integration that allows linking elements (e.g. `LinkImage`).
-		// // Currently the selection reads attributes from text nodes only. See #7429 and #7465.
-		// if ( selectedElement ) {
-		// 	this.isEnabled = model.schema.checkAttribute( selectedElement, 'bookmarkId' );
-		// } else {
-		// 	this.isEnabled = model.schema.checkAttributeInSelection( selection, 'bookmarkId' );
-		// }
+		this.isEnabled = !!getSelectedBookmark( selection );
 	}
 
 	/**
@@ -47,11 +40,11 @@ export default class EditBookmarkCommand extends Command {
 	public override execute( bookmarkId: string ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectedBookmarkElement = getSelectedBookmarkModelWidget( selection );
+		const selectedBookmark = getSelectedBookmark( selection );
 
-		if ( selectedBookmarkElement ) {
+		if ( selectedBookmark ) {
 			model.change( writer => {
-				writer.setAttribute( 'bookmarkId', bookmarkId, selectedBookmarkElement );
+				writer.setAttribute( 'bookmarkId', bookmarkId, selectedBookmark );
 			} );
 		}
 	}
@@ -60,11 +53,11 @@ export default class EditBookmarkCommand extends Command {
 /**
  * Returns the selected `bookmark` element in the model, if any.
  */
-function getSelectedBookmarkModelWidget( selection: DocumentSelection ): Element | null {
-	const selectedElement = selection.getSelectedElement();
+function getSelectedBookmark( selection: Selection | DocumentSelection ) {
+	const element = selection.getSelectedElement();
 
-	if ( selectedElement && selectedElement.is( 'element', 'bookmark' ) ) {
-		return selectedElement;
+	if ( !!element && element.is( 'element', 'bookmark' ) ) {
+		return element;
 	}
 
 	return null;

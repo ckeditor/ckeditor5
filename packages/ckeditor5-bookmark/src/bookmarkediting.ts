@@ -12,6 +12,8 @@ import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
 import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
+import EditBookmarkCommand from './editbookmarkcommand.js';
+
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
 /**
@@ -29,8 +31,12 @@ export default class BookmarkEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const { editor } = this;
+
 		this._defineSchema();
 		this._defineConverters();
+
+		editor.commands.add( 'editBookmark', new EditBookmarkCommand( editor ) );
 	}
 
 	/**
