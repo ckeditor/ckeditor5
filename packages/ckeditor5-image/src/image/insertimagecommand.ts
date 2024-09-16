@@ -131,9 +131,9 @@ export default class InsertImageCommand extends Command {
 			if ( index && selectedElement && imageUtils.isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
-				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, position, options.imageType || null );
+				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, position, options.imageType );
 			} else {
-				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, null, options.imageType || null );
+				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, null, options.imageType );
 			}
 		} );
 	}
