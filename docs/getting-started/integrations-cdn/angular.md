@@ -671,7 +671,7 @@ And then, link the method in the template:
 <!-- app.component.html -->
 
 <ckeditor
-  *ngIf="Editor && config"
+  *ngIf="(Editor && config)"
   data="<p>Hello, world!</p>"
   [editor]="Editor"
   [config]="config"
@@ -716,7 +716,7 @@ export class AppComponent {
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
 			version: '{@var ckeditor5-version}',
-			translations: [ 'pl' ]
+			translations: [ 'es' ]
 		} ).then( this._setupEditor.bind( this ) );
 	}
 
