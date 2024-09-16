@@ -11,6 +11,7 @@ import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { Image, ImageUpload, ImageInsert } from '@ckeditor/ckeditor5-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -25,11 +26,12 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
-			EasyImage, CloudServices, ImageInsert, Heading, Bookmark
+			EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
 		],
 		toolbar: [
 			'bookmark', '|',
 			'undo', 'redo', '|',
+			'bold', 'italic', '|',
 			'insertImage', 'insertTable', '|',
 			'heading', 'link'
 		],
