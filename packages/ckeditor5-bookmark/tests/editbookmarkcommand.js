@@ -108,6 +108,7 @@ describe( 'EditBookmarkCommand', () => {
 
 			it( 'should not retain selection attributes', () => {
 				editor.execute( 'bold' );
+				editor.execute( 'italic' );
 				command.execute( 'baz' );
 
 				expect( getModelData( model ) ).to.equal(
