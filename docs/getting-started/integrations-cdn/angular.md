@@ -109,7 +109,7 @@ npm install @ckeditor/ckeditor5-angular
 
 ### Using the component
 
-To use CKEditor&nbsp;5 with CDN, you need to import the `loadCKEditorCloud` function. Then, call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration.
+In the below example, the `loadCKEditorCloud` helper is used to load the editor code and plugins from CDN. To use CKEditor&nbsp;5 with CDN, you need to import the function. Then, call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration.
 
 ```ts
 // app.component.ts
@@ -158,6 +158,8 @@ export class AppComponent {
 	}
 }
 ```
+
+For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} page.
 
 ### Using the component with premium plugins
 
@@ -228,14 +230,6 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor. T
 >
 </ckeditor>
 ```
-
-The `<loadCKEditorCloud>` function supports the following properties:
-
-* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
-* `translations` &ndash; The translations to load. English language ('en') should not be passed because it is already bundled in.
-* `premium` &ndash; If `true` then the premium features will be loaded.
-* `ckbox` &ndash; CKBox bundle configuration.
-* `plugins` &ndash; Additional resources to load.
 
 ## Supported `@Input` properties
 

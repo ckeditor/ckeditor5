@@ -104,14 +104,6 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 
-The `<useCKEditorCloud>` component supports the following properties:
-
-* `version` (required) &ndash; The version of CKEditor Cloud Services to use.
-* `translations` &ndash; The translations to load. English language ('en') should not be passed because it is already bundled in.
-* `premium` &ndash; If `true` then the premium features will be loaded.
-* `ckbox` &ndash; CKBox bundle configuration.
-* `plugins` &ndash; Additional resources to load.
-
 ## Context feature
 
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful to use with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
