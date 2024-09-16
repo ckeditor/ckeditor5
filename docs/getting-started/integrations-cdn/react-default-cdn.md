@@ -52,10 +52,11 @@ const CKEditorDemo = () => {
 
 	const {
 		ClassicEditor,
-		Paragraph,
 		Essentials,
+		Paragraph,
 		Bold,
 		Italic,
+		Undo,
 		Mention
 	} = cloud.CKEditor;
 
@@ -70,7 +71,7 @@ const CKEditorDemo = () => {
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
-				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
+				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, Undo, SlashCommand ],
 			} }
 		/>
 	);
@@ -177,59 +178,14 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 			config={ {
 				plugins: [
 					CKEDITOR.Essentials,
-					CKEDITOR.CKFinderUploadAdapter,
-					CKEDITOR.Autoformat,
+					CKEDITOR.Paragraph,
 					CKEDITOR.Bold,
 					CKEDITOR.Italic,
-					CKEDITOR.BlockQuote,
-					CKEDITOR.CKBox,
-					CKEDITOR.CKFinder,
-					CKEDITOR.CloudServices,
-					CKEDITOR.EasyImage,
-					CKEDITOR.Heading,
-					CKEDITOR.Image,
-					CKEDITOR.ImageCaption,
-					CKEDITOR.ImageStyle,
-					CKEDITOR.ImageToolbar,
-					CKEDITOR.ImageUpload,
-					CKEDITOR.Indent,
-					CKEDITOR.IndentBlock,
-					CKEDITOR.Link,
-					CKEDITOR.List,
-					CKEDITOR.MediaEmbed,
-					CKEDITOR.Paragraph,
-					CKEDITOR.PasteFromOffice,
-					CKEDITOR.PictureEditing,
-					CKEDITOR.Table,
-					CKEDITOR.TableToolbar,
-					CKEDITOR.TextTransformation,
-					CKEDITOR.Base64UploadAdapter
+					CKEDITOR.Undo,
+					CKEDITOR.Mention
 				],
 				toolbar: {
-					items: [
-						'undo', 'redo',
-						'|', 'heading',
-						'|', 'bold', 'italic',
-						'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-						'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-					]
-				},
-				image: {
-					toolbar: [
-						'imageStyle:inline',
-						'imageStyle:block',
-						'imageStyle:side',
-						'|',
-						'toggleImageCaption',
-						'imageTextAlternative'
-					]
-				},
-				table: {
-					contentToolbar: [
-						'tableColumn',
-						'tableRow',
-						'mergeTableCells'
-					]
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				}
 			} }
 		/>
@@ -289,7 +245,7 @@ function App() {
 		return <div>Loading...</div>;
 	}
 
-	const { DecoupledEditor, Bold, Italic, Paragraph, Essentials } = cloud.CKEditor;
+	const { DecoupledEditor, Essentials, Paragraph, Bold, Italic, Undo } = cloud.CKEditor;
 
 	return (
 		<div>
@@ -300,7 +256,7 @@ function App() {
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
-							plugins: [ Bold, Italic, Paragraph, Essentials ],
+							plugins: [ Essentials, Paragraph, Bold, Italic, Undo ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
 						onReady={ ( editor ) => {
@@ -312,7 +268,7 @@ function App() {
 							if ( editorToolbarRef.current ) {
 								Array.from( editorToolbarRef.current.children ).forEach( child => child.remove() );
 							}
-						}}
+						} }
 					/>
 				) }
 			</div>
@@ -340,15 +296,15 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 Pass the translations you need into the `translations` array inside the configuration of the `useCKEditorCloud` hook.
 
-```js
+```jsx
 import React from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CKEditorDemo = () => {
-	const cloud = useCKEditorCloud({
+	const cloud = useCKEditorCloud( {
 		version: '{@var ckeditor5-version}',
-		translations: [ 'de' ]
-	});
+		translations: [ 'es' ]
+	} );
 
 	if ( cloud.status === 'error' ) {
 		return <div>Error!</div>;
@@ -359,22 +315,22 @@ const CKEditorDemo = () => {
 	}
 
 	const {
-		ClassicEditor: ClassicEditorBase,
-		Bold,
+		ClassicEditor,
 		Essentials,
+		Bold,
 		Italic,
 		Paragraph,
-		Undo,
+		Undo
 	} = cloud.CKEditor;
 
 	return (
 		<CKEditor
-			editor={ ClassicEditorBase }
+			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
-			config={{
+			config={ {
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-			}}
+			} }
 		/>
 	);
 };
