@@ -65,10 +65,11 @@ const editor = computed( () => {
 
 	const {
 		ClassicEditor,
-		Paragraph,
 		Essentials,
+		Paragraph,
 		Bold,
 		Italic,
+		Undo,
 		Mention
 	} = cloud.data.value.CKEditor;
 
@@ -80,6 +81,7 @@ const editor = computed( () => {
 			Paragraph,
 			Bold,
 			Italic,
+			Undo,
 			Mention,
 			SlashCommand
 		];
@@ -305,11 +307,11 @@ Since accessing the editor toolbar is not possible until after the editor instan
 ```html
 <template>
     <ckeditor
-			v-if="editor"
-			v-model="data"
-			:editor="editor"
-			@ready="onReady"
-		/>
+		v-if="editor"
+		v-model="data"
+		:editor="editor"
+		@ready="onReady"
+	/>
 </template>
 
 <script setup>

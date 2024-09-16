@@ -141,16 +141,16 @@ export class AppComponent {
 		const {
 			ClassicEditor,
 			Essentials,
+			Paragraph,
 			Bold,
 			Italic,
-			Paragraph,
 			Undo
 		} = cloud.CKEditor;
 
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: 'GPL',
-			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			plugins: [ Essentials, Paragraph, Bold, Italic,  Undo ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			}
@@ -196,9 +196,9 @@ export class AppComponent {
 		const {
 			ClassicEditor,
 			Essentials,
+			Paragraph,
 			Bold,
 			Italic,
-			Paragraph,
 			Undo,
 			Mention
 		} = cloud.CKEditor;
@@ -208,7 +208,7 @@ export class AppComponent {
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>',
-			plugins: [ Bold, Essentials, Italic, Paragraph, Undo, Mention, SlashCommand ],
+			plugins: [ Essentials, Paragraph, Bold, Italic, Undo, Mention, SlashCommand ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			}
@@ -340,9 +340,9 @@ export class MyComponent {
 	public ready;
 
 	ngOnInit() {
-		loadCKEditorCloud({
+		loadCKEditorCloud( {
 			version: '{@var ckeditor5-version}',
-		}).then( this._setupEditor.bind( this ) );
+		} ).then( this._setupEditor.bind( this ) );
 	}
 
 	private _setupEditor( cloud ) {
@@ -639,16 +639,16 @@ export class AppComponent {
 		const {
 			DecoupledEditor,
 			Essentials,
+			Paragraph,
 			Bold,
 			Italic,
-			Paragraph,
 			Undo
 		} = cloud.CKEditor;
 
 		this.Editor = DecoupledEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			plugins: [ Essentials, Paragraph, Bold, Italic, Undo ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
 	}
@@ -723,17 +723,17 @@ export class AppComponent {
 	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
 		const {
 			ClassicEditor,
+			Paragraph,
 			Essentials,
 			Bold,
 			Italic,
-			Paragraph,
 			Undo
 		} = cloud.CKEditor;
 
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			plugins: [ Essentials, Bold, Italic, Paragraph, Undo ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			}
