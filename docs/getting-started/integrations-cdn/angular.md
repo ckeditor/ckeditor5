@@ -159,7 +159,7 @@ export class AppComponent {
 }
 ```
 
-For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} page.
+For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
 ### Using the component with premium plugins
 
