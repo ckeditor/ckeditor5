@@ -18,6 +18,8 @@ order: 30
 
 Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
 
+This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
+
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
 </info-box>
@@ -95,75 +97,13 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 ## Quick start
 
-### Setting up the project
-
-This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
-
-### Installing the Angular component from npm
-
 First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install @ckeditor/ckeditor5-angular
 ```
 
-### Using the component
-
-In the below example, the `loadCKEditorCloud` helper is used to load the editor code and plugins from CDN. To use CKEditor&nbsp;5 with CDN, you need to import the function. Then, call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration.
-
-```ts
-// app.component.ts
-
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
-
-@Component( {
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.css'],
-	imports: [ CommonModule, CKEditorModule ],
-	standalone: true
-} )
-export class AppComponent {
-	public Editor: typeof ClassicEditor | null = null;
-
-	public config: EditorConfig | null = null;
-
-	public ngOnInit(): void {
-		loadCKEditorCloud( {
-			version: '{@var ckeditor5-version}'
-		} ).then( this._setupEditor.bind( this ) );
-	}
-
-	private _setupEditor ( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}'}> ) {
-		const {
-			ClassicEditor,
-			Essentials,
-			Paragraph,
-			Bold,
-			Italic,
-			Undo
-		} = cloud.CKEditor;
-
-		this.Editor = ClassicEditor;
-		this.config = {
-			licenseKey: 'GPL',
-			plugins: [ Essentials, Paragraph, Bold, Italic,  Undo ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-			}
-		};
-	}
-}
-```
-
-For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
-
-### Using the component with premium plugins
-
-To use premium plugins, set the premium property to `true` in the `loadCKEditorCloud` function configuration and provide your license key in the CKEditor configuration.
+In the below example, the `loadCKEditorCloud` helper is used to load the editor code and plugins from CDN. To use CKEditor&nbsp;5 with CDN, you need to import the function and call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
 ```ts
 // app.component.ts
@@ -207,7 +147,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>',
+			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Paragraph, Bold, Italic, Undo, Mention, SlashCommand ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
