@@ -633,7 +633,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
-CKEditor 5 supports multiple UI languages, and so does the official Angular component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `loadCKEditorCloud` function.
+CKEditor 5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Angular component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `loadCKEditorCloud` function.
 
 ```ts
 import { Component } from '@angular/core';
@@ -674,9 +674,7 @@ export class AppComponent {
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Paragraph, Undo ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-			}
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
 	}
 }

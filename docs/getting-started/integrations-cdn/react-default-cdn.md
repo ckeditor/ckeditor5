@@ -292,9 +292,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 ### Localization
 
-CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
-
-Pass the translations you need into the `translations` array inside the configuration of the `useCKEditorCloud` hook.
+CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `useCKEditorCloud` hook.
 
 ```jsx
 import React from 'react';
@@ -328,6 +326,7 @@ const CKEditorDemo = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
 			} }

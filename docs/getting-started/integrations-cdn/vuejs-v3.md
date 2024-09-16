@@ -54,7 +54,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 
@@ -360,6 +360,56 @@ We provide a **ready-to-use integration** featuring collaborative editing in a V
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
 
 It is not mandatory to build applications on top of the above sample, however, it should help you get started.
+
+### Localization
+
+CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `useCKEditorCloud` function.
+
+```html
+<script setup>
+import { ref, markRaw, computed } from 'vue';
+import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
+
+const cloud = useCKEditorCloud( {
+	version: '{@var ckeditor5-version}',
+	translations: [ 'es' ]
+} );
+
+const data = ref( '<p>Hello world!</p>' );
+
+const config = markRaw( {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'
+	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+} );
+
+const editor = computed( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const {
+		ClassicEditor,
+		Essentials,
+		Paragraph,
+		Bold,
+		Italic,
+		Undo
+	} = cloud.data.value.CKEditor;
+
+	return class Editor extends ClassicEditor {
+		static builtinPlugins = [
+			Essentials,
+			Paragraph,
+			Bold,
+			Italic,
+			Undo,
+			Mention,
+			SlashCommand
+		];
+	};
+} );
+</script>
+```
 
 ## Contributing and reporting issues
 
