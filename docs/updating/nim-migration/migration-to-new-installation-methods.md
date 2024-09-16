@@ -169,7 +169,7 @@ ClassicEditor
 </script>
 ```
 
-In some environments, you may not be able to use the import maps or JavaScript modules. In such cases, you can instead use the UMD builds, which register global variables that you can use in your scripts. This is the same setup as above, but using the UMD builds:
+In some environments, you may not be able to use the import maps or JavaScript modules. In such cases, you can use the UMD builds instead. These register global variables that you can use in your scripts. This is the same setup as above, but using the UMD builds:
 
 ```html
 <!-- Style sheets -->

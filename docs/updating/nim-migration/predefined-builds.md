@@ -775,7 +775,7 @@ If you are using predefined builds from npm, follow the steps below:
 
 ### CDN
 
-If you are using the predefined builds from CDN, follow the steps below depending on if you want to use the JavaScript modules (ESM) with imports or the standard (UMD) scripts with global variables.
+If you are using the predefined builds from CDN, follow the steps below depending on iwhether you want to use JavaScript modules (ESM) with imports or standard (UMD) scripts with global variables.
 
 #### CDN with imports
 
@@ -1847,7 +1847,7 @@ One notable difference between the old build and the new ESM build is that the f
 
 2. Add the `<link>` and `<script>` tags to include the editor's styles and code.
 
-	2.1 If you only use the open-source editor:
+	2.1 If you only use the open-source features:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
