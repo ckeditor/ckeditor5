@@ -44,7 +44,7 @@ import { useMultiRootEditor, withCKEditorCloud } from "@ckeditor/ckeditor5-react
 const withCKCloud = withCKEditorCloud( {
 	cloud: {
 		version: "{@var ckeditor5-version}",
-		languages: [ "de" ],
+		languages: [ "es" ],
 		premium: true,
 	},
 
@@ -59,81 +59,30 @@ const MultiRootEditorDemo = withCKCloud(
 	( { data, cloud } ) => {
 		const {
 			MultiRootEditor: MultiRootEditorBase,
-			CloudServices,
 			Essentials,
-			CKFinderUploadAdapter,
-			Autoformat,
+			Paragraph
 			Bold,
 			Italic,
-			BlockQuote,
-			CKBox,
-			CKFinder,
-			EasyImage,
-			Heading,
-			Image,
-			ImageCaption,
-			ImageStyle,
-			ImageToolbar,
-			ImageUpload,
-			Indent,
-			Link,
-			List,
-			MediaEmbed,
-			Paragraph,
-			PasteFromOffice,
-			PictureEditing,
-			TextTransformation,
+			Undo,
+			Mention
 		} = cloud.CKEditor;
+
+		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
 
 		class MultiRootEditor extends MultiRootEditorBase {
 			static builtinPlugins = [
 				Essentials,
-				CKFinderUploadAdapter,
-				Autoformat,
+				Paragraph,
 				Bold,
 				Italic,
-				BlockQuote,
-				CKBox,
-				CKFinder,
-				CloudServices,
-				EasyImage,
-				Heading,
-				Image,
-				ImageCaption,
-				ImageStyle,
-				ImageToolbar,
-				ImageUpload,
-				Indent,
-				Link,
-				List,
-				MediaEmbed,
-				Paragraph,
-				PasteFromOffice,
-				PictureEditing,
-				TextTransformation,
+				Undo,
+				Mention,
+				SlashCommand
 			];
 
 			static defaultConfig = {
 				toolbar: {
-					items: [
-						"undo",
-						"redo",
-						"|",
-						"heading",
-						"|",
-						"bold",
-						"italic",
-						"|",
-						"link",
-						"uploadImage",
-						"blockQuote",
-						"mediaEmbed",
-						"|",
-						"bulletedList",
-						"numberedList",
-						"outdent",
-						"indent",
-					],
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
 			};
 		}
