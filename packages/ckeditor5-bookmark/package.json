@@ -19,12 +19,14 @@
     "@ckeditor/ckeditor5-ui": "43.1.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "43.1.0",
     "@ckeditor/ckeditor5-cloud-services": "43.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
     "@ckeditor/ckeditor5-easy-image": "43.1.0",
     "@ckeditor/ckeditor5-editor-classic": "43.1.0",
     "@ckeditor/ckeditor5-engine": "43.1.0",
     "@ckeditor/ckeditor5-enter": "43.1.0",
+    "@ckeditor/ckeditor5-essentials": "43.1.0",
     "@ckeditor/ckeditor5-heading": "43.1.0",
     "@ckeditor/ckeditor5-html-support": "43.1.0",
     "@ckeditor/ckeditor5-image": "43.1.0",
