@@ -105,16 +105,6 @@ describe( 'EditBookmarkCommand', () => {
 					'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
 				);
 			} );
-
-			it( 'should not retain selection attributes', () => {
-				editor.execute( 'bold' );
-				editor.execute( 'italic' );
-				command.execute( 'baz' );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>[<bookmark bookmarkId="baz"></bookmark>]</paragraph>'
-				);
-			} );
 		} );
 	} );
 } );

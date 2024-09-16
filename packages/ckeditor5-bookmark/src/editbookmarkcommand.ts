@@ -36,9 +36,10 @@ export default class EditBookmarkCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const selectedBookmark = getSelectedBookmark( selection );
 
-		this.isEnabled = !!getSelectedBookmark( selection );
-		this.value = this.isEnabled ? getSelectedBookmark( selection )!.getAttribute( 'bookmarkId' ) as string : undefined;
+		this.isEnabled = !!selectedBookmark;
+		this.value = selectedBookmark ? selectedBookmark.getAttribute( 'bookmarkId' ) as string : undefined;
 	}
 
 	/**

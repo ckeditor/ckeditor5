@@ -50,16 +50,6 @@ export default class BookmarkEditing extends Plugin {
 			allowAttributes: 'bookmarkId',
 			disallowAttributes: 'linkHref'
 		} );
-
-		// Disallow formatting attributes on `bookmark` element.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			const bookmark = context.last;
-			const isFormatting = schema.getAttributeProperties( attributeName ).isFormatting;
-
-			if ( isFormatting && bookmark && bookmark.name == 'bookmark' ) {
-				return false;
-			}
-		} );
 	}
 
 	/**
