@@ -23,7 +23,7 @@ import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
 describe( 'BookmarkEditing', () => {
 	// eslint-disable-next-line max-len
-	const domUIElement = '<span class="ck-bookmark__icon"><svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 20 20" fill="none">\n<path d="M4.5 16.9343V3C4.5 2.44772 4.94771 2 5.5 2H14.5C15.0523 2 15.5 2.44772 15.5 3V16.9343C15.5 17.3579 15.0062 17.5896 14.6804 17.3188L10.3196 13.6942C10.1344 13.5402 9.86565 13.5402 9.6804 13.6942L5.3196 17.3188C4.99382 17.5896 4.5 17.3579 4.5 16.9343Z" stroke="#333333" stroke-width="1.5"></path>\n</svg></span>';
+	const domUIElement = '<span class="ck-bookmark__icon"><svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 14 16">\n<path class="ck-icon__fill" d="M2 14.4364V2C2 1.44772 2.44772 1 3 1H11C11.5523 1 12 1.44771 12 2V14.4364C12 14.8596 11.5069 15.0914 11.181 14.8214L7.31901 11.6215C7.13397 11.4681 6.86603 11.4681 6.68099 11.6215L2.81901 14.8214C2.49309 15.0914 2 14.8596 2 14.4364Z"></path>\n</svg></span>';
 
 	let editor, element, model, view, converter;
 
