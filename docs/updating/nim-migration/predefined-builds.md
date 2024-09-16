@@ -775,7 +775,7 @@ If you are using predefined builds from npm, follow the steps below:
 
 ### CDN
 
-If you are using the predefined builds from CDN, follow the steps below depending on iwhether you want to use JavaScript modules (ESM) with imports or standard (UMD) scripts with global variables.
+If you are using the predefined builds from CDN, follow the steps below depending on whether you want to use JavaScript modules (ESM) with imports or standard (UMD) scripts with global variables.
 
 #### CDN with imports
 
