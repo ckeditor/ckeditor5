@@ -789,7 +789,7 @@ One notable difference between the old build and the new ESM build is that the f
 
 2. Add the `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
 
-	2.1 If you only use the open-source editor:
+	2.1 If you only use the open-source features:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
