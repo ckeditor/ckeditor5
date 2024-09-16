@@ -11,9 +11,9 @@ import { Command } from 'ckeditor5/src/core.js';
 import type { Selection, DocumentSelection } from 'ckeditor5/src/engine.js';
 
 /**
- * The  edit bookmark command.
+ * The edit bookmark command.
  *
- * The command is registered by {@link module:bookmark/bookmarksediting~BookmarksEditing} as `'editBookmark'`.
+ * The command is registered by {@link module:bookmark/bookmarkediting~BookmarkEditing} as `'editBookmark'`.
  *
  * To update the bookmarkId of current selected bookmark element, execute the command passing the bookmark id as a parameter:
  *
