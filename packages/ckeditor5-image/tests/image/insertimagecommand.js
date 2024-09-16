@@ -134,6 +134,19 @@ describe( 'InsertImageCommand', () => {
 			expect( getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
 		} );
 
+		it( 'should be possible to specify image type', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			command.execute( {
+				imageType: 'imageBlock',
+				source: imgSrc
+			} );
+
+			expect( getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>foo</paragraph>` );
+		} );
+
 		it( 'should insert multiple images at selection position as other widgets for inline type images', () => {
 			const imgSrc1 = 'foo/bar.jpg';
 			const imgSrc2 = 'foo/baz.jpg';
