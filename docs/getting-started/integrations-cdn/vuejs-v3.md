@@ -305,12 +305,11 @@ Since accessing the editor toolbar is not possible until after the editor instan
 ```html
 <template>
     <ckeditor
-			v-if="editor"
-			v-model="data"
-			:editor="editor"
-			@ready="onReady"
-		/>
-	</ckeditor>
+		v-if="editor"
+		v-model="data"
+		:editor="editor"
+		@ready="onReady"
+	/>
 </template>
 
 <script setup>
