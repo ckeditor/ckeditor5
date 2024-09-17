@@ -861,6 +861,27 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( getModelData( model ) ).to.equal( modelData );
 			} );
 
+			it( 'should replace inline image with saved one after it is processed', () => {
+				setModelData( model, '<paragraph>[<imageInline ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageInline>]</paragraph>' );
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<imageInline ' +
+						'alt="alt text" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageInline>]</paragraph>'
+				);
+			} );
+
 			it( 'should replace image with saved one after it is processed', () => {
 				setModelData( model, '[<imageBlock ' +
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +

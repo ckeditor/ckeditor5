@@ -21,10 +21,6 @@ msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
 msgstr "রিচ টেক্সট এডিটর"
 
-msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
-msgid "Editor editing area: %0"
-msgstr "সম্পাদক সম্পাদনার ক্ষেত্র: %0"
-
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "এডিট ব্লক"
@@ -52,6 +48,10 @@ msgstr "সম্পাদক টুলবার"
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
 msgstr "ড্রপডাউন টুলবার"
+
+msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
+msgid "Dropdown menu"
+msgstr "ড্রপডাউন মেনু"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
