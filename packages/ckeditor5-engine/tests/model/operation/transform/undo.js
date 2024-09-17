@@ -829,6 +829,68 @@ describe( 'transform', () => {
 			return kate.destroy();
 		} );
 
+		// https://github.com/cksource/ckeditor5-commercial/issues/4341
+		it( 'split, type, remove on another client, undo, redo', async () => {
+			const kate = await Client.get( 'kate' );
+
+			kate.setData( '<paragraph>Abc[]</paragraph><paragraph>Xyz</paragraph><paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			john.setData( '<paragraph>Abc[]</paragraph><paragraph>Xyz</paragraph><paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			kate._processExecute( 'enter' );
+			kate._processExecute( 'insertText', { text: 'X' } );
+
+			syncClients();
+			expectClients( '<paragraph>Abc</paragraph><paragraph>X</paragraph><paragraph>Xyz</paragraph><paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			john.setSelection( [ 0, 0 ], [ 3, 3 ] );
+			john._processExecute( 'delete' );
+
+			syncClients();
+			expectClients( '<paragraph></paragraph><paragraph>Bar</paragraph>' );
+
+			kate.undo();
+			kate.undo();
+
+			syncClients();
+			expectClients( '<paragraph></paragraph><paragraph>Bar</paragraph>' );
+
+			kate.redo();
+			kate.redo();
+
+			syncClients();
+			expectClients( '<paragraph></paragraph><paragraph>Bar</paragraph>' );
+
+			return kate.destroy();
+		} );
+
+		// https://github.com/cksource/ckeditor5-commercial/issues/1939
+		it( 'two intersecting removes through multiple elements, then undo', async () => {
+			const kate = await Client.get( 'kate' );
+
+			kate.setData( '<paragraph>ABC</paragraph><paragraph>[ABC</paragraph><paragraph>ABC]</paragraph><paragraph>ABC</paragraph>' );
+			john.setData( '<paragraph>[ABC</paragraph><paragraph>ABC</paragraph><paragraph>ABC</paragraph><paragraph>ABC]</paragraph>' );
+
+			john._processExecute( 'delete' );
+			kate._processExecute( 'delete' );
+
+			syncClients();
+			expectClients( '<paragraph></paragraph>' );
+
+			john.undo();
+
+			syncClients();
+
+			// Actually, the *really* expected data is one paragraph less because `kate` removes it:
+			//
+			// <paragraph>ABC</paragraph><paragraph></paragraph><paragraph>ABC</paragraph>
+			//
+			// But during OT the merge operation becomes no operation at one point.
+			//
+			expectClients( '<paragraph>ABC</paragraph><paragraph></paragraph><paragraph></paragraph><paragraph>ABC</paragraph>' );
+
+			return kate.destroy();
+		} );
+
 		// https://github.com/ckeditor/ckeditor5/issues/9296
 		it( 'multiple enters, then backspaces, then undo, redo', () => {
 			john.setData( '<paragraph>AB[]CD</paragraph>' );
