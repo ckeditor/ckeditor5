@@ -840,7 +840,8 @@ describe( 'transform', () => {
 			kate._processExecute( 'insertText', { text: 'X' } );
 
 			syncClients();
-			expectClients( '<paragraph>Abc</paragraph><paragraph>X</paragraph><paragraph>Xyz</paragraph><paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			expectClients( '<paragraph>Abc</paragraph><paragraph>X</paragraph><paragraph>Xyz</paragraph>' +
+				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			john.setSelection( [ 0, 0 ], [ 3, 3 ] );
 			john._processExecute( 'delete' );
