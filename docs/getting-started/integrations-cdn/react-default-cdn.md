@@ -250,7 +250,7 @@ function App() {
 		return <div>Loading...</div>;
 	}
 
-	const { DecoupledEditor, Essentials, Paragraph, Bold, Italic, Undo } = cloud.CKEditor;
+	const { DecoupledEditor, Essentials, Paragraph, Bold, Italic } = cloud.CKEditor;
 
 	return (
 		<div>
@@ -261,7 +261,7 @@ function App() {
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
-							plugins: [ Essentials, Paragraph, Bold, Italic, Undo ],
+							plugins: [ Essentials, Paragraph, Bold, Italic ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
 						onReady={ ( editor ) => {
@@ -322,8 +322,7 @@ const CKEditorDemo = () => {
 		Essentials,
 		Bold,
 		Italic,
-		Paragraph,
-		Undo
+		Paragraph
 	} = cloud.CKEditor;
 
 	return (
@@ -333,7 +332,7 @@ const CKEditorDemo = () => {
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+				plugins: [ Bold, Essentials, Italic, Paragraph ],
 			} }
 		/>
 	);

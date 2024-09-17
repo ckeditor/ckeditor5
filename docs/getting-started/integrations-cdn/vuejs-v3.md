@@ -391,8 +391,7 @@ const editor = computed( () => {
 		Essentials,
 		Paragraph,
 		Bold,
-		Italic,
-		Undo
+		Italic
 	} = cloud.data.value.CKEditor;
 
 	return class Editor extends ClassicEditor {

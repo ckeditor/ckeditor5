@@ -580,14 +580,13 @@ export class AppComponent {
 			Essentials,
 			Paragraph,
 			Bold,
-			Italic,
-			Undo
+			Italic
 		} = cloud.CKEditor;
 
 		this.Editor = DecoupledEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Essentials, Paragraph, Bold, Italic, Undo ],
+			plugins: [ Essentials, Paragraph, Bold, Italic ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
 	}
@@ -665,14 +664,13 @@ export class AppComponent {
 			Paragraph,
 			Essentials,
 			Bold,
-			Italic,
-			Undo
+			Italic
 		} = cloud.CKEditor;
 
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Essentials, Bold, Italic, Paragraph, Undo ],
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
 	}
