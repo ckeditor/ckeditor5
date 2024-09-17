@@ -166,23 +166,31 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 		return <div>Loading...</div>;
 	}
 
-	const { CKEditor: CKEDITOR } = cloud;
+	const {
+		ClassicEditor,
+		Essentials,
+		Paragraph,
+		Bold,
+		Italic,
+		Undo,
+		Mention
+	} = cloud.CKEditor;
 
 	return (
 		<CKEditor
 			contextItemMetadata={ {
 				name
 			} }
-			editor={ CKEDITOR.ClassicEditor }
+			editor={ ClassicEditor }
 			data={ content }
 			config={ {
 				plugins: [
-					CKEDITOR.Essentials,
-					CKEDITOR.Paragraph,
-					CKEDITOR.Bold,
-					CKEDITOR.Italic,
-					CKEDITOR.Undo,
-					CKEDITOR.Mention
+					Essentials,
+					Paragraph,
+					Bold,
+					Italic,
+					Undo,
+					Mention
 				],
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
