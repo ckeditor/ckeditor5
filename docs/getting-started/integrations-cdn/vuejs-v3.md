@@ -304,7 +304,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 ```html
 <template>
-    <ckeditor
+	<ckeditor
 		v-if="editor"
 		v-model="data"
 		:editor="editor"
@@ -317,36 +317,36 @@ import { ref, computed } from 'vue';
 import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
 const cloud = useCKEditorCloud( {
-    version: '{@var ckeditor5-version}'
+	version: '{@var ckeditor5-version}'
 } );
 
 const data = ref( '<p>Hello world!</p>' );
 
 const editor = computed( () => {
-    if ( !cloud.data.value ) {
-        return null;
-    }
+	if ( !cloud.data.value ) {
+		return null;
+	}
 
-    const {
-        DecoupledEditor,
-        Paragraph,
-        Essentials
-    } = cloud.data.value.CKEditor;
+	const {
+		DecoupledEditor,
+		Paragraph,
+		Essentials
+	} = cloud.data.value.CKEditor;
 
-    return class Editor extends DecoupledEditor {
-        static builtinPlugins = [
-            Essentials,
-            Paragraph
-        ];
-    };
+	return class Editor extends DecoupledEditor {
+		static builtinPlugins = [
+			Essentials,
+			Paragraph
+		];
+	};
 } );
 
 function onReady( editor ) {
-    // Insert the toolbar before the editable area.
-    editor.ui.getEditableElement().parentElement.insertBefore(
-        editor.ui.view.toolbar.element,
-        editor.ui.getEditableElement()
-    );
+	// Insert the toolbar before the editable area.
+	editor.ui.getEditableElement().parentElement.insertBefore(
+		editor.ui.view.toolbar.element,
+		editor.ui.getEditableElement()
+	);
 }
 </script>
 ```
