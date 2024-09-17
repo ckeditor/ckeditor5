@@ -69,7 +69,6 @@ const editor = computed( () => {
 		Paragraph,
 		Bold,
 		Italic,
-		Undo,
 		Mention
 	} = cloud.data.value.CKEditor;
 
@@ -81,7 +80,6 @@ const editor = computed( () => {
 			Paragraph,
 			Bold,
 			Italic,
-			Undo,
 			Mention,
 			SlashCommand
 		];
@@ -403,7 +401,6 @@ const editor = computed( () => {
 			Paragraph,
 			Bold,
 			Italic,
-			Undo,
 			Mention,
 			SlashCommand
 		];

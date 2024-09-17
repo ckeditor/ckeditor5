@@ -56,7 +56,6 @@ const CKEditorDemo = () => {
 		Paragraph,
 		Bold,
 		Italic,
-		Undo,
 		Mention
 	} = cloud.CKEditor;
 
@@ -71,7 +70,7 @@ const CKEditorDemo = () => {
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
-				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, Undo, SlashCommand ],
+				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
 			} }
 		/>
 	);
@@ -172,7 +171,6 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 		Paragraph,
 		Bold,
 		Italic,
-		Undo,
 		Mention
 	} = cloud.CKEditor;
 
@@ -189,7 +187,6 @@ function CKEditorNestedInstanceDemo( { name, content } ) {
 					Paragraph,
 					Bold,
 					Italic,
-					Undo,
 					Mention
 				],
 				toolbar: {

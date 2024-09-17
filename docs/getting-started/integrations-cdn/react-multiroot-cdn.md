@@ -63,7 +63,6 @@ const MultiRootEditorDemo = withCKCloud(
 			Paragraph
 			Bold,
 			Italic,
-			Undo,
 			Mention
 		} = cloud.CKEditor;
 
@@ -75,7 +74,6 @@ const MultiRootEditorDemo = withCKCloud(
 				Paragraph,
 				Bold,
 				Italic,
-				Undo,
 				Mention,
 				SlashCommand
 			];

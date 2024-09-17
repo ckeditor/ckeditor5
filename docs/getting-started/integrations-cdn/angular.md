@@ -139,7 +139,6 @@ export class AppComponent {
 			Paragraph,
 			Bold,
 			Italic,
-			Undo,
 			Mention
 		} = cloud.CKEditor;
 
@@ -148,7 +147,7 @@ export class AppComponent {
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-			plugins: [ Essentials, Paragraph, Bold, Italic, Undo, Mention, SlashCommand ],
+			plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			}
