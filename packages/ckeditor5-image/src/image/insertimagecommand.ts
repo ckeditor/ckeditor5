@@ -95,10 +95,16 @@ export default class InsertImageCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param options Options for the executed command.
+	 * @param options.imageType The type of the image to insert. If not specified, the type will be determined automatically.
 	 * @param options.source The image source or an array of image sources to insert.
 	 * See the documentation of the command to learn more about accepted formats.
 	 */
-	public override execute( options: { source: ArrayOrItem<string | Record<string, unknown>> } ): void {
+	public override execute(
+		options: {
+			source: ArrayOrItem<string | Record<string, unknown>>;
+			imageType?: 'imageBlock' | 'imageInline' | null;
+		}
+	): void {
 		const sourceDefinitions = toArray<string | Record<string, unknown>>( options.source );
 		const selection = this.editor.model.document.selection;
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
@@ -125,9 +131,9 @@ export default class InsertImageCommand extends Command {
 			if ( index && selectedElement && imageUtils.isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
-				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, position );
+				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, position, options.imageType );
 			} else {
-				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes } );
+				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, null, options.imageType );
 			}
 		} );
 	}
