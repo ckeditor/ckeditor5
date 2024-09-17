@@ -20,7 +20,8 @@
 export default function count( iterable: Iterable<unknown> ): number {
 	let count = 0;
 
-	for ( const _ of iterable ) { // eslint-disable-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	for ( const _ of iterable ) {
 		count++;
 	}
 
