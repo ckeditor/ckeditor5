@@ -107,6 +107,18 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		if ( this.formView ) {
+			this.formView.destroy();
+		}
+	}
+
+	/**
 	 * Creates a button for `bookmark` command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
@@ -285,8 +297,6 @@ export default class BookmarkUI extends Plugin {
 
 	/**
 	 * Shows the correct UI type. It is either {@link #bookmarkView}.
-	 *
-	 * @internal
 	 */
 	private _showUI(): void {
 		if ( !this.formView ) {

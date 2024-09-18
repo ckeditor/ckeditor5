@@ -170,6 +170,44 @@ export default class BookmarkFormView extends View {
 	}
 
 	/**
+	 * Focuses the fist {@link #_focusables} in the form.
+	 */
+	public focus(): void {
+		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Validates the form and returns `false` when some fields are invalid.
+	 */
+	public isValid(): boolean {
+		this.resetFormStatus();
+
+		for ( const validator of this._validators ) {
+			const errorText = validator( this );
+
+			// One error per field is enough.
+			if ( errorText ) {
+				// Apply updated error.
+				this.idInputView.errorText = errorText;
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Cleans up the supplementary error and information text of the {@link #idInputView}
+	 * bringing them back to the state when the form has been displayed for the first time.
+	 *
+	 * See {@link #isValid}.
+	 */
+	public resetFormStatus(): void {
+		this.idInputView.errorText = null;
+	}
+
+	/**
 	 * Creates form view with input and button.
 	 */
 	private _createFormView() {
@@ -207,44 +245,6 @@ export default class BookmarkFormView extends View {
 		children.add( this._formView );
 
 		return children;
-	}
-
-	/**
-	 * Focuses the fist {@link #_focusables} in the form.
-	 */
-	public focus(): void {
-		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Validates the form and returns `false` when some fields are invalid.
-	 */
-	public isValid(): boolean {
-		this.resetFormStatus();
-
-		for ( const validator of this._validators ) {
-			const errorText = validator( this );
-
-			// One error per field is enough.
-			if ( errorText ) {
-				// Apply updated error.
-				this.idInputView.errorText = errorText;
-
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Cleans up the supplementary error and information text of the {@link #idInputView}
-	 * bringing them back to the state when the form has been displayed for the first time.
-	 *
-	 * See {@link #isValid}.
-	 */
-	public resetFormStatus(): void {
-		this.idInputView.errorText = null;
 	}
 
 	/**
