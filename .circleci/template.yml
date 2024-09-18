@@ -161,7 +161,7 @@ jobs:
           at: .out
       - run:
           name: Merge the code coverage of the framework and features
-          command: cat .out/combined_framework.info .out/combined_features.info > .out/combined_lcov.info
+          command: cat .out/combined_framework.info .out/combined_features_batch_n.info > .out/combined_lcov.info
       - run:
           name: Preparing the environment variables
           command: |

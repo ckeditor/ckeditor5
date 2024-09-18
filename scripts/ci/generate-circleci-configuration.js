@@ -24,7 +24,8 @@ const IS_COMMUNITY_PR = require( './is-community-pr' );
 const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_DIRECTORY, '.circleci' );
 
-const FEATURE_BATCH_NAME_PLACEHOLDER = 'cke5_tests_features_batch_n';
+const FEATURE_TEST_BATCH_NAME_PLACEHOLDER = 'cke5_tests_features_batch_n';
+const FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER = '.out/combined_features_batch_n.info';
 
 /**
  * This variable determines amount and size of feature test batches.
@@ -54,6 +55,21 @@ const prepareCodeCoverageDirectories = () => ( {
 		command: 'mkdir .nyc_output .out'
 	}
 } );
+
+const listBatchPackages = packageNames => {
+	const text = [
+		`A total of ${ packageNames.length } packages will be ran in this test batch:`,
+		packageNames.map( packageName => ` - ${ packageName }` ).join( '\\n' )
+	].join( '\\n\\n' );
+
+	return {
+		run: {
+			when: 'always',
+			name: 'List of packages running in this test batch',
+			command: `printf "${ text }"`
+		}
+	};
+};
 
 const persistToWorkspace = fileName => ( {
 	persist_to_workspace: {
@@ -99,7 +115,10 @@ const persistToWorkspace = fileName => ( {
 	}, [] );
 
 	const featureTestBatchNames = featureTestBatches.map( ( batch, batchIndex ) => {
-		return FEATURE_BATCH_NAME_PLACEHOLDER.replace( /(?<=_)n$/, batchIndex + 1 );
+		return FEATURE_TEST_BATCH_NAME_PLACEHOLDER.replace( /(?<=_)n$/, batchIndex + 1 );
+	} );
+	const featureCoverageBatchFilenames = featureTestBatches.map( ( batch, batchIndex ) => {
+		return FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER.replace( /(?<=_)n(?=\.info$)/, batchIndex + 1 );
 	} );
 
 	config.jobs.cke5_tests_framework = {
@@ -123,9 +142,10 @@ const persistToWorkspace = fileName => ( {
 			steps: [
 				...bootstrapCommands(),
 				prepareCodeCoverageDirectories(),
+				listBatchPackages( batch ),
 				...generateTestSteps( batch, {
 					checkCoverage: true,
-					coverageFile: '.out/combined_features.info'
+					coverageFile: featureCoverageBatchFilenames[ batchIndex ]
 				} ),
 				'community_verification_command',
 				persistToWorkspace( 'combined_features.info' )
@@ -155,13 +175,13 @@ const persistToWorkspace = fileName => ( {
 		replacePlaceholderBatchNameInArray( workflow.jobs, featureTestBatchNames );
 
 		// Replacing the placeholder batch objects in `jobs` arrays in `workflows`.
-		const placeholderJobIndex = workflow.jobs.findIndex( job => job[ FEATURE_BATCH_NAME_PLACEHOLDER ] );
+		const placeholderJobIndex = workflow.jobs.findIndex( job => job[ FEATURE_TEST_BATCH_NAME_PLACEHOLDER ] );
 
 		if ( placeholderJobIndex === -1 ) {
 			return;
 		}
 
-		const placeholderJobContent = workflow.jobs[ placeholderJobIndex ][ FEATURE_BATCH_NAME_PLACEHOLDER ];
+		const placeholderJobContent = workflow.jobs[ placeholderJobIndex ][ FEATURE_TEST_BATCH_NAME_PLACEHOLDER ];
 		const newBatchJobs = featureTestBatchNames.map( featureTestBatchName => {
 			return {
 				[ featureTestBatchName ]: placeholderJobContent
@@ -169,6 +189,22 @@ const persistToWorkspace = fileName => ( {
 		} );
 
 		workflow.jobs.splice( placeholderJobIndex, 1, ...newBatchJobs );
+	} );
+
+	// Replacing the coverage filename placeholder in coverage steps.
+	Object.values( config.jobs.cke5_coverage.steps ).forEach( step => {
+		if ( !( step instanceof Object ) ) {
+			return;
+		}
+
+		if ( !step.run || !step.run.command ) {
+			return;
+		}
+
+		step.run.command = step.run.command.replace(
+			FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER,
+			featureCoverageBatchFilenames.join( ' ' )
+		);
 	} );
 
 	if ( IS_COMMUNITY_PR ) {
@@ -235,7 +271,7 @@ function replaceShortCheckout( config, jobName ) {
 }
 
 function replacePlaceholderBatchNameInArray( array, featureTestBatchNames ) {
-	const placeholderIndex = array.findIndex( item => item === FEATURE_BATCH_NAME_PLACEHOLDER );
+	const placeholderIndex = array.findIndex( item => item === FEATURE_TEST_BATCH_NAME_PLACEHOLDER );
 
 	if ( placeholderIndex === -1 ) {
 		return;
