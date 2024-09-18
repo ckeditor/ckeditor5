@@ -4,7 +4,7 @@
  */
 
 /**
- * @module bookmark/editbookmarkcommand
+ * @module bookmark/updatebookmarkcommand
  */
 
 import { Command } from 'ckeditor5/src/core.js';
@@ -13,15 +13,15 @@ import type { Selection, DocumentSelection } from 'ckeditor5/src/engine.js';
 /**
  * The edit bookmark command.
  *
- * The command is registered by {@link module:bookmark/bookmarkediting~BookmarkEditing} as `'editBookmark'`.
+ * The command is registered by {@link module:bookmark/bookmarkediting~BookmarkEditing} as `'updateBookmark'`.
  *
  * To update the bookmarkId of current selected bookmark element, execute the command passing the bookmark id as a parameter:
  *
  * ```ts
- * editor.execute( 'editBookmark', 'newId' );
+ * editor.execute( 'updateBookmark', 'newId' );
  * ```
  */
-export default class EditBookmarkCommand extends Command {
+export default class UpdateBookmarkCommand extends Command {
 	/**
 	 * The value of the `'bookmarkId'` attribute.
 	 *
@@ -43,11 +43,19 @@ export default class EditBookmarkCommand extends Command {
 	}
 
 	/**
-	 * Updates a bookmark element with the given `id` attribute.
+	 * Executes the command.
 	 *
 	 * @fires execute
+	 * @param options Command options.
+	 * @param options.bookmarkId The new value of the `bookmarkId` attribute to set.
 	 */
-	public override execute( bookmarkId: string ): void {
+	public override execute( options: { bookmarkId: string } ): void {
+		if ( !options ) {
+			return;
+		}
+
+		const { bookmarkId } = options;
+
 		if ( !bookmarkId || typeof bookmarkId !== 'string' ) {
 			return;
 		}

@@ -6,7 +6,7 @@
 import type {
 	Bookmark,
 	BookmarkEditing,
-	EditBookmarkCommand
+	UpdateBookmarkCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -16,6 +16,6 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface CommandsMap {
-		editBookmark: EditBookmarkCommand;
+		updateBookmark: UpdateBookmarkCommand;
 	}
 }

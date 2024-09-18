@@ -13,9 +13,9 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 import BookmarkEditing from '../src/bookmarkediting.js';
-import EditBookmarkCommand from '../src/editbookmarkcommand.js';
+import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
 
-describe( 'EditBookmarkCommand', () => {
+describe( 'UpdateBookmarkCommand', () => {
 	let domElement, editor, model, command;
 
 	beforeEach( async () => {
@@ -34,7 +34,7 @@ describe( 'EditBookmarkCommand', () => {
 		} );
 
 		model = editor.model;
-		command = new EditBookmarkCommand( editor );
+		command = new UpdateBookmarkCommand( editor );
 	} );
 
 	afterEach( () => {
@@ -87,7 +87,7 @@ describe( 'EditBookmarkCommand', () => {
 			it( 'if bookmarkId is not a string', () => {
 				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
-				command.execute( { 'id': 'foo' } );
+				command.execute( true );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
@@ -99,7 +99,7 @@ describe( 'EditBookmarkCommand', () => {
 			} );
 
 			it( 'should update the bookmarkId of bookmark element with the proper id attribute', () => {
-				command.execute( 'bar' );
+				command.execute( { bookmarkId: 'bar' } );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
