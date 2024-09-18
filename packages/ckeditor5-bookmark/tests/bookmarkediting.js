@@ -6,6 +6,7 @@
 /* global document */
 
 import BookmarkEditing from '../src/bookmarkediting.js';
+import InsertBookmarkCommand from '../src/insertbookmarkcommand.js';
 import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
 
 import { Enter } from '@ckeditor/ckeditor5-enter';
@@ -14,6 +15,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -34,7 +36,7 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Enter, Image, Heading, Paragraph, Undo, Link ]
+			plugins: [ BookmarkEditing, Enter, Bold, Image, Heading, Paragraph, Undo, Link ]
 		};
 
 		editor = await createEditor( element, config );
@@ -54,6 +56,10 @@ describe( 'BookmarkEditing', () => {
 	} );
 
 	describe( 'init', () => {
+		it( 'adds an "insertBookmark" command', () => {
+			expect( editor.commands.get( 'insertBookmark' ) ).to.be.instanceOf( InsertBookmarkCommand );
+		} );
+
 		it( 'adds an "updateBookmark" command', () => {
 			expect( editor.commands.get( 'updateBookmark' ) ).to.be.instanceOf( UpdateBookmarkCommand );
 		} );
