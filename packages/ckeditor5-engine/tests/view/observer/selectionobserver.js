@@ -298,7 +298,7 @@ describe( 'SelectionObserver', () => {
 		domSelection.collapse( editable, 0 );
 	} );
 
-	it( 'should not enter infinite loop', async () => {
+	it( 'should not enter infinite loop', () => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		view.change( writer => {
 			writer.setSelection( viewFoo, 0 );
@@ -780,9 +780,5 @@ describe( 'SelectionObserver', () => {
 		const offset = domSelection.anchorOffset;
 
 		domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
-	}
-
-	function timeout( ms ) {
-		return new Promise( resolve => setTimeout( resolve, ms ) );
 	}
 } );
