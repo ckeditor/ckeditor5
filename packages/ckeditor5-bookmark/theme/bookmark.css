@@ -42,7 +42,9 @@
 
 		& .ck-bookmark__icon {
 			& .ck-icon {
-				width: 1em;	
+				height: 0.75em;
+				width: auto;
+				vertical-align: middle;
 			}
 		}
 	}
