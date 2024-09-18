@@ -6,6 +6,7 @@
 /* global document */
 
 import BookmarkEditing from '../src/bookmarkediting.js';
+import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
 
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -50,6 +51,12 @@ describe( 'BookmarkEditing', () => {
 
 	it( 'defines plugin name', () => {
 		expect( BookmarkEditing.pluginName ).to.equal( 'BookmarkEditing' );
+	} );
+
+	describe( 'init', () => {
+		it( 'adds an "updateBookmark" command', () => {
+			expect( editor.commands.get( 'updateBookmark' ) ).to.be.instanceOf( UpdateBookmarkCommand );
+		} );
 	} );
 
 	describe( 'schema definition', () => {
