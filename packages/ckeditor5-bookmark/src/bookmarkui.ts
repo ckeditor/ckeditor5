@@ -288,7 +288,7 @@ export default class BookmarkUI extends Plugin {
 	 *
 	 * @internal
 	 */
-	public _showUI(): void {
+	private _showUI(): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}

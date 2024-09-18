@@ -166,6 +166,7 @@ export default class BookmarkFormView extends View {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
+		this._formView.destroy();
 	}
 
 	/**
@@ -255,7 +256,7 @@ export default class BookmarkFormView extends View {
 		const t = this.locale!.t;
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		labeledInput.fieldView.inputMode = 'id';
+		labeledInput.fieldView.inputMode = 'text';
 		labeledInput.label = t( 'Add bookmark name' );
 		labeledInput.infoText = t( 'Enter the bookmark name without spaces.' );
 
@@ -266,7 +267,6 @@ export default class BookmarkFormView extends View {
 	 * Creates a button view.
 	 *
 	 * @param label The button label.
-	 * @param icon The button icon.
 	 * @param className The additional button CSS class name.
 	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns The button view instance.
