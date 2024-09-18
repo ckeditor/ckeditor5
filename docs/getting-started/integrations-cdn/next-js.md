@@ -28,7 +28,7 @@ First, install the CKEditor 5 packages:
 * `ckeditor5` &ndash; package with open-source plugins and features.
 * `ckeditor5-premium-features` &ndash; package with premium plugins and features.
 
-Depending on your configuration and chosen plugins, you may need to install the first or both packages.
+Depending on your configuration and selected plugins, you may need to install only the first one or both.
 
 ```bash
 npm install ckeditor5 ckeditor5-premium-features
@@ -40,9 +40,9 @@ Next.js is based on React, so install the [CKEditor 5 WYSIWYG editor component f
 npm install @ckeditor/ckeditor5-react
 ```
 
-Next, you will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The below example shows how to use the component with open-source and premium plugins.
+You will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The example below shows how to use the component with both open-source and premium plugins.
 
-App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of a file, above your imports. You do not need the directive if you use the Pages Router.
+The App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of the file, above your imports. You do not need the directive if you use the Pages Router.
 
 In the below example, the `useCKEditorCloud` hook is used to load the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
@@ -54,49 +54,49 @@ import React from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CustomEditor = () => {
-    const cloud = useCKEditorCloud( {
-        version: '43.1.0',
-        premium: true
-    } );
+	const cloud = useCKEditorCloud( {
+		version: '43.1.0',
+		premium: true
+	} );
 
-    if ( cloud.status === 'error' ) {
-        return <div>Error!</div>;
-    }
+	if ( cloud.status === 'error' ) {
+		return <div>Error!</div>;
+	}
 
-    if ( cloud.status === 'loading' ) {
-        return <div>Loading...</div>;
-    }
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
 
-    const {
-        ClassicEditor,
-        Essentials,
-        Paragraph,
-        Bold,
-        Italic,
-        Mention
-    } = cloud.CKEditor;
+	const {
+		ClassicEditor,
+		Essentials,
+		Paragraph,
+		Bold,
+		Italic,
+		Mention
+	} = cloud.CKEditor;
 
-    const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
 
-    return (
-        <CKEditor
-            editor={ ClassicEditor }
-            data={ '<p>Hello world!</p>' }
-            config={ {
-                licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
-                toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
-                plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
-            } }
-        />
-    );
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			data={ '<p>Hello world!</p>' }
+			config={ {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+				toolbar: {
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
+			} }
+		/>
+	);
 };
 
 export default CustomEditor;
 ```
 
-The `CustomEditor` component is ready to be used inside a page. The page's directory will differ depending on the chosen routing strategy.
+The `CustomEditor` component is ready to be used inside a page. The page's directory will differ depending on the selected routing strategy.
 
 CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for our custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
 
