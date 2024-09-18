@@ -9,10 +9,6 @@
 	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
 	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
-
-	--ck-color-bookmark-default: hsl(240, 100%, 47%);
-	--ck-color-bookmark-selected-background: hsla(201, 100%, 56%, 0.1);
-	--ck-color-bookmark-fake-selection: hsla(201, 100%, 56%, 0.3);
 }
 
 .ck-bookmark {

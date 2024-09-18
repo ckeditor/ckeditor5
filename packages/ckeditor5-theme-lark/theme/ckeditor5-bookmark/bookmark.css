@@ -8,7 +8,7 @@
  * in the bookmark UI has focus (the browser does not render the native selection in this state).
  */
 .ck .ck-fake-bookmark-selection {
-	background: var(--ck-color-bookmark-fake-selection);
+	background: var(--ck-color-link-fake-selection);
 }
 
 /* A collapsed fake visual selection. */

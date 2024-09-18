@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-bookmark-form {
+.ck.ck-bookmark-form {
 	display: flex;
 	align-items: baseline;
+	/* TODO linkform.css uses align-items: flex-start */
 }

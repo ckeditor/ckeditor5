@@ -137,6 +137,7 @@ export default class BookmarkFormView extends View {
 	public override render(): void {
 		super.render();
 
+		// TODO does this work if attached to the div, not to form?
 		submitHandler( {
 			view: this
 		} );
@@ -256,7 +257,6 @@ export default class BookmarkFormView extends View {
 		const t = this.locale!.t;
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		labeledInput.fieldView.inputMode = 'text';
 		labeledInput.label = t( 'Add bookmark name' );
 		labeledInput.infoText = t( 'Enter the bookmark name without spaces.' );
 
