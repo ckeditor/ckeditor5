@@ -298,9 +298,7 @@ describe( 'SelectionObserver', () => {
 		domSelection.collapse( editable, 0 );
 	} );
 
-	it( 'should not enter infinite loop', () => {
-		let counter = 70;
-
+	it( 'should not enter infinite loop', async () => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		view.change( writer => {
 			writer.setSelection( viewFoo, 0 );
@@ -315,6 +313,17 @@ describe( 'SelectionObserver', () => {
 		selectionObserver._clearInfiniteLoop();
 		viewDocument.on( 'selectionChange', selectionChangeSpy );
 
+		let counter = 70;
+
+		const simulateSelectionChanges = () => {
+			changeDomSelection();
+			counter--;
+
+			if ( counter > 0 ) {
+				setTimeout( simulateSelectionChanges, 10 );
+			}
+		};
+
 		return new Promise( resolve => {
 			viewDocument.on( 'selectionChangeDone', () => {
 				expect( wasInfiniteLoopDetected ).to.be.true;
@@ -323,10 +332,7 @@ describe( 'SelectionObserver', () => {
 				resolve();
 			} );
 
-			while ( counter > 0 ) {
-				changeDomSelection();
-				counter--;
-			}
+			simulateSelectionChanges();
 		} );
 	} );
 
@@ -774,5 +780,9 @@ describe( 'SelectionObserver', () => {
 		const offset = domSelection.anchorOffset;
 
 		domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
+	}
+
+	function timeout( ms ) {
+		return new Promise( resolve => setTimeout( resolve, ms ) );
 	}
 } );
