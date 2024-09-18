@@ -76,8 +76,8 @@ describe( 'BookmarkFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should create id input with inputmode=url', () => {
-			expect( view.idInputView.fieldView.inputMode ).to.be.equal( 'id' );
+		it( 'should create id input with inputmode=text', () => {
+			expect( view.idInputView.fieldView.inputMode ).to.be.equal( 'text' );
 		} );
 
 		it( 'should fire `submit` event on insertButtonView#execute', () => {
