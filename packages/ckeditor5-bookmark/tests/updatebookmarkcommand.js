@@ -11,6 +11,8 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
+import { Link } from '@ckeditor/ckeditor5-link';
 
 import BookmarkEditing from '../src/bookmarkediting.js';
 import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
@@ -29,7 +31,10 @@ describe( 'UpdateBookmarkCommand', () => {
 				Essentials,
 				BookmarkEditing,
 				Bold,
-				Italic
+				Italic,
+				ImageInline,
+				ImageBlock,
+				Link
 			]
 		} );
 
@@ -54,6 +59,18 @@ describe( 'UpdateBookmarkCommand', () => {
 		describe( 'should be `false`', () => {
 			it( 'when selection is collapsed inside paragraph text', () => {
 				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'when an image is selected', () => {
+				setModelData( model, '<paragraph>foo [<imageInline src="#"></imageInline>] bar</paragraph>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'when a link is selected', () => {
+				setModelData( model, '<paragraph>foo [<$text linkHref="foo">link</$text>] bar</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
