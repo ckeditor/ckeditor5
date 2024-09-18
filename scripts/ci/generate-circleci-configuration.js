@@ -24,6 +24,18 @@ const IS_COMMUNITY_PR = require( './is-community-pr' );
 const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_DIRECTORY, '.circleci' );
 
+const FEATURE_BATCH_NAME_PLACEHOLDER = 'cke5_tests_features_batch_n';
+
+/**
+ * This variable determines amount and size of feature test batches.
+ *
+ * If there are more feature packages than the sum of all batches defined here,
+ * one batch will be automatically added to cover remaining tests.
+ */
+const FEATURE_BATCH_SIZES = [
+	30
+];
+
 const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
 ];
@@ -67,6 +79,29 @@ const persistToWorkspace = fileName => ( {
 		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) )
 	);
 
+	const featureTestBatches = featurePackages.reduce( ( output, packageName, packageIndex ) => {
+		let currentBatch = FEATURE_BATCH_SIZES.findIndex( ( batchSize, batchIndex, allBatches ) => {
+			return packageIndex < allBatches.slice( 0, batchIndex + 1 ).reduce( ( a, b ) => a + b );
+		} );
+
+		// Additional batch for the remaining tests not included in defined batch sizes.
+		if ( currentBatch === -1 ) {
+			currentBatch = FEATURE_BATCH_SIZES.length;
+		}
+
+		if ( !output[ currentBatch ] ) {
+			output[ currentBatch ] = [];
+		}
+
+		output[ currentBatch ].push( packageName );
+
+		return output;
+	}, [] );
+
+	const featureTestBatchNames = featureTestBatches.map( ( batch, batchIndex ) => {
+		return FEATURE_BATCH_NAME_PLACEHOLDER.replace( /(?<=_)n$/, batchIndex + 1 );
+	} );
+
 	config.jobs.cke5_tests_framework = {
 		machine: true,
 		steps: [
@@ -81,19 +116,60 @@ const persistToWorkspace = fileName => ( {
 		]
 	};
 
-	config.jobs.cke5_tests_features = {
-		machine: true,
-		steps: [
-			...bootstrapCommands(),
-			prepareCodeCoverageDirectories(),
-			...generateTestSteps( featurePackages, {
-				checkCoverage: true,
-				coverageFile: '.out/combined_features.info'
-			} ),
-			'community_verification_command',
-			persistToWorkspace( 'combined_features.info' )
-		]
-	};
+	// Adding batches to the root `jobs`.
+	featureTestBatches.forEach( ( batch, batchIndex ) => {
+		config.jobs[ featureTestBatchNames[ batchIndex ] ] = {
+			machine: true,
+			steps: [
+				...bootstrapCommands(),
+				prepareCodeCoverageDirectories(),
+				...generateTestSteps( batch, {
+					checkCoverage: true,
+					coverageFile: '.out/combined_features.info'
+				} ),
+				'community_verification_command',
+				persistToWorkspace( 'combined_features.info' )
+			]
+		};
+	} );
+
+	Object.values( config.workflows ).forEach( workflow => {
+		if ( !( workflow instanceof Object ) ) {
+			return;
+		}
+
+		if ( !workflow.jobs ) {
+			return;
+		}
+
+		// Replacing the placeholder batch names in `requires` arrays in `workflows`.
+		workflow.jobs.forEach( job => {
+			const { requires } = Object.values( job )[ 0 ];
+
+			if ( requires ) {
+				replacePlaceholderBatchNameInArray( requires, featureTestBatchNames );
+			}
+		} );
+
+		// Replacing the placeholder batch names in `jobs` arrays in `workflows`.
+		replacePlaceholderBatchNameInArray( workflow.jobs, featureTestBatchNames );
+
+		// Replacing the placeholder batch objects in `jobs` arrays in `workflows`.
+		const placeholderJobIndex = workflow.jobs.findIndex( job => job[ FEATURE_BATCH_NAME_PLACEHOLDER ] );
+
+		if ( placeholderJobIndex === -1 ) {
+			return;
+		}
+
+		const placeholderJobContent = workflow.jobs[ placeholderJobIndex ][ FEATURE_BATCH_NAME_PLACEHOLDER ];
+		const newBatchJobs = featureTestBatchNames.map( featureTestBatchName => {
+			return {
+				[ featureTestBatchName ]: placeholderJobContent
+			};
+		} );
+
+		workflow.jobs.splice( placeholderJobIndex, 1, ...newBatchJobs );
+	} );
 
 	if ( IS_COMMUNITY_PR ) {
 		// CircleCI does not understand custom cloning when a PR comes from the community.
@@ -156,6 +232,16 @@ function replaceShortCheckout( config, jobName ) {
 
 		return item;
 	} );
+}
+
+function replacePlaceholderBatchNameInArray( array, featureTestBatchNames ) {
+	const placeholderIndex = array.findIndex( item => item === FEATURE_BATCH_NAME_PLACEHOLDER );
+
+	if ( placeholderIndex === -1 ) {
+		return;
+	}
+
+	array.splice( placeholderIndex, 1, ...featureTestBatchNames );
 }
 
 /**
