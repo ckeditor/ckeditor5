@@ -58,14 +58,15 @@ const prepareCodeCoverageDirectories = () => ( {
 
 const listBatchPackages = packageNames => {
 	const text = [
-		`A total of ${ packageNames.length } packages will be ran in this test batch:`,
-		packageNames.map( packageName => ` - ${ packageName }` ).join( '\\n' )
+		`A total of ${ packageNames.length } packages will be tested in this batch:`,
+		packageNames.map( packageName => ` - ${ packageName }` ).join( '\\n' ),
+		''
 	].join( '\\n\\n' );
 
 	return {
 		run: {
 			when: 'always',
-			name: 'List of packages running in this test batch',
+			name: 'List packages tested in this batch',
 			command: `printf "${ text }"`
 		}
 	};
