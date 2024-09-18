@@ -25,6 +25,9 @@ import {
 	type Locale
 } from 'ckeditor5/src/utils.js';
 
+// See: #8833.
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/bookmarkform.css';
 
 /**
