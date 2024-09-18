@@ -11,14 +11,14 @@ import { Command } from 'ckeditor5/src/core.js';
 import type { Selection, DocumentSelection } from 'ckeditor5/src/engine.js';
 
 /**
- * The edit bookmark command.
+ * The update bookmark command.
  *
  * The command is registered by {@link module:bookmark/bookmarkediting~BookmarkEditing} as `'updateBookmark'`.
  *
- * To update the bookmarkId of current selected bookmark element, execute the command passing the bookmark id as a parameter:
+ * To update the `bookmarkId` of current selected bookmark element, execute the command passing the bookmark id as a parameter:
  *
  * ```ts
- * editor.execute( 'updateBookmark', 'newId' );
+ * editor.execute( 'updateBookmark', { bookmarkId: 'newId' } );
  * ```
  */
 export default class UpdateBookmarkCommand extends Command {
