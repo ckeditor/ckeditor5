@@ -67,7 +67,7 @@ Use the `<ckeditor>` component inside the template tag. The below example shows 
 </template>
 
 <script>
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
 import 'ckeditor5/ckeditor5.css';
@@ -81,7 +81,7 @@ export default {
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
+				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 
 					// Mention configuration
@@ -355,7 +355,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 </template>
 
 <script>
-	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
+	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 
 	import 'ckeditor5/ckeditor5.css'
 
