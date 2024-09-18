@@ -13,6 +13,7 @@ import { IconView } from 'ckeditor5/src/ui.js';
 import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
+
 import bookmarkIcon from '../theme/icons/bookmark_inline.svg';
 
 /**
