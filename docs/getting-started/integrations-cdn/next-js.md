@@ -23,28 +23,17 @@ This guide assumes you already have a Next project. To create such a project, yo
 
 ## Using from CDN
 
-First, install the CKEditor 5 packages:
-
-* `ckeditor5` &ndash; package with open-source plugins and features.
-* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
-
-Depending on your configuration and selected plugins, you may need to install only the first one or both.
-
-```bash
-npm install ckeditor5 ckeditor5-premium-features
-```
-
-Next.js is based on React, so install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react), too:
+Next.js is based on React, so we need to install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
 
 ```bash
 npm install @ckeditor/ckeditor5-react
 ```
 
-You will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The example below shows how to use the component with both open-source and premium plugins.
+You will use the installed dependency in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The example below shows how to use the component with both open-source and premium plugins.
 
 The App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of the file, above your imports. You do not need the directive if you use the Pages Router.
 
-In the below example, the `useCKEditorCloud` hook is used to load the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
+In the below example, the `useCKEditorCloud` hook is used to load the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration (set it to `'GPL'` if you only use open-source plugins). For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
 ```jsx
 // components/custom-editor.js
@@ -55,7 +44,7 @@ import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
 const CustomEditor = () => {
 	const cloud = useCKEditorCloud( {
-		version: '43.1.0',
+		version: '{@var ckeditor5-version}',
 		premium: true
 	} );
 
