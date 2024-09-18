@@ -31,13 +31,11 @@ export default class InsertBookmarkCommand extends Command {
 		const selection = model.document.selection;
 		const startPosition = selection.isCollapsed ? selection.anchor! : selection.getFirstPosition()!;
 
-		const isAllowedElementInSelection = !!this._getAllowedElementBasedOnSelection( selection );
-		const isAllowedBookmarkBySchema = model.schema.checkChild( startPosition, 'bookmark' );
-		const isAllowedPAragraphBySchema = model.schema.checkChild( startPosition, 'paragraph' );
+		const isBookmarkAllowedBySchema = model.schema.checkChild( startPosition, 'bookmark' );
+		const isParagraphAllowedBySchema = model.schema.checkChild( startPosition, 'paragraph' );
+		const isAnyAllowedElementInSelection = !!this._getAllowedElementBasedOnSelection( selection );
 
-		const isAllowed = isAllowedBookmarkBySchema || isAllowedElementInSelection || isAllowedPAragraphBySchema;
-
-		this.isEnabled = isAllowed;
+		this.isEnabled = isBookmarkAllowedBySchema || isParagraphAllowedBySchema || isAnyAllowedElementInSelection;
 	}
 
 	/**
@@ -64,10 +62,10 @@ export default class InsertBookmarkCommand extends Command {
 
 		model.change( writer => {
 			const startPosition = selection.isCollapsed ? selection.anchor! : selection.getFirstPosition()!;
-			const isAllowedBookmarkBySchema = model.schema.checkChild( startPosition, 'bookmark' );
+			const isBookmarkAllowedBySchema = model.schema.checkChild( startPosition, 'bookmark' );
 
 			// If it is allowed to insert bookmark by schema than insert it.
-			if ( isAllowedBookmarkBySchema ) {
+			if ( isBookmarkAllowedBySchema ) {
 				writer.setSelection( startPosition );
 
 				return model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
@@ -98,10 +96,8 @@ export default class InsertBookmarkCommand extends Command {
 						}
 
 						// If first child is not a paragraph then insert paragraph before it and add bookmark inside of this paragraph.
-						const positionAtAllowedElement = model.createPositionAt( allowedElement, 0 );
-
 						editor.execute( 'insertParagraph', {
-							position: positionAtAllowedElement
+							position: model.createPositionAt( allowedElement, 0 )
 						} );
 
 						model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
