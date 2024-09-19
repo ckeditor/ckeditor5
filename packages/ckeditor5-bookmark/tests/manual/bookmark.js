@@ -72,7 +72,6 @@ function BookmarkTest( editor ) {
 				if ( formView.isValid() ) {
 					console.log( 'Bookmark ID:', formView.id );
 
-					formView.insertButtonView.focus();
 					balloon.remove( formView );
 					editor.editing.view.focus();
 				}

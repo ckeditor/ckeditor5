@@ -3,8 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+.ck.ck-bookmark-view {
+	&:focus {
+		outline: none;
+	}
+}
+
 .ck.ck-bookmark-form {
 	display: flex;
-	align-items: baseline;
-	/* TODO linkform.css uses align-items: flex-start */
+	align-items: flex-start;
 }

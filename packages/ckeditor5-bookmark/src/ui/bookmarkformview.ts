@@ -62,11 +62,6 @@ export default class BookmarkFormView extends View {
 	public readonly children: ViewCollection;
 
 	/**
-	 * The form view without heading.
-	 */
-	private _formView: View;
-
-	/**
 	 * An array of form validators used by {@link #isValid}.
 	 */
 	private readonly _validators: Array<BookmarkFormValidatorCallback>;
@@ -95,10 +90,12 @@ export default class BookmarkFormView extends View {
 		const t = locale.t;
 
 		this._validators = validators;
+
 		this.idInputView = this._createIdInput();
-		this.insertButtonView = this._createButton( t( 'Insert' ), 'ck-button-action', 'submit' );
+
+		this.insertButtonView = this._createButton( t( 'Insert' ), 'ck-button-action' );
 		this.insertButtonView.type = 'submit';
-		this._formView = this._createFormView();
+
 		this.children = this._createViewChildren();
 
 		this._focusCycler = new FocusCycler( {
@@ -117,7 +114,7 @@ export default class BookmarkFormView extends View {
 		const classList = [ 'ck', 'ck-bookmark-view' ];
 
 		this.setTemplate( {
-			tag: 'div',
+			tag: 'form',
 
 			attributes: {
 				class: classList,
@@ -136,7 +133,6 @@ export default class BookmarkFormView extends View {
 	public override render(): void {
 		super.render();
 
-		// TODO does this work if attached to the div, not to form?
 		submitHandler( {
 			view: this
 		} );
@@ -166,7 +162,6 @@ export default class BookmarkFormView extends View {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
-		this._formView.destroy();
 	}
 
 	/**
@@ -208,43 +203,41 @@ export default class BookmarkFormView extends View {
 	}
 
 	/**
-	 * Creates form view with input and button.
-	 */
-	private _createFormView() {
-		const view = new View( this.locale );
-
-		const classList = [ 'ck', 'ck-bookmark-form', 'ck-responsive-form' ];
-		const children = this._createFormChildren();
-
-		view.setTemplate( {
-			tag: 'form',
-
-			attributes: {
-				class: classList,
-
-				// https://github.com/ckeditor/ckeditor5-link/issues/90
-				tabindex: '-1'
-			},
-
-			children
-		} );
-
-		return view;
-	}
-
-	/**
 	 * Creates header and form view.
 	 */
 	private _createViewChildren() {
 		const children = this.createCollection();
 		const t = this.t!;
 
-		children.add( new FormHeaderView( this.locale, {
-			label: t( 'Bookmark' )
-		} ) );
-		children.add( this._formView );
+		children.add( new FormHeaderView( this.locale, { label: t( 'Bookmark' ) } ) );
+		children.add( this._createFormContentView() );
 
 		return children;
+	}
+
+	/**
+	 * Creates form content view with input and button.
+	 */
+	private _createFormContentView() {
+		const view = new View( this.locale );
+
+		const children = this.createCollection();
+		const classList = [ 'ck', 'ck-bookmark-form', 'ck-responsive-form' ];
+
+		children.add( this.idInputView );
+		children.add( this.insertButtonView );
+
+		view.setTemplate( {
+			tag: 'div',
+
+			attributes: {
+				class: classList
+			},
+
+			children
+		} );
+
+		return view;
 	}
 
 	/**
@@ -289,20 +282,6 @@ export default class BookmarkFormView extends View {
 		}
 
 		return button;
-	}
-
-	/**
-	 * Populates the {@link #children} collection of the form.
-	 *
-	 * @returns The children of bookmark form view.
-	 */
-	private _createFormChildren(): ViewCollection {
-		const children = this.createCollection();
-
-		children.add( this.idInputView );
-		children.add( this.insertButtonView );
-
-		return children;
 	}
 
 	/**
