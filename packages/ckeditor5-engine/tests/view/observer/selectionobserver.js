@@ -316,12 +316,14 @@ describe( 'SelectionObserver', () => {
 		let counter = 70;
 
 		const simulateSelectionChanges = () => {
+			if ( !counter ) {
+				return;
+			}
+
 			changeDomSelection();
 			counter--;
 
-			if ( counter > 0 ) {
-				setTimeout( simulateSelectionChanges, 10 );
-			}
+			setTimeout( simulateSelectionChanges, 10 );
 		};
 
 		return new Promise( resolve => {
@@ -329,6 +331,7 @@ describe( 'SelectionObserver', () => {
 				expect( wasInfiniteLoopDetected ).to.be.true;
 				expect( selectionChangeSpy.callCount ).to.equal( 60 );
 
+				counter = 0;
 				resolve();
 			} );
 
