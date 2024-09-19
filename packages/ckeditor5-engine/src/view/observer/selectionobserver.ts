@@ -156,7 +156,7 @@ export default class SelectionObserver extends Observer {
 		// handler would like to check it and update (for example table multi cell selection).
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
-		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+		this.listenTo( domDocument, 'selectionchange', () => {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	_debouncedLine();
 			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();
