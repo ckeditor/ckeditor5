@@ -11,7 +11,6 @@ import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
 import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview.js';
 import ColorTileView from '../colorgrid/colortileview.js';
-import LabelView from '../label/labelview.js';
 import Template from '../template.js';
 
 import DocumentColorCollection from './documentcolorcollection.js';

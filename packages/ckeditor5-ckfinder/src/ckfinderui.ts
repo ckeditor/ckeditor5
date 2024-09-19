@@ -8,12 +8,7 @@
  */
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import {
-	ButtonView,
-	FileDialogButtonView,
-	MenuBarMenuListItemButtonView,
-	MenuBarMenuListItemFileDialogButtonView
-} from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 import type CKFinderCommand from './ckfindercommand.js';
