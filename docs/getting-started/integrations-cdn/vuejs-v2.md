@@ -49,7 +49,7 @@ Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and 
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 		<!--  -->
 
-		<title>Vite App</title>
+		<title>CKEditor 5 - Vue 2</title>
 	</head>
 	<body>
 		<div id="app"></div>
