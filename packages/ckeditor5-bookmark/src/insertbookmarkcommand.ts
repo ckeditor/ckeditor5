@@ -100,7 +100,7 @@ export default class InsertBookmarkCommand extends Command {
 							position: model.createPositionAt( allowedElement, 0 )
 						} );
 
-						model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
+						return model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
 					}
 				}
 			}
