@@ -38,26 +38,23 @@ describe( 'BookmarkFormView', () => {
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
-		it( 'should create form element from template', () => {
-			expect( view._formView.element.classList.contains( 'ck' ) ).to.true;
-			expect( view._formView.element.classList.contains( 'ck-bookmark-form' ) ).to.true;
-			expect( view._formView.element.classList.contains( 'ck-responsive-form' ) ).to.true;
-			expect( view._formView.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
-		} );
-
 		it( 'should create child views', () => {
 			expect( view.idInputView ).to.be.instanceOf( View );
 			expect( view.insertButtonView ).to.be.instanceOf( View );
 
 			expect( view.insertButtonView.element.classList.contains( 'ck-button-action' ) ).to.be.true;
 
-			const formHeader = new FormHeaderView( { t: val => val } );
-
-			expect( formHeader ).to.be.instanceOf( View );
-			expect( view._formView ).to.be.instanceOf( View );
-
 			expect( view.children.get( 0 ) ).to.be.instanceOf( FormHeaderView );
-			expect( view.children.get( 1 ) ).to.equal( view._formView );
+			expect( view.children.get( 1 ) ).to.be.instanceOf( View );
+
+			const formContentView = view.children.get( 1 );
+
+			expect( formContentView.element.classList.contains( 'ck' ) ).to.true;
+			expect( formContentView.element.classList.contains( 'ck-bookmark-form' ) ).to.true;
+			expect( formContentView.element.classList.contains( 'ck-responsive-form' ) ).to.true;
+
+			expect( formContentView.template.children[ 0 ].get( 0 ) ).to.equal( view.idInputView );
+			expect( formContentView.template.children[ 0 ].get( 1 ) ).to.equal( view.insertButtonView );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -78,26 +75,6 @@ describe( 'BookmarkFormView', () => {
 
 		it( 'should create id input with inputmode=text', () => {
 			expect( view.idInputView.fieldView.inputMode ).to.be.equal( 'text' );
-		} );
-
-		it( 'should fire `submit` event on insertButtonView#execute', () => {
-			const spy = sinon.spy();
-
-			view.on( 'submit', spy );
-
-			view.insertButtonView.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.true;
-		} );
-
-		describe( 'template', () => {
-			it( 'has id input view', () => {
-				expect( view._formView.template.children[ 0 ].get( 0 ) ).to.equal( view.idInputView );
-			} );
-
-			it( 'has button views', () => {
-				expect( view._formView.template.children[ 0 ].get( 1 ) ).to.equal( view.insertButtonView );
-			} );
 		} );
 	} );
 
@@ -134,7 +111,7 @@ describe( 'BookmarkFormView', () => {
 			view.destroy();
 		} );
 
-		describe( 'activates keyboard navigation for the toolbar', () => {
+		describe( 'activates keyboard navigation for the form', () => {
 			it( 'so "tab" focuses the next focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
@@ -264,9 +241,22 @@ describe( 'BookmarkFormView', () => {
 		} );
 
 		it( 'trimmed DOM input value should be returned in ID getter', () => {
-			view.idInputView.fieldView.element.value = '  https://cksource.com/  ';
+			view.idInputView.fieldView.element.value = '  foobar  ';
 
-			expect( view.id ).to.be.equal( 'https://cksource.com/' );
+			expect( view.id ).to.be.equal( 'foobar' );
+		} );
+	} );
+
+	describe( '_createButton()', () => {
+		it( 'should delegate the execute event to the specified one', () => {
+			const spy = sinon.spy();
+			const button = view._createButton( 'foo', 'bar', 'cancel' );
+
+			view.on( 'cancel', spy );
+
+			button.fire( 'execute' );
+
+			expect( spy.calledOnce ).to.true;
 		} );
 	} );
 } );
