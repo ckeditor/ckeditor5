@@ -17,7 +17,7 @@ order: 40
 </p>
 
 <info-box warning>
-	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations-cdn/vuejs-v3"Rich text editor component for Vue.js 3+} guide.
+	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations-cdn/vuejs-v3 Rich text editor component for Vue.js 3+} guide.
 </info-box>
 
 You can use CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your application. This guide will help you install and configure the CDN distribution of the CKEditor&nbsp;5.
@@ -46,7 +46,7 @@ Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and 
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 		<!-- Add if you use premium features -->
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
-		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 
 		<title>CKEditor 5 - Vue 2</title>
 	</head>
@@ -69,40 +69,7 @@ Vue.use( CKEditor );
 new Vue( App ).$mount( '#app' );
 ```
 
-Use the `<ckeditor>` component inside the template tag. The below example shows how to use the component with open-source plugins.
-
-```html
-<template>
-	<ckeditor :editor="editor" v-model="editorData" :config="editorConfig" />
-</template>
-
-<script>
-const {
-	ClassicEditor,
-	Essentials,
-	Bold,
-	Italic,
-	Paragraph
-} = CKEDITOR;
-
-export default {
-	name: 'app',
-	data() {
-		return {
-			editor: ClassicEditor,
-			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
-			editorConfig: {
-				licenseKey: 'GPL',
-				plugins: [ Bold, Essentials, Italic, Paragraph ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			}
-		};
-	}
-};
-</script>
-```
-
-The following example shows how to use the component with premium plugins. To make it work, you need to provide a proper license key.
+Use the `<ckeditor>` component inside the template tag. The below example shows how to use the component with open-source and premium plugins. To make it work, you need to provide a proper license key.
 
 ```html
 <template>
@@ -127,7 +94,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 
@@ -138,4 +105,205 @@ export default {
 	}
 };
 </script>
+```
+
+## Component directives
+
+### `editor`
+
+This directive specifies the editor to be used by the component. It must directly reference the editor constructor to be used in the template.
+
+```html
+<template>
+	<ckeditor :editor="editor" />
+</template>
+
+<script>
+	import { ClassicEditor } from 'ckeditor5';
+
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: ClassicEditor,
+
+				// ...
+			};
+		}
+	};
+</script>
+```
+
+### `tag-name`
+
+By default, the editor component creates a `<div>` container which is used as an element passed to the editor (for example, {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `ClassicEditor#element`}). The element can be configured, so for example to create a `<textarea>`, use the following directive:
+
+```html
+<ckeditor :editor="editor" tag-name="textarea" />
+```
+
+### `v-model`
+
+A [standard directive](https://vuejs.org/v2/api/#v-model) for form inputs in Vue. Unlike [`value`](#value), it creates a two–way data binding, which:
+
+* Sets the initial editor content.
+* Automatically updates the state of the application as the editor content changes (for example, as the user types).
+* Can be used to set the editor content when necessary.
+
+```html
+<template>
+	<div>
+		<ckeditor :editor="editor" v-model="editorData" />
+		<button v-on:click="emptyEditor()">Empty the editor</button>
+
+		<h2>Editor data</h2>
+		<code>{{ editorData }}</code>
+	</div>
+</template>
+
+<script>
+	import { ClassicEditor } from 'ckeditor5';
+
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: ClassicEditor,
+				editorData: '<p>Content of the editor.</p>'
+			};
+		},
+		methods: {
+			emptyEditor() {
+				this.editorData = '';
+			}
+		}
+	};
+</script>
+```
+
+In the above example, the `editorData` property will be updated automatically as the user types and changes the content. It can also be used to change (as in `emptyEditor()`) or set the initial content of the editor.
+
+If you only want to execute an action when the editor data changes, use the [`input`](#input) event.
+
+### `value`
+
+Allows a one–way data binding that sets the content of the editor. Unlike [`v-model`](#v-model), the value will not be updated when the content of the editor changes.
+
+```html
+<template>
+	<ckeditor :editor="editor" :value="editorData" />
+</template>
+
+<script>
+	import { ClassicEditor } from 'ckeditor5';
+
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: ClassicEditor,
+				editorData: '<p>Content of the editor.</p>'
+			};
+		}
+	};
+</script>
+```
+
+To execute an action when the editor data changes, use the [`input`](#input) event.
+
+### `config`
+
+Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor.
+
+```html
+<template>
+	<ckeditor :editor="editor" :config="editorConfig" />
+</template>
+
+<script>
+	import { ClassicEditor } from 'ckeditor5';
+
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: ClassicEditor,
+				editorConfig: {
+					toolbar: [ 'bold', 'italic', '|', 'link' ]
+				}
+			};
+		}
+	};
+</script>
+```
+
+### `disabled`
+
+This directive controls the {@link module:core/editor/editor~Editor#isReadOnly `isReadOnly`} property of the editor.
+
+It sets the initial read–only state of the editor and changes it during its lifecycle.
+
+```html
+<template>
+	<ckeditor :editor="editor" :disabled="editorDisabled" />
+</template>
+
+<script>
+	import { ClassicEditor } from 'ckeditor5';
+
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: ClassicEditor,
+				// This editor will be read–only when created.
+				editorDisabled: true
+			};
+		}
+	};
+</script>
+```
+
+## Component events
+
+### `ready`
+
+Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} editor event.
+
+```html
+<ckeditor :editor="editor" @ready="onEditorReady" />
+```
+
+### `focus`
+
+Corresponds to the {@link module:engine/view/document~Document#event:focus `focus`} editor event.
+
+```html
+<ckeditor :editor="editor" @focus="onEditorFocus" />
+```
+
+### `blur`
+
+Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`} editor event.
+
+```html
+<ckeditor :editor="editor" @blur="onEditorBlur" />
+```
+
+### `input`
+
+Corresponds to the {@link module:engine/model/document~Document#event:change:data `change:data`} editor event. See the [`v-model` directive](#v-model) to learn more.
+
+```html
+<ckeditor :editor="editor" @input="onEditorInput" />
+```
+
+### `destroy`
+
+Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destroy`} editor event.
+
+**Note:** Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
+
+```html
+<ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
