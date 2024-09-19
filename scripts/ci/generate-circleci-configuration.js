@@ -149,7 +149,7 @@ const persistToWorkspace = fileName => ( {
 					coverageFile: featureCoverageBatchFilenames[ batchIndex ]
 				} ),
 				'community_verification_command',
-				persistToWorkspace( 'combined_features.info' )
+				persistToWorkspace( featureCoverageBatchFilenames[ batchIndex ].replace( /^\.out\//, '' ) )
 			]
 		};
 	} );
