@@ -6,6 +6,7 @@
 import type {
 	Bookmark,
 	BookmarkEditing,
+	BookmarkUI,
 	UpdateBookmarkCommand
 } from './index.js';
 
@@ -13,6 +14,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Bookmark.pluginName ]: Bookmark;
 		[ BookmarkEditing.pluginName ]: BookmarkEditing;
+		[ BookmarkUI.pluginName ]: BookmarkUI;
 	}
 
 	interface CommandsMap {

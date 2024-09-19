@@ -14,7 +14,9 @@ import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/e
 
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
-import bookmarkIcon from '../theme/icons/bookmark.svg';
+import '../theme/bookmark.css';
+
+import bookmarkIcon from '../theme/icons/bookmark_inline.svg';
 
 /**
  * The bookmark editing plugin.
