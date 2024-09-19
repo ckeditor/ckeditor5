@@ -5,11 +5,9 @@
 
 /* eslint-env node */
 
-'use strict';
+import { validate } from 'schema-utils';
 
-const { validate } = require( 'schema-utils' );
-
-module.exports = class FooterPlugin {
+export default class FooterPlugin {
 	/**
 	 * @param {String} footer Text that will be appended to an output file.
 	 */
@@ -39,4 +37,4 @@ module.exports = class FooterPlugin {
 			} );
 		} );
 	}
-};
+}

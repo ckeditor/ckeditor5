@@ -5,16 +5,16 @@
 
 /* eslint-env node */
 
-import fs from 'fs/promises';
+import fs from 'fs-extra';
 import path from 'upath';
 
 /**
  * @param {String} packagePath
  * @returns {Promise.<Boolean>}
  */
-export default function istypescriptpackage( packagePath ) {
+export default async function istypescriptpackage( packagePath ) {
 	const packageJsonPath = path.join( packagePath, 'package.json' );
-	const packageJson = require( packageJsonPath );
+	const packageJson = await fs.readJson( packageJsonPath );
 
 	// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
 	// the package is written in TS.

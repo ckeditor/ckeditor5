@@ -7,10 +7,9 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const buildApiDocs = require( './buildapi' );
-const parseArguments = require( './parse-arguments' );
+import umberto from 'umberto';
+import buildApiDocs from './buildapi.mjs';
+import parseArguments from './parse-arguments.mjs';
 
 buildDocs();
 
@@ -41,8 +40,6 @@ function buildDocs() {
  * @return {Promise}
  */
 function runUmberto( options ) {
-	const umberto = require( 'umberto' );
-
 	return umberto.buildSingleProject( {
 		configDir: 'docs',
 		clean: true,

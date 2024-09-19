@@ -7,12 +7,15 @@
 
 /* eslint-env node */
 
-const chalk = require( 'chalk' );
-const childProcess = require( 'child_process' );
-const fs = require( 'fs' );
-const minimist = require( 'minimist' );
-const path = require( 'path' );
+import chalk from 'chalk';
+import childProcess from 'child_process';
+import fs from 'fs';
+import minimist from 'minimist';
+import path from 'path';
+import module from 'module';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
+const require = module.createRequire( import.meta.url );
 const argv = minimist( process.argv.slice( 2 ), {
 	string: [
 		'base-dll-config',
@@ -30,7 +33,7 @@ const argv = minimist( process.argv.slice( 2 ), {
 	}
 } );
 
-const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : path.resolve( __dirname, '..', '..' );
+const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : CKEDITOR5_ROOT_PATH;
 const DEVELOPMENT_MODE = argv.dev;
 const VERBOSE_MODE = argv.verbose;
 

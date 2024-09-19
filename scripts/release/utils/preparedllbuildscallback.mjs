@@ -13,11 +13,11 @@
  */
 export default async function preparedllbuildscallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
 	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
-	const { default: fs } = await import( 'fs/promises' );
+	const { default: fs } = await import( 'fs-extra' );
 	const { default: path } = await import( 'upath' );
 
 	const packageJsonPath = path.join( packagePath, 'package.json' );
-	const packageJson = require( packageJsonPath );
+	const packageJson = await fs.readJson( packageJsonPath );
 
 	if ( !isDllPackage() ) {
 		return Promise.resolve();

@@ -13,7 +13,7 @@ import upath from 'upath';
 import { parse } from 'acorn';
 import { walk } from 'estree-walker';
 import { globSync } from 'glob';
-import constants from './release/utils/constants.js';
+import constants from './release/utils/constants.mjs';
 
 const require = createRequire( import.meta.url );
 

@@ -5,19 +5,22 @@
 
 /* eslint-env node */
 
-const path = require( 'path' );
-const webpack = require( 'webpack' );
-const TerserPlugin = require( 'terser-webpack-plugin' );
-const FooterPlugin = require( './webpack-footer-plugin' );
-const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
-const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-const { addTypeScriptLoader } = require( '../docs/utils' );
+import path from 'path';
+import webpack from 'webpack';
+import TerserPlugin from 'terser-webpack-plugin';
+import { bundler, loaders } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
+import FooterPlugin from './webpack-footer-plugin.mjs';
+import { addTypeScriptLoader } from '../docs/utils.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import module from 'module';
 
-const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
+const require = module.createRequire( import.meta.url );
+
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
 const { CI } = process.env;
 
-if ( ROOT_DIRECTORY !== process.cwd() ) {
+if ( CKEDITOR5_ROOT_PATH !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
 }
 
@@ -82,7 +85,7 @@ const webpackConfig = {
 		moduleIds: 'named'
 	},
 	output: {
-		path: path.join( ROOT_DIRECTORY, 'build' ),
+		path: path.join( CKEDITOR5_ROOT_PATH, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
 		libraryTarget: 'window'
@@ -101,7 +104,7 @@ const webpackConfig = {
 		new webpack.DllPlugin( {
 			name: 'CKEditor5.dll',
 			context: 'src',
-			path: path.join( ROOT_DIRECTORY, 'build', 'ckeditor5-dll.manifest.json' ),
+			path: path.join( CKEDITOR5_ROOT_PATH, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true
 		} ),
@@ -151,5 +154,5 @@ if ( CI ) {
 	};
 }
 
-module.exports = webpackConfig;
+export default webpackConfig;
 

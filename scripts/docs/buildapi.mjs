@@ -5,36 +5,18 @@
 
 /* eslint-env node */
 
-'use strict';
+import path from 'path';
+import { build } from '@ckeditor/ckeditor5-dev-docs';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
-const path = require( 'path' );
-
-const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
-
-module.exports = function buildApiDocs() {
-	const config = getConfig();
-
-	return require( '@ckeditor/ckeditor5-dev-docs' ).build( config );
-};
-
-/**
- * Prepares the configuration for the API docs builder.
- *
- * @returns {Object}
- */
-function getConfig() {
-	const commonConfig = {
-		cwd: ROOT_DIRECTORY,
-		outputPath: path.join( ROOT_DIRECTORY, 'docs', 'api', 'output.json' ),
+export default function buildApiDocs() {
+	return build( {
+		cwd: CKEDITOR5_ROOT_PATH,
+		outputPath: path.join( CKEDITOR5_ROOT_PATH, 'docs', 'api', 'output.json' ),
 		readmePath: 'README.md',
 		validateOnly: process.argv.includes( '--validate-only' ),
 		strict: process.argv.includes( '--strict' ),
-		type: 'typedoc'
-	};
-
-	return {
-		...commonConfig,
-		tsconfig: path.join( ROOT_DIRECTORY, 'tsconfig.typedoc.json' ),
+		tsconfig: path.join( CKEDITOR5_ROOT_PATH, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
 			// CKEditor 5 sources.
 			'packages/ckeditor5-*/src/**/*.ts',
@@ -59,5 +41,5 @@ function getConfig() {
 			'!packages/ckeditor5-*/src/augmentation.ts',
 			'!external/ckeditor5-commercial/packages/ckeditor5-*/src/augmentation.ts'
 		]
-	};
+	} );
 }

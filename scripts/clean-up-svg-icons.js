@@ -114,7 +114,7 @@ function processIcon( pathToIcon ) {
 	console.log( chalk.green( `Processing "${ pathToIcon }" icon...` ) );
 
 	const svgoOptions = [
-		'--config=./scripts/svgo.config.js',
+		'--config=./scripts/svgo.config.cjs',
 		`-i ${ pathToIcon }`
 	];
 

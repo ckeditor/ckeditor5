@@ -5,15 +5,13 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const minimist = require( 'minimist' );
+import minimist from 'minimist';
 
 /**
  * @param {Array.<String>} args An array containing modifiers for the executed command.
  * @return {DocumentationOptions}
  */
-module.exports = function parseArguments( args ) {
+export default function parseArguments( args ) {
 	const options = minimist( args, {
 		boolean: [
 			'skip-api',
@@ -56,7 +54,7 @@ module.exports = function parseArguments( args ) {
 	] );
 
 	return options;
-};
+}
 
 /**
  * Replaces all kebab-case keys in the `options` object with camelCase entries.

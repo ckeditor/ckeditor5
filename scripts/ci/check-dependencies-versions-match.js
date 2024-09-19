@@ -40,7 +40,7 @@ main().catch( err => {
 } );
 
 async function main() {
-	const isCkeditor5Package = await isCKEditor5PackageFactory();
+	const isCkeditor5Package = await isckeditor5packagefactory();
 	const expectedDependencies = getExpectedDepsVersions( packageJsons, isCkeditor5Package );
 
 	if ( shouldFix ) {

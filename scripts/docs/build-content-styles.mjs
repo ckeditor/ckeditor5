@@ -5,19 +5,21 @@
 
 /* eslint-env node */
 
-const fs = require( 'fs/promises' );
-const path = require( 'path' );
-const mkdirp = require( 'mkdirp' );
-const webpack = require( 'webpack' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
+import fs from 'fs/promises';
+import path from 'path';
+import module from 'module';
+import mkdirp from 'mkdirp';
+import webpack from 'webpack';
+import { styles, loaders } from '@ckeditor/ckeditor5-dev-utils';
+import { getLastFromChangelog } from '@ckeditor/ckeditor5-dev-release-tools';
 
-const { getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
-const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
+import { getCkeditor5Plugins, normalizePath, addTypeScriptLoader } from './utils.mjs';
+import postCssContentStylesPlugin from './list-content-styles-plugin.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
-const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
-const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
+const require = module.createRequire( import.meta.url );
+
+const DESTINATION_DIRECTORY = path.join( CKEDITOR5_ROOT_PATH, 'build', 'content-styles' );
 const OUTPUT_FILE_PATH = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
 
 const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/content-styles.html';
@@ -31,16 +33,16 @@ const contentRules = {
 	atRules: {}
 };
 
-const packagesPath = path.join( ROOT_DIRECTORY, 'packages' );
-const version = getLastFromChangelog( ROOT_DIRECTORY );
+const packagesPath = path.join( CKEDITOR5_ROOT_PATH, 'packages' );
+const version = getLastFromChangelog( CKEDITOR5_ROOT_PATH );
 
-module.exports = () => {
+export default function buildContentStyles() {
 	console.log( 'Building content styles...' );
 
 	return new Promise( resolve => {
 		getCkeditor5Plugins()
 			.then( ckeditor5Modules => {
-				return mkdirp( DESTINATION_DIRECTORY ).then( () => generateCKEditor5Source( ckeditor5Modules, ROOT_DIRECTORY ) );
+				return mkdirp( DESTINATION_DIRECTORY ).then( () => generateCKEditor5Source( ckeditor5Modules, CKEDITOR5_ROOT_PATH ) );
 			} )
 			.then( () => {
 				const webpackConfig = getWebpackConfig();
@@ -51,7 +53,7 @@ module.exports = () => {
 				// All variables are placed inside the `:root` selector. Let's extract their names and values as a map.
 				const cssVariables = new Map( contentRules.variables
 					.map( rule => {
-					// Let's extract all of them as an array of pairs: [ name, value ].
+						// Let's extract all of them as an array of pairs: [ name, value ].
 						const allRules = [];
 						let match;
 
@@ -62,7 +64,7 @@ module.exports = () => {
 						return allRules;
 					} )
 					.reduce( ( previousValue, currentValue ) => {
-					// And simplify nested arrays as a flattened array.
+						// And simplify nested arrays as a flattened array.
 						previousValue.push( ...currentValue );
 
 						return previousValue;
@@ -96,8 +98,8 @@ module.exports = () => {
 
 						// ...find its value and check whether it requires another variable.
 						while ( ( match = VARIABLE_USAGE_REGEXP.exec( value ) ) ) {
-						// If so, mark the entire `while()` block as it should be checked once again.
-						// Also, add the new variable to the used variables collection.
+							// If so, mark the entire `while()` block as it should be checked once again.
+							// Also, add the new variable to the used variables collection.
 							if ( !usedVariables.has( match[ 1 ] ) ) {
 								clearRun = false;
 								usedVariables.add( match[ 1 ] );
@@ -147,7 +149,8 @@ module.exports = () => {
 			.catch( err => {
 				console.log( err );
 			} );
-	} ); };
+	} );
+}
 
 /**
  * Prepares the configuration for webpack.
@@ -231,7 +234,7 @@ function runWebpack( webpackConfig ) {
  */
 function getModuleResolvePaths() {
 	return [
-		path.resolve( __dirname, '..', '..', 'node_modules' ),
+		path.resolve( CKEDITOR5_ROOT_PATH, 'node_modules' ),
 		'node_modules'
 	];
 }

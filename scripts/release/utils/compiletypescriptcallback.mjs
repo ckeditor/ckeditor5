@@ -11,7 +11,7 @@
  */
 export default async function compiletypescriptcallback( packagePath ) {
 	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
-	const { default: fs } = await import( 'fs/promises' );
+	const { default: fs } = await import( 'fs-extra' );
 	const { default: path } = await import( 'upath' );
 
 	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
@@ -28,9 +28,9 @@ export default async function compiletypescriptcallback( packagePath ) {
 	 * @param {String} packagePath
 	 * @returns {Promise.<Boolean>}
 	 */
-	function isTypeScriptPackage( packagePath ) {
+	async function isTypeScriptPackage( packagePath ) {
 		const packageJsonPath = path.join( packagePath, 'package.json' );
-		const packageJson = require( packageJsonPath );
+		const packageJson = await fs.readJson( packageJsonPath );
 
 		// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
 		// the package is written in TS.

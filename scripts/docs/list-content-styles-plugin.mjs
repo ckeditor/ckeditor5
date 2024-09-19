@@ -5,8 +5,6 @@
 
 /* eslint-env node */
 
-'use strict';
-
 /**
  * Returns the PostCSS plugin that allows intercepting CSS definition used in the editor's build.
  *
@@ -14,14 +12,10 @@
  * @param {Array.<String>} contentRules.variables Variables defined as `:root`.
  * @param {Object} contentRules.atRules Definitions of behaves.
  * @param {Array.<String>} contentRules.selector CSS definitions for all selectors.
- * @returns {Function}
+ * @returns {Object}
  */
-module.exports = contentRules => {
-	const {
-		variables,
-		atRules,
-		selector
-	} = contentRules;
+function listContentStyles( contentRules ) {
+	const { variables, atRules, selector } = contentRules;
 
 	return {
 		postcssPlugin: 'list-content-styles',
@@ -50,9 +44,11 @@ module.exports = contentRules => {
 			} );
 		}
 	};
-};
+}
 
-module.exports.postcss = true;
+listContentStyles.postcss = true;
+
+export default listContentStyles;
 
 /**
  * @param {Object} collection
