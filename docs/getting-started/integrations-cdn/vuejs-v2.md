@@ -119,7 +119,7 @@ This directive specifies the editor to be used by the component. It must directl
 </template>
 
 <script>
-	import { ClassicEditor } from 'ckeditor5';
+	const { ClassicEditor } = CKEDITOR;
 
 	export default {
 		name: 'app',
@@ -162,7 +162,7 @@ A [standard directive](https://vuejs.org/v2/api/#v-model) for form inputs in Vue
 </template>
 
 <script>
-	import { ClassicEditor } from 'ckeditor5';
+	const { ClassicEditor } = CKEDITOR;
 
 	export default {
 		name: 'app',
@@ -195,7 +195,7 @@ Allows a one–way data binding that sets the content of the editor. Unlike [`v-
 </template>
 
 <script>
-	import { ClassicEditor } from 'ckeditor5';
+	const { ClassicEditor } = CKEDITOR;
 
 	export default {
 		name: 'app',
@@ -221,7 +221,7 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 </template>
 
 <script>
-	import { ClassicEditor } from 'ckeditor5';
+	const { ClassicEditor } = CKEDITOR;
 
 	export default {
 		name: 'app',
@@ -249,7 +249,7 @@ It sets the initial read–only state of the editor and changes it during its li
 </template>
 
 <script>
-	import { ClassicEditor } from 'ckeditor5';
+	const { ClassicEditor } = CKEDITOR;
 
 	export default {
 		name: 'app',
