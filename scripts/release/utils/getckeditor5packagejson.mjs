@@ -5,18 +5,17 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const fs = require( 'fs-extra' );
-const upath = require( 'upath' );
+import fs from 'fs-extra';
+import upath from 'upath';
+import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
 /**
  * @param {Boolean} isNightly
  * @returns {Object}
  */
-module.exports = function getCKEditor5PackageJson() {
+export default function getckeditor5packagejson() {
 	const pkgJson = fs.readJsonSync(
-		upath.join( __dirname, '..', '..', '..', 'package.json' )
+		upath.join( CKEDITOR5_ROOT_PATH, 'package.json' )
 	);
 
 	return {
@@ -63,4 +62,4 @@ module.exports = function getCKEditor5PackageJson() {
 			'README.md'
 		]
 	};
-};
+}

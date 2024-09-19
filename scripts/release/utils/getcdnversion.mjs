@@ -5,14 +5,12 @@
 
 /* eslint-env node */
 
-'use strict';
-
 /**
  * @param {ReleaseOptions} cliArguments
  * @param {String} pkgJsonVersion
  * @returns {String}
  */
-module.exports = function getCdnVersion( cliArguments, pkgJsonVersion ) {
+export default function getcdnversion( cliArguments, pkgJsonVersion ) {
 	if ( cliArguments.nightly ) {
 		return 'nightly';
 	}
@@ -22,4 +20,4 @@ module.exports = function getCdnVersion( cliArguments, pkgJsonVersion ) {
 	}
 
 	return pkgJsonVersion;
-};
+}

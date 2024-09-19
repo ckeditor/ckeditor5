@@ -7,11 +7,11 @@
 
 /* eslint-env node */
 
-const { existsSync, readdirSync } = require( 'fs' );
-const { execSync } = require( 'child_process' );
-const { join } = require( 'upath' );
-const { red, green } = require( 'chalk' );
-const { RELEASE_NPM_DIRECTORY } = require( './utils/constants' );
+import { existsSync, readdirSync } from 'fs';
+import { execSync } from 'child_process';
+import { join } from 'upath';
+import { red, green } from 'chalk';
+import { RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
 
 const releaseDirectory = join( process.cwd(), RELEASE_NPM_DIRECTORY );
 

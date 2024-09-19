@@ -5,22 +5,19 @@
 
 /* eslint-env node */
 
-'use strict';
-
 /**
  * @param {String} packagePath
  * @returns {Promise}
  */
-module.exports = async function updatePackageEntryPoint( packagePath ) {
-	const upath = require( 'upath' );
-	const fs = require( 'fs-extra' );
-	const path = require( 'upath' );
+export default async function updatepackageentrypoint( packagePath ) {
+	const { default: fs } = await import( 'fs-extra' );
+	const { default: path } = await import( 'upath' );
 
 	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
 		return;
 	}
 
-	const packageJsonPath = upath.join( packagePath, 'package.json' );
+	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const pkgJson = await fs.readJson( packageJsonPath );
 	const { main } = pkgJson;
 
@@ -37,9 +34,9 @@ module.exports = async function updatePackageEntryPoint( packagePath ) {
 	 * @param {String} packagePath
 	 * @returns {Promise.<Boolean>}
 	 */
-	function isTypeScriptPackage( packagePath ) {
+	async function isTypeScriptPackage( packagePath ) {
 		const packageJsonPath = path.join( packagePath, 'package.json' );
-		const packageJson = require( packageJsonPath );
+		const packageJson = await fs.readJson( packageJsonPath );
 
 		// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
 		// the package is written in TS.
@@ -56,5 +53,5 @@ module.exports = async function updatePackageEntryPoint( packagePath ) {
 			.then( () => true )
 			.catch( () => false );
 	}
-};
+}
 

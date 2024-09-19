@@ -5,16 +5,14 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const fs = require( 'fs/promises' );
-const path = require( 'upath' );
+import fs from 'fs/promises';
+import path from 'upath';
 
 /**
  * @param {String} packagePath
  * @returns {Promise.<Boolean>}
  */
-module.exports = function isTypeScriptPackage( packagePath ) {
+export default function istypescriptpackage( packagePath ) {
 	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const packageJson = require( packageJsonPath );
 
@@ -26,7 +24,7 @@ module.exports = function isTypeScriptPackage( packagePath ) {
 
 	// Otherwise, let's check if the package contains a `tsconfig.json` file.
 	return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
-};
+}
 
 function checkFileExists( file ) {
 	return fs.access( file, fs.constants.F_OK )

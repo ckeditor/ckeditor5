@@ -7,21 +7,19 @@
 
 /* eslint-env node */
 
-'use strict';
+import fs from 'fs';
+import getchangelogoptions from './getchangelogoptions.mjs';
+import { generateChangelogForMonoRepository } from '@ckeditor/ckeditor5-dev-release-tools';
+import { CKEDITOR5_COMMERCIAL_PATH } from './utils/constants.mjs';
+import parsearguments from './utils/parsearguments.mjs';
 
-const fs = require( 'fs' );
-const getChangelogOptions = require( './getchangelogoptions' );
-const { generateChangelogForMonoRepository } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { CKEDITOR5_COMMERCIAL_PATH } = require( './utils/constants' );
-const parseArguments = require( './utils/parsearguments' );
-
-const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const cliArguments = parsearguments( process.argv.slice( 2 ) );
 
 if ( !fs.existsSync( CKEDITOR5_COMMERCIAL_PATH ) ) {
 	throw new Error( `The script assumes that the directory "${ CKEDITOR5_COMMERCIAL_PATH }" exists.` );
 }
 
-const changelogOptions = getChangelogOptions( cliArguments );
+const changelogOptions = getchangelogoptions( cliArguments );
 
 generateChangelogForMonoRepository( changelogOptions )
 	.then( () => {

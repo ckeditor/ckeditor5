@@ -5,16 +5,14 @@
 
 /* eslint-env node */
 
-'use strict';
-
 /**
  * @param {String} packagePath
  * @returns {Promise}
  */
-module.exports = async function compileTypeScriptCallback( packagePath ) {
-	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-	const fs = require( 'fs/promises' );
-	const path = require( 'upath' );
+export default async function compiletypescriptcallback( packagePath ) {
+	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
+	const { default: fs } = await import( 'fs/promises' );
+	const { default: path } = await import( 'upath' );
 
 	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
 		return;
@@ -49,5 +47,5 @@ module.exports = async function compileTypeScriptCallback( packagePath ) {
 			.then( () => true )
 			.catch( () => false );
 	}
-};
+}
 

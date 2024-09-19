@@ -5,12 +5,10 @@
 
 /* eslint-env node */
 
-'use strict';
+import { tools } from '@ckeditor/ckeditor5-dev-utils';
 
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-module.exports = async function buildTsAndDllForCkeditor5Root() {
+export default async function buildtsanddllforckeditor5root() {
 	await tools.shExec( 'yarn run build', { async: true, verbosity: 'silent' } );
 	await tools.shExec( 'yarn run build:dist', { async: true, verbosity: 'silent' } );
 	await tools.shExec( 'yarn run dll:build --skip-packages-dll', { async: true, verbosity: 'silent' } );
-};
+}

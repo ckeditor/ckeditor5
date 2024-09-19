@@ -5,10 +5,10 @@
 
 /* eslint-env node */
 
-const { format } = require( 'date-fns' );
-const { PACKAGES_DIRECTORY, CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } = require( './utils/constants' );
+import { format } from 'date-fns';
+import { PACKAGES_DIRECTORY, CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from './utils/constants.mjs';
 
-module.exports = function getChangelogOptions( cliArguments ) {
+export default function getchangelogoptions( cliArguments ) {
 	const changelogOptions = {
 		cwd: CKEDITOR5_ROOT_PATH,
 		packages: PACKAGES_DIRECTORY,
@@ -57,4 +57,4 @@ module.exports = function getChangelogOptions( cliArguments ) {
 	}
 
 	return changelogOptions;
-};
+}

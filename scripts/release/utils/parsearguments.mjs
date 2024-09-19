@@ -5,15 +5,14 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const minimist = require( 'minimist' );
+import minimist from 'minimist';
+import os from 'os';
 
 /**
  * @param {Array.<String>} cliArguments
  * @returns {ReleaseOptions} options
  */
-module.exports = function parseArguments( cliArguments ) {
+export default function parsearguments( cliArguments ) {
 	const config = {
 		boolean: [
 			'nightly',
@@ -38,7 +37,7 @@ module.exports = function parseArguments( cliArguments ) {
 		default: {
 			nightly: false,
 			'nightly-alpha': false,
-			concurrency: require( 'os' ).cpus().length / 2,
+			concurrency: os.cpus().length / 2,
 			'compile-only': false,
 			packages: null,
 			branch: 'release',
@@ -75,7 +74,7 @@ module.exports = function parseArguments( cliArguments ) {
 	}
 
 	return options;
-};
+}
 
 /**
  * Replaces all kebab-case keys in the `options` object with camelCase entries.

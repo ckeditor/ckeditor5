@@ -7,19 +7,17 @@
 
 /* eslint-env node */
 
-'use strict';
+import upath from 'upath';
+import { Listr } from 'listr2';
+import { tools } from '@ckeditor/ckeditor5-dev-utils';
+import parsearguments from './utils/parsearguments.mjs';
+import { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } from './utils/constants.mjs';
+import getcdnversion from './utils/getcdnversion.mjs';
+import getlistroptions from './utils/getlistroptions.mjs';
 
-const upath = require( 'upath' );
-const { Listr } = require( 'listr2' );
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-const parseArguments = require( './utils/parsearguments' );
-const { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } = require( './utils/constants' );
-const getCdnVersion = require( './utils/getcdnversion' );
-const getListrOptions = require( './utils/getlistroptions' );
-
-const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const cliArguments = parsearguments( process.argv.slice( 2 ) );
 const { version: packageJsonVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
-const cdnVersion = getCdnVersion( cliArguments, packageJsonVersion );
+const cdnVersion = getcdnversion( cliArguments, packageJsonVersion );
 
 const tasks = new Listr( [
 	{
@@ -52,7 +50,7 @@ const tasks = new Listr( [
 			);
 		}
 	}
-], getListrOptions( cliArguments ) );
+], getlistroptions( cliArguments ) );
 
 ( async () => {
 	try {

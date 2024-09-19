@@ -5,26 +5,22 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const upath = require( 'upath' );
-const fs = require( 'fs-extra' );
-const { glob } = require( 'glob' );
+import fs from 'fs-extra';
+import { glob } from 'glob';
+import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
 /**
  * Checks whether provided package name is the CKEditor 5 dependency.
  *
  * @returns {Promise.<Function>}
  */
-module.exports = async function isCKEditor5PackageFactory() {
-	const pathToCKEditor5 = upath.resolve( __dirname, '../../..' );
-
+export default async function isckeditor5packagefactory() {
 	const allPathsToPackageJson = await glob( [
 		'package.json',
 		'packages/*/package.json',
 		'external/ckeditor5-commercial/packages/*/package.json'
 	], {
-		cwd: pathToCKEditor5,
+		cwd: CKEDITOR5_ROOT_PATH,
 		nodir: true,
 		absolute: true
 	} );
@@ -36,4 +32,4 @@ module.exports = async function isCKEditor5PackageFactory() {
 	const allPackageNames = allPackageJson.map( packageJson => packageJson.name );
 
 	return packageName => allPackageNames.includes( packageName );
-};
+}

@@ -7,13 +7,11 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const path = require( 'path' );
-const fs = require( 'fs' );
-const rimraf = require( 'rimraf' );
-const minimist = require( 'minimist' );
-const isTypeScriptPackage = require( './utils/istypescriptpackage' );
+import path from 'path';
+import fs from 'fs';
+import rimraf from 'rimraf';
+import minimist from 'minimist';
+import istypescriptpackage from './utils/istypescriptpackage.mjs';
 
 const options = parseArguments( process.argv.slice( 2 ) );
 
@@ -67,7 +65,7 @@ async function findTypeScriptPackages( repositoryRoot ) {
 	const result = [];
 
 	for ( const pkg of allPackages ) {
-		if ( await isTypeScriptPackage( pkg ) ) {
+		if ( await istypescriptpackage( pkg ) ) {
 			result.push( pkg );
 		}
 	}

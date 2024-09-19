@@ -5,14 +5,12 @@
 
 /* eslint-env node */
 
-'use strict';
-
-module.exports = async function buildCKEditor5BuildsCallback( packagePath ) {
-	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+export default async function buildckeditor5buildscallback( packagePath ) {
+	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
 
 	return tools.shExec( 'yarn run build', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true
 	} );
-};
+}

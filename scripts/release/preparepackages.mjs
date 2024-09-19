@@ -7,35 +7,33 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const upath = require( 'upath' );
-const fs = require( 'fs-extra' );
-const { EventEmitter } = require( 'events' );
-const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-const { Listr } = require( 'listr2' );
-const updateVersionReferences = require( './utils/updateversionreferences' );
-const buildPackageUsingRollupCallback = require( './utils/buildpackageusingrollupcallback' );
-const buildTsAndDllForCkeditor5Root = require( './utils/buildtsanddllforckeditor5root' );
-const getCKEditor5PackageJson = require( './utils/getckeditor5packagejson' );
-const parseArguments = require( './utils/parsearguments' );
-const isCKEditor5PackageFactory = require( './utils/isckeditor5packagefactory' );
-const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' );
-const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
-const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
-const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
-const getListrOptions = require( './utils/getlistroptions' );
-const getCdnVersion = require( './utils/getcdnversion' );
-const {
+import upath from 'upath';
+import fs from 'fs-extra';
+import { EventEmitter } from 'events';
+import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import { tools } from '@ckeditor/ckeditor5-dev-utils';
+import { Listr } from 'listr2';
+import updateversionreferences from './utils/updateversionreferences.mjs';
+import buildpackageusingrollupcallback from './utils/buildpackageusingrollupcallback.mjs';
+import buildtsanddllforckeditor5root from './utils/buildtsanddllforckeditor5root.mjs';
+import getckeditor5packagejson from './utils/getckeditor5packagejson.mjs';
+import parsearguments from './utils/parsearguments.mjs';
+import isckeditor5packagefactory from './utils/isckeditor5packagefactory.mjs';
+import compiletypescriptcallback from './utils/compiletypescriptcallback.mjs';
+import updatepackageentrypoint from './utils/updatepackageentrypoint.mjs';
+import preparedllbuildscallback from './utils/preparedllbuildscallback.mjs';
+import buildckeditor5buildscallback from './utils/buildckeditor5buildscallback.mjs';
+import getlistroptions from './utils/getlistroptions.mjs';
+import getcdnversion from './utils/getcdnversion.mjs';
+import {
 	PACKAGES_DIRECTORY,
 	RELEASE_DIRECTORY,
 	RELEASE_CDN_DIRECTORY,
 	RELEASE_ZIP_DIRECTORY,
 	RELEASE_NPM_DIRECTORY
-} = require( './utils/constants' );
+} from './utils/constants.mjs';
 
-const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const cliArguments = parsearguments( process.argv.slice( 2 ) );
 
 // `executeInParallel()` is executed thrice.
 EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
@@ -131,14 +129,14 @@ const tasks = new Listr( [
 							// We do not use caret ranges by purpose. See: #14046.
 							version: latestVersion,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
+							shouldUpdateVersionCallback: await isckeditor5packagefactory()
 						} );
 					}
 				},
 				{
 					title: 'Updating references.',
 					task: async ctx => {
-						ctx.updatedFiles = await updateVersionReferences( {
+						ctx.updatedFiles = await updateversionreferences( {
 							version: latestVersion,
 							releaseDate: new Date()
 						} );
@@ -162,7 +160,7 @@ const tasks = new Listr( [
 				{
 					title: 'Preparing the "ckeditor5" package files.',
 					task: () => {
-						return buildTsAndDllForCkeditor5Root();
+						return buildtsanddllforckeditor5root();
 					}
 				},
 				{
@@ -174,7 +172,7 @@ const tasks = new Listr( [
 								return upath.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
 							},
 							listrTask: task,
-							taskToExecute: buildCKEditor5BuildsCallback,
+							taskToExecute: buildckeditor5buildscallback,
 							concurrency: 2
 						} );
 					}
@@ -185,7 +183,7 @@ const tasks = new Listr( [
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
 							listrTask: task,
-							taskToExecute: compileTypeScriptCallback,
+							taskToExecute: compiletypescriptcallback,
 							concurrency: cliArguments.concurrency
 						} );
 					}
@@ -196,7 +194,7 @@ const tasks = new Listr( [
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
 							listrTask: task,
-							taskToExecute: buildPackageUsingRollupCallback,
+							taskToExecute: buildpackageusingrollupcallback,
 							concurrency: cliArguments.concurrency
 						} );
 					}
@@ -207,7 +205,7 @@ const tasks = new Listr( [
 						return releaseTools.prepareRepository( {
 							outputDirectory: RELEASE_DIRECTORY,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							rootPackageJson: getCKEditor5PackageJson(),
+							rootPackageJson: getckeditor5packagejson(),
 							packagesToCopy: cliArguments.packages
 						} );
 					}
@@ -218,7 +216,7 @@ const tasks = new Listr( [
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
 							listrTask: task,
-							taskToExecute: updatePackageEntryPoint,
+							taskToExecute: updatepackageentrypoint,
 							concurrency: cliArguments.concurrency
 						} );
 					}
@@ -232,7 +230,7 @@ const tasks = new Listr( [
 								return upath.basename( packageDirectory ).startsWith( 'ckeditor5' );
 							},
 							listrTask: task,
-							taskToExecute: prepareDllBuildsCallback,
+							taskToExecute: preparedllbuildscallback,
 							concurrency: cliArguments.concurrency,
 							taskOptions: {
 								RELEASE_CDN_DIRECTORY
@@ -272,7 +270,7 @@ const tasks = new Listr( [
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 
-						const cdnVersion = getCdnVersion( cliArguments, latestVersion );
+						const cdnVersion = getcdnversion( cliArguments, latestVersion );
 						const zipName = `ckeditor5-${ cdnVersion }`;
 
 						await tools.shExec(
@@ -333,7 +331,7 @@ const tasks = new Listr( [
 			return false;
 		}
 	}
-], getListrOptions( cliArguments ) );
+], getlistroptions( cliArguments ) );
 
 ( async () => {
 	try {

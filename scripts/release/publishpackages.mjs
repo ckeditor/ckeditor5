@@ -7,18 +7,15 @@
 
 /* eslint-env node */
 
-'use strict';
+import upath from 'upath';
+import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import { Listr } from 'listr2';
+import validatedependenciesversions from './utils/validatedependenciesversions.mjs';
+import parsearguments from './utils/parsearguments.mjs';
+import { CKEDITOR5_ROOT_PATH, RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
+import getlistroptions from './utils/getlistroptions.mjs';
 
-const upath = require( 'upath' );
-const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { provideToken } = require( '@ckeditor/ckeditor5-dev-release-tools/lib/utils/cli' );
-const { Listr } = require( 'listr2' );
-const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
-const parseArguments = require( './utils/parsearguments' );
-const { CKEDITOR5_ROOT_PATH, RELEASE_NPM_DIRECTORY } = require( './utils/constants' );
-const getListrOptions = require( './utils/getlistroptions' );
-
-const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const cliArguments = parsearguments( process.argv.slice( 2 ) );
 
 const { version: latestVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
@@ -29,7 +26,7 @@ const tasks = new Listr( [
 	{
 		title: 'Validating CKEditor 5 packages.',
 		task: () => {
-			return validateDependenciesVersions( {
+			return validatedependenciesversions( {
 				packagesDirectory: RELEASE_NPM_DIRECTORY,
 				version: latestVersion
 			} );
@@ -121,14 +118,14 @@ const tasks = new Listr( [
 		// Nightly releases are not described in the changelog.
 		skip: cliArguments.nightly || cliArguments.nightlyAlpha
 	}
-], getListrOptions( cliArguments ) );
+], getlistroptions( cliArguments ) );
 
 ( async () => {
 	try {
 		if ( process.env.CKE5_RELEASE_TOKEN ) {
 			githubToken = process.env.CKE5_RELEASE_TOKEN;
 		} else if ( !( cliArguments.nightly || cliArguments.nightlyAlpha ) ) {
-			githubToken = await provideToken();
+			githubToken = await releaseTools.provideToken();
 		}
 
 		await tasks.run();

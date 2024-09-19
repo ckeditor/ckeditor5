@@ -7,11 +7,11 @@
 
 'use strict';
 
-const { glob } = require( 'glob' );
-const { promises: { readFile } } = require( 'fs' );
-const semver = require( 'semver' );
-const { normalizeTrim } = require( 'upath' );
-const isCKEditor5PackageFactory = require( './isckeditor5packagefactory' );
+import { glob } from 'glob';
+import { readFile } from 'fs/promises';
+import semver from 'semver';
+import { normalizeTrim } from 'upath';
+import isckeditor5packagefactory from './isckeditor5packagefactory.mjs';
 
 /**
  * Validates if the versions of packages and their dependencies in specified directory match the provided version.
@@ -21,7 +21,7 @@ const isCKEditor5PackageFactory = require( './isckeditor5packagefactory' );
  * @param {String} options.version Version that all packages and their dependencies need to match.
  * @param {Array.<String>} [options.skipPackages] Packages names that should not be validated.
  */
-module.exports = async function validateDependenciesVersions( { packagesDirectory, version, skipPackages = [] } ) {
+export default async function validatedependenciesversions( { packagesDirectory, version, skipPackages = [] } ) {
 	const normalizedReleaseDirectory = normalizeTrim( packagesDirectory );
 	const globPattern = `${ normalizedReleaseDirectory }/*/package.json`;
 	const pkgJsonPaths = await glob( globPattern, { absolute: true, nodir: true } );
@@ -30,7 +30,7 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
 		pkgJsonPaths.map( async pkgJsonPath => JSON.parse( await readFile( pkgJsonPath, 'utf8' ) ) )
 	);
 
-	const isCKEditor5Package = await isCKEditor5PackageFactory();
+	const isCKEditor5Package = await isckeditor5packagefactory();
 
 	const errors = pkgJsons
 		.filter( pkgJson => !skipPackages.includes( pkgJson.name ) )
@@ -49,7 +49,7 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
 
 		throw error;
 	}
-};
+}
 
 /**
  * @param {String} version

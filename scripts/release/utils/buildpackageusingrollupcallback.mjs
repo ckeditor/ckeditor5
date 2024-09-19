@@ -5,24 +5,21 @@
 
 /* eslint-env node */
 
-'use strict';
-
 /**
  * @param {String} packagePath
  * @returns {Promise}
  */
-module.exports = async function buildPackageUsingRollupCallback( packagePath ) {
-	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-
+export default async function buildpackageusingrollupcallback( packagePath ) {
 	// Ignore builds as they are rather "a product to use" instead of "blocks to combine".
 	if ( packagePath.includes( 'ckeditor5-build-' ) ) {
 		return;
 	}
+
+	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
 
 	return tools.shExec( 'yarn run build:dist', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true
 	} );
-};
-
+}

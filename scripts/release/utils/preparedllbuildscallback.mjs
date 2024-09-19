@@ -5,20 +5,18 @@
 
 /* eslint-env node */
 
-'use strict';
-
 /**
  * @param {String} packagePath
  * @param {Object} options
  * @param {String} options.RELEASE_CDN_DIRECTORY
  * @returns {Promise}
  */
-module.exports = async function prepareDllBuildsCallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
-	const fs = require( 'fs-extra' );
-	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-	const upath = require( 'upath' );
+export default async function preparedllbuildscallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
+	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
+	const { default: fs } = await import( 'fs/promises' );
+	const { default: path } = await import( 'upath' );
 
-	const packageJsonPath = upath.join( packagePath, 'package.json' );
+	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const packageJson = require( packageJsonPath );
 
 	if ( !isDllPackage() ) {
@@ -41,4 +39,4 @@ module.exports = async function prepareDllBuildsCallback( packagePath, { RELEASE
 	function isDllPackage() {
 		return 'dll:build' in ( packageJson.scripts || {} );
 	}
-};
+}

@@ -5,11 +5,9 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const fs = require( 'fs/promises' );
-const upath = require( 'upath' );
-const ROOT_DIRECTORY = upath.join( __dirname, '..', '..', '..' );
+import fs from 'fs/promises';
+import upath from 'upath';
+import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
 /**
  * Updates CKEditor 5 version and release date references in several places.
@@ -19,7 +17,7 @@ const ROOT_DIRECTORY = upath.join( __dirname, '..', '..', '..' );
  * @param {Date} options.releaseDate The release date to set.
  * @returns {Promise.<Array.<String>>} An array of relative paths to updated files.
  */
-module.exports = async function updateVersionReferences( { version, releaseDate } ) {
+export default async function updateversionreferences( { version, releaseDate } ) {
 	const filesToUpdate = [
 		{
 			file: 'README.md',
@@ -47,7 +45,7 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 			continue;
 		}
 
-		const absolutePath = upath.join( ROOT_DIRECTORY, file );
+		const absolutePath = upath.join( CKEDITOR5_ROOT_PATH, file );
 
 		if ( !( await checkFileExists( absolutePath ) ) ) {
 			continue;
@@ -65,7 +63,7 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 	}
 
 	return [ ...updatedFiles ];
-};
+}
 
 function checkFileExists( file ) {
 	return fs.access( file, fs.constants.F_OK )

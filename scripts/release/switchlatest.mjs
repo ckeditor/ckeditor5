@@ -7,12 +7,10 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const upath = require( 'upath' );
-const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { globSync } = require( 'glob' );
-const rootPkgJson = require( '../../package.json' );
+import upath from 'upath';
+import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import { globSync } from 'glob';
+import rootPkgJson from '../../package.json';
 
 const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 const GLOB_PATTERNS = [
