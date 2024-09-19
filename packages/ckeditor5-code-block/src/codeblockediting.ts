@@ -24,8 +24,6 @@ import {
 } from 'ckeditor5/src/engine.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
-import type { ListEditing } from '@ckeditor/ckeditor5-list';
-
 import CodeBlockCommand from './codeblockcommand.js';
 import IndentCodeBlockCommand from './indentcodeblockcommand.js';
 import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
