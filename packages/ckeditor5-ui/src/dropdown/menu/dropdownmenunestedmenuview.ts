@@ -137,7 +137,7 @@ export default class DropdownMenuNestedMenuView extends View implements Focusabl
 		} );
 
 		this.keystrokes = new KeystrokeHandler();
-		this.focusTracker = new FocusTracker();
+		this.focusTracker = new FocusTracker( `dropdown menu "${ id }"` );
 
 		this.buttonView = new DropdownMenuButtonView( locale );
 		this.buttonView.delegate( 'mouseenter' ).to( this );
@@ -149,6 +149,8 @@ export default class DropdownMenuNestedMenuView extends View implements Focusabl
 
 		this.listView = new DropdownMenuListView( locale );
 		this.listView.bind( 'ariaLabel' ).to( this.buttonView, 'label' );
+
+		this.focusTracker.chain( this.listView.focusTracker );
 
 		this.panelView.content.add( this.listView );
 

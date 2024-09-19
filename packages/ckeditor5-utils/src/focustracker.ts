@@ -12,6 +12,22 @@
 import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
+import { type View } from '@ckeditor/ckeditor5-ui';
+
+window.FOCUS_TRACKERS = [];
+
+window.logFocusTrackers = function() {
+	Array.from( window.FOCUS_TRACKERS )
+		.filter( a => a._getLabel() !== 'generic' )
+		.forEach( tracker => {
+			console.group( logFT( tracker ) );
+			console.log( '  isFocused:', tracker.isFocused );
+			console.log( '  focusedElement:', tracker.focusedElement );
+			console.log( '  elements:', tracker.elements );
+			console.log( '  chainedFocusTrackers:', tracker.chainedFocusTrackers );
+			console.groupEnd();
+		} );
+};
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.
@@ -27,12 +43,47 @@ import CKEditorError from './ckeditorerror.js';
  */
 export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
+	 * List of registered elements.
+	 *
+	 * @internal
+	 */
+	public _elements: Set<Element> = new Set();
+
+	public _chainedFocusTrackers: Set<FocusTracker> = new Set();
+
+	/**
+	 * Event loop timeout.
+	 */
+	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	private _label: string | ( () => string ) | undefined;
+
+	private _previousIsFocused: boolean | undefined;
+
+	private _previousFocusedElement: Element | null | undefined;
+
+	constructor( label?: string ) {
+		super();
+
+		this._label = label;
+
+		window.FOCUS_TRACKERS.push( this );
+
+		this._emitEventsOnFocusChange( {
+			isFocused: false,
+			focusedElement: null
+		} );
+	}
+
+	/**
 	 * True when one of the registered elements is focused.
 	 *
 	 * @readonly
 	 * @observable
 	 */
-	declare public isFocused: boolean;
+	public get isFocused(): boolean {
+		return !!this._focusedElement || !!this._focusedChainedFocusTracker;
+	}
 
 	/**
 	 * The currently focused element.
@@ -44,25 +95,12 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * @readonly
 	 * @observable
 	 */
-	declare public focusedElement: Element | null;
+	public get focusedElement(): Element | null {
+		if ( !this.isFocused ) {
+			return null;
+		}
 
-	/**
-	 * List of registered elements.
-	 *
-	 * @internal
-	 */
-	public _elements: Set<Element> = new Set();
-
-	/**
-	 * Event loop timeout.
-	 */
-	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null = null;
-
-	constructor() {
-		super();
-
-		this.set( 'isFocused', false );
-		this.set( 'focusedElement', null );
+		return this._focusedElement || this._focusedChainedFocusTracker!.focusedElement;
 	}
 
 	/**
@@ -70,6 +108,13 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 */
 	public get elements(): Array<Element> {
 		return Array.from( this._elements.values() );
+	}
+
+	/**
+	 * TODO
+	 */
+	public get chainedFocusTrackers(): Array<FocusTracker> {
+		return Array.from( this._chainedFocusTrackers.values() );
 	}
 
 	/**
@@ -113,14 +158,40 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		this.stopListening();
 	}
 
+	public chain( otherFocusTracker: FocusTracker ): void {
+		console.log( `chain ${ logFT( otherFocusTracker ) } as an extension of ${ logFT( this ) }` );
+
+		this.listenTo( otherFocusTracker, 'change:isFocused', () => {
+			console.group( `${ logFT( otherFocusTracker ) } change:isFocused =`, otherFocusTracker.isFocused );
+
+			if ( otherFocusTracker.isFocused ) {
+				this._focus( otherFocusTracker.focusedElement! );
+			} else {
+				this._blur();
+			}
+
+			console.groupEnd();
+		} );
+
+		this._chainedFocusTrackers.add( otherFocusTracker );
+	}
+
+	public unchain( otherFocusTracker: FocusTracker ): void {
+		console.log( 'TODO' );
+	}
+
 	/**
 	 * Stores currently focused element and set {@link #isFocused} as `true`.
 	 */
 	private _focus( element: Element ): void {
+		console.log( `${ logFT( this ) }#focus()` );
+
 		clearTimeout( this._nextEventLoopTimeout! );
 
-		this.focusedElement = element;
-		this.isFocused = true;
+		this._emitEventsOnFocusChange( {
+			focusedElement: element,
+			isFocused: true
+		} );
 	}
 
 	/**
@@ -130,9 +201,61 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	private _blur(): void {
 		clearTimeout( this._nextEventLoopTimeout! );
 
+		// Could be still focused via chained FTs.
+		if ( this.isFocused ) {
+			console.log( 'Blur aborted. Still focused.' );
+			return;
+		}
+
+		console.log( `${ logFT( this ) }#blur()` );
+
 		this._nextEventLoopTimeout = setTimeout( () => {
-			this.focusedElement = null;
-			this.isFocused = false;
+			this._emitEventsOnFocusChange( {
+				focusedElement: null,
+				isFocused: false
+			} );
 		}, 0 );
 	}
+
+	private get _focusedElement(): Element | undefined {
+		return this.elements.find( element => element.contains( document.activeElement ) );
+	}
+
+	private get _focusedChainedFocusTracker(): FocusTracker | undefined {
+		return this.chainedFocusTrackers.find( ( { isFocused } ) => isFocused );
+	}
+
+	private _emitEventsOnFocusChange( newState: {
+		isFocused: boolean;
+		focusedElement: Element | null;
+	} ): void {
+		if ( this._previousIsFocused !== newState.isFocused ) {
+			this.fire( 'change:isFocused', 'isFocused', newState.isFocused, this._previousIsFocused );
+			this._previousIsFocused = newState.isFocused;
+		}
+
+		if ( this._previousFocusedElement !== newState.focusedElement ) {
+			this.fire( 'change:focusedElement', 'focusedElement', newState.focusedElement, this._previousFocusedElement );
+			this._previousFocusedElement = newState.focusedElement;
+		}
+	}
+
+	public _getLabel(): string | undefined {
+		return ( typeof this._label == 'function' ? this._label() : this._label ) || 'generic';
+	}
+}
+
+export type ViewWithFocusTracker = View & { focusTracker: FocusTracker };
+
+/**
+ * Checks whether a view is an instance of {@link ~ViewWithFocusTracker}.
+ *
+ * @param view A view to be checked.
+ */
+export function isViewWithFocusTracker( view: View ): view is ViewWithFocusTracker {
+	return 'focusTracker' in view && view.focusTracker instanceof FocusTracker;
+}
+
+function logFT( ft: FocusTracker ) {
+	return `[FT:${ ft._getLabel() }]`;
 }

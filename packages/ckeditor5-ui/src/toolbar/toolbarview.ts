@@ -26,6 +26,7 @@ import {
 	Rect,
 	ResizeObserver,
 	global,
+	isViewWithFocusTracker,
 	isVisible,
 	logWarning,
 	type CollectionAddEvent,
@@ -264,11 +265,19 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		this.items.on<CollectionAddEvent<View>>( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element! );
+			if ( isViewWithFocusTracker( item ) ) {
+				this.focusTracker.chain( item.focusTracker );
+			} else {
+				this.focusTracker.add( item.element! );
+			}
 		} );
 
 		this.items.on<CollectionRemoveEvent<View>>( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element! );
+			if ( isViewWithFocusTracker( item ) ) {
+				this.focusTracker.unchain( item.focusTracker );
+			} else {
+				this.focusTracker.remove( item.element! );
+			}
 		} );
 
 		// Start listening for the keystrokes coming from #element.
