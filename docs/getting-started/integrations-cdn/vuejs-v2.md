@@ -17,10 +17,10 @@ order: 40
 </p>
 
 <info-box warning>
-	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations-cdn/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
+	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations-cdn/vuejs-v3"Rich text editor component for Vue.js 3+} guide.
 </info-box>
 
-Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application. This guide assumes that you already have a Vue 2 project.
+Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides an official Vue component you can use in your application. This guide assumes that you already have a Vue 2 project.
 
 {@snippet getting-started/use-builder}
 
@@ -32,7 +32,7 @@ First, install the CKEditor&nbsp;5 WYSIWYG editor component for Vue 2:
 npm install @ckeditor/ckeditor5-vue2
 ```
 
-Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and links are in the HTML snippet below. You can copy and paste them into your `index.html`. Open-source and premium features are in separate files, so there are different tags for both types of plugins. Add tags for premium features only if you use them.
+Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and links are shown in the HTML snippet below. You can copy and paste them into your `index.html` file. Open-source and premium features are in separate files, so there are different tags for both types of plugins. Add tags for premium features only if you use them.
 
 ```html
 <!DOCTYPE html>
@@ -45,8 +45,8 @@ Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and 
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 		<!-- Add if you use premium features -->
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
-        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 		<!--  -->
 
 		<title>Vite App</title>
@@ -133,7 +133,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 

@@ -30,8 +30,8 @@ Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;
 
 This guide assumes you already have a Vue project. First, install the CKEditor 5 packages:
 
-* `ckeditor5` – package with open-source plugins and features.
-* `ckeditor5-premium-features` – package with premium plugins and features.
+* `ckeditor5` &ndash; package with open-source plugins and features.
+* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
 
 ```bash
 npm install ckeditor5 ckeditor5-premium-features
@@ -80,7 +80,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 
@@ -120,8 +120,8 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>',
-                plugins: [ Bold, Essentials, Italic, Paragraph ],
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				plugins: [ Bold, Essentials, Italic, Paragraph ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			}
 		};
