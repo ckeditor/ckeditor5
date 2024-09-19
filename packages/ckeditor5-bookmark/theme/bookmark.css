@@ -4,7 +4,6 @@
  */
 
 :root {
-	--ck-bookmark-icon-default-fill-color: var(--ck-color-text);
 	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
 	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
@@ -34,6 +33,14 @@
 		&.ck-widget_selected,
 		&.ck-widget_selected:hover {
 			outline: none;
+		}
+
+		& .ck-bookmark__icon {
+			& .ck-icon {
+				height: 0.75em;
+				width: auto;
+				vertical-align: middle;
+			}
 		}
 	}
 }

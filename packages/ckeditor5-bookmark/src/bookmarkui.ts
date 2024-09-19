@@ -11,7 +11,6 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
-import '../theme/bookmark.css';
 
 /**
  * The UI plugin of the bookmark feature.
