@@ -101,7 +101,7 @@ All entries must be separated with a blank line, otherwise the lines will not be
 
 The changelog generator understands squash commits created by GitHub when merging a pull request.
 
-When using the _"Squash and merge"_ option, ensure the default commit title is not modified. It should contain the pull request title and its number, e.g., `Example pull request (#000)`. The changelog entries should be added as a commit description. They must follow the same rules as merge commits.
+When using the _"Squash and merge"_ option, ensure the default commit title is not modified. It should contain the pull request title and its number, for example: `Sample pull request (#000)`. The changelog entries should be added as a commit description. They must follow the same rules as merge commits.
 
 ### Examples of correct and incorrect message formatting
 
