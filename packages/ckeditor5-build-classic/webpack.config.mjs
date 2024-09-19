@@ -3,17 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-'use strict';
-
 /* eslint-env node */
 
-const path = require( 'path' );
-const webpack = require( 'webpack' );
-const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
-const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-const TerserPlugin = require( 'terser-webpack-plugin' );
+import path from 'path';
+import module from 'module';
+import { fileURLToPath } from 'url';
+import webpack from 'webpack';
+import { bundler, loaders } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
+import TerserPlugin from 'terser-webpack-plugin';
 
-module.exports = {
+const require = module.createRequire( import.meta.url );
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
+
+export default {
 	devtool: 'source-map',
 	performance: { hints: false },
 
@@ -21,7 +25,7 @@ module.exports = {
 
 	output: {
 		// The name under which the editor will be exported.
-		library: 'InlineEditor',
+		library: 'ClassicEditor',
 
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'ckeditor.js',
@@ -75,3 +79,4 @@ module.exports = {
 		}
 	}
 };
+
