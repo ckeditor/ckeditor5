@@ -40,5 +40,7 @@ export default class DropdownMenuListView extends ListView {
 				]
 			}
 		} );
+
+		this.focusTracker._label = 'DropdownMenuListView';
 	}
 }

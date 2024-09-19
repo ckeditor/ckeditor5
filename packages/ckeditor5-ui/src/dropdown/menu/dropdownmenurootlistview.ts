@@ -16,7 +16,7 @@ import { DropdownRootMenuBehaviors } from './dropdownmenubehaviors.js';
 import type BodyCollection from '../../editorui/bodycollection.js';
 import type { DropdownMenuDefinition } from './utils.js';
 
-import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
+import { type Locale, type BaseEvent, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Creates and manages a multi-level menu UI structure, suitable to be used inside dropdown components.
@@ -85,6 +85,8 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 */
 	declare public menuPanelClass: string | undefined;
 
+	declare public focusTracker: FocusTracker;
+
 	/**
 	 * The definitions object used to create the whole menu structure.
 	 */
@@ -122,6 +124,8 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		this._bodyCollection = bodyCollection;
 		this._definition = definition;
 
+		this.focusTracker = new FocusTracker( 'DropdownMenuRootListView' );
+
 		this.set( 'menuPanelClass', undefined );
 	}
 
@@ -152,6 +156,8 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 
 		DropdownRootMenuBehaviors.toggleMenusAndFocusItemsOnHover( this );
 		DropdownRootMenuBehaviors.closeMenuWhenAnotherOnTheSameLevelOpens( this );
+
+		this.menus.forEach( menu => this.focusTracker.add( menu ) );
 	}
 
 	/**

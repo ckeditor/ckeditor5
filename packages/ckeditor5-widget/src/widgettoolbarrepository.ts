@@ -170,6 +170,8 @@ export default class WidgetToolbarRepository extends Plugin {
 		const t = editor.t;
 		const toolbarView = new ToolbarView( editor.locale );
 
+		toolbarView.focusTracker._label = 'widget toolbar: ' + ariaLabel;
+
 		toolbarView.ariaLabel = ariaLabel || t( 'Widget toolbar' );
 
 		if ( this._toolbarDefinitions.has( toolbarId ) ) {

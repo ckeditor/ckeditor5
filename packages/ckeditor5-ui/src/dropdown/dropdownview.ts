@@ -222,7 +222,9 @@ export default class DropdownView extends View<HTMLDivElement> {
 		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
 
 		this.keystrokes = new KeystrokeHandler();
-		this.focusTracker = new FocusTracker();
+		this.focusTracker = new FocusTracker( () => {
+			return `DropdownView: "${ buttonView.label }"`;
+		} );
 
 		this.setTemplate( {
 			tag: 'div',

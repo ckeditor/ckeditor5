@@ -198,6 +198,7 @@ export function addMenuToDropdown(
 		ariaLabel?: string;
 	} = {} ): void {
 	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+	dropdownView.focusTracker.add( dropdownView.menuView );
 
 	if ( dropdownView.isOpen ) {
 		addMenuToOpenDropdown( dropdownView, options );

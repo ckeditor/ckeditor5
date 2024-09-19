@@ -151,7 +151,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		this.editor = editor;
 		this.componentFactory = new ComponentFactory( editor );
-		this.focusTracker = new FocusTracker();
+		this.focusTracker = new FocusTracker( 'EditorUI' );
 		this.tooltipManager = new TooltipManager( editor );
 		this.poweredBy = new PoweredBy( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
@@ -306,11 +306,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 */
 	public addToolbar( toolbarView: ToolbarView, options: FocusableToolbarOptions = {} ): void {
 		if ( toolbarView.isRendered ) {
-			this.focusTracker.add( toolbarView.element! );
+			this.focusTracker.add( toolbarView );
 			this.editor.keystrokes.listenTo( toolbarView.element! );
 		} else {
 			toolbarView.once<UIViewRenderEvent>( 'render', () => {
-				this.focusTracker.add( toolbarView.element! );
+				this.focusTracker.remove( toolbarView );
 				this.editor.keystrokes.listenTo( toolbarView.element! );
 			} );
 		}
