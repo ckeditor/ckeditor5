@@ -29,7 +29,7 @@ import { type View } from '@ckeditor/ckeditor5-ui';
 // 		} );
 // };
 
-const DEBUG = true;
+const DEBUG = false;
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.
