@@ -5,8 +5,8 @@
 
 /* eslint-env node */
 
-const { downloadTranslations, getToken } = require( '@ckeditor/ckeditor5-dev-transifex' );
-const { parseArguments, getCKEditor5PackageNames } = require( './utils' );
+import { downloadTranslations, getToken } from '@ckeditor/ckeditor5-dev-transifex';
+import { parseArguments, getCKEditor5PackageNames } from './utils.mjs';
 
 main().catch( err => {
 	console.error( err );

@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-export default async function buildckeditor5buildscallback( packagePath ) {
+export default async function buildCKEditor5BuildsCallback( packagePath ) {
 	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
 
 	return tools.shExec( 'yarn run build', {

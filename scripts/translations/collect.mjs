@@ -5,17 +5,16 @@
 
 /* eslint-env node */
 
-const upath = require( 'upath' );
-const { createPotFiles } = require( '@ckeditor/ckeditor5-dev-transifex' );
-const {
+import upath from 'upath';
+import { createPotFiles } from '@ckeditor/ckeditor5-dev-transifex';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import {
 	TRANSLATION_DIRECTORY_PATH,
 	parseArguments,
 	getCKEditor5SourceFiles,
 	getCKEditor5PackagePaths,
 	normalizePath
-} = require( './utils' );
-
-const CKEDITOR5_ROOT_PATH = upath.join( __dirname, '..', '..' );
+} from './utils.mjs';
 
 main();
 

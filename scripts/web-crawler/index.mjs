@@ -7,8 +7,8 @@
 
 /* eslint-env node */
 
-const minimist = require( 'minimist' );
-const { DEFAULT_CONCURRENCY, runCrawler, toArray, isUrlValid } = require( '@ckeditor/ckeditor5-dev-web-crawler' );
+import minimist from 'minimist';
+import { DEFAULT_CONCURRENCY, runCrawler, toArray, isUrlValid } from '@ckeditor/ckeditor5-dev-web-crawler';
 
 const options = parseArguments( process.argv.slice( 2 ) );
 

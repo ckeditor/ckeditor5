@@ -7,11 +7,9 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const { execSync } = require( 'child_process' );
-const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const semver = require( 'semver' );
+import { execSync } from 'child_process';
+import releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import semver from 'semver';
 
 // `@staging` and `@latest` share usually the same versions.
 //

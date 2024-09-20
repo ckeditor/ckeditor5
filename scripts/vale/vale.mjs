@@ -5,17 +5,16 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const ini = require( 'ini' );
-const yaml = require( 'js-yaml' );
-const fs = require( 'fs-extra' );
-const chalk = require( 'chalk' );
-const upath = require( 'upath' );
-const minimist = require( 'minimist' );
-const { globSync } = require( 'glob' );
-const { format } = require( 'date-fns' );
-const { spawn } = require( 'child_process' );
+import ini from 'ini';
+import yaml from 'js-yaml';
+import fs from 'fs-extra';
+import chalk from 'chalk';
+import upath from 'upath';
+import minimist from 'minimist';
+import { globSync } from 'glob';
+import { format } from 'date-fns';
+import { spawn } from 'child_process';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
 const VALE_ALERT_LEVELS = {
 	error: chalk.red( 'error' ),
@@ -24,9 +23,8 @@ const VALE_ALERT_LEVELS = {
 };
 
 const ARGS_CHAR_LIMIT = 8000;
-const CKEDITOR5_ROOT = upath.join( __dirname, '..', '..' );
-const RESULTS_DIR = upath.join( CKEDITOR5_ROOT, 'scripts', 'vale', 'results' );
-const VALE_CONFIG_PATH = upath.join( CKEDITOR5_ROOT, '.vale.ini' );
+const RESULTS_DIR = upath.join( CKEDITOR5_ROOT_PATH, 'scripts', 'vale', 'results' );
+const VALE_CONFIG_PATH = upath.join( CKEDITOR5_ROOT_PATH, '.vale.ini' );
 const READABILITY_FILES_GLOB = 'scripts/vale/styles/Readability/*.yml';
 
 const originalConfigFilesContents = {};
@@ -45,12 +43,12 @@ const defaultPatterns = [
 ];
 
 const spawnOptions = {
-	cwd: CKEDITOR5_ROOT,
+	cwd: CKEDITOR5_ROOT_PATH,
 	shell: true
 };
 
 const globOptions = {
-	cwd: CKEDITOR5_ROOT,
+	cwd: CKEDITOR5_ROOT_PATH,
 	ignore: [
 		'**/node_modules/**',
 		'**/tests/**'

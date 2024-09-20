@@ -9,10 +9,12 @@
 
 import upath from 'upath';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import fs from 'fs-extra';
 import { globSync } from 'glob';
-import rootPkgJson from '../../package.json';
+import { CKEDITOR5_ROOT_PATH } from './utils/constants.mjs';
 
-const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
+const rootPkgJson = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
+
 const GLOB_PATTERNS = [
 	'package.json',
 	'packages/*/package.json',
@@ -22,9 +24,9 @@ const GLOB_PATTERNS = [
 Promise.resolve()
 	// CKEditor 5 packages.
 	.then( () => releaseTools.reassignNpmTags( {
-		npmOwner: 'ckeditor',
+		npmOwner: 'ckeditor1',
 		version: rootPkgJson.version,
-		packages: globSync( GLOB_PATTERNS, { absolute: true, cwd: ROOT_DIRECTORY } )
-			.map( packageJsonPath => require( packageJsonPath ).name )
+		packages: globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
+			.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name )
 	} ) );
 

@@ -8,16 +8,17 @@
 /* eslint-env node */
 
 import upath from 'upath';
+import fs from 'fs-extra';
 import { Listr } from 'listr2';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
-import parsearguments from './utils/parsearguments.mjs';
+import parseArguments from './utils/parsearguments.mjs';
 import { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } from './utils/constants.mjs';
-import getcdnversion from './utils/getcdnversion.mjs';
-import getlistroptions from './utils/getlistroptions.mjs';
+import getCdnVersion from './utils/getcdnversion.mjs';
+import getListrOptions from './utils/getlistroptions.mjs';
 
-const cliArguments = parsearguments( process.argv.slice( 2 ) );
-const { version: packageJsonVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
-const cdnVersion = getcdnversion( cliArguments, packageJsonVersion );
+const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const { version: packageJsonVersion } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
+const cdnVersion = getCdnVersion( cliArguments, packageJsonVersion );
 
 const tasks = new Listr( [
 	{
@@ -50,7 +51,7 @@ const tasks = new Listr( [
 			);
 		}
 	}
-], getlistroptions( cliArguments ) );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {

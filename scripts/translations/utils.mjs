@@ -5,21 +5,12 @@
 
 /* eslint-env node */
 
-const path = require( 'path' );
-const fs = require( 'fs' );
-const minimist = require( 'minimist' );
-const glob = require( 'glob' );
+import path from 'path';
+import fs from 'fs';
+import minimist from 'minimist';
+import { globSync } from 'glob';
 
-const TRANSLATION_DIRECTORY_PATH = 'build/.transifex';
-
-module.exports = {
-	TRANSLATION_DIRECTORY_PATH,
-	parseArguments,
-	getCKEditor5SourceFiles,
-	getCKEditor5PackagePaths,
-	getCKEditor5PackageNames,
-	normalizePath
-};
+export const TRANSLATION_DIRECTORY_PATH = 'build/.transifex';
 
 /**
  * Parses CLI arguments and prepares configuration for the crawler.
@@ -27,7 +18,7 @@ module.exports = {
  * @param {Array.<String>} args CLI arguments and options.
  * @returns {TranslationOptions} options
  */
-function parseArguments( args ) {
+export function parseArguments( args ) {
 	const config = {
 		string: [
 			'cwd',
@@ -79,7 +70,7 @@ function parseArguments( args ) {
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
  */
-function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
+export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
 	const patterns = [
 		'packages/*/src/**/*.[jt]s'
 	];
@@ -90,7 +81,7 @@ function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
 
 	const globOptions = { cwd, absolute: true };
 
-	return patterns.map( item => glob.sync( item, globOptions ) )
+	return patterns.map( item => globSync( item, globOptions ) )
 		.flat()
 		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) )
 		.filter( srcPath => !srcPath.endsWith( '.d.ts' ) );
@@ -102,7 +93,7 @@ function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
  */
-function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
+export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
 	const patterns = [
 		'packages/*'
 	];
@@ -111,7 +102,7 @@ function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
 		patterns.push( 'external/*/packages/*' );
 	}
 
-	return patterns.map( item => glob.sync( item, { cwd } ) ).flat();
+	return patterns.map( item => globSync( item, { cwd } ) ).flat();
 }
 
 /**
@@ -125,7 +116,7 @@ function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
  * @param {TranslationOptions} options
  * @return {Array.<CKEditor5Entry>}
  */
-function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ignore } ) {
+export function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ignore } ) {
 	const packagesPath = normalizePath( cwd, 'packages' );
 
 	return fs.readdirSync( packagesPath )
@@ -173,7 +164,7 @@ function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ignore } )
  * @param {Array.<String>} values
  * @returns {String}
  */
-function normalizePath( ...values ) {
+export function normalizePath( ...values ) {
 	return values.join( '/' ).split( /[\\/]/g ).join( '/' );
 }
 

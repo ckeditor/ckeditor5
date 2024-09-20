@@ -7,13 +7,11 @@
 
 /* eslint-env node */
 
-const { execSync } = require( 'child_process' );
-const fs = require( 'fs/promises' );
-const upath = require( 'upath' );
-const { glob } = require( 'glob' );
-const minimist = require( 'minimist' );
-
-const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
+import { execSync } from 'child_process';
+import fs from 'fs/promises';
+import { glob } from 'glob';
+import minimist from 'minimist';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
 main()
 	.catch( err => {
@@ -62,20 +60,20 @@ function runTests( { packageName, checkCoverage } ) {
 	].filter( Boolean );
 
 	execSync( testCommand.join( ' ' ), {
-		cwd: CKEDITOR5_ROOT_DIRECTORY,
+		cwd: CKEDITOR5_ROOT_PATH,
 		stdio: 'inherit'
 	} );
 }
 
 function checkCodeCoverage() {
 	execSync( 'cp coverage/*/coverage-final.json .nyc_output', {
-		cwd: CKEDITOR5_ROOT_DIRECTORY,
+		cwd: CKEDITOR5_ROOT_PATH,
 		stdio: 'inherit'
 	} );
 
 	try {
 		execSync( 'npx nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100', {
-			cwd: CKEDITOR5_ROOT_DIRECTORY,
+			cwd: CKEDITOR5_ROOT_PATH,
 			stdio: 'inherit'
 		} );
 	} catch ( err ) {

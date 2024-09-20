@@ -8,18 +8,18 @@
 /* eslint-env node */
 
 import fs from 'fs';
-import getchangelogoptions from './getchangelogoptions.mjs';
 import { generateChangelogForMonoRepository } from '@ckeditor/ckeditor5-dev-release-tools';
+import getChangelogOptions from './getchangelogoptions.mjs';
 import { CKEDITOR5_COMMERCIAL_PATH } from './utils/constants.mjs';
-import parsearguments from './utils/parsearguments.mjs';
+import parseArguments from './utils/parsearguments.mjs';
 
-const cliArguments = parsearguments( process.argv.slice( 2 ) );
+const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
 if ( !fs.existsSync( CKEDITOR5_COMMERCIAL_PATH ) ) {
 	throw new Error( `The script assumes that the directory "${ CKEDITOR5_COMMERCIAL_PATH }" exists.` );
 }
 
-const changelogOptions = getchangelogoptions( cliArguments );
+const changelogOptions = getChangelogOptions( cliArguments );
 
 generateChangelogForMonoRepository( changelogOptions )
 	.then( () => {

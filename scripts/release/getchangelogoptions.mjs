@@ -8,7 +8,7 @@
 import { format } from 'date-fns';
 import { PACKAGES_DIRECTORY, CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from './utils/constants.mjs';
 
-export default function getchangelogoptions( cliArguments ) {
+export default function getChangelogOptions( cliArguments ) {
 	const changelogOptions = {
 		cwd: CKEDITOR5_ROOT_PATH,
 		packages: PACKAGES_DIRECTORY,

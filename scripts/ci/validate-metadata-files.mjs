@@ -7,14 +7,15 @@
 
 /* eslint-env node */
 
-'use strict';
+import { createRequire } from 'module';
+import fs from 'fs-extra';
+import upath from 'upath';
+import parser from '@babel/parser';
+import minimist from 'minimist';
+import { glob } from 'glob';
+import chalk from 'chalk';
 
-const fs = require( 'fs-extra' );
-const upath = require( 'upath' );
-const parser = require( '@babel/parser' );
-const minimist = require( 'minimist' );
-const { glob } = require( 'glob' );
-const { red, green, magenta } = require( 'chalk' );
+const require = createRequire( import.meta.url );
 
 main()
 	.catch( err => {
@@ -26,7 +27,7 @@ main()
 async function main() {
 	const options = getOptions( process.argv.slice( 2 ) );
 
-	console.log( magenta( '\nValidating plugins\' metadata and entry points...' ) );
+	console.log( chalk.magenta( '\nValidating plugins\' metadata and entry points...' ) );
 
 	const packagesGlobPattern = upath.join( options.cwd, 'packages', '*' );
 	const packagesPaths = ( await glob( packagesGlobPattern ) ).map( upath.toUnix );
@@ -52,27 +53,27 @@ async function main() {
 	}
 
 	if ( !invalidMetadata.length ) {
-		console.log( green( 'Validation successful.' ) );
+		console.log( chalk.green( 'Validation successful.' ) );
 
 		return;
 	}
 
 	for ( const { name, hasEntryPoint, missingExports, missingIcons } of invalidMetadata ) {
-		console.log( red( `\nPackage "${ name }" has failed validation:` ) );
+		console.log( chalk.red( `\nPackage "${ name }" has failed validation:` ) );
 
 		if ( !hasEntryPoint ) {
-			console.log( red( 'The "main" field in "package.json" file is either missing or has invalid path.' ) );
+			console.log( chalk.red( 'The "main" field in "package.json" file is either missing or has invalid path.' ) );
 		}
 
 		if ( missingExports.length ) {
-			console.log( red( [
+			console.log( chalk.red( [
 				'Missing exports:',
 				...missingExports.map( missingExport => ` - ${ missingExport }` )
 			].join( '\n' ) ) );
 		}
 
 		if ( missingIcons.length ) {
-			console.log( red( [
+			console.log( chalk.red( [
 				'Missing icons:',
 				...missingIcons.map( missingIcon => ` - ${ missingIcon }` )
 			].join( '\n' ) ) );

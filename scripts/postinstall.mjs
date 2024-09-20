@@ -3,17 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-'use strict';
-
 /* eslint-env node */
 
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath( import.meta.url );
-const __dirname = path.dirname( __filename );
+import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
 
 ( async () => {
 	// CKEditor 5.
@@ -22,7 +17,7 @@ const __dirname = path.dirname( __filename );
 	husky.install();
 
 	// External repositories.
-	const EXTERNAL_DIR_PATH = path.resolve( __dirname, '..', 'external' );
+	const EXTERNAL_DIR_PATH = path.resolve( CKEDITOR5_ROOT_PATH, 'external' );
 
 	// Exit process when "external" directory is not created.
 	if ( !fs.existsSync( EXTERNAL_DIR_PATH ) ) {
@@ -36,7 +31,7 @@ const __dirname = path.dirname( __filename );
 		.filter( externalRepository => fs.statSync( externalRepository ).isDirectory() )
 		// Filter out repositories without the `postinstall` hook.
 		.filter( externalRepository => {
-			const pkgJson = require( path.join( externalRepository, 'package.json' ) );
+			const pkgJson = fs.readJsonSync( path.join( externalRepository, 'package.json' ) );
 
 			return pkgJson && pkgJson.scripts && pkgJson.scripts.postinstall;
 		} )

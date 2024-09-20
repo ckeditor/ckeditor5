@@ -5,16 +5,14 @@
 
 /* eslint-env node */
 
-'use strict';
+import chalk from 'chalk';
+import fs from 'fs';
+import { globSync } from 'glob';
+import path from 'path';
+import sharp from 'sharp';
+import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
 
-const chalk = require( 'chalk' );
-const fs = require( 'fs' );
-const glob = require( 'glob' );
-const path = require( 'path' );
-const sharp = require( 'sharp' );
-
-const ROOT_DIRECTORY = path.join( __dirname, '..' );
-const BUILD_DIRECTORY = path.join( ROOT_DIRECTORY, 'build' );
+const BUILD_DIRECTORY = path.join( CKEDITOR5_ROOT_PATH, 'build' );
 const ICONS_DIRECTORY = path.join( BUILD_DIRECTORY, 'icons' );
 
 collectSvgIcons();
@@ -34,8 +32,8 @@ async function collectSvgIcons() {
 
 	logProcess( 'Collecting SVG icons...' );
 
-	const globOptions = { cwd: ROOT_DIRECTORY, ignore: [ '**/build/**', '**/node_modules/**' ] };
-	const svgFilesData = glob.sync( '**/packages/*/theme/icons/*.svg', globOptions ).map( getDataFromPath );
+	const globOptions = { cwd: CKEDITOR5_ROOT_PATH, ignore: [ '**/build/**', '**/node_modules/**' ] };
+	const svgFilesData = globSync( '**/packages/*/theme/icons/*.svg', globOptions ).map( getDataFromPath );
 
 	logProcess( 'Converting to PNG...' );
 

@@ -10,7 +10,7 @@
  * @param {String} pkgJsonVersion
  * @returns {String}
  */
-export default function getcdnversion( cliArguments, pkgJsonVersion ) {
+export default function getCdnVersion( cliArguments, pkgJsonVersion ) {
 	if ( cliArguments.nightly ) {
 		return 'nightly';
 	}

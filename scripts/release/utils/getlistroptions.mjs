@@ -9,7 +9,7 @@
  * @param {ReleaseOptions} cliArguments
  * @returns {Object}
  */
-export default function getlistroptions( cliArguments ) {
+export default function getListrOptions( cliArguments ) {
 	return {
 		renderer: cliArguments.verbose ? 'verbose' : 'default'
 	};

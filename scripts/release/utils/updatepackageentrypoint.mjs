@@ -9,7 +9,7 @@
  * @param {String} packagePath
  * @returns {Promise}
  */
-export default async function updatepackageentrypoint( packagePath ) {
+export default async function updatePackageEntryPoint( packagePath ) {
 	const { default: fs } = await import( 'fs-extra' );
 	const { default: path } = await import( 'upath' );
 

@@ -36,14 +36,12 @@
 // 	To check if single file is already optimized, run:
 // 		yarn run clean-up-svg-icons --verify-only <path/to/icon>
 
-'use strict';
-
-const chalk = require( 'chalk' );
-const upath = require( 'upath' );
-const fs = require( 'fs-extra' );
-const minimist = require( 'minimist' );
-const { globSync } = require( 'glob' );
-const { execSync } = require( 'child_process' );
+import chalk from 'chalk';
+import upath from 'upath';
+import fs from 'fs-extra';
+import minimist from 'minimist';
+import { globSync } from 'glob';
+import { execSync } from 'child_process';
 
 // A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
 // because, for instance, CSS animations may depend on it.

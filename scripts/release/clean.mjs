@@ -11,7 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';
 import minimist from 'minimist';
-import istypescriptpackage from './utils/istypescriptpackage.mjs';
+import isTypeScriptPackage from './utils/istypescriptpackage.mjs';
 
 const options = parseArguments( process.argv.slice( 2 ) );
 
@@ -65,7 +65,7 @@ async function findTypeScriptPackages( repositoryRoot ) {
 	const result = [];
 
 	for ( const pkg of allPackages ) {
-		if ( await istypescriptpackage( pkg ) ) {
+		if ( await isTypeScriptPackage( pkg ) ) {
 			result.push( pkg );
 		}
 	}

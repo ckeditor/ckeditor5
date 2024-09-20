@@ -5,12 +5,10 @@
 
 /* eslint-env node */
 
-'use strict';
-
 import { glob } from 'glob';
 import { readFile } from 'fs/promises';
 import semver from 'semver';
-import { normalizeTrim } from 'upath';
+import upath from 'upath';
 import isckeditor5packagefactory from './isckeditor5packagefactory.mjs';
 
 /**
@@ -21,8 +19,8 @@ import isckeditor5packagefactory from './isckeditor5packagefactory.mjs';
  * @param {String} options.version Version that all packages and their dependencies need to match.
  * @param {Array.<String>} [options.skipPackages] Packages names that should not be validated.
  */
-export default async function validatedependenciesversions( { packagesDirectory, version, skipPackages = [] } ) {
-	const normalizedReleaseDirectory = normalizeTrim( packagesDirectory );
+export default async function validateDependenciesVersions( { packagesDirectory, version, skipPackages = [] } ) {
+	const normalizedReleaseDirectory = upath.normalizeTrim( packagesDirectory );
 	const globPattern = `${ normalizedReleaseDirectory }/*/package.json`;
 	const pkgJsonPaths = await glob( globPattern, { absolute: true, nodir: true } );
 

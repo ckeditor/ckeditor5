@@ -7,14 +7,12 @@
 
 /* eslint-env node */
 
-'use strict';
-
 const {
 	// The number of the associated GitHub or Bitbucket pull request. Only available on forked PRs.
 	CIRCLE_PR_NUMBER
 } = process.env;
 
-module.exports = main();
+export default main();
 
 function main() {
 	if ( CIRCLE_PR_NUMBER ) {

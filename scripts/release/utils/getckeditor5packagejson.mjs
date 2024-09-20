@@ -13,7 +13,7 @@ import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
  * @param {Boolean} isNightly
  * @returns {Object}
  */
-export default function getckeditor5packagejson() {
+export default function getCKEditor5PackageJson() {
 	const pkgJson = fs.readJsonSync(
 		upath.join( CKEDITOR5_ROOT_PATH, 'package.json' )
 	);

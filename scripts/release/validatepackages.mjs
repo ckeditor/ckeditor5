@@ -9,14 +9,14 @@
 
 import { existsSync, readdirSync } from 'fs';
 import { execSync } from 'child_process';
-import { join } from 'upath';
-import { red, green } from 'chalk';
+import upath from 'upath';
+import chalk from 'chalk';
 import { RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
 
-const releaseDirectory = join( process.cwd(), RELEASE_NPM_DIRECTORY );
+const releaseDirectory = upath.join( process.cwd(), RELEASE_NPM_DIRECTORY );
 
 if ( !existsSync( releaseDirectory ) ) {
-	console.log( red( 'The "release" directory does not exist.' ) );
+	console.log( chalk.red( 'The "release" directory does not exist.' ) );
 
 	process.exit( 1 );
 }
@@ -24,7 +24,7 @@ if ( !existsSync( releaseDirectory ) ) {
 let isSuccess = true;
 
 for ( const directoryName of readdirSync( releaseDirectory ) ) {
-	const path = join( releaseDirectory, directoryName );
+	const path = upath.join( releaseDirectory, directoryName );
 
 	try {
 		execSync( `yarn publint ${ path } --level=warning --strict`, {
@@ -33,7 +33,7 @@ for ( const directoryName of readdirSync( releaseDirectory ) ) {
 			stdio: 'pipe'
 		} );
 	} catch ( error ) {
-		console.error( red( `Validation of the "${ directoryName }" package failed with the following errors:` ) );
+		console.error( chalk.red( `Validation of the "${ directoryName }" package failed with the following errors:` ) );
 		console.log( error.stdout );
 
 		isSuccess = false;
@@ -41,7 +41,7 @@ for ( const directoryName of readdirSync( releaseDirectory ) ) {
 }
 
 if ( isSuccess ) {
-	console.log( green( 'No issues found with the packages.' ) );
+	console.log( chalk.green( 'No issues found with the packages.' ) );
 }
 
 process.exit( Number( !isSuccess ) );

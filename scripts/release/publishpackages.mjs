@@ -8,16 +8,17 @@
 /* eslint-env node */
 
 import upath from 'upath';
+import fs from 'fs-extra';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { Listr } from 'listr2';
-import validatedependenciesversions from './utils/validatedependenciesversions.mjs';
-import parsearguments from './utils/parsearguments.mjs';
+import validateDependenciesVersions from './utils/validatedependenciesversions.mjs';
+import parseArguments from './utils/parsearguments.mjs';
 import { CKEDITOR5_ROOT_PATH, RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
-import getlistroptions from './utils/getlistroptions.mjs';
+import getListrOptions from './utils/getlistroptions.mjs';
 
-const cliArguments = parsearguments( process.argv.slice( 2 ) );
+const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
-const { version: latestVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
+const { version: latestVersion } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 
 let githubToken;
@@ -26,7 +27,7 @@ const tasks = new Listr( [
 	{
 		title: 'Validating CKEditor 5 packages.',
 		task: () => {
-			return validatedependenciesversions( {
+			return validateDependenciesVersions( {
 				packagesDirectory: RELEASE_NPM_DIRECTORY,
 				version: latestVersion
 			} );
@@ -118,7 +119,7 @@ const tasks = new Listr( [
 		// Nightly releases are not described in the changelog.
 		skip: cliArguments.nightly || cliArguments.nightlyAlpha
 	}
-], getlistroptions( cliArguments ) );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {

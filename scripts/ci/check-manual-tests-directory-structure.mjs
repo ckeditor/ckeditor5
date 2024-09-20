@@ -7,12 +7,9 @@
 
 /* eslint-env node */
 
-'use strict';
-
-const glob = require( 'glob' );
-const path = require( 'path' );
-const { red } = require( 'chalk' );
-const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
+import { globSync } from 'glob';
+import chalk from 'chalk';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
 // This script ensures that the "manual/" test directories are only located in the root
 // of the "tests" directories. Previously, they have been nested deeper, which prevents
@@ -24,12 +21,12 @@ const globPatterns = [
 	'tests/*/**/manual/**/*.@(js|ts|html|md)'
 ];
 
-const manualDirectoriesNotInTestsRoot = globPatterns.flatMap( pattern => glob.sync( pattern, { cwd: ROOT_DIRECTORY } ) );
+const manualDirectoriesNotInTestsRoot = globPatterns.flatMap( pattern => globSync( pattern, { cwd: CKEDITOR5_ROOT_PATH } ) );
 
 if ( manualDirectoriesNotInTestsRoot.length ) {
-	console.log( red( 'The "manual/" directory should be stored directly in the "tests/" directory.' ) );
-	console.log( red( 'The following tests do not follow this rule:' ) );
-	console.log( red( manualDirectoriesNotInTestsRoot.map( str => ` - ${ str }` ).join( '\n' ) ) );
+	console.log( chalk.red( 'The "manual/" directory should be stored directly in the "tests/" directory.' ) );
+	console.log( chalk.red( 'The following tests do not follow this rule:' ) );
+	console.log( chalk.red( manualDirectoriesNotInTestsRoot.map( str => ` - ${ str }` ).join( '\n' ) ) );
 
 	process.exit( 1 );
 }

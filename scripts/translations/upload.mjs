@@ -5,9 +5,9 @@
 
 /* eslint-env node */
 
-const fs = require( 'fs' );
-const { uploadPotFiles, getToken } = require( '@ckeditor/ckeditor5-dev-transifex' );
-const { parseArguments, getCKEditor5PackageNames, normalizePath } = require( './utils' );
+import fs from 'fs';
+import { uploadPotFiles, getToken } from '@ckeditor/ckeditor5-dev-transifex';
+import { parseArguments, getCKEditor5PackageNames, normalizePath } from './utils.mjs';
 
 main().catch( err => {
 	console.error( err );

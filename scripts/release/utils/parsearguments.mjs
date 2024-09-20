@@ -12,7 +12,7 @@ import os from 'os';
  * @param {Array.<String>} cliArguments
  * @returns {ReleaseOptions} options
  */
-export default function parsearguments( cliArguments ) {
+export default function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
 			'nightly',

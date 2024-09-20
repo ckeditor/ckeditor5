@@ -11,7 +11,7 @@
  * @param {String} options.RELEASE_CDN_DIRECTORY
  * @returns {Promise}
  */
-export default async function preparedllbuildscallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
+export default async function prepareDllBuildsCallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
 	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
 	const { default: fs } = await import( 'fs-extra' );
 	const { default: path } = await import( 'upath' );

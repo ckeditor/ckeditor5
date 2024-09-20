@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-'use strict';
-
 // Checks if all CSS files from `theme` directory of `theme-lark` package are imported in `index.css`.
 //
 // See: https://github.com/ckeditor/ckeditor5/issues/16010.
@@ -14,12 +12,13 @@
 
 /* eslint-env node */
 
-const chalk = require( 'chalk' );
-const upath = require( 'upath' );
-const fs = require( 'fs' );
-const { globSync } = require( 'glob' );
+import chalk from 'chalk';
+import upath from 'upath';
+import fs from 'fs';
+import { globSync } from 'glob';
+import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
 
-const THEME_LARK_DIR_PATH = upath.resolve( __dirname, '..', 'packages', 'ckeditor5-theme-lark', 'theme' );
+const THEME_LARK_DIR_PATH = upath.resolve( CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-theme-lark', 'theme' );
 const REGEX_FOR_INDEX_IMPORTS = /(?<=@import ")(.*)(?=";)/gm;
 const REGEX_FOR_MATCHING_COMMENTS = /\/\*(?:(?!\*\/).|\n)*\*\//gm;
 

@@ -13,16 +13,14 @@
 //
 // See: https://circleci.com/docs/using-dynamic-configuration/.
 
-'use strict';
+import upath from 'upath';
+import fs from 'fs/promises';
+import { glob } from 'glob';
+import yaml from 'js-yaml';
+import IS_COMMUNITY_PR from './is-community-pr.js';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
-const upath = require( 'upath' );
-const fs = require( 'fs/promises' );
-const { glob } = require( 'glob' );
-const yaml = require( 'js-yaml' );
-const IS_COMMUNITY_PR = require( './is-community-pr' );
-
-const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
-const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_DIRECTORY, '.circleci' );
+const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
 const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
@@ -51,11 +49,11 @@ const persistToWorkspace = fileName => ( {
 } );
 
 ( async () => {
-	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_ROOT_DIRECTORY, 'src' ) ) )
+	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_ROOT_PATH, 'src' ) ) )
 		.filter( filename => !filename.startsWith( 'index' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
-	const featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_DIRECTORY, 'packages' ) } ) )
+	const featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_PATH, 'packages' ) } ) )
 		.filter( packageName => !frameworkPackages.includes( packageName ) );
 
 	featurePackages.sort();

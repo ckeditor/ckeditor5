@@ -7,19 +7,17 @@
 
 /* eslint-env node */
 
-'use strict';
-
 // This script ensures that all "dependencies" in package JSONs listed below, use the same versions of
 // dependencies. It also checks that all versions are pinned, and they don't use the caret operator "^".
 // If you provide the "--fix" argument, the script will automatically fix the errors for you.
 
-const chalk = require( 'chalk' );
-const semver = require( 'semver' );
-const { globSync } = require( 'glob' );
-const fs = require( 'fs-extra' );
-const upath = require( 'upath' );
-const { execSync } = require( 'child_process' );
-const isCKEditor5PackageFactory = require( '../release/utils/isckeditor5packagefactory' );
+import chalk from 'chalk';
+import semver from 'semver';
+import { globSync } from 'glob';
+import fs from 'fs-extra';
+import { execSync } from 'child_process';
+import isCKEditor5PackageFactory from '../release/utils/isckeditor5packagefactory.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
 const versionsCache = {};
 const shouldFix = process.argv[ 2 ] === '--fix';
@@ -40,7 +38,7 @@ main().catch( err => {
 } );
 
 async function main() {
-	const isCkeditor5Package = await isckeditor5packagefactory();
+	const isCkeditor5Package = await isCKEditor5PackageFactory();
 	const expectedDependencies = getExpectedDepsVersions( packageJsons, isCkeditor5Package );
 
 	if ( shouldFix ) {
@@ -193,10 +191,10 @@ function getVersionsList( packageName ) {
  * @return {[Array.<Object>, Object.<String, String>]}
  */
 function getPackageJsons( directories ) {
-	const packageJsonPaths = globSync( directories, { absolute: true, cwd: upath.join( __dirname, '..', '..' ) } );
-	const packageJsons = packageJsonPaths.map( packageJsonPath => require( packageJsonPath ) );
+	const packageJsonPaths = globSync( directories, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } );
+	const packageJsons = packageJsonPaths.map( packageJsonPath => fs.readJsonSync( packageJsonPath ) );
 	const nameToPathMappings = packageJsonPaths
-		.reduce( ( accum, packageJsonPath ) => ( { ...accum, [ require( packageJsonPath ).name ]: packageJsonPath } ), {} );
+		.reduce( ( accum, packageJsonPath ) => ( { ...accum, [ fs.readJsonSync( packageJsonPath ).name ]: packageJsonPath } ), {} );
 
 	return [ packageJsons, nameToPathMappings ];
 }

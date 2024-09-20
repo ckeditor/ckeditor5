@@ -9,7 +9,7 @@
  * @param {String} packagePath
  * @returns {Promise}
  */
-export default async function compiletypescriptcallback( packagePath ) {
+export default async function compileTypeScriptCallback( packagePath ) {
 	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
 	const { default: fs } = await import( 'fs-extra' );
 	const { default: path } = await import( 'upath' );

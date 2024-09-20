@@ -17,7 +17,7 @@ import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
  * @param {Date} options.releaseDate The release date to set.
  * @returns {Promise.<Array.<String>>} An array of relative paths to updated files.
  */
-export default async function updateversionreferences( { version, releaseDate } ) {
+export default async function updateVersionReferences( { version, releaseDate } ) {
 	const filesToUpdate = [
 		{
 			file: 'README.md',

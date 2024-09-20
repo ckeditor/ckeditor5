@@ -12,7 +12,7 @@ import path from 'upath';
  * @param {String} packagePath
  * @returns {Promise.<Boolean>}
  */
-export default async function istypescriptpackage( packagePath ) {
+export default async function isTypeScriptPackage( packagePath ) {
 	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const packageJson = await fs.readJson( packageJsonPath );
 
