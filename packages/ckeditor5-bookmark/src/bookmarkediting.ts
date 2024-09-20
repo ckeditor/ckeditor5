@@ -12,6 +12,7 @@ import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
 import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
+import InsertBookmarkCommand from './insertbookmarkcommand.js';
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
 import '../theme/bookmark.css';
@@ -38,6 +39,7 @@ export default class BookmarkEditing extends Plugin {
 		this._defineSchema();
 		this._defineConverters();
 
+		editor.commands.add( 'insertBookmark', new InsertBookmarkCommand( editor ) );
 		editor.commands.add( 'updateBookmark', new UpdateBookmarkCommand( editor ) );
 	}
 
