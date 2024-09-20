@@ -12,7 +12,8 @@ import upath from 'upath';
 import { parse } from 'acorn';
 import { walk } from 'estree-walker';
 import { globSync } from 'glob';
-import { PACKAGES_DIRECTORY, CKEDITOR5_INDEX, CKEDITOR5_PREMIUM_FEATURES_INDEX } from './release/utils/constants.mjs';
+import { CKEDITOR5_INDEX, CKEDITOR5_PREMIUM_FEATURES_INDEX } from './constants.mjs';
+import { PACKAGES_DIRECTORY } from './release/utils/constants.mjs';
 
 /**
  * List of paths to the allowed `input` packages.

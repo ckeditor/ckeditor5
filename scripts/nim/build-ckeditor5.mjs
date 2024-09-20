@@ -11,7 +11,7 @@ import { rm, copyFile } from 'fs/promises';
 import upath from 'upath';
 import chalk from 'chalk';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
-import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 function dist( path ) {
 	return upath.join( CKEDITOR5_ROOT_PATH, 'dist', path );

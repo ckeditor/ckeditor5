@@ -18,7 +18,7 @@ import fs from 'fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
 import IS_COMMUNITY_PR from './is-community-pr.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 

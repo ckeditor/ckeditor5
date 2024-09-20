@@ -9,9 +9,9 @@
 
 import fs from 'fs';
 import { generateChangelogForMonoRepository } from '@ckeditor/ckeditor5-dev-release-tools';
-import getChangelogOptions from './getchangelogoptions.mjs';
-import { CKEDITOR5_COMMERCIAL_PATH } from './utils/constants.mjs';
+import getChangelogOptions from './utils/getchangelogoptions.mjs';
 import parseArguments from './utils/parsearguments.mjs';
+import { CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 

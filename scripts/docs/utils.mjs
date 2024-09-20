@@ -5,12 +5,12 @@
 
 /* eslint-env node */
 
-import { glob } from 'glob';
-import fs from 'fs/promises';
-import path from 'path';
-import { loaders } from '@ckeditor/ckeditor5-dev-utils';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 import module from 'module';
+import path from 'path';
+import fs from 'fs/promises';
+import { glob } from 'glob';
+import { loaders } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const require = module.createRequire( import.meta.url );
 

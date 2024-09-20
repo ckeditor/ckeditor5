@@ -7,7 +7,7 @@
 
 import path from 'path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 export default function buildApiDocs() {
 	return build( {

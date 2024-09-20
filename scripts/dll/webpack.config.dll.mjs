@@ -12,7 +12,7 @@ import { bundler, loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
 import FooterPlugin from './webpack-footer-plugin.mjs';
 import { addTypeScriptLoader } from '../docs/utils.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import module from 'module';
 
 const require = module.createRequire( import.meta.url );

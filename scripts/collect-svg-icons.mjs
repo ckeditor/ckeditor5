@@ -10,7 +10,7 @@ import fs from 'fs';
 import { globSync } from 'glob';
 import path from 'path';
 import sharp from 'sharp';
-import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
 const BUILD_DIRECTORY = path.join( CKEDITOR5_ROOT_PATH, 'build' );
 const ICONS_DIRECTORY = path.join( BUILD_DIRECTORY, 'icons' );

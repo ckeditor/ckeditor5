@@ -16,8 +16,8 @@ import semver from 'semver';
 import { globSync } from 'glob';
 import fs from 'fs-extra';
 import { execSync } from 'child_process';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import isCKEditor5PackageFactory from '../release/utils/isckeditor5packagefactory.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
 
 const versionsCache = {};
 const shouldFix = process.argv[ 2 ] === '--fix';

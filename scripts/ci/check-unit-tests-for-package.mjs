@@ -11,7 +11,7 @@ import { execSync } from 'child_process';
 import fs from 'fs/promises';
 import { glob } from 'glob';
 import minimist from 'minimist';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 main()
 	.catch( err => {

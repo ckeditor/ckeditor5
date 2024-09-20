@@ -8,7 +8,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { execSync } from 'child_process';
-import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
 ( async () => {
 	// CKEditor 5.

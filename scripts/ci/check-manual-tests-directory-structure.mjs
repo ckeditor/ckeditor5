@@ -9,7 +9,7 @@
 
 import { globSync } from 'glob';
 import chalk from 'chalk';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 // This script ensures that the "manual/" test directories are only located in the root
 // of the "tests" directories. Previously, they have been nested deeper, which prevents

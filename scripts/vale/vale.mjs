@@ -14,7 +14,7 @@ import minimist from 'minimist';
 import { globSync } from 'glob';
 import { format } from 'date-fns';
 import { spawn } from 'child_process';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const VALE_ALERT_LEVELS = {
 	error: chalk.red( 'error' ),

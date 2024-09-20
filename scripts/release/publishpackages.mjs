@@ -13,7 +13,8 @@ import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { Listr } from 'listr2';
 import validateDependenciesVersions from './utils/validatedependenciesversions.mjs';
 import parseArguments from './utils/parsearguments.mjs';
-import { CKEDITOR5_ROOT_PATH, RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );

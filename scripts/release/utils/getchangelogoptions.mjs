@@ -6,7 +6,8 @@
 /* eslint-env node */
 
 import { format } from 'date-fns';
-import { PACKAGES_DIRECTORY, CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from './utils/constants.mjs';
+import { PACKAGES_DIRECTORY } from './constants.mjs';
+import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 
 export default function getChangelogOptions( cliArguments ) {
 	const changelogOptions = {

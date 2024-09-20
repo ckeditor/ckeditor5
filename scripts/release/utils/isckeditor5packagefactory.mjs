@@ -7,7 +7,7 @@
 
 import fs from 'fs-extra';
 import { glob } from 'glob';
-import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 
 /**
  * Checks whether provided package name is the CKEditor 5 dependency.

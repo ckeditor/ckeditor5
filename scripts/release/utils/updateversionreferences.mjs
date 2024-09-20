@@ -7,7 +7,7 @@
 
 import fs from 'fs/promises';
 import upath from 'upath';
-import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 
 /**
  * Updates CKEditor 5 version and release date references in several places.

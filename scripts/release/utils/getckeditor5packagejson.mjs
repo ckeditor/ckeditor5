@@ -7,7 +7,7 @@
 
 import fs from 'fs-extra';
 import upath from 'upath';
-import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 
 /**
  * @param {Boolean} isNightly

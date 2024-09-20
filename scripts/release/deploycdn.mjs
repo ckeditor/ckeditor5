@@ -12,7 +12,8 @@ import fs from 'fs-extra';
 import { Listr } from 'listr2';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import parseArguments from './utils/parsearguments.mjs';
-import { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } from './utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } from './utils/constants.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 

@@ -7,7 +7,7 @@
 
 import upath from 'upath';
 import { createPotFiles } from '@ckeditor/ckeditor5-dev-transifex';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import {
 	TRANSLATION_DIRECTORY_PATH,
 	parseArguments,

@@ -13,7 +13,7 @@ import fs from 'fs';
 import minimist from 'minimist';
 import path from 'path';
 import module from 'module';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const require = module.createRequire( import.meta.url );
 const argv = minimist( process.argv.slice( 2 ), {

@@ -16,7 +16,7 @@ import chalk from 'chalk';
 import upath from 'upath';
 import fs from 'fs';
 import { globSync } from 'glob';
-import { CKEDITOR5_ROOT_PATH } from './release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
 const THEME_LARK_DIR_PATH = upath.resolve( CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-theme-lark', 'theme' );
 const REGEX_FOR_INDEX_IMPORTS = /(?<=@import ")(.*)(?=";)/gm;

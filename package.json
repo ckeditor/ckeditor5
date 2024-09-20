@@ -197,7 +197,7 @@
     "translations:download": "node ./scripts/translations/download.mjs",
     "translations:upload": "node ./scripts/translations/upload.mjs",
     "build": "tsc -p ./tsconfig.release-ckeditor5.json",
-    "build:dist": "node ./scripts/build-ckeditor5.mjs",
+    "build:dist": "node scripts/nim/build-ckeditor5.mjs",
     "predll:build": "npm run build",
     "dll:build": "node scripts/dll/build-dlls.mjs --base-dll-config ./scripts/dll/webpack.config.dll.mjs",
     "changelog": "node ./scripts/release/changelog.mjs",

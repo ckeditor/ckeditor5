@@ -15,7 +15,7 @@ import { getLastFromChangelog } from '@ckeditor/ckeditor5-dev-release-tools';
 
 import { getCkeditor5Plugins, normalizePath, addTypeScriptLoader } from './utils.mjs';
 import postCssContentStylesPlugin from './list-content-styles-plugin.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const require = module.createRequire( import.meta.url );
 

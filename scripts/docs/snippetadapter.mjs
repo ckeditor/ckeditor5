@@ -17,7 +17,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import { globSync } from 'glob';
 import { addTypeScriptLoader } from './utils.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../release/utils/constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = upath.dirname( __filename );
