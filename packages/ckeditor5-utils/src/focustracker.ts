@@ -288,14 +288,14 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 }
 
-export type ViewWithFocusTracker = View & { focusTracker: FocusTracker };
+type ViewWithFocusTracker = View & { focusTracker: FocusTracker };
 
 /**
  * Checks whether a view is an instance of {@link ~ViewWithFocusTracker}.
  *
  * @param view A view to be checked.
  */
-export function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracker {
+function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracker {
 	return 'focusTracker' in view && view.focusTracker instanceof FocusTracker;
 }
 
