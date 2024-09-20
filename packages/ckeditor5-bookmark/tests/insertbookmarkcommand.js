@@ -556,15 +556,14 @@ describe( 'InsertBookmarkCommand', () => {
 				);
 			} );
 
-			it( 'should not retain selection attributes', () => {
-				setModelData( model, '<paragraph>[]</paragraph>' );
+			it( 'should allow to add formatting attributes on bookmark', () => {
+				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				editor.execute( 'bold' );
 				editor.execute( 'italic' );
-				command.execute( { bookmarkId: 'foo' } );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+					'<paragraph><bookmark bold="true" bookmarkId="foo" italic="true"></bookmark></paragraph>'
 				);
 			} );
 		} );
