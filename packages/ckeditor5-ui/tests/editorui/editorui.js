@@ -126,8 +126,8 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should reset editables array', () => {
-			ui.setEditableElement( 'foo', {} );
-			ui.setEditableElement( 'bar', {} );
+			ui.setEditableElement( 'foo', document.createElement( 'div' ) );
+			ui.setEditableElement( 'bar', document.createElement( 'div' ) );
 
 			expect( [ ...ui.getEditableElementsNames() ] ).to.deep.equal( [ 'foo', 'bar' ] );
 

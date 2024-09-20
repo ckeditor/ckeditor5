@@ -310,7 +310,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 			this.editor.keystrokes.listenTo( toolbarView.element! );
 		} else {
 			toolbarView.once<UIViewRenderEvent>( 'render', () => {
-				this.focusTracker.remove( toolbarView );
+				this.focusTracker.add( toolbarView );
 				this.editor.keystrokes.listenTo( toolbarView.element! );
 			} );
 		}
