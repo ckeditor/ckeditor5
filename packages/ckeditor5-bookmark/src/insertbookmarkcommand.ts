@@ -7,7 +7,13 @@
  * @module bookmark/insertbookmarkcommand
  */
 
-import type { DocumentSelection, Selection, Position } from 'ckeditor5/src/engine.js';
+import type {
+	DocumentSelection,
+	Selection,
+	Position,
+	Schema
+} from 'ckeditor5/src/engine.js';
+
 import { Command } from 'ckeditor5/src/core.js';
 
 /**
@@ -29,9 +35,9 @@ export default class InsertBookmarkCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const doesPositionThatBookmarkCanBeInsertedExists = !!this._getPositionToInsertBookmark( selection );
+		const position = this._getPositionToInsertBookmark( selection );
 
-		this.isEnabled = doesPositionThatBookmarkCanBeInsertedExists;
+		this.isEnabled = !!position;
 	}
 
 	/**
@@ -57,32 +63,32 @@ export default class InsertBookmarkCommand extends Command {
 		const selection = model.document.selection;
 
 		model.change( writer => {
-			const position = this._getPositionToInsertBookmark( selection );
+			let position = this._getPositionToInsertBookmark( selection );
 
 			if ( !position ) {
 				return;
 			}
 
-			const isBookmarkAllowedBySchema = model.schema.checkChild( position, 'bookmark' );
-
-			// If the position allow for `bookmark` then insert it.
-			if ( isBookmarkAllowedBySchema ) {
-				writer.setSelection( position );
-
-				model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
-
-				return;
-			}
-
-			const isParagraphAllowedBySchema = model.schema.checkChild( position, 'paragraph' );
+			const isBookmarkAllowed = model.schema.checkChild( position, 'bookmark' );
 
 			// If the position does not allow for `bookmark` but allows for a `paragraph`
-			// then insert a `paragraph` with a `bookmark` inside.
-			if ( isParagraphAllowedBySchema ) {
-				editor.execute( 'insertParagraph', { position } );
+			// then insert a `paragraph` then we will insert a `bookmark` inside.
+			if ( !isBookmarkAllowed ) {
+				const newPosition = editor.execute( 'insertParagraph', { position } ) as Position | null;
 
-				model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
+				if ( !newPosition ) {
+					return;
+				}
+
+				position = newPosition;
 			}
+
+			const bookmarkElement = writer.createElement( 'bookmark', {
+				...Object.fromEntries( selection.getAttributes() ),
+				bookmarkId
+			} );
+
+			model.insertObject( bookmarkElement, position, null, { setSelection: 'on' } );
 		} );
 	}
 
@@ -94,28 +100,39 @@ export default class InsertBookmarkCommand extends Command {
 		const model = this.editor.model;
 		const schema = model.schema;
 
-		const startPosition = selection.getFirstPosition()!;
-
-		const isBookmarkAllowedBySchema = schema.checkChild( startPosition, 'bookmark' );
-		const isParagraphAllowedBySchema = model.schema.checkChild( startPosition, 'paragraph' );
+		const firstRange = selection.getFirstRange()!;
+		const startPosition = firstRange.start;
 
 		// Return position if it is allowed to insert bookmark or if it is allowed to insert paragraph.
-		if ( isBookmarkAllowedBySchema || isParagraphAllowedBySchema ) {
+		if ( isBookmarkAllowed( startPosition, schema ) ) {
 			return startPosition;
 		}
 
-		const firstRange = selection.getFirstRange()!;
-
-		for ( const item of firstRange.getItems() ) {
-			if ( schema.checkChild( item, 'bookmark' ) ) {
+		for ( const { previousPosition, item } of firstRange ) {
+			if ( item.is( 'element', 'paragraph' ) ) {
 				return model.createPositionAt( item, 0 );
 			}
 
-			if ( schema.checkChild( item, 'paragraph' ) ) {
-				return model.createPositionAt( item, 0 );
+			if ( isBookmarkAllowed( previousPosition, schema ) ) {
+				return previousPosition;
 			}
 		}
 
 		return null;
 	}
+}
+
+/**
+ * Verify if the given position allows for bookmark insertion. Verify if auto-paragraphing could help.
+ */
+function isBookmarkAllowed( position: Position, schema: Schema ): boolean {
+	if ( schema.checkChild( position, 'bookmark' ) ) {
+		return true;
+	}
+
+	if ( !schema.checkChild( position, 'paragraph' ) ) {
+		return false;
+	}
+
+	return schema.checkChild( 'paragraph', 'bookmark' );
 }
