@@ -28,6 +28,6 @@ export { default as SuperscriptUI } from './superscript/superscriptui.js';
 export { default as Underline } from './underline.js';
 export { default as UnderlineEditing } from './underline/underlineediting.js';
 export { default as UnderlineUI } from './underline/underlineui.js';
-export type { default as AttributeCommand } from './attributecommand.js';
+export { default as AttributeCommand } from './attributecommand.js';
 
 import './augmentation.js';
