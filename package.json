@@ -129,7 +129,7 @@
     "ckeditor5-premium-features": "43.1.0",
     "coveralls": "^3.1.0",
     "date-fns": "^2.30.0",
-    "eslint": "^7.19.0",
+    "eslint": "^8.21.0",
     "eslint-config-ckeditor5": "^7.0.0",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.1.1",
