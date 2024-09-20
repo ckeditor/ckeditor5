@@ -13,12 +13,15 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Table } from '@ckeditor/ckeditor5-table';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import BookmarkEditing from '../src/bookmarkediting.js';
 import InsertBookmarkCommand from '../src/insertbookmarkcommand.js';
 
 describe( 'InsertBookmarkCommand', () => {
 	let domElement, editor, model, command;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
@@ -220,6 +223,16 @@ describe( 'InsertBookmarkCommand', () => {
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
+
+			it( 'if position does not allow for bookmark and insertParagraph command returns null', () => {
+				setModelData( model, '[<imageBlock src="#"></imageBlock>]' );
+
+				sinon.stub( editor.commands.get( 'insertParagraph' ), 'execute' ).callsFake( () => null );
+
+				command.execute( { bookmarkId: 'foo' } );
+
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="#"></imageBlock>]' );
+			} );
 		} );
 
 		describe( 'if a bookmarkId was passed', () => {
@@ -228,8 +241,8 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>'
 				);
 			} );
 
@@ -238,8 +251,8 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]foobar</paragraph>'
 				);
 			} );
 
@@ -248,8 +261,8 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<heading1><bookmark bookmarkId="foo"></bookmark>foobar</heading1>'
+				expect( getModelData( model ) ).to.equal(
+					'<heading1>[<bookmark bookmarkId="foo"></bookmark>]foobar</heading1>'
 				);
 			} );
 
@@ -258,9 +271,9 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-						'<bookmark bookmarkId="foo"></bookmark>' +
+						'[<bookmark bookmarkId="foo"></bookmark>]' +
 						'<imageInline src="#"></imageInline>' +
 					'</paragraph>'
 				);
@@ -271,9 +284,9 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-						'<bookmark bookmarkId="foo"></bookmark>' +
+						'[<bookmark bookmarkId="foo"></bookmark>]' +
 						'<imageInline src="#"></imageInline>' +
 						'<imageInline src="#"></imageInline>' +
 					'</paragraph>'
@@ -285,10 +298,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'foo ' +
-						'<bookmark bookmarkId="foo"></bookmark>' +
+						'[<bookmark bookmarkId="foo"></bookmark>]' +
 						'<imageInline src="#"></imageInline>' +
 						' bar' +
 					'</paragraph>'
@@ -300,8 +313,8 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
 				);
 			} );
@@ -311,8 +324,8 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>' +
 					'<imageBlock src="#"></imageBlock>'
 				);
@@ -323,9 +336,9 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<imageBlock src="#"></imageBlock>' +
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
 				);
 			} );
@@ -337,9 +350,9 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
 				);
 			} );
@@ -356,8 +369,8 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
@@ -379,10 +392,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph><bookmark bookmarkId="foo"></bookmark>foo</paragraph></tableCell>' +
+							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -404,10 +417,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph><bookmark bookmarkId="foo"></bookmark>foo</paragraph></tableCell>' +
+							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
 					'</tableRow>' +
 					'<tableRow>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
@@ -431,12 +444,12 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>1</paragraph></tableCell>' +
 							'<tableCell><paragraph>2</paragraph></tableCell>' +
-							'<tableCell><paragraph><bookmark bookmarkId="foo"></bookmark>3</paragraph></tableCell>' +
+							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]3</paragraph></tableCell>' +
 							'<tableCell><paragraph>4</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -458,10 +471,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph><bookmark bookmarkId="foo"></bookmark>foo</paragraph></tableCell>' +
+							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
@@ -486,12 +499,12 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
 							'<tableCell>' +
-								'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+								'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 								'<imageBlock src="#"></imageBlock>' +
 							'</tableCell>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
@@ -519,12 +532,12 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
 							'<tableCell>' +
-								'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+								'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 								'<imageBlock src="#"></imageBlock>' +
 								'<paragraph>bar</paragraph>' +
 							'</tableCell>' +
@@ -547,10 +560,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph><bookmark bookmarkId="foo"></bookmark>foo</paragraph></tableCell>' +
+							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -562,8 +575,22 @@ describe( 'InsertBookmarkCommand', () => {
 				editor.execute( 'bold' );
 				editor.execute( 'italic' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bold="true" bookmarkId="foo" italic="true"></bookmark></paragraph>'
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<bookmark bold="true" bookmarkId="foo" italic="true"></bookmark>]</paragraph>'
+				);
+			} );
+
+			it( 'should inherit selection attributes', () => {
+				setModelData( model, '<paragraph><$text bold="true">foo[]bar</$text></paragraph>' );
+
+				editor.execute( 'insertBookmark', { bookmarkId: 'foo' } );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+						'<$text bold="true">foo</$text>' +
+						'[<bookmark bold="true" bookmarkId="foo"></bookmark>]' +
+						'<$text bold="true">bar</$text>' +
+					'</paragraph>'
 				);
 			} );
 		} );

@@ -11,7 +11,8 @@ import type {
 	DocumentSelection,
 	Selection,
 	Position,
-	Schema
+	Schema,
+	SchemaContextDefinition
 } from 'ckeditor5/src/engine.js';
 
 import { Command } from 'ckeditor5/src/core.js';
@@ -63,11 +64,7 @@ export default class InsertBookmarkCommand extends Command {
 		const selection = model.document.selection;
 
 		model.change( writer => {
-			let position = this._getPositionToInsertBookmark( selection );
-
-			if ( !position ) {
-				return;
-			}
+			let position = this._getPositionToInsertBookmark( selection )!;
 
 			const isBookmarkAllowed = model.schema.checkChild( position, 'bookmark' );
 
@@ -109,7 +106,12 @@ export default class InsertBookmarkCommand extends Command {
 		}
 
 		for ( const { previousPosition, item } of firstRange ) {
-			if ( item.is( 'element', 'paragraph' ) ) {
+			// When the table cell is selected (from the outside) we look for the first paragraph-like element inside.
+			if (
+				item.is( 'element' ) &&
+				schema.checkChild( item, '$text' ) &&
+				isBookmarkAllowed( item, schema )
+			) {
 				return model.createPositionAt( item, 0 );
 			}
 
@@ -125,7 +127,7 @@ export default class InsertBookmarkCommand extends Command {
 /**
  * Verify if the given position allows for bookmark insertion. Verify if auto-paragraphing could help.
  */
-function isBookmarkAllowed( position: Position, schema: Schema ): boolean {
+function isBookmarkAllowed( position: SchemaContextDefinition, schema: Schema ): boolean {
 	if ( schema.checkChild( position, 'bookmark' ) ) {
 		return true;
 	}
