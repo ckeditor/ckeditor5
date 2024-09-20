@@ -205,6 +205,10 @@ describe( 'MediaEmbedEditing', () => {
 
 						it( 'upcasts the URL (youtube)', () => {
 							testMediaUpcast( [
+								'https://www.youtube.com/shorts/foo',
+								'www.youtube.com/shorts/foo',
+								'youtube.com/shorts/foo',
+
 								'https://www.youtube.com/watch?v=foo',
 								'www.youtube.com/watch?v=foo',
 								'youtube.com/watch?v=foo',

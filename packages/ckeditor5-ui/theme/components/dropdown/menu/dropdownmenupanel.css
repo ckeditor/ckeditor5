@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-dropdown-menu__nested-menu__panel {
+.ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
 	position: absolute;
 	max-height: 314px; /* With the default settings, this is equal to 10 menu items. */
 	overflow-y: auto;
