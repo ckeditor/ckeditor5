@@ -18,7 +18,7 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 		input: 'src/index.ts',
 		output: upath.resolve( process.cwd(), './dist/index.js' ),
 		tsconfig: 'tsconfig.dist.json',
-		banner: '../../scripts/banner.mjs',
+		banner: '../../scripts/nim/banner.mjs',
 		external: [
 			'ckeditor5',
 			...Object.keys( {
