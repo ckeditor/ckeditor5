@@ -99,13 +99,8 @@ export default class InsertBookmarkCommand extends Command {
 		const isBookmarkAllowedBySchema = schema.checkChild( startPosition, 'bookmark' );
 		const isParagraphAllowedBySchema = model.schema.checkChild( startPosition, 'paragraph' );
 
-		// Return position if it is allowed to insert bookmark by schema.
-		if ( isBookmarkAllowedBySchema ) {
-			return startPosition;
-		}
-
-		// Return position if it is allowed to insert paragraph by schema.
-		if ( isParagraphAllowedBySchema ) {
+		// Return position if it is allowed to insert bookmark or if it is allowed to insert paragraph.
+		if ( isBookmarkAllowedBySchema || isParagraphAllowedBySchema ) {
 			return startPosition;
 		}
 
