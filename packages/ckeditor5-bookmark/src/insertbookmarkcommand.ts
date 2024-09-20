@@ -7,7 +7,7 @@
  * @module bookmark/insertbookmarkcommand
  */
 
-import type { DocumentSelection, Item, Element, Selection, Position } from 'ckeditor5/src/engine.js';
+import type { DocumentSelection, Selection, Position } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 
 /**
