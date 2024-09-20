@@ -9,7 +9,7 @@ import { glob } from 'glob';
 import { readFile } from 'fs/promises';
 import semver from 'semver';
 import upath from 'upath';
-import isckeditor5packagefactory from './isckeditor5packagefactory.mjs';
+import isCKEditor5PackageFactory from './isckeditor5packagefactory.mjs';
 
 /**
  * Validates if the versions of packages and their dependencies in specified directory match the provided version.
@@ -28,7 +28,7 @@ export default async function validateDependenciesVersions( { packagesDirectory,
 		pkgJsonPaths.map( async pkgJsonPath => JSON.parse( await readFile( pkgJsonPath, 'utf8' ) ) )
 	);
 
-	const isCKEditor5Package = await isckeditor5packagefactory();
+	const isCKEditor5Package = await isCKEditor5PackageFactory();
 
 	const errors = pkgJsons
 		.filter( pkgJson => !skipPackages.includes( pkgJson.name ) )

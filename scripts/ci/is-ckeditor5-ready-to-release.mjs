@@ -8,7 +8,7 @@
 /* eslint-env node */
 
 import { execSync } from 'child_process';
-import releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import semver from 'semver';
 
 // `@staging` and `@latest` share usually the same versions.
