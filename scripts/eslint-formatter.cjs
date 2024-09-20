@@ -8,7 +8,7 @@
 /* eslint-env node */
 
 // See: https://eslint.org/docs/user-guide/formatters/#stylish.
-const eslintStylishFormatter = require( 'eslint/lib/cli-engine/formatters/stylish' );
+const eslintStylishFormatter = require( 'eslint-formatter-stylish' );
 const chalk = require( 'chalk' );
 
 // eslint-disable-next-line max-len
