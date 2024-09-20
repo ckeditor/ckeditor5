@@ -9,12 +9,15 @@ import viewToPlainText from '../../src/utils/viewtoplaintext.js';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'viewToPlainText()', () => {
-	let converter;
+	let converter, viewDocument;
 
 	beforeEach( () => {
-		const viewDocument = new ViewDocument( new StylesProcessor() );
-
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new DomConverter( viewDocument );
+	} );
+
+	afterEach( () => {
+		viewDocument.destroy();
 	} );
 
 	function testViewToPlainText( viewString, expectedText ) {
