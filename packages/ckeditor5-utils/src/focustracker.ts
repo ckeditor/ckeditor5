@@ -12,7 +12,7 @@
 import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
-import { type View } from '@ckeditor/ckeditor5-ui';
+import { View } from '@ckeditor/ckeditor5-ui';
 
 // window.FOCUS_TRACKERS = [];
 
@@ -115,36 +115,63 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	/**
 	 * Starts tracking the specified element.
 	 */
-	public add( elementOrView: Element | ViewWithFocusTracker ): void {
-		if ( isViewWithFocusTracker( elementOrView ) ) {
-			const otherFocusTracker = elementOrView.focusTracker;
+	public add( elementOrView: Element | View ): void {
+		if ( isView( elementOrView ) ) {
+			if ( isViewWithFocusTracker( elementOrView ) ) {
+				this._addFocusTracker( elementOrView.focusTracker );
+			} else {
+				if ( !elementOrView.element ) {
+					/**
+					 * The {@link module:ui/view~View} added to the {@link module:utils/focustracker~FocusTracker} does not have an
+					 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before adding
+					 * it to the focus tracker.
+					 *
+					 * @error focustracker-add-view-missing-element
+					 */
+					throw new CKEditorError( 'focustracker-add-view-missing-element', {
+						focusTracker: this,
+						view: elementOrView
+					} );
+				}
 
-			if ( DEBUG ) {
-				console.log( `[FT] Add external ${ logFT( otherFocusTracker ) } to ${ logFT( this ) }` );
+				this._addElement( elementOrView.element );
 			}
-
-			this.listenTo( otherFocusTracker, 'change:isFocused', () => {
-				if ( DEBUG ) {
-					console.group( `[FT] External ${ logFT( otherFocusTracker ) } change:isFocused =`, otherFocusTracker.isFocused );
-				}
-
-				if ( otherFocusTracker.isFocused ) {
-					this._focus( otherFocusTracker.focusedElement! );
-				} else {
-					this._blur();
-				}
-
-				if ( DEBUG ) {
-					console.groupEnd();
-				}
-			} );
-
-			this._externalFocusTrackers.add( otherFocusTracker );
-
-			return;
+		} else {
+			this._addElement( elementOrView );
 		}
+	}
 
-		if ( this._elements.has( elementOrView ) ) {
+	/**
+	 * Stops tracking the specified element and stops listening on this element.
+	 */
+	public remove( elementOrView: Element | View ): void {
+		if ( isView( elementOrView ) ) {
+			if ( isViewWithFocusTracker( elementOrView ) ) {
+				this._removeFocusTracker( elementOrView.focusTracker );
+			} else {
+				if ( !elementOrView.element ) {
+					/**
+					 * The {@link module:ui/view~View} removed from the {@link module:utils/focustracker~FocusTracker} does not have an
+					 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before removing
+					 * it from the focus tracker.
+					 *
+					 * @error focustracker-remove-view-missing-element
+					 */
+					throw new CKEditorError( 'focustracker-remove-view-missing-element', {
+						focusTracker: this,
+						view: elementOrView
+					} );
+				}
+
+				this._removeElement( elementOrView.element );
+			}
+		} else {
+			this._removeElement( elementOrView );
+		}
+	}
+
+	private _addElement( element: Element ): void {
+		if ( this._elements.has( element ) ) {
 			/**
 			 * This element is already tracked by {@link module:utils/focustracker~FocusTracker}.
 			 *
@@ -153,39 +180,56 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 			throw new CKEditorError( 'focustracker-add-element-already-exist', this );
 		}
 
-		this.listenTo( elementOrView, 'focus', () => this._focus( elementOrView ), { useCapture: true } );
-		this.listenTo( elementOrView, 'blur', () => this._blur(), { useCapture: true } );
-		this._elements.add( elementOrView );
+		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );
+		this.listenTo( element, 'blur', () => this._blur(), { useCapture: true } );
+		this._elements.add( element );
 	}
 
-	/**
-	 * Stops tracking the specified element and stops listening on this element.
-	 */
-	public remove( elementOrView: Element | ViewWithFocusTracker ): void {
-		if ( isViewWithFocusTracker( elementOrView ) ) {
-			const otherFocusTracker = elementOrView.focusTracker;
-
-			if ( DEBUG ) {
-				console.log( `[FT] Remove external ${ logFT( otherFocusTracker ) } from ${ logFT( this ) }` );
-			}
-
-			this.stopListening( otherFocusTracker );
-			this._externalFocusTrackers.delete( otherFocusTracker );
-
-			if ( otherFocusTracker.isFocused ) {
-				this._blur();
-			}
-
-			return;
-		}
-
-		if ( elementOrView === this.focusedElement ) {
+	private _removeElement( element: Element ): void {
+		if ( element === this.focusedElement ) {
 			this._blur();
 		}
 
-		if ( this._elements.has( elementOrView ) ) {
-			this.stopListening( elementOrView );
-			this._elements.delete( elementOrView );
+		if ( this._elements.has( element ) ) {
+			this.stopListening( element );
+			this._elements.delete( element );
+		}
+	}
+
+	private _addFocusTracker( focusTracker: FocusTracker ): void {
+		if ( DEBUG ) {
+			console.log( `[FT] Add external ${ logFT( focusTracker ) } to ${ logFT( this ) }` );
+		}
+
+		this.listenTo( focusTracker, 'change:isFocused', () => {
+			if ( DEBUG ) {
+				console.group( `[FT] External ${ logFT( focusTracker ) } change:isFocused =`, focusTracker.isFocused );
+			}
+
+			if ( focusTracker.isFocused ) {
+				this._focus( focusTracker.focusedElement! );
+			} else {
+				this._blur();
+			}
+
+			if ( DEBUG ) {
+				console.groupEnd();
+			}
+		} );
+
+		this._externalFocusTrackers.add( focusTracker );
+	}
+
+	private _removeFocusTracker( focusTracker: FocusTracker ): void {
+		if ( DEBUG ) {
+			console.log( `[FT] Remove external ${ logFT( focusTracker ) } from ${ logFT( this ) }` );
+		}
+
+		this.stopListening( focusTracker );
+		this._externalFocusTrackers.delete( focusTracker );
+
+		if ( focusTracker.isFocused ) {
+			this._blur();
 		}
 	}
 
@@ -253,6 +297,10 @@ export type ViewWithFocusTracker = View & { focusTracker: FocusTracker };
  */
 export function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracker {
 	return 'focusTracker' in view && view.focusTracker instanceof FocusTracker;
+}
+
+function isView( item: unknown ): item is View {
+	return item instanceof View;
 }
 
 function logFT( ft: FocusTracker ) {
