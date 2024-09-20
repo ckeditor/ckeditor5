@@ -8,7 +8,6 @@
  */
 
 import {
-	UpcastWriter,
 	type DowncastAttributeEvent,
 	type DowncastWriter,
 	type EditingController,

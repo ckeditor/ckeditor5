@@ -17,21 +17,9 @@ order: 50
 
 Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
 
-<info-box hint>
-	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
+{@snippet getting-started/use-builder}
 
 ## Quick start
-
-### Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor&nbsp;5 in your Vue application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
 
 ### Setting up the project
 
@@ -400,7 +388,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
 	import CKEditor from '@ckeditor/ckeditor5-vue';
-	
+
 	import 'ckeditor5/ckeditor5.css';
 
 	export default {
@@ -475,6 +463,53 @@ export default {
 ```
 
 For more information, refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+### Jest testing
+
+You can use Jest as a test runner in Vue apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+
+For testing CKEditor&nbsp;5, it is recommended to use testing frameworks that utilize a real browser and provide a complete DOM implementation. Some popular options include:
+
+* [Vitest](https://vitest.dev/)
+* [Playwright](https://playwright.dev/)
+* [Cypress](https://www.cypress.io/)
+
+These frameworks offer better support for testing CKEditor&nbsp;5 and provide a more accurate representation of how the editor behaves in a real browser environment.
+
+If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
+
+```javascript
+beforeAll( () => {
+	window.scrollTo = jest.fn();
+
+	window.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+
+	for (const key of ['InputEvent', 'KeyboardEvent']) {
+		window[key].prototype.getTargetRanges = () => {
+			const range = new StaticRange({
+				startContainer: document.body.querySelector('.ck-editor__editable p')!,
+				startOffset: 0,
+				endContainer: document.body.querySelector('.ck-editor__editable p')!,
+				endOffset: 0,
+			});
+
+			return [range];
+		};
+	}
+
+	Range.prototype.getClientRects = () => ({
+		item: () => null,
+		length: 0,
+		[Symbol.iterator]: function* () {},
+	});
+} );
+```
+
+These mocks should be placed before the tests that use CKEditor&nbsp;5. They are imperfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Remember that they are not a replacement for proper browser testing.
 
 ## Contributing and reporting issues
 

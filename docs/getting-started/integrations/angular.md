@@ -38,12 +38,17 @@ Because of the breaking changes in the Angular library output format, the `@cked
 	 <td colspan="3">Actively supported versions</td>
 	</tr>
 	<tr>
-	 <td><code>^8</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
+	 <td><code>^9</code></td>
+	 <td><code>16+</code></td>
+	 <td>Migration to TypeScript&nbsp;5. Declaration files are not backward compatible. Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0">43</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td colspan="3">Past releases (no longer maintained)</td>
+	</tr>
+	<tr>
+	 <td><code>^8</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td><code>^7</code></td>
@@ -90,17 +95,9 @@ Because of the breaking changes in the Angular library output format, the `@cked
 
 All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
+{@snippet getting-started/use-builder}
+
 ## Quick start
-
-### Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor 5 in your Angular application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
 
 ### Setting up the project
 
@@ -696,12 +693,61 @@ There is a known issue related to the localization in Angular 17. Read more in t
 
 ## Known issues
 
+### Module resolution
+
 The `moduleResolution` option of the TypeScript configuration determines the algorithm for finding and resolving modules from `node_modules`. In Angular 17, the option is set to `node` by default. This option prevents type declaration for editor translations from being correctly loaded. To fix it, you have several options:
 
 * You can set the `moduleResolution` option to `bundler`. It is the recommended setting in TypeScript 5.0+ for applications that use a bundler. And it is a recommended way of fixing this problem. You can check other solutions below for lower TypeScript versions.
 * You can tell the TypeScript compiler to suppress the problem using the `// @ts-expect-error` comment above the imported translations.
 * You can update Angular to version 18, where the `moduleResolution` option is set to `bundler`  by default.
 * You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the config.
+
+### Jest testing
+
+You can use Jest as a test runner in Angular apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+
+For testing CKEditor&nbsp;5, it is recommended to use testing frameworks that utilize a real browser and provide a complete DOM implementation. Some popular options include:
+
+* [Vitest](https://vitest.dev/)
+* [Playwright](https://playwright.dev/)
+* [Cypress](https://www.cypress.io/)
+
+These frameworks offer better support for testing CKEditor&nbsp;5 and provide a more accurate representation of how the editor behaves in a real browser environment.
+
+If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
+
+```javascript
+beforeAll( () => {
+	window.scrollTo = jest.fn();
+
+	window.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+
+	for ( const key of [ 'InputEvent', 'KeyboardEvent' ] ) {
+		window[ key ].prototype.getTargetRanges = () => {
+			const range = new StaticRange( {
+				startContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				startOffset: 0,
+				endContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				endOffset: 0
+			} );
+
+			return [ range ];
+		};
+	}
+
+	Range.prototype.getClientRects = () => ( {
+		item: () => null,
+		length: 0,
+		[ Symbol.iterator ]: function* () {}
+	} );
+} );
+```
+
+These mocks should be placed before the tests that use CKEditor&nbsp;5. They are imperfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
 
 ## Contributing and reporting issues
 
