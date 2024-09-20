@@ -15,6 +15,8 @@ import path from 'path';
 import module from 'module';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
+const COLLABORATION_DLL_PACKAGE_NAME = 'ckeditor5-collaboration';
+
 const require = module.createRequire( import.meta.url );
 const argv = minimist( process.argv.slice( 2 ), {
 	string: [
@@ -67,6 +69,7 @@ if ( !argv[ 'skip-packages-dll' ] ) {
 	getPackageNames( ROOT_DIRECTORY )
 		.filter( isNotBaseDll )
 		.filter( hasDLLBuildScript )
+		.sort( packageName => packageName === COLLABORATION_DLL_PACKAGE_NAME ? -1 : 1 )
 		.forEach( fullPackageName => {
 			console.log( prefix + `Building ${ fullPackageName }...` );
 
