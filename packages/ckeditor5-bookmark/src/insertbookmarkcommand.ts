@@ -7,7 +7,7 @@
  * @module bookmark/insertbookmarkcommand
  */
 
-import type { DocumentSelection, Item, Element, Selection } from 'ckeditor5/src/engine.js';
+import type { DocumentSelection, Item, Element, Selection, Position } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 
 /**
@@ -29,13 +29,9 @@ export default class InsertBookmarkCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const startPosition = selection.isCollapsed ? selection.anchor! : selection.getFirstPosition()!;
+		const doesPositionThatBookmarkCanBeInsertedExists = !!this._getPositionToInsertBookmark( selection );
 
-		const isBookmarkAllowedBySchema = model.schema.checkChild( startPosition, 'bookmark' );
-		const isParagraphAllowedBySchema = model.schema.checkChild( startPosition, 'paragraph' );
-		const isAnyAllowedElementInSelection = !!this._getAllowedElementBasedOnSelection( selection );
-
-		this.isEnabled = isBookmarkAllowedBySchema || isParagraphAllowedBySchema || isAnyAllowedElementInSelection;
+		this.isEnabled = doesPositionThatBookmarkCanBeInsertedExists;
 	}
 
 	/**
@@ -61,64 +57,67 @@ export default class InsertBookmarkCommand extends Command {
 		const selection = model.document.selection;
 
 		model.change( writer => {
-			const startPosition = selection.isCollapsed ? selection.anchor! : selection.getFirstPosition()!;
-			const isBookmarkAllowedBySchema = model.schema.checkChild( startPosition, 'bookmark' );
+			const position = this._getPositionToInsertBookmark( selection );
 
-			// If it is allowed to insert bookmark by schema than insert it.
+			if ( !position ) {
+				return;
+			}
+
+			const isBookmarkAllowedBySchema = model.schema.checkChild( position, 'bookmark' );
+
+			// If the position allow for `bookmark` then insert it.
 			if ( isBookmarkAllowedBySchema ) {
-				writer.setSelection( startPosition );
+				writer.setSelection( position );
 
-				return model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
-			} else {
-				const selectedElement = selection.getSelectedElement();
+				model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
 
-				// If is selected single element and if it's a block element
-				// check if paragraph can be inserted before it and add bookmark inside of this paragraph.
-				if ( selectedElement && model.schema.isBlock( selectedElement ) ) {
-					editor.execute( 'insertParagraph', {
-						position: editor.model.createPositionAt( selectedElement, 'before' )
-					} );
+				return;
+			}
 
-					return model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
-				} else {
-					// If paragraph is not allowed by the schema then scan the selection ranges to find the first position
-					// for bookmark insertion (for example multiple table cells selected)
-					const allowedElement = this._getAllowedElementBasedOnSelection( selection ) as Element | null;
+			const isParagraphAllowedBySchema = model.schema.checkChild( position, 'paragraph' );
 
-					if ( allowedElement && allowedElement.childCount ) {
-						const firstChild = allowedElement.getChild( 0 )!;
+			// If the position does not allow for `bookmark` but allows for a `paragraph`
+			// then insert a `paragraph` with a `bookmark` inside.
+			if ( isParagraphAllowedBySchema ) {
+				editor.execute( 'insertParagraph', { position } );
 
-						// When first child is a paragraph then insert bookmark at the first place inside of it.
-						if ( firstChild.is( 'element', 'paragraph' ) ) {
-							writer.setSelection( firstChild, 'before' );
-
-							return writer.insertElement( 'bookmark', { bookmarkId }, firstChild );
-						}
-
-						// If first child is not a paragraph then insert paragraph before it and add bookmark inside of this paragraph.
-						editor.execute( 'insertParagraph', {
-							position: model.createPositionAt( allowedElement, 0 )
-						} );
-
-						return model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
-					}
-				}
+				model.insertObject( writer.createElement( 'bookmark', { bookmarkId } ) );
 			}
 		} );
 	}
 
 	/**
-	 * Returns the first element that accepts adding a `paragraph` on it.
-	 * @param selection Current selection.
+	 * Returns the position where the bookmark can be inserted. And if it is not possible to insert a bookmark,
+	 * check if it is possible to insert a paragraph.
 	 */
-	private _getAllowedElementBasedOnSelection( selection: Selection | DocumentSelection ): Item | null {
-		const schema = this.editor.model.schema;
+	private _getPositionToInsertBookmark( selection: Selection | DocumentSelection ): Position | null {
+		const model = this.editor.model;
+		const schema = model.schema;
 
-		for ( const range of selection.getRanges() ) {
-			for ( const item of range.getItems() ) {
-				if ( schema.checkChild( item, 'paragraph' ) ) {
-					return item;
-				}
+		const startPosition = selection.getFirstPosition()!;
+
+		const isBookmarkAllowedBySchema = schema.checkChild( startPosition, 'bookmark' );
+		const isParagraphAllowedBySchema = model.schema.checkChild( startPosition, 'paragraph' );
+
+		// Return position if it is allowed to insert bookmark by schema.
+		if ( isBookmarkAllowedBySchema ) {
+			return startPosition;
+		}
+
+		// Return position if it is allowed to insert paragraph by schema.
+		if ( isParagraphAllowedBySchema ) {
+			return startPosition;
+		}
+
+		const firstRange = selection.getFirstRange()!;
+
+		for ( const item of firstRange.getItems() ) {
+			if ( schema.checkChild( item, 'bookmark' ) ) {
+				return model.createPositionAt( item, 0 );
+			}
+
+			if ( schema.checkChild( item, 'paragraph' ) ) {
+				return model.createPositionAt( item, 0 );
 			}
 		}
 

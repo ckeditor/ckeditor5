@@ -103,8 +103,8 @@ describe( 'InsertBookmarkCommand', () => {
 					model,
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>foo</paragraph></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>foo</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -135,8 +135,8 @@ describe( 'InsertBookmarkCommand', () => {
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
 							'<tableCell><paragraph>bar</paragraph></tableCell>' +
-							'[<tableCell><paragraph>bar</paragraph></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -177,11 +177,8 @@ describe( 'InsertBookmarkCommand', () => {
 			} );
 
 			it( 'when bookmark element is not allowed on custom defined elements', () => {
-				model.schema.register( 'fooWrapper' );
-				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
-
-				model.schema.extend( 'fooWrapper', { allowIn: '$root' } );
-				model.schema.extend( 'fooBlock', { allowIn: 'fooWrapper', disallowChildren: [ 'bookmark', 'paragraph' ] } );
+				model.schema.register( 'fooWrapper', { allowIn: '$root' } );
+				model.schema.register( 'fooBlock', { inheritAllFrom: '$block', allowIn: 'fooWrapper', disallowChildren: [ 'bookmark' ] } );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'fooWrapper', view: 'foowrapper' } );
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'fooBlock', view: 'fooblock' } );
@@ -216,7 +213,7 @@ describe( 'InsertBookmarkCommand', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
 
-			it( 'if bookmarkId is not a string', () => {
+			it( 'if invalid command options are provided', () => {
 				setModelData( model, '<paragraph>[]</paragraph>' );
 
 				command.execute( { 'id': 'foo' } );
@@ -269,6 +266,20 @@ describe( 'InsertBookmarkCommand', () => {
 				);
 			} );
 
+			it( 'should create bookmark element before two selected `imageInline`', () => {
+				setModelData( model, '<paragraph>[<imageInline src="#"></imageInline><imageInline src="#"></imageInline>]</paragraph>' );
+
+				command.execute( { bookmarkId: 'foo' } );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'<bookmark bookmarkId="foo"></bookmark>' +
+						'<imageInline src="#"></imageInline>' +
+						'<imageInline src="#"></imageInline>' +
+					'</paragraph>'
+				);
+			} );
+
 			it( 'should create bookmark element before selected `imageInline` surrounded by text', () => {
 				setModelData( model, '<paragraph>foo [<imageInline src="#"></imageInline>] bar</paragraph>' );
 
@@ -290,6 +301,30 @@ describe( 'InsertBookmarkCommand', () => {
 				command.execute( { bookmarkId: 'foo' } );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+					'<imageBlock src="#"></imageBlock>'
+				);
+			} );
+
+			it( 'should create paragraph with bookmark element inside before two selected `imageBlock`', () => {
+				setModelData( model, '[<imageBlock src="#"></imageBlock><imageBlock src="#"></imageBlock>]' );
+
+				command.execute( { bookmarkId: 'foo' } );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+					'<imageBlock src="#"></imageBlock>' +
+					'<imageBlock src="#"></imageBlock>'
+				);
+			} );
+
+			it( 'should create paragraph with bookmark element between two `imageBlock`', () => {
+				setModelData( model, '<imageBlock src="#"></imageBlock>[<imageBlock src="#"></imageBlock>]' );
+
+				command.execute( { bookmarkId: 'foo' } );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<imageBlock src="#"></imageBlock>' +
 					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
 				);
@@ -336,8 +371,8 @@ describe( 'InsertBookmarkCommand', () => {
 					model,
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>foo</paragraph></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>foo</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -354,6 +389,33 @@ describe( 'InsertBookmarkCommand', () => {
 				);
 			} );
 
+			it( 'should create bookmark element at first allowed place when two `TableCell` are selected (2 row table)', () => {
+				setModelData(
+					model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>foo</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				command.execute( { bookmarkId: 'foo' } );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph><bookmark bookmarkId="foo"></bookmark>foo</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+							'<tableCell><paragraph>bar</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should create bookmark element at first allowed place when two `TableCell`s are selected (4 cell table)', () => {
 				setModelData(
 					model,
@@ -361,8 +423,8 @@ describe( 'InsertBookmarkCommand', () => {
 						'<tableRow>' +
 							'<tableCell><paragraph>1</paragraph></tableCell>' +
 							'<tableCell><paragraph>2</paragraph></tableCell>' +
-							'[<tableCell><paragraph>3</paragraph></tableCell>' +
-							'<tableCell><paragraph>4</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>3</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>4</paragraph></tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -386,10 +448,10 @@ describe( 'InsertBookmarkCommand', () => {
 					model,
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>foo</paragraph></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>foo</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -415,8 +477,8 @@ describe( 'InsertBookmarkCommand', () => {
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
-							'[<tableCell><imageBlock src="#"></imageBlock></tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'[<tableCell><imageBlock src="#"></imageBlock></tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
 							'<tableCell><paragraph>baz</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -448,8 +510,8 @@ describe( 'InsertBookmarkCommand', () => {
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
 							'[<tableCell>' +
 								'<imageBlock src="#"></imageBlock><paragraph>bar</paragraph>' +
-							'</tableCell>' +
-							'<tableCell><paragraph>bar</paragraph></tableCell>]' +
+							'</tableCell>]' +
+							'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
 							'<tableCell><paragraph>baz</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
