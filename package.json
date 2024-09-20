@@ -231,7 +231,8 @@
     "packages/*/dist/**",
     "packages/*/src/lib/**",
     "coverage/**",
-    "external/**"
+    "external/**",
+    "release/**"
   ],
   "workspaces": {
     "packages": [
