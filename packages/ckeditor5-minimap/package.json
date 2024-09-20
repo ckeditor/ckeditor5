@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-basic-styles": "43.1.0",
     "@ckeditor/ckeditor5-cloud-services": "43.1.0",
     "@ckeditor/ckeditor5-code-block": "43.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^43.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^44.0.0-alpha.0",
     "@ckeditor/ckeditor5-easy-image": "43.1.0",
     "@ckeditor/ckeditor5-editor-decoupled": "43.1.0",
     "@ckeditor/ckeditor5-font": "43.1.0",
