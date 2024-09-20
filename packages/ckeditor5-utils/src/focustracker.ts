@@ -12,7 +12,8 @@
 import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
-import { View } from '@ckeditor/ckeditor5-ui';
+import { type View } from '@ckeditor/ckeditor5-ui';
+import { isElement as _isElement } from 'lodash-es';
 
 // window.FOCUS_TRACKERS = [];
 
@@ -116,7 +117,9 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Starts tracking the specified element.
 	 */
 	public add( elementOrView: Element | View ): void {
-		if ( isView( elementOrView ) ) {
+		if ( isElement( elementOrView ) ) {
+			this._addElement( elementOrView );
+		} else {
 			if ( isViewWithFocusTracker( elementOrView ) ) {
 				this._addFocusTracker( elementOrView.focusTracker );
 			} else {
@@ -136,8 +139,6 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 
 				this._addElement( elementOrView.element );
 			}
-		} else {
-			this._addElement( elementOrView );
 		}
 	}
 
@@ -145,7 +146,9 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Stops tracking the specified element and stops listening on this element.
 	 */
 	public remove( elementOrView: Element | View ): void {
-		if ( isView( elementOrView ) ) {
+		if ( isElement( elementOrView ) ) {
+			this._removeElement( elementOrView );
+		} else {
 			if ( isViewWithFocusTracker( elementOrView ) ) {
 				this._removeFocusTracker( elementOrView.focusTracker );
 			} else {
@@ -165,8 +168,6 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 
 				this._removeElement( elementOrView.element );
 			}
-		} else {
-			this._removeElement( elementOrView );
 		}
 	}
 
@@ -299,10 +300,10 @@ function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracker {
 	return 'focusTracker' in view && view.focusTracker instanceof FocusTracker;
 }
 
-function isView( item: unknown ): item is View {
-	return item instanceof View;
-}
-
 function logFT( ft: FocusTracker ) {
 	return `[${ ft._getLabel() }]`;
+}
+
+function isElement( value: any ): value is Element {
+	return _isElement( value );
 }
