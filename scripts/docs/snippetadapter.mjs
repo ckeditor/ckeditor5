@@ -446,7 +446,6 @@ function getWebpackConfig( snippets, config ) {
 		optimization: {
 			minimizer: [
 				new TerserPlugin( {
-					sourceMap: true,
 					terserOptions: {
 						output: {
 							// Preserve CKEditor 5 license comments.
@@ -662,7 +661,6 @@ function getWebpackConfigForAssets( config ) {
 		optimization: {
 			minimizer: [
 				new TerserPlugin( {
-					sourceMap: true,
 					terserOptions: {
 						output: {
 							// Preserve CKEditor 5 license comments.
