@@ -47,7 +47,7 @@ describe( 'EditorUI', () => {
 	afterEach( async () => {
 		ui.destroy();
 
-		if ( editor.state === 'initializing' ) {
+		if ( editor.state !== 'destroyed' ) {
 			editor.fire( 'ready' );
 			await editor.destroy();
 		}
