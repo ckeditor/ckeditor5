@@ -756,8 +756,6 @@ function padWithNoOps( operations: Array<Operation>, howMany: number ) {
  *
  * See also `MarkerOperation` x `MoveOperation` transformation.
  * See also https://github.com/ckeditor/ckeditor5/pull/17071.
- *
- * @param operations
  */
 function handlePartialMarkerOperations( operations: Array<Operation> ) {
 	const markerOps: Map<string, { op: MarkerOperation; ranges: Array<Range> }> = new Map();
