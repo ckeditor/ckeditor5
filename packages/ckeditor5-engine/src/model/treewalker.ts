@@ -23,6 +23,8 @@ import type Range from './range.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
+(window as any).TreeWalkerInstances=0;
+
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.
  */
@@ -91,6 +93,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * @param options Object with configuration.
 	 */
 	constructor( options: TreeWalkerOptions ) {
+		// (window as any).TreeWalkerInstances++;
 		if ( !options || ( !options.boundaries && !options.startPosition ) ) {
 			/**
 			 * Neither boundaries nor starting position of a `TreeWalker` have been defined.

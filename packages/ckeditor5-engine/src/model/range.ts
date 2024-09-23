@@ -10,10 +10,12 @@
 import TypeCheckable from './typecheckable.js';
 import Position from './position.js';
 import TreeWalker, { type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import TextProxy from './textproxy.js';
 
 import type Document from './document.js';
 import type DocumentFragment from './documentfragment.js';
 import type Element from './element.js';
+import type Text from './text.js';
 import type InsertOperation from './operation/insertoperation.js';
 import type Item from './item.js';
 import type MergeOperation from './operation/mergeoperation.js';
@@ -21,7 +23,14 @@ import type MoveOperation from './operation/moveoperation.js';
 import type Operation from './operation/operation.js';
 import type SplitOperation from './operation/splitoperation.js';
 
-import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+
+(window as any).RangeGetItemsFlatShallow = 0;
+(window as any).RangeGetItemsOther = 0;
+(window as any).RangeGetWalkerFlatShallow = 0;
+(window as any).RangeGetWalkerOther = 0;
+(window as any).RangeIterator = 0;
+
 
 /**
  * Represents a range in the model tree.
@@ -74,6 +83,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * and `ignoreElementEnd` option set to `true`.
 	 */
 	public* [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
+		// (window as any).RangeIterator++;
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
@@ -90,10 +100,17 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * {@link #end} position are in the same {@link module:engine/model/position~Position#parent}.
 	 */
 	public get isFlat(): boolean {
-		const startParentPath = this.start.getParentPath();
-		const endParentPath = this.end.getParentPath();
+		if ( this.start.path.length != this.end.path.length ) {
+			return false;
+		}
 
-		return compareArrays( startParentPath, endParentPath ) == 'same';
+		for ( let i = 0; i < this.start.path.length - 1; i++ ) {
+			if ( this.start.path[ i ] != this.end.path[ i ] ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -418,6 +435,12 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 */
 	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
+		if ( options.shallow && this.isFlat ) {
+			// ( window as any ).RangeGetWalkerFlatShallow++;
+		} else {
+			// ( window as any ).RangeGetWalkerOther++;
+		}
+
 		options.boundaries = this;
 
 		return new TreeWalker( options );
@@ -437,15 +460,138 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 */
 	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<Item> {
-		options.boundaries = this;
-		options.ignoreElementEnd = true;
+		if ( options.shallow && this.isFlat ) {
+			// ( window as any ).RangeGetItemsFlatShallow++;
+			const parent = this.start.parent;
 
-		const treeWalker = new TreeWalker( options );
+			const startOffset = this.start.offset;
+			const endOffset = this.end.offset;
 
-		for ( const value of treeWalker ) {
-			yield value.item;
+			let offsetBefore = 0;
+
+			for ( let i = 0; i < parent.childCount; i++ ) {
+				const child = parent.getChild( i )!;
+				const offsetAfter = offsetBefore + child.offsetSize;
+
+				if ( offsetAfter <= startOffset ) {
+					// The node is fully before the range. Skip it.
+					offsetBefore = offsetAfter;
+
+					continue;
+				}
+
+				if ( offsetBefore >= endOffset ) {
+					// The node is fully after the range. Stop iteration.
+					break;
+				}
+
+				if ( offsetBefore >= startOffset && offsetAfter <= endOffset ) {
+					// The node is fully inside the range. Yield it.
+					yield child.is( '$text' ) ? new TextProxy( child, 0, child.offsetSize ) : child;
+				} else {
+					// The node is partially in range. Yield text proxy.
+					const textProxyOffsetStart = Math.max( offsetBefore, startOffset );
+					const textProxyOffsetEnd = Math.min( offsetAfter, endOffset );
+
+					yield new TextProxy( child as Text, textProxyOffsetStart - offsetBefore, textProxyOffsetEnd - textProxyOffsetStart );
+				}
+
+				offsetBefore = offsetAfter;
+			}
+		} else {
+			// ( window as any ).RangeGetItemsOther++;
+			options.boundaries = this;
+			options.ignoreElementEnd = true;
+
+			const treeWalker = new TreeWalker( options );
+
+			for ( const value of treeWalker ) {
+				yield value.item;
+			}
 		}
 	}
+
+	// public* getItemsValidate(): IterableIterator<Item> {
+	// 	const parent = this.start.parent;
+	//
+	// 	const startOffset = this.start.offset;
+	// 	const endOffset = this.end.offset;
+	//
+	// 	let offsetBefore = 0;
+	//
+	// 	for ( let i = 0; i < parent.childCount; i++ ) {
+	// 		const child = parent.getChild( i )!;
+	// 		const offsetAfter = offsetBefore + child.offsetSize;
+	//
+	// 		if ( offsetAfter <= startOffset ) {
+	// 			// The node is fully before the range. Skip it.
+	// 			offsetBefore = offsetAfter;
+	//
+	// 			continue;
+	// 		}
+	//
+	// 		if ( offsetBefore >= endOffset ) {
+	// 			// The node is fully after the range. Stop iteration.
+	// 			break;
+	// 		}
+	//
+	// 		if ( offsetBefore >= startOffset && offsetAfter <= endOffset ) {
+	// 			// The node is fully inside the range. Yield it.
+	// 			yield child.is( '$text' ) ? new TextProxy( child, 0, child.offsetSize ) : child;
+	// 		} else {
+	// 			// The node is partially in range. Yield text proxy.
+	// 			const textProxyOffsetStart = Math.max( offsetBefore, startOffset );
+	// 			const textProxyOffsetEnd = Math.min( offsetAfter, endOffset );
+	//
+	// 			yield new TextProxy( child as Text, textProxyOffsetStart - offsetBefore, textProxyOffsetEnd - textProxyOffsetStart );
+	// 		}
+	//
+	// 		offsetBefore = offsetAfter;
+	// 	}
+	// }
+	//
+	// public forEachItem( callback: ( item: Item ) => void ): void {
+	// 	const parent = this.start.parent;
+	//
+	// 	const startOffset = this.start.offset;
+	// 	const endOffset = this.end.offset;
+	//
+	// 	let offsetBefore = 0;
+	//
+	// 	for ( let i = 0; i < parent.childCount; i++ ) {
+	// 		const child = parent.getChild( i )!;
+	// 		const offsetAfter = offsetBefore + child.offsetSize;
+	//
+	// 		if ( offsetAfter <= startOffset ) {
+	// 			// The node is fully before the range. Skip it.
+	// 			offsetBefore = offsetAfter;
+	//
+	// 			continue;
+	// 		}
+	//
+	// 		if ( offsetBefore >= endOffset ) {
+	// 			// The node is fully after the range. Stop iteration.
+	// 			return;
+	// 		}
+	//
+	// 		if ( offsetBefore >= startOffset && offsetAfter <= endOffset ) {
+	// 			// The node is fully inside the range. Yield it.
+	// 			const item = child.is( '$text' ) ? new TextProxy( child, 0, child.offsetSize ) : child;
+	//
+	// 			callback( item );
+	// 		} else {
+	// 			// The node is partially in range. Yield text proxy.
+	// 			const textProxyOffsetStart = Math.max( offsetBefore, startOffset );
+	// 			const textProxyOffsetEnd = Math.min( offsetAfter, endOffset );
+	//
+	// 			const item = new TextProxy( child as Text, textProxyOffsetStart - offsetBefore, textProxyOffsetEnd - textProxyOffsetStart );
+	//
+	// 			callback( item );
+	// 		}
+	//
+	// 		offsetBefore = offsetAfter;
+	// 	}
+	// }
 
 	/**
 	 * Returns an iterator that iterates over all {@link module:engine/model/position~Position positions} that are boundaries or

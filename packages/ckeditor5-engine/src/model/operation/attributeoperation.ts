@@ -16,6 +16,9 @@ import type Document from '../document.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'lodash-es';
 import type { Selectable } from '../selection.js';
+import TextProxy from "../textproxy";
+import Text from "../text";
+import Item from "../item";
 
 /**
  * Operation to change nodes' attribute.
@@ -138,37 +141,78 @@ export default class AttributeOperation extends Operation {
 			throw new CKEditorError( 'attribute-operation-range-not-flat', this );
 		}
 
-		for ( const item of this.range.getItems( { shallow: true } ) ) {
-			if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
-				/**
-				 * Changed node has different attribute value than operation's old attribute value.
-				 *
-				 * @error attribute-operation-wrong-old-value
-				 * @param item
-				 * @param key
-				 * @param value
-				 */
-				throw new CKEditorError(
-					'attribute-operation-wrong-old-value',
-					this,
-					{ item, key: this.key, value: this.oldValue }
-				);
+		const parent = this.range.start.parent;
+
+		const startOffset = this.range.start.offset;
+		const endOffset = this.range.end.offset;
+
+		let offsetBefore = 0;
+
+		for ( let i = 0; i < parent.childCount; i++ ) {
+			const child = parent.getChild( i )!;
+			const offsetAfter = offsetBefore + child.offsetSize;
+
+			if ( offsetAfter <= startOffset ) {
+				// The node is fully before the range. Skip it.
+				offsetBefore = offsetAfter;
+
+				continue;
 			}
 
-			if ( this.oldValue === null && this.newValue !== null && item.hasAttribute( this.key ) ) {
-				/**
-				 * The attribute with given key already exists for the given node.
-				 *
-				 * @error attribute-operation-attribute-exists
-				 * @param node
-				 * @param key
-				 */
-				throw new CKEditorError(
-					'attribute-operation-attribute-exists',
-					this,
-					{ node: item, key: this.key }
-				);
+			if ( offsetBefore >= endOffset ) {
+				// The node is fully after the range. Stop iteration.
+				break;
 			}
+
+			if ( offsetBefore >= startOffset && offsetAfter <= endOffset ) {
+				// The node is fully inside the range. Yield it.
+				const item = child.is( '$text' ) ? new TextProxy( child, 0, child.offsetSize ) : child;
+
+				this._validateItem( item );
+			} else {
+				// The node is partially in range. Yield text proxy.
+				const textProxyOffsetStart = Math.max( offsetBefore, startOffset );
+				const textProxyOffsetEnd = Math.min( offsetAfter, endOffset );
+
+				const item = new TextProxy( child as Text, textProxyOffsetStart - offsetBefore, textProxyOffsetEnd - textProxyOffsetStart );
+
+				this._validateItem( item );
+			}
+
+			offsetBefore = offsetAfter;
+		}
+	}
+
+	public _validateItem( item: Item ) {
+		if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
+			/**
+			 * Changed node has different attribute value than operation's old attribute value.
+			 *
+			 * @error attribute-operation-wrong-old-value
+			 * @param item
+			 * @param key
+			 * @param value
+			 */
+			throw new CKEditorError(
+				'attribute-operation-wrong-old-value',
+				this,
+				{ item, key: this.key, value: this.oldValue }
+			);
+		}
+
+		if ( this.oldValue === null && this.newValue !== null && item.hasAttribute( this.key ) ) {
+			/**
+			 * The attribute with given key already exists for the given node.
+			 *
+			 * @error attribute-operation-attribute-exists
+			 * @param node
+			 * @param key
+			 */
+			throw new CKEditorError(
+				'attribute-operation-attribute-exists',
+				this,
+				{ node: item, key: this.key }
+			);
 		}
 	}
 

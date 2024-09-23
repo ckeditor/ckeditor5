@@ -1225,7 +1225,7 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'attribute changes included in an attribute change #1 - changes are reversed at the end', () => {
+		it.only( 'attribute changes included in an attribute change #1 - changes are reversed at the end', () => {
 			const parent = root.getChild( 1 );
 
 			const ranges = [
