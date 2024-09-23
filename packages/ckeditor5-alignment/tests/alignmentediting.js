@@ -25,8 +25,8 @@ describe( 'AlignmentEditing', () => {
 		model = editor.model;
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -55,6 +55,10 @@ describe( 'AlignmentEditing', () => {
 				} );
 
 			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'is allowed on paragraph', () => {
