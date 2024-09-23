@@ -16,16 +16,20 @@ import {
 	clickOutsideHandler,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
+
 import {
 	ClickObserver,
 	type ViewDocumentClickEvent,
-	type Node,
 	type Element
 } from 'ckeditor5/src/engine.js';
+
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import type { DeleteCommand } from 'ckeditor5/src/typing.js';
 
 import BookmarkFormView, { type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
 import BookmarkActionsView from './ui/bookmarkactionsview.js';
+import type UpdateBookmarkCommand from './updatebookmarkcommand.js';
+import type InsertBookmarkCommand from './insertbookmarkcommand.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -144,8 +148,14 @@ export default class BookmarkUI extends Plugin {
 	private _createActionsView(): BookmarkActionsView {
 		const editor = this.editor;
 		const actionsView = new BookmarkActionsView( editor.locale );
+		const updateBookmarkCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
+		const deleteCommand: DeleteCommand = editor.commands.get( 'delete' )!;
 
-		// Execute edit command after clicking on the "Edit" button.
+		actionsView.bind( 'id' ).to( updateBookmarkCommand, 'value' );
+		actionsView.editButtonView.bind( 'isEnabled' ).to( updateBookmarkCommand );
+		actionsView.removeButtonView.bind( 'isEnabled' ).to( deleteCommand );
+
+		// Display edit form view after clicking on the "Edit" button.
 		this.listenTo( actionsView, 'edit', () => {
 			this._addFormView();
 		} );
@@ -153,6 +163,7 @@ export default class BookmarkUI extends Plugin {
 		// Execute remove command after clicking on the "Remove" button.
 		this.listenTo( actionsView, 'remove', () => {
 			this._hideUI();
+			editor.execute( 'delete' );
 		} );
 
 		// Close the panel on esc key press when the **actions have focus**.
@@ -165,17 +176,40 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:bookmark/ui/bookmarkview~BookmarkView} instance.
+	 * Creates the {@link module:bookmark/ui/bookmarkformview~BookmarkFormView} instance.
 	 */
 	private _createFormView(): BookmarkFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
 		const locale = editor.locale;
+		const insertBookmarkCommand: InsertBookmarkCommand = editor.commands.get( 'insertBookmark' )!;
+		const updateBookmarkCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
 		const validators: Array<BookmarkFormValidatorCallback> = [];
 
 		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
 
+		formView.idInputView.fieldView.bind( 'value' ).to( updateBookmarkCommand, 'value' );
+
+		// TODO bind to both commands?
+		// Form elements should be read-only when corresponding commands are disabled.
+		formView.idInputView.bind( 'isEnabled' ).to( insertBookmarkCommand, 'isEnabled' );
+
+		// TODO bind to both commands?
+		// Disable the "save" button if the command is disabled.
+		formView.insertButtonView.bind( 'isEnabled' ).to( insertBookmarkCommand, 'isEnabled' );
+
+		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			this._closeFormView();
+			if ( formView.isValid() ) {
+				const { value } = formView.idInputView.fieldView.element!;
+
+				if ( this._getSelectedBookmarkElement() ) {
+					editor.execute( 'updateBookmark', { bookmarkId: value } );
+				} else {
+					editor.execute( 'insertBookmark', { bookmarkId: value } );
+				}
+
+				this._closeFormView();
+			}
 		} );
 
 		// Close the panel on esc key press when the **form has focus**.
@@ -251,7 +285,7 @@ export default class BookmarkUI extends Plugin {
 
 	/**
 	 * Attaches actions that control whether the balloon panel containing the
-	 * {@link #bookmarkView} is visible or not.
+	 * {@link #formView} is visible or not.
 	 */
 	private _enableUserBalloonInteractions(): void {
 		// Focus the form if the balloon is visible and the Tab key has been pressed.
@@ -304,7 +338,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Adds the {@link #bookmarkView} to the {@link #_balloon}.
+	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 */
 	private _addFormView(): void {
 		if ( !this.formView ) {
@@ -315,6 +349,9 @@ export default class BookmarkUI extends Plugin {
 			return;
 		}
 
+		const editor = this.editor;
+		const updateBookmarkCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
+
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
 
@@ -323,7 +360,7 @@ export default class BookmarkUI extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		this.formView!.idInputView.fieldView.value = '';
+		this.formView!.idInputView.fieldView.value = updateBookmarkCommand.value || '';
 
 		// Select input when form view is currently visible.
 		if ( this._balloon.visibleView === this.formView ) {
@@ -337,11 +374,17 @@ export default class BookmarkUI extends Plugin {
 	 * Closes the form view. Decides whether the balloon should be hidden completely.
 	 */
 	private _closeFormView(): void {
-		this._hideUI();
+		const updateBookmarkCommand: UpdateBookmarkCommand = this.editor.commands.get( 'updateBookmark' )!;
+
+		if ( updateBookmarkCommand.value !== undefined ) {
+			this._removeFormView();
+		} else {
+			this._hideUI();
+		}
 	}
 
 	/**
-	 * Removes the {@link #bookmarkView} from the {@link #_balloon}.
+	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 */
 	private _removeFormView(): void {
 		if ( this._isFormInPanel ) {
@@ -363,21 +406,13 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Shows the correct UI type. It is either {@link #bookmarkView}.
+	 * Shows the correct UI type. It is either {@link #formView} or {@link #actionsView}.
 	 *
 	 * @internal
 	 */
 	public _showUI( forceVisible: boolean = false ): void {
 		if ( !this.formView ) {
 			this._createViews();
-		}
-
-		const bookmark = this._getSelectedBookmarkElement();
-
-		const id = bookmark && bookmark.is( 'element' ) && bookmark.getAttribute( 'bookmarkId' ) as string;
-
-		if ( this.actionsView && id ) {
-			this.actionsView.set( 'id', id );
 		}
 
 		// When there's no bookmark under the selection, go straight to the editing UI.
@@ -404,6 +439,11 @@ export default class BookmarkUI extends Plugin {
 			else {
 				this._addActionsView();
 			}
+
+			// Be sure panel with link is visible.
+			if ( forceVisible ) {
+				this._balloon.showStack( 'main' );
+			}
 		}
 
 		// Begin responding to ui#update once the UI is added.
@@ -411,9 +451,9 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Removes the {@link #bookmarkView} from the {@link #_balloon}.
+	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
-	 * See {@link #_addFormView}.
+	 * See {@link #_addFormView}, {@link #_addActionsView}.
 	 */
 	private _hideUI(): void {
 		if ( !this._isUIInPanel ) {
@@ -461,7 +501,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isFormInPanel(): boolean {
 		return !!this.formView && this._balloon.hasView( this.formView );
@@ -483,20 +523,20 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
 		return this._isFormInPanel || this._areActionsInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #bookmarkView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
 	private get _isUIVisible(): boolean {
 		const visibleView = this._balloon.visibleView;
 
-		return !!this.formView && visibleView == this.formView;
+		return !!this.formView && visibleView == this.formView || this._areActionsVisible;
 	}
 
 	/**
@@ -508,6 +548,8 @@ export default class BookmarkUI extends Plugin {
 		const model = this.editor.model;
 		let target: PositionOptions[ 'target' ] | undefined;
 
+		const bookmarkElement = this._getSelectedBookmarkElement();
+
 		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
 			// There are cases when we highlight selection using a marker (#7705, #4721).
 			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME )! );
@@ -517,12 +559,12 @@ export default class BookmarkUI extends Plugin {
 			);
 
 			target = view.domConverter.viewRangeToDom( newRange );
-		} else {
+		}
+		else if ( bookmarkElement ) {
 			target = () => {
 				const mapper = this.editor.editing.mapper;
 				const domConverter = view.domConverter;
-				const modelElement = this._getSelectedBookmarkElement()! as Element;
-				const viewElement = mapper.toViewElement( modelElement )!;
+				const viewElement = mapper.toViewElement( bookmarkElement )!;
 
 				return domConverter.mapViewToDom( viewElement )!;
 			};
@@ -536,9 +578,15 @@ export default class BookmarkUI extends Plugin {
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 */
-	private _getSelectedBookmarkElement(): Node | null {
+	private _getSelectedBookmarkElement(): Element | null {
 		const selection = this.editor.model.document.selection;
-		return selection.getSelectedElement();
+		const element = selection.getSelectedElement();
+
+		if ( element && element.is( 'element', 'bookmark' ) ) {
+			return element;
+		}
+
+		return null;
 	}
 
 	/**
