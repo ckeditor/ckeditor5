@@ -14,10 +14,10 @@ describe( 'ComponentFactory', () => {
 	beforeEach( () => {
 		editor = new Editor();
 		factory = new ComponentFactory( editor );
+		editor.state = 'ready';
 	} );
 
 	afterEach( async () => {
-		editor.state = 'ready';
 		await editor.destroy();
 	} );
 
