@@ -21,6 +21,7 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import Bookmark from '../../src/bookmark.js';
 import BookmarkFormView from '../../src/ui/bookmarkformview.js';
+import BookmarkActionView from '../../src/ui/bookmarkactionview.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -28,14 +29,15 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
-			EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark, BookmarkTest
+			EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark, BookmarkTest,
+			BookmarkActionTest
 		],
 		toolbar: [
 			'bookmark', '|',
 			'undo', 'redo', '|',
 			'bold', 'italic', '|',
 			'insertImage', 'insertTable', '|',
-			'heading', 'link', 'bookmarkTest'
+			'heading', 'link', 'bookmarkTest', 'bookmarkActionTest'
 		],
 		cloudServices: CS_CONFIG,
 		menuBar: {
@@ -82,6 +84,52 @@ function BookmarkTest( editor ) {
 			} );
 
 			formView.resetFormStatus();
+
+			balloon.add( {
+				view: formView,
+				position: {
+					target: buttonView.element
+				}
+			} );
+		} );
+
+		return buttonView;
+	} );
+}
+
+function BookmarkActionTest( editor ) {
+	editor.ui.componentFactory.add( 'bookmarkActionTest', () => {
+		const buttonView = new ButtonView( editor.locale );
+		let formView = null;
+
+		buttonView.set( {
+			label: 'Action bookmark',
+			withText: true
+		} );
+
+		buttonView.on( 'execute', () => {
+			const balloon = editor.plugins.get( 'ContextualBalloon' );
+
+			if ( !formView ) {
+				formView = new BookmarkActionView( editor.locale );
+				formView.set( 'id', 'bookmark_id' );
+			}
+
+			formView.on( 'edit', () => {
+				if ( formView.isValid() ) {
+					console.log( 'Bookmark ID:', formView.id );
+
+					balloon.remove( formView );
+					editor.editing.view.focus();
+				}
+			} );
+
+			formView.on( 'remove', () => {
+				console.log( 'Bookmark ID:', formView.id );
+
+				balloon.remove( formView );
+				editor.editing.view.focus();
+			} );
 
 			balloon.add( {
 				view: formView,
