@@ -178,7 +178,7 @@
   },
   "scripts": {
     "postinstall": "node ./scripts/postinstall.mjs",
-    "lint": "eslint --quiet \"**/*.{js,ts,mjs}\" --format ./scripts/eslint-formatter.cjs",
+    "lint": "eslint --quiet \"**/*.{js,ts,mjs,cjs}\" --format ./scripts/eslint-formatter.cjs",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
