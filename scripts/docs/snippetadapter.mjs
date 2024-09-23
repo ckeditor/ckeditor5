@@ -134,7 +134,7 @@ export default async function snippetAdapter( snippets, options, umbertoHelpers 
 
 	const groupedSnippetsByLanguage = {};
 
-	const constantDefinitions = getConstantDefinitions( snippets );
+	const constantDefinitions = await getConstantDefinitions( snippets );
 
 	// Group snippets by language. There is no way to build different languages in a single Webpack process.
 	// Webpack must be called as many times as different languages are being used in snippets.
@@ -340,7 +340,7 @@ function filterAllowedSnippets( snippets, allowedSnippets ) {
  * @param {Array.<Object>} snippets
  * @returns {Object}
  */
-function getConstantDefinitions( snippets ) {
+async function getConstantDefinitions( snippets ) {
 	const knownPaths = new Set();
 	const constantDefinitions = {};
 	const constantOrigins = new Map();
@@ -355,11 +355,15 @@ function getConstantDefinitions( snippets ) {
 		while ( !knownPaths.has( directory ) ) {
 			knownPaths.add( directory );
 
-			const absolutePathToConstants = upath.join( directory, 'docs', 'constants.js' );
-			const importPathToConstants = upath.relative( __dirname, absolutePathToConstants );
+			const constantsFiles = globSync( 'constants.*js', {
+				absolute: true,
+				cwd: upath.join( directory, 'docs' )
+			} );
 
-			if ( fs.existsSync( absolutePathToConstants ) ) {
-				const packageConstantDefinitions = require( './' + importPathToConstants );
+			for ( const item of constantsFiles ) {
+				const importPathToConstants = upath.relative( __dirname, item );
+
+				const { default: packageConstantDefinitions } = await import( './' + importPathToConstants );
 
 				for ( const constantName in packageConstantDefinitions ) {
 					const constantValue = packageConstantDefinitions[ constantName ];
