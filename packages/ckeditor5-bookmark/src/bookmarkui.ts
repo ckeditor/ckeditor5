@@ -7,8 +7,11 @@
  * @module bookmark/bookmarkui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+
+import BookmarkEditing from './bookmarkediting.js';
+import type { BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -19,6 +22,13 @@ import bookmarkIcon from '../theme/icons/bookmark.svg';
  * which inserts the `bookmark` element upon selection.
  */
 export default class BookmarkUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ BookmarkEditing ] as const;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -68,4 +78,27 @@ export default class BookmarkUI extends Plugin {
 
 		return view;
 	}
+}
+
+/**
+ * Returns bookmark form validation callbacks.
+ *
+ * @param editor Editor instance.
+ */
+function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallback> {
+	const { t } = editor;
+	const { bookmarkElements } = editor.plugins.get( 'BookmarkEditing' );
+
+	return [
+		form => {
+			if ( form.id && /\s/.test( form.id ) ) {
+				return t( 'Bookmark name cannot contain space characters.' );
+			}
+		},
+		form => {
+			if ( Array.from( bookmarkElements.values() ).some( id => id === form.id ) ) {
+				return t( 'Bookmark name already exists.' );
+			}
+		}
+	];
 }
