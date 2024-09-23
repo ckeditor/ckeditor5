@@ -1146,8 +1146,8 @@ describe( 'LegacyTodoListEditing', () => {
 					} );
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			afterEach( async () => {
+				await editor.destroy();
 			} );
 
 			testArrowKey();
@@ -1189,8 +1189,8 @@ describe( 'LegacyTodoListEditing', () => {
 					} );
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			afterEach( async () => {
+				await editor.destroy();
 			} );
 
 			testArrowKey();

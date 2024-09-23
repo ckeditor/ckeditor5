@@ -661,7 +661,7 @@ describe( 'EditorUI', () => {
 					sinon.assert.notCalled( invisibleSpy );
 				} );
 
-				it( 'should do nothing if no toolbars were registered', () => {
+				it( 'should do nothing if no toolbars were registered', done => {
 					const editor = new Editor();
 					const ui = editor.ui = new MyEditorUI( editor );
 					const editingArea = document.createElement( 'div' );
@@ -675,7 +675,7 @@ describe( 'EditorUI', () => {
 					} ).to.not.throw();
 
 					editingArea.remove();
-					editor.destroy();
+					editor.destroy().then( done );
 					ui.destroy();
 				} );
 

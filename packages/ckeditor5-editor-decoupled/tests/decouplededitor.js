@@ -312,7 +312,7 @@ describe( 'DecoupledEditor', () => {
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 
@@ -324,7 +324,7 @@ describe( 'DecoupledEditor', () => {
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 

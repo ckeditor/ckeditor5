@@ -1263,8 +1263,8 @@ describe( 'table cell properties', () => {
 					} );
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			afterEach( async () => {
+				await editor.destroy();
 			} );
 
 			describe( 'border', () => {
