@@ -681,7 +681,7 @@ describe( 'EditorUI', () => {
 					editingArea.remove();
 
 					editor.fire( 'ready' );
-					editor.destroy().then( done );
+					editor.destroy().then( () => done() );
 					ui.destroy();
 				} );
 
