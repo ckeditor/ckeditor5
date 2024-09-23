@@ -175,14 +175,7 @@ export default class BookmarkUI extends Plugin {
 		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
 
 		this.listenTo( formView, 'submit', () => {
-			if ( formView.isValid() ) {
-				this._closeFormView();
-			}
-		} );
-
-		// Update balloon position when form error changes.
-		this.listenTo( formView.idInputView, 'change:errorText', () => {
-			editor.ui.update();
+			this._closeFormView();
 		} );
 
 		// Close the panel on esc key press when the **form has focus**.

@@ -277,6 +277,23 @@ describe( 'BookmarkUI', () => {
 			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
 		} );
 
+		it( 'should focus editor on submit', () => {
+			const updateSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			bookmarkUIFeature._createViews();
+			formView = bookmarkUIFeature.formView;
+
+			setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+
+			bookmarkUIFeature._showUI();
+
+			formView.idInputView.fieldView.value = 'id 1';
+
+			expect( updateSpy ).not.to.be.called;
+			formView.fire( 'submit' );
+			expect( updateSpy ).to.be.calledTwice;
+		} );
+
 		describe( 'response to ui#update', () => {
 			let view, viewDocument;
 
