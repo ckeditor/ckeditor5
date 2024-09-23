@@ -102,7 +102,7 @@ describe( 'PoweredBy', () => {
 				const showErrorStub = sinon.stub( ClassicTestEditor.prototype, '_showLicenseError' );
 
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.bar.baz'
+					licenseKey: '<YOUR_LICENSE_KEY>'
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
