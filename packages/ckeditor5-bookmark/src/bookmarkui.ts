@@ -25,9 +25,11 @@ import {
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 
 import BookmarkFormView, { type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
-import bookmarkIcon from '../theme/icons/bookmark.svg';
-import '../theme/bookmark.css';
 import BookmarkActionsView from './ui/bookmarkactionsview.js';
+
+import bookmarkIcon from '../theme/icons/bookmark.svg';
+
+import '../theme/bookmark.css';
 
 const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
 
@@ -137,18 +139,18 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:link/ui/linkactionsview~LinkActionsView} instance.
+	 * Creates the {@link module:bookmark/ui/bookmarkactionsview~BookmarkActionsView} instance.
 	 */
 	private _createActionsView(): BookmarkActionsView {
 		const editor = this.editor;
 		const actionsView = new BookmarkActionsView( editor.locale );
 
-		// Execute unlink command after clicking on the "Edit" button.
+		// Execute edit command after clicking on the "Edit" button.
 		this.listenTo( actionsView, 'edit', () => {
 			this._addFormView();
 		} );
 
-		// Execute unlink command after clicking on the "Unlink" button.
+		// Execute remove command after clicking on the "Remove" button.
 		this.listenTo( actionsView, 'remove', () => {
 			this._hideUI();
 		} );
@@ -168,16 +170,7 @@ export default class BookmarkUI extends Plugin {
 	private _createFormView(): BookmarkFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const t = locale.t;
-		const validators: Array<BookmarkFormValidatorCallback> = [
-			form => {
-				if ( form.id && /\s/.test( form.id ) ) {
-					return t( 'Bookmark name cannot contain space characters.' );
-				}
-
-				return undefined;
-			}
-		];
+		const validators: Array<BookmarkFormValidatorCallback> = [];
 
 		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
 
@@ -251,8 +244,8 @@ export default class BookmarkUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		// Handle click on view document and show panel when selection is placed inside the link element.
-		// Keep panel open until selection will be inside the same link element.
+		// Handle click on view document and show panel when selection is placed inside the bookmark element.
+		// Keep panel open until selection will be inside the same bookmark element.
 		this.listenTo<ViewDocumentClickEvent>( viewDocument, 'click', () => {
 			const bookmark = this._getSelectedBookmarkElement();
 
@@ -275,9 +268,8 @@ export default class BookmarkUI extends Plugin {
 				cancel();
 			}
 		}, {
-			// Use the high priority because the link UI navigation is more important
+			// Use the high priority because the bookmark UI navigation is more important
 			// than other feature's actions, e.g. list indentation.
-			// https://github.com/ckeditor/ckeditor5-link/issues/146
 			priority: 'high'
 		} );
 
@@ -397,20 +389,19 @@ export default class BookmarkUI extends Plugin {
 
 		// When there's no bookmark under the selection, go straight to the editing UI.
 		if ( !this._getSelectedBookmarkElement() ) {
-			// Show visual selection on a text without a link when the contextual balloon is displayed.
-			// See https://github.com/ckeditor/ckeditor5/issues/4721.
+			// Show visual selection on a text without a bookmark when the contextual balloon is displayed.
 			this._showFakeVisualSelection();
 
 			this._addActionsView();
 
-			// Be sure panel with link is visible.
+			// Be sure panel with bookmark is visible.
 			if ( forceVisible ) {
 				this._balloon.showStack( 'main' );
 			}
 
 			this._addFormView();
 		}
-		// If there's a link under the selection...
+		// If there's a bookmark under the selection...
 		else {
 			// Go to the editing UI if actions are already visible.
 			if ( this._areActionsVisible ) {
@@ -548,24 +539,13 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Returns the link {@link module:engine/view/attributeelement~AttributeElement} under
+	 * Returns the bookmark {@link module:engine/view/attributeelement~AttributeElement} under
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 */
 	private _getSelectedBookmarkElement(): Node | null {
 		const selection = this.editor.model.document.selection;
-		const selectedElement = selection.getSelectedElement();
-
-		if ( selectedElement ) {
-			const position = selection.getFirstPosition()!;
-			const node = position.nodeAfter;
-
-			if ( node && node.is( 'element' ) && !node.is( 'rootElement' ) ) {
-				return node;
-			}
-		}
-
-		return null;
+		return selection.getSelectedElement();
 	}
 
 	/**
