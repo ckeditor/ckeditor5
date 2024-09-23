@@ -12,14 +12,14 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "lodash-es": "4.17.21"
+    "lodash-es": "4.17.21",
+    "@ckeditor/ckeditor5-ui": "43.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "43.1.0",
     "@ckeditor/ckeditor5-editor-classic": "43.1.0",
     "@ckeditor/ckeditor5-core": "43.1.0",
     "@ckeditor/ckeditor5-engine": "43.1.0",
-    "@ckeditor/ckeditor5-ui": "43.1.0",
     "@types/lodash-es": "^4.17.12",
     "typescript": "5.0.4"
   },
