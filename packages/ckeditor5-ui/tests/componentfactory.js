@@ -16,6 +16,11 @@ describe( 'ComponentFactory', () => {
 		factory = new ComponentFactory( editor );
 	} );
 
+	afterEach( async () => {
+		editor.state = 'ready';
+		await editor.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'sets all the properties', () => {
 			expect( factory ).to.have.property( 'editor', editor );

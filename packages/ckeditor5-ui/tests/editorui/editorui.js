@@ -41,10 +41,12 @@ describe( 'EditorUI', () => {
 	beforeEach( () => {
 		editor = new Editor();
 		editor.ui = ui = new MyEditorUI( editor );
+		editor.state = 'ready';
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		ui.destroy();
+		await editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {
