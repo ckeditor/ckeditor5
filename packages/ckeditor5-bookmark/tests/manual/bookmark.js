@@ -17,11 +17,8 @@ import { Image, ImageUpload, ImageInsert } from '@ckeditor/ckeditor5-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import Bookmark from '../../src/bookmark.js';
-import BookmarkFormView from '../../src/ui/bookmarkformview.js';
-import BookmarkActionsView from '../../src/ui/bookmarkactionsview.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -29,15 +26,14 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
-			EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark, BookmarkTest,
-			BookmarkActionTest
+			EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
 		],
 		toolbar: [
 			'bookmark', '|',
 			'undo', 'redo', '|',
 			'bold', 'italic', '|',
 			'insertImage', 'insertTable', '|',
-			'heading', 'link', 'bookmarkTest', 'bookmarkActionTest'
+			'heading', 'link'
 		],
 		cloudServices: CS_CONFIG,
 		menuBar: {
@@ -50,93 +46,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-function BookmarkTest( editor ) {
-	editor.ui.componentFactory.add( 'bookmarkTest', () => {
-		const buttonView = new ButtonView( editor.locale );
-		let formView = null;
-
-		buttonView.set( {
-			label: 'Test bookmark',
-			withText: true
-		} );
-
-		buttonView.on( 'execute', () => {
-			const balloon = editor.plugins.get( 'ContextualBalloon' );
-
-			if ( !formView ) {
-				formView = new BookmarkFormView( editor.locale, [
-					( { id } ) => !id ? 'Some fake error' : null
-				] );
-			}
-
-			formView.on( 'submit', () => {
-				if ( formView.isValid() ) {
-					console.log( 'Bookmark ID:', formView.id );
-
-					balloon.remove( formView );
-					editor.editing.view.focus();
-				}
-			} );
-
-			formView.idInputView.on( 'change:errorText', () => {
-				editor.ui.update();
-			} );
-
-			formView.resetFormStatus();
-
-			balloon.add( {
-				view: formView,
-				position: {
-					target: buttonView.element
-				}
-			} );
-		} );
-
-		return buttonView;
-	} );
-}
-
-function BookmarkActionTest( editor ) {
-	editor.ui.componentFactory.add( 'bookmarkActionTest', () => {
-		const buttonView = new ButtonView( editor.locale );
-		let actionView = null;
-
-		buttonView.set( {
-			label: 'Action bookmark',
-			withText: true
-		} );
-
-		buttonView.on( 'execute', () => {
-			const balloon = editor.plugins.get( 'ContextualBalloon' );
-
-			if ( !actionView ) {
-				actionView = new BookmarkActionsView( editor.locale );
-				actionView.id = 'bookmark_id';
-			}
-
-			actionView.on( 'edit', () => {
-				console.log( 'Edit bookmark ID:', actionView.id );
-
-				balloon.remove( actionView );
-				editor.editing.view.focus();
-			} );
-
-			actionView.on( 'remove', () => {
-				console.log( 'Remove bookmark ID:', actionView.id );
-
-				balloon.remove( actionView );
-				editor.editing.view.focus();
-			} );
-
-			balloon.add( {
-				view: actionView,
-				position: {
-					target: buttonView.element
-				}
-			} );
-		} );
-
-		return buttonView;
-	} );
-}
