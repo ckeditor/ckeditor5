@@ -20,7 +20,7 @@ order: 40
 	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 Vue.js 3+ rich text editor component} guide.
 </info-box>
 
-Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
+You can use CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your application. This guide will help you install and configure the npm distribution of the CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 
