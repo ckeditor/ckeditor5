@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/ui/linkactionsview
+ * @module bookmark/ui/bookmarkactionsview
  */
 
 import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
@@ -13,13 +13,12 @@ import { icons } from 'ckeditor5/src/core.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../../theme/bookmark.css';
 
 /**
  * The bookmark actions view class. This view displays the bookmark preview, allows
  * removing or editing the bookmark.
  */
-export default class BookmarkActionView extends View {
+export default class BookmarkActionsView extends View {
 	/**
 	 * Tracks information about DOM focus in the actions.
 	 */
@@ -47,8 +46,10 @@ export default class BookmarkActionView extends View {
 
 	/**
 	 * The id preview view.
+	 *
+	 * @observable
 	 */
-	declare public id: string;
+	declare public id: string | undefined;
 
 	/**
 	 * A collection of views that can be focused in the view.
@@ -73,6 +74,8 @@ export default class BookmarkActionView extends View {
 		this.bookmarkPreviewView = this._createBookmarkPreviewView();
 		this.removeButtonView = this._createButton( t( 'Remove' ), icons.remove, 'remove' );
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
+
+		this.set( 'id', undefined );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -195,10 +198,28 @@ export default class BookmarkActionView extends View {
 			}
 		} );
 
-		button.bind( 'label' ).to( this, 'id', id => {
-			return id;
-		} );
+		button.bind( 'label' ).to( this, 'id' );
 
 		return button;
 	}
 }
+
+/**
+ * Fired when the {@link ~BookmarkActionsView#editButtonView} is clicked.
+ *
+ * @eventName ~BookmarkActionsView#edit
+ */
+export type EditEvent = {
+	name: 'edit';
+	args: [];
+};
+
+/**
+ * Fired when the {@link ~BookmarkActionsView#removeButtonView} is clicked.
+ *
+ * @eventName ~BookmarkActionsView#remove
+ */
+export type RemoveEvent = {
+	name: 'remove';
+	args: [];
+};

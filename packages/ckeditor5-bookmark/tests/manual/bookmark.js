@@ -21,7 +21,7 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import Bookmark from '../../src/bookmark.js';
 import BookmarkFormView from '../../src/ui/bookmarkformview.js';
-import BookmarkActionView from '../../src/ui/bookmarkactionview.js';
+import BookmarkActionsView from '../../src/ui/bookmarkactionsview.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -100,7 +100,7 @@ function BookmarkTest( editor ) {
 function BookmarkActionTest( editor ) {
 	editor.ui.componentFactory.add( 'bookmarkActionTest', () => {
 		const buttonView = new ButtonView( editor.locale );
-		let formView = null;
+		let actionView = null;
 
 		buttonView.set( {
 			label: 'Action bookmark',
@@ -110,29 +110,27 @@ function BookmarkActionTest( editor ) {
 		buttonView.on( 'execute', () => {
 			const balloon = editor.plugins.get( 'ContextualBalloon' );
 
-			if ( !formView ) {
-				formView = new BookmarkActionView( editor.locale );
-				formView.set( 'id', 'bookmark_id' );
+			if ( !actionView ) {
+				actionView = new BookmarkActionsView( editor.locale );
+				actionView.id = 'bookmark_id';
 			}
 
-			formView.on( 'edit', () => {
-				if ( formView.isValid() ) {
-					console.log( 'Bookmark ID:', formView.id );
+			actionView.on( 'edit', () => {
+				console.log( 'Edit bookmark ID:', actionView.id );
 
-					balloon.remove( formView );
-					editor.editing.view.focus();
-				}
+				balloon.remove( actionView );
+				editor.editing.view.focus();
 			} );
 
-			formView.on( 'remove', () => {
-				console.log( 'Bookmark ID:', formView.id );
+			actionView.on( 'remove', () => {
+				console.log( 'Remove bookmark ID:', actionView.id );
 
-				balloon.remove( formView );
+				balloon.remove( actionView );
 				editor.editing.view.focus();
 			} );
 
 			balloon.add( {
-				view: formView,
+				view: actionView,
 				position: {
 					target: buttonView.element
 				}

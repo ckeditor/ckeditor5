@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import BookmarkActionsView from '../../src/ui/bookmarkactionview.js';
+import BookmarkActionsView from '../../src/ui/bookmarkactionsview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
@@ -89,7 +89,7 @@ describe( 'BookmarkActionsView', () => {
 				it( 'binds id attribute to view#label', () => {
 					expect( view.bookmarkPreviewView.label ).to.be.undefined;
 
-					view.set( 'id', 'foo' );
+					view.id = 'foo';
 
 					expect( view.bookmarkPreviewView.label ).to.equal( 'foo' );
 				} );
