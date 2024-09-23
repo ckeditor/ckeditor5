@@ -15,25 +15,8 @@ import CKEditorError from './ckeditorerror.js';
 import { type View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'lodash-es';
 
-// window.FOCUS_TRACKERS = [];
-
-// window.logFocusTrackers = function() {
-// 	Array.from( window.FOCUS_TRACKERS )
-// 		.filter( a => a._getLabel() !== 'generic' )
-// 		.forEach( tracker => {
-// 			console.group( logFT( tracker ) );
-// 			console.log( '  isFocused:', tracker.isFocused );
-// 			console.log( '  focusedElement:', tracker.focusedElement );
-// 			console.log( '  elements:', tracker.elements );
-// 			console.log( '  chainedFocusTrackers:', tracker.chainedFocusTrackers );
-// 			console.groupEnd();
-// 		} );
-// };
-
-const DEBUG = false;
-
 /**
- * Allows observing a group of `Element`s whether at least one of them is focused.
+ * Allows observing a group of DOM `Element`s whether at least one of them (or their child) is focused.
  *
  * Used by the {@link module:core/editor/editor~Editor} in order to track whether the focus is still within the application,
  * or were used outside of its UI.
@@ -46,7 +29,7 @@ const DEBUG = false;
  */
 export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
-	 * True when one of the registered elements is focused.
+	 * True when one of the registered {@link #elements} or {@link #externalFocusTrackers} is focused.
 	 *
 	 * @readonly
 	 * @observable
@@ -56,9 +39,10 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	/**
 	 * The currently focused element.
 	 *
-	 * While {@link #isFocused `isFocused`} remains `true`, the focus can
-	 * move between different UI elements. This property tracks those
+	 * While {@link #isFocused `isFocused`} remains `true`, the focus can move between different UI elements. This property tracks those
 	 * elements and tells which one is currently focused.
+	 *
+	 * **Note**: The values of this property are restricted to {@link #elements} or elements registered in {@link #externalFocusTrackers}.
 	 *
 	 * @readonly
 	 * @observable
@@ -73,7 +57,9 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	public _elements: Set<Element> = new Set();
 
 	/**
-	 * TODO
+	 * List of external focus trackers that contribute to the state of this focus tracker.
+	 *
+	 * @internal
 	 */
 	public _externalFocusTrackers: Set<FocusTracker> = new Set();
 
@@ -82,38 +68,40 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 */
 	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	/**
-	 * TODO
-	 */
-	private _label: string | ( () => string ) | undefined;
-
-	constructor( label?: string ) {
+	constructor() {
 		super();
-
-		this._label = label;
-
-		// ( window.FOCUS_TRACKERS as any ).push( this );
 
 		this.set( 'isFocused', false );
 		this.set( 'focusedElement', null );
 	}
 
 	/**
-	 * List of registered elements.
+	 * List of registered DOM elements.
+	 *
+	 * **Note**: The list does do not include elements from {@link #externalFocusTrackers}.
 	 */
 	public get elements(): Array<Element> {
 		return Array.from( this._elements.values() );
 	}
 
 	/**
-	 * TODO
+	 * List of external focus trackers that contribute to the state of this focus tracker. See {@link #add} to learn more.
 	 */
 	public get externalFocusTrackers(): Array<FocusTracker> {
 		return Array.from( this._externalFocusTrackers.values() );
 	}
 
 	/**
-	 * Starts tracking the specified element.
+	 * Starts tracking a specified DOM element or a {@link module:ui/view~View} instance.
+	 *
+	 * * If a DOM element is passed, the focus tracker listens to the `focus` and `blur` events on this element.
+	 * Tracked elements are listed in {@link #elements}.
+	 * * If a {@link module:ui/view~View} instance is passed that has a `FocusTracker` instance ({@link ~ViewWithFocusTracker}),
+	 * the external focus tracker's state ({@link #isFocused}, {@link #focusedElement}) starts contributing to the current tracker instance.
+	 * This allows for increasing the "reach" of a focus tracker instance, by connecting two or more focus trackers together when DOM
+	 * elements they track are located in different subtrees in DOM. External focus trackers are listed in {@link #externalFocusTrackers}.
+	 * * If a {@link module:ui/view~View} instance is passed that has no `FocusTracker` (**not** a {@link ~ViewWithFocusTracker}),
+	 * its {@link module:ui/view~View#element} is used to track focus like any other DOM element.
 	 */
 	public add( elementOrView: Element | View ): void {
 		if ( isElement( elementOrView ) ) {
@@ -142,7 +130,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 
 	/**
-	 * Stops tracking the specified element and stops listening on this element.
+	 * Stops tracking focus in the specified DOM element or a {@link module:ui/view~View view instance}. See {@link #add} to learn more.
 	 */
 	public remove( elementOrView: Element | View ): void {
 		if ( isElement( elementOrView ) ) {
@@ -170,6 +158,9 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		}
 	}
 
+	/**
+	 * Adds a DOM element to the focus tracker and starts listening to the `focus` and `blur` events on it.
+	 */
 	private _addElement( element: Element ): void {
 		if ( this._elements.has( element ) ) {
 			/**
@@ -185,6 +176,9 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		this._elements.add( element );
 	}
 
+	/**
+	 * Removes a DOM element from the focus tracker.
+	 */
 	private _removeElement( element: Element ): void {
 		if ( element === this.focusedElement ) {
 			this._blur();
@@ -196,35 +190,25 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		}
 	}
 
+	/**
+	 * Adds an external `FocusTracker` instance to this focus tracker and makes it contribute to this focus tracker's state.
+	 */
 	private _addFocusTracker( focusTracker: FocusTracker ): void {
-		if ( DEBUG ) {
-			console.log( `[FT] Add external ${ logFT( focusTracker ) } to ${ logFT( this ) }` );
-		}
-
 		this.listenTo( focusTracker, 'change:isFocused', () => {
-			if ( DEBUG ) {
-				console.group( `[FT] External ${ logFT( focusTracker ) } change:isFocused =`, focusTracker.isFocused );
-			}
-
 			if ( focusTracker.isFocused ) {
 				this._focus( focusTracker.focusedElement! );
 			} else {
 				this._blur();
-			}
-
-			if ( DEBUG ) {
-				console.groupEnd();
 			}
 		} );
 
 		this._externalFocusTrackers.add( focusTracker );
 	}
 
+	/**
+	 * Removes an external `FocusTracker` instance from this focus tracker.
+	 */
 	private _removeFocusTracker( focusTracker: FocusTracker ): void {
-		if ( DEBUG ) {
-			console.log( `[FT] Remove external ${ logFT( focusTracker ) } from ${ logFT( this ) }` );
-		}
-
 		this.stopListening( focusTracker );
 		this._externalFocusTrackers.delete( focusTracker );
 
@@ -240,16 +224,18 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 */
 	public destroy(): void {
 		this.stopListening();
+
+		this._elements.clear();
+		this._externalFocusTrackers.clear();
+
+		this.isFocused = false;
+		this.focusedElement = null;
 	}
 
 	/**
-	 * Stores currently focused element and set {@link #isFocused} as `true`.
+	 * Stores currently focused element as {@link #focusedElement} and sets {@link #isFocused} `true`.
 	 */
 	private _focus( element: Element ): void {
-		if ( DEBUG ) {
-			console.log( `[FT] ${ logFT( this ) }#focus()` );
-		}
-
 		clearTimeout( this._nextEventLoopTimeout! );
 
 		this.focusedElement = element;
@@ -257,13 +243,17 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 
 	/**
-	 * Clears currently focused element and set {@link #isFocused} as `false`.
-	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
+	 * Clears currently {@link #focusedElement} and sets {@link #isFocused} `false`.
+	 *
+	 * This method uses `setTimeout()` to change order of fires `blur` and `focus` events ensuring that moving focus between
+	 * two elements within a single focus tracker's scope, will not cause `[ blurA, focusB ]` sequence but just `[ focusB ]`.
+	 * The former would cause a momentary change of `#isFocused` to `false` which is not desired because any logic listening to
+	 * a focus tracker state would experience UI flashes and glitches as the user focus travels across the UI.
 	 */
 	private _blur(): void {
-		// Filter out blurs that are unnecessary:
-		// * Chained FT blurs (e.g. when the focus still remains in one of the "local" elements),
-		// * DOM blurs (e.g. when the focus still remains in one of chained focus trackers).
+		// Avoid blurs that would be incorrect as a result of "local" elements and external focus trackers coexisting:
+		// * External FT blurs (e.g. when the focus still remains in one of the "local" elements or another external focus tracker),
+		// * "Local" element blurs (e.g. when the focus still remains in one of external focus trackers).
 		if (
 			this.elements.find( element => element.contains( document.activeElement ) ) ||
 			this.externalFocusTrackers.find( ( { isFocused } ) => isFocused )
@@ -274,33 +264,23 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		clearTimeout( this._nextEventLoopTimeout! );
 
 		this._nextEventLoopTimeout = setTimeout( () => {
-			if ( DEBUG ) {
-				console.log( `[FT] ${ logFT( this ) }#blur()` );
-			}
-
 			this.focusedElement = null;
 			this.isFocused = false;
 		}, 0 );
 	}
-
-	public _getLabel(): string | undefined {
-		return ( typeof this._label == 'function' ? this._label() : this._label ) || 'generic';
-	}
 }
 
-type ViewWithFocusTracker = View & { focusTracker: FocusTracker };
+/**
+ * A {@link module:ui/view~View} instance with a {@link module:utils/focustracker~FocusTracker} instance exposed
+ * at the `#focusTracker` property.
+ */
+export type ViewWithFocusTracker = View & { focusTracker: FocusTracker };
 
 /**
  * Checks whether a view is an instance of {@link ~ViewWithFocusTracker}.
- *
- * @param view A view to be checked.
  */
-function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracker {
+export function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracker {
 	return 'focusTracker' in view && view.focusTracker instanceof FocusTracker;
-}
-
-function logFT( ft: FocusTracker ) {
-	return `[${ ft._getLabel() }]`;
 }
 
 function isElement( value: any ): value is Element {
