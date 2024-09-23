@@ -9,7 +9,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import rimraf from 'rimraf';
+import { rimraf } from 'rimraf';
 import minimist from 'minimist';
 import isTypeScriptPackage from './utils/istypescriptpackage.mjs';
 
@@ -50,7 +50,7 @@ async function cleanReleaseArtifacts( options ) {
 	const removePatterns = typeScriptPatterns.flatMap( item => item );
 
 	for ( const pattern of removePatterns ) {
-		await removeFiles( pattern );
+		await rimraf( pattern, { glob: true } );
 	}
 }
 
@@ -86,24 +86,6 @@ function findAllPackages( repositoryRoot ) {
 				reject( err );
 			} else {
 				resolve( files.map( pkg => path.join( repositoryRoot, 'packages', pkg ) ) );
-			}
-		} );
-	} );
-}
-
-/**
- * Removes all files matched with the provided globbing pattern.
- *
- * @param {String} pattern
- * @returns {Promise}
- */
-function removeFiles( pattern ) {
-	return new Promise( ( resolve, reject ) => {
-		rimraf( pattern, err => {
-			if ( err ) {
-				reject( err );
-			} else {
-				resolve();
 			}
 		} );
 	} );
