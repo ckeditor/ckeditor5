@@ -250,6 +250,7 @@ export default class BookmarkUI extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
+		const command = editor.commands.get( 'insertBookmark' )!;
 		const t = locale.t;
 
 		view.set( {
@@ -259,6 +260,9 @@ export default class BookmarkUI extends Plugin {
 
 		// Execute the command.
 		this.listenTo( view, 'execute', () => this._showUI( true ) );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		view.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 		return view;
 	}
@@ -440,10 +444,12 @@ export default class BookmarkUI extends Plugin {
 				this._addActionsView();
 			}
 
+			// TODO: uncomment when keystroke will be implemented.
+
 			// Be sure panel with link is visible.
-			if ( forceVisible ) {
-				this._balloon.showStack( 'main' );
-			}
+			// if ( forceVisible ) {
+			// 	this._balloon.showStack( 'main' );
+			// }
 		}
 
 		// Begin responding to ui#update once the UI is added.

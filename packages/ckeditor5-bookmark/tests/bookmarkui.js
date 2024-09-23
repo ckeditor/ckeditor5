@@ -85,6 +85,18 @@ describe( 'BookmarkUI', () => {
 		it( 'should have an icon', () => {
 			expect( button.icon ).to.equal( bookmarkIcon );
 		} );
+
+		it( 'should bind #isEnabled to insert command', () => {
+			const command = editor.commands.get( 'insertBookmark' );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
 	} );
 
 	describe( 'the menuBar:bookmark menu bar button', () => {
@@ -277,6 +289,23 @@ describe( 'BookmarkUI', () => {
 			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
 		} );
 
+		it( 'should update the id when bookmark selected', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			bookmarkUIFeature._showUI();
+			formView = bookmarkUIFeature.formView;
+
+			const id = 'new_id';
+			formView.idInputView.fieldView.value = id;
+
+			formView.fire( 'submit' );
+			expect( executeSpy.calledOnce ).to.be.true;
+			expect( executeSpy.calledWith( 'updateBookmark', {
+				bookmarkId: id
+			} ) ).to.be.true;
+		} );
+
 		it( 'should focus editor on submit', () => {
 			const updateSpy = sinon.spy( editor.editing.view, 'focus' );
 
@@ -291,7 +320,7 @@ describe( 'BookmarkUI', () => {
 
 			expect( updateSpy ).not.to.be.called;
 			formView.fire( 'submit' );
-			expect( updateSpy ).to.be.calledTwice;
+			expect( updateSpy ).to.be.calledOnce;
 		} );
 
 		describe( 'response to ui#update', () => {
