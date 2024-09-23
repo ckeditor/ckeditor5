@@ -72,7 +72,7 @@ describe( 'PoweredBy', () => {
 
 					editor.fire( 'ready' );
 					editor.ui.destroy();
-					editor.destroy().then( done );
+					editor.destroy().then( () => done() );
 				} ).to.not.throw();
 			} );
 
@@ -460,7 +460,7 @@ describe( 'PoweredBy', () => {
 		describe( 'if there was no balloon', () => {
 			it( 'should not throw', done => {
 				expect( () => {
-					editor.destroy().then( done );
+					editor.destroy().then( () => done() );
 				} ).to.not.throw();
 			} );
 		} );
@@ -468,7 +468,7 @@ describe( 'PoweredBy', () => {
 		it( 'should destroy the emitter listeners', done => {
 			const spy = testUtils.sinon.spy( editor.ui.poweredBy, 'stopListening' );
 
-			editor.destroy().then( done );
+			editor.destroy().then( () => done() );
 
 			sinon.assert.calledOnce( spy );
 		} );
