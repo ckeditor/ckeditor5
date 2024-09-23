@@ -16,6 +16,10 @@ describe( 'Accessibility', () => {
 	} );
 
 	afterEach( async () => {
+		if ( editor.state === 'initializing' ) {
+			editor.fire( 'ready' );
+		}
+
 		await editor.destroy();
 	} );
 

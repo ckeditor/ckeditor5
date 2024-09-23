@@ -46,7 +46,11 @@ describe( 'EditorUI', () => {
 
 	afterEach( async () => {
 		ui.destroy();
-		await editor.destroy();
+
+		if ( editor.state === 'initializing' ) {
+			editor.fire( 'ready' );
+			await editor.destroy();
+		}
 	} );
 
 	describe( 'constructor()', () => {
@@ -675,6 +679,8 @@ describe( 'EditorUI', () => {
 					} ).to.not.throw();
 
 					editingArea.remove();
+
+					editor.fire( 'ready' );
 					editor.destroy().then( done );
 					ui.destroy();
 				} );

@@ -70,6 +70,7 @@ describe( 'PoweredBy', () => {
 					editor.ui.focusTracker.add( element );
 					element.focus();
 
+					editor.fire( 'ready' );
 					editor.ui.destroy();
 					editor.destroy().then( done );
 				} ).to.not.throw();
