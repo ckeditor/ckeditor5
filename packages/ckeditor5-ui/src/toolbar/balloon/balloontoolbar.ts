@@ -115,7 +115,7 @@ export default class BalloonToolbar extends Plugin {
 
 		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
 		this.toolbarView = this._createToolbarView();
-		this.focusTracker = new FocusTracker( 'balloon toolbar' );
+		this.focusTracker = new FocusTracker();
 
 		// Track focusable elements in the toolbar and the editable elements.
 		this._trackFocusableEditableElements();
@@ -212,8 +212,6 @@ export default class BalloonToolbar extends Plugin {
 			shouldGroupWhenFull,
 			isFloating: true
 		} );
-
-		toolbarView.focusTracker._label = 'balloon toolbar\'s toolbar';
 
 		toolbarView.ariaLabel = t( 'Editor contextual toolbar' );
 		toolbarView.render();

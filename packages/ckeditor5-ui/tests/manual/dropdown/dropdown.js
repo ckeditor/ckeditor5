@@ -361,8 +361,6 @@ function testMenu() {
 
 	const dropdownView = createDropdown( locale );
 
-	dropdownView.focusTracker._label = 'Menu dropdown';
-
 	addMenuToDropdown( dropdownView, bodyCollection, definitions );
 
 	dropdownView.buttonView.set( {

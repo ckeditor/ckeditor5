@@ -124,7 +124,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		this._bodyCollection = bodyCollection;
 		this._definition = definition;
 
-		this.focusTracker = new FocusTracker( 'DropdownMenuRootListView' );
+		this.focusTracker = new FocusTracker();
 
 		this.set( 'menuPanelClass', undefined );
 	}
