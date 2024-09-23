@@ -8,7 +8,6 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
-const chalk = require( 'chalk' );
 
 // When executing the script from the `{@exec...}` expression, relative paths used in the script will not work as this script can be
 // executed in the documentation builder context. Let current work directory point to CKEditor 5 repository.
@@ -137,7 +136,7 @@ function parseFiles() {
 			try {
 				return parseFile( file );
 			} catch ( error ) {
-				error.message = `Failed to parse ${ chalk.bold( file.path ) }\n${ error.message }`;
+				error.message = `Failed to parse ${ file.path }\n${ error.message }`;
 
 				throw error;
 			}
