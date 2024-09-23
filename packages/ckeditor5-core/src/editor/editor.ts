@@ -374,7 +374,18 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( !licenseKey ) {
 				/**
-				 * The licenseKey is missing. Add your license or 'GPL' string to the editor config.
+				 * The `licenseKey` is missing in the editor configuration. If you use premium features,
+				 * please provide your license key. If you do not have a key yet, please
+				 * [contact us](https://ckeditor.com/contact/) or
+	 			 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
+				 *
+				 * If you do not use premium features, add the `'GPL'` license key instead.
+				 *
+				 * ```js
+				 * Editor.create( document.querySelector( '#editor' ), {
+				 *   licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				 * } );
+				 * ```
 				 *
 				 * @error editor-license-key-missing
 				 */
@@ -970,7 +981,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'distributionChannel' ) {
 				/**
-				 * The usage is not valid for this distribution channel.
+				 * Your license doesn't allow using the editor in this distribution channel.
+				 *
+				 * If you use the `'GPL'` license key, you can use the editor installed from npm. If you use
+				 * a commercial license key, you need to use the editor from CDN or — if your plan allows — from npm.
 				 *
 				 * Please check your installation or contact support at https://ckeditor.com/contact/ for more information.
 				 *

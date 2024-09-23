@@ -31,11 +31,11 @@ const cloud = useCKEditorCloud( {
 
 This will add the necessary script and style sheet tags to the page's `<head>` and update the internal state to reflect the loading status. Depending on the framework, the `useCKEditorCloud` function may return different values. Please refer to the documentation of the specific integration for more details.
 
-Regardless of the framework used, the `useCKEditorCloud` functions always accept the same options, which are described in {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options The `loadCKEditorCloud` function options} section.
+Regardless of the framework used, the `useCKEditorCloud` functions always accept the same options, which are described in the {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options `loadCKEditorCloud` function options} section.
 
 ## Using the `loadCKEditorCloud` function
 
-To use the `loadCKEditorCloud` helper, you need to install the `@ckeditor/ckeditor5-integrations-common` package first:
+To use the `loadCKEditorCloud` helper, you need to install the following package:
 
 ```bash
 npm install @ckeditor/ckeditor5-integrations-common
