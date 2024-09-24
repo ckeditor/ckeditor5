@@ -704,17 +704,18 @@ function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallbac
 
 	return [
 		form => {
+			if ( !form.id ) {
+				return t( 'Bookmark must not be empty.' );
+			}
+		},
+		form => {
 			if ( form.id && /\s/.test( form.id ) ) {
 				return t( 'Bookmark name cannot contain space characters.' );
 			}
 		},
 		form => {
-			if ( !form.id ) {
-				return;
-			}
-
 			const selectedElement = editor.model.document.selection.getSelectedElement();
-			const existingBookmarkForId = bookmarkEditing.getElementForBookmarkId( form.id );
+			const existingBookmarkForId = bookmarkEditing.getElementForBookmarkId( form.id! );
 
 			// Accept change of bookmark ID if no real change is happening (edit -> submit, without changes).
 			if ( selectedElement === existingBookmarkForId ) {

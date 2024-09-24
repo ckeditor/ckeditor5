@@ -385,16 +385,6 @@ describe( 'BookmarkEditing', () => {
 
 			expect( domElement.children.length ).to.equal( 1 );
 		} );
-
-		it( 'should properly add bookmark to bookmarkElements map', () => {
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
-
-			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
-
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 1 );
-		} );
 	} );
 
 	describe( 'upcast', () => {
@@ -559,34 +549,137 @@ describe( 'BookmarkEditing', () => {
 		} );
 	} );
 
-	describe( 'bookmarkElements', () => {
-		it( 'should properly add bookmark to bookmarkElements map', () => {
+	describe( '_bookmarkElements', () => {
+		it( 'should properly add bookmark to _bookmarkElements map', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
 
 			editor.setData( '<p><a id="foo"></a></p>' );
 
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 1 );
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
 		} );
 
-		it( 'should properly remove bookmark from bookmarkElements map', () => {
+		it( 'should properly add all bookmarks to _bookmarkElements map', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
 
-			editor.setData( '<p><a id="foo"></a></p>' );
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'text before<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="baz"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="xyz"></a>text after' +
+				'</p>' +
+				'<p>' +
+					'<a id="bookmark_01"></a> space after bookmark' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="another_bookmark_name"></a> space after bookmark' +
+				'</p>'
+			);
 
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 1 );
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 6 );
+		} );
+
+		it( 'should properly add all bookmarks to _bookmarkElements map even with duplicated ids', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="foo"></a>duplicate' +
+				'</p>' +
+				'<p>' +
+					'<a id="foo"></a>another duplicate' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 5 );
+		} );
+
+		it( 'should properly remove all bookmarks from _bookmarkElements map after removed all content', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'text before<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="baz"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="xyz"></a>text after' +
+				'</p>' +
+				'<p>' +
+					'<a id="bookmark_01"></a> space after bookmark' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="another_bookmark_name"></a> space after bookmark' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 6 );
 
 			editor.execute( 'selectAll' );
 			editor.execute( 'delete' );
 
-			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph></paragraph>'
 			);
+		} );
+
+		it( 'should properly remove all bookmarks from _bookmarkElements map which were in a removed paragraph', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'foo<a id="bar"></a><a id="baz"></a><a id="xyz"></a>bar' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 4 );
+
+			const root = editor.model.document.getRoot();
+
+			// Move selection to 2nd paragraph.
+			editor.model.change( writer => {
+				writer.setSelection( root.getChild( 1 ), 'on' );
+			} );
+
+			// Remove everything from 2nd paragraph.
+			editor.execute( 'delete' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
 		} );
 	} );
 } );

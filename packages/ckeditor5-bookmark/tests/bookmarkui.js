@@ -424,6 +424,22 @@ describe( 'BookmarkUI', () => {
 				expect( updateSpy ).to.be.calledOnce;
 			} );
 
+			it( 'should show error form status if passed bookmark name is empty', () => {
+				bookmarkUIFeature._createViews();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
+				bookmarkUIFeature._showUI();
+
+				formView.idInputView.fieldView.value = '';
+
+				formView.fire( 'submit' );
+
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark must not be empty.' );
+			} );
+
 			it( 'should show error form status if passed bookmark name containing spaces', () => {
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.formView;
