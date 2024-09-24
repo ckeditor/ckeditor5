@@ -17,6 +17,7 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -36,7 +37,7 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Enter, Bold, Image, Heading, Paragraph, Undo, Link ]
+			plugins: [ BookmarkEditing, Enter, Bold, Image, Heading, Paragraph, Undo, Link, SelectAll ]
 		};
 
 		editor = await createEditor( element, config );
@@ -384,6 +385,16 @@ describe( 'BookmarkEditing', () => {
 
 			expect( domElement.children.length ).to.equal( 1 );
 		} );
+
+		it( 'should properly add bookmark to bookmarkElements map', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+
+			setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'upcast', () => {
@@ -545,6 +556,37 @@ describe( 'BookmarkEditing', () => {
 					'<paragraph><$text htmlA="{"attributes":{"id":"foo"}}">foobar</$text></paragraph>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'bookmarkElements', () => {
+		it( 'should properly add bookmark to bookmarkElements map', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData( '<p><a id="foo"></a></p>' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 1 );
+		} );
+
+		it( 'should properly remove bookmark from bookmarkElements map', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData( '<p><a id="foo"></a></p>' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 1 );
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'delete' );
+
+			expect( bookmarkEditing.bookmarkElements.size ).to.equal( 0 );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph></paragraph>'
+			);
 		} );
 	} );
 } );

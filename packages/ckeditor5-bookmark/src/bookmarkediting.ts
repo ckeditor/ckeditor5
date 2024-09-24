@@ -117,8 +117,6 @@ export default class BookmarkEditing extends Plugin {
 
 				this.bookmarkElements.set( modelElement, id );
 
-				console.log( 'editingDowncast bookmarkElements', this.bookmarkElements );
-
 				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
 
 				const labelCreator = () => `${ id } ${ t( 'bookmark widget' ) }`;

@@ -9,6 +9,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-u
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import BookmarkUI from '../src/bookmarkui.js';
+import BookmarkEditing from '../src/bookmarkediting.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -30,6 +31,10 @@ describe( 'BookmarkUI', () => {
 		element.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have proper "requires" value', () => {
+		expect( BookmarkUI.requires ).to.deep.equal( [ BookmarkEditing ] );
 	} );
 
 	it( 'should be correctly named', () => {
