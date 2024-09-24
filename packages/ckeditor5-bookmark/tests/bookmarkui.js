@@ -271,6 +271,24 @@ describe( 'BookmarkUI', () => {
 			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( newBookmarkDomElement );
 		} );
 
+		it( 'should optionally force `main` stack to be visible while bookmark is selected', () => {
+			bookmarkUIFeature._createViews();
+			formView = bookmarkUIFeature.formView;
+			actionsView = bookmarkUIFeature.actionsView;
+			formView.render();
+
+			setModelData( editor.model, '<paragraph>fo[<bookmark bookmarkId="foo"></bookmark>]ar</paragraph>' );
+
+			balloon.add( {
+				view: new View(),
+				stackId: 'secondary'
+			} );
+
+			bookmarkUIFeature._showUI( true );
+
+			expect( balloon.visibleView ).to.equal( actionsView );
+		} );
+
 		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
 			// (#7926)
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
@@ -324,15 +342,8 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		describe( 'response to ui#update', () => {
-			let view, viewDocument;
-
-			beforeEach( () => {
-				view = editor.editing.view;
-				viewDocument = view.document;
-			} );
-
 			it( 'should not duplicate #update listeners', () => {
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+				setModelData( editor.model, '<paragraph>f[<bookmark bookmarkId="id"></bookmark>]oo</paragraph>' );
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
@@ -350,12 +361,10 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
+				const root = editor.model.document.getRoot();
 
-				const root = viewDocument.getRoot();
-				const text = root.getChild( 0 ).getChild( 2 );
-
-				view.change( writer => {
-					writer.setSelection( text, 1, true );
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 1 );
 				} );
 
 				const expectedRange = getMarkersRange( editor );
@@ -368,7 +377,7 @@ describe( 'BookmarkUI', () => {
 				assertDomRange( expectedRange, spy.args[ 0 ][ 0 ].target );
 			} );
 
-			it( 'not update the position when is in not visible stack', () => {
+			it( 'not update the position when is in not visible stack (bookmark selected)', () => {
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.formView;
 				actionsView = bookmarkUIFeature.actionsView;
@@ -423,6 +432,69 @@ describe( 'BookmarkUI', () => {
 				editor.ui.fire( 'update' );
 
 				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'hides of the panel – editing a bookmark, then the selection moved out of the bookmark', () => {
+				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]bar</paragraph>' );
+
+				bookmarkUIFeature._showUI();
+
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
+				const spyHide = testUtils.sinon.spy( bookmarkUIFeature, '_hideUI' );
+
+				const root = editor.model.document.getRoot();
+
+				// Move selection to b[]ar.
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 2 );
+				} );
+
+				sinon.assert.calledOnce( spyHide );
+				sinon.assert.notCalled( spyUpdate );
+			} );
+
+			it( 'hides the panel – editing a bookmark, then the selection expands', () => {
+				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]foo</paragraph>' );
+
+				bookmarkUIFeature._showUI();
+
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
+				const spyHide = testUtils.sinon.spy( bookmarkUIFeature, '_hideUI' );
+
+				const root = editor.model.document.getRoot();
+
+				// Move selection to bookmark and a single character after it.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( root.getChild( 0 ), 0 ),
+						writer.createPositionAt( root.getChild( 0 ), 2 )
+					), true );
+				} );
+
+				sinon.assert.calledOnce( spyHide );
+				sinon.assert.notCalled( spyUpdate );
+			} );
+
+			it( 'hides the panel – creating a new bookmark, then the selection moved to another parent', () => {
+				setModelData( editor.model, '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+
+				bookmarkUIFeature._showUI();
+
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
+				const spyHide = testUtils.sinon.spy( bookmarkUIFeature, '_hideUI' );
+
+				const root = editor.model.document.getRoot();
+
+				// Move selection to b[a]r.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( root.getChild( 1 ), 1 ),
+						writer.createPositionAt( root.getChild( 1 ), 2 )
+					), true );
+				} );
+
+				sinon.assert.calledOnce( spyHide );
+				sinon.assert.notCalled( spyUpdate );
 			} );
 		} );
 
@@ -1074,4 +1146,3 @@ describe( 'BookmarkUI', () => {
 		expect( actual, 'endOffset' ).to.have.property( 'endOffset', expected.endOffset );
 	}
 } );
-

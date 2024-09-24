@@ -20,7 +20,8 @@ import {
 import {
 	ClickObserver,
 	type ViewDocumentClickEvent,
-	type Element
+	type Element,
+	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
@@ -32,8 +33,6 @@ import type UpdateBookmarkCommand from './updatebookmarkcommand.js';
 import type InsertBookmarkCommand from './insertbookmarkcommand.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
-
-import '../theme/bookmark.css';
 
 const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
 
@@ -411,10 +410,8 @@ export default class BookmarkUI extends Plugin {
 
 	/**
 	 * Shows the correct UI type. It is either {@link #formView} or {@link #actionsView}.
-	 *
-	 * @internal
 	 */
-	public _showUI( forceVisible: boolean = false ): void {
+	private _showUI( forceVisible: boolean = false ): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}
@@ -444,12 +441,10 @@ export default class BookmarkUI extends Plugin {
 				this._addActionsView();
 			}
 
-			// TODO: uncomment when keystroke will be implemented.
-
-			// Be sure panel with link is visible.
-			// if ( forceVisible ) {
-			// 	this._balloon.showStack( 'main' );
-			// }
+			// Be sure panel with bookmark is visible.
+			if ( forceVisible ) {
+				this._balloon.showStack( 'main' );
+			}
 		}
 
 		// Begin responding to ui#update once the UI is added.
@@ -492,15 +487,49 @@ export default class BookmarkUI extends Plugin {
 	 */
 	private _startUpdatingUI(): void {
 		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+
+		let prevSelectedBookmark = this._getSelectedBookmarkElement();
+		let prevSelectionParent = getSelectionParent();
 
 		const update = () => {
-			if ( this._isUIVisible ) {
+			const selectedBookmark = this._getSelectedBookmarkElement();
+			const selectionParent = getSelectionParent();
+
+			// Hide the panel if:
+			//
+			// * the selection went out of the EXISTING bookmark element. E.g. user moved the caret out
+			//   of the bookmark,
+			// * the selection went to a different parent when creating a NEW bookmark. E.g. someone
+			//   else modified the document.
+			// * the selection has expanded (e.g. displaying bookmark actions then pressing SHIFT+Right arrow).
+			//
+			if (
+				( prevSelectedBookmark && !selectedBookmark ) ||
+				( !prevSelectedBookmark && selectionParent !== prevSelectionParent )
+			) {
+				this._hideUI();
+			}
+			// Update the position of the panel when:
+			//  * link panel is in the visible stack
+			//  * the selection remains in the original link element,
+			//  * there was no link element in the first place, i.e. creating a new link
+			else if ( this._isUIVisible ) {
 				// If still in a bookmark element, simply update the position of the balloon.
 				// If there was no bookmark (e.g. inserting one), the balloon must be moved
 				// to the new position in the editing view (a new native DOM range).
 				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
+
+			prevSelectedBookmark = selectedBookmark;
+			prevSelectionParent = selectionParent;
 		};
+
+		function getSelectionParent() {
+			return viewDocument.selection.focus!.getAncestors()
+				.reverse()
+				.find( ( node ): node is ViewElement => node.is( 'element' ) );
+		}
 
 		this.listenTo( editor.ui, 'update', update );
 		this.listenTo( this._balloon, 'change:visibleView', update );
