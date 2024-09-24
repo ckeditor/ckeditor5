@@ -695,8 +695,6 @@ export default class BookmarkUI extends Plugin {
 
 /**
  * Returns bookmark form validation callbacks.
- *
- * @param editor Editor instance.
  */
 function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallback> {
 	const { t } = editor;
