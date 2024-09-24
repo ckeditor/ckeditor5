@@ -13,13 +13,23 @@ We will create a toolbar button that will insert the current date and time at th
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from our [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to run the editor.
+The easiest way to set up your project is to grab the starter files from our GitHub repositories for this tutorial. Depending on your installation method, you can use:
+
+* [npm repository](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/npm)
+* [CDN repository](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/cdn)
+
+We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to run the editor.
 
 The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, run the `npm install` command, and you can start coding right away.
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/timestamp-plugin/starter-files
+
+# npm
+cd ckeditor5-tutorials-examples/timestamp-plugin/npm/starter-files
+
+# CDN
+cd ckeditor5-tutorials-examples/timestamp-plugin/cdn/starter-files
 
 npm install
 npm run dev
@@ -27,10 +37,11 @@ npm run dev
 
 ## Creating a plugin
 
-All features in the CKEditor 5 are powered by plugins. To create our custom timestamp plugin, we need to import the base `Plugin` class.
+All features in the CKEditor 5 are powered by plugins. To create our custom timestamp plugin, we need to import the base `Plugin` class. Imports are the main difference between the CDN and npm installation methods. In the npm method, we use standard JavaScript syntax. The CDN script exposes a global variable we can use to access plugins.
 
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it to the editor's plugins array.
 
+<code-switcher>
 ```js
 import { 
 	ClassicEditor,
@@ -67,6 +78,7 @@ ClassicEditor
 		console.error( error.stack );
 	} );
 ```
+</code-switcher>
 
 The development server will refresh. The initialization of the timestamp plugin should be visible. You should see this in the browser (on the left) and the browser's development console (on the right):
 
@@ -80,6 +92,7 @@ Once we create a new instance of `ButtonView`, we will be able to customize it b
 
 We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, to be able to add it into the {@link getting-started/setup/toolbar toolbar} array.
 
+<code-switcher>
 ```js
 import { 
 	ClassicEditor,
@@ -133,6 +146,7 @@ ClassicEditor
 	} );
 
 ```
+</code-switcher>
 
 Now, you should be able to see the <kbd>Timestamp</kbd> button. It does not do anything just yet, so let's change that.
 
@@ -148,6 +162,7 @@ To insert anything into the document structure, we need to {@link framework/arch
 
 We will use the `insertContent()` method to insert our timestamp into the document. Inside, we just need to create a new text node with the `writer.createText()` method.
 
+<code-switcher>
 ```js
 class Timestamp extends Plugin {
 	init() {
@@ -180,6 +195,11 @@ class Timestamp extends Plugin {
 	}
 }
 ```
+</code-switcher>
+
+<info-box>
+The main difference between installation methods is imports. That is why some snippets may be identical for both installation methods.
+</info-box>
 
 Well done! You implemented a CKEditor 5 plugin. You should be able to click and see that it works.
 
@@ -191,7 +211,12 @@ See the result in action.
 
 ## Full code
 
-If you got lost at any point, see [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/final-project). You can paste the code from `main.js`, or clone and install the whole thing, and it will run out of the box.
+If you got lost at any point, see the final implementation of the plugin for your installation method:
+
+* [npm final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/npm/final-project)
+* [CDN final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/cdn/final-project)
+
+You can paste the code from `main.js` or clone and install the whole thing, and it will run out of the box.
 
 <info-box>
 	**What's next**
