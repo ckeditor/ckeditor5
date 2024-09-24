@@ -249,7 +249,8 @@ export default class BookmarkUI extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
-		const command = editor.commands.get( 'insertBookmark' )!;
+		const insertCommand = editor.commands.get( 'insertBookmark' )!;
+		const updateCommand = editor.commands.get( 'updateBookmark' )!;
 		const t = locale.t;
 
 		view.set( {
@@ -260,8 +261,13 @@ export default class BookmarkUI extends Plugin {
 		// Execute the command.
 		this.listenTo( view, 'execute', () => this._showUI( true ) );
 
-		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		view.bind( 'isOn' ).to( command, 'value', value => !!value );
+		view.bind( 'isEnabled' ).toMany(
+			[ insertCommand, updateCommand ],
+			'isEnabled',
+			( ...areEnabled ) => areEnabled.some( isVisible => isVisible )
+		);
+
+		view.bind( 'isOn' ).to( updateCommand, 'value', value => !!value );
 
 		return view;
 	}
