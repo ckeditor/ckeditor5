@@ -33,7 +33,7 @@ export default class BookmarkEditing extends Plugin {
 	/**
 	 * A collection of bookmarks elements in the document.
 	 */
-	public bookmarkElements = new Map<Element, string>();
+	private _bookmarkElements = new Map<Element, string>();
 
 	/**
 	 * @inheritDoc
@@ -57,6 +57,19 @@ export default class BookmarkEditing extends Plugin {
 		this.listenTo<DocumentChangeEvent>( editor.model.document, 'change:data', () => {
 			this._trackBookmarkElements();
 		} );
+	}
+
+	/**
+	 * Returns the model element for the given bookmark ID if it exists.
+	 */
+	public getElementForBookmarkId( bookmarkId: string ): Element | null {
+		for ( const [ element, id ] of this._bookmarkElements ) {
+			if ( id == bookmarkId ) {
+				return element;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -113,7 +126,7 @@ export default class BookmarkEditing extends Plugin {
 					class: 'ck-bookmark'
 				}, [ this._createBookmarkUIElement( writer ) ] );
 
-				this.bookmarkElements.set( modelElement, id );
+				this._bookmarkElements.set( modelElement, id );
 
 				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
 
@@ -159,9 +172,9 @@ export default class BookmarkEditing extends Plugin {
 	 * Tracking the added or removed bookmark elements.
 	 */
 	private _trackBookmarkElements(): void {
-		this.bookmarkElements.forEach( ( id, element ) => {
+		this._bookmarkElements.forEach( ( id, element ) => {
 			if ( element.root.rootName === '$graveyard' ) {
-				this.bookmarkElements.delete( element );
+				this._bookmarkElements.delete( element );
 			}
 		} );
 	}

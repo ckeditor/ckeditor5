@@ -207,7 +207,7 @@ export default class BookmarkUI extends Plugin {
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			if ( formView.isValid() ) {
-				const { value } = formView.idInputView.fieldView.element!;
+				const value = formView.id!;
 
 				if ( this._getSelectedBookmarkElement() ) {
 					editor.execute( 'updateBookmark', { bookmarkId: value } );
@@ -700,7 +700,7 @@ export default class BookmarkUI extends Plugin {
  */
 function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallback> {
 	const { t } = editor;
-	const { bookmarkElements } = editor.plugins.get( 'BookmarkEditing' );
+	const bookmarkEditing = editor.plugins.get( BookmarkEditing );
 
 	return [
 		form => {
@@ -709,7 +709,19 @@ function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallbac
 			}
 		},
 		form => {
-			if ( Array.from( bookmarkElements.values() ).some( id => id === form.id ) ) {
+			if ( !form.id ) {
+				return;
+			}
+
+			const selectedElement = editor.model.document.selection.getSelectedElement();
+			const existingBookmarkForId = bookmarkEditing.getElementForBookmarkId( form.id );
+
+			// Accept change of bookmark ID if no real change is happening (edit -> submit, without changes).
+			if ( selectedElement === existingBookmarkForId ) {
+				return;
+			}
+
+			if ( existingBookmarkForId ) {
 				return t( 'Bookmark name already exists.' );
 			}
 		}
