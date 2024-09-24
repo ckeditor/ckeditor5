@@ -21,6 +21,7 @@ import { SelectAll } from '@ckeditor/ckeditor5-select-all';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
+import { Element } from '@ckeditor/ckeditor5-engine';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
@@ -680,6 +681,45 @@ describe( 'BookmarkEditing', () => {
 			editor.execute( 'delete' );
 
 			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'getElementForBookmarkId', () => {
+		it( 'returns a bookmark element if exists with passed id', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ) ).is.instanceof( Element );
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ).getAttribute( 'bookmarkId' ) ).is.equal( 'foo' );
+		} );
+
+		it( 'returns null when there is no bookmark with passed id', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).is.null;
 		} );
 	} );
 } );
