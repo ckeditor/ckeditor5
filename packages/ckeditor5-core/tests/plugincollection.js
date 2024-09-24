@@ -69,7 +69,9 @@ describe( 'PluginCollection', () => {
 		PluginFoo.requires = [];
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
+		editor.state = 'ready';
+		await editor.destroy();
 		sinon.restore();
 	} );
 
