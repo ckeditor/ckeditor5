@@ -25,6 +25,21 @@ import {
 } from './utils.js';
 
 /**
+ * Returns a upcast helper that removes the `ck-table-resized` class from the table element.
+ */
+export function upcastTableElement() {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+			const viewTable = data.viewItem;
+
+			if ( viewTable.hasClass( 'ck-table-resized' ) ) {
+				conversionApi.consumable.consume( viewTable, { classes: 'ck-table-resized' } );
+			}
+		} );
+	};
+}
+
+/**
  * Returns a upcast helper that ensures the number of `<tableColumn>` elements corresponds to the actual number of columns in the table,
  * because the input data might have too few or too many <col> elements.
  */

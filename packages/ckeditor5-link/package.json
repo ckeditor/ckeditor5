@@ -38,6 +38,8 @@
     "@ckeditor/ckeditor5-table": "43.1.0",
     "@ckeditor/ckeditor5-theme-lark": "43.1.0",
     "@ckeditor/ckeditor5-undo": "43.1.0",
+    "@ckeditor/ckeditor5-remove-format": "43.1.0",
+    "@ckeditor/ckeditor5-font": "43.1.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"

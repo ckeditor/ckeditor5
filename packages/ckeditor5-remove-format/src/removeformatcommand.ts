@@ -7,7 +7,11 @@
  * @module remove-format/removeformatcommand
  */
 
+import { isEmpty, omit } from 'lodash-es';
+
 import type { DocumentSelection, Item, Schema } from 'ckeditor5/src/engine.js';
+import type { GHSViewAttributes } from '@ckeditor/ckeditor5-html-support';
+
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -46,14 +50,34 @@ export default class RemoveFormatCommand extends Command {
 					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
 						writer.removeSelectionAttribute( attributeName );
 					}
-				} else {
-					// Workaround for items with multiple removable attributes. See
-					// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
-					const itemRange = writer.createRangeOn( item );
 
-					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
-						writer.removeAttribute( attributeName, itemRange );
+					continue;
+				}
+
+				// Workaround for items with multiple removable attributes. See
+				// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
+				const itemRange = writer.createRangeOn( item );
+
+				// Remove GHS formatting attributes.
+				const ghsFormattingAttributes = this._getGHSFormattingAttributes( item );
+
+				for ( const [ name, attributeValue ] of ghsFormattingAttributes ) {
+					const filteredAttributeValue = omit(
+						attributeValue,
+						[ 'classes', 'styles' ] satisfies Array<keyof GHSViewAttributes>
+					);
+
+					// Remove GHS attribute if it's empty after removal of classes and styles.
+					if ( isEmpty( filteredAttributeValue ) ) {
+						writer.removeAttribute( name, itemRange );
+					} else {
+						writer.setAttribute( name, filteredAttributeValue, itemRange );
 					}
+				}
+
+				// Remove formatting attributes.
+				for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
+					writer.removeAttribute( attributeName, itemRange );
 				}
 			}
 		} );
@@ -67,6 +91,10 @@ export default class RemoveFormatCommand extends Command {
 	 */
 	private* _getFormattingItems( selection: DocumentSelection, schema: Schema ) {
 		const itemHasRemovableFormatting = ( item: Item | DocumentSelection ) => {
+			if ( this._getGHSFormattingAttributes( item ).size ) {
+				return true;
+			}
+
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
 
@@ -108,5 +136,38 @@ export default class RemoveFormatCommand extends Command {
 				yield attributeName;
 			}
 		}
+	}
+
+	/**
+	 * Returns map of GHS formatting attributes of a given model item.
+	 *
+	 * @returns The map of GHS formatting attributes found in a given item.
+	 */
+	private _getGHSFormattingAttributes( item: Item | DocumentSelection ): Map<string, GHSViewAttributes> {
+		const { plugins } = this.editor;
+
+		// GHS formatting attributes should be returned only for elements.
+		if ( !item.is( 'element' ) ) {
+			return new Map();
+		}
+
+		// GHS attributes are supported only when the GeneralHtmlSupport plugin is enabled.
+		if ( !plugins.has( 'GeneralHtmlSupport' ) ) {
+			return new Map();
+		}
+
+		const htmlSupport = plugins.get( 'GeneralHtmlSupport' );
+		const ghsAttributes = htmlSupport.getGhsAttributesForElement( item );
+
+		for ( const [ name, attribute ] of ghsAttributes.entries() ) {
+			const hasNoStyles = !attribute.styles || !Object.keys( attribute.styles ).length;
+			const hasNoClasses = !attribute.classes || !attribute.classes.length;
+
+			if ( hasNoStyles && hasNoClasses ) {
+				ghsAttributes.delete( name );
+			}
+		}
+
+		return ghsAttributes;
 	}
 }

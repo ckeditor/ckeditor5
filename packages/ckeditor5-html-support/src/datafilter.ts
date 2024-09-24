@@ -50,6 +50,7 @@ import {
 
 import {
 	getHtmlAttributeName,
+	isGHSAttributeName,
 	type GHSViewAttributes
 } from './utils.js';
 
@@ -554,7 +555,7 @@ export default class DataFilter extends Plugin {
 				}
 
 				for ( const attr of change.attributes.keys() ) {
-					if ( !attr.startsWith( 'html' ) || !attr.endsWith( 'Attributes' ) ) {
+					if ( !isGHSAttributeName( attr ) ) {
 						continue;
 					}
 
