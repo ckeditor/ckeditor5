@@ -86,16 +86,27 @@ describe( 'BookmarkUI', () => {
 			expect( button.icon ).to.equal( bookmarkIcon );
 		} );
 
-		it( 'should bind #isEnabled to insert command', () => {
-			const command = editor.commands.get( 'insertBookmark' );
+		it( 'should bind #isEnabled to insert and update command', () => {
+			const insertBookmark = editor.commands.get( 'insertBookmark' );
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
 			expect( button.isOn ).to.be.false;
 
-			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
+			insertBookmark.isEnabled = true;
+			updateBookmark.isEnabled = true;
+			expect( button.isEnabled ).to.equal( true );
 
-			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
+			insertBookmark.isEnabled = true;
+			updateBookmark.isEnabled = false;
+			expect( button.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = false;
+			updateBookmark.isEnabled = true;
+			expect( button.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = false;
+			updateBookmark.isEnabled = false;
+			expect( button.isEnabled ).to.equal( false );
 		} );
 	} );
 
@@ -169,6 +180,54 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
+		} );
+
+		it( 'should bind idInputView #isEnabled to insert and update command', () => {
+			const insertBookmark = editor.commands.get( 'insertBookmark' );
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
+
+			bookmarkUIFeature._showUI();
+			const idInputView = bookmarkUIFeature.formView.idInputView;
+
+			insertBookmark.isEnabled = true;
+			updateBookmark.isEnabled = true;
+			expect( idInputView.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = true;
+			updateBookmark.isEnabled = false;
+			expect( idInputView.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = false;
+			updateBookmark.isEnabled = true;
+			expect( idInputView.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = false;
+			updateBookmark.isEnabled = false;
+			expect( idInputView.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should bind insertButtonView #isEnabled to insert and update command', () => {
+			const insertBookmark = editor.commands.get( 'insertBookmark' );
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
+
+			bookmarkUIFeature._showUI();
+			const insertButtonView = bookmarkUIFeature.formView.insertButtonView;
+
+			insertBookmark.isEnabled = true;
+			updateBookmark.isEnabled = true;
+			expect( insertButtonView.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = true;
+			updateBookmark.isEnabled = false;
+			expect( insertButtonView.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = false;
+			updateBookmark.isEnabled = true;
+			expect( insertButtonView.isEnabled ).to.equal( true );
+
+			insertBookmark.isEnabled = false;
+			updateBookmark.isEnabled = false;
+			expect( insertButtonView.isEnabled ).to.equal( false );
 		} );
 
 		it( 'should add #actionsView to the balloon and attach the balloon to the bookmark element when selected', () => {

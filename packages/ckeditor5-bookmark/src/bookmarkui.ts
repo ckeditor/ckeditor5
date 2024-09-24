@@ -183,18 +183,24 @@ export default class BookmarkUI extends Plugin {
 		const insertBookmarkCommand: InsertBookmarkCommand = editor.commands.get( 'insertBookmark' )!;
 		const updateBookmarkCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
 		const validators: Array<BookmarkFormValidatorCallback> = [];
+		const commands = [ insertBookmarkCommand, updateBookmarkCommand ];
 
 		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
-
 		formView.idInputView.fieldView.bind( 'value' ).to( updateBookmarkCommand, 'value' );
 
-		// TODO bind to both commands?
 		// Form elements should be read-only when corresponding commands are disabled.
-		formView.idInputView.bind( 'isEnabled' ).to( insertBookmarkCommand, 'isEnabled' );
+		formView.idInputView.bind( 'isEnabled' ).toMany(
+			commands,
+			'isEnabled',
+			( ...areEnabled ) => areEnabled.some( isVisible => isVisible )
+		);
 
-		// TODO bind to both commands?
 		// Disable the "save" button if the command is disabled.
-		formView.insertButtonView.bind( 'isEnabled' ).to( insertBookmarkCommand, 'isEnabled' );
+		formView.insertButtonView.bind( 'isEnabled' ).toMany(
+			commands,
+			'isEnabled',
+			( ...areEnabled ) => areEnabled.some( isVisible => isVisible )
+		);
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
@@ -249,8 +255,8 @@ export default class BookmarkUI extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
-		const insertCommand = editor.commands.get( 'insertBookmark' )!;
-		const updateCommand = editor.commands.get( 'updateBookmark' )!;
+		const insertCommand: InsertBookmarkCommand = editor.commands.get( 'insertBookmark' )!;
+		const updateCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
 		const t = locale.t;
 
 		view.set( {
@@ -517,9 +523,9 @@ export default class BookmarkUI extends Plugin {
 				this._hideUI();
 			}
 			// Update the position of the panel when:
-			//  * link panel is in the visible stack
-			//  * the selection remains in the original link element,
-			//  * there was no link element in the first place, i.e. creating a new link
+			//  * bookmark panel is in the visible stack
+			//  * the selection remains on the original bookmark element,
+			//  * there was no bookmark element in the first place, i.e. creating a new bookmark
 			else if ( this._isUIVisible ) {
 				// If still in a bookmark element, simply update the position of the balloon.
 				// If there was no bookmark (e.g. inserting one), the balloon must be moved
