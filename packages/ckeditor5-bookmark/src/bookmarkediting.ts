@@ -7,10 +7,17 @@
  * @module bookmark/bookmarkediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
-import type { ViewUIElement, DowncastWriter, ViewElement, Element } from 'ckeditor5/src/engine.js';
+
+import type {
+	ViewUIElement,
+	DowncastWriter,
+	ViewElement,
+	Element,
+	DocumentChangeEvent
+} from 'ckeditor5/src/engine.js';
 
 import InsertBookmarkCommand from './insertbookmarkcommand.js';
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
@@ -24,24 +31,15 @@ import bookmarkIcon from '../theme/icons/bookmark_inline.svg';
  */
 export default class BookmarkEditing extends Plugin {
 	/**
+	 * A collection of bookmarks elements in the document.
+	 */
+	public bookmarkElements = new Map<Element, string>();
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
 		return 'BookmarkEditing' as const;
-	}
-
-	/**
-	 * A collection of bookmarks elements in the document.
-	 */
-	public bookmarkElements: Map<Element, string>;
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this.bookmarkElements = new Map();
 	}
 
 	/**
@@ -56,7 +54,7 @@ export default class BookmarkEditing extends Plugin {
 		editor.commands.add( 'insertBookmark', new InsertBookmarkCommand( editor ) );
 		editor.commands.add( 'updateBookmark', new UpdateBookmarkCommand( editor ) );
 
-		this.listenTo( editor.model.document, 'change', () => {
+		this.listenTo<DocumentChangeEvent>( editor.model.document, 'change:data', () => {
 			this._trackBookmarkElements();
 		} );
 	}
@@ -159,30 +157,13 @@ export default class BookmarkEditing extends Plugin {
 
 	/**
 	 * Tracking the added or removed bookmark elements.
-	 *
-	 * @internal
 	 */
 	private _trackBookmarkElements(): void {
-		for ( const change of this.editor.model.document.differ.getChanges( { includeChangesInGraveyard: true } ) ) {
-			if ( change.type == 'attribute' || change.name != 'bookmark' ) {
-				return;
+		this.bookmarkElements.forEach( ( id, element ) => {
+			if ( element.root.rootName === '$graveyard' ) {
+				this.bookmarkElements.delete( element );
 			}
-
-			if ( change.type === 'remove' ) {
-				this.bookmarkElements.forEach( ( id, element ) => {
-					if ( element.root.rootName === '$graveyard' ) {
-						this.bookmarkElements.delete( element );
-					}
-				} );
-
-				return;
-			}
-
-			const bookmarkElement = change.position.nodeAfter! as Element;
-			const bookmarkId = bookmarkElement.getAttribute( 'bookmarkId' ) as string;
-
-			this.bookmarkElements.set( bookmarkElement, bookmarkId );
-		}
+		} );
 	}
 }
 
