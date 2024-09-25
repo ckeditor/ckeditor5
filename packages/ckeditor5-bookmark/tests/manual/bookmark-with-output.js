@@ -46,11 +46,15 @@ ClassicEditor
 		const iframe = document.querySelector( '#iframe' );
 
 		editor.model.document.on( 'change', () => {
+			iframe.contentWindow.document.open();
 			iframe.contentWindow.document.write( editor.getData() );
+			iframe.contentWindow.document.close();
 		} );
 
 		setTimeout( () => {
+			iframe.contentWindow.document.open();
 			iframe.contentWindow.document.write( editor.getData() );
+			iframe.contentWindow.document.close();
 		}, 500 );
 	} )
 	.catch( err => {
