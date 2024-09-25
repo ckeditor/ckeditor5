@@ -696,7 +696,7 @@ export default class DragDrop extends Plugin {
 			preview.style.backgroundColor = 'white';
 		}
 
-		preview.innerHTML = dataTransfer.getData( 'text/html' );
+		view.domConverter.setContentOf( preview, dataTransfer.getData( 'text/html' ) );
 
 		dataTransfer.setDragImage( preview, 0, 0 );
 
