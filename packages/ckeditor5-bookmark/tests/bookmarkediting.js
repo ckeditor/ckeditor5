@@ -672,15 +672,22 @@ describe( 'BookmarkEditing', () => {
 
 			const root = editor.model.document.getRoot();
 
-			// Move selection to 2nd paragraph.
+			// Move start selection at the end of first paragraph and end of the selection to the end of 2nd paragraph.
 			editor.model.change( writer => {
-				writer.setSelection( root.getChild( 1 ), 'on' );
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( root.getChild( 0 ), 1 ),
+					writer.createPositionAt( root.getChild( 1 ), 9 )
+				), true );
 			} );
 
-			// Remove everything from 2nd paragraph.
+			// Remove everything what is selected.
 			editor.execute( 'delete' );
 
 			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+			);
 		} );
 	} );
 
