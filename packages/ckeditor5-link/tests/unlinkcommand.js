@@ -429,8 +429,8 @@ describe( 'UnlinkCommand', () => {
 	} );
 
 	describe( 'manual decorators', () => {
-		beforeEach( () => {
-			editor.destroy();
+		beforeEach( async () => {
+			await editor.destroy();
 			return ModelTestEditor.create( {
 				extraPlugins: [ LinkEditing ],
 				link: {

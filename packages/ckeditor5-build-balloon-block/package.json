@@ -52,13 +52,13 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "43.1.1",
-    "@ckeditor/ckeditor5-dev-translations": "^42.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "^43.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^43.0.0",
     "@ckeditor/ckeditor5-theme-lark": "43.1.1",
     "terser-webpack-plugin": "^4.2.3",
     "typescript": "5.0.4",
-    "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",

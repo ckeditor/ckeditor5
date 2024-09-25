@@ -161,8 +161,8 @@ describe( 'TableCellWidthEditing', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should not upcast the default `width` value from <td>', () => {

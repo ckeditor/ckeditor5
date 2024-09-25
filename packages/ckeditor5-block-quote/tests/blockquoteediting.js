@@ -88,6 +88,8 @@ describe( 'BlockQuoteEditing', () => {
 				editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
 				expect( editor.getData() ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
+
+				return editor.destroy();
 			} );
 	} );
 

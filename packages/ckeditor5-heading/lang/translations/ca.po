@@ -19,27 +19,27 @@ msgstr ""
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "Pàrraf"
+msgstr "Paràgraf"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Capçalera"
+msgstr "Encapçalament"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Escull capçalera"
+msgstr "Trieu l'encapçalament"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "Capçalera 1"
+msgstr "Encapçalament 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "Capçalera 2"
+msgstr "Encapçalament 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "Capçalera 3"
+msgstr "Encapçalament 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
@@ -55,8 +55,8 @@ msgstr "Encapçalament 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr "Escriu el teu títol"
+msgstr "Escriviu el títol"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr "Escriu o enganxa el teu contingut aquí."
+msgstr "Escriviu o enganxeu el contingut aquí."

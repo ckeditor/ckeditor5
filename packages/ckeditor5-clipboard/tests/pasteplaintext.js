@@ -50,6 +50,10 @@ describe( 'PastePlainText', () => {
 			} );
 	} );
 
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
 	it( 'should inherit selection attributes (collapsed selection)', () => {
 		let insertedNode;
 

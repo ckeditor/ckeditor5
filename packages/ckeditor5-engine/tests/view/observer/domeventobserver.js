@@ -44,6 +44,14 @@ class ClickCapturingObserver extends ClickObserver {
 	}
 }
 
+class ClickPassiveObserver extends ClickObserver {
+	constructor( view ) {
+		super( view );
+
+		this.usePassive = true;
+	}
+}
+
 describe( 'DomEventObserver', () => {
 	let view, viewDocument;
 
@@ -182,6 +190,23 @@ describe( 'DomEventObserver', () => {
 		} );
 
 		childDomElement.dispatchEvent( domEvent );
+	} );
+
+	it( 'should allow to listen passive events', () => {
+		const domElement = document.createElement( 'div' );
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+
+		const eventHandlerSpy = sinon.spy( ClickPassiveObserver.prototype, 'listenTo' );
+
+		view.addObserver( ClickPassiveObserver );
+
+		expect( eventHandlerSpy ).to.be.calledWith( domElement, 'click', sinon.match.func, {
+			useCapture: false,
+			usePassive: true
+		} );
+
+		eventHandlerSpy.restore();
 	} );
 
 	describe( 'integration with UIElement', () => {

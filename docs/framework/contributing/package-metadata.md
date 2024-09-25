@@ -9,7 +9,7 @@ modified_at: 2021-06-07
 
 The package metadata is a set of CKEditor&nbsp;5-related data describing plugins that the package delivers. It allows for the automated detection of plugins and building them by an external builder.
 
-In the case of official CKEditor&nbsp;5 packages (as well as some partner ones), this data is used by the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) and allows for building the {@link framework/architecture/plugins#plugins-and-html-output Features' HTML output} page presenting a list of all official CKEditor&nbsp;5 plugins.
+In the case of official CKEditor&nbsp;5 packages (as well as some partner ones), this data is used by the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) and allows for building the {@link framework/architecture/plugins#plugins-and-html-output Features' HTML output} page presenting a list of all official CKEditor&nbsp;5 plugins.
 
 The package metadata should be saved in the special `ckeditor5-metadata.json` file in the root of the package published on npm.
 

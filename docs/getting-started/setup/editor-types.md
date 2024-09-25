@@ -11,7 +11,7 @@ modified_at: 2024-06-25
 The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.
 
 <info-box>
-	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). It lets you quickly view and experiment with different presets.
+	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs). It lets you quickly view and experiment with different presets.
 </info-box>
 
 There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approaches to editing as well as various UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/quick-start Quick start} guide.
@@ -83,5 +83,5 @@ The multi-root editor is an editor type that features multiple, separate editabl
 See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
 
 <info-box>
-	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>

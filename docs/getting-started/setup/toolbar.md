@@ -29,7 +29,7 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check the {@link getting-started/setup/configuration#removing-features removing features} guide for more information.
 </info-box>
 
-The toolbar offers a flexible arrangement, achieved through configuration. Please note, that using [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) makes this task significantly easier.
+The toolbar offers a flexible arrangement, achieved through configuration. Please note, that using [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) makes this task significantly easier.
 
 The following example may give you a general idea:
 
@@ -340,7 +340,7 @@ To access the block toolbar, you need to click the button with braille pattern d
 
 The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator} is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
-The block toolbar complements the <!-- update to builder preset when ready-->[balloon editor type](https://ckeditor.com/ckeditor-5/builder?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
+The block toolbar complements the <!-- update to builder preset when ready-->[balloon editor type](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
 
 See the <!-- update to builder preset when ready-->{@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 
