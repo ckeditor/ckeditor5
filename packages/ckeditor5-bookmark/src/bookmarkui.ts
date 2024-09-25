@@ -7,7 +7,7 @@
  * @module bookmark/bookmarkui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -31,6 +31,8 @@ import BookmarkFormView, { type BookmarkFormValidatorCallback } from './ui/bookm
 import BookmarkActionsView from './ui/bookmarkactionsview.js';
 import type UpdateBookmarkCommand from './updatebookmarkcommand.js';
 import type InsertBookmarkCommand from './insertbookmarkcommand.js';
+
+import BookmarkEditing from './bookmarkediting.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
 
@@ -62,7 +64,7 @@ export default class BookmarkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon ] as const;
+		return [ BookmarkEditing, ContextualBalloon ] as const;
 	}
 
 	/**
@@ -182,10 +184,9 @@ export default class BookmarkUI extends Plugin {
 		const locale = editor.locale;
 		const insertBookmarkCommand: InsertBookmarkCommand = editor.commands.get( 'insertBookmark' )!;
 		const updateBookmarkCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
-		const validators: Array<BookmarkFormValidatorCallback> = [];
 		const commands = [ insertBookmarkCommand, updateBookmarkCommand ];
 
-		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, validators );
+		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, getFormValidators( editor ) );
 
 		formView.idInputView.fieldView.bind( 'value' ).to( updateBookmarkCommand, 'value' );
 
@@ -206,7 +207,7 @@ export default class BookmarkUI extends Plugin {
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			if ( formView.isValid() ) {
-				const { value } = formView.idInputView.fieldView.element!;
+				const value = formView.id!;
 
 				if ( this._getSelectedBookmarkElement() ) {
 					editor.execute( 'updateBookmark', { bookmarkId: value } );
@@ -216,6 +217,11 @@ export default class BookmarkUI extends Plugin {
 
 				this._closeFormView();
 			}
+		} );
+
+		// Update balloon position when form error changes.
+		this.listenTo( formView.idInputView, 'change:errorText', () => {
+			editor.ui.update();
 		} );
 
 		// Close the panel on esc key press when the **form has focus**.
@@ -685,4 +691,38 @@ export default class BookmarkUI extends Plugin {
 			} );
 		}
 	}
+}
+
+/**
+ * Returns bookmark form validation callbacks.
+ */
+function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallback> {
+	const { t } = editor;
+	const bookmarkEditing = editor.plugins.get( BookmarkEditing );
+
+	return [
+		form => {
+			if ( !form.id ) {
+				return t( 'Bookmark must not be empty.' );
+			}
+		},
+		form => {
+			if ( form.id && /\s/.test( form.id ) ) {
+				return t( 'Bookmark name cannot contain space characters.' );
+			}
+		},
+		form => {
+			const selectedElement = editor.model.document.selection.getSelectedElement();
+			const existingBookmarkForId = bookmarkEditing.getElementForBookmarkId( form.id! );
+
+			// Accept change of bookmark ID if no real change is happening (edit -> submit, without changes).
+			if ( selectedElement === existingBookmarkForId ) {
+				return;
+			}
+
+			if ( existingBookmarkForId ) {
+				return t( 'Bookmark name already exists.' );
+			}
+		}
+	];
 }

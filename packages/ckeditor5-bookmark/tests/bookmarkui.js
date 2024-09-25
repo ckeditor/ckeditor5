@@ -15,15 +15,15 @@ import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
-import BookmarkFormView from '../src/ui/bookmarkformview.js';
-import BookmarkActionsView from '../src/ui/bookmarkactionsview.js';
-import BookmarkEditing from '../src/bookmarkediting.js';
 
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
+import BookmarkFormView from '../src/ui/bookmarkformview.js';
+import BookmarkActionsView from '../src/ui/bookmarkactionsview.js';
+import BookmarkEditing from '../src/bookmarkediting.js';
 import BookmarkUI from '../src/bookmarkui.js';
 
 import bookmarkIcon from '../theme/icons/bookmark.svg';
@@ -53,6 +53,10 @@ describe( 'BookmarkUI', () => {
 		element.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have proper "requires" value', () => {
+		expect( BookmarkUI.requires ).to.deep.equal( [ BookmarkEditing, ContextualBalloon ] );
 	} );
 
 	it( 'should be correctly named', () => {
@@ -393,11 +397,101 @@ describe( 'BookmarkUI', () => {
 
 			bookmarkUIFeature._showUI();
 
-			formView.idInputView.fieldView.value = 'id 1';
+			formView.idInputView.fieldView.value = 'id_1';
 
 			expect( updateSpy ).not.to.be.called;
 			formView.fire( 'submit' );
 			expect( updateSpy ).to.be.calledOnce;
+		} );
+
+		describe( 'form status', () => {
+			it( 'should update ui on error due to change ballon position', () => {
+				const updateSpy = sinon.spy( editor.ui, 'update' );
+
+				bookmarkUIFeature._createViews();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+				bookmarkUIFeature._showUI();
+
+				formView.idInputView.fieldView.value = 'name with space';
+
+				expect( updateSpy ).not.to.be.called;
+				formView.fire( 'submit' );
+				expect( updateSpy ).to.be.calledOnce;
+			} );
+
+			it( 'should show error form status if passed bookmark name is empty', () => {
+				bookmarkUIFeature._createViews();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
+				bookmarkUIFeature._showUI();
+
+				formView.idInputView.fieldView.value = '';
+
+				formView.fire( 'submit' );
+
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark must not be empty.' );
+			} );
+
+			it( 'should show error form status if passed bookmark name containing spaces', () => {
+				bookmarkUIFeature._createViews();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+				bookmarkUIFeature._showUI();
+
+				formView.idInputView.fieldView.value = 'name with space';
+
+				formView.fire( 'submit' );
+
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
+			} );
+
+			it( 'should show error form status if passed bookmark name already exists', () => {
+				bookmarkUIFeature._createViews();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
+				bookmarkUIFeature._showUI();
+
+				formView.idInputView.fieldView.value = 'foo';
+
+				formView.fire( 'submit' );
+
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name already exists.' );
+			} );
+
+			it( 'should reset form status on show', () => {
+				bookmarkUIFeature._createViews();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph>[]</paragraph>' );
+				bookmarkUIFeature._showUI();
+
+				formView.idInputView.fieldView.value = 'name with space';
+
+				formView.fire( 'submit' );
+
+				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
+
+				bookmarkUIFeature._hideUI();
+				bookmarkUIFeature._showUI();
+				expect( formView.idInputView.errorText ).to.be.null;
+			} );
 		} );
 
 		describe( 'response to ui#update', () => {

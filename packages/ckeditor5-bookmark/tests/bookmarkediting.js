@@ -17,9 +17,11 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
+import { Element } from '@ckeditor/ckeditor5-engine';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
@@ -36,7 +38,7 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Enter, Bold, Image, Heading, Paragraph, Undo, Link ]
+			plugins: [ BookmarkEditing, Enter, Bold, Image, Heading, Paragraph, Undo, Link, SelectAll ]
 		};
 
 		editor = await createEditor( element, config );
@@ -545,6 +547,186 @@ describe( 'BookmarkEditing', () => {
 					'<paragraph><$text htmlA="{"attributes":{"id":"foo"}}">foobar</$text></paragraph>'
 				);
 			} );
+		} );
+	} );
+
+	describe( '_bookmarkElements', () => {
+		it( 'should properly add bookmark to _bookmarkElements map', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData( '<p><a id="foo"></a></p>' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
+		} );
+
+		it( 'should properly add all bookmarks to _bookmarkElements map', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'text before<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="baz"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="xyz"></a>text after' +
+				'</p>' +
+				'<p>' +
+					'<a id="bookmark_01"></a> space after bookmark' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="another_bookmark_name"></a> space after bookmark' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 6 );
+		} );
+
+		it( 'should properly add all bookmarks to _bookmarkElements map even with duplicated ids', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="foo"></a>duplicate' +
+				'</p>' +
+				'<p>' +
+					'<a id="foo"></a>another duplicate' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 5 );
+		} );
+
+		it( 'should properly remove all bookmarks from _bookmarkElements map after removed all content', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'text before<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="baz"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="xyz"></a>text after' +
+				'</p>' +
+				'<p>' +
+					'<a id="bookmark_01"></a> space after bookmark' +
+				'</p>' +
+				'<p>' +
+					'space before bookmark <a id="another_bookmark_name"></a> space after bookmark' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 6 );
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'delete' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph></paragraph>'
+			);
+		} );
+
+		it( 'should properly remove all bookmarks from _bookmarkElements map which were in a removed paragraph', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'foo<a id="bar"></a><a id="baz"></a><a id="xyz"></a>bar' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 4 );
+
+			const root = editor.model.document.getRoot();
+
+			// Move start selection at the end of first paragraph and end of the selection to the end of 2nd paragraph.
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( root.getChild( 0 ), 1 ),
+					writer.createPositionAt( root.getChild( 1 ), 9 )
+				), true );
+			} );
+
+			// Remove everything what is selected.
+			editor.execute( 'delete' );
+
+			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'getElementForBookmarkId', () => {
+		it( 'returns a bookmark element if exists with passed id', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ) ).is.instanceof( Element );
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ).getAttribute( 'bookmarkId' ) ).is.equal( 'foo' );
+		} );
+
+		it( 'returns null when there is no bookmark with passed id', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).is.null;
 		} );
 	} );
 } );

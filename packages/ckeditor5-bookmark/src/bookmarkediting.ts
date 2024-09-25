@@ -10,7 +10,14 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
-import type { ViewUIElement, DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+
+import type {
+	ViewUIElement,
+	DowncastWriter,
+	ViewElement,
+	Element,
+	DocumentChangeEvent
+} from 'ckeditor5/src/engine.js';
 
 import InsertBookmarkCommand from './insertbookmarkcommand.js';
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
@@ -23,6 +30,11 @@ import bookmarkIcon from '../theme/icons/bookmark_inline.svg';
  * The bookmark editing plugin.
  */
 export default class BookmarkEditing extends Plugin {
+	/**
+	 * A collection of bookmarks elements in the document.
+	 */
+	private _bookmarkElements = new Map<Element, string>();
+
 	/**
 	 * @inheritDoc
 	 */
@@ -41,6 +53,23 @@ export default class BookmarkEditing extends Plugin {
 
 		editor.commands.add( 'insertBookmark', new InsertBookmarkCommand( editor ) );
 		editor.commands.add( 'updateBookmark', new UpdateBookmarkCommand( editor ) );
+
+		this.listenTo<DocumentChangeEvent>( editor.model.document, 'change:data', () => {
+			this._trackBookmarkElements();
+		} );
+	}
+
+	/**
+	 * Returns the model element for the given bookmark ID if it exists.
+	 */
+	public getElementForBookmarkId( bookmarkId: string ): Element | null {
+		for ( const [ element, id ] of this._bookmarkElements ) {
+			if ( id == bookmarkId ) {
+				return element;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -91,11 +120,13 @@ export default class BookmarkEditing extends Plugin {
 				attributes: [ 'bookmarkId' ]
 			},
 			view: ( modelElement, { writer } ) => {
-				const id = modelElement.getAttribute( 'bookmarkId' );
+				const id = modelElement.getAttribute( 'bookmarkId' ) as string;
 				const containerElement = writer.createContainerElement( 'a', {
 					id,
 					class: 'ck-bookmark'
 				}, [ this._createBookmarkUIElement( writer ) ] );
+
+				this._bookmarkElements.set( modelElement, id );
 
 				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
 
@@ -134,6 +165,17 @@ export default class BookmarkEditing extends Plugin {
 			domElement.appendChild( icon.element! );
 
 			return domElement;
+		} );
+	}
+
+	/**
+	 * Tracking the added or removed bookmark elements.
+	 */
+	private _trackBookmarkElements(): void {
+		this._bookmarkElements.forEach( ( id, element ) => {
+			if ( element.root.rootName === '$graveyard' ) {
+				this._bookmarkElements.delete( element );
+			}
 		} );
 	}
 }
