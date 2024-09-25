@@ -22,24 +22,39 @@ import Bookmark from '../../src/bookmark.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
+const config = {
+	plugins: [
+		Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
+		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
+	],
+	toolbar: [
+		'bookmark', '|',
+		'undo', 'redo', '|',
+		'bold', 'italic', '|',
+		'insertImage', 'insertTable', '|',
+		'heading', 'link'
+	],
+	cloudServices: CS_CONFIG,
+	menuBar: {
+		isVisible: true
+	}
+};
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
-			EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
-		],
-		toolbar: [
-			'bookmark', '|',
-			'undo', 'redo', '|',
-			'bold', 'italic', '|',
-			'insertImage', 'insertTable', '|',
-			'heading', 'link'
-		],
-		cloudServices: CS_CONFIG,
-		menuBar: {
-			isVisible: true
-		}
+	.create( document.querySelector( '#editor' ), config )
+	.then( editor => {
+		window.editor = editor;
 	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-rtl' ),
+		{
+			...config,
+			language: 'ar'
+		} )
 	.then( editor => {
 		window.editor = editor;
 	} )
