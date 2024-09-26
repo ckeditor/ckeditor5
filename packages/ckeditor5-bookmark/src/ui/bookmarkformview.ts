@@ -54,7 +54,7 @@ export default class BookmarkFormView extends View {
 	/**
 	 * The Insert button view.
 	 */
-	public insertButtonView: ButtonView;
+	public buttonView: ButtonView;
 
 	/**
 	 * A collection of form child views in the form.
@@ -93,8 +93,8 @@ export default class BookmarkFormView extends View {
 
 		this.idInputView = this._createIdInput();
 
-		this.insertButtonView = this._createButton( t( 'Insert' ), 'ck-button-action' );
-		this.insertButtonView.type = 'submit';
+		this.buttonView = this._createButton( t( 'Insert' ), 'ck-button-action' );
+		this.buttonView.type = 'submit';
 
 		this.children = this._createViewChildren();
 
@@ -139,7 +139,7 @@ export default class BookmarkFormView extends View {
 
 		const childViews = [
 			this.idInputView,
-			this.insertButtonView
+			this.buttonView
 		];
 
 		childViews.forEach( v => {
@@ -225,7 +225,7 @@ export default class BookmarkFormView extends View {
 		const classList = [ 'ck', 'ck-bookmark-form', 'ck-responsive-form' ];
 
 		children.add( this.idInputView );
-		children.add( this.insertButtonView );
+		children.add( this.buttonView );
 
 		view.setTemplate( {
 			tag: 'div',
@@ -263,7 +263,7 @@ export default class BookmarkFormView extends View {
 	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns The button view instance.
 	 */
-	private _createButton( label: string, className: string, eventName?: string ): ButtonView {
+	private _createButton( label: string, className: string ): ButtonView {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
@@ -276,10 +276,6 @@ export default class BookmarkFormView extends View {
 				class: className
 			}
 		} );
-
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
 
 		return button;
 	}
