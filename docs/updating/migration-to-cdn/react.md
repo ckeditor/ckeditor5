@@ -121,7 +121,7 @@ function App() {
 					SlashCommand,
 					Undo
 				],
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				initialData: '<p>Hello from CKEditor 5 in React!</p>',
 			} }
 		/>
@@ -298,7 +298,7 @@ function App() {
 			<CKEditor
 				editor={ ClassicEditor }
 				config={ {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Paragraph ],
 					toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				} }
@@ -312,7 +312,7 @@ function App() {
 			<CKEditor
 				editor={ ClassicEditor }
 				config={ {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Paragraph ],
 					toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				} }

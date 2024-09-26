@@ -73,7 +73,7 @@ const { AIAdapter, /* ... other imports */ } = window.CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
 	.create( document.querySelector('#editor'), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		// ... other configuration
 	} )
 	.catch( error => {
