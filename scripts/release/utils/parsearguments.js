@@ -38,7 +38,7 @@ module.exports = function parseArguments( cliArguments ) {
 		default: {
 			nightly: false,
 			'nightly-alpha': false,
-			concurrency: require( 'os' ).cpus().length / 2,
+			concurrency: Math.floor( require( 'os' ).cpus().length / 2 ) || 1,
 			'compile-only': false,
 			packages: null,
 			branch: 'release',
