@@ -97,6 +97,10 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 ## Quick start
 
+<info-box>
+	To use our CDN services, you need [a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash

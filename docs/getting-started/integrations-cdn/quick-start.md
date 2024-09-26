@@ -16,6 +16,10 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web applic
 
 ## Installing CKEditor&nbsp;5 from CDN
 
+<info-box>
+	To use our CDN services, you need [a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 CDN is an alternative method of running CKEditor&nbsp;5. You can start using it in just a few steps and with a few tags.
 
 Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
