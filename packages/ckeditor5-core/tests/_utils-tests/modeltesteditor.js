@@ -18,12 +18,15 @@ describe( 'ModelTestEditor', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
-		it( 'creates an instance of editor', () => {
+		it( 'creates an instance of editor', async () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
 		it( 'should disable editing pipeline', () => {
@@ -38,10 +41,13 @@ describe( 'ModelTestEditor', () => {
 			} );
 		} );
 
-		it( 'creates main root element', () => {
+		it( 'creates main root element', async () => {
 			const editor = new ModelTestEditor();
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 
@@ -55,6 +61,10 @@ describe( 'ModelTestEditor', () => {
 
 					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should set data of the first root', () => {
@@ -76,6 +86,10 @@ describe( 'ModelTestEditor', () => {
 
 					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should set data of the first root', () => {
