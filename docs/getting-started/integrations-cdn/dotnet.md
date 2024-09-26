@@ -84,7 +84,7 @@ const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
-        licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+        licenseKey: '<YOUR_LICENSE_KEY>',
         plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
         toolbar: [
             'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -139,7 +139,7 @@ Now, we need to put our script in the previous template. We put it under the `<d
 
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 				toolbar: [
 					'undo', 'redo', '|', 'bold', 'italic', '|',

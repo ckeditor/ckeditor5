@@ -146,7 +146,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
@@ -585,7 +585,7 @@ export class AppComponent {
 
 		this.Editor = DecoupledEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
@@ -669,7 +669,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Paragraph ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};

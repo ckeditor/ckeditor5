@@ -48,7 +48,7 @@ const {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 		toolbar: [
 			'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -97,7 +97,7 @@ A simple HTML page with the CKEditor may look like the one below.
 
             ClassicEditor
                 .create( document.querySelector( '#editor' ), {
-                    licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+                    licenseKey: '<YOUR_LICENSE_KEY>',
                     plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
                     toolbar: [
                         'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -263,7 +263,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [
 				'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -316,7 +316,7 @@ Your final page should look similar to the one below.
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',

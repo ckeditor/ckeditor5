@@ -67,7 +67,7 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
@@ -186,7 +186,7 @@ import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 const config = markRaw( {
-    licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+    licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph ],
     toolbar: [ 'undo', 'redo' ]
 } );
@@ -329,7 +329,7 @@ import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	translations: [ coreTranslations, premiumFeaturesTranslations ],
 	// Other configuration options
 } );

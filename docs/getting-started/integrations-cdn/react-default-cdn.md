@@ -66,7 +66,7 @@ const CKEditorDemo = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
@@ -330,7 +330,7 @@ const CKEditorDemo = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				plugins: [ Bold, Essentials, Italic, Paragraph ],
 			} }

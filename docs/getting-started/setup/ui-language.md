@@ -112,7 +112,7 @@ import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [
 			Essentials,
 			Paragraph,

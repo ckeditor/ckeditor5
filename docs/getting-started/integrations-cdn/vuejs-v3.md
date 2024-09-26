@@ -54,7 +54,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 
@@ -200,7 +200,7 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 // Editor loading and configuration is skipped for brevity.
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 </script>
@@ -376,7 +376,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 
