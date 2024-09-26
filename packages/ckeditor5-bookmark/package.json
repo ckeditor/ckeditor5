@@ -38,7 +38,6 @@
     "@ckeditor/ckeditor5-select-all": "43.1.1",
     "@ckeditor/ckeditor5-table": "43.1.1",
     "@ckeditor/ckeditor5-theme-lark": "43.1.1",
-    "@ckeditor/ckeditor5-typing": "43.1.1",
     "@ckeditor/ckeditor5-undo": "43.1.1",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
