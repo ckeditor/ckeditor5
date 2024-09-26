@@ -38,7 +38,7 @@ describe( 'ClassicTestEditor', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'creates an instance of editor', () => {
+		it( 'creates an instance of editor', async () => {
 			const editor = new ClassicTestEditor( editorElement, { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
@@ -47,28 +47,40 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.ui ).to.be.instanceOf( EditorUI );
 			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'creates the instance of the editable (without rendering)', () => {
+		it( 'creates the instance of the editable (without rendering)', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
 			expect( editor.ui.view.editable ).to.be.instanceOf( InlineEditableUIView );
 			expect( editor.ui.view.editable.isRendered ).to.be.false;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'creates the #ui and ui#view (without rendering)', () => {
+		it( 'creates the #ui and ui#view (without rendering)', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
 			expect( editor.ui ).to.be.instanceOf( EditorUI );
 			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 			expect( editor.ui.view.isRendered ).to.be.false;
 			expect( editor.ui.getEditableElement() ).to.be.undefined;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'creates main root element', () => {
+		it( 'creates main root element', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
 		it( 'mixes ElementApiMixin', () => {
@@ -152,15 +164,18 @@ describe( 'ClassicTestEditor', () => {
 		} );
 
 		it( 'sets proper states', () => {
-			const editor = new ClassicTestEditor();
+			const baseEditor = new ClassicTestEditor();
 
-			expect( editor.state ).to.equal( 'initializing' );
+			expect( baseEditor.state ).to.equal( 'initializing' );
 
 			return ClassicTestEditor.create( editorElement ).then( editor => {
 				expect( editor.state ).to.equal( 'ready' );
 
 				return editor.destroy().then( () => {
 					expect( editor.state ).to.equal( 'destroyed' );
+
+					baseEditor.fire( 'ready' );
+					return baseEditor.destroy();
 				} );
 			} );
 		} );

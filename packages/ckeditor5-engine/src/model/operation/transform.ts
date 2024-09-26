@@ -373,6 +373,9 @@ export function transformSets(
 		operationsB.splice( indexB, 1, ...newOpsB );
 	}
 
+	handlePartialMarkerOperations( operationsA );
+	handlePartialMarkerOperations( operationsB );
+
 	if ( options.padWithNoOps ) {
 		// If no-operations padding is enabled, count how many extra `a` and `b` operations were generated.
 		const brokenOperationsACount = operationsA.length - data.originalOperationsACount;
@@ -524,6 +527,9 @@ class ContextFactory {
 					const range = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
 
 					if ( opA.splitPosition.hasSameParentAs( opB.sourcePosition ) && range.containsPosition( opA.splitPosition ) ) {
+						// TODO: Potential bug -- we are saving offset value directly and it is not later updated during OT.
+						// TODO: This may cause a bug it here was an non-undone operation that may have impacted this offset.
+						// TODO: Similar error was with MarkerOperation relations, where full path was saved and never updated.
 						const howMany = range.end.offset - opA.splitPosition.offset;
 						const offset = opA.splitPosition.offset - range.start.offset;
 
@@ -564,22 +570,7 @@ class ContextFactory {
 				return;
 			}
 
-			if ( opB instanceof MoveOperation ) {
-				const movedRange = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
-
-				const affectedLeft = movedRange.containsPosition( markerRange.start ) ||
-					movedRange.start.isEqual( markerRange.start );
-
-				const affectedRight = movedRange.containsPosition( markerRange.end ) ||
-					movedRange.end.isEqual( markerRange.end );
-
-				if ( ( affectedLeft || affectedRight ) && !movedRange.containsRange( markerRange ) ) {
-					this._setRelation( opA, opB, {
-						side: affectedLeft ? 'left' : 'right',
-						path: affectedLeft ? markerRange.start.path.slice() : markerRange.end.path.slice()
-					} );
-				}
-			} else if ( opB instanceof MergeOperation ) {
+			if ( opB instanceof MergeOperation ) {
 				const wasInLeftElement = markerRange.start.isEqual( opB.targetPosition );
 				const wasStartBeforeMergedElement = markerRange.start.isEqual( opB.deletionPosition );
 				const wasEndBeforeMergedElement = markerRange.end.isEqual( opB.deletionPosition );
@@ -745,6 +736,61 @@ function updateBaseVersions( operations: ReadonlyArray<Operation>, baseVersion: 
 function padWithNoOps( operations: Array<Operation>, howMany: number ) {
 	for ( let i = 0; i < howMany; i++ ) {
 		operations.push( new NoOperation( 0 ) );
+	}
+}
+
+/**
+ * Transformed operations set may include marker operations which were broken into multiple marker operations during transformation.
+ * It represents marker range being broken into multiple pieces as the transformation was processed. Each partial marker operation is
+ * a piece of the original marker range.
+ *
+ * These partial marker operations ("marker range pieces") should be "glued" together if, after transformations, the ranges ended up
+ * next to each other.
+ *
+ * If the ranges did not end up next to each other, then partial marker operations should be discarded, as the marker range cannot
+ * be broken into two pieces.
+ *
+ * There is always one "reference" marker operation (the original operation) and there may be some partial marker operations. Partial
+ * marker operations have base version set to `-1`. If the `operations` set includes partial marker operations, then they are always
+ * after the original marker operation.
+ *
+ * See also `MarkerOperation` x `MoveOperation` transformation.
+ * See also https://github.com/ckeditor/ckeditor5/pull/17071.
+ */
+function handlePartialMarkerOperations( operations: Array<Operation> ) {
+	const markerOps: Map<string, { op: MarkerOperation; ranges: Array<Range> }> = new Map();
+
+	for ( let i = 0; i < operations.length; i++ ) {
+		const op = operations[ i ];
+
+		if ( !( op instanceof MarkerOperation ) ) {
+			continue;
+		}
+
+		if ( op.baseVersion !== -1 ) {
+			markerOps.set( op.name, {
+				op,
+				ranges: op.newRange ? [ op.newRange ] : []
+			} );
+		} else {
+			if ( op.newRange ) {
+				// `markerOps.get( op.name )` must exist because original marker operation is always before partial marker operations.
+				// If the original marker operation was changed to `NoOperation`, then the partial marker operations would be changed
+				// to `NoOperation` as well, so this is not a case.
+				markerOps.get( op.name )!.ranges.push( op.newRange );
+			}
+
+			operations.splice( i, 1 );
+			i--;
+		}
+	}
+
+	for ( const { op, ranges } of markerOps.values() ) {
+		if ( ranges.length ) {
+			op.newRange = Range._createFromRanges( ranges );
+		} else {
+			op.newRange = null;
+		}
 	}
 }
 
@@ -1153,32 +1199,52 @@ setTransformation( MarkerOperation, MergeOperation, ( a, b ) => {
 	return [ a ];
 } );
 
-setTransformation( MarkerOperation, MoveOperation, ( a, b, context ) => {
+setTransformation( MarkerOperation, MoveOperation, ( a, b ) => {
+	const result = [ a ];
+
 	if ( a.oldRange ) {
 		a.oldRange = Range._createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
 	}
 
 	if ( a.newRange ) {
-		if ( context.abRelation ) {
-			const aNewRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
+		// In many simple cases the marker range will be kept integral after the transformation. For example, if some nodes
+		// were inserted before the range, or into the range, then the marker range is not broken into two.
+		//
+		// However, if some nodes are taken out of the range and moved somewhere else, or are moved into the range, then the marker
+		// range is "broken" into two or three pieces, and these pieces must be transformed and updated separately.
+		//
+		// When the marker range is transformed by move operation, as a result we get an array with one (simple case) or multiple
+		// ("broken range" case) ranges.
+		const ranges = a.newRange._getTransformedByMoveOperation( b );
 
-			if ( context.abRelation.side == 'left' && b.targetPosition.isEqual( a.newRange.start ) ) {
-				( a.newRange as any ).end = aNewRange.end;
-				( a.newRange.start as any ).path = context.abRelation.path;
+		a.newRange = ranges[ 0 ];
 
-				return [ a ];
-			} else if ( context.abRelation.side == 'right' && b.targetPosition.isEqual( a.newRange.end ) ) {
-				( a.newRange as any ).start = aNewRange.start;
-				( a.newRange.end as any ).path = context.abRelation.path;
+		// If there are multiple ranges, we will create separate marker operations for each piece of the original marker range.
+		// Since they will be marker operations, they will be processed through the transformation process.
+		//
+		// However, we cannot create multiple ranges for the same marker (for the same marker name). A marker has only one range.
+		// So, we cannot really have multiple marker operations for the same marker. We will keep the track of the separate marker
+		// operations to see, if after all transformations, the marker pieces are next to each other or not. If so, we will glue
+		// them together to the original marker operation (`a`). If not, we will discard them. These extra operations will never
+		// be executed, as they will only exist temporarily during the transformation process.
+		//
+		// We will call these additional marker operations "partial marker operations" and we will mark them with negative base version.
+		//
+		// See also `handlePartialMarkerOperations()`.
+		// See also https://github.com/ckeditor/ckeditor5/pull/17071.
+		//
+		for ( let i = 1; i < ranges.length; i++ ) {
+			const op = a.clone();
 
-				return [ a ];
-			}
+			op.oldRange = null;
+			op.newRange = ranges[ i ];
+			op.baseVersion = -1;
+
+			result.push( op );
 		}
-
-		a.newRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
 	}
 
-	return [ a ];
+	return result;
 } );
 
 setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
@@ -1194,6 +1260,8 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 				( a.newRange as any ).start = Position._createAt( b.insertionPosition );
 			} else if ( a.newRange.start.isEqual( b.splitPosition ) && !context.abRelation.wasInLeftElement ) {
 				( a.newRange as any ).start = Position._createAt( b.moveTargetPosition );
+			} else {
+				( a.newRange as any ).start = aNewRange.start;
 			}
 
 			if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasInRightElement ) {
@@ -1313,6 +1381,7 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 	}
 
 	// The default case.
+	// TODO: Possibly, there's a missing case for same `targetPosition` but different `sourcePosition`.
 	//
 	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
 		a.howMany += b.howMany;
@@ -1340,11 +1409,11 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	// was to have it all deleted, together with its children. From user experience point of view, moving back the
 	// removed nodes might be unexpected. This means that in this scenario we will block the merging.
 	//
-	// The exception of this rule would be if the remove operation was later undone.
+	// The exception to this rule would be if the remove operation was later undone.
 	//
 	const removedRange = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( b.type == 'remove' && !context.bWasUndone && !context.forceWeakRemove ) {
+	if ( b.type == 'remove' && !context.bWasUndone ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return [ new NoOperation( 0 ) ];
 		}
@@ -1455,60 +1524,67 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 	// Case 1:
 	//
 	// Merge operation moves nodes to the place where split happens.
-	// This is a classic situation when there are two paragraphs, and there is a split (enter) after the first
+	//
+	// This is a classic situation when there are two paragraphs, and there is a split (enter) at the end of the first
 	// paragraph and there is a merge (delete) at the beginning of the second paragraph:
 	//
 	// <p>Foo{}</p><p>[]Bar</p>.
 	//
-	// Split is after `Foo`, while merge is from `Bar` to the end of `Foo`.
+	// User A presses enter after `Foo`, while User B presses backspace before `Bar`. It is intuitive that after both operations, the
+	// editor state should stay the same.
 	//
 	// State after split:
-	// <p>Foo</p><p></p><p>Bar</p>
+	// <p>Foo</p><p></p><p>[]Bar</p>
 	//
-	// Now, `Bar` should be merged to the new paragraph:
+	// When this happens, `Bar` should be merged to the newly created paragraph, to maintain the editor state:
 	// <p>Foo</p><p>Bar</p>
 	//
-	// Instead of merging it to the original paragraph:
+	// Another option is to merge into the original paragraph `Foo`, according to the `targetPosition`. This results in an incorrect state:
 	// <p>FooBar</p><p></p>
 	//
-	// This means that `targetPosition` needs to be transformed. This is the default case though.
-	// For example, if the split would be after `F`, `targetPosition` should also be transformed.
+	// Also, consider an example where User A also writes something in the new paragraph:
+	// <p>Foo</p><p>Xyz</p><p>[]Bar</p>
 	//
-	// There are three exceptions, though, when we want to keep `targetPosition` as it was.
+	// In this case it is clear that merge should happen into `[ 1, 3 ]` not into `[ 0, 3 ]`. It first has to be transformed to `[ 1, 0 ]`,
+	// and then transformed be insertion into `[ 1, 3 ]`.
 	//
-	// First exception is when the merge target position is inside an element (not at the end, as usual). This
-	// happens when the merge operation earlier was transformed by "the same" merge operation. If merge operation
-	// targets inside the element we want to keep the original target position (and not transform it) because
-	// we have additional context telling us that we want to merge to the original element. We can check if the
-	// merge operation points inside element by checking what is `SplitOperation#howMany`. Since merge target position
-	// is same as split position, if `howMany` is non-zero, it means that the merge target position is inside an element.
+	// So, usually we want to move `targetPosition` to the new paragraph when it is same as split position. This is how it is handled
+	// in the default transformation (`_getTransformedBySplitOperation()`). We don't need a special case for this.
 	//
-	// Second exception is when the element to merge is in the graveyard and split operation uses it. In that case
+	// However, there are two exceptions, when we **do not** want to transform `targetPosition`, and we need a special case then.
+	//
+	// These exceptions happen only if undo is involved. During OT, above presented case (`<p>Foo{}</p><p>[]Bar</p>`) is the only way
+	// how `SplitOperation#splitPosition` and `MergeOperation#targetPosition` can be the same.
+	//
+	// First exception is when the element to merge is in the graveyard and split operation uses it. In that case
 	// if target position would be transformed, the merge operation would target at the source position:
 	//
-	// root: <p>Foo</p>				graveyard: <p></p>
+	// root: <p>Foo[]</p>				graveyard: <p></p>
 	//
 	// SplitOperation: root [ 0, 3 ] using graveyard [ 0 ] (howMany = 0)
 	// MergeOperation: graveyard [ 0, 0 ] -> root [ 0, 3 ] (howMany = 0)
 	//
-	// Since split operation moves the graveyard node back to the root, the merge operation source position changes.
-	// We would like to merge from the empty <p> to the "Foo" <p>:
+	// Since split operation moves the graveyard element back to the root (to path `[ 1 ]`), the merge operation `sourcePosition` changes.
+	// After split we have: `<p>Foo</p><p></p>`, so `sourcePosition` is `[ 1, 0 ]`. But if `targetPosition` is transformed, then it
+	// also becomes `[ 1, 0 ]`. In this case, we want to keep the `targetPosition` as it was.
 	//
-	// root: <p>Foo</p><p></p>			graveyard:
+	// Second exception is connected strictly with undo relations. If this `MergeOperation` was earlier transformed by
+	// `MergeOperation` and we stored an information that earlier the target position was not affected, then here, when transforming by
+	// `SplitOperation` we are not going to change it as well.
 	//
-	// MergeOperation#sourcePosition = root [ 1, 0 ]
+	// For these two cases we will only transform `sourcePosition` and return early.
 	//
-	// If `targetPosition` is transformed, it would become root [ 1, 0 ] as well. It has to be kept as it was.
-	//
-	// Third exception is connected with relations. If this happens during undo and we have explicit information
-	// that target position has not been affected by the operation which is undone by this split then this split should
-	// not move the target position either.
+	// Note, that earlier there was also third special case here. `targetPosition` was not transformed, if it pointed into the middle of
+	// target element, not into its end (as usual). This can also happen only with undo involved. However, it wasn't always a correct
+	// solution, as in some cases we actually wanted to transform `targetPosition`. Also, this case usually happens together with the second
+	// case described above. There is only one scenario that we have in our unit tests, where this third case happened without second case.
+	// However, this scenario went fine no matter if we transformed `targetPosition` or not. That's because this happened in the middle
+	// of transformation process and the operation was correctly transformed later on.
 	//
 	if ( a.targetPosition.isEqual( b.splitPosition ) ) {
-		const mergeInside = b.howMany != 0;
 		const mergeSplittingElement = b.graveyardPosition && a.deletionPosition.isEqual( b.graveyardPosition );
 
-		if ( mergeInside || mergeSplittingElement || context.abRelation == 'mergeTargetNotMoved' ) {
+		if ( mergeSplittingElement || context.abRelation == 'mergeTargetNotMoved' ) {
 			a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
 
 			return [ a ];
@@ -1899,14 +1975,17 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				let gyMoveSource = b.graveyardPosition.clone();
 				let splitNodesMoveSource = b.targetPosition._getTransformedByMergeOperation( b );
 
-				if ( a.howMany > 1 ) {
-					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, a.targetPosition, 0 ) );
+				// `a.targetPosition` points to graveyard, so it was probably affected by `b` (which moved merged element to the graveyard).
+				const aTarget = a.targetPosition.getTransformedByOperation( b );
 
-					gyMoveSource = gyMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
-					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
+				if ( a.howMany > 1 ) {
+					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, aTarget, 0 ) );
+
+					gyMoveSource = gyMoveSource._getTransformedByMove( a.sourcePosition, aTarget, a.howMany - 1 );
+					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, aTarget, a.howMany - 1 );
 				}
 
-				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, a.targetPosition );
+				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, aTarget );
 				const gyMove = new MoveOperation( gyMoveSource, 1, gyMoveTarget, 0 );
 
 				const splitNodesMoveTargetPath = gyMove.getMovedRangeStart().path.slice();

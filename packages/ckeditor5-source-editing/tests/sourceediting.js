@@ -828,7 +828,7 @@ describe( 'SourceEditing', () => {
 
 		editorElement.remove();
 
-		editor.destroy();
+		await editor.destroy();
 	} );
 } );
 
