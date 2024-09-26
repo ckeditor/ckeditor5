@@ -21,8 +21,8 @@ Ensure that your testing suite uses real web browser environments for testing. I
 If you have any CKEditor&nbsp;5 imports in your test files, remove them. For example, remove lines like:
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 ```
 
 ### Step 2: Update your test files to use CDN

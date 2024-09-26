@@ -98,8 +98,8 @@ npm install @ckeditor/ckeditor5-integrations-common
 If you have any CKEditor&nbsp;5 imports in your JavaScript files, remove them. For example, remove lines like:
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 ```
 
 Next, update your JavaScript file to use the `loadCKEditorCloud` function from the `@ckeditor/ckeditor5-integrations-common` package. Here is an example of migrating the CKEditor&nbsp;5 initialization code:

@@ -207,8 +207,8 @@ The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Wi
 If you have any CKEditor&nbsp;5 imports in your test files, remove them. For example, remove lines like:
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 ```
 
 #### Step 2: Use `useCKEditorCloud` hook to load CKEditor&nbsp;5 Context from CDN
