@@ -522,8 +522,6 @@ export default class BookmarkUI extends Plugin {
 		let prevSelectedBookmark = this._getSelectedBookmarkElement();
 		let prevSelectionParent = getSelectionParent();
 
-		// The form button label should change based on whether a bookmark element is selected.
-		// If a bookmark is selected, the label should be "Update" otherwise is "Insert".
 		this._updateFormButtonLabel();
 
 		const update = () => {
@@ -555,7 +553,6 @@ export default class BookmarkUI extends Plugin {
 				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
 
-			// Make sure the form button label is up to date.
 			this._updateFormButtonLabel();
 
 			prevSelectedBookmark = selectedBookmark;
