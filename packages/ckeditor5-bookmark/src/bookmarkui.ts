@@ -340,7 +340,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * If bookmark element is selected form button label is set on 'Update' otherwise its 'Insert'.
+	 * When bookmark element is selected, form button label should be set on 'Update' otherwise it is 'Insert'.
 	 */
 	private _updateFormButtonLabel() {
 		const locale = this.editor.locale;
