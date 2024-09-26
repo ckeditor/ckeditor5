@@ -5,7 +5,6 @@
 
 /**
  * @module bookmark/bookmarkconfig
- * @publicApi
  */
 
 /**
