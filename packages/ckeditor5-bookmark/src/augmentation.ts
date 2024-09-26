@@ -8,10 +8,20 @@ import type {
 	BookmarkEditing,
 	BookmarkUI,
 	InsertBookmarkCommand,
-	UpdateBookmarkCommand
+	UpdateBookmarkCommand,
+	BookmarkConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:bookmark/bookmark~Bookmark} feature.
+		 *
+		 * Read more in {@link module:bookmark/bookmarkconfig~BookmarkConfig}.
+		 */
+		bookmark?: BookmarkConfig;
+	}
 	interface PluginsMap {
 		[ Bookmark.pluginName ]: Bookmark;
 		[ BookmarkEditing.pluginName ]: BookmarkEditing;
