@@ -375,9 +375,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			if ( !licenseKey ) {
 				/**
 				 * The `licenseKey` is missing in the editor configuration. If you use premium features,
-				 * please provide your license key. If you do not have a key yet, please
-				 * [contact us](https://ckeditor.com/contact/) or
-	 			 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
+				 * please provide your license key. If you do not have a key yet, please contact us at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/) or order a trial at
+				 * [https://orders.ckeditor.com/trial/premium-features](https://orders.ckeditor.com/trial/premium-features).
 				 *
 				 * If you do not use premium features, add the `'GPL'` license key instead.
 				 *
@@ -898,7 +898,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		setTimeout( () => {
 			if ( reason == 'invalid' ) {
 				/**
-				 * Invalid license key. Please contact our customer support at https://ckeditor.com/contact/.
+				 * Invalid license key. Please contact our customer support at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error invalid-license-key
 				 */
@@ -907,7 +908,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'expired' ) {
 				/**
-				 * Your license key has expired. Please renew your license at https://ckeditor.com/TODO/.
+				 * Your license key has expired. Please renew your license at
+				 * [https://portal.ckeditor.com/](https://portal.ckeditor.com/).
 				 *
 				 * @error license-key-expired
 				 */
@@ -916,7 +918,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'domainLimit' ) {
 				/**
-				 * The hostname is not allowed by your license. Please update your license configuration at https://ckeditor.com/TODO/.
+				 * The hostname is not allowed by your license. Please update your license configuration at
+				 * [https://portal.ckeditor.com/](https://portal.ckeditor.com/).
 				 *
 				 * @error license-key-domain-limit
 				 */
@@ -927,7 +930,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * The plugin is not allowed by your license.
 				 *
-				 * Please check your license or contact support at https://ckeditor.com/contact/ for more information.
+				 * Please check your license or contact support at [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
+				 * for more information.
 				 *
 				 * @error license-key-feature-not-allowed
 				 * @param {String} pluginName
@@ -939,7 +943,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have exhausted the evaluation usage limit. Restart the editor.
 				 *
-				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 * Please contact our customer support to get full access at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-evaluation-limit
 				 */
@@ -950,7 +954,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have exhausted the trial usage limit. Restart the editor.
 				 *
-				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 * Please contact our customer support to get full access at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-trial-limit
 				 */
@@ -961,7 +965,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have reached the development usage limit. Restart the editor.
 				 *
-				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 * Please contact our customer support to get full access at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-development-limit
 				 */
@@ -972,7 +976,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * The editor usage limit has been reached.
 				 *
-				 * Visit Contact support to extend the limit at https://ckeditor.com/contact/.
+				 * Visit Contact support to extend the limit at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-usage-limit
 				 */
@@ -983,10 +987,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * Your license doesn't allow using the editor in this distribution channel.
 				 *
-				 * If you use the `'GPL'` license key, you can use the editor installed from npm. If you use
-				 * a commercial license key, you need to use the editor from CDN or — if your plan allows — from npm.
+				 * If you use the `'GPL'` license key, you can use the editor installed from npm (self-hosted). If you have
+				 * a commercial license, you can to use the editor from CDN or — if your plan allows — from npm.
 				 *
-				 * Please check your installation or contact support at https://ckeditor.com/contact/ for more information.
+				 * Please check your installation or contact support at [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
+				 * for more information.
 				 *
 				 * @error license-key-distribution-channel
 				 */
