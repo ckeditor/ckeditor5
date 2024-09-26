@@ -10,7 +10,7 @@
  */
 
 import DomEmitterMixin from './dom/emittermixin.js';
-import ObservableMixin from './observablemixin.js';
+import ObservableMixin, { type DecoratedMethodEvent } from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
 import { type View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'lodash-es';
@@ -73,6 +73,9 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 
 		this.set( 'isFocused', false );
 		this.set( 'focusedElement', null );
+
+		this.decorate( 'add' );
+		this.decorate( 'remove' );
 	}
 
 	/**
@@ -162,13 +165,10 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Adds a DOM element to the focus tracker and starts listening to the `focus` and `blur` events on it.
 	 */
 	private _addElement( element: Element ): void {
+		console.log( `${ this._label || 'unknown' }": adding DOM element`, element );
+
 		if ( this._elements.has( element ) ) {
-			/**
-			 * This element is already tracked by {@link module:utils/focustracker~FocusTracker}.
-			 *
-			 * @error focustracker-add-element-already-exist
-			 */
-			throw new CKEditorError( 'focustracker-add-element-already-exist', this );
+			return;
 		}
 
 		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );
@@ -194,12 +194,26 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Adds an external `FocusTracker` instance to this focus tracker and makes it contribute to this focus tracker's state.
 	 */
 	private _addFocusTracker( focusTracker: FocusTracker ): void {
-		this.listenTo( focusTracker, 'change:isFocused', () => {
-			if ( focusTracker.isFocused ) {
-				this._focus( focusTracker.focusedElement! );
-			} else {
-				this._blur();
-			}
+		console.log( `"${ this._label || 'unknown' }": adds another FT "${ focusTracker._label || 'unknown' }"` );
+
+		if ( this._externalFocusTrackers.has( focusTracker ) ) {
+			return;
+		}
+
+		for ( const element of focusTracker.elements ) {
+			this._addElement( element );
+		}
+
+		this.listenTo<DecoratedMethodEvent<FocusTracker, 'add'>>( focusTracker, 'add', ( evt, [ elementOrView ] ) => {
+			console.group( `"${ this._label || 'unknown' }": react to "${ focusTracker._label || 'unknown' }"#add`, elementOrView );
+			this.add( elementOrView );
+			console.groupEnd();
+		} );
+
+		this.listenTo<DecoratedMethodEvent<FocusTracker, 'remove'>>( focusTracker, 'remove', ( evt, [ elementOrView ] ) => {
+			console.group( `"${ this._label || 'unknown' }": react to "${ focusTracker._label || 'unknown' }"#remove`, elementOrView );
+			this.remove( elementOrView );
+			console.groupEnd();
 		} );
 
 		this._externalFocusTrackers.add( focusTracker );
@@ -209,6 +223,10 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Removes an external `FocusTracker` instance from this focus tracker.
 	 */
 	private _removeFocusTracker( focusTracker: FocusTracker ): void {
+		for ( const element of focusTracker.elements ) {
+			this.remove( element );
+		}
+
 		this.stopListening( focusTracker );
 		this._externalFocusTrackers.delete( focusTracker );
 
@@ -254,12 +272,12 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		// Avoid blurs that would be incorrect as a result of "local" elements and external focus trackers coexisting:
 		// * External FT blurs (e.g. when the focus still remains in one of the "local" elements or another external focus tracker),
 		// * "Local" element blurs (e.g. when the focus still remains in one of external focus trackers).
-		if (
-			this.elements.find( element => element.contains( document.activeElement ) ) ||
-			this.externalFocusTrackers.find( ( { isFocused } ) => isFocused )
-		) {
-			return;
-		}
+		// if (
+		// 	this.elements.find( element => element.contains( document.activeElement ) ) ||
+		// 	this.externalFocusTrackers.find( ( { isFocused } ) => isFocused )
+		// ) {
+		// 	return;
+		// }
 
 		clearTimeout( this._nextEventLoopTimeout! );
 

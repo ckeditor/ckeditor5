@@ -260,7 +260,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 		// Children added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
-			this.focusTracker.add( item.element! );
+			this.focusTracker.add( item );
 		}
 
 		this.items.on<CollectionAddEvent<View>>( 'add', ( evt, item ) => {

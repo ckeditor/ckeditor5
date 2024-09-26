@@ -152,6 +152,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.editor = editor;
 		this.componentFactory = new ComponentFactory( editor );
 		this.focusTracker = new FocusTracker();
+		this.focusTracker._label = 'editor UI';
 		this.tooltipManager = new TooltipManager( editor );
 		this.poweredBy = new PoweredBy( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );

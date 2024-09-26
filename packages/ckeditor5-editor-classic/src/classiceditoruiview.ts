@@ -63,6 +63,8 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
+		this.toolbar.focusTracker._label = 'classic toolbar';
+
 		if ( options.useMenuBar ) {
 			this.menuBarView = new MenuBarView( locale );
 		}
