@@ -249,7 +249,7 @@ export default class BookmarkFormView extends View {
 		const t = this.locale!.t;
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		labeledInput.label = t( 'Add bookmark name' );
+		labeledInput.label = t( 'Add bookmark' );
 		labeledInput.infoText = t( 'Enter the bookmark name without spaces.' );
 
 		return labeledInput;

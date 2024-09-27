@@ -76,6 +76,10 @@ describe( 'BookmarkFormView', () => {
 		it( 'should create id input with inputmode=text', () => {
 			expect( view.idInputView.fieldView.inputMode ).to.be.equal( 'text' );
 		} );
+
+		it( 'should have proper label', () => {
+			expect( view.idInputView.label ).to.be.equal( 'Add bookmark' );
+		} );
 	} );
 
 	describe( 'render()', () => {
