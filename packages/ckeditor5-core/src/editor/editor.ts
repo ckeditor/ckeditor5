@@ -480,13 +480,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( licensePayload.usageEndpoint ) {
 				editor.once<EditorReadyEvent>( 'ready', () => {
-					const usage = editor._getUsageData();
-
 					const request = {
 						requestId: uid(),
 						requestTime: Math.round( Date.now() / 1000 ),
 						license: licenseKey,
-						usage
+						editor: editor._getUsageData()
 					};
 
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
@@ -1037,6 +1035,11 @@ type LicenseErrorReason =
 type EditorUsageData = {
 
 	/**
+	 * The document domain where the editor is running.
+	 */
+	documentDomain: string;
+
+	/**
 	 * The editor version.
 	 */
 	version: string;
@@ -1044,7 +1047,7 @@ type EditorUsageData = {
 	/**
 	 * The editor type.
 	 */
-	type: `${ 'Classic' | 'Inline' | 'Decoupled' | 'MultiRoot' }Editor`;
+	type: `${ '' | 'Classic' | 'Inline' | 'Decoupled' | 'MultiRoot' }Editor`;
 
 	/**
 	 * The list of plugins used in the editor.
@@ -1131,52 +1134,19 @@ type IntegrationUsageData = {
 	 * The version of the CKEditor framework used in the integration. e.g. for React integration might be `18.0.0`.
 	 */
 	frameworkVersion?: string;
-
-	/**
-	 * Additional data specific to the integration. e.g. for the React integration it might be:
-	 *
-	 * 	* The list of React components or Hooks used in the integration.
-	 * 	* Check if the editor was loaded using CDN injector helpers or was placed as head script manually.
-	 */
-	additionalData?: Record<string, unknown>;
 };
 
 type EnvUsageData = {
 
 	/**
-	 * Indicates that the application is running on Macintosh.
+	 * The operating system used in the editor.
 	 */
-	isMac: boolean;
+	os: 'mac' | 'windows' | 'ios' | 'android';
 
 	/**
-	 * Indicates that the application is running on Windows.
+	 * The browser engine used in the editor.
 	 */
-	isWindows: boolean;
-
-	/**
-	 * Indicates that the application is running in Firefox (Gecko).
-	 */
-	isGecko: boolean;
-
-	/**
-	 * Indicates that the application is running in Safari.
-	 */
-	isSafari: boolean;
-
-	/**
-	 * Indicates that the application is running in iOS.
-	 */
-	isiOS: boolean;
-
-	/**
-	 * Indicates that the application is running on Android mobile device.
-	 */
-	isAndroid: boolean;
-
-	/**
-	 * Indicates that the application is running in a browser using the Blink engine.
-	 */
-	isBlink: boolean;
+	browser: 'safari' | 'gecko' | 'blink';
 };
 
 type ToolbarUsageData = {
