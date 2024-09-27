@@ -75,6 +75,7 @@ class TestEditor extends ClassicEditor {
 
 const data = ref( '<p>Hello world!</p>' );
 const config = reactive( {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	toolbar: [ 'heading', '|', 'bold', 'italic' ]
 } );
 </script>
@@ -125,6 +126,7 @@ const TestEditor = computed( () => {
 
 const data = ref( '<p>Hello world!</p>' );
 const config = reactive( {
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'heading', '|', 'bold', 'italic' ]
 } );
 </script>

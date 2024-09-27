@@ -18,6 +18,10 @@ This guide assume you have a Laravel project. You can create a basic Laravel pro
 
 ## Using from CDN
 
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 The folder structure of the created project should resemble the one below:
 
 ```plain
@@ -87,7 +91,7 @@ Both previously attached scripts expose global variables named `CKEDITOR` and `C
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [
 				'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -142,7 +146,7 @@ Now, we need to put our script in the previous template. We need to put the scri
 
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 				toolbar: [
 					'undo', 'redo', '|', 'bold', 'italic', '|',

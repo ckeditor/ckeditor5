@@ -26,6 +26,10 @@ You can use CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your ap
 
 ## Quick start
 
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 First, install the CKEditor&nbsp;5 WYSIWYG editor component for Vue 2:
 
 ```bash
@@ -94,7 +98,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: { 

@@ -106,7 +106,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			// ... Other configuration ....

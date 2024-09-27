@@ -121,7 +121,7 @@ function App() {
 					SlashCommand,
 					Undo
 				],
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				initialData: '<p>Hello from CKEditor 5 in React!</p>',
 			} }
 		/>
@@ -207,8 +207,8 @@ The code above will remove all CKEditor&nbsp;5 CDN scripts, style sheets, and Wi
 If you have any CKEditor&nbsp;5 imports in your test files, remove them. For example, remove lines like:
 
 ```javascript
-import { ClassicEditor, ... } from 'ckeditor5';
-import { AIAdapter, ... } from 'ckeditor5-premium-features';
+import { ClassicEditor, /* ... other imports */ } from 'ckeditor5';
+import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 ```
 
 #### Step 2: Use `useCKEditorCloud` hook to load CKEditor&nbsp;5 Context from CDN
@@ -298,7 +298,7 @@ function App() {
 			<CKEditor
 				editor={ ClassicEditor }
 				config={ {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Paragraph ],
 					toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				} }
@@ -312,7 +312,7 @@ function App() {
 			<CKEditor
 				editor={ ClassicEditor }
 				config={ {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Paragraph ],
 					toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				} }

@@ -97,6 +97,10 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 ## Quick start
 
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
@@ -146,7 +150,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
@@ -585,7 +589,7 @@ export class AppComponent {
 
 		this.Editor = DecoupledEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};
@@ -669,7 +673,7 @@ export class AppComponent {
 
 		this.Editor = ClassicEditor;
 		this.config = {
-			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Paragraph ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		};

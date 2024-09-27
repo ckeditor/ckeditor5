@@ -24,6 +24,10 @@ This guide assumes that you already have a Vue project. If you do not have one, 
 
 ## Quick start
 
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 Start by installing the Vue integration for CKEditor&nbsp;5 from npm:
 
 ```bash
@@ -54,7 +58,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 
@@ -200,7 +204,7 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 // Editor loading and configuration is skipped for brevity.
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 </script>
@@ -376,7 +380,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'
+	licenseKey: '<YOUR_LICENSE_KEY>',
 	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 } );
 

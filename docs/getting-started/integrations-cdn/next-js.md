@@ -23,6 +23,10 @@ This guide assumes you already have a Next project. To create such a project, yo
 
 ## Using from CDN
 
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 Next.js is based on React, so we need to install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
 
 ```bash
@@ -33,7 +37,7 @@ You will use the installed dependency in a React component. Create a new compone
 
 The App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of the file, above your imports. You do not need the directive if you use the Pages Router.
 
-In the below example, the `useCKEditorCloud` hook is used to load the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration (set it to `'GPL'` if you only use open-source plugins). For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
+In the below example, the `useCKEditorCloud` hook is used to load the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
 ```jsx
 // components/custom-editor.js
@@ -72,7 +76,7 @@ const CustomEditor = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},

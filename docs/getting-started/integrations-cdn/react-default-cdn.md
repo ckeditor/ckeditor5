@@ -24,6 +24,10 @@ This guide assumes that you already have a React project. If you do not have one
 
 ## Quick start
 
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
+
 Start by installing the React integration for CKEditor&nbsp;5 from npm:
 
 ```bash
@@ -66,7 +70,7 @@ const CKEditorDemo = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or "GPL"
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
@@ -330,7 +334,7 @@ const CKEditorDemo = () => {
 			editor={ ClassicEditor }
 			data={ '<p>Hello world!</p>' }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				plugins: [ Bold, Essentials, Italic, Paragraph ],
 			} }
