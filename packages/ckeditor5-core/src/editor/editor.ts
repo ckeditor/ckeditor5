@@ -987,8 +987,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * Your license doesn't allow using the editor in this distribution channel.
 				 *
-				 * If you use the `'GPL'` license key, you can use the editor installed from npm (self-hosted). If you have
-				 * a commercial license, you can to use the editor from CDN or — if your plan allows — from npm.
+				 * Having the `'GPL'` license key, you can use the editor installed from npm (self-hosted). If you have
+				 * a commercial license, you can use the editor from CDN or — if your plan allows — from npm.
 				 *
 				 * Please check your installation or contact support at [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
 				 * for more information.
