@@ -158,7 +158,7 @@ export default class SelectionObserver extends Observer {
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
 		// TODO ShadowRoot - this event is always fired from the document, even inside a Shadow DOM.
-		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+		this.listenTo( domDocument, 'selectionchange', () => {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	_debouncedLine();
 			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();

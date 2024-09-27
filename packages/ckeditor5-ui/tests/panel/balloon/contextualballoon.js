@@ -61,8 +61,8 @@ describe( 'ContextualBalloon', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 		editorElement.remove();
 	} );
 
@@ -850,8 +850,8 @@ describe( 'ContextualBalloon', () => {
 					expect( balloon.view.pin.calledTwice );
 					expect( balloon.view.pin.secondCall.args[ 0 ].viewportOffsetConfig.top ).to.equal( 200 );
 
-					newEditor.destroy();
 					editorElement.remove();
+					return newEditor.destroy();
 				} );
 		} );
 

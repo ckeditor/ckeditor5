@@ -57,6 +57,12 @@ export default abstract class DomEventObserver<
 	public useCapture: boolean = false;
 
 	/**
+	 * If set to `true`, indicates that the function specified by listener will never call `preventDefault()`.
+	 * Default value is `false`.
+	 */
+	public usePassive: boolean = false;
+
+	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
 	 * observer {@link #isEnabled is not enabled}.
 	 *
@@ -75,7 +81,7 @@ export default abstract class DomEventObserver<
 				if ( this.isEnabled && !this.checkShouldIgnoreEventFromTarget( domEvent.target as any ) ) {
 					this.onDomEvent( domEvent );
 				}
-			}, { useCapture: this.useCapture } );
+			}, { useCapture: this.useCapture, usePassive: this.usePassive } );
 		} );
 	}
 

@@ -176,7 +176,7 @@ describe( 'PlainTableOutput', () => {
 					'</table>'
 				);
 
-				testEditor.destroy();
+				await testEditor.destroy();
 			} );
 
 			it( 'should be overridable', () => {
@@ -450,7 +450,7 @@ describe( 'PlainTableOutput', () => {
 					'</figure>'
 				);
 
-				testEditor.destroy();
+				await testEditor.destroy();
 			} );
 
 			// See: https://github.com/ckeditor/ckeditor5/issues/11394
@@ -482,7 +482,7 @@ describe( 'PlainTableOutput', () => {
 					'</figure>'
 				);
 
-				testEditor.destroy();
+				await testEditor.destroy();
 			} );
 
 			function createEmptyTable() {
