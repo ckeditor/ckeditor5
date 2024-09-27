@@ -959,6 +959,22 @@ describe( 'BookmarkUI', () => {
 
 				expect( formView.buttonView.label ).to.equal( 'Update' );
 			} );
+
+			it( 'should have "Update" label when bookmark already inserted but balloon is not closed.', () => {
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				bookmarkUIFeature._showUI();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+
+				expect( formView.buttonView.label ).to.equal( 'Insert' );
+
+				formView.idInputView.fieldView.value = 'new_id';
+
+				formView.fire( 'submit' );
+				actionsView.fire( 'edit' );
+
+				expect( formView.buttonView.label ).to.equal( 'Update' );
+			} );
 		} );
 	} );
 
