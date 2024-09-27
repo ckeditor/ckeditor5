@@ -10,10 +10,170 @@
  */
 
 import DomEmitterMixin from './dom/emittermixin.js';
-import ObservableMixin, { type DecoratedMethodEvent } from './observablemixin.js';
+import ObservableMixin, { type ObservableChangeEvent } from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
 import { type View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'lodash-es';
+import { getAncestors, global } from './index.js';
+
+class GlobalFocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
+	public childFocusTrackers: Set<FocusTracker> = new Set();
+
+	/**
+	 * The currently focused element.
+	 *
+	 * @readonly
+	 * @observable
+	 */
+	declare public focusedElement: Element | null;
+
+	/**
+	 * Event loop timeout.
+	 */
+	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	/**
+	 * TODO
+	 */
+	public constructor() {
+		super();
+
+		this.set( 'focusedElement', document.activeElement );
+
+		this.on<ObservableChangeEvent<Element | null>>( 'change:focusedElement', ( evt, name, focusedElement ) => {
+			console.log( '[GlobalFocusTracker] focusedElement =', focusedElement );
+
+			console.time( '[GlobalFocusTracker] _updateChildFocusTrackers' );
+			this._updateChildFocusTrackers( focusedElement );
+			console.timeEnd( '[GlobalFocusTracker] _updateChildFocusTrackers' );
+		} );
+
+		this.listenTo<'focus'>( global.document, 'focus', () => {
+			clearTimeout( this._nextEventLoopTimeout! );
+
+			this.focusedElement = document.activeElement;
+		}, { useCapture: true } );
+
+		this.listenTo<'blur'>( global.document.body, 'blur', () => {
+			clearTimeout( this._nextEventLoopTimeout! );
+
+			this._nextEventLoopTimeout = setTimeout( () => {
+				this.focusedElement = document.activeElement;
+			}, 0 );
+		}, { useCapture: true } );
+	}
+
+	/**
+	 * TODO
+	 */
+	public add( childFocusTracker: FocusTracker ) {
+		this.childFocusTrackers.add( childFocusTracker );
+
+		childFocusTracker.on( 'destroy', () => {
+			// Destroy the global one when the last local focus tracker is destroyed.
+			if ( !this.childFocusTrackers.size ) {
+				this.destroy();
+			}
+		} );
+	}
+
+	public _updateChildFocusTrackers( focusedElement: Element | null ) {
+		console.group( '[GlobalFocusTracker] _updateChildFocusTrackers' );
+
+		const stateMap = new Map<FocusTracker, {
+			isFocused: boolean;
+			focusedElement: Element | null;
+			isRelationsUpdated: boolean;
+		}>();
+
+		// 1. Discover state based only on DOM #elements.
+		for ( const childFocusTracker of this.childFocusTrackers ) {
+			const focusedElementCandidates: Array<[ Element, number ]> = [];
+
+			// Update states based on the local #elements.
+			for ( const element of childFocusTracker.elements ) {
+				if ( element.contains( focusedElement ) ) {
+					focusedElementCandidates.push( [ element, getAncestors( element ).length ] );
+				}
+			}
+
+			stateMap.set( childFocusTracker, {
+				isFocused: !!focusedElementCandidates.length,
+
+				// Pick the candidate that is the as deep in the DOM tree as possible in case some candidates are nested in each other.
+				focusedElement: focusedElementCandidates.length ? focusedElementCandidates
+					.sort( ( candidateA, candidateB ) => candidateB[ 1 ] - candidateA[ 1 ] )[ 0 ][ 0 ] : null,
+
+				isRelationsUpdated: false
+			} );
+		}
+
+		function updateFocusTrackerRelations( focusTracker: FocusTracker ) {
+			const trackerState = stateMap.get( focusTracker )!;
+
+			if ( !trackerState.isRelationsUpdated ) {
+				console.group( `[GlobalFocusTracker] updateFocusTrackerRelations, visit "${ _getLabel( focusTracker ) }"` );
+
+				for ( const externalView of focusTracker._externalViews ) {
+					const { isFocused: isExternalFocusTrackerFocused } = updateFocusTrackerRelations( externalView.focusTracker );
+
+					// Some focus trackers deeper in the relation net are focused.
+					if ( isExternalFocusTrackerFocused ) {
+						if ( trackerState.focusedElement ) {
+							const currentFocusedElementDepth = getAncestors( trackerState.focusedElement ).length;
+							const externalViewFocusedElementDepth = getAncestors( externalView.element! ).length;
+							const isTheSameSubTree = trackerState.focusedElement.contains( externalView.element );
+
+							// If they belong to the same sub-tree of DOM, they myst be deeper than the current focused element
+							// to be considered as focused.
+							// If the belong to other sub-trees, just take the focus from the related one.
+							if ( isTheSameSubTree ? currentFocusedElementDepth < externalViewFocusedElementDepth : true ) {
+								trackerState.focusedElement = externalView.element;
+								trackerState.isFocused = true;
+							}
+						} else {
+							trackerState.focusedElement = externalView.element;
+							trackerState.isFocused = true;
+						}
+					}
+				}
+
+				trackerState.isRelationsUpdated = true;
+
+				console.groupEnd();
+			}
+
+			return trackerState;
+		}
+
+		// 2. Update states based on relations between focus trackers and externals views that contribute to their states.
+		for ( const childFocusTracker of this.childFocusTrackers ) {
+			console.group( `[GlobalFocusTracker] update based on relations "${ _getLabel( childFocusTracker ) }"` );
+
+			updateFocusTrackerRelations( childFocusTracker );
+
+			console.groupEnd();
+		}
+
+		// 3. Commit state to the focus trackers.
+		for ( const childFocusTracker of this.childFocusTrackers ) {
+			const childFocusTrackerState = stateMap.get( childFocusTracker )!;
+
+			childFocusTracker.focusedElement = childFocusTrackerState.focusedElement;
+			childFocusTracker.isFocused = childFocusTrackerState.isFocused;
+		}
+
+		console.groupEnd();
+	}
+
+	/**
+	 * TODO
+	 */
+	public destroy(): void {
+		this.stopListening();
+		this.childFocusTrackers.clear();
+	}
+}
 
 /**
  * Allows observing a group of DOM `Element`s whether at least one of them (or their child) is focused.
@@ -55,6 +215,8 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * @internal
 	 */
 	public _elements: Set<Element> = new Set();
+	public _externalElements: Set<Element> = new Set();
+	public _externalViews: Set<ViewWithFocusTracker> = new Set();
 
 	/**
 	 * List of external focus trackers that contribute to the state of this focus tracker.
@@ -71,11 +233,23 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	constructor() {
 		super();
 
+		if ( !FocusTracker._globalFocusTracker ) {
+			FocusTracker._globalFocusTracker = new GlobalFocusTracker();
+		}
+
 		this.set( 'isFocused', false );
 		this.set( 'focusedElement', null );
 
 		this.decorate( 'add' );
 		this.decorate( 'remove' );
+		this.decorate( 'destroy' );
+
+		FocusTracker._globalFocusTracker.add( this );
+		// FocusTracker._globalFocusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+		// 	this._update( focusedElement );
+		// } );
+
+		// this._update( FocusTracker._globalFocusTracker.focusedElement );
 	}
 
 	/**
@@ -85,6 +259,10 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 */
 	public get elements(): Array<Element> {
 		return Array.from( this._elements.values() );
+	}
+
+	public get externalElements(): Array<Element> {
+		return Array.from( this._externalElements.values() );
 	}
 
 	/**
@@ -110,25 +288,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		if ( isElement( elementOrView ) ) {
 			this._addElement( elementOrView );
 		} else {
-			if ( isViewWithFocusTracker( elementOrView ) ) {
-				this._addFocusTracker( elementOrView.focusTracker );
-			} else {
-				if ( !elementOrView.element ) {
-					/**
-					 * The {@link module:ui/view~View} added to the {@link module:utils/focustracker~FocusTracker} does not have an
-					 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before adding
-					 * it to the focus tracker.
-					 *
-					 * @error focustracker-add-view-missing-element
-					 */
-					throw new CKEditorError( 'focustracker-add-view-missing-element', {
-						focusTracker: this,
-						view: elementOrView
-					} );
-				}
-
-				this._addElement( elementOrView.element );
-			}
+			this._addView( elementOrView );
 		}
 	}
 
@@ -139,25 +299,26 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 		if ( isElement( elementOrView ) ) {
 			this._removeElement( elementOrView );
 		} else {
-			if ( isViewWithFocusTracker( elementOrView ) ) {
-				this._removeFocusTracker( elementOrView.focusTracker );
-			} else {
-				if ( !elementOrView.element ) {
-					/**
-					 * The {@link module:ui/view~View} removed from the {@link module:utils/focustracker~FocusTracker} does not have an
-					 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before removing
-					 * it from the focus tracker.
-					 *
-					 * @error focustracker-remove-view-missing-element
-					 */
-					throw new CKEditorError( 'focustracker-remove-view-missing-element', {
-						focusTracker: this,
-						view: elementOrView
-					} );
-				}
+			this._removeView( elementOrView );
+			// if ( isViewWithFocusTracker( elementOrView ) ) {
+			// 	this._removeFocusTracker( elementOrView.focusTracker );
+			// } else {
+			// 	if ( !elementOrView.element ) {
+			// 		/**
+			// 		 * The {@link module:ui/view~View} removed from the {@link module:utils/focustracker~FocusTracker} does not have an
+			// 		 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before removing
+			// 		 * it from the focus tracker.
+			// 		 *
+			// 		 * @error focustracker-remove-view-missing-element
+			// 		 */
+			// 		throw new CKEditorError( 'focustracker-remove-view-missing-element', {
+			// 			focusTracker: this,
+			// 			view: elementOrView
+			// 		} );
+			// 	}
 
-				this._removeElement( elementOrView.element );
-			}
+			// 	this._removeElement( elementOrView.element );
+			// }
 		}
 	}
 
@@ -165,14 +326,8 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Adds a DOM element to the focus tracker and starts listening to the `focus` and `blur` events on it.
 	 */
 	private _addElement( element: Element ): void {
-		console.log( `${ this._label || 'unknown' }": adding DOM element`, element );
+		console.log( `[FocusTracker] "${ _getLabel( this ) }": adding DOM element`, element );
 
-		if ( this._elements.has( element ) ) {
-			return;
-		}
-
-		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );
-		this.listenTo( element, 'blur', () => this._blur(), { useCapture: true } );
 		this._elements.add( element );
 	}
 
@@ -180,13 +335,73 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Removes a DOM element from the focus tracker.
 	 */
 	private _removeElement( element: Element ): void {
-		if ( element === this.focusedElement ) {
-			this._blur();
-		}
+		console.log( `[FocusTracker] "${ _getLabel( this ) }": removing DOM element`, element );
 
-		if ( this._elements.has( element ) ) {
-			this.stopListening( element );
-			this._elements.delete( element );
+		this._elements.delete( element );
+	}
+
+	private _addView( view: View ): void {
+		// if ( isViewWithFocusTracker( view ) ) {
+		// 	this._addElement( view.element! );
+		// 	this._addFocusTracker( view.focusTracker );
+		// } else {
+		// 	if ( !view.element ) {
+		// 		/**
+		// 		 * The {@link module:ui/view~View} added to the {@link module:utils/focustracker~FocusTracker} does not have an
+		// 		 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before adding
+		// 		 * it to the focus tracker.
+		// 		 *
+		// 		 * @error focustracker-add-view-missing-element
+		// 		 */
+		// 		throw new CKEditorError( 'focustracker-add-view-missing-element', {
+		// 			focusTracker: this,
+		// 			view
+		// 		} );
+		// 	}
+
+		// 	this._addElement( view.element! );
+		// }
+
+		if ( isViewWithFocusTracker( view ) ) {
+			this._externalViews.add( view );
+		} else {
+			if ( !view.element ) {
+				/**
+				 * The {@link module:ui/view~View} added to the {@link module:utils/focustracker~FocusTracker} does not have an
+				 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before adding
+				 * it to the focus tracker.
+				 *
+				 * @error focustracker-add-view-missing-element
+				 */
+				throw new CKEditorError( 'focustracker-add-view-missing-element', {
+					focusTracker: this,
+					view
+				} );
+			}
+
+			this._addElement( view.element );
+		}
+	}
+
+	public _removeView( view: View ): void {
+		if ( isViewWithFocusTracker( view ) ) {
+			this._externalViews.delete( view );
+		} else {
+			if ( !view.element ) {
+				/**
+				 * The {@link module:ui/view~View} removed from the {@link module:utils/focustracker~FocusTracker} does not have an
+				 * {@link module:ui/view~View#element}. Make sure the view is {@link module:ui/view~View#render} before removing
+				 * it from the focus tracker.
+				 *
+				 * @error focustracker-remove-view-missing-element
+				 */
+				throw new CKEditorError( 'focustracker-remove-view-missing-element', {
+					focusTracker: this,
+					view
+				} );
+			}
+
+			this._removeElement( view.element );
 		}
 	}
 
@@ -194,45 +409,22 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * Adds an external `FocusTracker` instance to this focus tracker and makes it contribute to this focus tracker's state.
 	 */
 	private _addFocusTracker( focusTracker: FocusTracker ): void {
-		console.log( `"${ this._label || 'unknown' }": adds another FT "${ focusTracker._label || 'unknown' }"` );
-
-		if ( this._externalFocusTrackers.has( focusTracker ) ) {
-			return;
-		}
+		console.log( `[FocusTracker] "${ _getLabel( this ) }": adds another FT "${ _getLabel( focusTracker ) }"` );
 
 		for ( const element of focusTracker.elements ) {
-			this._addElement( element );
+			this._externalElements.add( element );
 		}
 
-		this.listenTo<DecoratedMethodEvent<FocusTracker, 'add'>>( focusTracker, 'add', ( evt, [ elementOrView ] ) => {
-			console.group( `"${ this._label || 'unknown' }": react to "${ focusTracker._label || 'unknown' }"#add`, elementOrView );
-			this.add( elementOrView );
-			console.groupEnd();
-		} );
-
-		this.listenTo<DecoratedMethodEvent<FocusTracker, 'remove'>>( focusTracker, 'remove', ( evt, [ elementOrView ] ) => {
-			console.group( `"${ this._label || 'unknown' }": react to "${ focusTracker._label || 'unknown' }"#remove`, elementOrView );
-			this.remove( elementOrView );
-			console.groupEnd();
-		} );
-
-		this._externalFocusTrackers.add( focusTracker );
+		// this._externalFocusTrackers.add( focusTracker );
 	}
 
 	/**
 	 * Removes an external `FocusTracker` instance from this focus tracker.
 	 */
 	private _removeFocusTracker( focusTracker: FocusTracker ): void {
-		for ( const element of focusTracker.elements ) {
-			this.remove( element );
-		}
+		console.log( `[FocusTracker] "${ _getLabel( this ) }": removes another FT "${ _getLabel( focusTracker ) }"` );
 
-		this.stopListening( focusTracker );
 		this._externalFocusTrackers.delete( focusTracker );
-
-		if ( focusTracker.isFocused ) {
-			this._blur();
-		}
 	}
 
 	/**
@@ -286,6 +478,22 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 			this.isFocused = false;
 		}, 0 );
 	}
+
+	// private _update( focusedElement: Element ): void {
+	// 	for ( const localElement of this.elements ) {
+	// 		if ( localElement.contains( focusedElement ) ) {
+	// 			this.focusedElement = localElement;
+	// 			this.isFocused = true;
+
+	// 			return;
+	// 		}
+	// 	}
+
+	// 	this.focusedElement = null;
+	// 	this.isFocused = false;
+	// }
+
+	private static _globalFocusTracker: GlobalFocusTracker | null = null;
 }
 
 /**
@@ -304,3 +512,33 @@ export function isViewWithFocusTracker( view: any ): view is ViewWithFocusTracke
 function isElement( value: any ): value is Element {
 	return _isElement( value );
 }
+
+function _getLabel( ft: FocusTracker ): void {
+	return ft._label || 'unknown';
+}
+
+window.logFocusTrackers = () => {
+	console.group( 'FocusTrackers' );
+
+	// const data = [];
+	for ( const ft of FocusTracker._globalFocusTracker.childFocusTrackers ) {
+		if ( ft.isFocused ) {
+			console.group( `"${ _getLabel( ft ) }"` );
+			console.log( 'isFocused =', ft.isFocused );
+			console.log( 'focusedElement =', ft.focusedElement );
+			console.log( ft );
+			console.groupEnd();
+		}
+	}
+
+	// for ( const ft of FocusTracker._globalFocusTracker.childFocusTrackers ) {
+	// 	data.push( {
+	// 		label: _getLabel( ft ),
+	// 		isFocused: ft.isFocused,
+	// 		focusedElement: ft.focusedElement
+	// 	} );
+	// }
+
+	// console.table( data );
+	console.groupEnd();
+};
