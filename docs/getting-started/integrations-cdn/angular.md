@@ -20,79 +20,6 @@ Angular is a TypeScript-based, open-source, single-page web application framewor
 
 This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
-
-## Supported Angular versions
-
-Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
-
-<table>
-  <thead>
-	<tr>
-	 <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
-	 <th>Angular&nbsp;version</th>
-	 <th>Details</th>
-	</tr>
-  </thead>
-  <tbody>
-	<tr>
-	 <td colspan="3">Actively supported versions</td>
-	</tr>
-	<tr>
-	 <td><code>^8</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td colspan="3">Past releases (no longer maintained)</td>
-	</tr>
-	<tr>
-	 <td><code>^7</code></td>
-	 <td><code>13+</code></td>
-	 <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^6</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^5</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
-	</tr>
-	<tr>
-	 <td><code>^5</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
-	</tr>
-	<tr>
-	 <td><code>^4</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^3</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Requires Node.js in version 14 or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^2</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
-	</tr>
-	<tr>
-	 <td><code>^1</code></td>
-	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-	 <td>Angular versions no longer maintained.</td>
-	</tr>
-  </tbody>
-</table>
-
-All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
@@ -680,6 +607,79 @@ export class AppComponent {
 	}
 }
 ```
+
+## Supported Angular versions
+
+<info-box hint>
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
+</info-box>
+
+Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
+
+<table>
+  <thead>
+	<tr>
+	 <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
+	 <th>Angular&nbsp;version</th>
+	 <th>Details</th>
+	</tr>
+  </thead>
+  <tbody>
+	<tr>
+	 <td colspan="3">Actively supported versions</td>
+	</tr>
+	<tr>
+	 <td><code>^8</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td colspan="3">Past releases (no longer maintained)</td>
+	</tr>
+	<tr>
+	 <td><code>^7</code></td>
+	 <td><code>13+</code></td>
+	 <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^6</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^5</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	</tr>
+	<tr>
+	 <td><code>^5</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	</tr>
+	<tr>
+	 <td><code>^4</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^3</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Requires Node.js in version 14 or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^2</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
+	</tr>
+	<tr>
+	 <td><code>^1</code></td>
+	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
+	 <td>Angular versions no longer maintained.</td>
+	</tr>
+  </tbody>
+</table>
+
+All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
 ## Contributing and reporting issues
 
