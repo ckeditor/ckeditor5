@@ -598,8 +598,8 @@ describe( 'WordCount', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should sum characters of each root', () => {

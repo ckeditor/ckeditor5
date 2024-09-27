@@ -45,6 +45,10 @@ describe( 'ClipboardPipeline feature', () => {
 			} );
 	} );
 
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'registers ClipboardObserver', () => {
 			expect( view.getObserver( ClipboardObserver ) ).to.be.instanceOf( ClipboardObserver );

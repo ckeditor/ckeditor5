@@ -33,6 +33,10 @@ describe( 'inlineAutoformatEditing', () => {
 			} );
 	} );
 
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
 	describe( 'regExp', () => {
 		it( 'should not call the formatCallback if there are less than 3 capture groups', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );

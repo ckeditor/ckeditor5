@@ -252,7 +252,7 @@ describe( 'ImageResizeButtons', () => {
 				editorElement.remove();
 			}
 
-			if ( editor ) {
+			if ( editor && editor.state !== 'destroyed' ) {
 				await editor.destroy();
 			}
 		} );
@@ -296,7 +296,7 @@ describe( 'ImageResizeButtons', () => {
 			expect( buttonView.label ).to.equal( 'Resize image: 30%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 
 		it( 'should be created with invisible "Resize image to 50%" label when is not provided', async () => {
@@ -307,7 +307,7 @@ describe( 'ImageResizeButtons', () => {
 			expect( buttonView.label ).to.equal( 'Resize image to 50%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 
 		it( 'should be created with a proper tooltip in custom option', () => {
@@ -386,7 +386,7 @@ describe( 'ImageResizeButtons', () => {
 				editor.ui.componentFactory.create( 'resizeImage:noicon' );
 			}, 'imageresizebuttons-missing-icon', editor );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 } );

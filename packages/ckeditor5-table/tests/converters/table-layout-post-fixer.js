@@ -26,8 +26,8 @@ describe( 'Table layout post-fixer', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'on insert table', () => {

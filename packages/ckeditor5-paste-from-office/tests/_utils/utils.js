@@ -160,8 +160,8 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
