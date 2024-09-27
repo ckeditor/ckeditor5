@@ -6,20 +6,17 @@
 /* globals document, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
-import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
-import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { ClickObserver } from '@ckeditor/ckeditor5-engine';
+
+import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import BookmarkFormView from '../src/ui/bookmarkformview.js';
 import BookmarkActionsView from '../src/ui/bookmarkactionsview.js';
