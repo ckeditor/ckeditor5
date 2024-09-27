@@ -340,14 +340,13 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * When bookmark element is selected, form button label should be set on 'Update' otherwise it is 'Insert'.
+	 * When a bookmark element is selected, the form button label should be set to 'Update'
+	 * otherwise, it should be 'Insert'.
 	 */
-	private _updateFormButtonLabel() {
-		const locale = this.editor.locale;
-		const t = locale.t;
-		const element = !!this._getSelectedBookmarkElement();
+	private _updateFormButtonLabel( isBookmarkSelected: boolean ) {
+		const t = this.editor.locale.t;
 
-		this.formView!.buttonView.label = element ? t( 'Update' ) : t( 'Insert' );
+		this.formView!.buttonView.label = isBookmarkSelected ? t( 'Update' ) : t( 'Insert' );
 	}
 
 	/**
@@ -522,7 +521,7 @@ export default class BookmarkUI extends Plugin {
 		let prevSelectedBookmark = this._getSelectedBookmarkElement();
 		let prevSelectionParent = getSelectionParent();
 
-		this._updateFormButtonLabel();
+		this._updateFormButtonLabel( !!prevSelectedBookmark );
 
 		const update = () => {
 			const selectedBookmark = this._getSelectedBookmarkElement();
@@ -553,7 +552,7 @@ export default class BookmarkUI extends Plugin {
 				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
 
-			this._updateFormButtonLabel();
+			this._updateFormButtonLabel( !!prevSelectedBookmark );
 
 			prevSelectedBookmark = selectedBookmark;
 			prevSelectionParent = selectionParent;

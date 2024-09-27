@@ -52,7 +52,7 @@ export default class BookmarkFormView extends View {
 	public idInputView: LabeledFieldView<InputTextView>;
 
 	/**
-	 * The Insert button view.
+	 * The Submit button view.
 	 */
 	public buttonView: ButtonView;
 

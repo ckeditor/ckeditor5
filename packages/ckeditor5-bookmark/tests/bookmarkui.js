@@ -938,7 +938,7 @@ describe( 'BookmarkUI', () => {
 				expect( formView.buttonView.label ).to.equal( 'Insert' );
 			} );
 
-			it( 'should have "Insert" label when bookamrk is not selected', () => {
+			it( 'should have "Insert" label when bookmark is not selected', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
@@ -949,7 +949,7 @@ describe( 'BookmarkUI', () => {
 				expect( formView.buttonView.label ).to.equal( 'Insert' );
 			} );
 
-			it( 'should have "Update" label when bookamrk is selected', () => {
+			it( 'should have "Update" label when bookmark is selected', () => {
 				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
