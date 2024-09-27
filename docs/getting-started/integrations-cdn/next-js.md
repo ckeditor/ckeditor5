@@ -24,7 +24,7 @@ This guide assumes you already have a Next project. To create such a project, yo
 ## Using from CDN
 
 <info-box>
-	To use our CDN services, you need [a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
 </info-box>
 
 Next.js is based on React, so we need to install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):

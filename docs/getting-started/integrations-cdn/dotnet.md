@@ -19,7 +19,7 @@ For the purpose of this guide, we will use a basic ASP.NET Core project created 
 ## Using from CDN
 
 <info-box>
-	To use our CDN services, you need [a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
 </info-box>
 
 The folder structure of the created project should resemble the one below:

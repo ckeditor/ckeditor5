@@ -30,7 +30,7 @@ This guide assumes you already have a React project. If you want to create a new
 ## Quick start
 
 <info-box>
-	To use our CDN services, you need [a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
 </info-box>
 
 Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/setup/editor-types#multi-root-editor multi-root editor type}.

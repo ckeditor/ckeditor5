@@ -25,7 +25,7 @@ This guide assumes that you already have a Vue project. If you do not have one, 
 ## Quick start
 
 <info-box>
-	To use our CDN services, you need [a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
 </info-box>
 
 Start by installing the Vue integration for CKEditor&nbsp;5 from npm:
