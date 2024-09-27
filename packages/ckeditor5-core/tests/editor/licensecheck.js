@@ -566,7 +566,7 @@ describe( 'Editor - license check', () => {
 			const sentData = JSON.parse( fetchStub.firstCall.lastArg.body );
 
 			expect( sentData.license ).to.equal( licenseKey );
-			expect( sentData.usage ).to.deep.equal( { version: globalThis.CKEDITOR_VERSION } );
+			expect( sentData.editor ).to.deep.equal( { version: globalThis.CKEDITOR_VERSION } );
 		} );
 
 		it( 'should not send any request if license key does not contain a usage endpoint', () => {
