@@ -294,6 +294,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// * a tooltip is displayed for a focused element, then the same element gets mouseentered,
 		// * a tooltip is displayed for an element via mouseenter, then the focus moves to the same element.
 		if ( elementWithTooltipAttribute === this._currentElementWithTooltip ) {
+			this._unpinTooltipDebounced.cancel();
+
 			return;
 		}
 
@@ -302,7 +304,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// The tooltip should be pinned immediately when the element gets focused using keyboard.
 		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
 		// See https://github.com/ckeditor/ckeditor5/issues/16383
-		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ) {
+		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ||
+			elementWithTooltipAttribute.matches( '.ck-with-instant-tooltip' ) ) {
 			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 		} else {
 			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
@@ -347,6 +350,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			// Note that this should happen whether the tooltip is already visible or not, for instance,
 			// it could be invisible but queued (debounced): it should get canceled.
 			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
+				this._pinTooltipDebounced.cancel();
+
 				this._unpinTooltipDebounced();
 			}
 		} else {
@@ -355,6 +360,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
 				return;
 			}
+
+			this._pinTooltipDebounced.cancel();
 
 			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
