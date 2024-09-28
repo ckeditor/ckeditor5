@@ -78,7 +78,7 @@ describe( 'BookmarkFormView', () => {
 		} );
 
 		it( 'should have proper label', () => {
-			expect( view.idInputView.label ).to.be.equal( 'Add bookmark' );
+			expect( view.idInputView.label ).to.be.equal( 'Bookmark name' );
 		} );
 	} );
 
