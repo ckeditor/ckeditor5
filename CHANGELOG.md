@@ -7,35 +7,35 @@ We are happy to announce the release of CKEditor 5 v43.2.0.
 
 ### Release highlights
 
-#### Notable bug fixes and improvements
+#### Notable improvements
 
-* **Operational Transformation Stability**: Significant changes have been made to the OT system, enhancing undo functionality and real-time collaboration, especially in conflict resolution scenarios. These improvements ensure smoother editor operations during complex interactions.
-* **Performance Improvements**: We’ve merged several community-driven performance enhancements (thanks @sunesimonsen), that optimize the editor’s core engine. While no changes to the editor’s logic were made, these updates improve overall efficiency and responsiveness.
+* **Operational Transformation Stability**: Significant changes have been made to the OT system, enhancing the undo functionality and real-time collaboration, especially in conflict resolution scenarios. These improvements ensure smoother editor operations during complex interactions.
+* **Performance Improvements**: We have merged several community-driven performance enhancements (thanks @sunesimonsen), that optimize the editor’s core engine. While no changes to the editor’s logic were made, these updates improve overall efficiency and responsiveness.
 
 #### More imports available via `ckeditor5` and `ckeditor5-premium-features` indexes
 
-As users transition to new installation methods (v42.0.0+) with `ckeditor5` and `ckeditor5-premium-features` as the main packages, we're continuously addressing missing imports for less common classes, functions, types, and utilities, broadening their availability. Since our TypeScript rewrite (v37.0.0), imports can now be made directly through the package indexes, simplifying integration. As many users historically imported from `src`, we encourage you to try the new version and report any missing imports. In the future, we are considering removing `src` from published packages to reduce package size, so the more feedback we receive, the better and more stable API.
+As users transition to new installation methods (v42.0.0+) with `ckeditor5` and `ckeditor5-premium-features` as the main packages, we are continuously addressing missing imports for less common classes, functions, types, and utilities, broadening their availability. Since our TypeScript rewrite (v37.0.0), imports can now be made directly through the package indexes, simplifying integration. As many users historically imported from `src`, we encourage you to try the new version and report any missing imports. In the future, we are considering removing `src` from published packages to reduce package size, so the more feedback we receive, the better and more stable API we will provide.
 
 ### Features
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added the `usePassive` option to `DomEventObserver` that enables listening passive events. Closes [#16412](https://github.com/ckeditor/ckeditor5/issues/16412). ([commit](https://github.com/ckeditor/ckeditor5/commit/a4882635f3654d578ee04fd0125f8c9f34feef7e))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added the `usePassive` option to `DomEventObserver` that enables listening to passive events. Closes [#16412](https://github.com/ckeditor/ckeditor5/issues/16412). ([commit](https://github.com/ckeditor/ckeditor5/commit/a4882635f3654d578ee04fd0125f8c9f34feef7e))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: It is now possible to embed YouTube shorts. Closes [#17090](https://github.com/ckeditor/ckeditor5/issues/17090). ([commit](https://github.com/ckeditor/ckeditor5/commit/2b74a8aeb69e8e01823d6cb1d0fb752f1480ee4d))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Update the "Powered by" link. ([commit](https://github.com/ckeditor/ckeditor5/commit/5c02fd75fb4f3b2e900fad2e08a6c9017e71fa97))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Updated the "Powered by" link. ([commit](https://github.com/ckeditor/ckeditor5/commit/5c02fd75fb4f3b2e900fad2e08a6c9017e71fa97))
 
 ### Bug fixes
 
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Editing inline images using `CKBox` no longer changes and reinserts them simultaneously. Closes [#17056](https://github.com/ckeditor/ckeditor5/issues/17056). ([commit](https://github.com/ckeditor/ckeditor5/commit/90d69bffea3c7b7e77b0c83f2ff52d5843735047))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed incorrect marker handling in some scenarios involving undo and real-time collaboration, which earlier led to a `model-nodelist-offset-out-of-bounds` error. See [#9296](https://github.com/ckeditor/ckeditor5/issues/9296). ([commit](https://github.com/ckeditor/ckeditor5/commit/a639c3556e2ed73280b695f8c85ac3bcfc18286a))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed incorrect handling of merge changes during undo in some scenarios involving real-time collaboration, which earlier led to a `model-nodelist-offset-out-of-bounds` error. See [#9296](https://github.com/ckeditor/ckeditor5/issues/9296). ([commit](https://github.com/ckeditor/ckeditor5/commit/a639c3556e2ed73280b695f8c85ac3bcfc18286a))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed conflict resolution error, which led to editor crash in some scenarios where two users removed bigger intersecting part of the content and used undo. See [#9296](https://github.com/ckeditor/ckeditor5/issues/9296). ([commit](https://github.com/ckeditor/ckeditor5/commit/a639c3556e2ed73280b695f8c85ac3bcfc18286a))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed incorrect undo behavior leading to an editor crash when a user pressed enter key multiple times, then pressed backspace that many times, then undo all the changes. Closes [#9296](https://github.com/ckeditor/ckeditor5/issues/9296). ([commit](https://github.com/ckeditor/ckeditor5/commit/a639c3556e2ed73280b695f8c85ac3bcfc18286a))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed conflict resolution error, which led to editor crash in some scenarios where two users removed larger intersecting part of the content and used undo. See [#9296](https://github.com/ckeditor/ckeditor5/issues/9296). ([commit](https://github.com/ckeditor/ckeditor5/commit/a639c3556e2ed73280b695f8c85ac3bcfc18286a))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed incorrect undo behavior leading to an editor crash when a user pressed <kbd>Enter</kbd> key multiple times, then pressed backspace that many times, then undid all the changes. Closes [#9296](https://github.com/ckeditor/ckeditor5/issues/9296). ([commit](https://github.com/ckeditor/ckeditor5/commit/a639c3556e2ed73280b695f8c85ac3bcfc18286a))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Increased the specificity of the dropdown menu panel styles to address issues with incorrect `z-index` ordering. ([commit](https://github.com/ckeditor/ckeditor5/commit/3df198a12a50845dad58fd7cd31e54e670960579))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Fix scrolling in dropdowns when block toolbar button is active. Closes [#17067](https://github.com/ckeditor/ckeditor5/issues/17067). ([commit](https://github.com/ckeditor/ckeditor5/commit/9bc0e49bc737b647621ecf1b1e980046a97ed0ca))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Fixed scrolling in dropdowns when a block toolbar button is active. Closes [#17067](https://github.com/ckeditor/ckeditor5/issues/17067). ([commit](https://github.com/ckeditor/ckeditor5/commit/9bc0e49bc737b647621ecf1b1e980046a97ed0ca))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Increased the specificity of the dropdown menu panel styles to address issues with incorrect `z-index` ordering. ([commit](https://github.com/ckeditor/ckeditor5/commit/3df198a12a50845dad58fd7cd31e54e670960579))
 
 ### Other changes
 
-* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: Export the `AttributeCommand` class. Closes [#17105](https://github.com/ckeditor/ckeditor5/issues/17105). ([commit](https://github.com/ckeditor/ckeditor5/commit/01d1396b5ae697aadcfe5e14867093229d396006))
+* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: Exported the `AttributeCommand` class. Closes [#17105](https://github.com/ckeditor/ckeditor5/issues/17105). ([commit](https://github.com/ckeditor/ckeditor5/commit/01d1396b5ae697aadcfe5e14867093229d396006))
 * **[ckeditor5-premium-features](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckeditor5-premium-features)**: Marked the `ckeditor5` package as `peerDependencies`.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Performance improvements. Avoided creating unnecessary arrays. Closes [#17143](https://github.com/ckeditor/ckeditor5/issues/17143). ([commit](https://github.com/ckeditor/ckeditor5/commit/8a0dd4bd26f265a48bd8721107e847f2e5edd652))
 
