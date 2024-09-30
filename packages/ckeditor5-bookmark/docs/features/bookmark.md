@@ -10,7 +10,7 @@ The bookmarks feature allows to add and manage the bookmarks attached to the con
 
 ## Demo
 
-Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action.
+Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark.
 
 {@snippet features/bookmark}
 

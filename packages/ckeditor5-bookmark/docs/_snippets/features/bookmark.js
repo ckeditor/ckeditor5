@@ -29,6 +29,9 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
+		menuBar: {
+			isVisible: true
+		},
 		image: {
 			toolbar: [
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|',
