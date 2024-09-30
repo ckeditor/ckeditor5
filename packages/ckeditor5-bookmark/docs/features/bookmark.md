@@ -51,7 +51,6 @@ Here are some other CKEditor&nbsp;5 features that you can use similarly to the b
 * {@link features/document-outline Document outline} &ndash; displays the list of sections (headings) of the document next to the editor.
 * {@link features/document-outline Table of contents} &ndash; lets you insert a widget with a list of headings (section titles) that reflects the structure of the document.
 
-
 ## Common API
 
 The {@link module:bookmark/bookmark~Bookmark} plugin registers:
