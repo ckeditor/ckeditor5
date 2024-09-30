@@ -1870,6 +1870,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.true;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+
+			await editor.destroy();
 		} );
 
 		it( 'should disable image upload command if access not allowed', async () => {
@@ -1894,6 +1896,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.false;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+
+			await editor.destroy();
 		} );
 
 		it( 'should not disable image upload command if access allowed ( CKBox loaded first )', async () => {
@@ -1918,6 +1922,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.true;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+
+			await editor.destroy();
 		} );
 
 		it( 'should disable image upload command if access not allowed ( CKBox loaded first )', async () => {
@@ -1942,6 +1948,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.false;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+
+			await editor.destroy();
 		} );
 	} );
 } );

@@ -158,8 +158,8 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 			editor = await VirtualTestEditor.create( await editorConfig() );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {

@@ -26,6 +26,10 @@ describe( 'Notification', () => {
 			} );
 	} );
 
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
 	describe( 'init()', () => {
 		it( 'should create notification plugin', () => {
 			expect( notification ).to.instanceof( Notification );

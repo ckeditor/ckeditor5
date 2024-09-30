@@ -49,8 +49,8 @@ describe( 'utils', () => {
 					} );
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			afterEach( async () => {
+				await editor.destroy();
 			} );
 
 			it( 'extracts plain text from blockqoutes', () => {

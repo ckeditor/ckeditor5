@@ -29,8 +29,8 @@ describe( 'Essentials preset', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 
 		editorElement.remove();
 	} );

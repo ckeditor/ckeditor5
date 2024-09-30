@@ -58,7 +58,7 @@ describe( 'PoweredBy', () => {
 
 	describe( 'constructor()', () => {
 		describe( 'balloon creation', () => {
-			it( 'should not throw if there is no view in EditorUI', () => {
+			it( 'should not throw if there is no view in EditorUI', done => {
 				expect( () => {
 					const editor = new Editor();
 
@@ -71,8 +71,9 @@ describe( 'PoweredBy', () => {
 					editor.ui.focusTracker.add( element );
 					element.focus();
 
-					editor.destroy();
+					editor.fire( 'ready' );
 					editor.ui.destroy();
+					editor.destroy().then( () => done() );
 				} ).to.not.throw();
 			} );
 
@@ -473,45 +474,45 @@ describe( 'PoweredBy', () => {
 				focusEditor( editor );
 			} );
 
-			it( 'should unpin the balloon', () => {
+			it( 'should unpin the balloon', async () => {
 				const unpinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'unpin' );
 
-				editor.destroy();
+				await editor.destroy();
 
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
-			it( 'should destroy the balloon', () => {
+			it( 'should destroy the balloon', async () => {
 				const destroySpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'destroy' );
 
-				editor.destroy();
+				await editor.destroy();
 
 				sinon.assert.called( destroySpy );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
 			} );
 
-			it( 'should cancel any throttled show to avoid post-destroy timed errors', () => {
+			it( 'should cancel any throttled show to avoid post-destroy timed errors', async () => {
 				const spy = testUtils.sinon.spy( editor.ui.poweredBy._showBalloonThrottled, 'cancel' );
 
-				editor.destroy();
+				await editor.destroy();
 
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
 
 		describe( 'if there was no balloon', () => {
-			it( 'should not throw', () => {
+			it( 'should not throw', done => {
 				expect( () => {
-					editor.destroy();
+					editor.destroy().then( () => done() );
 				} ).to.not.throw();
 			} );
 		} );
 
-		it( 'should destroy the emitter listeners', () => {
+		it( 'should destroy the emitter listeners', done => {
 			const spy = testUtils.sinon.spy( editor.ui.poweredBy, 'stopListening' );
 
-			editor.destroy();
+			editor.destroy().then( () => done() );
 
 			sinon.assert.calledOnce( spy );
 		} );

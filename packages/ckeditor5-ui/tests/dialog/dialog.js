@@ -31,8 +31,8 @@ describe( 'Dialog', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 		editorElement.remove();
 		Dialog._visibleDialogPlugin = undefined;
 	} );

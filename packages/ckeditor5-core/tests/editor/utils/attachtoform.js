@@ -45,12 +45,15 @@ describe( 'attachToForm()', () => {
 		}
 	} );
 
-	it( 'should throw an error when is used with editor without `ElementApiMixin`', () => {
+	it( 'should throw an error when is used with editor without `ElementApiMixin`', async () => {
 		const editor = new Editor();
 
 		expectToThrowCKEditorError( () => {
 			attachToForm( editor );
 		}, /^attachtoform-missing-elementapi-interface/, editor );
+
+		editor.fire( 'ready' );
+		await editor.destroy();
 	} );
 
 	it( 'should update editor#element after the "submit" event', () => {
