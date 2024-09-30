@@ -19,7 +19,7 @@ export { default as LinkFormView } from './ui/linkformview.js';
 export { default as LinkCommand } from './linkcommand.js';
 export { default as UnlinkCommand } from './unlinkcommand.js';
 
-export { addLinkProtocolIfApplicable } from './utils.js';
+export { addLinkProtocolIfApplicable, isLinkableElement } from './utils.js';
 
 export type { LinkConfig, LinkDecoratorDefinition } from './linkconfig.js';
 
