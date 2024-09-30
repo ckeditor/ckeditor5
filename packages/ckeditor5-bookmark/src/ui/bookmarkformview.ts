@@ -260,7 +260,6 @@ export default class BookmarkFormView extends View {
 	 *
 	 * @param label The button label.
 	 * @param className The additional button CSS class name.
-	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns The button view instance.
 	 */
 	private _createButton( label: string, className: string ): ButtonView {
