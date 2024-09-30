@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import { Bookmark } from '@ckeditor5/ckeditor5-bookmark';
+// import { Bookmark } from '@ckeditor5/ckeditor5-bookmark';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
@@ -15,18 +15,11 @@ import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.j
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';
 
+ClassicEditor.builtinPlugins.push( /* Bookmark,*/ PictureEditing, ImageInsert,
+	ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-bookmark' ), {
-		plugins: ClassicEditor.builtinPlugins.concat( [
-			Bookmark,
-			PictureEditing,
-			ImageInsert,
-			ImageResize,
-			AutoImage,
-			LinkImage,
-			CKBox,
-			CKBoxImageEdit
-		] ),
 		toolbar: {
 			items: [
 				'bookmark', '|',
