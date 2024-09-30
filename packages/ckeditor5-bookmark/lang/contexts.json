@@ -1,6 +1,7 @@
 {
 	"Bookmark": "The label of the bookmark toolbar button. Also, a bookmark form header.",
 	"Insert": "The button in the bookmark insert form.",
+	"Update": "The button in the bookmark update form.",
 	"Bookmark name": "The label of the input in the bookmark insert and update form.",
 	"Enter the bookmark name without spaces.": "The description of bookmark input in the bookmark insert form.",
 	"Bookmark must not be empty.": "The error message. Displayed when the bookmark name is empty.",
