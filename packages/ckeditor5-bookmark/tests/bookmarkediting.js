@@ -9,22 +9,20 @@ import BookmarkEditing from '../src/bookmarkediting.js';
 import InsertBookmarkCommand from '../src/insertbookmarkcommand.js';
 import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
 
-import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image } from '@ckeditor/ckeditor5-image';
-import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { SelectAll } from '@ckeditor/ckeditor5-select-all';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Element } from '@ckeditor/ckeditor5-engine';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget';
 
 describe( 'BookmarkEditing', () => {
 	// eslint-disable-next-line max-len
@@ -38,7 +36,7 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Enter, Bold, Image, Heading, Paragraph, Undo, Link, SelectAll ]
+			plugins: [ BookmarkEditing, Essentials, Bold, Image, Heading, Paragraph, Link ]
 		};
 
 		editor = await createEditor( element, config );
@@ -509,7 +507,7 @@ describe( 'BookmarkEditing', () => {
 
 				const config = {
 					language: 'en',
-					plugins: [ BookmarkEditing, Enter, Image, Heading, Paragraph, Undo, Link, GeneralHtmlSupport ],
+					plugins: [ BookmarkEditing, Essentials, Image, Heading, Paragraph, Link, GeneralHtmlSupport ],
 					htmlSupport: {
 						allow: [
 							{

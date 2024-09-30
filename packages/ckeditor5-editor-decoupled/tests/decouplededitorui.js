@@ -40,8 +40,8 @@ describe( 'DecoupledEditorUI', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {

@@ -9,10 +9,11 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
+
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import BookmarkEditing from '../src/bookmarkediting.js';
 import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';

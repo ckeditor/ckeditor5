@@ -15,6 +15,8 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import {
+	type EventInfo,
+	getAncestors,
 	global,
 	Rect,
 	ResizeObserver,
@@ -446,8 +448,22 @@ export default class BlockToolbar extends Plugin {
 		let pendingAnimationFrame = false;
 
 		// Reposition the button on scroll, but do it only once per animation frame to avoid performance issues.
-		const repositionOnScroll = () => {
+		const repositionOnScroll = ( evt: EventInfo, domEvt: Event ) => {
 			if ( pendingAnimationFrame ) {
+				return;
+			}
+
+			// It makes no sense to reposition the button when the user scrolls the dropdown or any other
+			// nested scrollable element. The button should be repositioned only when the user scrolls the
+			// editable or any other scrollable parent of the editable. Leaving it as it is buggy on Chrome
+			// where scrolling nested scrollables is not properly handled.
+			// See more: https://github.com/ckeditor/ckeditor5/issues/17067
+			const editableElement = this._getSelectedEditableElement();
+
+			if (
+				domEvt.target !== global.document &&
+				!getAncestors( editableElement ).includes( domEvt.target as HTMLElement )
+			) {
 				return;
 			}
 

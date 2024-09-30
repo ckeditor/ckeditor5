@@ -13,4 +13,6 @@ export { default as BookmarkUI } from './bookmarkui.js';
 export { default as InsertBookmarkCommand } from './insertbookmarkcommand.js';
 export { default as UpdateBookmarkCommand } from './updatebookmarkcommand.js';
 
+export type { BookmarkConfig } from './bookmarkconfig.js';
+
 import './augmentation.js';

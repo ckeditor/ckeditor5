@@ -6,11 +6,9 @@
 /* globals console:false, window, document */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { Image, ImageUpload, ImageInsert } from '@ckeditor/ckeditor5-image';
@@ -24,7 +22,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 const config = {
 	plugins: [
-		Link, LinkImage, Typing, Paragraph, Undo, Enter, Table, Image, ImageUpload,
+		Essentials, Link, LinkImage, Paragraph, Table, Image, ImageUpload,
 		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
 	],
 	toolbar: [
