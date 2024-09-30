@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -593,6 +593,34 @@ describe( 'InsertBookmarkCommand', () => {
 						'<$text bold="true">bar</$text>' +
 					'</paragraph>'
 				);
+			} );
+		} );
+
+		describe( 'id validation', () => {
+			let stub;
+
+			beforeEach( () => {
+				stub = sinon.stub( console, 'warn' );
+			} );
+
+			afterEach( () => {
+				stub.restore();
+			} );
+
+			it( 'should warn if the command is executed with invalid id ( only spaces )', () => {
+				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				command.execute( { bookmarkId: '   ' } );
+
+				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-id' );
+			} );
+
+			it( 'should warn if the command is executed with invalid id ( spaces with bookmark name )', () => {
+				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				command.execute( { bookmarkId: 'bookmark name' } );
+
+				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-id' );
 			} );
 		} );
 	} );

@@ -9,6 +9,9 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import type { Selection, DocumentSelection } from 'ckeditor5/src/engine.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
+
+import { isBookmarkIdValid } from './utils.js';
 
 /**
  * The update bookmark command.
@@ -57,6 +60,19 @@ export default class UpdateBookmarkCommand extends Command {
 		const { bookmarkId } = options;
 
 		if ( !bookmarkId || typeof bookmarkId !== 'string' ) {
+			return;
+		}
+
+		if ( !isBookmarkIdValid( bookmarkId ) ) {
+			/**
+			 * Update bookmark command can be executed only with a valid id.
+			 *
+			 * Spaces are not allowed in the bookmark id.
+			 *
+			 * @error update-bookmark-command-executed-with-invalid-id
+			 */
+			logWarning( 'update-bookmark-command-executed-with-invalid-id' );
+
 			return;
 		}
 

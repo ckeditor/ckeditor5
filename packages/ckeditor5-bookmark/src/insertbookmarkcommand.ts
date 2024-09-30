@@ -14,8 +14,10 @@ import type {
 	Schema,
 	SchemaContextDefinition
 } from 'ckeditor5/src/engine.js';
-
+import { logWarning } from 'ckeditor5/src/utils.js';
 import { Command } from 'ckeditor5/src/core.js';
+
+import { isBookmarkIdValid } from './utils.js';
 
 /**
  * The insert bookmark command.
@@ -56,6 +58,19 @@ export default class InsertBookmarkCommand extends Command {
 		const { bookmarkId } = options;
 
 		if ( !bookmarkId || typeof bookmarkId !== 'string' ) {
+			return;
+		}
+
+		if ( !isBookmarkIdValid( bookmarkId ) ) {
+			/**
+			 * Insert bookmark command can be executed only with a valid id.
+			 *
+			 * Spaces are not allowed in the bookmark id.
+			 *
+			 * @error insert-bookmark-command-executed-with-invalid-id
+			 */
+			logWarning( 'insert-bookmark-command-executed-with-invalid-id' );
+
 			return;
 		}
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -122,6 +122,34 @@ describe( 'UpdateBookmarkCommand', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
 				);
+			} );
+		} );
+
+		describe( 'id validation', () => {
+			let stub;
+
+			beforeEach( () => {
+				stub = sinon.stub( console, 'warn' );
+			} );
+
+			afterEach( () => {
+				stub.restore();
+			} );
+
+			it( 'should warn if the command is executed with invalid id ( only spaces )', () => {
+				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+				command.execute( { bookmarkId: '   ' } );
+
+				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
+			} );
+
+			it( 'should warn if the command is executed with invalid id ( spaces with bookmark name )', () => {
+				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+				command.execute( { bookmarkId: 'bookmark name' } );
+
+				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
 			} );
 		} );
 	} );
