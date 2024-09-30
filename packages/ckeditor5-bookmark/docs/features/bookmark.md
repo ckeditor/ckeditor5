@@ -42,18 +42,23 @@ ClassicEditor
 
 ## Configuration
 
+TODO
 
 ## Related features
 
 Here are some other CKEditor&nbsp;5 features that you can use similarly to the bookmark plugin to structure your text better:
 
-* TODO
+* {@link features/document-outline Document outline} &ndash; displays the list of sections (headings) of the document next to the editor.
+* {@link features/document-outline Table of contents} &ndash; lets you insert a widget with a list of headings (section titles) that reflects the structure of the document.
+
 
 ## Common API
 
 The {@link module:bookmark/bookmark~Bookmark} plugin registers:
 
-* TODO
+* the `'bookmark'` UI button component implemented by the {@link module:bookmark/bookmarkui~BookmarkUI bookmark UI feature},
+* the `'insertBookmark'` command implemented by the {@link module:bookmark/insertbookmarkcommand~InsertBookmarkCommand editing feature}.
+* the `'updateBookmark'` command implemented by the {@link module:bookmark/updatebookmarkcommand~UpdateBookmarkCommand editing feature}.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
