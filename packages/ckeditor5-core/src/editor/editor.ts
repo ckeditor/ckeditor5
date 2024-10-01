@@ -928,7 +928,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * The plugin is not allowed by your license.
 				 *
-				 * Please check your license or contact support at [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
+				 * Please check your license or contact support at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
 				 * for more information.
 				 *
 				 * @error license-key-feature-not-allowed
@@ -939,9 +940,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'evaluationLimit' ) {
 				/**
-				 * You have exhausted the evaluation usage limit. Restart the editor.
+				 * You have reached the usage limit of your evaluation license key. Restart the editor.
 				 *
-				 * Please contact our customer support to get full access at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * Please contact our customer support to get full access at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-evaluation-limit
 				 */
@@ -950,9 +952,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'trialLimit' ) {
 				/**
-				 * You have exhausted the trial usage limit. Restart the editor.
+				 * You have reached the usage limit of your trial license key. Restart the editor.
 				 *
-				 * Please contact our customer support to get full access at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * Please contact our customer support to get full access at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-trial-limit
 				 */
@@ -961,9 +964,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'developmentLimit' ) {
 				/**
-				 * You have reached the development usage limit. Restart the editor.
+				 * You have reached the usage limit of your development license key. Restart the editor.
 				 *
-				 * Please contact our customer support to get full access at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * Please contact our customer support to get full access at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-development-limit
 				 */
@@ -972,9 +976,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'usageLimit' ) {
 				/**
-				 * The editor usage limit has been reached.
+				 * You have reached the usage limit of your license key.
 				 *
-				 * Visit Contact support to extend the limit at [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * Please contact our customer support to extend the limit at
+				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-usage-limit
 				 */
