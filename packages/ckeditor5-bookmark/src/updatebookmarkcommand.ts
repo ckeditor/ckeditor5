@@ -59,7 +59,7 @@ export default class UpdateBookmarkCommand extends Command {
 
 		const { bookmarkId } = options;
 
-		if ( !bookmarkId || typeof bookmarkId !== 'string' || !isBookmarkIdValid( bookmarkId ) ) {
+		if ( !isBookmarkIdValid( bookmarkId ) ) {
 			/**
 			 * Update bookmark command can be executed only with a valid id.
 			 *
