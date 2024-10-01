@@ -367,6 +367,26 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				expect( editor.getData() ).to.equal( '<p>foo <button>Button</button> bar</p>' );
 			} );
 
+			it( 'white spaces inside an inline object elements should be trimmed', () => {
+				editor.model.schema.register( 'button', {
+					allowWhere: '$text',
+					isInline: true,
+					allowChildren: [ '$text' ]
+				} );
+
+				editor.conversion.elementToElement( {
+					model: 'button',
+					view: 'button'
+				} );
+
+				editor.setData( '<p>foo <button>\n\t\t\t\t  Some   button  \n\t\t</button> bar</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <button>Some button</button> bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <button>Some button</button> bar</p>' );
+			} );
+
 			it( 'white spaces around successive inline object elements should not be trimmed', () => {
 				editor.model.schema.register( 'button', {
 					allowWhere: '$text',
