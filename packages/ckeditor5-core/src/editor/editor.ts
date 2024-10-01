@@ -7,6 +7,8 @@
  * @module core/editor/editor
  */
 
+import { set, get } from 'lodash-es';
+
 import {
 	Config,
 	CKEditorError,
@@ -39,7 +41,7 @@ import PluginCollection from '../plugincollection.js';
 import CommandCollection, { type CommandsMap } from '../commandcollection.js';
 import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
 import Accessibility from '../accessibility.js';
-import { getEditorUsageData } from './utils/editorusagedata.js';
+import { getEditorUsageData, type EditorUsageData } from './utils/editorusagedata.js';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
@@ -492,7 +494,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						requestId: uid(),
 						requestTime: Math.round( Date.now() / 1000 ),
 						license: licenseKey,
-						editor: getEditorUsageData( editor )
+						editor: editor._getEditorUsageData()
 					};
 
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
@@ -1006,6 +1008,30 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this._showLicenseError = () => {};
 	}
 
+	private _getEditorUsageData( ): EditorUsageData {
+		const collectedData = getEditorUsageData( this );
+
+		function setUsageData( path: string, value: unknown ) {
+			if ( get( collectedData, path ) !== undefined ) {
+				/**
+				 * The error thrown when trying to set the usage data path that was already set.
+				 * Make sure that you are not setting the same path multiple times.
+				 *
+				 * @error editor-usage-data-path-already-set
+				 */
+				throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
+			}
+
+			set( collectedData, path, value );
+		}
+
+		this.fire<EditorCollectUsageDataEvent>( 'collectUsageData', {
+			setUsageData
+		} );
+
+		return collectedData;
+	}
+
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
 		const headers = new Headers( { 'Content-Type': 'application/json' } );
 		const response = await fetch( new URL( endpoint ), {
@@ -1051,6 +1077,24 @@ type LicenseErrorReason =
 export type EditorReadyEvent = {
 	name: 'ready';
 	args: [];
+};
+
+/**
+ * Fired when the editor is about to collect usage data.
+ *
+ * This event is fired when the editor is about to collect usage data. It allows plugins to provide additional data for
+ * the usage statistics. The usage data is collected by the editor and sent to the usage tracking server. All plugins are
+ * expected to be ready at this point.
+ *
+ * @eventName ~Editor#collectUsageData
+ */
+export type EditorCollectUsageDataEvent = {
+	name: 'collectUsageData';
+	args: [
+		{
+			setUsageData( path: string, value: unknown ): void;
+		}
+	];
 };
 
 /**
