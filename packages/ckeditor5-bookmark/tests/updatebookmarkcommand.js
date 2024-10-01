@@ -19,11 +19,12 @@ import BookmarkEditing from '../src/bookmarkediting.js';
 import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
 
 describe( 'UpdateBookmarkCommand', () => {
-	let domElement, editor, model, command;
+	let domElement, editor, model, command, stub;
 
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
+		stub = sinon.stub( console, 'warn' );
 
 		editor = await ClassicEditor.create( domElement, {
 			plugins: [
@@ -44,6 +45,7 @@ describe( 'UpdateBookmarkCommand', () => {
 	} );
 
 	afterEach( () => {
+		stub.restore();
 		domElement.remove();
 		return editor.destroy();
 	} );
@@ -126,16 +128,6 @@ describe( 'UpdateBookmarkCommand', () => {
 		} );
 
 		describe( 'id validation', () => {
-			let stub;
-
-			beforeEach( () => {
-				stub = sinon.stub( console, 'warn' );
-			} );
-
-			afterEach( () => {
-				stub.restore();
-			} );
-
 			it( 'should warn if the command is executed with invalid id ( only spaces )', () => {
 				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 

@@ -20,13 +20,14 @@ import BookmarkEditing from '../src/bookmarkediting.js';
 import InsertBookmarkCommand from '../src/insertbookmarkcommand.js';
 
 describe( 'InsertBookmarkCommand', () => {
-	let domElement, editor, model, command;
+	let domElement, editor, model, command, stub;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
+		stub = sinon.stub( console, 'warn' );
 
 		editor = await ClassicEditor.create( domElement, {
 			plugins: [
@@ -47,6 +48,7 @@ describe( 'InsertBookmarkCommand', () => {
 	} );
 
 	afterEach( () => {
+		stub.restore();
 		domElement.remove();
 		return editor.destroy();
 	} );
@@ -597,16 +599,6 @@ describe( 'InsertBookmarkCommand', () => {
 		} );
 
 		describe( 'id validation', () => {
-			let stub;
-
-			beforeEach( () => {
-				stub = sinon.stub( console, 'warn' );
-			} );
-
-			afterEach( () => {
-				stub.restore();
-			} );
-
 			it( 'should warn if the command is executed with invalid id ( only spaces )', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
