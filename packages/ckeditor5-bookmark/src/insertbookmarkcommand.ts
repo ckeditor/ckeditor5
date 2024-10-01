@@ -57,7 +57,7 @@ export default class InsertBookmarkCommand extends Command {
 
 		const { bookmarkId } = options;
 
-		if ( !bookmarkId || typeof bookmarkId !== 'string' || !isBookmarkIdValid( bookmarkId ) ) {
+		if ( !isBookmarkIdValid( bookmarkId ) ) {
 			/**
 			 * Insert bookmark command can be executed only with a valid id.
 			 *
