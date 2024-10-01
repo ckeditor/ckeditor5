@@ -599,7 +599,7 @@ describe( 'InsertBookmarkCommand', () => {
 		} );
 
 		describe( 'id validation', () => {
-			it( 'should warn if the command is executed with invalid id ( only spaces )', () => {
+			it( 'should warn if the command is executed with invalid id (only spaces)', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				command.execute( { bookmarkId: '   ' } );
@@ -607,7 +607,7 @@ describe( 'InsertBookmarkCommand', () => {
 				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-id' );
 			} );
 
-			it( 'should warn if the command is executed with invalid id ( spaces with bookmark name )', () => {
+			it( 'should warn if the command is executed with invalid id (spaces with bookmark name)', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				command.execute( { bookmarkId: 'bookmark name' } );
@@ -615,7 +615,7 @@ describe( 'InsertBookmarkCommand', () => {
 				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-id' );
 			} );
 
-			it( 'should warn if the command is executed with invalid id ( empty name )', () => {
+			it( 'should warn if the command is executed with invalid id (empty name)', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				command.execute( { bookmarkId: '' } );

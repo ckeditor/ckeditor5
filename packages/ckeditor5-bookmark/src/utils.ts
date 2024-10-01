@@ -8,18 +8,14 @@
  */
 
 /**
- * Returns `true` if bookmark id is valid otherwise its `false`.
+ * Returns `true` if the bookmark id is valid; otherwise, its `false`.
  */
 export function isBookmarkIdValid( id: string ): boolean {
 	if ( !id || typeof id !== 'string' ) {
 		return false;
 	}
 
-	if ( id.replace( /\s+/g, '' ).length === 0 ) {
-		return false;
-	}
-
-	if ( id.split( ' ' ).length > 1 ) {
+	if ( id.includes( ' ' ) ) {
 		return false;
 	}
 
