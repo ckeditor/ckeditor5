@@ -39,6 +39,7 @@ import PluginCollection from '../plugincollection.js';
 import CommandCollection, { type CommandsMap } from '../commandcollection.js';
 import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
 import Accessibility from '../accessibility.js';
+import { getEditorUsageData } from './utils/editorusagedata.js';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
@@ -67,6 +68,13 @@ declare global {
  * (as most editor implementations do).
  */
 export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
+	/**
+	 * An required name of the editor class. The name should reflect the constructor name.
+	 */
+	public static get editorName(): `${ string }Editor` {
+		return 'Editor';
+	}
+
 	/**
 	 * A namespace for the accessibility features of the editor.
 	 */
@@ -484,7 +492,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						requestId: uid(),
 						requestTime: Math.round( Date.now() / 1000 ),
 						license: licenseKey,
-						editor: editor._getUsageData()
+						editor: getEditorUsageData( editor )
 					};
 
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
@@ -886,12 +894,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public static ContextWatchdog = ContextWatchdog;
 
-	private _getUsageData(): EditorUsageData {
-		return {
-			version: globalThis.CKEDITOR_VERSION
-		} /* TODO: Remove */ as unknown as EditorUsageData;
-	}
-
 	private _showLicenseError( reason: LicenseErrorReason, pluginName?: string ) {
 		setTimeout( () => {
 			if ( reason == 'invalid' ) {
@@ -1031,159 +1033,6 @@ type LicenseErrorReason =
 	'developmentLimit' |
 	'usageLimit' |
 	'distributionChannel';
-
-type EditorUsageData = {
-
-	/**
-	 * The document domain where the editor is running.
-	 */
-	documentDomain: string;
-
-	/**
-	 * The editor version.
-	 */
-	version: string;
-
-	/**
-	 * The editor type.
-	 */
-	type: `${ '' | 'Classic' | 'Inline' | 'Decoupled' | 'MultiRoot' }Editor`;
-
-	/**
-	 * The list of plugins used in the editor.
-	 */
-	plugins: Array<PluginUsageData>;
-
-	/**
-	 * The configuration of the toolbars used in the editor.
-	 */
-	toolbar: {
-
-		/**
-		 * The normal toolbar configuration used in the editor (if present).
-		 */
-		normal?: ToolbarUsageData;
-
-		/**
-		 * The block toolbar configuration used in the editor (if present).
-		 */
-		block?: ToolbarUsageData;
-
-		/**
-		 * The balloon toolbar configuration used in the editor (if present).
-		 */
-		balloon?: ToolbarUsageData;
-	};
-
-	/**
-	 * The configuration of the context menus used in the editor.
-	 */
-	menuBar: {
-
-		/**
-		 * Check if the editor menu is enabled.
-		 */
-		isVisible: boolean;
-	};
-
-	/**
-	 * The configuration of the language used in the editor.
-	 */
-	language: {
-
-		/**
-		 * The language used in the editor UI.
-		 */
-		ui: string;
-
-		/**
-		 * The language used in the editor content.
-		 */
-		content: string;
-	};
-
-	distribution: {
-
-		/**
-		 * The distribution channel of the editor. It can be for example `sh` or `cloud`.
-		 */
-		channel: string;
-	};
-
-	/**
-	 * Environment and browser information.
-	 */
-	env: EnvUsageData;
-
-	/**
-	 * The configuration of the editor integrations.
-	 */
-	integrations: {
-		[integrationName: string]: IntegrationUsageData;
-	};
-};
-
-type IntegrationUsageData = {
-
-	/**
-	 * The version of the CKEditor integration. e.g. it might be `43.0.0`.
-	 */
-	version: string;
-
-	/**
-	 * The version of the CKEditor framework used in the integration. e.g. for React integration might be `18.0.0`.
-	 */
-	frameworkVersion?: string;
-};
-
-type EnvUsageData = {
-
-	/**
-	 * The operating system used in the editor.
-	 */
-	os: 'mac' | 'windows' | 'ios' | 'android';
-
-	/**
-	 * The browser engine used in the editor.
-	 */
-	browser: 'safari' | 'gecko' | 'blink';
-};
-
-type ToolbarUsageData = {
-
-	/**
-	 * List of toolbar items without separators and new lines.
-	 */
-	items: Array<string>;
-
-	/**
-	 * Check if `-` line separator was used in the toolbar.
-	 */
-	isMultiline: boolean;
-
-	/**
-	 * Check if toolbar is configured to stop grouping items when it is full.
-	 */
-	shouldNotGroupWhenFull: boolean;
-};
-
-type PluginUsageData = {
-
-	/**
-	 * The name of the plugin.
-	 */
-	name: string;
-
-	/**
-	 * Flag indicating whether the plugin is a premium CKEditor 5 plugin or not.
-	 */
-	isPremium: boolean;
-
-	/**
-	 * Flag indicating whether the plugin is an official CKEditor 5 plugin or not.
-	 */
-	isOfficial: boolean;
-};
 
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional

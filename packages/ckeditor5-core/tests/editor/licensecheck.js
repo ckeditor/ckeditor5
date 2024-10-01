@@ -10,6 +10,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import Editor from '../../src/editor/editor.js';
 import testUtils from '../../tests/_utils/utils.js';
 import generateKey from '../_utils/generatelicensekey.js';
+import { getEditorUsageData } from '../../src/editor/utils/editorusagedata.js';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -566,7 +567,11 @@ describe( 'Editor - license check', () => {
 			const sentData = JSON.parse( fetchStub.firstCall.lastArg.body );
 
 			expect( sentData.license ).to.equal( licenseKey );
-			expect( sentData.editor ).to.deep.equal( { version: globalThis.CKEDITOR_VERSION } );
+			expect( sentData.editor ).to.deep.equal(
+				// JSON.stringify() helps with getting rid of the `undefined` values.
+				// It's done by the fetch anyways.
+				JSON.parse( JSON.stringify( getEditorUsageData( editor ) ) )
+			);
 		} );
 
 		it( 'should not send any request if license key does not contain a usage endpoint', () => {
