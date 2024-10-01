@@ -63,7 +63,7 @@ export default class UpdateBookmarkCommand extends Command {
 			/**
 			 * Update bookmark command can be executed only with a valid id.
 			 *
-			 * Spaces are not allowed in the bookmark id but id cannot be empty.
+			 * A valid bookmark ID must be a non-empty string and must not contain any spaces.
 			 *
 			 * @error update-bookmark-command-executed-with-invalid-id
 			 */
