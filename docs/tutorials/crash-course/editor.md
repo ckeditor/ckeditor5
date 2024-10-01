@@ -195,7 +195,7 @@ import 'ckeditor5/ckeditor5.css';
 // No need to import the styles.
 ```
 
-The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR` you can use in your project. You can use this variable to access the editor class and plugins. That is why you must change the import statements to destructuring in the `main.js` file:
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR` you can use in your project. You can use this variable to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
 
 ```js
 // Before:
