@@ -15,6 +15,7 @@ import { Image, ImageUpload, ImageInsert } from '@ckeditor/ckeditor5-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import Bookmark from '../../src/bookmark.js';
 
@@ -23,7 +24,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 const config = {
 	plugins: [
 		Essentials, Link, LinkImage, Paragraph, Table, Image, ImageUpload,
-		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
+		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark,
+		GeneralHtmlSupport
 	],
 	toolbar: [
 		'bookmark', '|',
@@ -35,6 +37,19 @@ const config = {
 	cloudServices: CS_CONFIG,
 	menuBar: {
 		isVisible: true
+	},
+	bookmark: {
+		enableNonEmptyBookmarkConversion: true
+	},
+	htmlSupport: {
+		allow: [
+			{
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			}
+		]
 	}
 };
 
@@ -54,7 +69,7 @@ ClassicEditor
 			language: 'ar'
 		} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor_rtl = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
