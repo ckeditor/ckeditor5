@@ -57,15 +57,11 @@ export default class InsertBookmarkCommand extends Command {
 
 		const { bookmarkId } = options;
 
-		if ( !bookmarkId || typeof bookmarkId !== 'string' ) {
-			return;
-		}
-
-		if ( !isBookmarkIdValid( bookmarkId ) ) {
+		if ( !bookmarkId || typeof bookmarkId !== 'string' || !isBookmarkIdValid( bookmarkId ) ) {
 			/**
 			 * Insert bookmark command can be executed only with a valid id.
 			 *
-			 * Spaces are not allowed in the bookmark id.
+			 * Spaces are not allowed in the bookmark id but id cannot be empty.
 			 *
 			 * @error insert-bookmark-command-executed-with-invalid-id
 			 */

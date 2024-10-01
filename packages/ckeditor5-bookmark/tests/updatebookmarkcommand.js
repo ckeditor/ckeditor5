@@ -151,6 +151,14 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
 			} );
+
+			it( 'should warn if the command is executed with invalid id ( empty name )', () => {
+				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+				command.execute( { bookmarkId: '' } );
+
+				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
+			} );
 		} );
 	} );
 } );
