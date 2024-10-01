@@ -1473,6 +1473,9 @@ export default class DomConverter {
 			// for inline objects can verify if the element is empty.
 			if ( this._isInlineObjectElement( viewElement ) ) {
 				inlineNodes.push( viewElement );
+
+				// Inline object content should be handled as a flow-root.
+				this._processDomInlineNodes( null, nestedInlineNodes, options );
 			} else {
 				// It's an inline element that is not an object (like <b>, <i>) or a block element.
 				for ( const inlineNode of nestedInlineNodes ) {

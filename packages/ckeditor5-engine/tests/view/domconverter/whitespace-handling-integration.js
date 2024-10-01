@@ -347,7 +347,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				expect( editor.getData() ).to.equal( '<p>foo <img src="/assets/sample.png"> bar</p>' );
 			} );
 
-			it( 'white space around (and inside) inline object elements should not be trimmed', () => {
+			it( 'white space around inline object elements should not be trimmed', () => {
 				editor.model.schema.register( 'button', {
 					allowWhere: '$text',
 					isInline: true,
@@ -362,12 +362,12 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				editor.setData( '<p>foo <button> Button </button> bar</p>' );
 
 				expect( getData( editor.model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph>foo <button> Button </button> bar</paragraph>' );
+					.to.equal( '<paragraph>foo <button>Button</button> bar</paragraph>' );
 
-				expect( editor.getData() ).to.equal( '<p>foo <button> Button </button> bar</p>' );
+				expect( editor.getData() ).to.equal( '<p>foo <button>Button</button> bar</p>' );
 			} );
 
-			it( 'white spaces around (and inside) successive inline object elements should not be trimmed', () => {
+			it( 'white spaces around successive inline object elements should not be trimmed', () => {
 				editor.model.schema.register( 'button', {
 					allowWhere: '$text',
 					isInline: true,
@@ -382,12 +382,12 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				editor.setData( '<p>foo <button> Button </button> <button> Another </button> bar</p>' );
 
 				expect( getData( editor.model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph>foo <button> Button </button> <button> Another </button> bar</paragraph>' );
+					.to.equal( '<paragraph>foo <button>Button</button> <button>Another</button> bar</paragraph>' );
 
-				expect( editor.getData() ).to.equal( '<p>foo <button> Button </button> <button> Another </button> bar</p>' );
+				expect( editor.getData() ).to.equal( '<p>foo <button>Button</button> <button>Another</button> bar</p>' );
 			} );
 
-			it( 'white spaces around (and inside) nested inline object elements should not be trimmed', () => {
+			it( 'white spaces around nested inline object elements should not be trimmed', () => {
 				editor.model.schema.register( 'select', {
 					allowWhere: '$text',
 					isInline: true,
@@ -434,17 +434,29 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 					.to.equal( '<paragraph>select ' +
 						'<select name="things">' +
 							'<optgroup label="FoosAndBars">' +
-								'<option value="foo"> Foo </option>' +
-								'<option value="bar"> Bar </option>' +
+								'<option value="foo">Foo</option>' +
+								'<option value="bar">Bar</option>' +
 							'</optgroup>' +
 							'<optgroup label="letters">' +
-								'<option value="a"> A </option>' +
-								'<option value="b"> B </option>' +
+								'<option value="a">A</option>' +
+								'<option value="b">B</option>' +
 							'</optgroup>' +
 						'</select>' +
 					' with some text</paragraph>' );
 
-				expect( editor.getData() ).to.equal( initialData );
+				expect( editor.getData() ).to.equal(
+					'<p>select <select name="things">' +
+							'<optgroup label="FoosAndBars">' +
+								'<option value="foo">Foo</option>' +
+								'<option value="bar">Bar</option>' +
+							'</optgroup>' +
+							'<optgroup label="letters">' +
+								'<option value="a">A</option>' +
+								'<option value="b">B</option>' +
+							'</optgroup>' +
+						'</select> with some text' +
+					'</p>'
+				);
 			} );
 
 			// All possible cases have been checked 👆. These are dummy tests only to verify this will work for all elements in the list.
