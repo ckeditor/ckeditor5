@@ -249,9 +249,18 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 				viewElement = parentElement;
 			}
 
-			// Insert the picture and move img into it.
-			viewWriter.insert( viewWriter.createPositionBefore( imgElement ), pictureElement );
-			viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionAt( pictureElement, 'end' ) );
+			const prevPictureElement = imgElement.parent!.is( 'element', 'picture' ) ? imgElement.parent : null;
+
+			if ( prevPictureElement ) {
+				// Insert a new picture, move img into it, remove previous picture element (ckeditor5#17192).
+				viewWriter.insert( viewWriter.createPositionBefore( prevPictureElement ), pictureElement );
+				viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionAt( pictureElement, 'end' ) );
+				viewWriter.remove( prevPictureElement );
+			} else {
+				// Insert the picture and move img into it.
+				viewWriter.insert( viewWriter.createPositionBefore( imgElement ), pictureElement );
+				viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionAt( pictureElement, 'end' ) );
+			}
 
 			// Apply collected attribute elements over the new picture element.
 			for ( const attributeElement of attributeElements ) {
