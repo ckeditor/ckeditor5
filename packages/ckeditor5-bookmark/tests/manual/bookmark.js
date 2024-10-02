@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console:false, window, document */
+/* globals console:false, window, document, CKEditorInspector */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -24,8 +24,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 const config = {
 	plugins: [
 		Essentials, Link, LinkImage, Paragraph, Table, Image, ImageUpload,
-		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark,
-		GeneralHtmlSupport
+		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
 	],
 	toolbar: [
 		'bookmark', '|',
@@ -37,26 +36,88 @@ const config = {
 	cloudServices: CS_CONFIG,
 	menuBar: {
 		isVisible: true
-	},
-	bookmark: {
-		enableNonEmptyBookmarkConversion: true
-	},
-	htmlSupport: {
-		allow: [
-			{
-				name: /^.*$/,
-				styles: true,
-				attributes: true,
-				classes: true
-			}
-		]
 	}
 };
+
+const { plugins, ...configWithoutPlugins } = config;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), config )
 	.then( editor => {
 		window.editor = editor;
+		CKEditorInspector.attach( { editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-wrapped-anchors-not-allowed' ),
+		{
+			...config,
+			bookmark: {
+				enableNonEmptyBookmarkConversion: false
+			}
+		} )
+	.then( editor => {
+		window.editor_wrapped_anchors_not_allowed = editor;
+		CKEditorInspector.attach( { editor_wrapped_anchors_not_allowed: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-with-ghs' ), {
+		...configWithoutPlugins,
+		plugins: [
+			...plugins,
+			GeneralHtmlSupport
+		],
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor_ghs = editor;
+		CKEditorInspector.attach( { editor_ghs: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-with-ghs-wrapped-anchors-not-allowed' ),
+		{
+			...configWithoutPlugins,
+			plugins: [
+				...plugins,
+				GeneralHtmlSupport
+			],
+			bookmark: {
+				enableNonEmptyBookmarkConversion: false
+			},
+			htmlSupport: {
+				allow: [
+					{
+						name: /^.*$/,
+						styles: true,
+						attributes: true,
+						classes: true
+					}
+				]
+			}
+		} )
+	.then( editor => {
+		window.editor_ghs_wrapped_anchors_not_allowed = editor;
+		CKEditorInspector.attach( { editor_ghs_wrapped_anchors_not_allowed: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -70,6 +131,7 @@ ClassicEditor
 		} )
 	.then( editor => {
 		window.editor_rtl = editor;
+		CKEditorInspector.attach( { editor_rtl: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
