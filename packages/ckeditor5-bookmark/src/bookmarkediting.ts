@@ -212,7 +212,9 @@ function upcastMatcher( element: ViewElement, expectEmpty: boolean = true ) {
 }
 
 /**
- * TODO
+ * A view-to-model converter that handles converting pointed or wrapped anchors with `id` and/or `name` attributes.
+ *
+ * @returns Returns a conversion callback.
  */
 function dataViewModelAnchorInsertion( editor: Editor ) {
 	return (
