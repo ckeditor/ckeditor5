@@ -55,39 +55,39 @@ msgstr "مول تېكىست تەھرىرلىگۈچ. تەھرىرلەش رايو�
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "ھۆججەت باشقۇرغۇچ بىلەن قىستۇر"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "ھۆججەت باشقۇرغۇچتا ئالماشتۇر"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "سۈرەتنى ھۆججەت باشقۇرغۇچ بىلەن قىستۇرىدۇ"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "سۈرەتنى ھۆججەت باشقۇرغۇچ بىلەن ئالماشتۇرىدۇ"
 
 msgctxt "The label for a button that opens a file manager in order to insert a file."
 msgid "File"
-msgstr ""
+msgstr "ھۆججەت"
 
 msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
 msgid "With file manager"
-msgstr ""
+msgstr "ھۆججەت باشقۇرغۇچ بىلەن"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "جەدۋەل ماۋزۇسى تاقاق"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "جەدۋەل ماۋزۇسى ئوچۇق"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "مەزمۇن تەھرىرلەش كۇنۇپكا بېسىلىشى"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."

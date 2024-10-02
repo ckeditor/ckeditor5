@@ -23,235 +23,235 @@ msgstr "جەدۋەل قىستۇر"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr ""
+msgstr "ماۋزۇ رەت"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "سولغا رەت قىستۇر"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "ئوڭغا رەت قىستۇر"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr ""
+msgstr "رەت ئۆچۈر"
 
 msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "رەت تاللا"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr ""
+msgstr "رەت"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr ""
+msgstr "ماۋزۇ قۇر"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr ""
+msgstr "ئاستىغا قۇر قىستۇر"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr ""
+msgstr "ئۈستىگە قۇر قىستۇر"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr ""
+msgstr "قۇر ئۆچۈر"
 
 msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "قۇر تاللا"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr ""
+msgstr "قۇر"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr ""
+msgstr "كاتەكچىنى ئۈستىگە بىرلەشتۈر"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr ""
+msgstr "كاتەكچىنى ئوڭغا بىرلەشتۈر"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr ""
+msgstr "كاتەكچىنى ئاستىغا بىرلەشتۈر"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr ""
+msgstr "كاتەكچىنى سولغا بىرلەشتۈر"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr ""
+msgstr "كاتەكچىنى بويىغا پارچىلا"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr ""
+msgstr "كاتەكچىنى توغرىسىغا پارچىلا"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr ""
+msgstr "كاتەكچە بىرلەشتۈر"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "جەدۋەل قورال بالداق"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table."
 msgid "Table properties"
-msgstr ""
+msgstr "جەدۋەل خاسلىقى"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
 msgid "Cell properties"
-msgstr ""
+msgstr "كاتەكچە خاسلىقى"
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
-msgstr ""
+msgstr "گىرۋەك"
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
-msgstr ""
+msgstr "ئۇسلۇب"
 
 msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
 msgid "Width"
-msgstr ""
+msgstr "كەڭلىك"
 
 msgctxt "The label for the input that allows configuring the height of a table or a table cell."
 msgid "Height"
-msgstr ""
+msgstr "ئېگىزلىك"
 
 msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
 msgid "Color"
-msgstr ""
+msgstr "رەڭ"
 
 msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
 msgid "Background"
-msgstr ""
+msgstr "تەگلىك"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "ئىچكى ئارىلىقى"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
-msgstr ""
+msgstr "ئۆلچىمى"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "جەدۋەل كاتەكچىسىدىكى تېكىست توغرىلىنىشى"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
-msgstr ""
+msgstr "توغرىلاش"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "توغرىسىغا تېكىست توغرىلاش قورال بالدىقى"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "بويىغا تېكىست توغرىلاش قورال بالدىقى"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "جەدۋەل توغرىلاش قورال بالدىقى"
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
-msgstr ""
+msgstr "يوق"
 
 msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
 msgid "Solid"
-msgstr ""
+msgstr "ئۇيۇل"
 
 msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
 msgid "Dotted"
-msgstr ""
+msgstr "چېكىتلىك"
 
 msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
 msgid "Dashed"
-msgstr ""
+msgstr "سىزىقچە"
 
 msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
 msgid "Double"
-msgstr ""
+msgstr "قوش"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "ئويمان"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "چوققا"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "پېتىنقى"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "كۆپۈنكى"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى سولغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى مەركەزگە توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى ئوڭغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى ئوڭ سولغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى چوققىغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى ئوتتۇرىغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "كاتەكچە تېكىستىنى ئاستىغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "جەدۋەلنى سولغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
-msgstr ""
+msgstr "جەدۋەلنى ئوتتۇرىغا توغرىلا"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "جەدۋەلنى ئوڭغا توغرىلا"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
-msgstr ""
+msgstr "رەڭ ئىناۋەتسىز. «#FF0000» ياكى «rgb(255,0,0)» ياكى «red» نى سىناڭ."
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
-msgstr ""
+msgstr "قىممىتى ئىناۋەتسىز. «10px» ياكى «2em» ياكى «2» نى سىناڭ."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "رەڭ تاللىغۇچ"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr ""
+msgstr "جەدۋەل چۈشەندۈرۈشى كىرگۈزۈلىدۇ"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
 msgid "Keystrokes that can be used in a table cell"

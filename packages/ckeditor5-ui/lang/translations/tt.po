@@ -183,7 +183,7 @@ msgstr ""
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
 msgid "MENU_BAR_MENU_INSERT"
-msgstr ""
+msgstr "Керт"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
 msgid "MENU_BAR_MENU_FORMAT"
