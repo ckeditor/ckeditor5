@@ -219,6 +219,8 @@ export default {
 If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
 
 ```js
+// Since v44, the `ckeditor5-dev-*` packages are ESM only.
+// Hence, ensure to install the latest compatible version of the packages.
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
