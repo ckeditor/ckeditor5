@@ -161,31 +161,31 @@ The editor and its contents should disappear. **This method returns a promise, s
 
 ## Adapt this tutorial to CDN
 
-If you want to use the editor from CDN, you can adapt this tutorial by following the below steps.
+If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
 First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CKEditor 5 Framework – tutorial CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-    </head>
-    <body>
-        <div id="editor">
-            <p>Hello world!</p>
-        </div>
-        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 Framework – tutorial CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello world!</p>
+		</div>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 
-        <script type="module" src="/main.js"></script>
-    </body>
+		<script type="module" src="/main.js"></script>
+	</body>
 </html>
 ```
 
-The CSS file contains the editor and content styles. Consequentially, you do not need to import styles into your JavaScript file.
+The CSS file contains the editor and content styles. Therefore, you do not need to import styles into your JavaScript file.
 
 ```js
 // Before:
@@ -195,7 +195,7 @@ import 'ckeditor5/ckeditor5.css';
 // No need to import the styles.
 ```
 
-The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR` you can use in your project. You can use this variable to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR`. You can use it in your project to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
 
 ```js
 // Before:
@@ -205,7 +205,7 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
 ```
 
-After following those steps closely and running the `npm run dev` command, you should be able to open the editor in the browser.
+After following these steps and running the `npm run dev` command, you should be able to open the editor in the browser.
 
 ## What's next
 

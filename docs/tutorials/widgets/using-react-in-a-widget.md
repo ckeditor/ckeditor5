@@ -463,7 +463,7 @@ export default function App( props ) {
 								]
 							},
 							// The configuration of the Products plugin. It specifies a function that will allow
-            				// the editor to render a React <ProductPreview> component inside a product widget.
+							// the editor to render a React <ProductPreview> component inside a product widget.
 							products: {
 								productRenderer: ( id, domElement ) => {
 									const product = props.products.find( product => product.id === id );
@@ -478,10 +478,10 @@ export default function App( props ) {
 						data={ editorData }
 						onReady={ ( editor ) => {
 							// A function executed when the editor has been initialized and is ready.
-    						// It synchronizes the initial data state and saves the reference to the editor instance.
+							// It synchronizes the initial data state and saves the reference to the editor instance.
 							setEditorRef( editor );
 							// CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
-        					// data layers. Use it to debug the application and learn more about the editor.
+							// data layers. Use it to debug the application and learn more about the editor.
 							CKEditorInspector.attach( editor );
 						} }
 						onChange={ ( evt, editor ) => {
@@ -741,27 +741,27 @@ npm run dev
 
 ## Adapt this tutorial to CDN
 
-If you want to use the editor from CDN, you can adapt this tutorial by following the below steps.
+If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
 First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CKEditor 5 Framework – tutorial CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-    </head>
-    <body>
-        <div id="editor">
-            <p>Hello world!</p>
-        </div>
-        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 Framework – tutorial CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello world!</p>
+		</div>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 
-        <script type="module" src="/main.js"></script>
-    </body>
+		<script type="module" src="/main.js"></script>
+	</body>
 </html>
 ```
 
@@ -775,7 +775,7 @@ import 'ckeditor5/ckeditor5.css';
 // No need to import the styles.
 ```
 
-The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR` you can use in your project. You can use this variable to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR`. You can use it in your project to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
 
 ```js
 // Before:
@@ -785,4 +785,4 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
 ```
 
-After following those steps closely and running the `npm run dev` command, you should be able to open the editor in the browser.
+After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.
