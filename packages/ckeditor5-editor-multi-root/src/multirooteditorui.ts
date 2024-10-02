@@ -8,16 +8,25 @@
  */
 
 import {
+	type EditorConfig,
+	type ToolbarConfigItem,
 	type Editor
 } from 'ckeditor5/src/core.js';
 
 import {
 	EditorUI,
+	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
-	type InlineEditableUIView
+	type InlineEditableUIView,
+	type View
 } from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine.js';
+import {
+	enablePlaceholder,
+	type DocumentSelectionChangeEvent
+} from 'ckeditor5/src/engine.js';
+
+import { omit } from 'lodash-es';
 
 import type MultiRootEditorUIView from './multirooteditoruiview.js';
 
@@ -34,6 +43,14 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * The editable element that was focused the last time when any of the editables had focus.
 	 */
 	private _lastFocusedEditableElement: HTMLElement | null;
+
+	/**
+	 * A cached map of toolbar items for each individual root. It saves time on recreating the
+	 * toolbar items every time the user moves their selection between roots.
+	 *
+	 * See {@link #_loadToolbarItemsForRoot}.
+	 */
+	private _rootToolbarItems = new Map<string, Array<View>>();
 
 	/**
 	 * Creates an instance of the multi-root editor UI class.
@@ -181,12 +198,60 @@ export default class MultiRootEditorUI extends EditorUI {
 	private _initToolbar(): void {
 		const editor = this.editor;
 		const view = this.view;
-		const toolbar = view.toolbar;
-
-		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
+		const modelSelection = editor.model.document.selection;
+		let previousSelectedRootName = modelSelection.anchor!.root.rootName!;
 
 		// Register the toolbar, so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
+
+		// Change the editor toolbar dynamically when the user moves their selection between roots.
+		modelSelection.on<DocumentSelectionChangeEvent>( 'change:range', () => {
+			const currentSelectedRootName = modelSelection.anchor!.root.rootName!;
+
+			if ( currentSelectedRootName !== previousSelectedRootName ) {
+				this._loadToolbarItemsForRoot( currentSelectedRootName );
+				previousSelectedRootName = currentSelectedRootName;
+			}
+		} );
+
+		// Load the toolbar items for the root that gets selected upon initialization.
+		this._loadToolbarItemsForRoot( previousSelectedRootName );
+	}
+
+	/**
+	 * Loads {@link module:editor-multi-root/multirooteditoruiview~MultiRootEditorUIView#toolbar} items
+	 * according to the toolbar configuration of a root.
+	 *
+	 * The configuration is either read from {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} or
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+	 */
+	private _loadToolbarItemsForRoot( rootName: string ) {
+		const toolbarView = this.view.toolbar;
+		let itemsToLoad: Array<View>;
+
+		if ( !this._rootToolbarItems.has( rootName ) ) {
+			const editor = this.editor;
+			const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+			const getRootToolbarConfig = normalizeRootsToolbarsConfig( editor.config.get( 'rootsToolbars' ) );
+			let rootToolbarConfig;
+
+			if ( getRootToolbarConfig( rootName ) ) {
+				rootToolbarConfig = {
+					...normalizeToolbarConfig( getRootToolbarConfig( rootName ) ),
+					...omit( globalToolbarConfig, 'items' )
+				};
+			} else {
+				rootToolbarConfig = globalToolbarConfig;
+			}
+
+			itemsToLoad = toolbarView.createItemsFromConfig( rootToolbarConfig, this.componentFactory );
+			this._rootToolbarItems.set( rootName, itemsToLoad );
+		} else {
+			itemsToLoad = this._rootToolbarItems.get( rootName )!;
+		}
+
+		toolbarView.items.clear();
+		toolbarView.items.addMany( itemsToLoad );
 	}
 
 	/**
@@ -219,4 +284,21 @@ export default class MultiRootEditorUI extends EditorUI {
 			keepOnFocus: true
 		} );
 	}
+}
+
+/**
+ * Converts `config.rootsToolbars` into a function form if not one already.
+ */
+function normalizeRootsToolbarsConfig(
+	rootsToolbarsConfig: EditorConfig[ 'rootsToolbars' ] | undefined
+): ( ( rootName: string ) => Array<ToolbarConfigItem> | undefined ) {
+	if ( typeof rootsToolbarsConfig === 'function' ) {
+		return rootsToolbarsConfig;
+	}
+
+	return ( rootName: string ) => {
+		if ( rootsToolbarsConfig ) {
+			return rootsToolbarsConfig[ rootName ];
+		}
+	};
 }

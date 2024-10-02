@@ -7,10 +7,48 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ButtonView, ToolbarView } from '../../../src/index.js';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 createEditor( '#editor-ltr', 'en', 'en' );
 createEditor( '#editor-rtl-mixed', 'ar', 'en' );
 createEditor( '#editor-rtl', 'ar', 'ar' );
+setupPlayground();
+
+function setupPlayground() {
+	const playgroundToolbarView = new ToolbarView( new Locale(), {
+		shouldGroupWhenFull: true
+	} );
+
+	playgroundToolbarView.render();
+
+	function createButton( label ) {
+		const button = new ButtonView();
+
+		button.set( {
+			label,
+			withText: true
+		} );
+
+		return button;
+	}
+
+	playgroundToolbarView.items.addMany( new Array( 15 ).fill( 0 ).map( ( i, index ) => createButton( index ) ) );
+
+	document.querySelector( '#add' ).addEventListener( 'click', () => {
+		playgroundToolbarView.items.add( createButton( playgroundToolbarView.items.length ) );
+	} );
+
+	document.querySelector( '#remove' ).addEventListener( 'click', () => {
+		playgroundToolbarView.items.remove( playgroundToolbarView.items.length - 1 );
+	} );
+
+	document.querySelector( '#clear' ).addEventListener( 'click', () => {
+		playgroundToolbarView.items.clear();
+	} );
+
+	document.querySelector( '#playground' ).appendChild( playgroundToolbarView.element );
+}
 
 function createEditor( selector, language, uiLanguageCode ) {
 	ClassicEditor

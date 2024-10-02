@@ -68,6 +68,18 @@ MultiRootEditor
 					'|', 'link', 'insertTable', 'mediaEmbed',
 					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 				]
+			},
+			rootsToolbars: {
+				leftSide: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'link'
+				],
+				rightSide: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'link'
+				]
 			}
 		}
 	)
