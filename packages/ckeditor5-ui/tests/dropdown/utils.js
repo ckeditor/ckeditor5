@@ -1391,6 +1391,16 @@ describe( 'utils', () => {
 			expect( dropdownView.menuView.render.calledOnce ).to.be.true;
 		} );
 
+		it( 'should add the menu view to dropdown\'s focus tracker to allow for linking focus trackers and keeping track of the focus ' +
+			'when it goes to sub-menus in other DOM sub-trees',
+		() => {
+			const addSpy = sinon.spy( dropdownView.focusTracker, 'add' );
+
+			addMenuToDropdown( dropdownView, body, definition );
+
+			sinon.assert.calledWithExactly( addSpy, dropdownView.menuView );
+		} );
+
 		it( 'should focus dropdown menu view after dropdown is opened', () => {
 			addMenuToDropdown( dropdownView, body, definition );
 
