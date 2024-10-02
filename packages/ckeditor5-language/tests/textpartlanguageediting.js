@@ -159,7 +159,7 @@ describe( 'TextPartLanguageEditing', () => {
 
 			expect( customEditor.config.get( 'language' ) ).to.deep.equal( languageConfig );
 
-			customEditor.destroy();
+			await customEditor.destroy();
 		} );
 	} );
 } );

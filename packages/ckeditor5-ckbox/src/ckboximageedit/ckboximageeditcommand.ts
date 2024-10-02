@@ -395,6 +395,7 @@ export default class CKBoxImageEditCommand extends Command {
 			writer.setSelection( element, 'on' );
 
 			editor.execute( 'insertImage', {
+				imageType: element.is( 'element', 'imageInline' ) ? 'imageInline' : null,
 				source: {
 					src: imageFallbackUrl,
 					sources: imageSources,

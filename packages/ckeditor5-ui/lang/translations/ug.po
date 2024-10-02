@@ -51,7 +51,7 @@ msgstr "سىرىلما قورال بالداق"
 
 msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
 msgid "Dropdown menu"
-msgstr ""
+msgstr "سىرىلما تىزىملىك"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
@@ -123,7 +123,7 @@ msgstr "تەھرىرلىگۈچ مەزمۇن قورال بالداق"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "ئون ئالتىلىك"
 
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
@@ -135,43 +135,43 @@ msgstr "ئىزدىگۈدەك تۈر يوق"
 
 msgctxt "A default label of a dialog window displayed on top the editor."
 msgid "Editor dialog"
-msgstr ""
+msgstr "تەھرىر سۆزلەشكۈ"
 
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
-msgstr ""
+msgstr "تاقا"
 
 msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
 msgid "Help Contents. To close this dialog press ESC."
-msgstr ""
+msgstr "ياردەم مەزمۇنى. بۇ سۆزلەشكۈنى تاقاشتا ESC بېسىلىدۇ."
 
 msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
 msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
-msgstr ""
+msgstr "تۆۋەندە تەھرىرلىگۈچتە ئىشلىتىلىدىغان ھەرپتاختا تېزلەتمە تىزىمىنى تاپالايسىز."
 
 msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
 msgid "(may require <kbd>Fn</kbd>)"
-msgstr ""
+msgstr "(<kbd>Fn</kbd> ئىشلىتىش كېرەك بولۇشى مۇمكىن)"
 
 msgctxt "The label for the button that opens the Accessibility help dialog from the application menu bar."
 msgid "Accessibility"
-msgstr ""
+msgstr "زىيارەتچانلىق"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
-msgstr ""
+msgstr "زىيارەتچانلىق يارەم"
 
 msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
 msgid "Press %0 for help."
-msgstr ""
+msgstr "ياردەم ئۈچۈن %0 بېسىلىدۇ"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
-msgstr ""
+msgstr "فوكۇس نۇقتىسىنى سۆزلەشكۈ كۆزنىكىگە يۆتكەيدۇ ياكى چىقىرىۋېتىدۇ"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.)."
 msgid "MENU_BAR_MENU_FILE"
-msgstr ""
+msgstr "ھۆججەت"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.)."
 msgid "MENU_BAR_MENU_EDIT"
@@ -179,7 +179,7 @@ msgstr "تەھرىرلەش"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source)."
 msgid "MENU_BAR_MENU_VIEW"
-msgstr ""
+msgstr "كۆرۈنۈش"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
 msgid "MENU_BAR_MENU_INSERT"
@@ -187,28 +187,28 @@ msgstr "قىستۇر"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
 msgid "MENU_BAR_MENU_FORMAT"
-msgstr ""
+msgstr "پىچىم"
 
 msgctxt "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.)."
 msgid "MENU_BAR_MENU_TOOLS"
-msgstr ""
+msgstr "قورال"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help)."
 msgid "MENU_BAR_MENU_HELP"
-msgstr ""
+msgstr "ياردەم"
 
 msgctxt "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.)."
 msgid "MENU_BAR_MENU_TEXT"
-msgstr ""
+msgstr "تېكىست"
 
 msgctxt "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
 msgid "MENU_BAR_MENU_FONT"
-msgstr ""
+msgstr "خەت نۇسخا"
 
 msgctxt "The accessible label of the editor menu bar used by assistive technologies."
 msgid "Editor menu bar"
-msgstr ""
+msgstr "تەھرىرلىگۈچ قورال بالداق"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "ئىناۋەتلىك رەڭ كودىنى كىرگۈزۈڭ (مەسىلەن، «ff0000»)"

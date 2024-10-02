@@ -30,6 +30,10 @@ describe( 'blockAutoformatEditing', () => {
 			} );
 	} );
 
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
 	describe( 'command name', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();

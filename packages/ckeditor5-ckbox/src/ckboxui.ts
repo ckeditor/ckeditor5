@@ -64,7 +64,6 @@ export default class CKBoxUI extends Plugin {
 		const locale = editor.locale;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const command = editor.commands.get( 'ckbox' )!;
-		const t = locale.t;
 
 		view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 

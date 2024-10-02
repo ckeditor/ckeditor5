@@ -1182,6 +1182,10 @@ describe( 'Autoformat', () => {
 					} );
 			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			it( 'should not replace asterisk with bulleted list item', () => {
 				setData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
@@ -1308,6 +1312,8 @@ describe( 'Autoformat', () => {
 						insertSpace();
 
 						expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+
+						return editor.destroy();
 					} );
 			} );
 		} );
@@ -2401,6 +2407,10 @@ describe( 'Autoformat', () => {
 					} );
 			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			it( 'should not replace asterisk with bulleted list item', () => {
 				setData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
@@ -2528,6 +2538,8 @@ describe( 'Autoformat', () => {
 						insertSpace();
 
 						expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+
+						return editor.destroy();
 					} );
 			} );
 		} );

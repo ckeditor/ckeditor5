@@ -9,7 +9,7 @@ const http = require( 'http' );
 const fs = require( 'fs' );
 const querystring = require( 'querystring' );
 const url = require( 'url' );
-const { upperFirst } = require( 'lodash' );
+const { upperFirst } = require( 'lodash-es' );
 
 const hostname = '127.0.0.1';
 const port = 3000;

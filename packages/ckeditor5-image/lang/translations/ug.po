@@ -23,15 +23,15 @@ msgstr "رەسىمچىك"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "تېكىست چۆرىدەت"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "تېكىست ئۈز"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "قۇردا"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -71,31 +71,31 @@ msgstr "رەسىم قىستۇرۇش"
 
 msgctxt "The label for the replace image toolbar button."
 msgid "Replace image"
-msgstr ""
+msgstr "سۈرەت ئالماشتۇر"
 
 msgctxt "The label for the upload image from computer toolbar button with visible label in insert image dropdown."
 msgid "Upload from computer"
-msgstr ""
+msgstr "كومپيۇتېردىن يۈكلە"
 
 msgctxt "The label for the replace image by upload from computer toolbar button with visible label in insert image dropdown."
 msgid "Replace from computer"
-msgstr ""
+msgstr "كومپيۇتېردىن ئالماشتۇر"
 
 msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
-msgstr ""
+msgstr "سۈرەتنى كومپيۇتېردىن يۈكلە"
 
 msgctxt "The label for the upload image from computer menu bar button (standalone button)."
 msgid "Image from computer"
-msgstr ""
+msgstr "كومپيۇتېردىن سۈرەت تاللاڭ"
 
 msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
 msgid "From computer"
-msgstr ""
+msgstr "كومپيۇتېردىن"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
-msgstr ""
+msgstr "سۈرەتنى كومپيۇتېردىن ئالماشتۇرىدۇ"
 
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
@@ -103,92 +103,92 @@ msgstr "چىقىرىش مەغلۇپ بولدى"
 
 msgctxt "The title of the notification displayed when there is no permission to upload assets."
 msgid "You have no image upload permissions."
-msgstr ""
+msgstr "سۈرەت يۈكلەش ئىجازىتىڭىز يوق."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr ""
+msgstr "سۈرەت قورال بالداق"
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
-msgstr ""
+msgstr "سۈرەت چوڭلۇقىنى تەڭشە"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr ""
+msgstr "سۈرەت چوڭلۇقىنى %0 كە تەڭشە"
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
-msgstr ""
+msgstr "سۈرەت چوڭلۇقىنى ئەسلى چوڭلۇقىغا تەڭشەيدۇ"
 
 msgctxt "The label for image resize balloon input."
 msgid "Resize image (in %0)"
-msgstr ""
+msgstr "سۈرەت چوڭلۇقىنى تەڭشە (بىرلىكى %0)"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "ئەسلى"
 
 msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
 msgid "Custom image size"
-msgstr ""
+msgstr "ئىختىيارى سۈرەت چوڭلۇقى"
 
 msgctxt "The label for the resize option that allows user to enter custom size of the image."
 msgid "Custom"
-msgstr ""
+msgstr "ئىختىيارى"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "سۈرەت چوڭلۇقىنى تەڭشەش تىزىمى"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "سۈرەتنى تور ئادرېسىدىن قىستۇر"
 
 msgctxt "The label for the insert image via url dropdown button."
 msgid "Insert via URL"
-msgstr ""
+msgstr "تور ئادرېسىدىن قىستۇر"
 
 msgctxt "The label for the insert image via url menu bar button (standalone button)."
 msgid "Image via URL"
-msgstr ""
+msgstr "تور ئادرېسىدىن كەلگەن سۈرەت"
 
 msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
 msgid "Via URL"
-msgstr ""
+msgstr "تور ئادرېسى ئارقىلىق"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "سۈرەت تور ئادرېسىنى يېڭىلا"
 
 msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
 msgid "Caption for the image"
-msgstr ""
+msgstr "سۈرەت چۈشەندۈرۈشى"
 
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
-msgstr ""
+msgstr "سۈرەت چۈشەندۈرۈشى: %0"
 
 msgctxt "Text used as error label when user submitted custom image resize form with blank value."
 msgid "The value must not be empty."
-msgstr ""
+msgstr "قىممىتى بوش قالدۇرۇلمايدۇ."
 
 msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
 msgid "The value should be a plain number."
-msgstr ""
+msgstr "مەزكۇر قىممەت سان بولۇشى كېرەك."
 
 msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
 msgid "Uploading image"
-msgstr ""
+msgstr "سۈرەت يۈكلەۋاتىدۇ"
 
 msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
 msgid "Image upload complete"
-msgstr ""
+msgstr "سۈرەت يۈكلەش تامام"
 
 msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
 msgid "Error during image upload"
-msgstr ""
+msgstr "سۈرەت يۈكلەشتە خاتالىق كۆرۈلدى"
 
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
-msgstr ""
+msgstr "سۈرەت"
