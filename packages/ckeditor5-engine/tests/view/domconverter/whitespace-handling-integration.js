@@ -387,6 +387,27 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				expect( editor.getData() ).to.equal( '<p>foo <button>Some button</button> bar</p>' );
 			} );
 
+			it( 'white spaces inside a textarea (as inline object element) should not be trimmed', () => {
+				editor.model.schema.register( 'textarea', {
+					allowWhere: '$text',
+					isInline: true,
+					allowChildren: [ '$text' ]
+				} );
+
+				editor.conversion.elementToElement( {
+					model: 'textarea',
+					view: 'textarea'
+				} );
+
+				editor.setData( '<p>foo <textarea>\n\t\t\t\t  Some   textarea  \n\t\t</textarea> bar</p>' );
+
+				// Note that the first \n is trimmed by the DOMParser.
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <textarea>\t\t\t\t  Some   textarea  \n\t\t</textarea> bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <textarea>\t\t\t\t  Some   textarea  \n\t\t</textarea> bar</p>' );
+			} );
+
 			it( 'white spaces around successive inline object elements should not be trimmed', () => {
 				editor.model.schema.register( 'button', {
 					allowWhere: '$text',
