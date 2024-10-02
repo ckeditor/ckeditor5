@@ -58,7 +58,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const editor = computed( () => {
-	if (!cloud.data.value) {
+	if ( !cloud.data.value ) {
 		return null;
 	}
 
@@ -66,7 +66,7 @@ const editor = computed( () => {
 } );
 
 const config = computed( () => {
-		if (!cloud.data.value) {
+		if ( !cloud.data.value ) {
 		return null;
 	}
 
@@ -338,7 +338,7 @@ const cloud = useCKEditorCloud( {
 const data = ref( '<p>Hello world!</p>' );
 
 const editor = computed( () => {
-	if (!cloud.data.value) {
+	if ( !cloud.data.value ) {
 		return null;
 	}
 
@@ -346,7 +346,7 @@ const editor = computed( () => {
 } );
 
 const config = computed( () => {
-	if (!cloud.data.value) {
+	if ( !cloud.data.value ) {
 		return null;
 	}
 

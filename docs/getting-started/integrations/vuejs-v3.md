@@ -184,14 +184,14 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 
 <script setup>
 import { computed } from 'vue';
-import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 const config = computed( () => {
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Essentials, Paragraph ],
-    toolbar: [ 'undo', 'redo' ]
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	};
 } );
 </script>
