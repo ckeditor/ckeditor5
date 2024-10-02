@@ -254,6 +254,7 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 		}
 
 		conversionApi.updateConversionResult( bookmark, data );
+
 		const { modelCursor, modelRange } = conversionApi.convertChildren( viewItem, data.modelCursor );
 
 		data.modelCursor = modelCursor;
