@@ -23,11 +23,11 @@ msgstr "Калын"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr ""
+msgstr "Курсив"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr ""
+msgstr "Ассызыклау"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
@@ -35,7 +35,7 @@ msgstr "Код"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Сызылган"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
@@ -47,7 +47,7 @@ msgstr ""
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
 msgid "Italic text"
-msgstr ""
+msgstr "Курсив текст"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
 msgid "Move out of an inline code style"
@@ -55,12 +55,12 @@ msgstr ""
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
 msgid "Bold text"
-msgstr ""
+msgstr "Калын текст"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
 msgid "Underline text"
-msgstr ""
+msgstr "Ассызыклы текст"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 msgid "Strikethrough text"
-msgstr ""
+msgstr "Сызылган текст"

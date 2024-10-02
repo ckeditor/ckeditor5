@@ -31,7 +31,7 @@ msgstr "ئۇلاش ئادىرسى"
 
 msgctxt "An error text displayed when user attempted to enter an empty URL."
 msgid "Link URL must not be empty."
-msgstr ""
+msgstr "ئۇلانما تور ئادرېسى بوش قالدۇرۇلمايدۇ."
 
 msgctxt "Label for the image link button."
 msgid "Link image"
@@ -59,8 +59,8 @@ msgstr "چۈشۈرۈشچان"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "ئۇلانما قۇر"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "ئۇلانمىنى چىقىرىۋەت"
