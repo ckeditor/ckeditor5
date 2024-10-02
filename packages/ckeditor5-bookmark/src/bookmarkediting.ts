@@ -178,12 +178,11 @@ export default class BookmarkEditing extends Plugin {
 }
 
 /**
- * TODO!!
- * A helper function to match an `anchor` element which must contain `id` attribute but without `href` attribute,
- * also element must be empty when matcher is execute in data pipeline so it can be upcasted to a `bookmark`.
+ * A helper function to match an `anchor` element which must contain `id` or `name` attribute but without `href` attribute,
+ * also when `expectEmpty` is set to `true` but the element is not empty matcher should not match any element.
  *
  * @param element The element to be checked.
- * @param expectEmpty When set to `true` matcher is executed in data pipeline, checks if `element` is empty;
+ * @param expectEmpty Default set to `true`, when set to `false` matcher expects that `anchor` is not empty;
  * in editing pipeline it's not empty because it contains the `UIElement`.
  */
 function upcastMatcher( element: ViewElement, expectEmpty: boolean = true ) {
@@ -228,11 +227,7 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 			return;
 		}
 
-		// TODO: make a helper
-		let enableNonEmptyBookmarkConversion = editor.config.get( 'bookmark.enableNonEmptyBookmarkConversion' );
-
-		// When not defined, option `enableNonEmptyBookmarkConversion` by default is set to `true`.
-		enableNonEmptyBookmarkConversion = enableNonEmptyBookmarkConversion !== undefined ? enableNonEmptyBookmarkConversion : true;
+		const enableNonEmptyBookmarkConversion = isEnabledNonEmptyBookmarkConversion( editor );
 
 		if ( !enableNonEmptyBookmarkConversion && !viewItem.isEmpty ) {
 			return;
@@ -260,4 +255,11 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 		data.modelCursor = modelCursor;
 		data.modelRange = modelWriter.createRange( data.modelRange!.start, modelRange!.end );
 	};
+}
+
+function isEnabledNonEmptyBookmarkConversion( editor: Editor ) {
+	const enableNonEmptyBookmarkConversion = editor.config.get( 'bookmark.enableNonEmptyBookmarkConversion' );
+
+	// When not defined, option `enableNonEmptyBookmarkConversion` by default is set to `true`.
+	return enableNonEmptyBookmarkConversion !== undefined ? enableNonEmptyBookmarkConversion : true;
 }
