@@ -5,8 +5,8 @@
 
 /* globals console, window, document */
 
-import config from './config';
-import allDataSets from './data/generated/index.js';
+import config from '../../../_utils/performance-config.js';
+import allDataSets from '../../../_data/generated/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 const initialData = allDataSets.paragraphs();
