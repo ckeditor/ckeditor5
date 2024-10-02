@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals globalThis */
+/* globals globalThis, localStorage */
 
 import { global, env } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -73,6 +73,24 @@ describe( 'getEditorUsageData()', () => {
 			main: undefined,
 			block: undefined,
 			balloon: undefined
+		} );
+	} );
+
+	describe( 'sessionId', () => {
+		it( 'should generate unique sessionId when one is not present', async () => {
+			localStorage.removeItem( '__ckeditor-session-id' );
+
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			expect( getEditorUsageData( editor ).sessionId ).to.be.string;
+		} );
+
+		it( 'should return sessionId when present in local storage', async () => {
+			localStorage.setItem( '__ckeditor-session-id', 'fake-session-id' );
+
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			expect( getEditorUsageData( editor ).sessionId ).to.equal( 'fake-session-id' );
 		} );
 	} );
 
