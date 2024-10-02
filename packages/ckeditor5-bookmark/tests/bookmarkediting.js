@@ -521,12 +521,12 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert an `a` with `id` attribute inside code block', () => {
 				editor.setData(
 					'<pre data-language="Plain text" spellcheck="false">' +
-						'<code class="language-plaintext"><a id="foo"></a></code>' +
+						'<code class="language-html"><a id="foo"></a></code>' +
 					'</pre>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<codeBlock language="plaintext"></codeBlock>'
+					'<codeBlock language="html"></codeBlock>'
 				);
 			} );
 		} );
