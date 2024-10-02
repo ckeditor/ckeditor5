@@ -17,6 +17,7 @@ import { Link } from '@ckeditor/ckeditor5-link';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -37,7 +38,7 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Essentials, Bold, Italic, ImageInline, ImageBlock, Heading, Paragraph, Link, Table ]
+			plugins: [ BookmarkEditing, Essentials, Bold, Italic, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, CodeBlock ]
 		};
 
 		editor = await createEditor( element, config );
@@ -514,6 +515,18 @@ describe( 'BookmarkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
+
+			it( 'should not convert an `a` with `id` attribute inside code block', () => {
+				editor.setData(
+					'<pre data-language="Plain text" spellcheck="false">' +
+						'<code class="language-plaintext"><a id="foo"></a></code>' +
+					'</pre>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<codeBlock language="plaintext"></codeBlock>'
 				);
 			} );
 		} );
