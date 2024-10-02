@@ -114,7 +114,11 @@ export default function buildContentStyles() {
 				for ( const atRuleName of Object.keys( contentRules.atRules ) ) {
 					const rules = transformCssRules( contentRules.atRules[ atRuleName ] )
 						.split( '\n' )
-						.map( line => `\t${ line }` )
+						.map( line => {
+							const singleIndent = line.replace( /^\t{2,}/, '\t' );
+
+							return `\t${ singleIndent }`;
+						} )
 						.join( '\n' );
 
 					atRulesDefinitions.push( `@${ atRuleName } {\n${ rules }\n}` );

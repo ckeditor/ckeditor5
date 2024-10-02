@@ -88,7 +88,8 @@ async function getCkeditor5ModulePaths() {
 		.map( packagePath => {
 			const shortPackageName = packagePath.replace( /^packages/, '' );
 
-			return new RegExp( shortPackageName );
+			// The trailing slash is needed to avoid partial matching, when an open source package name is included in a premium feature.
+			return new RegExp( shortPackageName + '/' );
 		} );
 
 	return files.filter( modulePath => {
