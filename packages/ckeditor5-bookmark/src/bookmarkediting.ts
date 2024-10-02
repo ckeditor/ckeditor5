@@ -96,8 +96,6 @@ export default class BookmarkEditing extends Plugin {
 		const { editor } = this;
 		const { conversion, t } = editor;
 
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:a', dataViewModelAnchorInsertion( editor ) );
-
 		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => upcastMatcher( element ) );
 
 		// Register an inline object matcher so that bookmarks <a>s are correctly recognized as inline elements in editing pipeline.
@@ -141,6 +139,10 @@ export default class BookmarkEditing extends Plugin {
 				return toWidget( containerElement, writer, { label: labelCreator } );
 			}
 		} );
+
+		conversion.for( 'upcast' ).add(
+			dispatcher => dispatcher.on<UpcastElementEvent>( 'element:a', dataViewModelAnchorInsertion( editor ) )
+		);
 	}
 
 	/**
@@ -259,7 +261,10 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 	};
 }
 
-function isEnabledNonEmptyBookmarkConversion( editor: Editor ) {
+/**
+ * Normalize the bookmark configuration option `enableNonEmptyBookmarkConversion`.
+ */
+function isEnabledNonEmptyBookmarkConversion( editor: Editor ): boolean {
 	const enableNonEmptyBookmarkConversion = editor.config.get( 'bookmark.enableNonEmptyBookmarkConversion' );
 
 	// When not defined, option `enableNonEmptyBookmarkConversion` by default is set to `true`.
