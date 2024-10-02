@@ -47,7 +47,7 @@ Once the integration is installed, create a new Vue component called `Editor.vue
 </template>
 
 <script setup>
-import { ref, markRaw, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
 const cloud = useCKEditorCloud( {
@@ -57,36 +57,33 @@ const cloud = useCKEditorCloud( {
 
 const data = ref( '<p>Hello world!</p>' );
 
-const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-} );
-
 const editor = computed( () => {
 	if ( !cloud.data.value ) {
 		return null;
 	}
 
-	const {
-		ClassicEditor,
-		Essentials,
-		Paragraph,
-		Bold,
-		Italic,
-		Mention
-	} = cloud.data.value.CKEditor;
+	return cloud.data.value.CKEditor.ClassicEditor;
+} );
 
+const config = computed( () => {
+		if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
 	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
 
-	return class Editor extends ClassicEditor {
-		static builtinPlugins = [
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
 			Essentials,
 			Paragraph,
 			Bold,
 			Italic,
 			Mention,
 			SlashCommand
-		];
+		]
 	};
 } );
 </script>
@@ -198,14 +195,27 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 </template>
 
 <script setup>
-import { markRaw } from 'vue';
+import { computed } from 'vue';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 // Editor loading and configuration is skipped for brevity.
 
-const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+const config = computed( () => {
+	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
+	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
+			Essentials,
+			Paragraph,
+			Bold,
+			Italic,
+			Mention,
+			SlashCommand
+		]
+	};
 } );
 </script>
 ```
@@ -312,6 +322,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 		v-if="editor"
 		v-model="data"
 		:editor="editor"
+		:config="config"
 		@ready="onReady"
 	/>
 </template>
@@ -331,17 +342,28 @@ const editor = computed( () => {
 		return null;
 	}
 
-	const {
-		DecoupledEditor,
-		Paragraph,
-		Essentials
-	} = cloud.data.value.CKEditor;
+	return cloud.data.value.CKEditor.ClassicEditor;
+} );
 
-	return class Editor extends DecoupledEditor {
-		static builtinPlugins = [
+const config = computed( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
+	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		plugins: [
 			Essentials,
-			Paragraph
-		];
+			Paragraph,
+			Bold,
+			Italic,
+			Mention,
+			SlashCommand
+		]
 	};
 } );
 
@@ -369,44 +391,11 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 ```html
 <script setup>
-import { ref, markRaw, computed } from 'vue';
-import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
+import { useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
 const cloud = useCKEditorCloud( {
 	version: '{@var ckeditor5-version}',
 	translations: [ 'es' ]
-} );
-
-const data = ref( '<p>Hello world!</p>' );
-
-const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-} );
-
-const editor = computed( () => {
-	if ( !cloud.data.value ) {
-		return null;
-	}
-
-	const {
-		ClassicEditor,
-		Essentials,
-		Paragraph,
-		Bold,
-		Italic
-	} = cloud.data.value.CKEditor;
-
-	return class Editor extends ClassicEditor {
-		static builtinPlugins = [
-			Essentials,
-			Paragraph,
-			Bold,
-			Italic,
-			Mention,
-			SlashCommand
-		];
-	};
 } );
 </script>
 ```
