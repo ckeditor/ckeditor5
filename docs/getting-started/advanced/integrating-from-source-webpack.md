@@ -69,13 +69,17 @@ You can now configure webpack. There are a couple of things that you need to tak
 The minimal configuration, assuming that you use the same methods of handling assets as CKEditor&nbsp;5 builds, will look like this:
 
 ```js
-// webpack.config.js
+import path from 'path';
+import { createRequire } from 'module';
+import { styles } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
 
-const path = require( 'path' );
-const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
 
-module.exports = {
+const require = createRequire( import.meta.url );
+
+export default {
 	entry: './main.js',
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
@@ -136,13 +140,17 @@ module.exports = {
 Optionally, you may need to handle `.ts` files to use TypeScript in your project. There is the [`ts-loader`](https://webpack.js.org/guides/typescript/#loader) for this purpose. Webpack configuration must take into account these changes.
 
 ```js
-// webpack.config.js
+import path from 'path';
+import { createRequire } from 'module';
+import { styles } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
 
-const path = require( 'path' );
-const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
 
-module.exports = {
+const require = createRequire( import.meta.url );
+
+export default {
 	entry: './main.ts',
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
@@ -568,9 +576,14 @@ npm install --save \
 And add it to your webpack configuration:
 
 ```js
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
-module.exports = {
+import path from 'path';
+import { createRequire } from 'module';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
+const require = createRequire( import.meta.url );
+
+export default {
 	// More configuration.
 	// ...
 

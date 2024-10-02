@@ -20,12 +20,19 @@ Prior to version 42.0.0, there were several ways to install CKEditor&nbsp;5, eac
 Here is a code example showing one of the possible setups using the old installation methods:
 
 ```js
-// webpack.config.js
-const path = require( 'path' );
-const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+// webpack.config.mjs
 
-module.exports = {
+import path from 'path';
+import { createRequire } from 'module';
+import { styles } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
+
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
+
+const require = createRequire( import.meta.url );
+
+export default {
 	entry: './src/index.js',
 	output: {
 		path: path.resolve( __dirname, 'dist' ),

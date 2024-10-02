@@ -444,6 +444,8 @@ First, import an object that provides a utility for creating the configuration f
 
 ```js
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+// or use an `import` instruction when developing an ESM project (`type=module`).
+import { styles } from '@ckeditor/ckeditor5-dev-utils';
 ```
 
 Then, add two new elements to the exported object under the `module.rules` array (as new items of the `oneOf` array). These are SVG and CSS loaders required to handle the CKEditor&nbsp;5 source:
@@ -738,6 +740,8 @@ Then, add the installed plugin to the webpack configuration:
 
 // ...
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
+// or use an `import` instruction when developing an ESM project (`type=module`).
+import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
 
 module.exports = {
 	// ...

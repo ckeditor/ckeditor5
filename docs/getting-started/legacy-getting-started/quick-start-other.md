@@ -209,6 +209,7 @@ Then, install the packages needed to build CKEditor&nbsp;5:
 
 ```bash
 npm install --save \
+	@ckeditor/ckeditor5-dev-utils \
 	css-loader@5 \
 	postcss-loader@4 \
 	raw-loader@4 \
@@ -220,14 +221,18 @@ npm install --save \
 The minimal webpack configuration needed to enable building CKEditor&nbsp;5 is:
 
 ```js
-// webpack.config.js
+// webpack.config.mjs
 
-'use strict';
+import path from 'path';
+import { createRequire } from 'module';
+import { styles } from '@ckeditor/ckeditor5-dev-utils';
 
-const path = require( 'path' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
 
-module.exports = {
+const require = createRequire( import.meta.url );
+
+export default {
 	// https://webpack.js.org/configuration/entry-context/
 	entry: './app.js',
 
@@ -294,7 +299,6 @@ You can start with the {@link examples/builds/classic-editor classic editor} wit
 
 ```bash
 npm install --save \
-	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-paragraph \
