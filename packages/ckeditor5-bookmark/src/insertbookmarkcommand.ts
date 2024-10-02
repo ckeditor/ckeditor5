@@ -59,13 +59,13 @@ export default class InsertBookmarkCommand extends Command {
 
 		if ( !isBookmarkIdValid( bookmarkId ) ) {
 			/**
-			 * Insert bookmark command can be executed only with a valid id.
+			 * Insert bookmark command can be executed only with a valid name.
 			 *
-			 * A valid bookmark ID must be a non-empty string and must not contain any spaces.
+			 * A valid bookmark name must be a non-empty string and must not contain any spaces.
 			 *
-			 * @error insert-bookmark-command-executed-with-invalid-id
+			 * @error insert-bookmark-command-executed-with-invalid-name
 			 */
-			logWarning( 'insert-bookmark-command-executed-with-invalid-id' );
+			logWarning( 'insert-bookmark-command-executed-with-invalid-name' );
 
 			return;
 		}

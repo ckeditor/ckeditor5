@@ -61,13 +61,13 @@ export default class UpdateBookmarkCommand extends Command {
 
 		if ( !isBookmarkIdValid( bookmarkId ) ) {
 			/**
-			 * Update bookmark command can be executed only with a valid id.
+			 * Update bookmark command can be executed only with a valid name.
 			 *
-			 * A valid bookmark ID must be a non-empty string and must not contain any spaces.
+			 * A valid bookmark name must be a non-empty string and must not contain any spaces.
 			 *
-			 * @error update-bookmark-command-executed-with-invalid-id
+			 * @error update-bookmark-command-executed-with-invalid-name
 			 */
-			logWarning( 'update-bookmark-command-executed-with-invalid-id' );
+			logWarning( 'update-bookmark-command-executed-with-invalid-name' );
 
 			return;
 		}
