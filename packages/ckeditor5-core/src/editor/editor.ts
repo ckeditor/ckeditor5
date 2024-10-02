@@ -494,7 +494,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						requestId: uid(),
 						requestTime: Math.round( Date.now() / 1000 ),
 						license: licenseKey,
-						editor: editor._getEditorUsageData()
+						editor: collectUsageData( editor )
 					};
 
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
@@ -1008,30 +1008,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this._showLicenseError = () => {};
 	}
 
-	private _getEditorUsageData( ): EditorUsageData {
-		const collectedData = getEditorUsageData( this );
-
-		function setUsageData( path: string, value: unknown ) {
-			if ( get( collectedData, path ) !== undefined ) {
-				/**
-				 * The error thrown when trying to set the usage data path that was already set.
-				 * Make sure that you are not setting the same path multiple times.
-				 *
-				 * @error editor-usage-data-path-already-set
-				 */
-				throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
-			}
-
-			set( collectedData, path, value );
-		}
-
-		this.fire<EditorCollectUsageDataEvent>( 'collectUsageData', {
-			setUsageData
-		} );
-
-		return collectedData;
-	}
-
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
 		const headers = new Headers( { 'Content-Type': 'application/json' } );
 		const response = await fetch( new URL( endpoint ), {
@@ -1047,6 +1023,30 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		return response.json();
 	}
+}
+
+function collectUsageData( editor: Editor ): EditorUsageData {
+	const collectedData = getEditorUsageData( editor );
+
+	function setUsageData( path: string, value: unknown ) {
+		if ( get( collectedData, path ) !== undefined ) {
+			/**
+			 * The error thrown when trying to set the usage data path that was already set.
+			 * Make sure that you are not setting the same path multiple times.
+			 *
+			 * @error editor-usage-data-path-already-set
+			 */
+			throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
+		}
+
+		set( collectedData, path, value );
+	}
+
+	editor.fire<EditorCollectUsageDataEvent>( 'collectUsageData', {
+		setUsageData
+	} );
+
+	return collectedData;
 }
 
 type LicenseErrorReason =
