@@ -520,7 +520,7 @@ describe( 'BookmarkEditing', () => {
 
 			it( 'should not convert an `a` with `id` attribute inside code block', () => {
 				editor.setData(
-					'<pre data-language="Plain text" spellcheck="false">' +
+					'<pre data-language="HTML" spellcheck="false">' +
 						'<code class="language-html"><a id="foo"></a></code>' +
 					'</pre>'
 				);
