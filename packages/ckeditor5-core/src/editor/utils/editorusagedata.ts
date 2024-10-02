@@ -130,7 +130,7 @@ function getEnvUsageData(): EnvUsageData {
 	};
 }
 
-type EditorUsageData = {
+export type EditorUsageData = {
 	hostname: string;
 	version: string;
 	type: `${ string }Editor`;

@@ -702,6 +702,133 @@ describe( 'Editor - license check', () => {
 			expect( () => clock.tick( 1 ) ).to.not.throw();
 		} );
 	} );
+
+	describe( 'collect usage data', () => {
+		let editor, sendUsageRequestStub;
+
+		beforeEach( () => {
+			const { licenseKey } = generateKey( {
+				usageEndpoint: 'https://ckeditor.com'
+			} );
+
+			editor = new TestEditor( { licenseKey } );
+			sendUsageRequestStub = sinon.stub( editor, '_sendUsageRequest' ).returns( Promise.resolve() );
+		} );
+
+		it( 'should fire `collectUsageData` event with proper payload', () => {
+			const spy = sinon.spy();
+
+			editor.on( 'collectUsageData', spy );
+			editor.fire( 'ready' );
+
+			expect( spy ).to.be.calledOnce.calledWithMatch(
+				sinon.match.object,
+				{
+					setUsageData: sinon.match.func
+				}
+			);
+		} );
+
+		it( 'should be possible to set flat usage data using helper passed in the event', () => {
+			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
+				setUsageData( 'foo', 123 );
+			} );
+
+			editor.fire( 'ready' );
+
+			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
+				sinon.match.string,
+				sinon.match( {
+					editor: {
+						foo: 123
+					}
+				} )
+			);
+		} );
+
+		it( 'should be possible to set nested usage data using helper passed in the event', () => {
+			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
+				setUsageData( 'foo.bar', 123 );
+			} );
+
+			editor.fire( 'ready' );
+
+			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
+				sinon.match.string,
+				sinon.match( {
+					editor: {
+						foo: {
+							bar: 123
+						}
+					}
+				} )
+			);
+		} );
+
+		it( 'should be possible to set multiple usage data using helper passed in the event', () => {
+			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
+				setUsageData( 'foo', 123 );
+				setUsageData( 'bar', 456 );
+			} );
+
+			editor.fire( 'ready' );
+
+			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
+				sinon.match.string,
+				sinon.match( {
+					editor: {
+						foo: 123,
+						bar: 456
+					}
+				} )
+			);
+		} );
+
+		it( 'should be possible to set integrations usage data using helper passed in the event without raising error', () => {
+			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
+				setUsageData( 'integrations.foo', 123 );
+			} );
+
+			editor.fire( 'ready' );
+
+			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
+				sinon.match.string,
+				sinon.match( {
+					editor: {
+						integrations: {
+							foo: 123
+						}
+					}
+				} )
+			);
+		} );
+
+		it( 'should be impossible to override already collected usage data', () => {
+			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
+				expect( () => {
+					setUsageData( 'plugins', 456 );
+				} ).to.throw( CKEditorError, 'editor-usage-data-path-already-set' );
+			} );
+
+			editor.fire( 'ready' );
+
+			expect( sendUsageRequestStub ).to.be.calledOnce;
+		} );
+
+		it( 'should raise error when trying to set the same data two times in row', () => {
+			const spy = sinon.spy( ( _, { setUsageData } ) => {
+				expect( () => {
+					setUsageData( 'foo', 123 );
+					setUsageData( 'foo', 456 );
+				} ).to.throw( CKEditorError, 'editor-usage-data-path-already-set' );
+			} );
+
+			editor.on( 'collectUsageData', spy );
+			editor.fire( 'ready' );
+
+			expect( spy ).to.be.calledOnce;
+		} );
+	} );
 } );
 
 function wait( time ) {

@@ -7,6 +7,8 @@
  * @module core/editor/editor
  */
 
+import { set, get } from 'lodash-es';
+
 import {
 	Config,
 	CKEditorError,
@@ -39,7 +41,7 @@ import PluginCollection from '../plugincollection.js';
 import CommandCollection, { type CommandsMap } from '../commandcollection.js';
 import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
 import Accessibility from '../accessibility.js';
-import { getEditorUsageData } from './utils/editorusagedata.js';
+import { getEditorUsageData, type EditorUsageData } from './utils/editorusagedata.js';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
@@ -492,7 +494,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						requestId: uid(),
 						requestTime: Math.round( Date.now() / 1000 ),
 						license: licenseKey,
-						editor: getEditorUsageData( editor )
+						editor: collectUsageData( editor )
 					};
 
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
@@ -1023,6 +1025,30 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	}
 }
 
+function collectUsageData( editor: Editor ): EditorUsageData {
+	const collectedData = getEditorUsageData( editor );
+
+	function setUsageData( path: string, value: unknown ) {
+		if ( get( collectedData, path ) !== undefined ) {
+			/**
+			 * The error thrown when trying to set the usage data path that was already set.
+			 * Make sure that you are not setting the same path multiple times.
+			 *
+			 * @error editor-usage-data-path-already-set
+			 */
+			throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
+		}
+
+		set( collectedData, path, value );
+	}
+
+	editor.fire<EditorCollectUsageDataEvent>( 'collectUsageData', {
+		setUsageData
+	} );
+
+	return collectedData;
+}
+
 type LicenseErrorReason =
 	'invalid' |
 	'expired' |
@@ -1051,6 +1077,24 @@ type LicenseErrorReason =
 export type EditorReadyEvent = {
 	name: 'ready';
 	args: [];
+};
+
+/**
+ * Fired when the editor is about to collect usage data.
+ *
+ * This event is fired when the editor is about to collect usage data. It allows plugins to provide additional data for
+ * the usage statistics. The usage data is collected by the editor and sent to the usage tracking server. All plugins are
+ * expected to be ready at this point.
+ *
+ * @eventName ~Editor#collectUsageData
+ */
+export type EditorCollectUsageDataEvent = {
+	name: 'collectUsageData';
+	args: [
+		{
+			setUsageData( path: string, value: unknown ): void;
+		}
+	];
 };
 
 /**
