@@ -10,8 +10,8 @@ import allDataSets from './data/generated/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 // TEST CONFIG.
-const TRIES_PER_DATA_SET = 1;	// Number of tries per data set.
-const DATA_SET_NAME = 'formattingLongP';		// Change to string with data set name if you want to check only specific data set.
+const TRIES_PER_DATA_SET = 10;	// Number of tries per data set.
+const DATA_SET_NAME = null;		// Change to string with data set name if you want to check only specific data set.
 const REMOVE_OUTLIERS = 1;		// Change to `0` to keep all values in the results. Change to higher value to remove more outliers.
 
 // If `DATA_SET_NAME` is defined, keep only that data set.
