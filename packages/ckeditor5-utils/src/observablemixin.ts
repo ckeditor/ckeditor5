@@ -319,7 +319,7 @@ export default function ObservableMixin( base?: Constructor<Emitter> ): unknown 
 
 		public [ boundPropertiesSymbol ]?: Map<string, Binding>;
 
-		public [ boundObservablesSymbol]?: Map<Observable, Record<string, Set<Binding>>>;
+		public [ boundObservablesSymbol ]?: Map<Observable, Record<string, Set<Binding>>>;
 	}
 
 	return Mixin;
