@@ -96,6 +96,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
+		// this.focusTracker._label = 'ListView';
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this.focusables,

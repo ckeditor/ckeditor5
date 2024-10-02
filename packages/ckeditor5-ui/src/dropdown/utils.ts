@@ -198,6 +198,7 @@ export function addMenuToDropdown(
 		ariaLabel?: string;
 	} = {} ): void {
 	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+	dropdownView.focusTracker.add( dropdownView.menuView );
 
 	if ( dropdownView.isOpen ) {
 		addMenuToOpenDropdown( dropdownView, options );
@@ -217,6 +218,8 @@ function addMenuToOpenDropdown(
 ): void {
 	const dropdownMenuRootListView = dropdownView.menuView!;
 	const t = dropdownView.locale!.t;
+
+	// dropdownView.focusTracker._label = 'MenuDropdownView';
 
 	dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
 	dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
