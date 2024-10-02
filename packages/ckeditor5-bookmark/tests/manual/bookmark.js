@@ -16,6 +16,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 import Bookmark from '../../src/bookmark.js';
 
@@ -23,14 +24,14 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 const config = {
 	plugins: [
-		Essentials, Link, LinkImage, Paragraph, Table, Image, ImageUpload,
+		Essentials, Link, LinkImage, Paragraph, Table, Image, ImageUpload, CodeBlock,
 		EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
 	],
 	toolbar: [
 		'bookmark', '|',
 		'undo', 'redo', '|',
 		'bold', 'italic', '|',
-		'insertImage', 'insertTable', '|',
+		'insertImage', 'insertTable', 'codeBlock', '|',
 		'heading', 'link'
 	],
 	cloudServices: CS_CONFIG,
