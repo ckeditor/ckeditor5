@@ -39,7 +39,7 @@ msgstr ""
 
 msgctxt "The label for the (single) replace action button in the find and replace dropdown."
 msgid "Replace"
-msgstr ""
+msgstr "Алмаштыр"
 
 msgctxt "The label for the replace all action button in the find and replace dropdown."
 msgid "Replace all"

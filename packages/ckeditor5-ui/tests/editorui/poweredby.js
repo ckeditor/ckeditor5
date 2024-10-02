@@ -392,7 +392,7 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should have a link that opens in a new tab', () => {
-				const link = 'https://ckeditor.com/?utm_source=ckeditor&utm_medium=referral' +
+				const link = 'https://ckeditor.com/powered-by-ckeditor/?utm_source=ckeditor&utm_medium=referral' +
 					'&utm_campaign=701Dn000000hVgmIAE_powered_by_ckeditor_logo';
 				expect( view.element.firstChild.tagName ).to.equal( 'A' );
 				expect( view.element.firstChild.href ).to.equal( link );
