@@ -133,7 +133,7 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: '   ' } );
 
-				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
+				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-name' );
 			} );
 
 			it( 'should warn if the command is executed with invalid id (spaces with bookmark name)', () => {
@@ -141,7 +141,7 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'bookmark name' } );
 
-				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
+				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-name' );
 			} );
 
 			it( 'should warn if the command is executed with invalid id (empty name)', () => {
@@ -149,7 +149,7 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: '' } );
 
-				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-id' );
+				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-name' );
 			} );
 		} );
 	} );
