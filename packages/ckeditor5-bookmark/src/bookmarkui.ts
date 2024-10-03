@@ -198,7 +198,7 @@ export default class BookmarkUI extends Plugin {
 		);
 
 		// Disable the "save" button if the command is disabled.
-		formView.insertButtonView.bind( 'isEnabled' ).toMany(
+		formView.buttonView.bind( 'isEnabled' ).toMany(
 			commands,
 			'isEnabled',
 			( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
@@ -340,6 +340,16 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
+	 * Updates the button label. If bookmark is selected label is set to 'Update' otherwise
+	 * it is 'Insert'.
+	 */
+	private _updateFormButtonLabel( isBookmarkSelected: boolean ) {
+		const t = this.editor.locale.t;
+
+		this.formView!.buttonView.label = isBookmarkSelected ? t( 'Update' ) : t( 'Insert' );
+	}
+
+	/**
 	 * Adds the {@link #actionsView} to the {@link #_balloon}.
 	 *
 	 * @internal
@@ -412,7 +422,7 @@ export default class BookmarkUI extends Plugin {
 		if ( this._isFormInPanel ) {
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
-			this.formView!.insertButtonView.focus();
+			this.formView!.buttonView.focus();
 
 			// Reset the ID field to update the state of the submit button.
 			this.formView!.idInputView.fieldView.reset();
@@ -511,6 +521,8 @@ export default class BookmarkUI extends Plugin {
 		let prevSelectedBookmark = this._getSelectedBookmarkElement();
 		let prevSelectionParent = getSelectionParent();
 
+		this._updateFormButtonLabel( !!prevSelectedBookmark );
+
 		const update = () => {
 			const selectedBookmark = this._getSelectedBookmarkElement();
 			const selectionParent = getSelectionParent();
@@ -539,6 +551,8 @@ export default class BookmarkUI extends Plugin {
 				// to the new position in the editing view (a new native DOM range).
 				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
+
+			this._updateFormButtonLabel( !!prevSelectedBookmark );
 
 			prevSelectedBookmark = selectedBookmark;
 			prevSelectionParent = selectionParent;
