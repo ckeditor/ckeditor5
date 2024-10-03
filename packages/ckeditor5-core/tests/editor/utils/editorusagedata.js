@@ -76,6 +76,65 @@ describe( 'getEditorUsageData()', () => {
 		} );
 	} );
 
+	describe( '#pageSessionId', () => {
+		beforeEach( () => {
+			delete global.window.CKEDITOR_PAGE_SESSION_ID;
+		} );
+
+		it( 'should return unique page session id', async () => {
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			const usageData = getEditorUsageData( editor );
+
+			expect( usageData.pageSessionId ).to.be.a( 'string' );
+		} );
+
+		it( 'should return the same page session id for the same editor instance', async () => {
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			const usageData1 = getEditorUsageData( editor );
+			const usageData2 = getEditorUsageData( editor );
+
+			expect( usageData1.pageSessionId ).to.be.equal( usageData2.pageSessionId );
+		} );
+
+		it( 'should return the same page session id for different editor instances', async () => {
+			const domElement1 = global.document.body.appendChild( global.document.createElement( 'div' ) );
+			const domElement2 = global.document.body.appendChild( global.document.createElement( 'div' ) );
+
+			const editor1 = await ClassicTestEditor.create( domElement1, {} );
+			const editor2 = await ClassicTestEditor.create( domElement2, {} );
+
+			const usageData1 = getEditorUsageData( editor1 );
+			const usageData2 = getEditorUsageData( editor2 );
+
+			expect( usageData1.pageSessionId ).to.be.equal( usageData2.pageSessionId );
+
+			await editor1.destroy();
+			await editor2.destroy();
+
+			domElement1.remove();
+			domElement2.remove();
+		} );
+
+		it( 'should store session id in global window object', async () => {
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			const usageData = getEditorUsageData( editor );
+
+			expect( global.window.CKEDITOR_PAGE_SESSION_ID ).to.be.equal( usageData.pageSessionId );
+		} );
+
+		it( 'should use crypto API to generate session id', async () => {
+			const cryptoStub = sinon.stub( global.window.crypto, 'randomUUID' ).returns( 'FooBar' );
+
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			expect( getEditorUsageData( editor ).pageSessionId ).to.be.equal( 'FooBar' );
+			expect( cryptoStub ).to.have.been.calledOnce;
+		} );
+	} );
+
 	describe( '#env', () => {
 		describe( 'os', () => {
 			const os = [
