@@ -503,18 +503,18 @@ describe( 'BookmarkEditing', () => {
 			} );
 
 			it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
-				editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
+				editor.setData( '<p><a id="foo" name="foo"></a></p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
 
 			it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
-				editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
+				editor.setData( '<p><a id="foo" name="bar"></a></p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
 
@@ -653,6 +653,22 @@ describe( 'BookmarkEditing', () => {
 			// When on an anchor is a `name` attribute is instead of `id` attribute.
 			it( 'should properly convert an `a` with `name` attribute', () => {
 				editor.setData( '<p><a name="foo">foobar</a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
+				editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
+				editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
