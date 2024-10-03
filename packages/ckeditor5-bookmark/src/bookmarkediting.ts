@@ -255,7 +255,7 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 
 		conversionApi.updateConversionResult( bookmark, data );
 
-		// This part uses the result of `bookmark` insertion to convert the `anchor` content
+		// Convert children uses the result of `bookmark` insertion to convert the `anchor` content
 		// after the bookmark element (not inside it).
 		const { modelCursor, modelRange } = conversionApi.convertChildren( viewItem, data.modelCursor );
 
