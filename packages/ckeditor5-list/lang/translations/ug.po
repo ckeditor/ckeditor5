@@ -115,36 +115,36 @@ msgstr "تىزىم خاسلىقى"
 
 msgctxt "The label of the input allowing to change the start index of a numbered list."
 msgid "Start at"
-msgstr ""
+msgstr "باشلىنىشى"
 
 msgctxt "The error message displayed when the numbered list start index input value is not a valid number."
 msgid "Invalid start index value."
-msgstr ""
+msgstr "ئىناۋەتسىز باشلىنىش ئىندېكىس قىممىتى"
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
-msgstr ""
+msgstr "باشلىنىدىغان ئىندېكىس قىممىتى چوقۇم 0 دىن چوڭ بولۇشى كېرەك."
 
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
-msgstr ""
+msgstr "ئەكسىچە تەرتىپ"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
 msgid "Keystrokes that can be used in a list"
-msgstr ""
+msgstr "تىزىمدا ئىشلەتكىلى بولىدىغان كۇنۇپكا بېسىلىشى"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
 msgid "Increase list item indent"
-msgstr ""
+msgstr "تىزىم تۈرىنى تارايتىشنى ئاشۇرىدۇ"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
-msgstr ""
+msgstr "تىزىم تۈرىنى تارايتىشنى كېمەيتىدۇ"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "ئىش تىزىمىنى كىرگۈزۈۋاتىدۇ"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "ئىش تىزىمىدىن ئايرىلىۋاتىدۇ"

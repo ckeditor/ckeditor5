@@ -206,28 +206,28 @@ describe( 'BookmarkUI', () => {
 			expect( idInputView.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should bind insertButtonView #isEnabled to insert and update command', () => {
+		it( 'should bind buttonView #isEnabled to insert and update command', () => {
 			const insertBookmark = editor.commands.get( 'insertBookmark' );
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
 			bookmarkUIFeature._showUI();
-			const insertButtonView = bookmarkUIFeature.formView.insertButtonView;
+			const buttonView = bookmarkUIFeature.formView.buttonView;
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = true;
-			expect( insertButtonView.isEnabled ).to.equal( true );
+			expect( buttonView.isEnabled ).to.equal( true );
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = false;
-			expect( insertButtonView.isEnabled ).to.equal( true );
+			expect( buttonView.isEnabled ).to.equal( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = true;
-			expect( insertButtonView.isEnabled ).to.equal( true );
+			expect( buttonView.isEnabled ).to.equal( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = false;
-			expect( insertButtonView.isEnabled ).to.equal( false );
+			expect( buttonView.isEnabled ).to.equal( false );
 		} );
 
 		it( 'should add #actionsView to the balloon and attach the balloon to the bookmark element when selected', () => {
@@ -924,6 +924,53 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._addFormView();
 
 			expect( bookmarkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
+		} );
+
+		describe( 'button label', () => {
+			it( 'should have "Insert" by default', () => {
+				bookmarkUIFeature._addFormView();
+				formView = bookmarkUIFeature.formView;
+
+				expect( formView.buttonView.label ).to.equal( 'Insert' );
+			} );
+
+			it( 'should have "Insert" label when bookmark is not selected', () => {
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+				bookmarkUIFeature._addFormView();
+				formView = bookmarkUIFeature.formView;
+
+				bookmarkUIFeature._showUI();
+
+				expect( formView.buttonView.label ).to.equal( 'Insert' );
+			} );
+
+			it( 'should have "Update" label when bookmark is selected', () => {
+				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
+
+				bookmarkUIFeature._addFormView();
+				formView = bookmarkUIFeature.formView;
+
+				bookmarkUIFeature._showUI();
+
+				expect( formView.buttonView.label ).to.equal( 'Update' );
+			} );
+
+			it( 'should have "Update" label when bookmark already inserted but balloon is not closed.', () => {
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				bookmarkUIFeature._showUI();
+				formView = bookmarkUIFeature.formView;
+				actionsView = bookmarkUIFeature.actionsView;
+
+				expect( formView.buttonView.label ).to.equal( 'Insert' );
+
+				formView.idInputView.fieldView.value = 'new_id';
+
+				formView.fire( 'submit' );
+				actionsView.fire( 'edit' );
+
+				expect( formView.buttonView.label ).to.equal( 'Update' );
+			} );
 		} );
 	} );
 

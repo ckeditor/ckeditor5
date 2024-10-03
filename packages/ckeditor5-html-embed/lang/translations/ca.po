@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the HTML embed feature."
 msgid "Insert HTML"
-msgstr "Introduir HTML"
+msgstr "Insereix HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr "Fragment de HTML"
+msgstr "Fragment HTML"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
