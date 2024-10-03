@@ -15,6 +15,7 @@ import type PluginCollection from '../../plugincollection.js';
 
 export function getEditorUsageData( editor: Editor ): EditorUsageData {
 	return {
+		sessionId: getSessionId(),
 		pageSessionId: getPageSessionID(),
 		hostname: window.location.hostname,
 		version: globalThis.CKEDITOR_VERSION,
@@ -131,6 +132,14 @@ function getEnvUsageData(): EnvUsageData {
 	};
 }
 
+function getSessionId(): string {
+	if ( !localStorage.getItem( '__ckeditor-session-id' ) ) {
+		localStorage.setItem( '__ckeditor-session-id', crypto.randomUUID() );
+	}
+
+	return localStorage.getItem( '__ckeditor-session-id' )!;
+}
+
 function getPageSessionID() {
 	global.window.CKEDITOR_PAGE_SESSION_ID ||= crypto.randomUUID();
 
@@ -144,6 +153,7 @@ declare global {
 }
 
 export type EditorUsageData = {
+	sessionId: string;
 	pageSessionId: string;
 	hostname: string;
 	version: string;
