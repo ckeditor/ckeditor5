@@ -1027,7 +1027,7 @@ describe( 'BookmarkEditing', () => {
 	describe( 'clipboard', () => {
 		let clipboardPlugin, viewDocument;
 
-		beforeEach( async () => {
+		beforeEach( () => {
 			clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
 			viewDocument = view.document;
 		} );
