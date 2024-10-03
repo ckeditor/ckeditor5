@@ -750,20 +750,38 @@ describe( 'BookmarkEditing', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should properly convert an `a` with `id` attribute', () => {
-				editor.setData( '<p><a id="foo"></a></p>' );
+			describe( 'pointed bookmarks', () => {
+				it( 'should properly convert an `a` with `id` attribute', () => {
+					editor.setData( '<p><a id="foo"></a>foobar</p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
-				);
-			} );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
 
-			it( 'should not convert an `a` with `id` attribute and with text inside', () => {
-				editor.setData( '<p><a id="foo">foobar</a></p>' );
+				it( 'should properly convert an `a` with `name` attribute to bookmark', () => {
+					editor.setData( '<p><a name="foo"></a>foobar</p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
-				);
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo" name="foo"></a>foobar</p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo" name="bar"></a>foobar</p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
 			} );
 
 			describe( 'wrapped bookmarks', () => {
@@ -777,7 +795,8 @@ describe( 'BookmarkEditing', () => {
 						const config = {
 							language: 'en',
 							plugins: [
-								BookmarkEditing, Essentials, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, GeneralHtmlSupport
+								BookmarkEditing, Essentials, ImageInline, ImageBlock,
+								Heading, Paragraph, Link, Table, GeneralHtmlSupport
 							],
 							htmlSupport: {
 								allow: [
