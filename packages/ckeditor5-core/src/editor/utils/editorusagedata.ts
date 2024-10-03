@@ -7,7 +7,7 @@
  * @module core/editor/utils/editorusagedata
  */
 
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, global } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from '../editor.js';
 import type { ToolbarConfig, ToolbarConfigItem } from '../editorconfig.js';
@@ -16,6 +16,7 @@ import type PluginCollection from '../../plugincollection.js';
 export function getEditorUsageData( editor: Editor ): EditorUsageData {
 	return {
 		sessionId: getSessionId(),
+		pageSessionId: getPageSessionID(),
 		hostname: window.location.hostname,
 		version: globalThis.CKEDITOR_VERSION,
 		type: getEditorType( editor ),
@@ -139,8 +140,20 @@ function getSessionId(): string {
 	return localStorage.getItem( '__ckeditor-session-id' )!;
 }
 
+function getPageSessionID() {
+	global.window.CKEDITOR_PAGE_SESSION_ID ||= crypto.randomUUID();
+
+	return global.window.CKEDITOR_PAGE_SESSION_ID;
+}
+
+declare global {
+	interface Window {
+		CKEDITOR_PAGE_SESSION_ID?: string;
+	}
+}
+
 export type EditorUsageData = {
-	sessionId: string;
+	pageSessionId: string;
 	hostname: string;
 	version: string;
 	type: `${ string }Editor`;
