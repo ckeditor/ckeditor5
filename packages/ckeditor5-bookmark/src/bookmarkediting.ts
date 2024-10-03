@@ -7,16 +7,20 @@
  * @module bookmark/bookmarkediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
+import type { EventInfo } from 'ckeditor5/src/utils.js';
 
 import type {
 	ViewUIElement,
 	DowncastWriter,
 	ViewElement,
 	Element,
-	DocumentChangeEvent
+	DocumentChangeEvent,
+	UpcastElementEvent,
+	UpcastConversionData,
+	UpcastConversionApi
 } from 'ckeditor5/src/engine.js';
 
 import InsertBookmarkCommand from './insertbookmarkcommand.js';
@@ -81,7 +85,7 @@ export default class BookmarkEditing extends Plugin {
 		schema.register( 'bookmark', {
 			inheritAllFrom: '$inlineObject',
 			allowAttributes: 'bookmarkId',
-			disallowAttributes: 'linkHref'
+			disallowAttributes: [ 'linkHref', 'htmlA' ]
 		} );
 	}
 
@@ -136,14 +140,9 @@ export default class BookmarkEditing extends Plugin {
 			}
 		} );
 
-		conversion.for( 'upcast' ).elementToElement( {
-			view: element => upcastMatcher( element ),
-			model: ( viewElement, { writer } ) => {
-				const bookmarkId = viewElement.getAttribute( 'id' );
-
-				return writer.createElement( 'bookmark', { bookmarkId } );
-			}
-		} );
+		conversion.for( 'upcast' ).add(
+			dispatcher => dispatcher.on<UpcastElementEvent>( 'element:a', dataViewModelAnchorInsertion( editor ) )
+		);
 	}
 
 	/**
@@ -181,27 +180,96 @@ export default class BookmarkEditing extends Plugin {
 }
 
 /**
- * A helper function to match an `anchor` element which must contain `id` attribute but without `href` attribute,
- * also element must be empty when matcher is execute in data pipeline so it can be upcasted to a `bookmark`.
+ * A helper function to match an `anchor` element which must contain `id` or `name` attribute but without `href` attribute,
+ * also when `expectEmpty` is set to `true` but the element is not empty matcher should not match any element.
  *
  * @param element The element to be checked.
- * @param dataPipeline When set to `true` matcher is executed in data pipeline, checks if `element` is empty;
+ * @param expectEmpty Default set to `true`, when set to `false` matcher expects that `anchor` is not empty;
  * in editing pipeline it's not empty because it contains the `UIElement`.
  */
-function upcastMatcher( element: ViewElement, dataPipeline: boolean = true ) {
+function upcastMatcher( element: ViewElement, expectEmpty: boolean = true ) {
 	const isAnchorElement = element.name === 'a';
 
 	if ( !isAnchorElement ) {
 		return null;
 	}
 
-	const hasIdAttribute = element.hasAttribute( 'id' );
-	const hasHrefAttribute = element.hasAttribute( 'href' );
-	const isEmpty = element.isEmpty;
-
-	if ( !hasIdAttribute || hasHrefAttribute || dataPipeline && !isEmpty ) {
+	if ( expectEmpty && !element.isEmpty ) {
 		return null;
 	}
 
-	return { name: true, attributes: [ 'id' ] };
+	const hasIdAttribute = element.hasAttribute( 'id' );
+	const hasNameAttribute = element.hasAttribute( 'name' );
+	const hasHrefAttribute = element.hasAttribute( 'href' );
+
+	if ( hasIdAttribute && !hasHrefAttribute ) {
+		return { name: true, attributes: [ 'id' ] };
+	}
+
+	if ( hasNameAttribute && !hasHrefAttribute ) {
+		return { name: true, attributes: [ 'name' ] };
+	}
+
+	return null;
+}
+
+/**
+ * A view-to-model converter that handles converting pointed or wrapped anchors with `id` and/or `name` attributes.
+ *
+ * @returns Returns a conversion callback.
+ */
+function dataViewModelAnchorInsertion( editor: Editor ) {
+	return (
+		evt: EventInfo,
+		data: UpcastConversionData<ViewElement>,
+		conversionApi: UpcastConversionApi
+	) => {
+		const viewItem = data.viewItem;
+		const match = upcastMatcher( viewItem, false );
+
+		if ( !match || !conversionApi.consumable.test( viewItem, match ) ) {
+			return;
+		}
+
+		const enableNonEmptyBookmarkConversion = isEnabledNonEmptyBookmarkConversion( editor );
+
+		if ( !enableNonEmptyBookmarkConversion && !viewItem.isEmpty ) {
+			return;
+		}
+
+		const modelWriter = conversionApi.writer;
+		const anchorId = viewItem.getAttribute( 'id' );
+		const anchorName = viewItem.getAttribute( 'name' );
+		const bookmarkId = anchorId || anchorName;
+		const bookmark = modelWriter.createElement( 'bookmark', { bookmarkId } );
+
+		if ( !conversionApi.safeInsert( bookmark, data.modelCursor ) ) {
+			return;
+		}
+
+		conversionApi.consumable.consume( viewItem, match );
+
+		if ( anchorId === anchorName ) {
+			conversionApi.consumable.consume( viewItem, { attributes: [ 'name' ] } );
+		}
+
+		conversionApi.updateConversionResult( bookmark, data );
+
+		// Convert children uses the result of `bookmark` insertion to convert the `anchor` content
+		// after the bookmark element (not inside it).
+		const { modelCursor, modelRange } = conversionApi.convertChildren( viewItem, data.modelCursor );
+
+		data.modelCursor = modelCursor;
+		data.modelRange = modelWriter.createRange( data.modelRange!.start, modelRange!.end );
+	};
+}
+
+/**
+ * Normalize the bookmark configuration option `enableNonEmptyBookmarkConversion`.
+ */
+function isEnabledNonEmptyBookmarkConversion( editor: Editor ): boolean {
+	const enableNonEmptyBookmarkConversion = editor.config.get( 'bookmark.enableNonEmptyBookmarkConversion' );
+
+	// When not defined, option `enableNonEmptyBookmarkConversion` by default is set to `true`.
+	return enableNonEmptyBookmarkConversion !== undefined ? enableNonEmptyBookmarkConversion : true;
 }

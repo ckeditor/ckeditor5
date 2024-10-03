@@ -12,10 +12,12 @@ import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Image } from '@ckeditor/ckeditor5-image';
+import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Table } from '@ckeditor/ckeditor5-table';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -36,7 +38,7 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Essentials, Bold, Image, Heading, Paragraph, Link ]
+			plugins: [ BookmarkEditing, Essentials, Bold, Italic, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, CodeBlock ]
 		};
 
 		editor = await createEditor( element, config );
@@ -387,127 +389,361 @@ describe( 'BookmarkEditing', () => {
 	} );
 
 	describe( 'upcast', () => {
-		it( 'should properly convert an `a` with `id` attribute', () => {
-			editor.setData( '<p><a id="foo"></a></p>' );
+		describe( 'pointed bookmarks', () => {
+			it( 'should properly convert an `a` with `id` attribute', () => {
+				editor.setData( '<p><a id="foo"></a></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
-			);
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute with text before', () => {
+				editor.setData( '<p>Example text<a id="foo"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute with text before with space', () => {
+				editor.setData( '<p>text <a id="foo"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute with text after', () => {
+				editor.setData( '<p><a id="foo"></a>Example text</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute with text after with space', () => {
+				editor.setData( '<p><a id="foo"></a> text</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
+				editor.setData( '<p>Example<a id="foo"></a>text</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `id` attribute text with spaces before and after', () => {
+				editor.setData( '<p>Example <a id="foo"></a> text</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>Example <bookmark bookmarkId="foo"></bookmark> text</paragraph>'
+				);
+			} );
+
+			it( 'should not convert an `a` with `id` and `href` attribute and without text inside', () => {
+				editor.setData( '<p><a id="foo" href="www.ckeditor.com"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph></paragraph>'
+				);
+			} );
+
+			it( 'should not convert `a` with `id` and `href` attribute and with text inside', () => {
+				editor.setData( '<p><a id="foo" href="www.ckeditor.com">foobar</a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><$text linkHref="www.ckeditor.com">foobar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not convert `p` with `id` attribute', () => {
+				editor.setData( '<p id="foo"></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph></paragraph>'
+				);
+			} );
+
+			it( 'should not convert `p` with `id` attribute and text inside', () => {
+				editor.setData( '<p id="foo">bar</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should not convert `h2` with `id` attribute', () => {
+				editor.setData( '<h2 id="foo"></h2>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<heading1></heading1>'
+				);
+			} );
+
+			it( 'should not convert `h2` with `id` attribute and text inside', () => {
+				editor.setData( '<h2 id="foo">bar</h2>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<heading1>bar</heading1>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with `name` attribute (default)', () => {
+				editor.setData( '<p><a name="foo"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
+				editor.setData( '<p><a id="foo" name="foo"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
+				editor.setData( '<p><a id="foo" name="bar"></a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
+				);
+			} );
+
+			it( 'should not convert an `a` with `id` attribute inside code block', () => {
+				editor.setData(
+					'<pre data-language="HTML" spellcheck="false">' +
+						'<code class="language-html"><a id="foo"></a></code>' +
+					'</pre>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<codeBlock language="html"></codeBlock>'
+				);
+			} );
 		} );
 
-		it( 'should properly convert an `a` with `id` attribute with text before', () => {
-			editor.setData( '<p>Example text<a id="foo"></a></p>' );
+		describe( 'wrapped bookmarks', () => {
+			it( 'should convert an `a` with `id` attribute and with text inside', () => {
+				editor.setData( '<p><a id="foo">foobar</a></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
 
-		it( 'should properly convert an `a` with `id` attribute with text before with space', () => {
-			editor.setData( '<p>text <a id="foo"></a></p>' );
+			it( 'should properly convert an `a` with `id` attribute with text before', () => {
+				editor.setData( '<p>Example text<a id="foo">foobar</a></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>Example text<bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
 
-		it( 'should properly convert an `a` with `id` attribute with text after', () => {
-			editor.setData( '<p><a id="foo"></a>Example text</p>' );
+			it( 'should properly convert an `a` with `id` attribute with text before with space', () => {
+				editor.setData( '<p>text <a id="foo">foobar</a></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>text <bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
 
-		it( 'should properly convert an `a` with `id` attribute with text after with space', () => {
-			editor.setData( '<p><a id="foo"></a> text</p>' );
+			it( 'should properly convert an `a` with `id` attribute with text after', () => {
+				editor.setData( '<p><a id="foo">foobar</a>Example text</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobarExample text</paragraph>'
+				);
+			} );
 
-		it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
-			editor.setData( '<p>Example<a id="foo"></a>text</p>' );
+			it( 'should properly convert an `a` with `id` attribute with text after with space', () => {
+				editor.setData( '<p><a id="foo">foobar</a> text</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar text</paragraph>'
+				);
+			} );
 
-		it( 'should properly convert an `a` with `id` attribute text with spaces before and after', () => {
-			editor.setData( '<p>Example <a id="foo"></a> text</p>' );
+			it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
+				editor.setData( '<p>Example<a id="foo">foobar</a>text</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>Example <bookmark bookmarkId="foo"></bookmark> text</paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>foobartext</paragraph>'
+				);
+			} );
 
-		it( 'should not convert an `a` with `id` attribute and with text inside', () => {
-			editor.setData( '<p><a id="foo">foobar</a></p>' );
+			it( 'should properly convert an `a` with `id` attribute text with spaces before and after', () => {
+				editor.setData( '<p>Example <a id="foo">foobar</a> text</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>foobar</paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>Example <bookmark bookmarkId="foo"></bookmark>foobar text</paragraph>'
+				);
+			} );
 
-		it( 'should not convert an `a` with `id` and `href` attribute and without text inside', () => {
-			editor.setData( '<p><a id="foo" href="www.ckeditor.com"></a></p>' );
+			it( 'should convert an `a` with `id` attribute and containing formatted text', () => {
+				editor.setData( '<p>before <a id="foo">f<i>oo</i>b<strong>ar</strong></a> after</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph></paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'before ' +
+						'<bookmark bookmarkId="foo"></bookmark>' +
+						'f' +
+						'<$text italic="true">oo</$text>' +
+						'b' +
+						'<$text bold="true">ar</$text>' +
+						' after' +
+					'</paragraph>'
+				);
+			} );
 
-		it( 'should not convert `a` with `id` and `href` attribute and with text inside', () => {
-			editor.setData( '<p><a id="foo" href="www.ckeditor.com">foobar</a></p>' );
+			it( 'should convert an `a` with `id` attribute and containing inline image', () => {
+				editor.setData( '<p>before <a id="foo">foo<img src="#"></img>bar</a> after</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><$text linkHref="www.ckeditor.com">foobar</$text></paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'before ' +
+						'<bookmark bookmarkId="foo"></bookmark>' +
+						'foo' +
+						'<imageInline src="#"></imageInline>' +
+						'bar' +
+						' after' +
+					'</paragraph>'
+				);
+			} );
 
-		it( 'should not convert `p` with `id` attribute', () => {
-			editor.setData( '<p id="foo"></p>' );
+			it( 'should convert an `a` with `id` attribute and containing block image', () => {
+				editor.setData( '<a id="foo"><figure class="image"><img src="#"></figure></a>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph></paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'<bookmark bookmarkId="foo"></bookmark>' +
+					'</paragraph>' +
+					'<imageBlock src="#"></imageBlock>'
+				);
+			} );
 
-		it( 'should not convert `p` with `id` attribute and text inside', () => {
-			editor.setData( '<p id="foo">bar</p>' );
+			it( 'should convert an `a` with `id` attribute and containing table', () => {
+				editor.setData(
+					'<a id="foo">' +
+						'<table><tr><td></td><td></td></tr></table>' +
+					'</a>'
+				);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>bar</paragraph>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'<bookmark bookmarkId="foo"></bookmark>' +
+					'</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph></paragraph></tableCell>' +
+							'<tableCell><paragraph></paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
 
-		it( 'should not convert `h2` with `id` attribute', () => {
-			editor.setData( '<h2 id="foo"></h2>' );
+			// When on an anchor is a `name` attribute is instead of `id` attribute.
+			it( 'should properly convert an `a` with `name` attribute', () => {
+				editor.setData( '<p><a name="foo">foobar</a></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<heading1></heading1>'
-			);
-		} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
 
-		it( 'should not convert `h2` with `id` attribute and text inside', () => {
-			editor.setData( '<h2 id="foo">bar</h2>' );
+			it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
+				editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<heading1>bar</heading1>'
-			);
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
+
+			it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
+				editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+				);
+			} );
+
+			describe( 'when `enableNonEmptyBookmarkConversion` is set to `false` ', () => {
+				let element, editor, model;
+
+				beforeEach( async () => {
+					element = document.createElement( 'div' );
+					document.body.appendChild( element );
+
+					const config = {
+						language: 'en',
+						plugins: [ BookmarkEditing, Essentials, ImageInline, ImageBlock, Heading, Paragraph, Link, Table ],
+						bookmark: {
+							enableNonEmptyBookmarkConversion: false
+						}
+					};
+
+					editor = await createEditor( element, config );
+
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					element.remove();
+					await editor.destroy();
+				} );
+
+				it( 'should not convert an `a` with `id` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should not convert an `a` with `name` attribute to bookmark', () => {
+					editor.setData( '<p><a name="foo">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should not convert an `a` with same `id` and `name` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>foobar</paragraph>'
+					);
+				} );
+			} );
 		} );
 
 		describe( 'with GHS enabled', () => {
 			let element, editor, model;
+
 			beforeEach( async () => {
 				element = document.createElement( 'div' );
 				document.body.appendChild( element );
 
 				const config = {
 					language: 'en',
-					plugins: [ BookmarkEditing, Essentials, Image, Heading, Paragraph, Link, GeneralHtmlSupport ],
+					plugins: [ BookmarkEditing, Essentials, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, GeneralHtmlSupport ],
 					htmlSupport: {
 						allow: [
 							{
@@ -530,20 +766,144 @@ describe( 'BookmarkEditing', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should properly convert an `a` with `id` attribute', () => {
-				editor.setData( '<p><a id="foo"></a></p>' );
+			describe( 'pointed bookmarks', () => {
+				it( 'should properly convert an `a` with `id` attribute', () => {
+					editor.setData( '<p><a id="foo"></a>foobar</p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
-				);
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should properly convert an `a` with `name` attribute to bookmark', () => {
+					editor.setData( '<p><a name="foo"></a>foobar</p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo" name="foo"></a>foobar</p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
+					editor.setData( '<p><a id="foo" name="bar"></a>foobar</p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
+
+				it( 'should consume only the `id` attribute from anchor elements if `id` and `name` are different', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => {
+						dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).to.be.true;
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).to.be.false;
+						} );
+					}, { priority: 'low' } );
+
+					editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'<bookmark bookmarkId="foo"></bookmark>' +
+							'<$text htmlA="{"attributes":{"name":"bar"}}">foobar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should consume both attributes from anchor elements if `id` and `name` are the same', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => {
+						dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).to.be.false;
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).to.be.false;
+						} );
+					}, { priority: 'low' } );
+
+					editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
 			} );
 
-			it( 'should not convert an `a` with `id` attribute and with text inside', () => {
-				editor.setData( '<p><a id="foo">foobar</a></p>' );
+			describe( 'wrapped bookmarks', () => {
+				describe( 'when `enableNonEmptyBookmarkConversion` is set to `false` ', () => {
+					let element, editor, model;
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><$text htmlA="{"attributes":{"id":"foo"}}">foobar</$text></paragraph>'
-				);
+					beforeEach( async () => {
+						element = document.createElement( 'div' );
+						document.body.appendChild( element );
+
+						const config = {
+							language: 'en',
+							plugins: [
+								BookmarkEditing, Essentials, ImageInline, ImageBlock,
+								Heading, Paragraph, Link, Table, GeneralHtmlSupport
+							],
+							htmlSupport: {
+								allow: [
+									{
+										name: /^.*$/,
+										styles: true,
+										attributes: true,
+										classes: true
+									}
+								]
+							},
+							bookmark: {
+								enableNonEmptyBookmarkConversion: false
+							}
+						};
+
+						editor = await createEditor( element, config );
+
+						model = editor.model;
+					} );
+
+					afterEach( async () => {
+						element.remove();
+						await editor.destroy();
+					} );
+
+					it( 'should not convert an `a` with `id` attribute to bookmark', () => {
+						editor.setData( '<p><a id="foo">foobar</a></p>' );
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><$text htmlA="{"attributes":{"id":"foo"}}">foobar</$text></paragraph>'
+						);
+					} );
+
+					it( 'should not convert an `a` with `name` attribute to bookmark', () => {
+						editor.setData( '<p><a name="foo">foobar</a></p>' );
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><$text htmlA="{"attributes":{"name":"foo"}}">foobar</$text></paragraph>'
+						);
+					} );
+
+					it( 'should not convert an `a` with same `id` and `name` attribute to bookmark', () => {
+						editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"foo"}}">foobar</$text></paragraph>'
+						);
+					} );
+
+					it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', () => {
+						editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"bar"}}">foobar</$text></paragraph>'
+						);
+					} );
+				} );
 			} );
 		} );
 	} );
