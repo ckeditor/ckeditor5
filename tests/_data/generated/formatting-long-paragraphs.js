@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 // Creates 40 paragraphs, each with a 1000 of text nodes, each text node is wrapped in an HTML tag that will be converted to text attribute.
 // This is a counterpart data set to `formatting-short-paragraphs` where both tests have same total number of text nodes, but
 // we observed that longer paragraphs have significant negative impact on editor performance.

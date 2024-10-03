@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 // This is the most basic performance test, where we load many paragraphs (5000) and fill them with reasonable text volume, no formatting.
 // Below data creates 400 pages when copy-pasted to Google Docs (default page settings).
 export default function makeData() {
@@ -9,7 +14,7 @@ export default function makeData() {
 				'Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ' +
 				'Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ' +
 				'Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ' +
-			'</p>'
+			'</p>';
 	}
 
 	return initialData;

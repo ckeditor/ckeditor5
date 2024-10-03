@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, sessionStorage, navigator, alert */
 
-import config from '../../../_utils/performance-config.js';
-import allDataSets from '../../../_data/generated/index.js';
+import config from '../../_utils/performance-config.js';
+import allDataSets from '../../_data/generated/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 // TEST CONFIG.
@@ -27,11 +27,19 @@ const dataSetNames = Object.keys( dataSets );
 run();
 
 function run() {
-	if ( !isStarted() ) {
-		startTests();
-	}
+	const btnEl = document.getElementById( 'btnStart' );
 
-	performTest();
+	if ( !isStarted() ) {
+		btnEl.addEventListener( 'click', () => {
+			btnEl.remove();
+
+			setupTests();
+			performTest();
+		} );
+	} else {
+		btnEl.remove();
+		performTest();
+	}
 }
 
 function performTest() {
@@ -63,7 +71,8 @@ function setStatus() {
 	const dataSetName = getCurrentDataSetName();
 	const tryNumber = sessionStorage.getItem( 'performanceTestTryNumber' );
 
-	statusEl.innerHTML = `Dataset "${ dataSetName }" (${ dataSetIndex + 1 } / ${ dataSetNames.length }), try ${ tryNumber } / ${ TRIES_PER_DATA_SET }`;
+	statusEl.innerHTML = `Dataset "${ dataSetName }" (${ dataSetIndex + 1 } / ${ dataSetNames.length }), ` +
+		`try ${ tryNumber } / ${ TRIES_PER_DATA_SET }`;
 }
 
 function getCurrentDataSetName() {
@@ -72,7 +81,7 @@ function getCurrentDataSetName() {
 	return dataSetNames[ dataSetIndex ];
 }
 
-function startTests() {
+function setupTests() {
 	sessionStorage.setItem( 'performanceTestTryNumber', '1' );
 	sessionStorage.setItem( 'performanceTestResults', '{}' );
 	sessionStorage.setItem( 'performanceTestDataSetIndex', '0' );
@@ -149,7 +158,8 @@ function finishTests() {
 	console.log( resultsProcessed );
 
 	navigator.clipboard.writeText( resultsProcessed ).then( () => {
-		alert( "Tests finished!\nResults are copied to your clipboard\nYou can paste them to a spreadsheet" );
+		// eslint-disable-next-line no-alert
+		alert( 'Tests finished!\nResults are copied to your clipboard\nYou can paste them to a spreadsheet' );
 	} );
 }
 
@@ -165,7 +175,10 @@ function prepareResults( dataObj ) {
 		const results = entry[ 1 ];
 
 		for ( let i = 0; i < REMOVE_OUTLIERS; i++ ) {
-			let maxV = 0, minV = Number.MAX_VALUE, maxJ = 0, minJ = 0;
+			let maxV = 0;
+			let minV = Number.MAX_VALUE;
+			let maxJ = 0;
+			let minJ = 0;
 
 			for ( let j = 0; j < results.length - 1; j++ ) {
 				if ( results[ j ] === '' ) {
@@ -188,6 +201,6 @@ function prepareResults( dataObj ) {
 			results[ minJ ] = '';
 		}
 
-		return dataSetName + "\t\t" + results.join( "\t" ) + "\n";
+		return dataSetName + '\t\t' + results.join( '\t' ) + '\n';
 	} ).join( '' );
 }
