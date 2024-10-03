@@ -798,6 +798,39 @@ describe( 'BookmarkEditing', () => {
 						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 					);
 				} );
+
+				it( 'should consume only the `id` attribute from anchor elements if `id` and `name` are different', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => {
+						dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).to.be.true;
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).to.be.false;
+						} );
+					}, { priority: 'low' } );
+
+					editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'<bookmark bookmarkId="foo"></bookmark>' +
+							'<$text htmlA="{"attributes":{"name":"bar"}}">foobar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should consume both attributes from anchor elements if `id` and `name` are the same', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => {
+						dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).to.be.false;
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).to.be.false;
+						} );
+					}, { priority: 'low' } );
+
+					editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
+					);
+				} );
 			} );
 
 			describe( 'wrapped bookmarks', () => {
