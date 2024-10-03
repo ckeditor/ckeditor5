@@ -17,6 +17,7 @@ modified_at: 2021-06-17
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor},  add the {@link features/images-overview#image-features subfeatures that you need} to your plugin list and to the editor toolbar:
 
+<code-switcher>
 ```js
 import {
 	ClassicEditor,
@@ -40,6 +41,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring the toolbar dropdown
 
@@ -86,21 +88,10 @@ ClassicEditor
 You also need to configure the desired contextual image toolbar items. Notice the {@link getting-started/setup/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
-import {
-	ClassicEditor,
-	Image,
-	ImageCaption,
-	ImageResize,
-	ImageStyle,
-	ImageToolbar,
-	LinkImage
-} from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
-		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
-		toolbar: [ 'insertImage', /* ... */ ],
 		image: {
 			toolbar: [
 				'imageStyle:block',

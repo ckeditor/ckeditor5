@@ -35,6 +35,7 @@ You can read more about possible implementations of the mention feature in a [de
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Mention } from 'ckeditor5';
 
@@ -49,6 +50,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 

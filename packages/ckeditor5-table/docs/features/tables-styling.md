@@ -34,6 +34,7 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolbar } from 'ckeditor5';
 
@@ -60,6 +61,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring styling tools
 

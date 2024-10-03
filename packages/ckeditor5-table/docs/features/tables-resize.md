@@ -33,6 +33,7 @@ The column resize feature is compatible with the {@link features/export-word Exp
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Table, TableColumnResize } from 'ckeditor5';
 
@@ -45,6 +46,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Common API
 

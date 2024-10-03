@@ -54,6 +54,7 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Autoformat } from 'ckeditor5';
 
@@ -66,6 +67,7 @@ ClassicEditor.
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box hint>
 	Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the commands that are included in the actual configuration. For example, `bold` autoformatting will not work if there is no `bold` command registered in the editor.

@@ -233,6 +233,7 @@ The style sheet:
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Style } from 'ckeditor5';
 
@@ -241,7 +242,6 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Style, /* ... */ ],
 		toolbar: [ 'style', /* ... */ ],
-		},
 		style: {
 			// Configuration.
 		}
@@ -249,6 +249,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -308,6 +309,7 @@ At present, the style feature may clash with other features that bring in simila
 ## Related features
 
 Check out also these CKEditor&nbsp;5 features to gain better control over your content style and format:
+
 * {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
 * {@link features/font Font styles} &ndash; Control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/headings Headings} &ndash; Divide your content into sections.

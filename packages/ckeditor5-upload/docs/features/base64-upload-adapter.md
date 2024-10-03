@@ -37,6 +37,7 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Base64UploadAdapter } from 'ckeditor5';
 
@@ -49,6 +50,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.
 

@@ -50,6 +50,7 @@ We recommended using the {@link features/media-embed media embed} feature for em
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, HtmlEmbed } from 'ckeditor5';
 
@@ -65,6 +66,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 

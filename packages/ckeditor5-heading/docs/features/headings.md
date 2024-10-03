@@ -49,6 +49,7 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Heading } from 'ckeditor5';
 
@@ -64,14 +65,17 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ### Installation with toolbar heading buttons
 
 To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 ```
+</code-switcher>
 
 ## Configuration
 

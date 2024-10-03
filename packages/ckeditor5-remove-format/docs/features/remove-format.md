@@ -29,6 +29,7 @@ Select the content you want to clean up and press the remove format button {@ico
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, RemoveFormat } from 'ckeditor5';
 
@@ -41,6 +42,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring the remove format feature
 
@@ -97,6 +99,7 @@ From now on, the remove format button should also remove links in the content. {
 ## Related features
 
 CKEditor&nbsp;5 has more features that can help you format your content:
+
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.

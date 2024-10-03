@@ -28,6 +28,7 @@ Toggle the block elements visibility with the show block {@icon @ckeditor/ckedit
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, ShowBlocks } from 'ckeditor5';
 
@@ -40,6 +41,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box info>
 	Read more about {@link getting-started/setup/configuration installing plugins} and {@link getting-started/setup/toolbar toolbar configuration}.

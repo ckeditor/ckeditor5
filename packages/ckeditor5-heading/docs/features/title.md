@@ -32,6 +32,7 @@ The title plugin lets you move from the title to the body element using the <kbd
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Title } from 'ckeditor5';
 
@@ -46,6 +47,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Placeholder integration
 

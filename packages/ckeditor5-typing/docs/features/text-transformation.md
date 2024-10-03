@@ -73,6 +73,7 @@ You may find interesting details and usage examples in the [Automatic text trans
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, TextTransformation } from 'ckeditor5';
 
@@ -87,6 +88,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring transformations
 

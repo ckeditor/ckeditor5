@@ -31,6 +31,7 @@ Each code block has a [specific programming language assigned](#configuring-code
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, CodeBlock } from 'ckeditor5';
 
@@ -46,6 +47,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring code block languages
 

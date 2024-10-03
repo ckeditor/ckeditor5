@@ -33,6 +33,7 @@ The editor below is configured to keep HTML comments in the document content. Yo
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { HtmlComment } from 'ckeditor5';
 
@@ -44,6 +45,7 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+</code-switcher>
 
 HTML comment feature does not require any configuration.
 

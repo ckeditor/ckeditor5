@@ -32,6 +32,7 @@ You can also use one of the many CKEditor&nbsp;5 features available in the toolb
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, SourceEditing } from 'ckeditor5';
 
@@ -44,9 +45,11 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
 
+<code-switcher>
 ```js
 import { ClassicEditor, SourceEditing, Markdown } from 'ckeditor5';
 
@@ -59,6 +62,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Limitations and incompatibilities
 
