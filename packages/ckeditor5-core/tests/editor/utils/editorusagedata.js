@@ -76,8 +76,8 @@ describe( 'getEditorUsageData()', () => {
 		} );
 	} );
 
-	describe( 'sessionId', () => {
-		it( 'should generate unique sessionId when one is not present', async () => {
+	describe( '#sessionId', () => {
+		it( 'should return unique sessionId when one is not present', async () => {
 			localStorage.removeItem( '__ckeditor-session-id' );
 
 			editor = await ClassicTestEditor.create( domElement, {} );
@@ -91,6 +91,34 @@ describe( 'getEditorUsageData()', () => {
 			editor = await ClassicTestEditor.create( domElement, {} );
 
 			expect( getEditorUsageData( editor ).sessionId ).to.equal( 'fake-session-id' );
+		} );
+
+		it( 'should return the same session id for the same editor instance', async () => {
+			editor = await ClassicTestEditor.create( domElement, {} );
+
+			const usageData1 = getEditorUsageData( editor );
+			const usageData2 = getEditorUsageData( editor );
+
+			expect( usageData1.sessionId ).to.be.equal( usageData2.sessionId );
+		} );
+
+		it( 'should return the same page session id for different editor instances', async () => {
+			const domElement1 = global.document.body.appendChild( global.document.createElement( 'div' ) );
+			const domElement2 = global.document.body.appendChild( global.document.createElement( 'div' ) );
+
+			const editor1 = await ClassicTestEditor.create( domElement1, {} );
+			const editor2 = await ClassicTestEditor.create( domElement2, {} );
+
+			const usageData1 = getEditorUsageData( editor1 );
+			const usageData2 = getEditorUsageData( editor2 );
+
+			expect( usageData1.sessionId ).to.be.equal( usageData2.sessionId );
+
+			await editor1.destroy();
+			await editor2.destroy();
+
+			domElement1.remove();
+			domElement2.remove();
 		} );
 	} );
 

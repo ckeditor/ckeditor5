@@ -14,12 +14,8 @@ import type { ToolbarConfig, ToolbarConfigItem } from '../editorconfig.js';
 import type PluginCollection from '../../plugincollection.js';
 
 export function getEditorUsageData( editor: Editor ): EditorUsageData {
-	if ( !localStorage.getItem( '__ckeditor-session-id' ) ) {
-		localStorage.setItem( '__ckeditor-session-id', crypto.randomUUID() );
-	}
-
 	return {
-		sessionId: localStorage.getItem( '__ckeditor-session-id' )!,
+		sessionId: getSessionId(),
 		hostname: window.location.hostname,
 		version: globalThis.CKEDITOR_VERSION,
 		type: getEditorType( editor ),
@@ -133,6 +129,14 @@ function getEnvUsageData(): EnvUsageData {
 		os,
 		browser
 	};
+}
+
+function getSessionId(): string {
+	if ( !localStorage.getItem( '__ckeditor-session-id' ) ) {
+		localStorage.setItem( '__ckeditor-session-id', crypto.randomUUID() );
+	}
+
+	return localStorage.getItem( '__ckeditor-session-id' )!;
 }
 
 export type EditorUsageData = {
