@@ -66,7 +66,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	/**
 	 * Event loop timeout.
 	 */
-	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null = null;
+	private _blurTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	// @if CK_DEBUG_FOCUSTRACKER // public _label?: string;
 
@@ -256,7 +256,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	private _focus( element: Element ): void {
 		// @if CK_DEBUG_FOCUSTRACKER // console.log( `"${ getName( this ) }": _focus() on element`, element );
 
-		clearTimeout( this._nextEventLoopTimeout! );
+		this._clearBlurTimeout();
 
 		this.focusedElement = element;
 		this.isFocused = true;
@@ -271,24 +271,39 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * a focus tracker state would experience UI flashes and glitches as the user focus travels across the UI.
 	 */
 	private _blur(): void {
-		// Avoid blurs that would be incorrect as a result of #elements and #externalViews (and their focus trackers) coexisting:
-		// * External FT blurs (e.g. when the focus still remains in one of the #elements or another #externalView),
-		// * #elements blurs (e.g. when the focus still remains in one of #externalViews).
-		if (
-			this.elements.find( element => element.contains( document.activeElement ) ) ||
-			this.externalViews.find( view => view.focusTracker.isFocused )
-		) {
+		const isAnyElementFocused = this.elements.find( element => element.contains( document.activeElement ) );
+
+		// Avoid blurs originating from external FTs when the focus still remains in one of the #elements.
+		if ( isAnyElementFocused ) {
 			return;
 		}
 
-		clearTimeout( this._nextEventLoopTimeout! );
+		const isAnyExternalViewFocused = this.externalViews.find( view => {
+			// Do not consider external views's focus trackers as focused if there's a blur timeout pending.
+			return view.focusTracker.isFocused && !view.focusTracker._blurTimeout;
+		} );
 
-		this._nextEventLoopTimeout = setTimeout( () => {
+		// Avoid unnecessary DOM blurs coming from #elements when the focus still remains in one of #externalViews.
+		if ( isAnyExternalViewFocused ) {
+			return;
+		}
+
+		this._clearBlurTimeout();
+
+		this._blurTimeout = setTimeout( () => {
 			// @if CK_DEBUG_FOCUSTRACKER // console.log( `"${ getName( this ) }": Blur.` );
 
 			this.focusedElement = null;
 			this.isFocused = false;
 		}, 0 );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _clearBlurTimeout(): void {
+		clearTimeout( this._blurTimeout! );
+		this._blurTimeout = null;
 	}
 
 	// @if CK_DEBUG_FOCUSTRACKER // public static _instances: Array<FocusTracker> = [];

@@ -70,7 +70,7 @@ describe( 'FocusTracker', () => {
 	} );
 
 	describe( 'add()', () => {
-		describe( 'from DOM elements', () => {
+		describe( 'for DOM elements', () => {
 			it( 'should throw an error when element has been already added', () => {
 				focusTracker.add( containerFirstInput );
 
@@ -166,437 +166,516 @@ describe( 'FocusTracker', () => {
 					expect( focusTracker.focusedElement ).to.equal( container );
 				} );
 			} );
+		} );
 
-			describe( 'for views', () => {
-				describe( 'without focus tracker', () => {
-					let view;
+		describe( 'for views', () => {
+			describe( 'without focus tracker', () => {
+				let view;
 
-					beforeEach( () => {
-						view = new FocusableView();
+				beforeEach( () => {
+					view = new FocusableView();
 
-						view.render();
-						document.body.appendChild( view.element );
-					} );
+					view.render();
+					document.body.appendChild( view.element );
+				} );
 
-					afterEach( () => {
-						view.destroy();
-						view.element.remove();
-					} );
+				afterEach( () => {
+					view.destroy();
+					view.element.remove();
+				} );
 
-					it( 'should add view#element as a plain DOM element', () => {
+				it( 'should add view#element as a plain DOM element', () => {
+					focusTracker.add( view );
+
+					view.focus();
+
+					expect( focusTracker.isFocused ).to.be.true;
+					expect( focusTracker.focusedElement ).to.equal( view.element );
+				} );
+
+				it( 'should not be listed in #externalViews', () => {
+					focusTracker.add( view );
+
+					expect( focusTracker.externalViews ).to.have.length( 0 );
+				} );
+
+				it( 'should contribute to #elements', () => {
+					focusTracker.add( view );
+
+					expect( focusTracker.elements ).to.deep.equal( [ view.element ] );
+				} );
+
+				it( 'should throw if view#element is unavailable', () => {
+					const view = new FocusableView();
+
+					view.element = null;
+
+					expectToThrowCKEditorError( () => {
 						focusTracker.add( view );
-
-						view.focus();
-
-						expect( focusTracker.isFocused ).to.be.true;
-						expect( focusTracker.focusedElement ).to.equal( view.element );
+					}, 'focustracker-add-view-missing-element', {
+						focusTracker,
+						view
 					} );
+				} );
+			} );
 
-					it( 'should not be listed in #externalViews', () => {
-						focusTracker.add( view );
+			describe( 'with focus tracker', () => {
+				let childViewA, childViewB, childViewC, rootFocusTracker, rootElement, isFocusedSpy, focusedElementSpy;
 
-						expect( focusTracker.externalViews ).to.have.length( 0 );
-					} );
+				beforeEach( () => {
+					rootElement = document.createElement( 'root' );
+					rootElement.setAttribute( 'tabindex', 0 );
 
-					it( 'should contribute to #elements', () => {
-						focusTracker.add( view );
+					document.body.appendChild( rootElement );
 
-						expect( focusTracker.elements ).to.deep.equal( [ view.element ] );
-					} );
+					childViewA = new FocusableViewWithFocusTracker( 'child-a' );
+					childViewB = new FocusableViewWithFocusTracker( 'child-b' );
+					childViewC = new FocusableViewWithFocusTracker( 'child-c' );
 
-					it( 'should throw if view#element is unavailable', () => {
-						const view = new FocusableView();
+					childViewA.render();
+					childViewB.render();
+					childViewC.render();
 
-						view.element = null;
+					rootFocusTracker = focusTracker;
 
-						expectToThrowCKEditorError( () => {
-							focusTracker.add( view );
-						}, 'focustracker-add-view-missing-element', {
-							focusTracker,
-							view
-						} );
+					isFocusedSpy = sinon.spy();
+					focusedElementSpy = sinon.spy();
+
+					rootFocusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => isFocusedSpy( isFocused ) );
+					rootFocusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+						focusedElementSpy( focusedElement );
 					} );
 				} );
 
-				describe( 'with focus tracker', () => {
-					let childViewA, childViewB, childViewC, rootFocusTracker, rootElement, isFocusedSpy, focusedElementSpy;
+				afterEach( () => {
+					childViewA.destroy();
+					childViewB.destroy();
+					childViewC.destroy();
+					rootElement.remove();
 
-					beforeEach( () => {
-						rootElement = document.createElement( 'root' );
-						rootElement.setAttribute( 'tabindex', 0 );
+					childViewA.element.remove();
+					childViewB.element.remove();
+					childViewC.element.remove();
+				} );
 
-						document.body.appendChild( rootElement );
+				it( 'should add view as a related view', () => {
+					rootElement.appendChild( childViewA.element );
+					rootFocusTracker.add( childViewA );
 
-						childViewA = new FocusableViewWithFocusTracker( 'child-a' );
-						childViewB = new FocusableViewWithFocusTracker( 'child-b' );
-						childViewC = new FocusableViewWithFocusTracker( 'child-c' );
+					childViewA.children.first.focus();
 
-						childViewA.render();
-						childViewB.render();
-						childViewC.render();
+					expect( rootFocusTracker.isFocused ).to.be.true;
+					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+				} );
 
-						rootFocusTracker = focusTracker;
+				it( 'should be listed in #externalViews', () => {
+					rootFocusTracker.add( childViewA );
 
-						isFocusedSpy = sinon.spy();
-						focusedElementSpy = sinon.spy();
+					expect( rootFocusTracker.externalViews ).to.deep.equal( [ childViewA ] );
+				} );
 
-						rootFocusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => isFocusedSpy( isFocused ) );
-						rootFocusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
-							focusedElementSpy( focusedElement );
-						} );
+				it( 'should contribute to #elements', () => {
+					rootFocusTracker.add( childViewA );
+
+					expect( rootFocusTracker.elements ).to.deep.equal( [ childViewA.element ] );
+				} );
+
+				describe( 'focus detection between linked focus trackers', () => {
+					it( 'should set #focusedElement to a child view#element when a sub-child got focused', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)
+						// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
+						rootElement.appendChild( childViewA.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+
+						childViewA.children.get( 0 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
 					} );
 
-					afterEach( () => {
-						childViewA.destroy();
-						childViewB.destroy();
-						childViewC.destroy();
-						rootElement.remove();
+					it( 'should set #focusedElement to a child view#element when multiple sub-child got focused in short order', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)
+						// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
+						// 		<child-a-b />                      (tracked by child-a)          -> 2nd focus
+						// 	</child-a>
+						// </rootElement>
+						rootElement.appendChild( childViewA.element );
 
-						childViewA.element.remove();
-						childViewB.element.remove();
-						childViewC.element.remove();
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+
+						childViewA.children.get( 0 ).focus();
+						childViewA.children.get( 1 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
 					} );
 
-					it( 'should add view as a related view', () => {
+					it( 'should set #focusedElement the correct child view#element if two successive focuses ocurred in that view ' +
+						'at different nesting levels',
+					() => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)
+						// 		<child-a-a>                        (tracked by child-a)
+						// 			<child-b>                      (tracked by child-a)        -> 1st focus
+						// 				<child-b-a></child-b-a>    (tracked by child-b)        -> 2nd focus
+						// 				<child-b-b />              (tracked by child-b)
+						// 			</child-b>
+						// 		</child-a-a>
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
+						childViewA.children.get( 0 ).children.add( childViewB );
+						rootElement.appendChild( childViewA.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+						childViewA.focusTracker.add( childViewB );
+
+						childViewB.focus();
+						childViewB.children.get( 0 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
+					} );
+
+					it( 'should set #focusedElement to a child view#element when a logically connected sub-child was focused', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)
+						// 		<child-a-a />                      (tracked by child-a)
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// 	<child-b>                              (tracked by child-a)
+						// 		<child-b-a />                      (tracked by child-b)              -> 1st focus
+						// 		<child-b-b />                      (tracked by child-b)
+						// 	</child-b>
+						// </rootElement>
+						rootElement.appendChild( childViewA.element );
+						rootElement.appendChild( childViewB.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+						childViewA.focusTracker.add( childViewB );
+
+						childViewB.children.get( 0 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
+					} );
+
+					it( 'should set #focusedElement to a child view#element when multiple logically connected sub-children were ' +
+						'focused in short order',
+					() => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)
+						// 		<child-a-a />                      (tracked by child-a)
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// 	<child-b>                              (tracked by child-a)
+						// 		<child-b-a />                      (tracked by child-b)              -> 1st focus
+						// 		<child-b-b />                      (tracked by child-b)
+						// 	</child-b>
+						// 	<child-c>                              (tracked by child-a)
+						// 		<child-c-a />                      (tracked by child-c)              -> 2nd focus
+						// 		<child-c-b />                      (tracked by child-c)
+						// 	</child-c>
+						// </rootElement>
+						rootElement.appendChild( childViewA.element );
+						rootElement.appendChild( childViewB.element );
+						rootElement.appendChild( childViewC.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+						childViewA.focusTracker.add( childViewB );
+						childViewA.focusTracker.add( childViewC );
+
+						childViewB.children.get( 0 ).focus();
+						childViewC.children.get( 0 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
+					} );
+				} );
+
+				describe( 'blur handling between linked focus trackers', () => {
+					it( 'should set #focusedElement to the root element if focus moved back from the child view', () => {
+						// <rootElement>                           (tracked by root FT)          -> 2nd focus
+						// 	<child-a>                              (tracked by root FT)
+						// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
+						rootElement.appendChild( childViewA.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+
+						childViewA.children.get( 0 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						rootElement.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( rootElement );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledTwice( focusedElementSpy );
+						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
+						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, rootElement );
+					} );
+
+					it( 'should set #focusedElement to the view#element if focus moved from the sub-child to the child view', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)          -> 2nd focus
+						// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
+						rootElement.appendChild( childViewA.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+
+						childViewA.children.get( 0 ).focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						childViewA.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
+					} );
+
+					it( 'should set #focusedElement to a view#element in a different DOM sub-tree when its child gets focused', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)          -> 1st focus
+						// 		<child-a-a />                      (tracked by child-a)
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
+						// <child-b>                              (tracked by root FT)
+						// 	<child-b-a />                         (tracked by child-b)           -> 2nd focus
+						// 	<child-b-b />                         (tracked by child-b)
+						// </child-b>
+						rootElement.appendChild( childViewA.element );
+						document.body.appendChild( childViewB.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+						rootFocusTracker.add( childViewB );
+
+						childViewA.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						childViewB.children.first.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledTwice( focusedElementSpy );
+						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
+						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
+					} );
+
+					it( 'should set #focusedElement to a view#element in a different DOM sub-tree when it gets focused', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)          -> 1st focus
+						// 		<child-a-a />                      (tracked by child-a)
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
+						// <child-b>                              (tracked by root FT)           -> 2nd focus
+						// 	<child-b-a />                         (tracked by child-b)
+						// 	<child-b-b />                         (tracked by child-b)
+						// </child-b>
+						rootElement.appendChild( childViewA.element );
+						document.body.appendChild( childViewB.element );
+
+						rootFocusTracker.add( rootElement );
+						rootFocusTracker.add( childViewA );
+						rootFocusTracker.add( childViewB );
+
+						childViewA.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						childViewB.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledTwice( focusedElementSpy );
+						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
+						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
+					} );
+
+					it( 'should preserve #focusedElement if a focused element in a sub-tree was removed', () => {
+						// <rootElement>                           (tracked by root FT)
+						// 	<child-a>                              (tracked by root FT)          -> 1st focus, then remove
+						// 		<child-a-a />                      (tracked by child-a)
+						// 		<child-a-b />                      (tracked by child-a)
+						// 	</child-a>
+						// </rootElement>
 						rootElement.appendChild( childViewA.element );
 						rootFocusTracker.add( childViewA );
 
 						childViewA.children.first.focus();
-
 						expect( rootFocusTracker.isFocused ).to.be.true;
 						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
+
+						childViewA.element.remove();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledOnce( focusedElementSpy );
 					} );
 
-					it( 'should be listed in #externalViews', () => {
+					it( 'should avoid accidental blurs as the focus traverses multiple DOM sub-trees (1)', () => {
+						// <rootElement>                             (tracked by root FT)
+						//     <child-a>                             (tracked by root FT)
+						//         <child-a-a />                     (tracked by child-a)            -> 1st focus
+						//         <child-a-b />                     (tracked by child-a)
+						//     </child-a>
+						// </rootElement>
+						// <child-b>                                 (tracked by root FT)           -> 2nd focus
+						//     <child-b-a>                           (tracked by child-b)
+						//         <child-c>                         (tracked by child-b)
+						//             <child-c-a />                 (tracked by child-c)
+						//             <child-c-b />                 (tracked by child-c)           -> 3rd focus
+						//         </child-c>
+						//     </child-b-a>
+						//     <child-b-b />                         (tracked by child-b)           -> 4th focus
+						// </child-b>
+						rootElement.appendChild( childViewA.element );
+						document.body.appendChild( childViewB.element );
+						childViewB.children.first.children.add( childViewC );
+
+						rootFocusTracker.add( rootElement );
 						rootFocusTracker.add( childViewA );
+						rootFocusTracker.add( childViewB );
+						childViewB.focusTracker.add( childViewC );
 
-						expect( rootFocusTracker.externalViews ).to.deep.equal( [ childViewA ] );
+						childViewA.children.first.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						childViewB.focus();
+						childViewC.children.last.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+
+						childViewB.children.last.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledTwice( focusedElementSpy );
+						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
+						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
 					} );
 
-					it( 'should contribute to #elements', () => {
+					it( 'should avoid accidental blurs as the focus traverses multiple DOM sub-trees (2)', () => {
+						// <rootElement>                             (tracked by root FT)
+						//     <child-a>                             (tracked by root FT)
+						//         <child-a-a />                     (tracked by child-a)            -> 1st focus
+						//         <child-a-b />                     (tracked by child-a)
+						//     </child-a>
+						//     <child-b>                             (tracked by root FT)           -> 3rd focus
+						//         <child-b-a />                     (tracked by child-b)
+						//         <child-b-b />                     (tracked by child-b)
+						//     </child-b>
+						// </rootElement>
+						// <child-c>                                  (tracked by child-b)
+						//     <child-c-a />                          (tracked by child-c)
+						//     <child-c-b />                          (tracked by child-c)           -> 2nd focus
+						// </child-c>
+						rootElement.appendChild( childViewA.element );
+						rootElement.appendChild( childViewB.element );
+						document.body.appendChild( childViewC.element );
+
+						rootFocusTracker.add( rootElement );
 						rootFocusTracker.add( childViewA );
+						rootFocusTracker.add( childViewB );
+						childViewB.focusTracker.add( childViewC );
 
-						expect( rootFocusTracker.elements ).to.deep.equal( [ childViewA.element ] );
+						childViewA.children.first.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+
+						childViewC.children.first.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+
+						childViewB.focus();
+						expect( rootFocusTracker.isFocused ).to.be.true;
+						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+
+						sinon.assert.calledOnce( isFocusedSpy );
+						sinon.assert.calledTwice( focusedElementSpy );
+						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
+						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
 					} );
+				} );
 
-					describe( 'focus detection between linked focus trackers', () => {
-						it( 'should set #focusedElement to a child view#element when a sub-child got focused', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)
-							// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
+				it( 'should avoid accidental blurs as the focus traverses multiple DOM sub-trees (3)', () => {
+					// <rootElement>                             (tracked by root FT)
+					//     <child-a>                             (tracked by root FT)
+					//         <child-a-a />                     (tracked by child-a)            -> 1st focus
+					//         <child-a-b />                     (tracked by child-a)
+					//     </child-a>
+					//     <child-b>                             (tracked by root FT)
+					//         <child-b-a />                     (tracked by child-b)
+					//         <child-b-b />                     (tracked by child-b)
+					//     </child-b>
+					// </rootElement>
+					// <child-c>
+					//     <child-c-a />                          (tracked by child-c)           -> 2nd focus
+					//     <child-c-b />                          (tracked by child-c)
+					// </child-c>
+					rootElement.appendChild( childViewA.element );
+					rootElement.appendChild( childViewB.element );
+					document.body.appendChild( childViewC.element );
 
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
+					rootFocusTracker.add( rootElement );
+					rootFocusTracker.add( childViewA );
+					rootFocusTracker.add( childViewB );
 
-							childViewA.children.get( 0 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					childViewA.children.first.focus();
+					expect( rootFocusTracker.isFocused ).to.be.true;
+					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
 
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
+					childViewC.children.first.focus();
+					expect( rootFocusTracker.isFocused ).to.be.false;
+					expect( rootFocusTracker.focusedElement ).to.equal( null );
 
-						it( 'should set #focusedElement to a child view#element when multiple sub-child got focused in short order', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)
-							// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
-							// 		<child-a-b />                      (tracked by child-a)          -> 2nd focus
-							// 	</child-a>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-
-							childViewA.children.get( 0 ).focus();
-							childViewA.children.get( 1 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
-
-						it( 'should set #focusedElement the correct child view#element if two successive focuses ocurred in that view ' +
-							'at different nesting levels',
-						() => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)
-							// 		<child-a-a>                        (tracked by child-a)
-							// 			<child-b>                      (tracked by child-a)        -> 1st focus
-							// 				<child-b-a></child-b-a>    (tracked by child-b)        -> 2nd focus
-							// 				<child-b-b />              (tracked by child-b)
-							// 			</child-b>
-							// 		</child-a-a>
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							childViewA.children.get( 0 ).children.add( childViewB );
-							rootElement.appendChild( childViewA.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-							childViewA.focusTracker.add( childViewB );
-
-							childViewB.focus();
-							childViewB.children.get( 0 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
-
-						it( 'should set #focusedElement to a child view#element when a logically connected sub-child was focused', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)
-							// 		<child-a-a />                      (tracked by child-a)
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// 	<child-b>                              (tracked by child-a)
-							// 		<child-b-a />                      (tracked by child-b)              -> 1st focus
-							// 		<child-b-b />                      (tracked by child-b)
-							// 	</child-b>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
-							rootElement.appendChild( childViewB.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-							childViewA.focusTracker.add( childViewB );
-
-							childViewB.children.get( 0 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
-
-						it( 'should set #focusedElement to a child view#element when multiple logically connected sub-children were ' +
-							'focused in short order',
-						() => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)
-							// 		<child-a-a />                      (tracked by child-a)
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// 	<child-b>                              (tracked by child-a)
-							// 		<child-b-a />                      (tracked by child-b)              -> 1st focus
-							// 		<child-b-b />                      (tracked by child-b)
-							// 	</child-b>
-							// 	<child-c>                              (tracked by child-a)
-							// 		<child-c-a />                      (tracked by child-c)              -> 2nd focus
-							// 		<child-c-b />                      (tracked by child-c)
-							// 	</child-c>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
-							rootElement.appendChild( childViewB.element );
-							rootElement.appendChild( childViewC.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-							childViewA.focusTracker.add( childViewB );
-							childViewA.focusTracker.add( childViewC );
-
-							childViewB.children.get( 0 ).focus();
-							childViewC.children.get( 0 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
-					} );
-
-					describe( 'blur handling between linked focus trackers', () => {
-						it( 'should set #focusedElement to the root element if focus moved back from the child view', () => {
-							// <rootElement>                           (tracked by root FT)          -> 2nd focus
-							// 	<child-a>                              (tracked by root FT)
-							// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-
-							childViewA.children.get( 0 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							rootElement.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( rootElement );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledTwice( focusedElementSpy );
-							sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-							sinon.assert.calledWithExactly( focusedElementSpy.secondCall, rootElement );
-						} );
-
-						it( 'should set #focusedElement to the view#element if focus moved from the sub-child to the child view', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)          -> 2nd focus
-							// 		<child-a-a />                      (tracked by child-a)          -> 1st focus
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-
-							childViewA.children.get( 0 ).focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							childViewA.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
-
-						it( 'should set #focusedElement to a view#element in a different DOM sub-tree when its child gets focused', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)          -> 1st focus
-							// 		<child-a-a />                      (tracked by child-a)
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							// <child-b>                              (tracked by root FT)
-							// 	<child-b-a />                         (tracked by child-b)           -> 2nd focus
-							// 	<child-b-b />                         (tracked by child-b)
-							// </child-b>
-							rootElement.appendChild( childViewA.element );
-							document.body.appendChild( childViewB.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-							rootFocusTracker.add( childViewB );
-
-							childViewA.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							childViewB.children.first.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledTwice( focusedElementSpy );
-							sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-							sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
-						} );
-
-						it( 'should set #focusedElement to a view#element in a different DOM sub-tree when it gets focused', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)          -> 1st focus
-							// 		<child-a-a />                      (tracked by child-a)
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							// <child-b>                              (tracked by root FT)           -> 2nd focus
-							// 	<child-b-a />                         (tracked by child-b)
-							// 	<child-b-b />                         (tracked by child-b)
-							// </child-b>
-							rootElement.appendChild( childViewA.element );
-							document.body.appendChild( childViewB.element );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-							rootFocusTracker.add( childViewB );
-
-							childViewA.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							childViewB.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledTwice( focusedElementSpy );
-							sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-							sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
-						} );
-
-						it( 'should preserve #focusedElement if a focused element in a sub-tree was removed', () => {
-							// <rootElement>                           (tracked by root FT)
-							// 	<child-a>                              (tracked by root FT)          -> 1st focus, then remove
-							// 		<child-a-a />                      (tracked by child-a)
-							// 		<child-a-b />                      (tracked by child-a)
-							// 	</child-a>
-							// </rootElement>
-							rootElement.appendChild( childViewA.element );
-							rootFocusTracker.add( childViewA );
-
-							childViewA.children.first.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-
-							childViewA.element.remove();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledOnce( focusedElementSpy );
-						} );
-
-						it( 'should avoid accidental blurs as the focus traverses multiple DOM sub-trees', async () => {
-							// <rootElement>                             (tracked by root FT)
-							//     <child-a>                             (tracked by root FT)
-							//         <child-a-a />                     (tracked by child-a)            -> 1st focus
-							//         <child-a-b />                     (tracked by child-a)
-							//     </child-a>
-							// </rootElement>
-							// <child-b>                                 (tracked by root FT)           -> 2nd focus
-							//     <child-b-a>                           (tracked by child-b)
-							//         <child-c>                         (tracked by child-b)
-							//             <child-c-a />                 (tracked by child-c)
-							//             <child-c-b />                 (tracked by child-c)           -> 3rd focus
-							//         </child-c>
-							//     </child-b-a>
-							//     <child-b-b />                         (tracked by child-b)           -> 4th focus
-							// </child-b>
-							rootElement.appendChild( childViewA.element );
-							document.body.appendChild( childViewB.element );
-							childViewB.children.first.children.add( childViewC );
-
-							rootFocusTracker.add( rootElement );
-							rootFocusTracker.add( childViewA );
-							rootFocusTracker.add( childViewB );
-							childViewB.focusTracker.add( childViewC );
-
-							childViewA.children.first.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
-
-							childViewB.focus();
-							childViewC.children.last.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
-
-							childViewB.children.last.focus();
-							expect( rootFocusTracker.isFocused ).to.be.true;
-							expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
-
-							sinon.assert.calledOnce( isFocusedSpy );
-							sinon.assert.calledTwice( focusedElementSpy );
-							sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-							sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
-						} );
-					} );
+					sinon.assert.calledTwice( isFocusedSpy );
+					sinon.assert.calledTwice( focusedElementSpy );
+					sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
+					sinon.assert.calledWithExactly( focusedElementSpy.secondCall, null );
 				} );
 			} );
 		} );
