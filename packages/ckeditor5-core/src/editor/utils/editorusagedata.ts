@@ -153,6 +153,7 @@ declare global {
 }
 
 export type EditorUsageData = {
+	sessionId: string;
 	pageSessionId: string;
 	hostname: string;
 	version: string;
