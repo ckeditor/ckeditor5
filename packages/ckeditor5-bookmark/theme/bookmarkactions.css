@@ -5,26 +5,20 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-bookmark-view {
-	&:focus {
-		outline: none;
-	}
-}
-
-.ck.ck-bookmark-form {
-	display: flex;
-	align-items: flex-start;
-
+.ck.ck-bookmark-actions {
 	@mixin ck-media-phone {
+		display: flex;
 		flex-wrap: wrap;
 
-		& .ck-button,
-		& .ck-labeled-field-view {
+		& .ck-bookmark-actions__preview {
 			flex-basis: 100%;
+			justify-content: center;
+			padding: var(--ck-spacing-standard);
 		}
 
-		& .ck-button {
-			justify-content: center;
+		& .ck-button:not(.ck-bookmark-actions__preview) {
+			flex-basis: 50%;
+			margin-top: 0;
 		}
 	}
 }
