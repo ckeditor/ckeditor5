@@ -29,7 +29,7 @@ import { isElement as _isElement } from 'lodash-es';
  */
 export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
-	 * True when one of the registered {@link #elements} or {@link #externalFocusTrackers} is focused.
+	 * True when one of the registered {@link #elements} or {@link #externalViews} is focused.
 	 *
 	 * @readonly
 	 * @observable
@@ -42,7 +42,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * While {@link #isFocused `isFocused`} remains `true`, the focus can move between different UI elements. This property tracks those
 	 * elements and tells which one is currently focused.
 	 *
-	 * **Note**: The values of this property are restricted to {@link #elements} or elements registered in {@link #externalFocusTrackers}.
+	 * **Note**: The values of this property are restricted to {@link #elements} or elements registered in {@link #externalViews}.
 	 *
 	 * @readonly
 	 * @observable
@@ -82,7 +82,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	/**
 	 * List of registered DOM elements.
 	 *
-	 * **Note**: The list does do not include elements from {@link #externalFocusTrackers}.
+	 * **Note**: The list does do not include elements from {@link #externalViews}.
 	 */
 	public get elements(): Array<Element> {
 		return Array.from( this._elements.values() );
@@ -103,7 +103,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * * If a {@link module:ui/view~View} instance is passed that has a `FocusTracker` instance ({@link ~ViewWithFocusTracker}),
 	 * the external focus tracker's state ({@link #isFocused}, {@link #focusedElement}) starts contributing to the current tracker instance.
 	 * This allows for increasing the "reach" of a focus tracker instance, by connecting two or more focus trackers together when DOM
-	 * elements they track are located in different subtrees in DOM. External focus trackers are listed in {@link #externalFocusTrackers}.
+	 * elements they track are located in different subtrees in DOM. External focus trackers are listed in {@link #externalViews}.
 	 * * If a {@link module:ui/view~View} instance is passed that has no `FocusTracker` (**not** a {@link ~ViewWithFocusTracker}),
 	 * its {@link module:ui/view~View#element} is used to track focus like any other DOM element.
 	 */
