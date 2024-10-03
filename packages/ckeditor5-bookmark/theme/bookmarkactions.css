@@ -6,6 +6,19 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-bookmark-actions {
+	& .ck-bookmark-actions__preview {
+		& .ck-button__label {
+			max-width: var(--ck-input-width);
+			min-width: 3em;
+			text-overflow: ellipsis;
+			overflow: hidden;
+
+			@mixin ck-media-phone {
+				min-width: auto;
+			}
+		}
+	}
+
 	@mixin ck-media-phone {
 		display: flex;
 		flex-wrap: wrap;
