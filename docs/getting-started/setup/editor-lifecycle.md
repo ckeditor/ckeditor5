@@ -30,6 +30,7 @@ Add an element that CKEditor&nbsp;5 should replace on your HTML page:
 
 Then you call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<div>` element with a classic editor:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials } from 'ckeditor5';
 
@@ -46,6 +47,7 @@ ClassicEditor
 		console.error( error );
 	} );
 ```
+</code-switcher>
 
 After creation, the editor will appear on the page in the selected area.
 
@@ -69,6 +71,7 @@ Add the elements where CKEditor&nbsp;5 should initialize the toolbar and the edi
 
 Then call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
 
+<code-switcher>
 ```js
 import { DecoupledEditor, Essentials } from 'ckeditor5';
 
@@ -87,6 +90,7 @@ DecoupledEditor
 		console.error( error );
 	} );
 ```
+</code-switcher>
 
 ## Getting the editor's instance
 
