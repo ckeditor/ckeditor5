@@ -22,7 +22,11 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Element } from '@ckeditor/ckeditor5-engine';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import {
+	setData as setModelData,
+	getData as getModelData,
+	stringify as stringifyModel
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget';
 
@@ -1019,7 +1023,405 @@ describe( 'BookmarkEditing', () => {
 			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).is.null;
 		} );
 	} );
+
+	describe( 'clipboard', () => {
+		let clipboardPlugin, viewDocument;
+
+		beforeEach( async () => {
+			clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+			viewDocument = view.document;
+		} );
+
+		describe( 'wrapped bookmarks', () => {
+			it( 'should paste anchor with identical `id` and `name` attributes', done => {
+				const html = '<p><a id="xyz" name="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with various `id` and `name` attributes', done => {
+				const html = '<p><a id="xyz" name="foo">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with `id` attribute', done => {
+				const html = '<p><a id="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with `name` attribute', done => {
+				const html = '<p><a name="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor when bookmark with the same `id` already exists', done => {
+				const html = '<p><a name="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				setModelData( model,
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph>[]</paragraph>'
+				);
+
+				model.document.on( 'change:data', () => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+					const modeldata = getModelData( model, { withoutSelection: true } );
+
+					expect( modeldata ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+		} );
+
+		describe( 'unwrapped bookmarks', () => {
+			it( 'should paste anchor with identical `id` and `name` attributes', done => {
+				const html = '<p><a id="xyz" name="xyz"></a>foo</p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with various `id` and `name` attributes', done => {
+				const html = '<p><a id="xyz" name="foo"></a>foo</p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with identical `id` and `name` attributes (content before bookmark)', done => {
+				const html = '<p>foo<a id="xyz" name="xyz"></a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with `name` attribute', done => {
+				const html = '<p><a id="xyz"></a>foo</p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with `name` attribute', done => {
+				const html = '<p>foo<a id="xyz"></a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with `name` attribute', done => {
+				const html = '<p><a name="xyz"></a>foo</p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor with `name` attribute (content before bookmark)', done => {
+				const html = '<p>foo<a name="xyz"></a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>';
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should paste anchor when bookmark with the same `id` already exists', done => {
+				const html = '<p><a name="xyz"></a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				setModelData( model,
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph>[]</paragraph>'
+				);
+
+				model.document.on( 'change:data', () => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark></paragraph>';
+					const modeldata = getModelData( model, { withoutSelection: true } );
+
+					expect( modeldata ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+		} );
+
+		describe( 'when `enableNonEmptyBookmarkConversion` is set to `false` ', () => {
+			let element, editor, view, viewDocument, clipboardPlugin;
+
+			beforeEach( async () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				const config = {
+					language: 'en',
+					plugins: [ BookmarkEditing, Essentials, Paragraph ],
+					bookmark: {
+						enableNonEmptyBookmarkConversion: false
+					}
+				};
+
+				editor = await createEditor( element, config );
+				model = editor.model;
+				view = editor.editing.view;
+				viewDocument = view.document;
+				clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+			} );
+
+			afterEach( async () => {
+				element.remove();
+				await editor.destroy();
+			} );
+
+			it( 'should paste anchor with `name` attribute', done => {
+				const html = '<p><a name="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+
+			it( 'should paste anchor with `id` attribute', done => {
+				const html = '<p><a id="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+
+			it( 'should paste anchor with `id` and `name` attributes', done => {
+				const html = '<p><a id="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					const expectedModel = '<paragraph>foo</paragraph>';
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.method ).to.equal( 'paste' );
+					expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+		} );
+	} );
 } );
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
+}
 
 async function createEditor( element, config ) {
 	const editor = await ClassicTestEditor.create( element, config );
