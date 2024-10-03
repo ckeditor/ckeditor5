@@ -5,8 +5,8 @@
 
 /* globals console, window, document */
 
-import config from '../../../_utils/performance-config.js';
-import allDataSets from '../../../_data/generated/index.js';
+import config from '../../_utils/performance-config.js';
+import allDataSets from '../../_data/generated/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 const initialData = allDataSets.paragraphs();
@@ -15,13 +15,21 @@ const editorElement = document.querySelector( '#editor' );
 
 const startTime = window.performance.now();
 
-ClassicEditor
-	.create( editorElement, finalConfig )
-	.then( () => {
-		const testTime = window.performance.now() - startTime;
+function startTest() {
+	ClassicEditor
+		.create( editorElement, finalConfig )
+		.then( () => {
+			const testTime = window.performance.now() - startTime;
 
-		console.log( testTime );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+			console.log( testTime );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
+
+document.getElementById( 'btnStart' ).addEventListener( 'click', () => {
+	document.getElementById( 'btnStart' ).remove();
+
+	startTest();
+} );
