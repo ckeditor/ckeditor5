@@ -21,9 +21,9 @@ main()
 	} );
 
 async function main() {
-	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile, retries } = getOptions( process.argv.slice( 2 ) );
+	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile, attempts } = getOptions( process.argv.slice( 2 ) );
 
-	runTests( { packageName, checkCoverage, retries } );
+	runTests( { packageName, checkCoverage, attempts } );
 
 	if ( checkCoverage && !allowNonFullCoverage ) {
 		const exitCode = checkCodeCoverage();
@@ -46,9 +46,9 @@ async function main() {
  * @param {Object} options
  * @param {String} options.packageName
  * @param {Boolean} options.checkCoverage
- * @param {Number} options.retries
+ * @param {Number} options.attempts
  */
-function runTests( { packageName, checkCoverage, retries = 3 } ) {
+function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 	const shortName = packageName.replace( /^ckeditor5?-/, '' );
 
 	const testCommand = [
@@ -60,22 +60,23 @@ function runTests( { packageName, checkCoverage, retries = 3 } ) {
 		checkCoverage ? '--coverage' : null
 	].filter( Boolean );
 
-	for ( let retry = 0; retry < retries; retry++ ) {
-		try {
-			execSync( testCommand.join( ' ' ), {
-				cwd: CKEDITOR5_ROOT_PATH,
-				stdio: 'inherit'
-			} );
-
-			break;
-		} catch ( err ) {
-			if ( retry === retries ) {
-				throw err;
-			} else {
-				console.error( err );
-				console.log( `\n⚠️ Retry ${ retry + 1 } of ${ retries } for ${ packageName }!` );
-			}
+	try {
+		execSync( testCommand.join( ' ' ), {
+			cwd: CKEDITOR5_ROOT_PATH,
+			stdio: 'inherit'
+		} );
+	} catch ( err ) {
+		if ( !attempts ) {
+			throw err;
 		}
+
+		console.log( `\n⚠️ Retry the test execution. Remaining attempts: ${ attempts - 1 }.` );
+
+		return runTests( {
+			packageName,
+			checkCoverage,
+			attempts: attempts - 1
+		} );
 	}
 }
 
@@ -104,13 +105,14 @@ function checkCodeCoverage() {
  * @returns {Boolean} options.checkCoverage
  * @returns {Boolean} options.allowNonFullCoverage
  * @returns {String|null} options.coverageFile
- * @returns {Number} options.retries
+ * @returns {Number} options.attempts
  */
 function getOptions( argv ) {
 	const options = minimist( argv, {
 		string: [
 			'package-name',
-			'coverage-file'
+			'coverage-file',
+			'attempts'
 		],
 		boolean: [
 			'check-coverage',
@@ -122,7 +124,7 @@ function getOptions( argv ) {
 		}
 	} );
 
-	options.retries = Number( options.retries ?? 3 );
+	options.attempts = Number( options.attempts || 1 );
 	options.packageName = options[ 'package-name' ];
 	options.coverageFile = options[ 'coverage-file' ];
 	options.checkCoverage = options[ 'check-coverage' ];
