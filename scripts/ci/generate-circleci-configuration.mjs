@@ -235,8 +235,8 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 		const testCommand = [
 			'node',
 			'scripts/ci/check-unit-tests-for-package.mjs',
-			'--package-name',
 			'--retries 3',
+			'--package-name',
 			packageName,
 			checkCoverage ? '--check-coverage' : null,
 			allowNonFullCoverage ? '--allow-non-full-coverage' : null,
