@@ -219,8 +219,8 @@ The example below shows how all these mechanisms can be used together to enable 
 </info-box>
 -->
 
+<code-switcher>
 ```js
-// Note: We need to build the editor from source.
 import { ClassicEditor, PendingActions } from 'ckeditor5';
 
 let isDirty = false;
@@ -317,6 +317,7 @@ function updateStatus( editor ) {
 	}
 }
 ```
+</code-switcher>
 
 How to understand this demo:
 
