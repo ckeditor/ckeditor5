@@ -52,6 +52,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editorBasic = editor;
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Bookmark' ),
+			text: 'Click to insert a bookmark.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err );
