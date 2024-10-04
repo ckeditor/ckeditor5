@@ -19,7 +19,7 @@ export default function makeData() {
 	return initialData;
 }
 
-function makeList( itemsCount, tagName, levels ) {
+export function makeList( itemsCount, tagName, levels ) {
 	let initialData = `<${ tagName }>`;
 
 	for ( let i = 0; i < itemsCount / 2; i++ ) {

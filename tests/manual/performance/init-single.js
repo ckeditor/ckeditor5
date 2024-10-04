@@ -6,10 +6,10 @@
 /* globals console, window, document */
 
 import config from '../../_utils/performance-config.js';
-import allDataSets from '../../_data/generated/index.js';
+import dataSet from '../../_data/generated/mixed.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-const initialData = allDataSets.paragraphs();
+const initialData = dataSet();
 const finalConfig = { initialData, ...config };
 const editorElement = document.querySelector( '#editor' );
 
@@ -18,10 +18,12 @@ const startTime = window.performance.now();
 function startTest() {
 	ClassicEditor
 		.create( editorElement, finalConfig )
-		.then( () => {
+		.then( editor => {
 			const testTime = window.performance.now() - startTime;
 
 			console.log( testTime );
+
+			window._editor = editor;
 		} )
 		.catch( err => {
 			console.error( err.stack );
