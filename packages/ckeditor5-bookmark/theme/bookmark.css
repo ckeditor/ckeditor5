@@ -10,40 +10,42 @@
 	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
 }
 
-.ck-bookmark {
-	&.ck-widget {
-		outline: none;
-
-		& .ck-bookmark__icon .ck-icon__fill {
-			transition: fill var(--ck-bookmark-icon-animation-duration) var(--ck-bookmark-icon-animation-curve);
-		}
-
-		&:hover {
-			& .ck-bookmark__icon .ck-icon__fill {
-				fill: var(--ck-bookmark-icon-hover-fill-color);
-			}
-		}
-
-		&.ck-widget_selected {
-			.ck-bookmark__icon .ck-icon__fill {
-				fill: var(--ck-bookmark-icon-selected-fill-color);
-			}
-		}
-
-		&.ck-widget_selected,
-		&.ck-widget_selected:hover {
+.ck-content {
+	& .ck-bookmark {
+		&.ck-widget {
 			outline: none;
-		}
 
-		& .ck-bookmark__icon {
-			position: relative;
-			/* To make it align with text baseline. */
-			top: -0.065em;
+			& .ck-bookmark__icon .ck-icon__fill {
+				transition: fill var(--ck-bookmark-icon-animation-duration) var(--ck-bookmark-icon-animation-curve);
+			}
 
-			& .ck-icon {
-				height: 1.2em;
-				width: auto;
-				vertical-align: middle;
+			&:hover {
+				& .ck-bookmark__icon .ck-icon__fill {
+					fill: var(--ck-bookmark-icon-hover-fill-color);
+				}
+			}
+
+			&.ck-widget_selected {
+				.ck-bookmark__icon .ck-icon__fill {
+					fill: var(--ck-bookmark-icon-selected-fill-color);
+				}
+			}
+
+			&.ck-widget_selected,
+			&.ck-widget_selected:hover {
+				outline: none;
+			}
+
+			& .ck-bookmark__icon {
+				position: relative;
+				/* To make it align with text baseline. */
+				top: -0.065em;
+
+				& .ck-icon {
+					height: 1.2em;
+					width: auto;
+					vertical-align: middle;
+				}
 			}
 		}
 	}
