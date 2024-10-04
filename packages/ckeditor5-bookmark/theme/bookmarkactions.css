@@ -21,7 +21,7 @@
 
 		& .ck-bookmark-actions__preview {
 			flex-basis: 100%;
-			padding: var(--ck-spacing-standard);
+			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
 			justify-content: center;
 
 			& .ck-button__label {
@@ -31,7 +31,6 @@
 
 		& .ck-button:not(.ck-bookmark-actions__preview) {
 			flex-basis: 50%;
-			margin-top: 0;
 		}
 	}
 }
