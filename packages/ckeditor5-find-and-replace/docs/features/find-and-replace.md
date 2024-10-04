@@ -29,6 +29,7 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, FindAndReplace } from 'ckeditor5';
 
@@ -44,6 +45,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -51,7 +53,6 @@ ClassicEditor
 
 By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
 
-<code-switcher>
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -63,7 +64,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-</code-switcher>
 
 {@snippet features/find-and-replace-dropdown}
 
