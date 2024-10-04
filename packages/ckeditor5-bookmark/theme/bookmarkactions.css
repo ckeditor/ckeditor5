@@ -12,10 +12,6 @@
 			min-width: 3em;
 			text-overflow: ellipsis;
 			overflow: hidden;
-
-			@mixin ck-media-phone {
-				min-width: auto;
-			}
 		}
 	}
 
@@ -25,8 +21,12 @@
 
 		& .ck-bookmark-actions__preview {
 			flex-basis: 100%;
-			justify-content: center;
 			padding: var(--ck-spacing-standard);
+			justify-content: center;
+
+			& .ck-button__label {
+				min-width: auto;
+			}
 		}
 
 		& .ck-button:not(.ck-bookmark-actions__preview) {
