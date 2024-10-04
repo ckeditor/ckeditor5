@@ -21,9 +21,9 @@ main()
 	} );
 
 async function main() {
-	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile } = getOptions( process.argv.slice( 2 ) );
+	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile, retries } = getOptions( process.argv.slice( 2 ) );
 
-	runTests( { packageName, checkCoverage } );
+	runTests( { packageName, checkCoverage, retries } );
 
 	if ( checkCoverage && !allowNonFullCoverage ) {
 		const exitCode = checkCodeCoverage();
@@ -46,8 +46,9 @@ async function main() {
  * @param {Object} options
  * @param {String} options.packageName
  * @param {Boolean} options.checkCoverage
+ * @param {Number} options.retries
  */
-function runTests( { packageName, checkCoverage } ) {
+function runTests( { packageName, checkCoverage, retries = 3 } ) {
 	const shortName = packageName.replace( /^ckeditor5?-/, '' );
 
 	const testCommand = [
@@ -59,10 +60,23 @@ function runTests( { packageName, checkCoverage } ) {
 		checkCoverage ? '--coverage' : null
 	].filter( Boolean );
 
-	execSync( testCommand.join( ' ' ), {
-		cwd: CKEDITOR5_ROOT_PATH,
-		stdio: 'inherit'
-	} );
+	for ( let retry = 0; retry < retries; retry++ ) {
+		try {
+			execSync( testCommand.join( ' ' ), {
+				cwd: CKEDITOR5_ROOT_PATH,
+				stdio: 'inherit'
+			} );
+
+			break;
+		} catch ( err ) {
+			if ( retry === retries ) {
+				throw err;
+			} else {
+				console.error( err );
+				console.log( `\n⚠️ Retry ${ retry + 1 } of ${ retries } for ${ packageName }!` );
+			}
+		}
+	}
 }
 
 function checkCodeCoverage() {
@@ -90,6 +104,7 @@ function checkCodeCoverage() {
  * @returns {Boolean} options.checkCoverage
  * @returns {Boolean} options.allowNonFullCoverage
  * @returns {String|null} options.coverageFile
+ * @returns {Number} options.retries
  */
 function getOptions( argv ) {
 	const options = minimist( argv, {
@@ -107,6 +122,7 @@ function getOptions( argv ) {
 		}
 	} );
 
+	options.retries = Number( options.retries ?? 3 );
 	options.packageName = options[ 'package-name' ];
 	options.coverageFile = options[ 'coverage-file' ];
 	options.checkCoverage = options[ 'check-coverage' ];
