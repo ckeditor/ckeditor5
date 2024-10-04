@@ -10,7 +10,12 @@ import tablesMany from './tables-many-smaller.js';
 import formattingLongP from './formatting-long-paragraphs.js';
 import formattingShortP from './formatting-short-paragraphs.js';
 import inlineStyles from './inline-styles.js';
+import mixed from './mixed.js';
+// Below data sets were tested, and they do not differ vs above tests.
+// import paragraphsLong from './paragraphs-long.js';
+// import images from './images.js';
 
 export default {
-	paragraphs, lists, tableHuge, tablesMany, formattingLongP, formattingShortP, inlineStyles
+	paragraphs, lists, tableHuge, tablesMany, formattingLongP, formattingShortP, inlineStyles, mixed
+	//, images, paragraphsLong
 };
