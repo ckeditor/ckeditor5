@@ -124,7 +124,7 @@ function getOptions( argv ) {
 		}
 	} );
 
-	options.attempts = Number( options.attempts || 1 );
+	options.attempts = Number( options.attempts || 3 );
 	options.packageName = options[ 'package-name' ];
 	options.coverageFile = options[ 'coverage-file' ];
 	options.checkCoverage = options[ 'check-coverage' ];
