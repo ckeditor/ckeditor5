@@ -231,9 +231,9 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 			return;
 		}
 
-		const enableNonEmptyBookmarkConversion = isEnabledNonEmptyBookmarkConversion( editor );
+		const enableNonEmptyAnchorConversion = isEnabledNonEmptyAnchorConversion( editor );
 
-		if ( !enableNonEmptyBookmarkConversion && !viewItem.isEmpty ) {
+		if ( !enableNonEmptyAnchorConversion && !viewItem.isEmpty ) {
 			return;
 		}
 
@@ -265,11 +265,11 @@ function dataViewModelAnchorInsertion( editor: Editor ) {
 }
 
 /**
- * Normalize the bookmark configuration option `enableNonEmptyBookmarkConversion`.
+ * Normalize the bookmark configuration option `enableNonEmptyAnchorConversion`.
  */
-function isEnabledNonEmptyBookmarkConversion( editor: Editor ): boolean {
-	const enableNonEmptyBookmarkConversion = editor.config.get( 'bookmark.enableNonEmptyBookmarkConversion' );
+function isEnabledNonEmptyAnchorConversion( editor: Editor ): boolean {
+	const enableNonEmptyAnchorConversion = editor.config.get( 'bookmark.enableNonEmptyAnchorConversion' );
 
-	// When not defined, option `enableNonEmptyBookmarkConversion` by default is set to `true`.
-	return enableNonEmptyBookmarkConversion !== undefined ? enableNonEmptyBookmarkConversion : true;
+	// When not defined, option `enableNonEmptyAnchorConversion` by default is set to `true`.
+	return enableNonEmptyAnchorConversion !== undefined ? enableNonEmptyAnchorConversion : true;
 }
