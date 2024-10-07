@@ -808,8 +808,8 @@ You can see the block widget implementation in action in the editor below. You c
 If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project) available.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/block-widget/final-project
+npx -y degit ckeditor/ckeditor5-tutorials-examples/block-widget/final-project final-project
+cd final-project
 
 npm install
 npm run dev

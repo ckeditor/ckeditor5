@@ -563,8 +563,8 @@ You can see the external data widget implementation in action in the editor belo
 If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source/final-project) available.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/data-from-external-source/final-project
+npx -y degit ckeditor/ckeditor5-tutorials-examples/data-from-external-source/final-project final-project
+cd final-project
 
 npm install
 npm run dev
