@@ -56,7 +56,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 const editorComponent = document.querySelector( '#editor-component' );
 
-const editorShadow = editorComponent.attachShadow( { mode: 'open', delegatesFocus: true } );
+const editorShadow = editorComponent.attachShadow( { mode: 'open', delegatesFocus: false } );
 const bodyCollectionWrapperShadow = document.querySelector( '.ck-body-wrapper' ).attachShadow( { mode: 'open' } );
 
 const editorElement = document.createElement( 'div' );
@@ -77,9 +77,10 @@ for ( const sheet of document.styleSheets ) {
 }
 
 // This requires delegatesFocus: true
-editorComponent.addEventListener( 'focus', () => {
-	window.editor.focus();
-}, { capture: true } );
+// TODO this breaks toolbars cycling
+// editorComponent.addEventListener( 'focus', () => {
+// 	window.editor.focus();
+// }, { capture: true } );
 
 document.querySelector( 'button#focus-editor-component' ).addEventListener( 'click', () => {
 	editorComponent.focus( { preventScroll: true } );
@@ -97,7 +98,8 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, BlockToolbar
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport,
+			// BlockToolbar
 		],
 		toolbar: [
 			'heading', 'style',
