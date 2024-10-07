@@ -16,6 +16,7 @@ import {
 	first,
 	global,
 	isVisible,
+	isShadowRoot,
 	type EventInfo,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
@@ -241,8 +242,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		}
 	}
 
-	public registerShadowRoot( node: ShadowRoot ): void {
-		if ( this._shadowRoots.has( node ) ) {
+	public registerShadowRoot( node: ShadowRoot | Node ): void {
+		if ( !isShadowRoot( node ) || this._shadowRoots.has( node ) ) {
 			return;
 		}
 
@@ -250,6 +251,9 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		this._addMouseEnterLeaveListeners( node );
 	}
 
+	/**
+	 * TODO ShadowRoot
+	 */
 	private _addMouseEnterLeaveListeners( node: Document | ShadowRoot ): void {
 		this.listenTo( node, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this.listenTo( node, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
