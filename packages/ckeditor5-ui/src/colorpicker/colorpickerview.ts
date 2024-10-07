@@ -10,7 +10,7 @@
 import { convertColor, convertToHex, registerCustomElement, type ColorPickerViewConfig } from './utils.js';
 
 import type { HexColor } from '@ckeditor/ckeditor5-core';
-import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
+import { type Locale, global, env, getActiveElement } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view.js';
 import type InputTextView from '../inputtext/inputtextview.js';
@@ -142,7 +142,7 @@ export default class ColorPickerView extends View {
 			// Update the selected color in the color picker palette when it's not focused.
 			// It means the user typed the color in the input.
 			// TODO ShadowRoot
-			if ( document.activeElement !== this.picker ) {
+			if ( getActiveElement( this.element! ) !== this.picker ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
 

@@ -34,6 +34,7 @@ import {
 	first,
 	getSelection,
 	getParentOrHostElement,
+	getActiveElement,
 	env
 } from '@ckeditor/ckeditor5-utils';
 
@@ -1091,8 +1092,7 @@ export default class DomConverter {
 	 */
 	public focus( viewEditable: EditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
-		const rootNode = domEditable && ( domEditable.getRootNode() as ShadowRoot | DomDocument );
-		const activeElement = rootNode && rootNode.activeElement;
+		const activeElement = domEditable && getActiveElement( domEditable );
 
 		// TODO ShadowRoot
 		if ( domEditable && activeElement !== domEditable ) {

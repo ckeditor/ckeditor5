@@ -23,8 +23,6 @@ export default function getSelection( node: Node ): Selection | null {
 			// TODO Does it work if in multiple nested shadows?
 			const ranges = domSelection.getComposedRanges( rootNode );
 
-			console.log( 'sel', ranges, domSelection.direction );
-
 			// TODO for now just a DOM selection wrapper
 			return {
 				rangeCount: ranges.length,
@@ -55,7 +53,6 @@ export default function getSelection( node: Node ): Selection | null {
 				},
 
 				setBaseAndExtent( ...args ) {
-					console.log( 'sel set base and extent' );
 					return domSelection.setBaseAndExtent( ...args );
 				}
 			} as any;

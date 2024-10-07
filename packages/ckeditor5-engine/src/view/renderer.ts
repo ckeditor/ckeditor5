@@ -1093,7 +1093,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * Removes the DOM selection.
 	 */
 	private _removeDomSelection(): void {
-		// TODO ShadowRoot
+		// TODO ShadowRoot - this currently does not work in Shadow DOM but also looks like it has no effect
 		for ( const doc of this.domDocuments ) {
 			const domSelection = doc.getSelection()!;
 

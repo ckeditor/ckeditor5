@@ -71,6 +71,7 @@ export { default as isVisible } from './dom/isvisible.js';
 export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type DomPoint } from './dom/position.js';
 export { default as remove } from './dom/remove.js';
 export { default as getSelection } from './dom/getselection.js';
+export { default as getActiveElement } from './dom/getactiveelement.js';
 export * from './dom/scroll.js';
 
 export * from './keyboard.js';

@@ -31,7 +31,7 @@ import type { FalsyValue } from '../template.js';
 import type BodyCollection from '../editorui/bodycollection.js';
 
 import {
-	global,
+	getActiveElement,
 	priorities,
 	logWarning,
 	type Collection,
@@ -607,7 +607,7 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
 		// TODO ShadowRoot - the activeElement is valid for the closest ShadowRoot
-		if ( elements.some( element => element.getRootNode().activeElement && element.contains( element.getRootNode().activeElement ) ) ) {
+		if ( elements.some( element => getActiveElement( element ) && element.contains( getActiveElement( element ) ) ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );
