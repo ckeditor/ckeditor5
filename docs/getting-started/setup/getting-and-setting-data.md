@@ -105,6 +105,7 @@ This approach is **only available in the Classic editor**, and only if the edito
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Classic editor</title>
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 </head>
 <body>
 	<h1>Classic editor</h1>
@@ -114,22 +115,14 @@ This approach is **only available in the Classic editor**, and only if the edito
 		</textarea>
 		<p><input type="submit" value="Submit"></p>
 	</form>
-	<script type="importmap">
-		{
-			"imports": {
-				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
-			}
-		}
-	</script>
-	<script type="module">
-	  	import {
+	<script>
+	  	const {
 			ClassicEditor,
 			Essentials,
 			Paragraph,
 			Bold,
 			Italic
-		} from 'ckeditor5';
+		} = CKEDITOR;
 
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
