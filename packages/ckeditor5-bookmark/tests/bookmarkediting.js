@@ -675,7 +675,7 @@ describe( 'BookmarkEditing', () => {
 				);
 			} );
 
-			describe( 'when `enableNonEmptyBookmarkConversion` is set to `false` ', () => {
+			describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
 				let element, editor, model;
 
 				beforeEach( async () => {
@@ -686,7 +686,7 @@ describe( 'BookmarkEditing', () => {
 						language: 'en',
 						plugins: [ BookmarkEditing, Essentials, ImageInline, ImageBlock, Heading, Paragraph, Link, Table ],
 						bookmark: {
-							enableNonEmptyBookmarkConversion: false
+							enableNonEmptyAnchorConversion: false
 						}
 					};
 
@@ -834,7 +834,7 @@ describe( 'BookmarkEditing', () => {
 			} );
 
 			describe( 'wrapped bookmarks', () => {
-				describe( 'when `enableNonEmptyBookmarkConversion` is set to `false` ', () => {
+				describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
 					let element, editor, model;
 
 					beforeEach( async () => {
@@ -858,7 +858,7 @@ describe( 'BookmarkEditing', () => {
 								]
 							},
 							bookmark: {
-								enableNonEmptyBookmarkConversion: false
+								enableNonEmptyAnchorConversion: false
 							}
 						};
 
