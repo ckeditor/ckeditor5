@@ -26,17 +26,19 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 ## Bootstrapping the project
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to start the editor.
-
-The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the starter-files directory, run the `npm install` command, and you can start coding right away.
+The easiest way to get started is to grab the starter project using the commands below.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/inline-widget/starter-files
+npx -y degit ckeditor/ckeditor5-tutorials-examples/inline-widget/starter-files inline-widget
+cd inline-widget
 
 npm install
 npm run dev
 ```
+
+This will create a new directory called `inline-widget` with the necessary files. The `npm install` command will install all the dependencies, and `npm run dev` will start the development server.
+
+The editor with some basic plugins is created in the `main.js` file.
 
 First, let's define the `Placeholder` plugin. The project should have a structure shown below:
 
@@ -107,27 +109,12 @@ Finally, you need to load the `Placeholder` plugin in your `main.js` file:
 ```js
 // main.js
 
-import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
 import Placeholder from './placeholder/placeholder';
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( { editor: 'editor' } );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 
@@ -523,19 +510,7 @@ Add the dropdown to the toolbar:
 ```js
 // main.js
 
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Essentials,
-	Heading,
-	List,
-	Paragraph
-} from 'ckeditor5';
-
 import Placeholder from './placeholder/placeholder';
-
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -543,14 +518,6 @@ ClassicEditor
 
 		// Insert the "placeholder" dropdown into the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]
-	} )
-	.then( editor => {
-		// This code runs after the editor initialization.
-		// ...
-	} )
-	.catch( error => {
-		// Error handling if something goes wrong during initialization.
-		// ...
 	} );
 ```
 
