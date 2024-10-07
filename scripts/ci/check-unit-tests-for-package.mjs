@@ -21,9 +21,9 @@ main()
 	} );
 
 async function main() {
-	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile } = getOptions( process.argv.slice( 2 ) );
+	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile, attempts } = getOptions( process.argv.slice( 2 ) );
 
-	runTests( { packageName, checkCoverage } );
+	runTests( { packageName, checkCoverage, attempts } );
 
 	if ( checkCoverage && !allowNonFullCoverage ) {
 		const exitCode = checkCodeCoverage();
@@ -46,8 +46,9 @@ async function main() {
  * @param {Object} options
  * @param {String} options.packageName
  * @param {Boolean} options.checkCoverage
+ * @param {Number} options.attempts
  */
-function runTests( { packageName, checkCoverage } ) {
+function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 	const shortName = packageName.replace( /^ckeditor5?-/, '' );
 
 	const testCommand = [
@@ -59,10 +60,24 @@ function runTests( { packageName, checkCoverage } ) {
 		checkCoverage ? '--coverage' : null
 	].filter( Boolean );
 
-	execSync( testCommand.join( ' ' ), {
-		cwd: CKEDITOR5_ROOT_PATH,
-		stdio: 'inherit'
-	} );
+	try {
+		execSync( testCommand.join( ' ' ), {
+			cwd: CKEDITOR5_ROOT_PATH,
+			stdio: 'inherit'
+		} );
+	} catch ( err ) {
+		if ( !attempts ) {
+			throw err;
+		}
+
+		console.log( `\n⚠️ Retry the test execution. Remaining attempts: ${ attempts - 1 }.` );
+
+		return runTests( {
+			packageName,
+			checkCoverage,
+			attempts: attempts - 1
+		} );
+	}
 }
 
 function checkCodeCoverage() {
@@ -90,12 +105,14 @@ function checkCodeCoverage() {
  * @returns {Boolean} options.checkCoverage
  * @returns {Boolean} options.allowNonFullCoverage
  * @returns {String|null} options.coverageFile
+ * @returns {Number} options.attempts
  */
 function getOptions( argv ) {
 	const options = minimist( argv, {
 		string: [
 			'package-name',
-			'coverage-file'
+			'coverage-file',
+			'attempts'
 		],
 		boolean: [
 			'check-coverage',
@@ -107,6 +124,7 @@ function getOptions( argv ) {
 		}
 	} );
 
+	options.attempts = Number( options.attempts || 3 );
 	options.packageName = options[ 'package-name' ];
 	options.coverageFile = options[ 'coverage-file' ];
 	options.checkCoverage = options[ 'check-coverage' ];

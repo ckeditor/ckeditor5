@@ -11,6 +11,8 @@ import upath from 'upath';
 import fs from 'fs-extra';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { Listr } from 'listr2';
+import { ListrInquirerPromptAdapter } from '@listr2/prompt-adapter-inquirer';
+import { confirm } from '@inquirer/prompts';
 import validateDependenciesVersions from './utils/validatedependenciesversions.mjs';
 import parseArguments from './utils/parsearguments.mjs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
@@ -47,7 +49,8 @@ const tasks = new Listr( [
 						return true;
 					}
 
-					return task.prompt( { type: 'Confirm', message: 'Do you want to continue?' } );
+					return task.prompt( ListrInquirerPromptAdapter )
+						.run( confirm, { message: 'Do you want to continue?' } );
 				},
 				optionalEntries: {
 					// The `#default` key is used for all packages that do not have own definition.
