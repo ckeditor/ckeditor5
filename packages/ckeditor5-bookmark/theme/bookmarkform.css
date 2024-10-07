@@ -27,4 +27,15 @@
 			justify-content: center;
 		}
 	}
+
+	&.ck-responsive-form {
+		& > .ck-button {
+			@mixin ck-media-phone {
+				&:nth-last-child(1) {
+					margin: var(--ck-spacing-large);
+					padding: 0 var(--ck-spacing-standard);
+				}
+			}
+		}
+	}
 }
