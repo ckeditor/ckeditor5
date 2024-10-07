@@ -41,8 +41,8 @@ describe( 'ImageStyleEditing', () => {
 			expect( ImageStyleEditing.requires ).to.deep.equal( [ ImageUtils ] );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 	} );
 
@@ -87,7 +87,7 @@ describe( 'ImageStyleEditing', () => {
 						]
 					} );
 
-					editor.destroy();
+					await editor.destroy();
 				} );
 
 				it( 'should not set a default config if neither image editing plugins are loaded', async () => {
@@ -201,7 +201,7 @@ describe( 'ImageStyleEditing', () => {
 
 			expect( editor.commands.get( 'imageStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 
@@ -225,8 +225,8 @@ describe( 'ImageStyleEditing', () => {
 			document = model.document;
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value', () => {

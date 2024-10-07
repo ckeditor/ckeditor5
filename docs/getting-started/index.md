@@ -10,32 +10,17 @@ meta-description: Learn how to start with CKEditor 5, the modern JavaScript-rich
 
 CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Notion, Slack, or Twitter-like applications, all is possible within a single editing framework. It is a modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent support for modern bundlers. Find out the most convenient way to start using it!
 
-<span class="navigation-hint_mobile">
-	<info-box>
-		Use the **main menu button in the upper-left corner** to navigate through the documentation.
-	</info-box>
-</span>
+{@snippet getting-started/use-builder}
 
 ## Are you new to CKEditor&nbsp;5?
 
 If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily. You have a few methods to choose from:
 
-* [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
+* [Using CKEditor&nbsp;5 Builder](#ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
 * {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm Using npm}, where you use a JavaScript package and build the editor with a bundler.
 * {@link getting-started/integrations-cdn/quick-start#installing-ckeditor-5-from-cdn Using CDN}, where you use our cloud-distributed CDN in a no-build setup.
 * {@link getting-started/integrations/quick-start#installing-ckeditor-5-from-a-zip-file Using a ZIP file}, where you download the ready-to-run files and copy them to your project.
 * Choosing one of the [pre-made integrations with popular frameworks](#ckeditor-5-framework-integrations).
-
-## Using CKEditor&nbsp;5 Builder
-
-Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* editor type,
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
 
 ## CKEditor&nbsp;5 framework integrations
 

@@ -178,7 +178,7 @@ describe( 'MultiRootEditor', () => {
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( editorData.foo );
 				expect( editor.getData( { rootName: 'bar' } ) ).to.equal( editorData.bar );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 
@@ -193,15 +193,12 @@ describe( 'MultiRootEditor', () => {
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '' );
 				expect( editor.getData( { rootName: 'bar' } ) ).to.equal( '' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 
 		it( 'initializes the editor if no roots are specified', done => {
-			MultiRootEditor.create( {} ).then( editor => {
-				editor.destroy();
-				done();
-			} );
+			MultiRootEditor.create( {} ).then( editor => editor.destroy() ).then( done );
 		} );
 
 		it( 'should throw when trying to create the editor using the same source element more than once', done => {

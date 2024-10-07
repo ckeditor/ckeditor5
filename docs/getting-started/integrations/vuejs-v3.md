@@ -56,7 +56,7 @@ With these packages installed, create a new Vue component called `Editor.vue`. I
 </template>
 
 <script setup>
-import { ref, markRaw } from 'vue';
+import { ref, computed } from 'vue';
 import { ClassicEditor, Paragraph, Essentials, Bold, Italic, Mention } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
@@ -66,10 +66,12 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 const data = ref( '<p>Hello world!</p>' );
 
-const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-	plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
-	toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+const config = computed( () => {
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+	};
 } );
 </script>
 ```
@@ -181,14 +183,16 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 </template>
 
 <script setup>
-import { markRaw } from 'vue';
-import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import { computed } from 'vue';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
-const config = markRaw( {
-    licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Essentials, Paragraph ],
-    toolbar: [ 'undo', 'redo' ]
+const config = computed( () => {
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+	};
 } );
 </script>
 ```
@@ -314,24 +318,17 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `config` prop in the component:
 
 ```html
-<template>
-	<ckeditor :editor="ClassicEditor" v-model="data" :config="config" />
-</template>
 
 <script setup>
-import { ref, markRaw } from 'vue';
-import { ClassicEditor } from 'ckeditor5';
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-
+import { computed } from 'vue';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-const data = ref( '<p>Hello world!</p>' );
-
-const config = markRaw( {
-	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-	translations: [ coreTranslations, premiumFeaturesTranslations ],
-	// Other configuration options
+const config = computed( () => {
+	return {
+		translations: [ coreTranslations, premiumFeaturesTranslations ],
+		// Other configuration options
+	};
 } );
 </script>
 ```

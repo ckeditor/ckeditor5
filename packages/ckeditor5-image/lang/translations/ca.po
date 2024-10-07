@@ -27,7 +27,7 @@ msgstr "Embolcallar el text"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr "Partir el text"
+msgstr "Parteix el text"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"

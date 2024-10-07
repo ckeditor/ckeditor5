@@ -128,7 +128,7 @@ class PoweredByView extends View<HTMLDivElement> {
 				{
 					tag: 'a',
 					attributes: {
-						href: 'https://ckeditor.com/?utm_source=ckeditor&' +
+						href: 'https://ckeditor.com/powered-by-ckeditor/?utm_source=ckeditor&' +
 							'utm_medium=referral&utm_campaign=701Dn000000hVgmIAE_powered_by_ckeditor_logo',
 						target: '_blank',
 						tabindex: '-1'

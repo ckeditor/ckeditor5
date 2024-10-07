@@ -137,7 +137,11 @@ export default class ClassicEditorUI extends EditorUI {
 		const editingView = this.editor.editing.view;
 
 		this._elementReplacer.restore();
-		editingView.detachDomRoot( view.editable.name! );
+
+		if ( editingView.getDomRoot( view.editable.name! ) ) {
+			editingView.detachDomRoot( view.editable.name! );
+		}
+
 		view.destroy();
 	}
 
