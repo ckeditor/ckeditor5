@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-import path from 'path';
+import upath from 'upath';
 import fs from 'fs';
 import minimist from 'minimist';
 import { globSync } from 'glob';
@@ -49,7 +49,7 @@ export function parseArguments( args ) {
 	delete options[ 'ignore-unused-core-package-contexts' ];
 
 	// Normalize the current work directory path.
-	options.cwd = normalizePath( path.resolve( options.cwd ) );
+	options.cwd = upath.resolve( options.cwd );
 
 	// Convert packages to an array.
 	if ( typeof options.packages === 'string' ) {
@@ -81,8 +81,10 @@ export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
 
 	const globOptions = { cwd, absolute: true };
 
-	return patterns.map( item => globSync( item, globOptions ) )
+	return patterns
+		.map( item => globSync( item, globOptions ) )
 		.flat()
+		.map( srcPath => upath.normalize( srcPath ) )
 		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) )
 		.filter( srcPath => !srcPath.endsWith( '.d.ts' ) );
 }
@@ -102,7 +104,10 @@ export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
 		patterns.push( 'external/*/packages/*' );
 	}
 
-	return patterns.map( item => globSync( item, { cwd } ) ).flat();
+	return patterns
+		.map( item => globSync( item, { cwd } ) )
+		.flat()
+		.map( srcPath => upath.normalize( srcPath ) );
 }
 
 /**
@@ -117,7 +122,7 @@ export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
  * @return {Array.<CKEditor5Entry>}
  */
 export function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ignore } ) {
-	const packagesPath = normalizePath( cwd, 'packages' );
+	const packagesPath = upath.join( cwd, 'packages' );
 
 	return fs.readdirSync( packagesPath )
 		.filter( item => item.startsWith( 'ckeditor5-' ) )
@@ -140,12 +145,12 @@ export function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ign
 			let absolutePath;
 
 			if ( transifexProcess === 'upload' ) {
-				absolutePath = normalizePath( cwd, TRANSLATION_DIRECTORY_PATH, packageName );
+				absolutePath = upath.join( cwd, TRANSLATION_DIRECTORY_PATH, packageName );
 			} else if ( transifexProcess === 'download' ) {
-				absolutePath = normalizePath( cwd, 'packages', packageName );
+				absolutePath = upath.join( cwd, 'packages', packageName );
 			}
 
-			const relativePath = path.posix.relative( cwd, absolutePath );
+			const relativePath = upath.relative( cwd, absolutePath );
 
 			return [ resourceName, relativePath ];
 		} )
