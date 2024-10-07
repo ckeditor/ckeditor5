@@ -32,8 +32,9 @@ import {
 	isComment,
 	isValidAttributeName,
 	first,
-	env,
-	getSelection
+	getSelection,
+	getParentOrHostElement,
+	env
 } from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node.js';
@@ -1090,9 +1091,11 @@ export default class DomConverter {
 	 */
 	public focus( viewEditable: EditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
+		const rootNode = domEditable && ( domEditable.getRootNode() as ShadowRoot | DomDocument );
+		const activeElement = rootNode && rootNode.activeElement;
 
 		// TODO ShadowRoot
-		if ( domEditable && domEditable.getRootNode().activeElement !== domEditable ) {
+		if ( domEditable && activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
 			const scrollPositions: Array<[ number, number ]> = [];
@@ -1851,7 +1854,8 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 
 	while ( node ) {
 		callback( node );
-		node = node.parentElement; // TODO ShadowRoot
+		// TODO ShadowRoot
+		node = getParentOrHostElement( node ) as DomElement | null;
 	}
 }
 

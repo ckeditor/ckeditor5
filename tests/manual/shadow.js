@@ -77,10 +77,12 @@ for ( const sheet of document.styleSheets ) {
 }
 
 // This requires delegatesFocus: true
-editorComponent.addEventListener( 'focus', () => window.editor.focus() );
+editorComponent.addEventListener( 'focus', () => {
+	window.editor.focus();
+}, { capture: true } );
 
-document.querySelector( 'button#focus-editor' ).addEventListener( 'click', () => {
-	editorComponent.focus();
+document.querySelector( 'button#focus-editor-component' ).addEventListener( 'click', () => {
+	editorComponent.focus( { preventScroll: true } );
 } );
 
 ClassicEditor
