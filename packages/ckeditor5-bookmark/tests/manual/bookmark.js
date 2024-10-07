@@ -57,7 +57,7 @@ ClassicEditor
 		{
 			...config,
 			bookmark: {
-				enableNonEmptyBookmarkConversion: false
+				enableNonEmptyAnchorConversion: false
 			}
 		} )
 	.then( editor => {
@@ -103,7 +103,7 @@ ClassicEditor
 				GeneralHtmlSupport
 			],
 			bookmark: {
-				enableNonEmptyBookmarkConversion: false
+				enableNonEmptyAnchorConversion: false
 			},
 			htmlSupport: {
 				allow: [
