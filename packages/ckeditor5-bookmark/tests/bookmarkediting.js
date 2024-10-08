@@ -1131,23 +1131,13 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with `name` attribute', done => {
+			it( 'should paste anchor with `id` attribute', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
 					done: () => done(),
 					pastedHtml: '<p><a id="xyz"></a>foo</p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
-				} );
-			} );
-
-			it( 'should paste anchor with `name` attribute', done => {
-				testClipboardPaste( {
-					clipboardPlugin,
-					viewDocument,
-					done: () => done(),
-					pastedHtml: '<p>foo<a id="xyz"></a></p>',
-					expectedModel: '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>'
 				} );
 			} );
 
@@ -1241,6 +1231,26 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
+			it( 'should paste anchor with image (bookmark after)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><img src="#"></img><a name="xyz"></a></p>',
+					expectedModel: '<paragraph><imageInline src="#"></imageInline><bookmark bookmarkId="xyz"></bookmark></paragraph>'
+				} );
+			} );
+
+			it( 'should paste anchor with image (bookmark before)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a name="xyz"></a><img src="#"></img></p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark><imageInline src="#"></imageInline></paragraph>'
+				} );
+			} );
+
 			it( 'should paste anchor when bookmark with the same `id` already exists', done => {
 				const html = '<p><a name="xyz">foo</a></p>';
 				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
@@ -1324,6 +1334,74 @@ describe( 'BookmarkEditing', () => {
 					done: () => done(),
 					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
 					expectedModel: '<paragraph>foo</paragraph>'
+				} );
+			} );
+		} );
+
+		describe( 'with GHS enabled', () => {
+			let element, editor, view, viewDocument, clipboardPlugin;
+
+			beforeEach( async () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				const config = {
+					language: 'en',
+					plugins: [ BookmarkEditing, Essentials, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, GeneralHtmlSupport ],
+					htmlSupport: {
+						allow: [
+							{
+								name: /^.*$/,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					},
+					bookmark: {
+						enableNonEmptyBookmarkConversion: false
+					}
+				};
+
+				editor = await createEditor( element, config );
+				model = editor.model;
+				view = editor.editing.view;
+				viewDocument = view.document;
+				clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+			} );
+
+			afterEach( async () => {
+				element.remove();
+				await editor.destroy();
+			} );
+
+			it( 'should convert anchor to bookmark (`name` attribute)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a name="xyz">foo</a></p>',
+					expectedModel: '<paragraph><$text htmlA="{"attributes":{"name":"xyz"}}">foo</$text></paragraph>'
+				} );
+			} );
+
+			it( 'should convert anchor to bookmark (`id` attribute)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz">foo</a></p>',
+					expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz"}}">foo</$text></paragraph>'
+				} );
+			} );
+
+			it( 'should convert anchor to bookmark (`name` and `id` attribute)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+					expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz","name":"xyz"}}">foo</$text></paragraph>'
 				} );
 			} );
 		} );
