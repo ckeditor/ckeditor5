@@ -1101,7 +1101,7 @@ describe( 'BookmarkEditing', () => {
 		} );
 
 		describe( 'pointed bookmarks', () => {
-			it( 'should paste anchor with identical `id` and `name` attributes', done => {
+			it( 'should paste `a` with the same `id` and `name` attributes', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1111,7 +1111,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with various `id` and `name` attributes', done => {
+			it( 'should paste `a` with different `id` and `name` attributes', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1121,7 +1121,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with identical `id` and `name` attributes (content before bookmark)', done => {
+			it( 'should paste `a` with identical `id` and `name` attributes (content before bookmark)', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1131,7 +1131,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with `id` attribute', done => {
+			it( 'should paste `a` with `id` attribute', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1141,7 +1141,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with `name` attribute', done => {
+			it( 'should paste `a` with `name` attribute', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1151,7 +1151,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with `name` attribute (content before bookmark)', done => {
+			it( 'should paste `a` with `name` attribute (content before bookmark)', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1161,7 +1161,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor when bookmark with the same `id` already exists', done => {
+			it( 'should paste `a` when bookmark with the same `id` already exists', done => {
 				const html = '<p><a name="xyz"></a></p>';
 				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
 				const preventDefaultSpy = sinon.spy();
@@ -1191,7 +1191,7 @@ describe( 'BookmarkEditing', () => {
 		} );
 
 		describe( 'wrapped bookmarks', () => {
-			it( 'should paste anchor with identical `id` and `name` attributes', done => {
+			it( 'should paste `a` with the same `id` and `name` attributes', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1201,7 +1201,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with various `id` and `name` attributes', done => {
+			it( 'should paste `a` with different `id` and `name` attributes', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1211,7 +1211,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with `id` attribute', done => {
+			it( 'should paste `a` with `id` attribute', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1221,7 +1221,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with `name` attribute', done => {
+			it( 'should paste `a` with `name` attribute', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1231,7 +1231,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with image (bookmark after)', done => {
+			it( 'should paste `a` with image (bookmark after)', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1241,7 +1241,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor with image (bookmark before)', done => {
+			it( 'should paste `a` with image (bookmark before)', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1251,7 +1251,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should paste anchor when bookmark with the same `id` already exists', done => {
+			it( 'should paste `a` when bookmark with the same `id` already exists', done => {
 				const html = '<p><a name="xyz">foo</a></p>';
 				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
 				const preventDefaultSpy = sinon.spy();
@@ -1307,7 +1307,7 @@ describe( 'BookmarkEditing', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should not convert anchor to bookmark (`name` attribute)', done => {
+			it( 'should not convert an `a` with `name` attribute to bookmark', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1317,7 +1317,7 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should not convert anchor to bookmark (`id` attribute)', done => {
+			it( 'should not convert an `a` with `id` attribute to bookmark', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1327,81 +1327,190 @@ describe( 'BookmarkEditing', () => {
 				} );
 			} );
 
-			it( 'should not convert anchor to bookmark (`name` and `id` attribute)', done => {
+			it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
 					done: () => done(),
 					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+					expectedModel: '<paragraph>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
 					expectedModel: '<paragraph>foo</paragraph>'
 				} );
 			} );
 		} );
 
 		describe( 'with GHS enabled', () => {
-			let element, editor, view, viewDocument, clipboardPlugin;
+			describe( 'pointed bookmarks', () => {
+				let element, editor, view, viewDocument, clipboardPlugin;
 
-			beforeEach( async () => {
-				element = document.createElement( 'div' );
-				document.body.appendChild( element );
+				beforeEach( async () => {
+					element = document.createElement( 'div' );
+					document.body.appendChild( element );
 
-				const config = {
-					language: 'en',
-					plugins: [ BookmarkEditing, Essentials, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, GeneralHtmlSupport ],
-					htmlSupport: {
-						allow: [
-							{
-								name: /^.*$/,
-								styles: true,
-								attributes: true,
-								classes: true
+					const config = {
+						language: 'en',
+						plugins: [
+							BookmarkEditing, Essentials, ImageInline, ImageBlock,
+							Heading, Paragraph, Link, Table, GeneralHtmlSupport
+						],
+						htmlSupport: {
+							allow: [
+								{
+									name: /^.*$/,
+									styles: true,
+									attributes: true,
+									classes: true
+								}
+							]
+						}
+					};
+
+					editor = await createEditor( element, config );
+					model = editor.model;
+					view = editor.editing.view;
+					viewDocument = view.document;
+					clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+				} );
+
+				afterEach( async () => {
+					element.remove();
+					await editor.destroy();
+				} );
+
+				it( 'should convert an `a` with `name` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a name="xyz">foo</a></p>',
+						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					} );
+				} );
+
+				it( 'should convert an `a` with `id` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a id="xyz">foo</a></p>',
+						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					} );
+				} );
+
+				it( 'should convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					} );
+				} );
+
+				it( 'should convert an `a` with different `id` and `name` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
+						expectedModel:
+							'<paragraph>' +
+								'<bookmark bookmarkId="foo"></bookmark>' +
+								'<$text htmlA="{"attributes":{"name":"bar"}}">foo</$text>' +
+							'</paragraph>'
+					} );
+				} );
+			} );
+
+			describe( 'wrapped bookmarks', () => {
+				describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+					let element, editor, view, viewDocument, clipboardPlugin;
+
+					beforeEach( async () => {
+						element = document.createElement( 'div' );
+						document.body.appendChild( element );
+
+						const config = {
+							language: 'en',
+							plugins: [
+								BookmarkEditing, Essentials, ImageInline, ImageBlock,
+								Heading, Paragraph, Link, Table, GeneralHtmlSupport
+							],
+							htmlSupport: {
+								allow: [
+									{
+										name: /^.*$/,
+										styles: true,
+										attributes: true,
+										classes: true
+									}
+								]
+							},
+							bookmark: {
+								enableNonEmptyAnchorConversion: false
 							}
-						]
-					},
-					bookmark: {
-						enableNonEmptyBookmarkConversion: false
-					}
-				};
+						};
 
-				editor = await createEditor( element, config );
-				model = editor.model;
-				view = editor.editing.view;
-				viewDocument = view.document;
-				clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
-			} );
+						editor = await createEditor( element, config );
+						model = editor.model;
+						view = editor.editing.view;
+						viewDocument = view.document;
+						clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+					} );
 
-			afterEach( async () => {
-				element.remove();
-				await editor.destroy();
-			} );
+					afterEach( async () => {
+						element.remove();
+						await editor.destroy();
+					} );
 
-			it( 'should convert anchor to bookmark (`name` attribute)', done => {
-				testClipboardPaste( {
-					clipboardPlugin,
-					viewDocument,
-					done: () => done(),
-					pastedHtml: '<p><a name="xyz">foo</a></p>',
-					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
-				} );
-			} );
+					it( 'should not convert an `a` with `name` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a name="xyz">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"name":"xyz"}}">foo</$text></paragraph>'
+						} );
+					} );
 
-			it( 'should convert anchor to bookmark (`id` attribute)', done => {
-				testClipboardPaste( {
-					clipboardPlugin,
-					viewDocument,
-					done: () => done(),
-					pastedHtml: '<p><a id="xyz">foo</a></p>',
-					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
-				} );
-			} );
+					it( 'should not convert an `a` with `id` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a id="xyz">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz"}}">foo</$text></paragraph>'
+						} );
+					} );
 
-			it( 'should convert anchor to bookmark (`name` and `id` attribute)', done => {
-				testClipboardPaste( {
-					clipboardPlugin,
-					viewDocument,
-					done: () => done(),
-					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
-					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz","name":"xyz"}}">foo</$text></paragraph>'
+						} );
+					} );
+
+					it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"bar"}}">foo</$text></paragraph>'
+						} );
+					} );
 				} );
 			} );
 		} );
