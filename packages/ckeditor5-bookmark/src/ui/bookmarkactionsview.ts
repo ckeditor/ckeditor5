@@ -76,8 +76,8 @@ export default class BookmarkActionsView extends View {
 		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), icons.remove, 'remove' );
 		this.editButtonView = this._createButton( t( 'Edit bookmark' ), icons.pencil, 'edit' );
 
-		this._extendAriaLabelledByIds( this.removeButtonView, this.bookmarkPreviewView.id );
-		this._extendAriaLabelledByIds( this.editButtonView, this.bookmarkPreviewView.id );
+		this._extendAriaLabelledByIdsList( this.removeButtonView, this.bookmarkPreviewView.id );
+		this._extendAriaLabelledByIdsList( this.editButtonView, this.bookmarkPreviewView.id );
 
 		this.set( 'id', undefined );
 
@@ -201,23 +201,25 @@ export default class BookmarkActionsView extends View {
 	}
 
 	/**
-	 * Extends the `aria-labelledby` attribute of the button with the given label id.
-	 * It creates the `aria-labelledby="button-tooltip-id bookmark-name-id"`.
-	 * The accessibility output will look like this: "<button label> <bookmark name>."
+	 * Extends the `aria-labelledby` attribute of the button with the given label `id`.
+	 *```html
+	 * <button aria-labelledby="button-tooltip-id bookmark-name-id">
+	 * 	<!-- ... -->
+	 * </button>
+	 *```
+	 * The accessibility output will be a concatenated string from both elements: "[button_label] [bookmark_name]".
+	 * The `id` of the default button label must stays as originally set.
 	 *
 	 * @param button Button view instance.
 	 * @param labelId Label id of bookmark name preview.
 	 */
-	private _extendAriaLabelledByIds( button: ButtonView, labelId: string ): void {
-		const currentButtonId = button.labelView.id;
-
+	private _extendAriaLabelledByIdsList( button: ButtonView, labelId: string ): void {
 		button.set( {
-			ariaLabelledBy: `${ currentButtonId } ${ labelId }`
+			ariaLabelledBy: `${ button.labelView.id } ${ labelId }`
 		} );
 
-		button.labelView.set( {
-			id: currentButtonId
-		} );
+		button.labelView.unbind( 'id' );
+		button.labelView.bind( 'id' ).to( button.labelView, 'id', id => id?.split( ' ' )[ 0 ] );
 	}
 }
 
