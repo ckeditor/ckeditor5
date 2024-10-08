@@ -1270,7 +1270,7 @@ describe( 'BookmarkEditing', () => {
 			} );
 		} );
 
-		describe( 'when `enableNonEmptyBookmarkConversion` is set to `false` ', () => {
+		describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
 			let element, editor, view, viewDocument, clipboardPlugin;
 
 			beforeEach( async () => {
@@ -1281,7 +1281,7 @@ describe( 'BookmarkEditing', () => {
 					language: 'en',
 					plugins: [ BookmarkEditing, Essentials, Paragraph ],
 					bookmark: {
-						enableNonEmptyBookmarkConversion: false
+						enableNonEmptyAnchorConversion: false
 					}
 				};
 
