@@ -1,0 +1,44 @@
+/**
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module paste-from-office/filters/bookmark
+ */
+
+import {
+	type UpcastWriter,
+	type ViewDocumentFragment
+} from 'ckeditor5/src/engine.js';
+
+/**
+ * Transforms `<a>` elements which are bookmarks by moving their children after the element.
+ *
+ * @param documentFragment The view structure to be transformed.
+ */
+export default function transformBookmarks(
+	documentFragment: ViewDocumentFragment,
+	writer: UpcastWriter
+): void {
+	const elementsToChange = [];
+
+	for ( const value of writer.createRangeIn( documentFragment ) ) {
+		const element = value.item;
+
+		if (
+			element.is( 'element', 'a' ) &&
+			!element.hasAttribute( 'href' ) &&
+			( element.hasAttribute( 'id' ) || element.hasAttribute( 'name' ) ) )
+		{
+			elementsToChange.push( element );
+		}
+	}
+
+	for ( const element of elementsToChange ) {
+		const offset = element.parent!.getChildIndex( element ) + 1;
+		const children = element.getChildren();
+
+		writer.insertChild( offset, children, element.parent! );
+	}
+}
