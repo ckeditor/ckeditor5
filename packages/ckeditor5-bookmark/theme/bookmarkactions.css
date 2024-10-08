@@ -6,13 +6,15 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-bookmark-actions {
+	display: flex;
+	align-items: center;
+
 	& .ck-bookmark-actions__preview {
-		& .ck-button__label {
-			max-width: var(--ck-input-width);
-			min-width: 3em;
-			text-overflow: ellipsis;
-			overflow: hidden;
-		}
+		max-width: var(--ck-input-width);
+		min-width: 3em;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		font-weight: normal;
 	}
 
 	@mixin ck-media-phone {
@@ -22,15 +24,20 @@
 		& .ck-bookmark-actions__preview {
 			flex-basis: 100%;
 			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
-			justify-content: center;
-
-			& .ck-button__label {
-				min-width: auto;
-			}
+			text-align: center;
+			min-width: auto;
 		}
 
-		& .ck-button:not(.ck-bookmark-actions__preview) {
+		& .ck-button {
 			flex-basis: 50%;
+		}
+	}
+
+	&.ck-responsive-form {
+		& .ck-button {
+			@mixin ck-media-phone {
+				margin-top: var(--ck-spacing-standard);
+			}
 		}
 	}
 }

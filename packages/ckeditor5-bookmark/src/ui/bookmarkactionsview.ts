@@ -7,7 +7,7 @@
  * @module bookmark/ui/bookmarkactionsview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
+import { LabelView, ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
 
@@ -33,7 +33,7 @@ export default class BookmarkActionsView extends View {
 	/**
 	 * The bookmark preview view.
 	 */
-	public bookmarkPreviewView: ButtonView;
+	public bookmarkPreviewView: LabelView;
 
 	/**
 	 * The remove button view.
@@ -73,8 +73,28 @@ export default class BookmarkActionsView extends View {
 		const t = locale.t;
 
 		this.bookmarkPreviewView = this._createBookmarkPreviewView();
-		this.removeButtonView = this._createButton( t( 'Remove' ), icons.remove, 'remove' );
-		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
+		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), icons.remove, 'remove' );
+		this.editButtonView = this._createButton( t( 'Edit bookmark' ), icons.pencil, 'edit' );
+
+		const removeButtonLabelViewId = this.removeButtonView.labelView.id;
+
+		this.removeButtonView.set( {
+			ariaLabelledBy: `${ removeButtonLabelViewId } ${ this.bookmarkPreviewView.id }`
+		} );
+
+		this.removeButtonView.labelView.set( {
+			id: removeButtonLabelViewId
+		} );
+
+		const editButtonLabelViewId = this.editButtonView.labelView.id;
+
+		this.editButtonView.set( {
+			ariaLabelledBy: `${ editButtonLabelViewId } ${ this.bookmarkPreviewView.id }`
+		} );
+
+		this.editButtonView.labelView.set( {
+			id: editButtonLabelViewId
+		} );
 
 		this.set( 'id', undefined );
 
@@ -120,7 +140,7 @@ export default class BookmarkActionsView extends View {
 		super.render();
 
 		const childViews = [
-			this.bookmarkPreviewView,
+			// this.bookmarkPreviewView,
 			this.editButtonView,
 			this.removeButtonView
 		];
@@ -177,20 +197,14 @@ export default class BookmarkActionsView extends View {
 	}
 
 	/**
-	 * Creates a bookmark name preview button.
+	 * Creates a bookmark name preview label.
 	 *
-	 * @returns The button view instance.
+	 * @returns The label view instance.
 	 */
-	private _createBookmarkPreviewView(): ButtonView {
-		const button = new ButtonView( this.locale );
-		const t = this.t;
+	private _createBookmarkPreviewView(): LabelView {
+		const label = new LabelView( this.locale );
 
-		button.set( {
-			withText: true,
-			tooltip: t( 'Bookmark name' )
-		} );
-
-		button.extendTemplate( {
+		label.extendTemplate( {
 			attributes: {
 				class: [
 					'ck',
@@ -199,9 +213,9 @@ export default class BookmarkActionsView extends View {
 			}
 		} );
 
-		button.bind( 'label' ).to( this, 'id' );
+		label.bind( 'text' ).to( this, 'id' );
 
-		return button;
+		return label;
 	}
 }
 
