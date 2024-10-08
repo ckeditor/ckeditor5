@@ -214,12 +214,13 @@ export default class BookmarkActionsView extends View {
 	 * @param labelId Label id of bookmark name preview.
 	 */
 	private _extendAriaLabelledByIdsList( button: ButtonView, labelId: string ): void {
+		button.labelView.unbind( 'id' );
+
 		button.set( {
 			ariaLabelledBy: `${ button.labelView.id } ${ labelId }`
 		} );
 
-		button.labelView.unbind( 'id' );
-		button.labelView.bind( 'id' ).to( button.labelView, 'id', id => id?.split( ' ' )[ 0 ] );
+		button.labelView.bind( 'id' ).to( button, 'ariaLabelledBy', ariaLabelledBy => ariaLabelledBy?.split( ' ' )[ 0 ] );
 	}
 }
 

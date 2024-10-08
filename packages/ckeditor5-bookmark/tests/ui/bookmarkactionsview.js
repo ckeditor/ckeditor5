@@ -43,19 +43,21 @@ describe( 'BookmarkActionsView', () => {
 		} );
 
 		it( 'should set `ariaLabelledBy` for `removeButtonView`', () => {
-			const currentButtonLabelId = view.removeButtonView.labelView.id;
+			const originalButtonLabelId = view.removeButtonView.labelView.id;
 			const bookmarkPreviewId = view.bookmarkPreviewView.id;
-			const concatenatedIds = `${ currentButtonLabelId } ${ bookmarkPreviewId }`;
+			const concatenatedIds = `${ originalButtonLabelId } ${ bookmarkPreviewId }`;
 
 			expect( view.removeButtonView.ariaLabelledBy ).to.be.equal( concatenatedIds );
+			expect( view.removeButtonView.labelView.id ).to.be.equal( originalButtonLabelId );
 		} );
 
 		it( 'should set `ariaLabelledBy` for `editButtonView`', () => {
-			const currentButtonLabelId = view.editButtonView.labelView.id;
+			const originalButtonLabelId = view.editButtonView.labelView.id;
 			const bookmarkPreviewId = view.bookmarkPreviewView.id;
-			const concatenatedIds = `${ currentButtonLabelId } ${ bookmarkPreviewId }`;
+			const concatenatedIds = `${ originalButtonLabelId } ${ bookmarkPreviewId }`;
 
 			expect( view.editButtonView.ariaLabelledBy ).to.be.equal( concatenatedIds );
+			expect( view.editButtonView.labelView.id ).to.be.equal( originalButtonLabelId );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
