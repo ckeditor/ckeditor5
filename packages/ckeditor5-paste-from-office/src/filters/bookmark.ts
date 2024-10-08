@@ -36,9 +36,9 @@ export default function transformBookmarks(
 	}
 
 	for ( const element of elementsToChange ) {
-		const offset = element.parent!.getChildIndex( element ) + 1;
+		const index = element.parent!.getChildIndex( element ) + 1;
 		const children = element.getChildren();
 
-		writer.insertChild( offset, children, element.parent! );
+		writer.insertChild( index, children, element.parent! );
 	}
 }
