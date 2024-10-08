@@ -12,9 +12,10 @@
 	& .ck-bookmark-actions__preview {
 		max-width: var(--ck-input-width);
 		min-width: 3em;
-		text-overflow: ellipsis;
-		overflow: hidden;
 		font-weight: normal;
+		text-overflow: ellipsis;
+		text-align: center;
+		overflow: hidden;
 	}
 
 	@mixin ck-media-phone {
@@ -24,7 +25,6 @@
 		& .ck-bookmark-actions__preview {
 			flex-basis: 100%;
 			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
-			text-align: center;
 			min-width: auto;
 		}
 	}
