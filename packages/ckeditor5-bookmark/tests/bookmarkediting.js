@@ -18,6 +18,7 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -42,7 +43,10 @@ describe( 'BookmarkEditing', () => {
 
 		const config = {
 			language: 'en',
-			plugins: [ BookmarkEditing, Essentials, Bold, Italic, ImageInline, ImageBlock, Heading, Paragraph, Link, Table, CodeBlock ]
+			plugins: [
+				BookmarkEditing, Essentials, Bold, Italic, ImageInline, ImageBlock,
+				Heading, Paragraph, Link, Table, CodeBlock, BlockQuote
+			]
 		};
 
 		editor = await createEditor( element, config );
@@ -522,15 +526,67 @@ describe( 'BookmarkEditing', () => {
 				);
 			} );
 
-			it( 'should not convert an `a` with `id` attribute inside code block', () => {
+			it( 'should not convert an `a` with `id` attribute inside code block (only anchor)', () => {
 				editor.setData(
 					'<pre data-language="HTML" spellcheck="false">' +
-						'<code class="language-html"><a id="foo"></a></code>' +
+						'<code class="language-html">' +
+							'<a id="foo"></a>' +
+						'</code>' +
 					'</pre>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<codeBlock language="html"></codeBlock>'
+				);
+			} );
+
+			it( 'should not convert an `a` with `id` attribute inside code block (more content)', () => {
+				editor.setData(
+					'<pre data-language="HTML" spellcheck="false">' +
+						'<code class="language-html">' +
+							'<p>Some text before</p>' +
+							'<a id="foo"></a>' +
+							'<p>Some text after</p>' +
+						'</code>' +
+					'</pre>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<codeBlock language="html">' +
+						'Some text beforeSome text after' +
+					'</codeBlock>'
+				);
+			} );
+
+			it( 'should not split blockquote containing an `a` with `id` attribute inside block quote (only anchor)', () => {
+				editor.setData(
+					'<blockquote>' +
+						'<a id="foo"></a>' +
+					'</blockquote>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<blockQuote>' +
+						'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+
+			it( 'should not split blockquote containing an `a` with `id` attribute inside block quote (more content)', () => {
+				editor.setData(
+					'<blockquote>' +
+						'<p>Some text before</p>' +
+						'<a id="foo"></a>' +
+						'<p>Some text after</p>' +
+					'</blockquote>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<blockQuote>' +
+						'<paragraph>Some text before</paragraph>' +
+						'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
+						'<paragraph>Some text after</paragraph>' +
+					'</blockQuote>'
 				);
 			} );
 		} );
