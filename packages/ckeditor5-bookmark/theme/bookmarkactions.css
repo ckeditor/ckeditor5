@@ -4,15 +4,22 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
 
 .ck.ck-bookmark-actions {
+	display: flex;
+	align-items: center;
+
 	& .ck-bookmark-actions__preview {
-		& .ck-button__label {
-			max-width: var(--ck-input-width);
-			min-width: 3em;
-			text-overflow: ellipsis;
-			overflow: hidden;
-		}
+		max-width: var(--ck-input-width);
+		min-width: 3em;
+		font-weight: normal;
+		text-overflow: ellipsis;
+		text-align: center;
+		overflow: hidden;
+
+		@mixin ck-unselectable;
+		cursor: default;
 	}
 
 	@mixin ck-media-phone {
@@ -22,15 +29,16 @@
 		& .ck-bookmark-actions__preview {
 			flex-basis: 100%;
 			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
-			justify-content: center;
-
-			& .ck-button__label {
-				min-width: auto;
-			}
+			min-width: auto;
 		}
+	}
 
-		& .ck-button:not(.ck-bookmark-actions__preview) {
-			flex-basis: 50%;
+	&.ck-responsive-form {
+		& .ck-button {
+			@mixin ck-media-phone {
+				flex-basis: 50%;
+				margin-top: var(--ck-spacing-standard);
+			}
 		}
 	}
 }

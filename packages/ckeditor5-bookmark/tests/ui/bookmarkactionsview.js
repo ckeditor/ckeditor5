@@ -6,12 +6,10 @@
 /* globals document */
 
 import BookmarkActionsView from '../../src/ui/bookmarkactionsview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { ButtonView, LabelView, ViewCollection, FocusCycler } from '@ckeditor/ckeditor5-ui';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-utils';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BookmarkActionsView', () => {
@@ -39,9 +37,27 @@ describe( 'BookmarkActionsView', () => {
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.bookmarkPreviewView ).to.be.instanceOf( View );
-			expect( view.removeButtonView ).to.be.instanceOf( View );
-			expect( view.editButtonView ).to.be.instanceOf( View );
+			expect( view.bookmarkPreviewView ).to.be.instanceOf( LabelView );
+			expect( view.removeButtonView ).to.be.instanceOf( ButtonView );
+			expect( view.editButtonView ).to.be.instanceOf( ButtonView );
+		} );
+
+		it( 'should set `ariaLabelledBy` for `removeButtonView`', () => {
+			const originalButtonLabelId = view.removeButtonView.labelView.id;
+			const bookmarkPreviewId = view.bookmarkPreviewView.id;
+			const concatenatedIds = `${ originalButtonLabelId } ${ bookmarkPreviewId }`;
+
+			expect( view.removeButtonView.ariaLabelledBy ).to.be.equal( concatenatedIds );
+			expect( view.removeButtonView.labelView.id ).to.be.equal( originalButtonLabelId );
+		} );
+
+		it( 'should set `ariaLabelledBy` for `editButtonView`', () => {
+			const originalButtonLabelId = view.editButtonView.labelView.id;
+			const bookmarkPreviewId = view.bookmarkPreviewView.id;
+			const concatenatedIds = `${ originalButtonLabelId } ${ bookmarkPreviewId }`;
+
+			expect( view.editButtonView.ariaLabelledBy ).to.be.equal( concatenatedIds );
+			expect( view.editButtonView.labelView.id ).to.be.equal( originalButtonLabelId );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -87,11 +103,11 @@ describe( 'BookmarkActionsView', () => {
 
 			describe( 'bindings', () => {
 				it( 'binds id attribute to view#label', () => {
-					expect( view.bookmarkPreviewView.label ).to.be.undefined;
+					expect( view.bookmarkPreviewView.text ).to.be.undefined;
 
 					view.id = 'foo';
 
-					expect( view.bookmarkPreviewView.label ).to.equal( 'foo' );
+					expect( view.bookmarkPreviewView.text ).to.equal( 'foo' );
 				} );
 			} );
 		} );
@@ -108,7 +124,6 @@ describe( 'BookmarkActionsView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.bookmarkPreviewView,
 				view.editButtonView,
 				view.removeButtonView
 			] );
@@ -120,9 +135,8 @@ describe( 'BookmarkActionsView', () => {
 			const view = new BookmarkActionsView( { t: () => {} } );
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.bookmarkPreviewView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.editButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.removeButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.editButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.removeButtonView.element );
 
 			view.destroy();
 		} );
@@ -171,7 +185,7 @@ describe( 'BookmarkActionsView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.editButtonView.element;
 
-				const spy = sinon.spy( view.bookmarkPreviewView, 'focus' );
+				const spy = sinon.spy( view.removeButtonView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -200,8 +214,8 @@ describe( 'BookmarkActionsView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the #bookmarkPreviewView', () => {
-			const spy = sinon.spy( view.bookmarkPreviewView, 'focus' );
+		it( 'focuses the #editButtonView', () => {
+			const spy = sinon.spy( view.editButtonView, 'focus' );
 
 			view.focus();
 
