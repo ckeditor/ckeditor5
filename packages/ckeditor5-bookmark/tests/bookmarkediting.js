@@ -1381,7 +1381,7 @@ describe( 'BookmarkEditing', () => {
 					viewDocument,
 					done: () => done(),
 					pastedHtml: '<p><a name="xyz">foo</a></p>',
-					expectedModel: '<paragraph><$text htmlA="{"attributes":{"name":"xyz"}}">foo</$text></paragraph>'
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
 			} );
 
@@ -1391,7 +1391,7 @@ describe( 'BookmarkEditing', () => {
 					viewDocument,
 					done: () => done(),
 					pastedHtml: '<p><a id="xyz">foo</a></p>',
-					expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz"}}">foo</$text></paragraph>'
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
 			} );
 
@@ -1401,7 +1401,7 @@ describe( 'BookmarkEditing', () => {
 					viewDocument,
 					done: () => done(),
 					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
-					expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz","name":"xyz"}}">foo</$text></paragraph>'
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
 			} );
 		} );
