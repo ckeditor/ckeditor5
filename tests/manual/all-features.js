@@ -8,6 +8,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
@@ -64,7 +66,8 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport,
+			BlockToolbar, BalloonToolbar
 		],
 		toolbar: [
 			'heading', 'style',
@@ -89,6 +92,17 @@ ClassicEditor
 			'|',
 			'undo', 'redo', 'findAndReplace'
 		],
+		blockToolbar: [
+			'heading',
+			'|',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed'
+		],
+		balloonToolbar: [ 'bold', 'italic', 'link' ],
 		cloudServices: CS_CONFIG,
 		table: {
 			contentToolbar: [

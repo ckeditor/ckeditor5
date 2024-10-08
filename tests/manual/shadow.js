@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
@@ -56,7 +57,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 const editorComponent = document.querySelector( '#editor-component' );
 
-const editorShadow = editorComponent.attachShadow( { mode: 'open', delegatesFocus: false } );
+const editorShadow = editorComponent.attachShadow( { mode: 'open' } );
 const bodyCollectionWrapperShadow = document.querySelector( '.ck-body-wrapper' ).attachShadow( { mode: 'open' } );
 
 const editorElement = document.createElement( 'div' );
@@ -76,16 +77,6 @@ for ( const sheet of document.styleSheets ) {
 	}
 }
 
-// This requires delegatesFocus: true
-// TODO this breaks toolbars cycling
-// editorComponent.addEventListener( 'focus', () => {
-// 	window.editor.focus();
-// }, { capture: true } );
-
-document.querySelector( 'button#focus-editor-component' ).addEventListener( 'click', () => {
-	editorComponent.focus( { preventScroll: true } );
-} );
-
 ClassicEditor
 	.create( editorElement, {
 		initialData: document.querySelector( '#editor-data' ).innerHTML,
@@ -99,7 +90,7 @@ ClassicEditor
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport,
-			// BlockToolbar
+			BlockToolbar, BalloonToolbar
 		],
 		toolbar: [
 			'heading', 'style',
@@ -134,6 +125,7 @@ ClassicEditor
 			'insertTable',
 			'mediaEmbed'
 		],
+		balloonToolbar: [ 'bold', 'italic', 'link' ],
 		cloudServices: CS_CONFIG,
 		table: {
 			contentToolbar: [
