@@ -119,6 +119,8 @@
     "@ckeditor/ckeditor5-slash-command": "43.2.0",
     "@ckeditor/ckeditor5-template": "43.2.0",
     "@ckeditor/ckeditor5-track-changes": "43.2.0",
+    "@inquirer/prompts": "^6.0.0",
+    "@listr2/prompt-adapter-inquirer": "^2.0.16",
     "@ocular-d/vale-bin": "^2.29.1",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "@wiris/mathtype-ckeditor5": "^8.10.0",

@@ -13,6 +13,7 @@ import { icons } from 'ckeditor5/src/core.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import '../../theme/bookmarkactions.css';
 
 /**
  * The bookmark actions view class. This view displays the bookmark preview, allows

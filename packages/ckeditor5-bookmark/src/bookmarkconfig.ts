@@ -47,5 +47,5 @@ export interface BookmarkConfig {
 	 *
 	 * @default true
 	 */
-	enableNonEmptyBookmarkConversion?: boolean;
+	enableNonEmptyAnchorConversion?: boolean;
 }
