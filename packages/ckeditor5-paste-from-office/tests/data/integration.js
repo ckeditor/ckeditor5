@@ -150,7 +150,7 @@ describe( 'PasteFromOffice - integration', () => {
 	generateIntegrationTests( {
 		input: 'bookmark',
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, Bookmark, Table, TableProperties, TableCellProperties, Bold, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, Bookmark, Table, TableProperties, TableCellProperties, Bold, Image, PasteFromOffice ]
 		}
 	} );
 
