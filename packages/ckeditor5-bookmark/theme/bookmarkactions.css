@@ -4,6 +4,7 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
 
 .ck.ck-bookmark-actions {
 	display: flex;
@@ -16,6 +17,9 @@
 		text-overflow: ellipsis;
 		text-align: center;
 		overflow: hidden;
+
+		@mixin ck-unselectable;
+		cursor: default;
 	}
 
 	@mixin ck-media-phone {
