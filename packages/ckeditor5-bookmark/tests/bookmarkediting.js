@@ -22,7 +22,11 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Element } from '@ckeditor/ckeditor5-engine';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import {
+	setData as setModelData,
+	getData as getModelData,
+	stringify as stringifyModel
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget';
 
@@ -1087,10 +1091,468 @@ describe( 'BookmarkEditing', () => {
 			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).is.null;
 		} );
 	} );
+
+	describe( 'clipboard', () => {
+		let clipboardPlugin, viewDocument;
+
+		beforeEach( () => {
+			clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+			viewDocument = view.document;
+		} );
+
+		describe( 'pointed bookmarks', () => {
+			it( 'should paste `a` with the same `id` and `name` attributes', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz" name="xyz"></a>foo</p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with different `id` and `name` attributes', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz" name="foo"></a>foo</p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with identical `id` and `name` attributes (content before bookmark)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p>foo<a id="xyz" name="xyz"></a></p>',
+					expectedModel: '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with `id` attribute', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz"></a>foo</p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with `name` attribute', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a name="xyz"></a>foo</p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with `name` attribute (content before bookmark)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p>foo<a name="xyz"></a></p>',
+					expectedModel: '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` when bookmark with the same `id` already exists', done => {
+				const html = '<p><a name="xyz"></a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				setModelData( model,
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph>[]</paragraph>'
+				);
+
+				model.document.on( 'change:data', () => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark></paragraph>';
+					const modeldata = getModelData( model, { withoutSelection: true } );
+
+					expect( modeldata ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+		} );
+
+		describe( 'wrapped bookmarks', () => {
+			it( 'should paste `a` with the same `id` and `name` attributes', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with different `id` and `name` attributes', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz" name="foo">foo</a></p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with `id` attribute', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz">foo</a></p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with `name` attribute', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a name="xyz">foo</a></p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with image (bookmark after)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><img src="#"></img><a name="xyz"></a></p>',
+					expectedModel: '<paragraph><imageInline src="#"></imageInline><bookmark bookmarkId="xyz"></bookmark></paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` with image (bookmark before)', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a name="xyz"></a><img src="#"></img></p>',
+					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark><imageInline src="#"></imageInline></paragraph>'
+				} );
+			} );
+
+			it( 'should paste `a` when bookmark with the same `id` already exists', done => {
+				const html = '<p><a name="xyz">foo</a></p>';
+				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagation = sinon.spy();
+
+				setModelData( model,
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph>[]</paragraph>'
+				);
+
+				model.document.on( 'change:data', () => {
+					const expectedModel = '<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
+					'<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
+					const modeldata = getModelData( model, { withoutSelection: true } );
+
+					expect( modeldata ).to.equal( expectedModel );
+
+					done();
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy,
+					stopPropagation
+				} );
+			} );
+		} );
+
+		describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+			let element, editor, view, viewDocument, clipboardPlugin;
+
+			beforeEach( async () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				const config = {
+					language: 'en',
+					plugins: [ BookmarkEditing, Essentials, Paragraph ],
+					bookmark: {
+						enableNonEmptyAnchorConversion: false
+					}
+				};
+
+				editor = await createEditor( element, config );
+				model = editor.model;
+				view = editor.editing.view;
+				viewDocument = view.document;
+				clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+			} );
+
+			afterEach( async () => {
+				element.remove();
+				await editor.destroy();
+			} );
+
+			it( 'should not convert an `a` with `name` attribute to bookmark', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a name="xyz">foo</a></p>',
+					expectedModel: '<paragraph>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should not convert an `a` with `id` attribute to bookmark', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz">foo</a></p>',
+					expectedModel: '<paragraph>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+					expectedModel: '<paragraph>foo</paragraph>'
+				} );
+			} );
+
+			it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', done => {
+				testClipboardPaste( {
+					clipboardPlugin,
+					viewDocument,
+					done: () => done(),
+					pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
+					expectedModel: '<paragraph>foo</paragraph>'
+				} );
+			} );
+		} );
+
+		describe( 'with GHS enabled', () => {
+			describe( 'pointed bookmarks', () => {
+				let element, editor, view, viewDocument, clipboardPlugin;
+
+				beforeEach( async () => {
+					element = document.createElement( 'div' );
+					document.body.appendChild( element );
+
+					const config = {
+						language: 'en',
+						plugins: [
+							BookmarkEditing, Essentials, ImageInline, ImageBlock,
+							Heading, Paragraph, Link, Table, GeneralHtmlSupport
+						],
+						htmlSupport: {
+							allow: [
+								{
+									name: /^.*$/,
+									styles: true,
+									attributes: true,
+									classes: true
+								}
+							]
+						}
+					};
+
+					editor = await createEditor( element, config );
+					model = editor.model;
+					view = editor.editing.view;
+					viewDocument = view.document;
+					clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+				} );
+
+				afterEach( async () => {
+					element.remove();
+					await editor.destroy();
+				} );
+
+				it( 'should convert an `a` with `name` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a name="xyz">foo</a></p>',
+						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					} );
+				} );
+
+				it( 'should convert an `a` with `id` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a id="xyz">foo</a></p>',
+						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					} );
+				} );
+
+				it( 'should convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
+					} );
+				} );
+
+				it( 'should convert an `a` with different `id` and `name` attribute to bookmark', done => {
+					testClipboardPaste( {
+						clipboardPlugin,
+						viewDocument,
+						done: () => done(),
+						pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
+						expectedModel:
+							'<paragraph>' +
+								'<bookmark bookmarkId="foo"></bookmark>' +
+								'<$text htmlA="{"attributes":{"name":"bar"}}">foo</$text>' +
+							'</paragraph>'
+					} );
+				} );
+			} );
+
+			describe( 'wrapped bookmarks', () => {
+				describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+					let element, editor, view, viewDocument, clipboardPlugin;
+
+					beforeEach( async () => {
+						element = document.createElement( 'div' );
+						document.body.appendChild( element );
+
+						const config = {
+							language: 'en',
+							plugins: [
+								BookmarkEditing, Essentials, ImageInline, ImageBlock,
+								Heading, Paragraph, Link, Table, GeneralHtmlSupport
+							],
+							htmlSupport: {
+								allow: [
+									{
+										name: /^.*$/,
+										styles: true,
+										attributes: true,
+										classes: true
+									}
+								]
+							},
+							bookmark: {
+								enableNonEmptyAnchorConversion: false
+							}
+						};
+
+						editor = await createEditor( element, config );
+						model = editor.model;
+						view = editor.editing.view;
+						viewDocument = view.document;
+						clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
+					} );
+
+					afterEach( async () => {
+						element.remove();
+						await editor.destroy();
+					} );
+
+					it( 'should not convert an `a` with `name` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a name="xyz">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"name":"xyz"}}">foo</$text></paragraph>'
+						} );
+					} );
+
+					it( 'should not convert an `a` with `id` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a id="xyz">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz"}}">foo</$text></paragraph>'
+						} );
+					} );
+
+					it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz","name":"xyz"}}">foo</$text></paragraph>'
+						} );
+					} );
+
+					it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', done => {
+						testClipboardPaste( {
+							clipboardPlugin,
+							viewDocument,
+							done: () => done(),
+							pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
+							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"bar"}}">foo</$text></paragraph>'
+						} );
+					} );
+				} );
+			} );
+		} );
+	} );
 } );
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
+}
 
 async function createEditor( element, config ) {
 	const editor = await ClassicTestEditor.create( element, config );
 
 	return editor;
+}
+
+function testClipboardPaste( {
+	clipboardPlugin,
+	viewDocument,
+	done,
+	pastedHtml,
+	expectedModel
+} ) {
+	const dataTransferMock = createDataTransfer( { 'text/html': pastedHtml, 'text/plain': 'y' } );
+	const preventDefaultSpy = sinon.spy();
+	const stopPropagation = sinon.spy();
+
+	clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+		expect( data.dataTransfer ).to.equal( dataTransferMock );
+		expect( data.method ).to.equal( 'paste' );
+		expect( stringifyModel( data.content ) ).to.equal( expectedModel );
+
+		done();
+	} );
+
+	viewDocument.fire( 'paste', {
+		dataTransfer: dataTransferMock,
+		preventDefault: preventDefaultSpy,
+		stopPropagation
+	} );
 }
