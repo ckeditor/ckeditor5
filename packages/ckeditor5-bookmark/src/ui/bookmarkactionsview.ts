@@ -7,8 +7,22 @@
  * @module bookmark/ui/bookmarkactionsview
  */
 
-import { LabelView, ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
+import {
+	LabelView,
+	ButtonView,
+	View,
+	ViewCollection,
+	FocusCycler,
+	type FocusableView
+} from 'ckeditor5/src/ui.js';
+
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	type LocaleTranslate,
+	type Locale
+} from 'ckeditor5/src/utils.js';
+
 import { icons } from 'ckeditor5/src/core.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -73,11 +87,8 @@ export default class BookmarkActionsView extends View {
 		const t = locale.t;
 
 		this.bookmarkPreviewView = this._createBookmarkPreviewView();
-		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), icons.remove, 'remove' );
-		this.editButtonView = this._createButton( t( 'Edit bookmark' ), icons.pencil, 'edit' );
-
-		this._extendAriaLabelledByIdsList( this.removeButtonView, this.bookmarkPreviewView.id );
-		this._extendAriaLabelledByIdsList( this.editButtonView, this.bookmarkPreviewView.id );
+		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), icons.remove, 'remove', this.bookmarkPreviewView );
+		this.editButtonView = this._createButton( t( 'Edit bookmark' ), icons.pencil, 'edit', this.bookmarkPreviewView );
 
 		this.set( 'id', undefined );
 
@@ -162,9 +173,10 @@ export default class BookmarkActionsView extends View {
 	 * @param label The button label.
 	 * @param icon The button icon.
 	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
+	 * @param additionalLabel An additional label outside the button.
 	 * @returns The button view instance.
 	 */
-	private _createButton( label: string, icon: string, eventName?: string ): ButtonView {
+	private _createButton( label: string, icon: string, eventName: string, additionalLabel: LabelView ): ButtonView {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
@@ -174,6 +186,17 @@ export default class BookmarkActionsView extends View {
 		} );
 
 		button.delegate( 'execute' ).to( this, eventName );
+
+		// Since button label `id` is bound to the `ariaLabelledBy` property
+		// we need to modify this binding to include only the first ID token
+		// as this button will be labeled by multiple labels.
+		button.labelView.unbind( 'id' );
+
+		button.labelView.bind( 'id' ).to( button, 'ariaLabelledBy', ariaLabelledBy => {
+			return getFirstToken( ariaLabelledBy! );
+		} );
+
+		button.ariaLabelledBy = `${ button.ariaLabelledBy } ${ additionalLabel.id }`;
 
 		return button;
 	}
@@ -195,32 +218,10 @@ export default class BookmarkActionsView extends View {
 			}
 		} );
 
+		// Bind label text with the bookmark ID.
 		label.bind( 'text' ).to( this, 'id' );
 
 		return label;
-	}
-
-	/**
-	 * Extends the `aria-labelledby` attribute of the button with the given label `id`.
-	 *```html
-	 * <button aria-labelledby="button-tooltip-id bookmark-name-id">
-	 * 	<!-- ... -->
-	 * </button>
-	 *```
-	 * The accessibility output will be a concatenated string from both elements: "[button_label] [bookmark_name]".
-	 * The `id` of the default button label must stays as originally set.
-	 *
-	 * @param button Button view instance.
-	 * @param labelId Label id of bookmark name preview.
-	 */
-	private _extendAriaLabelledByIdsList( button: ButtonView, labelId: string ): void {
-		button.labelView.unbind( 'id' );
-
-		button.set( {
-			ariaLabelledBy: `${ button.labelView.id } ${ labelId }`
-		} );
-
-		button.labelView.bind( 'id' ).to( button, 'ariaLabelledBy', ariaLabelledBy => ariaLabelledBy?.split( ' ' )[ 0 ] );
 	}
 }
 
@@ -243,3 +244,10 @@ export type RemoveEvent = {
 	name: 'remove';
 	args: [];
 };
+
+/**
+ * Returns the first token from space separated token list.
+ */
+function getFirstToken( tokenList: string ): string {
+	return tokenList.split( ' ' )[ 0 ];
+}
