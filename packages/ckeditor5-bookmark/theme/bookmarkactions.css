@@ -27,15 +27,12 @@
 			text-align: center;
 			min-width: auto;
 		}
-
-		& .ck-button {
-			flex-basis: 50%;
-		}
 	}
 
 	&.ck-responsive-form {
 		& .ck-button {
 			@mixin ck-media-phone {
+				flex-basis: 50%;
 				margin-top: var(--ck-spacing-standard);
 			}
 		}

@@ -6,12 +6,10 @@
 /* globals document */
 
 import BookmarkActionsView from '../../src/ui/bookmarkactionsview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { ButtonView, LabelView, ViewCollection, FocusCycler } from '@ckeditor/ckeditor5-ui';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-utils';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BookmarkActionsView', () => {
@@ -39,9 +37,25 @@ describe( 'BookmarkActionsView', () => {
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.bookmarkPreviewView ).to.be.instanceOf( View );
-			expect( view.removeButtonView ).to.be.instanceOf( View );
-			expect( view.editButtonView ).to.be.instanceOf( View );
+			expect( view.bookmarkPreviewView ).to.be.instanceOf( LabelView );
+			expect( view.removeButtonView ).to.be.instanceOf( ButtonView );
+			expect( view.editButtonView ).to.be.instanceOf( ButtonView );
+		} );
+
+		it( 'should set `ariaLabelledBy` for `removeButtonView`', () => {
+			const currentButtonLabelId = view.removeButtonView.labelView.id;
+			const bookmarkPreviewId = view.bookmarkPreviewView.id;
+			const concatenatedIds = `${ currentButtonLabelId } ${ bookmarkPreviewId }`;
+
+			expect( view.removeButtonView.ariaLabelledBy ).to.be.equal( concatenatedIds );
+		} );
+
+		it( 'should set `ariaLabelledBy` for `editButtonView`', () => {
+			const currentButtonLabelId = view.editButtonView.labelView.id;
+			const bookmarkPreviewId = view.bookmarkPreviewView.id;
+			const concatenatedIds = `${ currentButtonLabelId } ${ bookmarkPreviewId }`;
+
+			expect( view.editButtonView.ariaLabelledBy ).to.be.equal( concatenatedIds );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
