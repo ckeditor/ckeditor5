@@ -2,6 +2,7 @@
 category: features
 menu-title: Bookmark
 meta-title: Bookmark | CKEditor 5 Documentation
+modified_at: 2024-10-08
 ---
 
 # Bookmark
@@ -10,9 +11,15 @@ The bookmarks feature allows to add and manage the bookmarks attached to the con
 
 ## Demo
 
-Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark.
+Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`). To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`.
 
 {@snippet features/bookmark}
+
+<!-- We may decide to move this part above the demo, but I think it's OK here -->
+
+You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark panel will pop up.
+
+Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -46,16 +53,15 @@ TODO
 
 ## Related features
 
-Here are some other CKEditor&nbsp;5 features that you can use similarly to the bookmark plugin to structure your text better:
+Here are some other CKEditor&nbsp;5 features that you can use similarly to the bookmark plugin to crosslink and structure your text better:
 
-* {@link features/document-outline Document outline} &ndash; displays the list of sections (headings) of the document next to the editor.
-* {@link features/document-outline Table of contents} &ndash; lets you insert a widget with a list of headings (section titles) that reflects the structure of the document.
+* The {@link features/link link feature} allows adding local and global URLs to the content. 
+* The {@link features/document-outline document outline} displays the list of sections (headings) of the document next to the editor.
+* The {@link features/document-outline table of contents} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document.
 
 ## Common API
 
-The {@link module:bookmark/bookmark~Bookmark} plugin registers:
-
-* the `'bookmark'` UI button component implemented by the {@link module:bookmark/bookmarkui~BookmarkUI bookmark UI feature},
+The {@link module:bookmark/bookmark~Bookmark} plugin registers the `'bookmark'` UI button component implemented by the {@link module:bookmark/bookmarkui~BookmarkUI bookmark UI feature}, and the following commands:
 * the `'insertBookmark'` command implemented by the {@link module:bookmark/insertbookmarkcommand~InsertBookmarkCommand editing feature}.
 * the `'updateBookmark'` command implemented by the {@link module:bookmark/updatebookmarkcommand~UpdateBookmarkCommand editing feature}.
 
