@@ -40,6 +40,7 @@ You can configure resizing images by handles in two different ways in the CKEdit
 
 * By installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins. This will not load the unnecessary `ImageResizeButtons` plugin:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from 'ckeditor5';
 
@@ -54,6 +55,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 Both ways enable resize handles by default.
 
@@ -143,6 +145,7 @@ const imageConfiguration = {
 	]
 }
 ```
+
 Try out the live demo of the individual resize buttons {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-large.svg Image resize} available in the image toolbar:
 
 {@snippet features/image-resize-buttons}
@@ -155,6 +158,7 @@ As a result, your plugin setup should look like this: `plugins: [ 'ImageResizeEd
 
 This will enable the image resize feature only through the chosen UI: either a [dropdown](#using-resize-dropdown) or [standalone buttons](#using-standalone-resize-buttons) in the image toolbar.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Image, ImageResizeButtons, ImageResizeEditing, ImageToolbar } from 'ckeditor5';
 
@@ -196,6 +200,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Markup and styling
 
@@ -324,6 +329,7 @@ When using the {@link features/ckbox CKBox file manager} service, it produces se
 
 To enable it you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
 
+<code-switcher>
 ```js
 import { ClassicEditor, Image, ImageResize } from 'ckeditor5';
 
@@ -335,6 +341,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Common API
 

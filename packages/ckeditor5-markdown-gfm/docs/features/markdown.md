@@ -37,6 +37,7 @@ Please remember that Markdown syntax is really simple and it does not cover all 
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Bold, Italic, Essentials, Markdown } from 'ckeditor5';
 
@@ -55,6 +56,7 @@ ClassicEditor
 	.catch( /* ... */ );
 
 ```
+</code-switcher>
 
 ## Extending formatting support
 If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.

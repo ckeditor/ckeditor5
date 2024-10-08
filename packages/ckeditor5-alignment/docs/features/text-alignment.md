@@ -28,6 +28,7 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Alignment } from 'ckeditor5';
 
@@ -43,6 +44,7 @@ ClassicEditor.
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring alignment options
 

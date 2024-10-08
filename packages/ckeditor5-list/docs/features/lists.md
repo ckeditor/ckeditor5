@@ -86,6 +86,7 @@ The `List` plugin provides the {@link features/lists ordered (numbered) and unor
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, List } from 'ckeditor5';
 
@@ -101,6 +102,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ### List properties
 
@@ -108,6 +110,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
 
+<code-switcher>
 ```js
 import { ClassicEditor, List, ListProperties } from 'ckeditor5';
 
@@ -126,6 +129,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.

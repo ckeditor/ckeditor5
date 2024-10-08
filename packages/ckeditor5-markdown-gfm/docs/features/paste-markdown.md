@@ -35,6 +35,7 @@ Paste some Markdown-formatted content into the demo editor below and see it turn
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Bold, Italic, Essentials, PasteFromMarkdownExperimental } from 'ckeditor5';
 
@@ -54,6 +55,7 @@ ClassicEditor
 	.catch( /* ... */ );
 
 ```
+</code-switcher>
 
 ## Known issues
 

@@ -40,6 +40,7 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of link
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, AutoLink, Link } from 'ckeditor5';
 
@@ -55,6 +56,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Custom link attributes (decorators)
 

@@ -63,6 +63,7 @@ Therefore, the main use cases for GHS would be:
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, GeneralHtmlSupport } from 'ckeditor5';
 
@@ -77,6 +78,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -223,6 +225,7 @@ To enable such elements and add attributes or classes to them, you need to use t
 
 Base implementation example:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials, Paragraph, Plugin, SourceEditing, GeneralHtmlSupport } from 'ckeditor5';
 
@@ -283,6 +286,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 You can treat both inline and block elements as object elements. To make it possible, it is necessary to set the {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.
 

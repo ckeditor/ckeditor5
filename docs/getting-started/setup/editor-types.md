@@ -20,6 +20,7 @@ Other custom-tailored editor types can be made using the {@link framework/extern
 
 For example, this code will import the classic editor type and some essential text formatting plugins. It also provides the configuration of the {@link getting-started/setup/toolbar main editor toolbar}.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Bold, Italic, Link } from 'ckeditor5'; // Imports.
 
@@ -32,6 +33,7 @@ ClassicEditor // Editor type declaration.
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Classic editor
 

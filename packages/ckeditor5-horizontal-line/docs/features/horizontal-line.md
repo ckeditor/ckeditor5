@@ -28,6 +28,7 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, HorizontalLine } from 'ckeditor5';
 
@@ -40,6 +41,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Related features
 

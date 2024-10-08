@@ -29,6 +29,7 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, FindAndReplace } from 'ckeditor5';
 
@@ -44,6 +45,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 

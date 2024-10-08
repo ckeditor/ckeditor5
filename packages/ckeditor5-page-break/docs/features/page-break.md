@@ -28,6 +28,7 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, PageBreak } from 'ckeditor5';
 
@@ -40,6 +41,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Related features
 
