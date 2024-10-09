@@ -186,9 +186,29 @@ export default class ColorPickerView extends View {
 			this.picker.shadowRoot!.appendChild( styleSheetForFocusedColorPicker );
 		}
 
+		// Workaround for unstable selection after firing 'color-changed' event in Webkit-based browsers.
+		// The selection is being collapsed after the event is fired, causing the font color plugin
+		// not to update the selected editor content. Setting the color immediately after the event
+		// is fired is a workaround for this issue. It's not a perfect solution, but it's the best we can do for now.
+		// It may be removed in the future if the issue is fixed in the browser.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/17069
+		let colorSelectedEventDebounce: number | null = null;
+
 		this.picker.addEventListener( 'color-changed', event => {
 			const color = event.detail.value;
-			this._debounceColorPickerEvent( color );
+
+			// At first, set the color internally in the component. It's converted to the configured output format.
+			this.set( 'color', color );
+
+			if ( colorSelectedEventDebounce !== null ) {
+				clearTimeout( colorSelectedEventDebounce );
+			}
+
+			// Let's wait until selection is being moved from web component to the editor.
+			colorSelectedEventDebounce = setTimeout( () => {
+				// Then let the outside world know that the user changed the color.
+				this.fire<ColorPickerColorSelectedEvent>( 'colorSelected', { color: this.color } );
+			}, 150 );
 		} );
 	}
 
