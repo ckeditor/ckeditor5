@@ -29,6 +29,26 @@ With CKBox you can:
 
 {@link features/ckbox **Read a separate guide on CKBox**} to learn about its installation and configuration. The guide also lets you try CKBox in action.
 
+## Uploadcare file manager
+
+Uploadcare is a modern file management platform with multiple integrations with services like Dropbox, Google Drive, OneDrive and similar.
+
+With Uploadcare you can:
+- Upload images directly from:
+	- Dropbox,
+	- Facebook,
+	- Google Drive,
+	- Google Photos,
+	- Instagram,
+	- OneDrive,
+	- Local computer,
+	- External URL.
+- Manage all uploaded images through a dedicated platform.
+- Edit images by changing dimensions, applying filters and adjusting various image parameters.
+- Get your images served quickly through global CDN.
+
+{@link features/uploadcare **Read a separate guide on Uploadcare**} to learn about its installation and configuration. The guide also lets you try Uploadcare in action.
+
 ## CKFinder file manager
 
 CKFinder is a powerful file manager with various image editing and image upload options.
