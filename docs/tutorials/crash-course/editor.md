@@ -11,7 +11,7 @@ modified_at: 2023-08-16
 
 ## Test environment
 
-For the purposes of this tutorial, we have created a minimal setup required to use the editor. To follow along, run the commands below:
+For this tutorial, we have created a minimal setup required to use the editor. To follow along, run the commands below:
 
 ```bash
 npx -y degit ckeditor/ckeditor5-tutorials-examples/crash-course crash-course

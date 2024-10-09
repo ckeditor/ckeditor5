@@ -10,7 +10,7 @@ modified_at: 2022-07-15
 
 In this part of the tutorial we will focus on creating a dialog, which will get the user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part using the commands below.
+We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there} or grab our starter files for this part using the commands below.
 
 ```bash
 npx -y degit ckeditor/ckeditor5-tutorials-examples/abbreviation-plugin/part-1 abbreviation-plugin

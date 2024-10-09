@@ -45,7 +45,7 @@ This will create a new directory called `react-widget` with the necessary files.
 
 The editor with some basic plugins is created in the `main.js` file.
 
-Open the URL displayed in your terminal. If everything went well, you should see a "Hello world" application in your web browser, which might not be much but it is a good start:
+Open the URL displayed in your terminal. If everything goes well, you should see a "Hello world" application in your web browser, which might not be much, but it is a good start:
 
 {@img assets/img/using-react-in-a-widget-1.png Screenshot of the "Hello world" application in web browser.}
 
