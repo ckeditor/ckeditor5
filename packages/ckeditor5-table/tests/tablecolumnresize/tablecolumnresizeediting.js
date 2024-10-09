@@ -1375,6 +1375,37 @@ describe( 'TableColumnResizeEditing', () => {
 				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 			} );
 
+			it( 'correctly resizes a table with only footer rows', () => {
+				// Test-specific.
+				const columnToResizeIndex = 0;
+				const mouseMovementVector = { x: 10, y: 0 };
+
+				setModelData( model, modelTable( [ [ '0', '1' ] ], { footerRows: '1', columnWidths: '50%,50%' } ) );
+
+				// Test-agnostic.
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
+
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
+
+				assertModelWidthsSum( finalModelColumnWidthsPc );
+
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
+
+				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+					initialViewColumnWidthsPx,
+					mouseMovementVector,
+					contentDirection,
+					columnToResizeIndex
+				);
+
+				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+			} );
+
 			it( 'does not remove column when it was shrinked to negative width', () => {
 				// Test-specific.
 				setModelData( model, modelTable( [
