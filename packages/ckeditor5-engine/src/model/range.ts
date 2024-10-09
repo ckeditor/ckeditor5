@@ -21,6 +21,9 @@ import type MoveOperation from './operation/moveoperation.js';
 import type Operation from './operation/operation.js';
 import type SplitOperation from './operation/splitoperation.js';
 
+import Text from './text.js';
+import TextProxy from './textproxy.js';
+
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -437,13 +440,107 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 */
 	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<Item> {
-		options.boundaries = this;
-		options.ignoreElementEnd = true;
+		if ( this.isFlat && options.shallow ) {
+			const parent = this.start.parent;
 
-		const treeWalker = new TreeWalker( options );
+			const startOffset = this.start.offset;
+			const endOffset = this.end.offset;
 
-		for ( const value of treeWalker ) {
-			yield value.item;
+			let offsetBefore = 0;
+			let offsetAfter = 0;
+			let i = 0;
+
+			while ( offsetAfter <= startOffset ) {
+				const child = parent.getChild( i )!;
+
+				offsetBefore = offsetAfter;
+				offsetAfter = offsetBefore + child.offsetSize;
+
+				i++;
+
+				if ( offsetAfter > startOffset ) {
+					i--;
+				}
+			}
+
+			while ( offsetBefore < endOffset && i < parent.childCount ) {
+				const child = parent.getChild( i )!;
+				let item;
+
+				if ( offsetBefore >= startOffset && offsetAfter <= endOffset ) {
+					// The node is fully inside the range. Yield it.
+					item = child;
+				} else {
+					// The node is partially in range. Yield text proxy.
+					const textProxyOffsetStart = Math.max( offsetBefore, startOffset );
+					const textProxyOffsetEnd = Math.min( offsetAfter, endOffset );
+
+					item = new TextProxy( child as Text, textProxyOffsetStart - offsetBefore, textProxyOffsetEnd - textProxyOffsetStart );
+				}
+
+				offsetBefore = offsetAfter;
+				offsetAfter = offsetBefore + child.offsetSize;
+
+				i++;
+
+				yield item;
+			}
+		} else {
+			options.boundaries = this;
+			options.ignoreElementEnd = true;
+
+			const treeWalker = new TreeWalker( options );
+
+			for ( const value of treeWalker ) {
+				yield value.item;
+			}
+		}
+	}
+
+	public forEachItem( callback: Function ) {
+		const parent = this.start.parent;
+
+		const startOffset = this.start.offset;
+		const endOffset = this.end.offset;
+
+		let offsetBefore = 0;
+		let offsetAfter = 0;
+		let i = 0;
+
+		while ( offsetAfter <= startOffset ) {
+			const child = parent.getChild( i )!;
+
+			offsetBefore = offsetAfter;
+			offsetAfter = offsetBefore + child.offsetSize;
+
+			i++;
+
+			if ( offsetAfter > startOffset ) {
+				i--;
+			}
+		}
+
+		while ( offsetBefore < endOffset && i < parent.childCount ) {
+			const child = parent.getChild( i )!;
+			let item;
+
+			if ( offsetBefore >= startOffset && offsetAfter <= endOffset ) {
+				// The node is fully inside the range. Yield it.
+				item = child;
+			} else {
+				// The node is partially in range. Yield text proxy.
+				const textProxyOffsetStart = Math.max( offsetBefore, startOffset );
+				const textProxyOffsetEnd = Math.min( offsetAfter, endOffset );
+
+				item = new TextProxy( child as Text, textProxyOffsetStart - offsetBefore, textProxyOffsetEnd - textProxyOffsetStart );
+			}
+
+			offsetBefore = offsetAfter;
+			offsetAfter = offsetBefore + child.offsetSize;
+
+			i++;
+
+			callback( item );
 		}
 	}
 
