@@ -1,0 +1,13 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<!-- For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI. -->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"request-failure": "vimeo.com",
+		"response-failure": "vimeo.com",
+		"console-error": [ "<svg> attribute preserveAspectRatio", "vimeo.com" ]
+	}'>
+</head>
+
+<button id="btnStart">Start</button>
+
+<div id="editor"></div>
