@@ -33,6 +33,7 @@
     "@ckeditor/ckeditor5-html-support": "43.2.0",
     "@ckeditor/ckeditor5-image": "43.2.0",
     "@ckeditor/ckeditor5-link": "43.2.0",
+    "@ckeditor/ckeditor5-list": "43.2.0",
     "@ckeditor/ckeditor5-editor-multi-root": "43.2.0",
     "@ckeditor/ckeditor5-paragraph": "43.2.0",
     "@ckeditor/ckeditor5-table": "43.2.0",
