@@ -9,20 +9,25 @@ import config from '../../_utils/performance-config.js';
 import allDataSets from '../../_data/generated/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-// TEST CONFIG.
+//////////////////
+// TEST CONFIG. //
+//////////////////
+
 // Number of tries per data set.
 const TRIES_PER_DATA_SET = 10;
 
-// Change to string with data set name if you want to check only specific data set.
-const DATA_SET_NAME = null;
+// Change to array with data sets names if you want to check only specific data sets.
+const DATA_SETS_NAMES = null;
 
 // Change to `0` to keep all values in the results. Change to higher value to remove more outliers.
 const REMOVE_OUTLIERS = 1;
-// END OF TEST CONFIG.
 
-// If `DATA_SET_NAME` is defined, keep only that data set.
-const dataSets = DATA_SET_NAME ? { [ DATA_SET_NAME ]: allDataSets[ DATA_SET_NAME ] } : allDataSets;
-const dataSetNames = Object.keys( dataSets );
+/////////////////////////
+// END OF TEST CONFIG. //
+/////////////////////////
+
+// If `DATA_SETS_NAMES` is defined, keep only that data set.
+const dataSetsNames = DATA_SETS_NAMES ? DATA_SETS_NAMES : Object.keys( allDataSets );
 
 run();
 
@@ -44,7 +49,7 @@ function run() {
 
 function performTest() {
 	const dataSetName = getCurrentDataSetName();
-	const initialData = dataSets[ dataSetName ]();
+	const initialData = allDataSets[ dataSetName ]();
 	const finalConfig = { initialData, ...config };
 	const editorElement = document.querySelector( '#editor' );
 
@@ -71,14 +76,14 @@ function setStatus() {
 	const dataSetName = getCurrentDataSetName();
 	const tryNumber = sessionStorage.getItem( 'performanceTestTryNumber' );
 
-	statusEl.innerHTML = `Dataset "${ dataSetName }" (${ dataSetIndex + 1 } / ${ dataSetNames.length }), ` +
+	statusEl.innerHTML = `Dataset "${ dataSetName }" (${ dataSetIndex + 1 } / ${ dataSetsNames.length }), ` +
 		`try ${ tryNumber } / ${ TRIES_PER_DATA_SET }`;
 }
 
 function getCurrentDataSetName() {
 	const dataSetIndex = Number( sessionStorage.getItem( 'performanceTestDataSetIndex' ) );
 
-	return dataSetNames[ dataSetIndex ];
+	return dataSetsNames[ dataSetIndex ];
 }
 
 function setupTests() {
@@ -122,7 +127,7 @@ function runNext() {
 function isNextDataSet() {
 	const dataSetIndex = Number( sessionStorage.getItem( 'performanceTestDataSetIndex' ) );
 
-	return dataSetIndex < dataSetNames.length - 1;
+	return dataSetIndex < dataSetsNames.length - 1;
 }
 
 function nextDataSet() {
