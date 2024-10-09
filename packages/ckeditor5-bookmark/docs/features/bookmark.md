@@ -49,13 +49,40 @@ ClassicEditor
 
 ## Configuration
 
-TODO
+By default the conversion of wrapped anchors is turned on. It allows to convert into bookmarks non-empty anchor elements:
+
+```html
+<a id="foo">Foo bar baz</a>
+```
+
+will be converted into bookmark and the output will look like on below example:
+
+```html
+<a id="foo"></a>Foo bar baz
+```
+
+You can disable it by setting the {@link module:bookmark/bookmarkconfig~BookmarkConfig#enableNonEmptyAnchorConversion `config.bookmark.enableNonEmptyAnchorConversion`} to `false` in editor config.
+
+```js
+import { ClassicEditor, Bookmark } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Bookmark, /* ... */ ],
+		toolbar: [ 'bookmark', /* ... */ ],
+		bookmark: {
+			enableNonEmptyAnchorConversion: false
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ## Related features
 
 Here are some other CKEditor&nbsp;5 features that you can use similarly to the bookmark plugin to crosslink and structure your text better:
 
-* The {@link features/link link feature} allows adding local and global URLs to the content. 
+* The {@link features/link link feature} allows adding local and global URLs to the content.
 * The {@link features/document-outline document outline} displays the list of sections (headings) of the document next to the editor.
 * The {@link features/document-outline table of contents} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document.
 
