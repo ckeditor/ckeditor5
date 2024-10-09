@@ -21,6 +21,13 @@ You can change the bookmark's name or remove it by clicking the bookmark icon in
 
 Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
 
+The feature converts anchors into Bookmarks on {@link getting-started/setup/getting-and-setting-data#initializing-the-editor-with-data initializing the editor} or while {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata replacing the editor data with `setData()`}. While the basic notation based on `id` attribute in an `a` HTML element without `href` attribute is converted, also similar notations are meet the conditions:
+ - an `a` HTML element with `name` attribute,
+ - an `a` HTML element with the same `name` and `id` attributes,
+ - an `a` HTML element with different `name` and `id` attributes.
+
+By default, all bookmarks created in the editor have only the `id="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}.
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
