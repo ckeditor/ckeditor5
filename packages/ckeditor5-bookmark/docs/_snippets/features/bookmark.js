@@ -25,8 +25,8 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-bookmark' ), {
 		toolbar: {
 			items: [
-				'bookmark', '|',
-				'undo', 'redo', '|', 'heading',
+				'bookmark',
+				'|', 'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent',
