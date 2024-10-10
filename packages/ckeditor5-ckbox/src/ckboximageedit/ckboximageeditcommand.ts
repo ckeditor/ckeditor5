@@ -108,6 +108,9 @@ export default class CKBoxImageEditCommand extends Command {
 			return;
 		}
 
+		// TODO ShadowRoot
+		//  - can we append it to the body collection?
+		//  - does CKBox support Shadow DOM?
 		const wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 
 		this._wrapper = wrapper;

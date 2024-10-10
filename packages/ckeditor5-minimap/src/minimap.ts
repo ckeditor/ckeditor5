@@ -84,7 +84,7 @@ export default class Minimap extends Plugin {
 		this._scrollableRootAncestor = findClosestScrollableAncestor( editingRootElement );
 
 		// DOM root element is not yet attached to the document.
-		if ( !editingRootElement.ownerDocument.body.contains( editingRootElement ) ) {
+		if ( !editingRootElement.isConnected ) {
 			editor.ui.once( 'update', this._onUiReady.bind( this ) );
 
 			return;

@@ -13,6 +13,7 @@ import getBorderWidths from './getborderwidths.js';
 import isText from './istext.js';
 import getPositionedAncestor from './getpositionedancestor.js';
 import global from './global.js';
+import getParentOrHostElement from './getparentorhostelement.js';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -116,7 +117,7 @@ export default class Rect {
 			// will fail to obtain the geometry and the rect instance makes little sense to the features using it.
 			// To get rid of this warning make sure the source passed to the constructor is a descendant of `window.document.body`.
 			// @if CK_DEBUG // const sourceNode = isSourceRange ? source.startContainer : source;
-			// @if CK_DEBUG // if ( !sourceNode.ownerDocument || !sourceNode.ownerDocument.body.contains( sourceNode ) ) {
+			// @if CK_DEBUG // if ( !sourceNode.ownerDocument || !sourceNode.isConnected ) {
 			// @if CK_DEBUG // 	console.warn(
 			// @if CK_DEBUG // 		'rect-source-not-in-dom: The source of this rect does not belong to any rendered DOM tree.',
 			// @if CK_DEBUG // 		{ source } );
@@ -316,7 +317,8 @@ export default class Rect {
 				)
 			) {
 				child = parent;
-				parent = parent.parentNode;
+				// TODO ShadowRoot
+				parent = getParentOrHostElement( parent );
 				continue;
 			}
 
@@ -334,7 +336,8 @@ export default class Rect {
 			}
 
 			child = parent;
-			parent = parent.parentNode;
+			// TODO ShadowRoot
+			parent = getParentOrHostElement( parent );
 		}
 
 		return visibleRect;

@@ -239,6 +239,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		// Register the element, so it becomes available for Alt+F10 and Esc navigation.
 		this.focusTracker.add( domElement );
+		this.tooltipManager.registerShadowRoot( domElement.getRootNode() );
 
 		const setUpKeystrokeHandler = () => {
 			// The editing view of the editor is already listening to keystrokes from DOM roots (see: KeyObserver).
@@ -307,10 +308,12 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	public addToolbar( toolbarView: ToolbarView, options: FocusableToolbarOptions = {} ): void {
 		if ( toolbarView.isRendered ) {
 			this.focusTracker.add( toolbarView.element! );
+			this.tooltipManager.registerShadowRoot( toolbarView.element!.getRootNode() );
 			this.editor.keystrokes.listenTo( toolbarView.element! );
 		} else {
 			toolbarView.once<UIViewRenderEvent>( 'render', () => {
 				this.focusTracker.add( toolbarView.element! );
+				this.tooltipManager.registerShadowRoot( toolbarView.element!.getRootNode() );
 				this.editor.keystrokes.listenTo( toolbarView.element! );
 			} );
 		}
@@ -393,6 +396,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		const menuBarViewElement = menuBarView.element!;
 
 		this.focusTracker.add( menuBarViewElement );
+		this.tooltipManager.registerShadowRoot( menuBarViewElement.getRootNode() );
 		this.editor.keystrokes.listenTo( menuBarViewElement );
 
 		const normalizedMenuBarConfig = normalizeMenuBarConfig( this.editor.config.get( 'menuBar' ) || {} );
@@ -679,10 +683,15 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		for ( const view of body ) {
 			this.focusTracker.add( view.element! );
+
+			// TODO ShadowRoot This must register all shadow roots the editor is touching
+			// TODO how should we handle nested shadow roots?
+			this.tooltipManager.registerShadowRoot( view.element!.getRootNode() );
 		}
 
 		body.on<CollectionAddEvent<View>>( 'add', ( evt, view ) => {
 			this.focusTracker.add( view.element! );
+			this.tooltipManager.registerShadowRoot( view.element!.getRootNode() );
 		} );
 
 		body.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {

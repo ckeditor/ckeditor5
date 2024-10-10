@@ -12,7 +12,7 @@
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 import FocusObserver from './focusobserver.js';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, getSelection } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view.js';
@@ -115,8 +115,6 @@ export default class SelectionObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public override observe( domElement: HTMLElement ): void {
-		const domDocument = domElement.ownerDocument;
-
 		const startDocumentIsSelecting = () => {
 			this.document.isSelecting = true;
 
@@ -131,7 +129,7 @@ export default class SelectionObserver extends Observer {
 
 			// Make sure that model selection is up-to-date at the end of selecting process.
 			// Sometimes `selectionchange` events could arrive after the `mouseup` event and that selection could be already outdated.
-			this._handleSelectionChange( domDocument );
+			this._handleSelectionChange( domElement );
 
 			this.document.isSelecting = false;
 
@@ -147,6 +145,8 @@ export default class SelectionObserver extends Observer {
 		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
+		const domDocument = domElement.ownerDocument;
+
 		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
 			return;
@@ -154,8 +154,10 @@ export default class SelectionObserver extends Observer {
 
 		// This listener is using capture mode to make sure that selection is upcasted before any other
 		// handler would like to check it and update (for example table multi cell selection).
+		// TODO ShadowRoot - this event will propagate across the shadow DOM boundary (bubbles and composed flags set)
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
+		// TODO ShadowRoot - this event is always fired from the document, even inside a Shadow DOM.
 		this.listenTo( domDocument, 'selectionchange', () => {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	_debouncedLine();
@@ -181,7 +183,8 @@ export default class SelectionObserver extends Observer {
 				return;
 			}
 
-			this._handleSelectionChange( domDocument );
+			// TODO ShadowRoot - this will not work if separate roots are in separate shadow DOMs
+			this._handleSelectionChange( domElement );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -206,7 +209,8 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			this._handleSelectionChange( domDocument );
+			// TODO ShadowRoot - this will not work if separate roots are in separate shadow DOMs
+			this._handleSelectionChange( domElement );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -247,14 +251,14 @@ export default class SelectionObserver extends Observer {
 	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
-	 * @param domDocument DOM document.
+	 * @param domElement DOM element.
 	 */
-	private _handleSelectionChange( domDocument: Document ) {
+	private _handleSelectionChange( domElement: HTMLElement ) {
 		if ( !this.isEnabled ) {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( domElement )!;
 
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode! ) ) {
 			return;

@@ -483,6 +483,7 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 	let checkedElement = domResizeHostParent!;
 
 	while ( isNaN( parentWidth ) ) {
+		// TODO ShadowRoot
 		checkedElement = checkedElement.parentElement!;
 
 		if ( ++currentLevel > ancestorLevelLimit ) {
