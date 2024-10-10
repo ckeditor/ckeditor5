@@ -2,13 +2,13 @@
 category: features
 menu-title: Bookmark
 meta-title: Bookmark | CKEditor 5 Documentation
-meta-description: The bookmarks feature allows to add and manage bookmark anchors attached to the content.
+meta-description: The bookmarks feature allows for adding and managing bookmark anchors attached to the content.
 modified_at: 2024-10-08
 ---
 
 # Bookmark
 
-The bookmarks feature allows to add and manage the bookmarks attached to the content of the editor. These provide fast access to important content sections, speed up the editing navigation and contribute to a more efficient content creation.
+The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, speed up the editing navigation and contribute to a more efficient content creation.
 
 ## Demo
 
@@ -26,7 +26,7 @@ To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/cke
 
 Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
 
-The feature converts anchors into bookmarks during the {@link getting-started/setup/getting-and-setting-data#initializing-the-editor-with-data initialization the editor} or while {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata replacing the editor data with `setData()`}. The notation based on the `id` attribute in an `a` HTML element without a `href` attribute is converted. Similar notations meet the conditions, too:
+The feature converts anchors into bookmarks during the {@link getting-started/setup/getting-and-setting-data#initializing-the-editor-with-data initialization of the editor} or while {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata replacing the editor data with `setData()`}. The notation based on the `id` attribute in an `a` HTML element without a `href` attribute is converted. Similar notations meet the conditions, too:
 * an `a` HTML element with a `name` attribute,
 * an `a` HTML element with the same `name` and `id` attributes,
 * an `a` HTML element with different `name` and `id` attributes.
