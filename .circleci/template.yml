@@ -4,6 +4,7 @@
 # To modify commands to execute on CI review this file, and the script that generates it.
 version: 2.1
 
+# List of parameters must be synchronized between configuration files.
 parameters:
   isNightly:
     type: boolean
@@ -110,7 +111,7 @@ jobs:
 
   cke5_validators:
     machine: true
-    resource_class: xlarge
+    resource_class: large
     steps:
       - checkout_command
       - bootstrap_repository_command
@@ -150,7 +151,7 @@ jobs:
 
   cke5_coverage:
     machine: true
-    resource_class: xlarge
+    resource_class: medium
     steps:
       - community_verification_command
       - checkout_command
@@ -174,7 +175,7 @@ jobs:
 
   cke5_trigger_release_process:
     machine: true
-    resource_class: xlarge
+    resource_class: medium
     steps:
       - community_verification_command
       - checkout_command
@@ -202,7 +203,7 @@ jobs:
 
   cke5_trigger_uber_ci:
     machine: true
-    resource_class: xlarge
+    resource_class: medium
     steps:
       - community_verification_command
       - checkout_command
@@ -253,7 +254,7 @@ jobs:
 
   stale_bot:
     machine: true
-    resource_class: xlarge
+    resource_class: large
     steps:
       - checkout_command
       - bootstrap_repository_command

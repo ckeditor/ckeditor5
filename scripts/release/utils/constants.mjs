@@ -16,3 +16,11 @@ export const RELEASE_ZIP_DIRECTORY = upath.join( RELEASE_DIRECTORY, 'zip' );
 
 export const S3_COPY_ARGS = '--recursive --metadata-directive REPLACE --cache-control max-age=31536000';
 export const CDN_S3_BUCKET = 'ckeditor-cdn-prod-files';
+
+export const S3_CONTENT_TYPE = {
+	'*.js': 'text/javascript; charset=utf-8',
+	'*.ts': 'application/typescript; charset=utf-8',
+	'*.css': 'text/css; charset=utf-8',
+	'*.zip': 'application/zip',
+	'*.map': 'application/json; charset=utf-8'
+};
