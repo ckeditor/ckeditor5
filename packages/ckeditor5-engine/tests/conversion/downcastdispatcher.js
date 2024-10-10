@@ -352,7 +352,8 @@ describe( 'DowncastDispatcher', () => {
 	} );
 
 	describe( 'convert', () => {
-		it( 'should fire event with correct parameters for every item in passed range', () => {
+		it.only( 'should fire event with correct parameters for every item in passed range', () => {
+			debugger;
 			root._appendChild( [
 				new ModelText( 'foo', { bold: true } ),
 				new ModelElement( 'imageBlock' ),

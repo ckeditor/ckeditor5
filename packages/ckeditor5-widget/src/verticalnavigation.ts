@@ -158,8 +158,9 @@ function getNearestNonInlineLimit( model: Model, startPosition: Position, direct
 	const range = model.createRangeIn( startPosition.root );
 
 	const walkerValueType = direction == 'forward' ? 'elementStart' : 'elementEnd';
+	let previousPosition = startPosition;
 
-	for ( const { previousPosition, item, type } of range.getWalker( { startPosition, direction } ) ) {
+	for ( const { item, type, nextPosition } of range.getWalker( { startPosition, direction } ) ) {
 		if ( schema.isLimit( item ) && !schema.isInline( item ) ) {
 			return previousPosition;
 		}
@@ -168,6 +169,8 @@ function getNearestNonInlineLimit( model: Model, startPosition: Position, direct
 		if ( type == walkerValueType && schema.isBlock( item ) ) {
 			return null;
 		}
+
+		previousPosition = nextPosition;
 	}
 
 	return null;

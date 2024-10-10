@@ -384,7 +384,7 @@ export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		for ( const value of range ) {
 			const data = {
 				item: value.item,
-				range: Range._createFromPositionAndShift( value.previousPosition, value.length! ),
+				range: Range._createFromPositionAndShift( value.nextPosition, -value.length! ),
 				attributeKey: key,
 				attributeOldValue: oldValue,
 				attributeNewValue: newValue
@@ -912,7 +912,7 @@ function getEventName<TType extends string>( type: TType, data: { item: Item | S
 
 function walkerValueToEventData( value: TreeWalkerValue ) {
 	const item = value.item;
-	const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length! );
+	const itemRange = Range._createFromPositionAndShift( value.nextPosition, -value.length! );
 
 	return {
 		item,

@@ -199,8 +199,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * Makes a step forward in model. Moves the {@link #position} to the next position and returns the encountered value.
 	 */
 	private _next(): IteratorResult<TreeWalkerValue> {
-		const previousPosition = this.position;
-		const position = this.position.clone();
+		const position = this.position;
 		const parent = this._visitedParent;
 
 		// We are at the end of the root.
@@ -234,7 +233,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 
 			this._position = position;
 
-			return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
+			return formatReturnValue( 'elementStart', node, position, 1 );
 		}
 
 		if ( node instanceof Text ) {
@@ -258,7 +257,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			position.offset += charactersCount;
 			this._position = position;
 
-			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
+			return formatReturnValue( 'text', item, position, charactersCount );
 		}
 
 		// `node` is not set, we reached the end of current `parent`.
@@ -271,15 +270,14 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			return this._next();
 		}
 
-		return formatReturnValue( 'elementEnd', parent as Element, previousPosition, position );
+		return formatReturnValue( 'elementEnd', parent as Element, position );
 	}
 
 	/**
 	 * Makes a step backward in model. Moves the {@link #position} to the previous position and returns the encountered value.
 	 */
 	private _previous(): IteratorResult<TreeWalkerValue> {
-		const previousPosition = this.position;
-		const position = this.position.clone();
+		const position = this.position;
 		const parent = this._visitedParent;
 
 		// We are at the beginning of the root.
@@ -304,7 +302,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			if ( this.shallow ) {
 				this._position = position;
 
-				return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
+				return formatReturnValue( 'elementStart', node, position, 1 );
 			}
 
 			( position.path as Array<number> ).push( node.maxOffset );
@@ -315,7 +313,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 				return this._previous();
 			}
 
-			return formatReturnValue( 'elementEnd', node, previousPosition, position );
+			return formatReturnValue( 'elementEnd', node, position );
 		}
 
 		if ( node instanceof Text ) {
@@ -339,7 +337,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			position.offset -= charactersCount;
 			this._position = position;
 
-			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
+			return formatReturnValue( 'text', item, position, charactersCount );
 		}
 
 		// `node` is not set, we reached the beginning of current `parent`.
@@ -347,14 +345,13 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 		this._position = position;
 		this._visitedParent = parent.parent!;
 
-		return formatReturnValue( 'elementStart', parent as Element, previousPosition, position, 1 );
+		return formatReturnValue( 'elementStart', parent as Element, position, 1 );
 	}
 }
 
 function formatReturnValue(
 	type: TreeWalkerValueType,
 	item: Item,
-	previousPosition: Position,
 	nextPosition: Position,
 	length?: number
 ): IteratorYieldResult<TreeWalkerValue> {
@@ -363,7 +360,6 @@ function formatReturnValue(
 		value: {
 			type,
 			item,
-			previousPosition,
 			nextPosition,
 			length
 		}
@@ -387,15 +383,6 @@ export interface TreeWalkerValue {
 	 * Item between old and new positions of {@link module:engine/model/treewalker~TreeWalker}.
 	 */
 	item: Item;
-
-	/**
-	 * Previous position of the iterator.
-	 * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
-	 * position before the item.
-	 * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
-	 * the position after item.
-	 */
-	previousPosition: Position;
 
 	/**
 	 * Next position of the iterator.

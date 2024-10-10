@@ -776,10 +776,15 @@ function modelChangePostFixer(
 			}
 
 			// Check if there is no nested list.
-			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as Element ) ) {
+			const rangeInElement = model.createRangeIn( item as Element );
+			let previousPosition = rangeInElement.start;
+
+			for ( const { item: innerItem, nextPosition } of rangeInElement ) {
 				if ( isListItemBlock( innerItem ) ) {
 					findAndAddListHeadToMap( previousPosition, itemToListHead );
 				}
+
+				previousPosition = nextPosition;
 			}
 		}
 		// Removed list item or block adjacent to a list.
