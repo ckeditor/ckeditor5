@@ -256,28 +256,36 @@ describe( 'ToolbarView', () => {
 
 			view.render();
 
-			sinon.assert.calledOnce( spyAdd );
+			sinon.assert.calledOnceWithExactly( spyAdd, view.element );
 			sinon.assert.notCalled( spyRemove );
 
 			view.destroy();
 		} );
 
-		it( 'registers #items in #focusTracker', () => {
+		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		it( 'registers #items in #focusTracker as View instances (not just DOM elements) to alow for complex Views scattered across ' +
+			'multiple DOM sub-trees',
+		() => {
 			const view = new ToolbarView( locale );
 			const spyAdd = sinon.spy( view.focusTracker, 'add' );
 			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
 
-			view.items.add( focusable() );
-			view.items.add( focusable() );
+			const focusableViewA = focusable();
+			const focusableViewB = focusable();
+
+			view.items.add( focusableViewA );
+			view.items.add( focusableViewB );
 			sinon.assert.notCalled( spyAdd );
 
 			view.render();
 
 			// 2 for items and 1 for toolbar itself.
 			sinon.assert.calledThrice( spyAdd );
+			sinon.assert.calledWithExactly( spyAdd.secondCall, focusableViewA );
+			sinon.assert.calledWithExactly( spyAdd.thirdCall, focusableViewB );
 
 			view.items.remove( 1 );
-			sinon.assert.calledOnce( spyRemove );
+			sinon.assert.calledOnceWithExactly( spyRemove, focusableViewB );
 
 			view.destroy();
 		} );

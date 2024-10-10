@@ -116,10 +116,12 @@ export default class BalloonToolbar extends Plugin {
 		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
 		this.toolbarView = this._createToolbarView();
 		this.focusTracker = new FocusTracker();
+		// this.focusTracker._label = 'BalloonToolbar';
+		// this.toolbarView.focusTracker._label = 'BalloonToolbar#ToolbarView';
 
 		// Track focusable elements in the toolbar and the editable elements.
 		this._trackFocusableEditableElements();
-		this.focusTracker.add( this.toolbarView.element! );
+		this.focusTracker.add( this.toolbarView );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		editor.ui.addToolbar( this.toolbarView, {

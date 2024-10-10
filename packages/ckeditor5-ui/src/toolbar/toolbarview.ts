@@ -193,6 +193,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
+		// this.focusTracker._label = 'ToolbarView';
+
 		this.set( 'class', undefined );
 		this.set( 'isCompact', false );
 
@@ -260,15 +262,15 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 		// Children added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
-			this.focusTracker.add( item.element! );
+			this.focusTracker.add( item );
 		}
 
 		this.items.on<CollectionAddEvent<View>>( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element! );
+			this.focusTracker.add( item );
 		} );
 
 		this.items.on<CollectionRemoveEvent<View>>( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element! );
+			this.focusTracker.remove( item );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
