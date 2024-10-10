@@ -174,7 +174,7 @@ export default class DomConverter {
 		this.document = document;
 		this.renderingMode = renderingMode;
 		this.blockFillerMode = blockFillerMode || ( renderingMode === 'editing' ? 'br' : 'nbsp' );
-		this.preElements = [ 'pre' ];
+		this.preElements = [ 'pre', 'textarea' ];
 		this.blockElements = [
 			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
 			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
@@ -1473,6 +1473,9 @@ export default class DomConverter {
 			// for inline objects can verify if the element is empty.
 			if ( this._isInlineObjectElement( viewElement ) ) {
 				inlineNodes.push( viewElement );
+
+				// Inline object content should be handled as a flow-root.
+				this._processDomInlineNodes( null, nestedInlineNodes, options );
 			} else {
 				// It's an inline element that is not an object (like <b>, <i>) or a block element.
 				for ( const inlineNode of nestedInlineNodes ) {
