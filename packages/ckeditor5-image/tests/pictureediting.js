@@ -1857,6 +1857,94 @@ describe( 'PictureEditing', () => {
 
 					expect( editor.getData() ).to.equal( '<p>foo<img src="/assets/sample.png">bar</p>' );
 				} );
+
+				it( 'should downcast changed "sources" attribute on an existing picture element', () => {
+					editor.setData(
+						'<figure class="image">' +
+							'<picture>' +
+								'<source srcset="">' +
+								'<img src="/assets/sample.png">' +
+							'</picture>' +
+							'<figcaption>Caption</figcaption>' +
+						'</figure>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute(
+							'sources',
+							[
+								{
+									srcset: '/assets/sample2.png'
+								}
+							],
+							modelDocument.getRoot().getChild( 0 )
+						);
+					} );
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false">' +
+							'<picture>' +
+								'<source srcset="/assets/sample2.png"></source>' +
+								'<img src="/assets/sample.png"></img>' +
+							'</picture>' +
+							'<figcaption ' +
+								'aria-label="Caption for the image" ' +
+								'class="ck-editor__editable ck-editor__nested-editable" ' +
+								'contenteditable="true" ' +
+								'data-placeholder="Enter image caption" ' +
+								'role="textbox" ' +
+								'tabindex="-1">' +
+									'Caption' +
+							'</figcaption>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'should downcast changed "sources" attribute on an existing linked picture element', () => {
+					editor.setData(
+						'<figure class="image">' +
+							'<a href="https://ckeditor.com">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png">' +
+									'<img src="/assets/sample.png">' +
+								'</picture>' +
+							'</a>' +
+							'<figcaption>Caption</figcaption>' +
+						'</figure>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute(
+							'sources',
+							[
+								{
+									srcset: '/assets/sample2.png'
+								}
+							],
+							modelDocument.getRoot().getChild( 0 )
+						);
+					} );
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false">' +
+							'<a href="https://ckeditor.com">' +
+								'<picture>' +
+									'<source srcset="/assets/sample2.png"></source>' +
+									'<img src="/assets/sample.png"></img>' +
+								'</picture>' +
+							'</a>' +
+							'<figcaption ' +
+								'aria-label="Caption for the image" ' +
+								'class="ck-editor__editable ck-editor__nested-editable" ' +
+								'contenteditable="true" ' +
+								'data-placeholder="Enter image caption" ' +
+								'role="textbox" ' +
+								'tabindex="-1">' +
+									'Caption' +
+							'</figcaption>' +
+						'</figure>'
+					);
+				} );
 			} );
 		} );
 	} );
