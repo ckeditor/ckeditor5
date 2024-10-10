@@ -2,12 +2,13 @@
 category: features
 menu-title: Bookmark
 meta-title: Bookmark | CKEditor 5 Documentation
+meta-description: The bookmarks feature allows to add and manage bookmark anchors attached to the content.
 modified_at: 2024-10-08
 ---
 
 # Bookmark
 
-The bookmarks feature allows to add and manage the bookmarks attached to the content of editor. These provide fast access to important content sections, speed up the editing and contribute to a more efficient content creation.
+The bookmarks feature allows to add and manage the bookmarks attached to the content of the editor. These provide fast access to important content sections, speed up the editing navigation and contribute to a more efficient content creation.
 
 ## Demo
 
