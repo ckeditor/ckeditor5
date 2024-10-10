@@ -62,7 +62,7 @@ By default, the conversion of wrapped anchors is turned on. It allows to convert
 <a id="foo">Foo bar baz</a>
 ```
 
-will be converted into a bookmark and the output will look like on below example:
+will be converted into a bookmark and the output will look like on the example below:
 
 ```html
 <a id="foo"></a>Foo bar baz
