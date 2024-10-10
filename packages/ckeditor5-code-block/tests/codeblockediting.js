@@ -87,6 +87,7 @@ describe( 'CodeBlockEditing', () => {
 						{ language: 'cpp', label: 'C++' },
 						{ language: 'css', label: 'CSS' },
 						{ language: 'diff', label: 'Diff' },
+						{ language: 'go', label: 'Go' },
 						{ language: 'html', label: 'HTML' },
 						{ language: 'java', label: 'Java' },
 						{ language: 'javascript', label: 'JavaScript' },
