@@ -11,19 +11,26 @@ The bookmarks feature allows to add and manage the bookmarks attached to the con
 
 ## Demo
 
-Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`). To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`.
+Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`).
+
+To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark panel will pop up.
 
 {@snippet features/bookmark}
-
-<!-- We may decide to move this part above the demo, but I think it's OK here -->
-
-You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark panel will pop up.
-
-Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
+
+## Handling the anchor markup
+
+Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
+
+The feature converts anchors into bookmarks during the {@link getting-started/setup/getting-and-setting-data#initializing-the-editor-with-data initialization the editor} or while {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata replacing the editor data with `setData()`}. The notation based on the `id` attribute in an `a` HTML element without a `href` attribute is converted. Similar notations meet the conditions, too:
+* an `a` HTML element with a `name` attribute,
+* an `a` HTML element with the same `name` and `id` attributes,
+* an `a` HTML element with different `name` and `id` attributes.
+
+By default, all bookmarks created in the editor only have the `id="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}.
 
 ## Installation
 
@@ -49,13 +56,40 @@ ClassicEditor
 
 ## Configuration
 
-TODO
+By default, the conversion of wrapped anchors is turned on. It allows to convert non-empty anchor elements into bookmarks. For example:
+
+```html
+<a id="foo">Foo bar baz</a>
+```
+
+will be converted into a bookmark and the output will look like on below example:
+
+```html
+<a id="foo"></a>Foo bar baz
+```
+
+You can disable the automatic conversion by setting the {@link module:bookmark/bookmarkconfig~BookmarkConfig#enableNonEmptyAnchorConversion `config.bookmark.enableNonEmptyAnchorConversion`} to `false` in the editor configuration.
+
+```js
+import { ClassicEditor, Bookmark } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Bookmark, /* ... */ ],
+		toolbar: [ 'bookmark', /* ... */ ],
+		bookmark: {
+			enableNonEmptyAnchorConversion: false
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ## Related features
 
-Here are some other CKEditor&nbsp;5 features that you can use similarly to the bookmark plugin to crosslink and structure your text better:
+Here are some other CKEditor&nbsp;5 features that you can use similarly to the bookmark plugin to cross-link and structure your text better:
 
-* The {@link features/link link feature} allows adding local and global URLs to the content. 
+* The {@link features/link link feature} allows adding local and global URLs to the content.
 * The {@link features/document-outline document outline} displays the list of sections (headings) of the document next to the editor.
 * The {@link features/document-outline table of contents} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document.
 

@@ -12,6 +12,12 @@
 					"name": "bookmark",
 					"iconPath": "theme/icons/bookmark.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "a",
+					"attributes": "id"
+				}
 			]
 		}
 	]
