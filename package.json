@@ -199,6 +199,7 @@
     "translations:collect": "node ./scripts/translations/collect.mjs",
     "translations:download": "node ./scripts/translations/download.mjs",
     "translations:upload": "node ./scripts/translations/upload.mjs",
+    "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
     "build": "tsc -p ./tsconfig.release-ckeditor5.json",
     "build:dist": "node scripts/nim/build-ckeditor5.mjs",
     "predll:build": "npm run build",
