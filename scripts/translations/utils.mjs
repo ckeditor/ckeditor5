@@ -28,7 +28,8 @@ export function parseArguments( args ) {
 
 		boolean: [
 			'include-external-directory',
-			'ignore-unused-core-package-contexts'
+			'ignore-unused-core-package-contexts',
+			'validate-only'
 		],
 
 		default: {
@@ -36,17 +37,19 @@ export function parseArguments( args ) {
 			packages: [],
 			ignore: [],
 			'include-external-directory': false,
-			'ignore-unused-core-package-contexts': false
+			'ignore-unused-core-package-contexts': false,
+			'validate-only': false
 		}
 	};
 
 	const options = minimist( args, config );
 
 	// Convert to camelCase.
-	options.includeExternalDirectory = options[ 'include-external-directory' ];
-	delete options[ 'include-external-directory' ];
-	options.ignoreUnusedCorePackageContexts = options[ 'ignore-unused-core-package-contexts' ];
-	delete options[ 'ignore-unused-core-package-contexts' ];
+	replaceKebabCaseWithCamelCase( options, [
+		'include-external-directory',
+		'ignore-unused-core-package-contexts',
+		'validate-only'
+	] );
 
 	// Normalize the current work directory path.
 	options.cwd = upath.resolve( options.cwd );
@@ -171,6 +174,40 @@ export function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ign
  */
 export function normalizePath( ...values ) {
 	return values.join( '/' ).split( /[\\/]/g ).join( '/' );
+}
+
+/**
+ * Replaces all kebab-case keys in the `options` object with camelCase entries.
+ * Kebab-case keys will be removed.
+ *
+ * @param {object} options
+ * @param {Array.<string>} keys Kebab-case keys in `options` object.
+ */
+function replaceKebabCaseWithCamelCase( options, keys ) {
+	for ( const key of keys ) {
+		const camelCaseKey = toCamelCase( key );
+
+		options[ camelCaseKey ] = options[ key ];
+		delete options[ key ];
+	}
+}
+
+/**
+ * Returns a camelCase value for specified kebab-case `value`.
+ *
+ * @param {string} value Kebab-case string.
+ * @returns {string}
+ */
+function toCamelCase( value ) {
+	return value.split( '-' )
+		.map( ( item, index ) => {
+			if ( index == 0 ) {
+				return item.toLowerCase();
+			}
+
+			return item.charAt( 0 ).toUpperCase() + item.slice( 1 ).toLowerCase();
+		} )
+		.join( '' );
 }
 
 /**
