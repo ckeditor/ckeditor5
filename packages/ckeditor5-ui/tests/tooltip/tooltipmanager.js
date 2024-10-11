@@ -306,6 +306,18 @@ describe( 'TooltipManager', () => {
 					} );
 				} );
 
+				it( 'should pin a tooltip instantly if element has a `ck-with-instant-tooltip` class', () => {
+					elements.a.classList.add( 'ck-with-instant-tooltip' );
+
+					utils.dispatchMouseEnter( elements.a );
+
+					sinon.assert.calledOnce( pinSpy );
+					sinon.assert.calledWith( pinSpy, {
+						target: elements.a,
+						positions: sinon.match.array
+					} );
+				} );
+
 				it( 'should pin just a single tooltip (singleton)', async () => {
 					const secondEditor = await ClassicTestEditor.create( element, {
 						plugins: [ Paragraph, Bold, Italic ],

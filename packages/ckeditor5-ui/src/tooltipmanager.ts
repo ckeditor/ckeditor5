@@ -304,6 +304,9 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// The tooltip should be pinned immediately when the element gets focused using keyboard.
 		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
 		// See https://github.com/ckeditor/ckeditor5/issues/16383
+		// Also, if the element has a class `ck-with-instant-tooltip`, the tooltip should be pinned immediately.
+		// This is useful for elements that have their content partially hidden (e.g. a long text in a small container)
+		// and should show a tooltip on hover, like merge field.
 		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ||
 			elementWithTooltipAttribute.matches( '.ck-with-instant-tooltip' ) ) {
 			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
@@ -361,10 +364,9 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 				return;
 			}
 
-			this._pinTooltipDebounced.cancel();
-
 			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
+			this._pinTooltipDebounced.cancel();
 			this._unpinTooltipDebounced();
 		}
 	}
