@@ -13,6 +13,8 @@ import { EventEmitter } from 'events';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import { Listr } from 'listr2';
+import { ListrInquirerPromptAdapter } from '@listr2/prompt-adapter-inquirer';
+import { confirm } from '@inquirer/prompts';
 import updateVersionReferences from './utils/updateversionreferences.mjs';
 import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcallback.mjs';
 import buildTsAndDllForCKEditor5Root from './utils/buildtsanddllforckeditor5root.mjs';
@@ -97,10 +99,10 @@ const tasks = new Listr( [
 				return fs.emptyDir( RELEASE_DIRECTORY );
 			}
 
-			const shouldContinue = await task.prompt( {
-				type: 'Confirm',
-				message: 'The release directory must be empty. Continue and remove all files?'
-			} );
+			const shouldContinue = await task.prompt( ListrInquirerPromptAdapter )
+				.run( confirm, {
+					message: 'The release directory must be empty. Continue and remove all files?'
+				} );
 
 			if ( !shouldContinue ) {
 				return Promise.reject( 'Aborting as requested.' );

@@ -294,7 +294,7 @@ You can start with the {@link examples/builds/classic-editor classic editor} wit
 
 ```bash
 npm install --save \
-	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-dev-utils@43 \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-paragraph \
