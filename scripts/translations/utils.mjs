@@ -29,7 +29,8 @@ export function parseArguments( args ) {
 		boolean: [
 			'include-external-directory',
 			'ignore-unused-core-package-contexts',
-			'validate-only'
+			'validate-only',
+			'skip-license-header'
 		],
 
 		default: {
@@ -38,7 +39,8 @@ export function parseArguments( args ) {
 			ignore: [],
 			'include-external-directory': false,
 			'ignore-unused-core-package-contexts': false,
-			'validate-only': false
+			'validate-only': false,
+			'skip-license-header': false
 		}
 	};
 
@@ -48,7 +50,8 @@ export function parseArguments( args ) {
 	replaceKebabCaseWithCamelCase( options, [
 		'include-external-directory',
 		'ignore-unused-core-package-contexts',
-		'validate-only'
+		'validate-only',
+		'skip-license-header'
 	] );
 
 	// Normalize the current work directory path.
