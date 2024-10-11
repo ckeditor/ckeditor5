@@ -355,6 +355,8 @@ function isFocusedView( subTreeRoot: Element, view: View ): boolean {
 // @if CK_DEBUG_FOCUSTRACKER // 	keysToLog: Array<string> = [ 'isFocused', 'focusedElement' ]
 // @if CK_DEBUG_FOCUSTRACKER // ): string {
 // @if CK_DEBUG_FOCUSTRACKER // 	keysToLog.forEach( key => { console.log( `${ key }=`, focusTracker[ key ] ) } );
+// @if CK_DEBUG_FOCUSTRACKER // 	console.log( 'elements', focusTracker.elements );
+// @if CK_DEBUG_FOCUSTRACKER // 	console.log( 'externalViews', focusTracker.externalViews );
 // @if CK_DEBUG_FOCUSTRACKER // }
 // @if CK_DEBUG_FOCUSTRACKER //
 // @if CK_DEBUG_FOCUSTRACKER // window.logFocusTrackers = (
