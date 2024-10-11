@@ -37,6 +37,9 @@ function main() {
 		ignoreUnusedCorePackageContexts: options.ignoreUnusedCorePackageContexts,
 
 		// Whether to validate the translations contexts against the source messages only. No files will be updated.
-		validateOnly: options.validateOnly
+		validateOnly: options.validateOnly,
+
+		// Whether to skip adding the license header to newly created translation files.
+		skipLicenseHeader: options.skipLicenseHeader
 	} );
 }
