@@ -43,6 +43,7 @@ export { default as ImageCaptionUI } from './imagecaption/imagecaptionui.js';
 export { createImageTypeRegExp } from './imageupload/utils.js';
 
 export type { ImageConfig } from './imageconfig.js';
+export type { ImageLoadedEvent } from './image/imageloadobserver.js';
 export type { default as ImageTypeCommand } from './image/imagetypecommand.js';
 export type { default as InsertImageCommand } from './image/insertimagecommand.js';
 export type { default as ReplaceImageSourceCommand } from './image/replaceimagesourcecommand.js';
