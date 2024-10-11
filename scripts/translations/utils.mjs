@@ -6,11 +6,8 @@
 /* eslint-env node */
 
 import upath from 'upath';
-import fs from 'fs';
 import minimist from 'minimist';
 import { globSync } from 'glob';
-
-export const TRANSLATION_DIRECTORY_PATH = 'build/.transifex';
 
 /**
  * Parses CLI arguments and prepares configuration for the crawler.
@@ -117,69 +114,6 @@ export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
 }
 
 /**
- * Returns an array of entries containing the package's name (resource) used on the Transifex service and a relative path
- * to the package on a file system. The relative path depends on the `transifexProcess` argument.
- *
- * When uploading translations, returned path points to a directory containing translation sources.
- * For the download process, it points to a directory containing the source code.
- *
- * @param {'upload'|'download'} transifexProcess A control flag.
- * @param {TranslationOptions} options
- * @return {Array.<CKEditor5Entry>}
- */
-export function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ignore } ) {
-	const packagesPath = upath.join( cwd, 'packages' );
-
-	return fs.readdirSync( packagesPath )
-		.filter( item => item.startsWith( 'ckeditor5-' ) )
-		.filter( item => {
-			// If no packages to process have been specified, handle all found.
-			if ( packages.length === 0 ) {
-				return true;
-			}
-
-			// Otherwise, process only specified packages.
-			return packages.includes( item );
-		} )
-		.map( packageName => {
-			let resourceName = packageName;
-
-			if ( packageName === 'ckeditor5-letters' ) {
-				resourceName = 'letters';
-			}
-
-			let absolutePath;
-
-			if ( transifexProcess === 'upload' ) {
-				absolutePath = upath.join( cwd, TRANSLATION_DIRECTORY_PATH, packageName );
-			} else if ( transifexProcess === 'download' ) {
-				absolutePath = upath.join( cwd, 'packages', packageName );
-			}
-
-			const relativePath = upath.relative( cwd, absolutePath );
-
-			return [ resourceName, relativePath ];
-		} )
-		.filter( ( [ packageName ] ) => {
-			if ( ignore.includes( packageName ) ) {
-				return false;
-			}
-
-			return true;
-		} );
-}
-
-/**
- * Returns a path that always uses the UNIX separator for directories.
- *
- * @param {Array.<String>} values
- * @returns {String}
- */
-export function normalizePath( ...values ) {
-	return values.join( '/' ).split( /[\\/]/g ).join( '/' );
-}
-
-/**
  * Replaces all kebab-case keys in the `options` object with camelCase entries.
  * Kebab-case keys will be removed.
  *
@@ -220,16 +154,13 @@ function toCamelCase( value ) {
  *
  * @property {Array.<String>} packages Package names to be processed. If empty, all found packages will be processed.
  *
- * @property {Array.<String>} [ignore] Name of packages that should be skipped while processing then.
+ * @property {Array.<String>} ignore Name of packages that should be skipped while processing then.
  *
  * @property {Boolean} includeExternalDirectory Whether to look for packages located in the `external/` directory.
  *
  * @property {Boolean} ignoreUnusedCorePackageContexts Whether to allow having unused contexts by the `ckeditor5-core` package.
- */
-
-/**
- * @typedef {[String, String]} CKEditor5Entry
  *
- * The first element of the array represents a package (resource) name in the Transifex service.
- * The second element of the array represents a relative path where to look for translations source.
+ * @property {Boolean} validateOnly Whether to validate the translation contexts against the source messages only. No files will be updated.
+ *
+ * @property {Boolean} skipLicenseHeader Whether to skip adding the license header to newly created translation files.
  */
