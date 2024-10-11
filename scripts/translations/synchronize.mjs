@@ -34,6 +34,9 @@ function main() {
 
 		// Whether to hide unused context errors from the `@ckeditor/ckeditor5-core` package.
 		// Required when only some of the common translations are used.
-		ignoreUnusedCorePackageContexts: options.ignoreUnusedCorePackageContexts
+		ignoreUnusedCorePackageContexts: options.ignoreUnusedCorePackageContexts,
+
+		// Whether to validate the translations contexts against the source messages only. No files will be updated.
+		validateOnly: options.validateOnly
 	} );
 }
