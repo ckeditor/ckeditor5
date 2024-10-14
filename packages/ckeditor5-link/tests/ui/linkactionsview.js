@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals window, document, Event */
 
 import LinkActionsView from '../../src/ui/linkactionsview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
@@ -13,14 +13,25 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
 
 describe( 'LinkActionsView', () => {
-	let view;
+	let view, editor, editorElement;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		view = new LinkActionsView( { t: val => val } );
+	beforeEach( async () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Essentials, Paragraph, Bookmark ]
+		} );
+
+		view = new LinkActionsView( editor );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -28,6 +39,9 @@ describe( 'LinkActionsView', () => {
 	afterEach( () => {
 		view.element.remove();
 		view.destroy();
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -71,7 +85,7 @@ describe( 'LinkActionsView', () => {
 		it( 'should create #_linkConfig containing config object passed as argument', () => {
 			const customConfig = { allowedProtocols: [ 'https', 'ftps', 'tel', 'sms' ] };
 
-			const view = new LinkActionsView( { t: () => { } }, customConfig );
+			const view = new LinkActionsView( editor, customConfig );
 			view.render();
 
 			expect( view._linkConfig ).to.equal( customConfig );
@@ -138,6 +152,163 @@ describe( 'LinkActionsView', () => {
 
 					expect( view.previewButtonView.isEnabled ).to.be.true;
 				} );
+
+				describe( 'when href starts with `#`', () => {
+					describe( 'and Bookmark plugin is loaded', () => {
+						it( 'href is `#foo` and bookmark with this `id` exists in the content', () => {
+							editor.setData( '<p><a id="foo"></a></p>' );
+
+							view.href = '#foo';
+
+							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
+							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_self' );
+							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener' );
+							expect( view.previewButtonView.tooltip ).to.equal( 'Scroll to bookmark' );
+
+							const spy = sinon.spy();
+							const windowOpenStub = sinon.stub( window, 'open' );
+
+							view.previewButtonView.on( 'execute', spy );
+							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
+							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( windowOpenStub, 0 );
+						} );
+
+						it( 'href is `#foo` and bookmark with this `id` not exists in the content', () => {
+							editor.setData( '<p><a id="bar"></a></p>' );
+
+							view.href = '#foo';
+
+							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
+							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
+							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
+							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
+
+							const spy = sinon.spy();
+							const windowOpenStub = sinon.stub( window, 'open' );
+
+							view.previewButtonView.on( 'execute', spy );
+							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
+							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( windowOpenStub, 1 );
+						} );
+					} );
+
+					describe( 'and Bookmark plugin is not loaded', () => {
+						let view, editor, editorElement;
+
+						testUtils.createSinonSandbox();
+
+						beforeEach( async () => {
+							editorElement = document.createElement( 'div' );
+							document.body.appendChild( editorElement );
+
+							editor = await ClassicTestEditor.create( editorElement, {
+								plugins: [ Essentials, Paragraph ]
+							} );
+
+							view = new LinkActionsView( editor );
+							view.render();
+							document.body.appendChild( view.element );
+						} );
+
+						afterEach( () => {
+							view.element.remove();
+							view.destroy();
+							editorElement.remove();
+
+							return editor.destroy();
+						} );
+
+						it( 'href is `#foo`', () => {
+							editor.setData( '<p><a id="foo"></a></p>' );
+
+							view.href = '#foo';
+
+							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
+							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
+							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
+							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
+
+							const spy = sinon.spy();
+							const windowOpenStub = sinon.stub( window, 'open' );
+
+							view.previewButtonView.on( 'execute', spy );
+							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
+							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( windowOpenStub, 1 );
+						} );
+					} );
+				} );
+
+				describe( 'when href not starts with `#`', () => {
+					describe( 'and Bookmark plugin is loaded', () => {
+						it( 'href is `foo`', () => {
+							editor.setData( '<p><a id="foo"></a></p>' );
+
+							view.href = 'foo';
+
+							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
+							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
+							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
+							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
+
+							const spy = sinon.spy();
+							const windowOpenStub = sinon.stub( window, 'open' );
+
+							view.previewButtonView.on( 'execute', spy );
+							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
+							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( windowOpenStub, 1 );
+						} );
+					} );
+
+					describe( 'and Bookmark plugin is not loaded', () => {
+						let view, editor, editorElement;
+
+						testUtils.createSinonSandbox();
+
+						beforeEach( async () => {
+							editorElement = document.createElement( 'div' );
+							document.body.appendChild( editorElement );
+
+							editor = await ClassicTestEditor.create( editorElement, {
+								plugins: [ Essentials, Paragraph ]
+							} );
+
+							view = new LinkActionsView( editor );
+							view.render();
+							document.body.appendChild( view.element );
+						} );
+
+						afterEach( () => {
+							view.element.remove();
+							view.destroy();
+							editorElement.remove();
+
+							return editor.destroy();
+						} );
+
+						it( 'href is `foo`', () => {
+							editor.setData( '<p><a id="foo"></a></p>' );
+
+							view.href = 'foo';
+
+							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
+							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
+							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
+							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
+
+							const spy = sinon.spy();
+							const windowOpenStub = sinon.stub( window, 'open' );
+
+							view.previewButtonView.on( 'execute', spy );
+							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
+							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( windowOpenStub, 1 );
+						} );
+					} );
+				} );
 			} );
 		} );
 
@@ -162,7 +333,7 @@ describe( 'LinkActionsView', () => {
 		it( 'should register child views\' #element in #focusTracker', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-			const view = new LinkActionsView( { t: () => {} } );
+			const view = new LinkActionsView( editor );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.previewButtonView.element );
@@ -173,7 +344,7 @@ describe( 'LinkActionsView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new LinkActionsView( { t: () => {} } );
+			const view = new LinkActionsView( editor );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 

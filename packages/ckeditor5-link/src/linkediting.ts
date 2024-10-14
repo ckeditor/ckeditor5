@@ -38,7 +38,7 @@ import {
 	ensureSafeUrl,
 	getLocalizedDecorators,
 	normalizeDecorators,
-	openLink,
+	handleLinkOpening,
 	addLinkProtocolIfApplicable,
 	type NormalizedLinkDecoratorAutomaticDefinition,
 	type NormalizedLinkDecoratorManualDefinition
@@ -280,7 +280,7 @@ export default class LinkEditing extends Plugin {
 			evt.stop();
 			data.preventDefault();
 
-			openLink( url );
+			handleLinkOpening( url, editor );
 		}, { context: '$capture' } );
 
 		// Open link on Alt+Enter.
@@ -295,7 +295,7 @@ export default class LinkEditing extends Plugin {
 
 			evt.stop();
 
-			openLink( url );
+			handleLinkOpening( url, editor );
 		} );
 	}
 

@@ -17,7 +17,9 @@ import type {
 	ViewNode,
 	ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
+
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
@@ -192,6 +194,36 @@ export function linkHasProtocol( link: string ): boolean {
  */
 export function openLink( link: string ): void {
 	window.open( link, '_blank', 'noopener' );
+}
+
+/**
+ * Scrolls the view to the desired bookmark or open a link in new window.
+ */
+export function handleLinkOpening( link: string, editor: Editor ): void {
+	if ( !editor.plugins.has( 'BookmarkEditing' ) ) {
+		openLink( link );
+
+		return;
+	}
+
+	const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+	const bookmarkId = link.slice( 1 );
+	const modelBookmark = bookmarkEditing.getElementForBookmarkId( bookmarkId );
+
+	if ( !modelBookmark ) {
+		openLink( link );
+
+		return;
+	}
+
+	editor.model.change( writer => {
+		writer.setSelection( modelBookmark, 'before' );
+	} );
+
+	editor.editing.view.scrollToTheSelection( {
+		alignToTop: true,
+		forceScroll: true
+	} );
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };

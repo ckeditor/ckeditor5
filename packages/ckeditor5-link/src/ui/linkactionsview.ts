@@ -8,10 +8,11 @@
  */
 
 import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { FocusTracker, KeystrokeHandler, type LocaleTranslate } from 'ckeditor5/src/utils.js';
+import { type Editor, icons } from 'ckeditor5/src/core.js';
+import { type BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
-import { ensureSafeUrl } from '../utils.js';
+import { ensureSafeUrl, handleLinkOpening } from '../utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -26,6 +27,11 @@ import type { LinkConfig } from '../linkconfig.js';
  * unlinking or editing the link.
  */
 export default class LinkActionsView extends View {
+	/**
+	 * The editor that the UI belongs to.
+	 */
+	public readonly editor: Editor;
+
 	/**
 	 * Tracks information about DOM focus in the actions.
 	 */
@@ -70,16 +76,20 @@ export default class LinkActionsView extends View {
 
 	private readonly _linkConfig: LinkConfig;
 
+	private readonly _bookmarkEditing: BookmarkEditing | null;
+
 	declare public t: LocaleTranslate;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, linkConfig: LinkConfig = {} ) {
-		super( locale );
+	constructor( editor: Editor, linkConfig: LinkConfig = {} ) {
+		super( editor.locale );
 
-		const t = locale.t;
+		const t = editor.locale.t;
 
+		this.editor = editor;
+		this._bookmarkEditing = editor.plugins.has( 'BookmarkEditing' ) ? editor.plugins.get( 'BookmarkEditing' ) : null;
 		this.previewButtonView = this._createPreviewButton();
 		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
@@ -197,8 +207,7 @@ export default class LinkActionsView extends View {
 		const t = this.t;
 
 		button.set( {
-			withText: true,
-			tooltip: t( 'Open link in new tab' )
+			withText: true
 		} );
 
 		button.extendTemplate( {
@@ -208,9 +217,49 @@ export default class LinkActionsView extends View {
 					'ck-link-actions__preview'
 				],
 				href: bind.to( 'href', href => href && ensureSafeUrl( href, this._linkConfig.allowedProtocols ) ),
-				target: '_blank',
-				rel: 'noopener noreferrer'
+				target: bind.to( 'href', href => {
+					if (
+						href &&
+						href.startsWith( '#' ) &&
+						this._bookmarkEditing &&
+						this._bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) )
+					) {
+						return '_self';
+					}
+
+					return '_blank';
+				} ),
+				rel: bind.to( 'href', href => {
+					if (
+						href &&
+						href.startsWith( '#' ) &&
+						this._bookmarkEditing &&
+						this._bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) )
+					) {
+						return 'noopener';
+					}
+
+					return 'noopener noreferrer';
+				} )
+			},
+			on: {
+				click: bind.to( () => {
+					handleLinkOpening( this.href!, this.editor );
+				} )
 			}
+		} );
+
+		button.bind( 'tooltip' ).to( this, 'href', href => {
+			if (
+				href &&
+				href.startsWith( '#' ) &&
+				this._bookmarkEditing &&
+				this._bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) )
+			) {
+				return t( 'Scroll to bookmark' );
+			}
+
+			return t( 'Open link in new tab' );
 		} );
 
 		button.bind( 'label' ).to( this, 'href', href => {
@@ -220,7 +269,6 @@ export default class LinkActionsView extends View {
 		button.bind( 'isEnabled' ).to( this, 'href', href => !!href );
 
 		button.template!.tag = 'a';
-		button.template!.eventListeners = {};
 
 		return button;
 	}
