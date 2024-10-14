@@ -1,0 +1,24 @@
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: az\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for copying selected content."
+msgid "Copy selected content"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for pasting content."
+msgid "Paste content"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for pasting content as plain text."
+msgid "Paste content as plain text"
+msgstr ""
