@@ -200,7 +200,7 @@ export function openLink( link: string ): void {
  * Scrolls the view to the desired bookmark or open a link in new window.
  */
 export function handleLinkOpening( link: string, editor: Editor ): void {
-	if ( !editor.plugins.has( 'BookmarkEditing' ) ) {
+	if ( !link.startsWith( '#' ) || !editor.plugins.has( 'BookmarkEditing' ) ) {
 		openLink( link );
 
 		return;
