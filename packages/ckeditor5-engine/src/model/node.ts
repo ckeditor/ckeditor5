@@ -64,6 +64,16 @@ export default abstract class Node extends TypeCheckable {
 	private _attrs: Map<string, unknown>;
 
 	/**
+	 * @internal
+	 */
+	public _index: number | null = null;
+
+	/**
+	 * @internal
+	 */
+	public _startOffset: number | null = null;
+
+	/**
 	 * Creates a model node.
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
@@ -83,45 +93,12 @@ export default abstract class Node extends TypeCheckable {
 		return null;
 	}
 
-	/**
-	 * Index of this node in its parent or `null` if the node has no parent.
-	 *
-	 * Accessing this property throws an error if this node's parent element does not contain it.
-	 * This means that model tree got broken.
-	 */
 	public get index(): number | null {
-		let pos;
-
-		if ( !this.parent ) {
-			return null;
-		}
-
-		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent', this );
-		}
-
-		return pos;
+		return this._index;
 	}
 
-	/**
-	 * Offset at which this node starts in its parent. It is equal to the sum of {@link #offsetSize offsetSize}
-	 * of all its previous siblings. Equals to `null` if node has no parent.
-	 *
-	 * Accessing this property throws an error if this node's parent element does not contain it.
-	 * This means that model tree got broken.
-	 */
 	public get startOffset(): number | null {
-		let pos;
-
-		if ( !this.parent ) {
-			return null;
-		}
-
-		if ( ( pos = this.parent.getChildStartOffset( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent', this );
-		}
-
-		return pos;
+		return this._startOffset;
 	}
 
 	/**
@@ -140,11 +117,11 @@ export default abstract class Node extends TypeCheckable {
 	 * Equals to `null` if the node has no parent.
 	 */
 	public get endOffset(): number | null {
-		if ( !this.parent ) {
+		if ( this.startOffset === null ) {
 			return null;
 		}
 
-		return this.startOffset! + this.offsetSize;
+		return this.startOffset + this.offsetSize;
 	}
 
 	/**

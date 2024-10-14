@@ -107,14 +107,6 @@ describe( 'Node', () => {
 			expect( img.index ).to.equal( 1 );
 			expect( textR.index ).to.equal( 2 );
 		} );
-
-		it( 'should throw an error if parent does not contain element', () => {
-			node.parent = new Element( 'parent' );
-
-			expectToThrowCKEditorError( () => {
-				node.index;
-			}, /model-node-not-found-in-parent/, node.parent );
-		} );
 	} );
 
 	describe( '_clone()', () => {
@@ -172,14 +164,6 @@ describe( 'Node', () => {
 			expect( textBA.startOffset ).to.equal( 0 );
 			expect( img.startOffset ).to.equal( 2 );
 			expect( textR.startOffset ).to.equal( 3 );
-		} );
-
-		it( 'should throw an error if parent does not contain element', () => {
-			node.parent = new Element( 'parent' );
-
-			expectToThrowCKEditorError( () => {
-				node.startOffset;
-			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 

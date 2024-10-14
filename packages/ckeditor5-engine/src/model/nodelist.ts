@@ -22,6 +22,8 @@ export default class NodeList implements Iterable<Node> {
 	 */
 	private _nodes: Array<Node> = [];
 
+	private _offsets: Array<Node> = [];
+
 	/**
 	 * Creates an empty node list.
 	 *
@@ -54,7 +56,7 @@ export default class NodeList implements Iterable<Node> {
 	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes contained inside this node list.
 	 */
 	public get maxOffset(): number {
-		return this._nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
+		return this._offsets.length;
 	}
 
 	/**
@@ -64,13 +66,19 @@ export default class NodeList implements Iterable<Node> {
 		return this._nodes[ index ] || null;
 	}
 
+	public getNodeAtIndex( index: number ): Node | null {
+		return this.getNode( index );
+	}
+
+	public getNodeAtOffset( offset: number ): Node | null {
+		return this._offsets[ offset ] || null;
+	}
+
 	/**
 	 * Returns an index of the given node. Returns `null` if given node is not inside this node list.
 	 */
 	public getNodeIndex( node: Node ): number | null {
-		const index = this._nodes.indexOf( node );
-
-		return index == -1 ? null : index;
+		return node.index;
 	}
 
 	/**
@@ -78,19 +86,7 @@ export default class NodeList implements Iterable<Node> {
 	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
 	 */
 	public getNodeStartOffset( node: Node ): number | null {
-		const index = this.getNodeIndex( node );
-
-		if ( index === null ) {
-			return null;
-		}
-
-		let sum = 0;
-
-		for ( let i = 0; i < index; i++ ) {
-			sum += this._nodes[ i ].offsetSize;
-		}
-
-		return sum;
+		return node.startOffset;
 	}
 
 	/**
@@ -125,17 +121,13 @@ export default class NodeList implements Iterable<Node> {
 	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link #maxOffset}.
 	 */
 	public offsetToIndex( offset: number ): number {
-		let totalOffset = 0;
-
-		for ( const node of this._nodes ) {
-			if ( offset >= totalOffset && offset < totalOffset + node.offsetSize ) {
-				return this.getNodeIndex( node )!;
-			}
-
-			totalOffset += node.offsetSize;
+		if ( offset == this._offsets.length ) {
+			return this._nodes.length;
 		}
 
-		if ( totalOffset != offset ) {
+		const node = this._offsets[ offset ];
+
+		if ( !node ) {
 			/**
 			 * Given offset cannot be found in the node list.
 			 *
@@ -152,7 +144,7 @@ export default class NodeList implements Iterable<Node> {
 			);
 		}
 
-		return this.length;
+		return this.getNodeIndex( node )!;
 	}
 
 	/**
@@ -175,7 +167,32 @@ export default class NodeList implements Iterable<Node> {
 			}
 		}
 
-		this._nodes = spliceArray<Node>( this._nodes, Array.from( nodes ), index, 0 );
+		const nodesArray = Array.from( nodes );
+		const offsetsArray = this._makeOffsetsArray( nodesArray );
+		let offset = this.indexToOffset( index );
+
+		this._nodes = spliceArray<Node>( this._nodes, nodesArray, index, 0 );
+		this._offsets = spliceArray<Node>( this._offsets, offsetsArray, offset, 0 );
+
+		for ( let i = index; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
+	}
+
+	private _makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
+		const offsets: Array<Node> = [];
+
+		for ( const node of nodes ) {
+			const nodeOffsets = Array( node.offsetSize );
+			nodeOffsets.fill( node );
+
+			offsets.splice( offsets.length, 0, ...nodeOffsets );
+		}
+
+		return offsets;
 	}
 
 	/**
@@ -187,7 +204,29 @@ export default class NodeList implements Iterable<Node> {
 	 * @returns Array containing removed nodes.
 	 */
 	public _removeNodes( indexStart: number, howMany: number = 1 ): Array<Node> {
-		return this._nodes.splice( indexStart, howMany );
+		if ( howMany == 0 ) {
+			return [];
+		}
+
+		let offset = this.indexToOffset( indexStart );
+		const nodes = this._nodes.splice( indexStart, howMany );
+
+		const totalOffset = nodes[ nodes.length - 1 ].startOffset! + nodes[ nodes.length - 1 ].offsetSize - offset;
+		this._offsets.splice( offset, totalOffset );
+
+		nodes.forEach( node => {
+			node._index = null;
+			node._startOffset = null;
+		} );
+
+		for ( let i = indexStart; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
+
+		return nodes;
 	}
 
 	/**
