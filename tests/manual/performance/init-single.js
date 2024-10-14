@@ -13,9 +13,9 @@ const initialData = dataSet();
 const finalConfig = { initialData, ...config };
 const editorElement = document.querySelector( '#editor' );
 
-const startTime = window.performance.now();
-
 function startTest() {
+	const startTime = window.performance.now();
+
 	ClassicEditor
 		.create( editorElement, finalConfig )
 		.then( editor => {
