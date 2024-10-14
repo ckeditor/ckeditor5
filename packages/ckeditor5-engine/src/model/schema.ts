@@ -41,7 +41,7 @@ export default class Schema extends ObservableMixin() {
 	/**
 	 * A dictionary containing attribute properties.
 	 */
-	private readonly _attributeProperties: Record<string, AttributeProperties> = {};
+	private readonly _attributeProperties: Record<string, AttributeProperties> = Object.create( null );
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
 
 	/**
@@ -642,7 +642,7 @@ export default class Schema extends ObservableMixin() {
 	 * @param attributeName A name of the attribute.
 	 */
 	public getAttributeProperties( attributeName: string ): AttributeProperties {
-		return this._attributeProperties[ attributeName ] || {};
+		return this._attributeProperties[ attributeName ] || Object.create( null );
 	}
 
 	/**
