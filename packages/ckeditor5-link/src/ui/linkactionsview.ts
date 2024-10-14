@@ -218,24 +218,14 @@ export default class LinkActionsView extends View {
 				],
 				href: bind.to( 'href', href => href && ensureSafeUrl( href, this._linkConfig.allowedProtocols ) ),
 				target: bind.to( 'href', href => {
-					if (
-						href &&
-						href.startsWith( '#' ) &&
-						this._bookmarkEditing &&
-						this._bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) )
-					) {
+					if ( isScrollableToBookmark( href, this._bookmarkEditing ) ) {
 						return '_self';
 					}
 
 					return '_blank';
 				} ),
 				rel: bind.to( 'href', href => {
-					if (
-						href &&
-						href.startsWith( '#' ) &&
-						this._bookmarkEditing &&
-						this._bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) )
-					) {
+					if ( isScrollableToBookmark( href, this._bookmarkEditing ) ) {
 						return 'noopener';
 					}
 
@@ -250,12 +240,7 @@ export default class LinkActionsView extends View {
 		} );
 
 		button.bind( 'tooltip' ).to( this, 'href', href => {
-			if (
-				href &&
-				href.startsWith( '#' ) &&
-				this._bookmarkEditing &&
-				this._bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) )
-			) {
+			if ( isScrollableToBookmark( href, this._bookmarkEditing ) ) {
 				return t( 'Scroll to bookmark' );
 			}
 
@@ -272,6 +257,13 @@ export default class LinkActionsView extends View {
 
 		return button;
 	}
+}
+
+/**
+ * Checks if clicking the link can be scrolled to bookmark when bookmark `id` matches hash `url`.
+ */
+function isScrollableToBookmark( link: string | undefined, bookmarkEditing: BookmarkEditing | null ): boolean {
+	return !!link && link.startsWith( '#' ) && !!bookmarkEditing && !!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
 }
 
 /**
