@@ -98,7 +98,7 @@
     "@ckeditor/ckeditor5-dev-release-tools": "^44.0.0",
     "@ckeditor/ckeditor5-dev-stale-bot": "^44.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^44.0.0",
-    "@ckeditor/ckeditor5-dev-translations": "^44.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "https://gitpkg.now.sh/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-translations?ci/3804",
     "@ckeditor/ckeditor5-dev-utils": "^44.0.0",
     "@ckeditor/ckeditor5-dev-web-crawler": "^44.0.0",
     "@ckeditor/ckeditor5-document-outline": "43.2.0",
