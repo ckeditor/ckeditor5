@@ -21,6 +21,14 @@ describe( 'Autosave', () => {
 		sinon.restore();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Autosave.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Autosave.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should have static pluginName property', () => {
 		expect( Autosave.pluginName ).to.equal( 'Autosave' );
 	} );

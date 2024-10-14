@@ -8,6 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
+import CodeBlockElementSupport from '../../src/integrations/codeblock.js';
 
 /* global document */
 
@@ -34,6 +35,14 @@ describe( 'CodeBlockElementSupport', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CodeBlockElementSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CodeBlockElementSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be named', () => {

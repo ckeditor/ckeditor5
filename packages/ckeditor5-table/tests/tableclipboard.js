@@ -26,6 +26,14 @@ describe( 'table clipboard', () => {
 	} );
 
 	describe( 'TableClipboard', () => {
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableClipboard.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableClipboard.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should be a named plugin', () => {
 			expect( editor.plugins.get( 'TableClipboard' ) ).to.be.instanceOf( TableClipboard );
 		} );

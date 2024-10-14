@@ -52,6 +52,14 @@ describe( 'SimpleUploadAdapter', () => {
 		expect( SimpleUploadAdapter.pluginName ).to.equal( 'SimpleUploadAdapter' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SimpleUploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SimpleUploadAdapter.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should activate the adapter', () => {
 			return ClassicTestEditor

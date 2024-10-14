@@ -12,6 +12,14 @@ describe( 'Markdown', () => {
 		expect( Markdown.pluginName ).to.equal( 'Markdown' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Markdown.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Markdown.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set editor.data.processor', () => {
 		return ClassicTestEditor
 			.create( '', {

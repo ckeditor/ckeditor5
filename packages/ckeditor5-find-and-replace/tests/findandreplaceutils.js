@@ -14,6 +14,7 @@ import { Collection } from 'ckeditor5/src/utils.js';
 import FindAndReplace from '../src/findandreplace.js';
 import FindAndReplaceUI from '../src/findandreplaceui.js';
 import FindAndReplaceEditing from '../src/findandreplaceediting.js';
+import FindAndReplaceUtils from '../src/findandreplaceutils.js';
 
 describe( 'FindAndReplace', () => {
 	let editor, findAndReplaceUtils, model, editorElement, root;
@@ -31,6 +32,14 @@ describe( 'FindAndReplace', () => {
 		model = editor.model;
 		root = model.document.getRoot();
 		findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FindAndReplaceUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FindAndReplaceUtils.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should not append duplicated search result in updateFindResultFromRange if already present in startResults', () => {

@@ -46,6 +46,14 @@ describe( 'HtmlEmbedEditing', () => {
 		expect( HtmlEmbedEditing.pluginName ).to.equal( 'HtmlEmbedEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HtmlEmbedEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HtmlEmbedEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( HtmlEmbedEditing ) ).to.be.instanceOf( HtmlEmbedEditing );
 	} );

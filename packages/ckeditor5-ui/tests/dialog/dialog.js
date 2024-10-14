@@ -41,6 +41,14 @@ describe( 'Dialog', () => {
 		expect( Dialog.pluginName ).to.equal( 'Dialog' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Dialog.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Dialog.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should initialize with isOpen=false', () => {
 		expect( dialogPlugin.isOpen ).to.be.false;
 	} );

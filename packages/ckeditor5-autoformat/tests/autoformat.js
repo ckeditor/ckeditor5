@@ -69,6 +69,14 @@ describe( 'Autoformat', () => {
 			expect( Autoformat.pluginName ).to.equal( 'Autoformat' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( Autoformat.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( Autoformat.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should add keystroke accessibility info', () => {
 			expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 				label: 'Revert autoformatting action',
