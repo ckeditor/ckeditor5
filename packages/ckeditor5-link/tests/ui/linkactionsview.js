@@ -155,7 +155,7 @@ describe( 'LinkActionsView', () => {
 
 				describe( 'when href starts with `#`', () => {
 					describe( 'and Bookmark plugin is loaded', () => {
-						it( 'href is `#foo` and bookmark with this `id` exists in the content', () => {
+						it( 'should scroll to bookmark when bookmark `id` matches hash `url`', () => {
 							editor.setData( '<p><a id="foo"></a></p>' );
 
 							view.href = '#foo';
@@ -174,7 +174,7 @@ describe( 'LinkActionsView', () => {
 							sinon.assert.callCount( windowOpenStub, 0 );
 						} );
 
-						it( 'href is `#foo` and bookmark with this `id` not exists in the content', () => {
+						it( 'should open link when bookmark `id` does not matches hash `url`', () => {
 							editor.setData( '<p><a id="bar"></a></p>' );
 
 							view.href = '#foo';
@@ -220,7 +220,7 @@ describe( 'LinkActionsView', () => {
 							return editor.destroy();
 						} );
 
-						it( 'href is `#foo`', () => {
+						it( 'should open link', () => {
 							editor.setData( '<p><a id="foo"></a></p>' );
 
 							view.href = '#foo';
@@ -243,7 +243,7 @@ describe( 'LinkActionsView', () => {
 
 				describe( 'when href not starts with `#`', () => {
 					describe( 'and Bookmark plugin is loaded', () => {
-						it( 'href is `foo`', () => {
+						it( 'should open link', () => {
 							editor.setData( '<p><a id="foo"></a></p>' );
 
 							view.href = 'foo';
@@ -289,7 +289,7 @@ describe( 'LinkActionsView', () => {
 							return editor.destroy();
 						} );
 
-						it( 'href is `foo`', () => {
+						it( 'should open link', () => {
 							editor.setData( '<p><a id="foo"></a></p>' );
 
 							view.href = 'foo';
