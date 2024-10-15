@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "Dropdown option label for the paragraph format."
-msgid "Paragraph"
-msgstr "Odstavek"
-
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
 msgstr "Naslov"

@@ -239,10 +239,6 @@ msgctxt "The localized error string that can be displayed next to length (paddin
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
 msgstr "Неверное значение. Попробуйте \"10px\" или \"2em\" или просто \"2\"."
 
-msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
-msgid "Color picker"
-msgstr "Выбор цвета"
-
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "Подпись таблицы"

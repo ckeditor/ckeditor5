@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "Dropdown option label for the paragraph format."
-msgid "Paragraph"
-msgstr "Đoạn văn"
-
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
 msgstr "Tiêu đề"
