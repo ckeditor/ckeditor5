@@ -82,10 +82,23 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Gets the child at the given index.
+	 * Gets the child at the given index. Returns `null` if incorrect index was passed.
+	 *
+	 * @param index Index in this element.
+	 * @returns Child node.
 	 */
 	public getChild( index: number ): Node | null {
 		return this._children.getNode( index );
+	}
+
+	/**
+	 * Gets the child at the given offset. Returns `null` if incorrect index was passed.
+	 *
+	 * @param offset Offset in this element.
+	 * @returns Child node.
+	 */
+	public getChildAtOffset( offset: number ): Node | null {
+		return this._children.getNodeAtOffset( offset );
 	}
 
 	/**
@@ -153,8 +166,8 @@ export default class Element extends Node {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
 		let node: Node = this;
 
-		for ( const index of relativePath ) {
-			node = ( node as Element ).getChild( ( node as Element ).offsetToIndex( index ) )!;
+		for ( const offset of relativePath ) {
+			node = ( node as Element ).getChildAtOffset( offset )!;
 		}
 
 		return node;
