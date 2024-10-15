@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "Dropdown option label for the paragraph format."
-msgid "Paragraph"
-msgstr "Paragrāfs"
-
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
 msgstr "Virsraksts"
