@@ -34,21 +34,26 @@ module.exports = {
 			{
 				extensions: [ '.ts', '.js', '.json' ]
 			}
-		],
-		'ckeditor5-rules/ckeditor-plugin-flags': [
-			'error',
-			{
-				requiredFlags: [
-					{
-						name: 'isOfficialPlugin',
-						returnValue: true
-					}
-				],
-				disallowedFlags: [ 'isPremiumPlugin' ]
-			}
 		]
 	},
 	overrides: [
+		{
+			files: [ './packages/*/src/**/*.ts' ],
+			rules: {
+				'ckeditor5-rules/ckeditor-plugin-flags': [
+					'error',
+					{
+						requiredFlags: [
+							{
+								name: 'isOfficialPlugin',
+								returnValue: true
+							}
+						],
+						disallowedFlags: [ 'isPremiumPlugin' ]
+					}
+				]
+			}
+		},
 		{
 			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
