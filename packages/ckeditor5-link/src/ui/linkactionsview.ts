@@ -8,8 +8,8 @@
  */
 
 import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { type Editor, icons } from 'ckeditor5/src/core.js';
+import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 import { type BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 import { ensureSafeUrl, handleLinkOpening } from '../utils.js';
@@ -27,11 +27,6 @@ import type { LinkConfig } from '../linkconfig.js';
  * unlinking or editing the link.
  */
 export default class LinkActionsView extends View {
-	/**
-	 * The editor that the UI belongs to.
-	 */
-	public readonly editor: Editor;
-
 	/**
 	 * Tracks information about DOM focus in the actions.
 	 */
@@ -83,13 +78,12 @@ export default class LinkActionsView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: Editor, linkConfig: LinkConfig = {} ) {
-		super( editor.locale );
+	constructor( locale: Locale, linkConfig: LinkConfig = {}, bookmarkEditing: BookmarkEditing | null = null ) {
+		super( locale );
 
-		const t = editor.locale.t;
+		const t = locale.t;
 
-		this.editor = editor;
-		this._bookmarkEditing = editor.plugins.has( 'BookmarkEditing' ) ? editor.plugins.get( 'BookmarkEditing' ) : null;
+		this._bookmarkEditing = bookmarkEditing;
 		this.previewButtonView = this._createPreviewButton();
 		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
@@ -234,7 +228,7 @@ export default class LinkActionsView extends View {
 			},
 			on: {
 				click: bind.to( () => {
-					handleLinkOpening( this.href!, this.editor );
+					handleLinkOpening( this.href!, this._bookmarkEditing );
 				} )
 			}
 		} );

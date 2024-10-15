@@ -280,7 +280,9 @@ export default class LinkEditing extends Plugin {
 			evt.stop();
 			data.preventDefault();
 
-			handleLinkOpening( url, editor );
+			const bookmarkEditing = editor.plugins.has( 'BookmarkEditing' ) ? editor.plugins.get( 'BookmarkEditing' ) : null;
+
+			handleLinkOpening( url, bookmarkEditing );
 		}, { context: '$capture' } );
 
 		// Open link on Alt+Enter.
@@ -295,7 +297,9 @@ export default class LinkEditing extends Plugin {
 
 			evt.stop();
 
-			handleLinkOpening( url, editor );
+			const bookmarkEditing = editor.plugins.has( 'BookmarkEditing' ) ? editor.plugins.get( 'BookmarkEditing' ) : null;
+
+			handleLinkOpening( url, bookmarkEditing );
 		} );
 	}
 

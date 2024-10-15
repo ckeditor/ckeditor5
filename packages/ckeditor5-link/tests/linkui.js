@@ -20,6 +20,7 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { Bookmark, BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 
@@ -1515,6 +1516,39 @@ describe( 'LinkUI', () => {
 
 				actionsView.keystrokes.press( keyEvtData );
 				expect( balloon.visibleView ).to.equal( formView );
+			} );
+		} );
+
+		describe( 'with Bookmark plugin loaded', () => {
+			let editor, linkUIFeature, actionsView, editorElement;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote, Bookmark ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						linkUIFeature = editor.plugins.get( LinkUI );
+						linkUIFeature._createViews();
+						actionsView = linkUIFeature.actionsView;
+					} );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'should `actionsView._bookmarkEditing` contains the BookmarkEditing plugin', () => {
+				expect( actionsView._bookmarkEditing ).to.be.instanceOf( BookmarkEditing );
 			} );
 		} );
 	} );

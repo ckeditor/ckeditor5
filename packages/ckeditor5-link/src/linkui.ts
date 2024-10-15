@@ -164,7 +164,11 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createActionsView(): LinkActionsView {
 		const editor = this.editor;
-		const actionsView = new LinkActionsView( editor, editor.config.get( 'link' ) );
+		const actionsView = new LinkActionsView(
+			editor.locale,
+			editor.config.get( 'link' ),
+			editor.plugins.has( 'BookmarkEditing' ) ? editor.plugins.get( 'BookmarkEditing' ) : null
+		);
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
 

@@ -19,7 +19,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
@@ -199,14 +199,13 @@ export function openLink( link: string ): void {
 /**
  * Scrolls the view to the desired bookmark or open a link in new window.
  */
-export function handleLinkOpening( link: string, editor: Editor ): void {
-	if ( !link.startsWith( '#' ) || !editor.plugins.has( 'BookmarkEditing' ) ) {
+export function handleLinkOpening( link: string, bookmarkEditing: BookmarkEditing | null ): void {
+	if ( !link.startsWith( '#' ) || !bookmarkEditing ) {
 		openLink( link );
 
 		return;
 	}
 
-	const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 	const bookmarkId = link.slice( 1 );
 	const modelBookmark = bookmarkEditing.getElementForBookmarkId( bookmarkId );
 
@@ -216,11 +215,11 @@ export function handleLinkOpening( link: string, editor: Editor ): void {
 		return;
 	}
 
-	editor.model.change( writer => {
+	bookmarkEditing.editor.model.change( writer => {
 		writer.setSelection( modelBookmark, 'before' );
 	} );
 
-	editor.editing.view.scrollToTheSelection( {
+	bookmarkEditing.editor.editing.view.scrollToTheSelection( {
 		alignToTop: true,
 		forceScroll: true
 	} );

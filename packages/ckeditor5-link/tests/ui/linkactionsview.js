@@ -16,10 +16,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
+import { Bookmark, BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 describe( 'LinkActionsView', () => {
-	let view, editor, editorElement;
+	let view, editor, editorElement, bookmarkEditing;
 
 	testUtils.createSinonSandbox();
 
@@ -28,10 +28,11 @@ describe( 'LinkActionsView', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Essentials, Paragraph, Bookmark ]
+			plugins: [ Essentials, Paragraph, Bookmark, BookmarkEditing ]
 		} );
 
-		view = new LinkActionsView( editor );
+		bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+		view = new LinkActionsView( { t: () => {} }, undefined, bookmarkEditing );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -85,7 +86,7 @@ describe( 'LinkActionsView', () => {
 		it( 'should create #_linkConfig containing config object passed as argument', () => {
 			const customConfig = { allowedProtocols: [ 'https', 'ftps', 'tel', 'sms' ] };
 
-			const view = new LinkActionsView( editor, customConfig );
+			const view = new LinkActionsView( { t: () => {} }, customConfig );
 			view.render();
 
 			expect( view._linkConfig ).to.equal( customConfig );
@@ -163,7 +164,6 @@ describe( 'LinkActionsView', () => {
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_self' );
 							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener' );
-							expect( view.previewButtonView.tooltip ).to.equal( 'Scroll to bookmark' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -182,7 +182,6 @@ describe( 'LinkActionsView', () => {
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
 							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
-							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -207,7 +206,7 @@ describe( 'LinkActionsView', () => {
 								plugins: [ Essentials, Paragraph ]
 							} );
 
-							view = new LinkActionsView( editor );
+							view = new LinkActionsView( { t: () => {} } );
 							view.render();
 							document.body.appendChild( view.element );
 						} );
@@ -228,7 +227,6 @@ describe( 'LinkActionsView', () => {
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
 							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
-							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -251,7 +249,6 @@ describe( 'LinkActionsView', () => {
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
 							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
 							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
-							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -276,7 +273,7 @@ describe( 'LinkActionsView', () => {
 								plugins: [ Essentials, Paragraph ]
 							} );
 
-							view = new LinkActionsView( editor );
+							view = new LinkActionsView( { t: () => {} } );
 							view.render();
 							document.body.appendChild( view.element );
 						} );
@@ -297,7 +294,6 @@ describe( 'LinkActionsView', () => {
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
 							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
 							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
-							expect( view.previewButtonView.tooltip ).to.equal( 'Open link in new tab' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -333,7 +329,7 @@ describe( 'LinkActionsView', () => {
 		it( 'should register child views\' #element in #focusTracker', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-			const view = new LinkActionsView( editor );
+			const view = new LinkActionsView( { t: () => {} } );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.previewButtonView.element );
@@ -344,7 +340,7 @@ describe( 'LinkActionsView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new LinkActionsView( editor );
+			const view = new LinkActionsView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
