@@ -85,6 +85,9 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+## Bookmarks on blocks
+
+At this time, if a bookmark is attached to a block, it appears before it. However, we plan to expand this solution in the future. We invite you to help us [gather feedback for linking directly to blocks and auto generating IDs](https://github.com/ckeditor/ckeditor5/issues/17264).
 
 ## Related features
 
