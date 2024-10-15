@@ -289,7 +289,6 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.isEnabled ).to.be.true;
 			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.false;
 			expect( formView.saveButtonView.isEnabled ).to.be.true;
-			expect( formView.cancelButtonView.isEnabled ).to.be.true;
 
 			expect( actionsView.unlinkButtonView.isEnabled ).to.be.true;
 			expect( actionsView.editButtonView.isEnabled ).to.be.true;
@@ -300,7 +299,6 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.isEnabled ).to.be.false;
 			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.true;
 			expect( formView.saveButtonView.isEnabled ).to.be.false;
-			expect( formView.cancelButtonView.isEnabled ).to.be.true;
 
 			expect( actionsView.unlinkButtonView.isEnabled ).to.be.false;
 			expect( actionsView.editButtonView.isEnabled ).to.be.false;

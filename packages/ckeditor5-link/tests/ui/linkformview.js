@@ -40,22 +40,16 @@ describe( 'LinkFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link-form' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.true;
-			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( view.element.classList.contains( 'ck-link__bookmarks-panel' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.urlInputView ).to.be.instanceOf( View );
+			expect( view.backButton ).to.be.instanceOf( View );
+			expect( view.settingsButton ).to.be.instanceOf( View );
+			expect( view.bookmarksButton ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
-			expect( view.cancelButtonView ).to.be.instanceOf( View );
-
-			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
-			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
-
-			expect( view.children.get( 0 ) ).to.equal( view.urlInputView );
-			expect( view.children.get( 1 ) ).to.equal( view.saveButtonView );
-			expect( view.children.get( 2 ) ).to.equal( view.cancelButtonView );
+			expect( view.displayedTextInputView ).to.be.instanceOf( View );
+			expect( view.urlInputView ).to.be.instanceOf( View );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -74,12 +68,12 @@ describe( 'LinkFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
+		it( 'should fire `cancel` event on backButton#execute', () => {
 			const spy = sinon.spy();
 
 			view.on( 'cancel', spy );
 
-			view.cancelButtonView.fire( 'execute' );
+			view.backButton.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.true;
 		} );
@@ -89,13 +83,36 @@ describe( 'LinkFormView', () => {
 		} );
 
 		describe( 'template', () => {
+			/**
+				 * div
+				 * 	header
+				 * 		backButton
+				 * 		...
+				 * 		settingsButton
+				 * 	form
+				 * 		displayedTextInputView
+				 * 		div
+				 * 			urlInputView
+				 * 			saveButton
+				 * 	bookmarksButton
+				 */
+
 			it( 'has url input view', () => {
-				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view.urlInputView );
+				const formChildren = view.template.children[ 1 ].template.children[ 0 ];
+
+				expect( formChildren.get( 0 ) ).to.equal( view.displayedTextInputView );
+				expect( formChildren.get( 1 ).template.children[ 0 ] ).to.equal( view.urlInputView );
 			} );
 
 			it( 'has button views', () => {
-				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
-				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
+				const headerChildren = view.template.children[ 0 ].template.children[ 0 ];
+				const formChildren = view.template.children[ 1 ].template.children[ 0 ];
+				const bookmarksButton = view.template.children[ 2 ];
+
+				expect( headerChildren.get( 0 ) ).to.equal( view.backButton );
+				expect( headerChildren.get( 2 ) ).to.equal( view.settingsButton );
+				expect( formChildren.last.template.children[ 1 ] ).to.equal( view.saveButtonView );
+				expect( bookmarksButton ).to.equal( view.bookmarksButton );
 			} );
 		} );
 	} );
@@ -103,22 +120,28 @@ describe( 'LinkFormView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
+				view.backButton,
+				view.settingsButton,
+				view.displayedTextInputView,
 				view.urlInputView,
 				view.saveButtonView,
-				view.cancelButtonView
+				view.bookmarksButton
 			] );
 		} );
 
-		it( 'should register child views\' #element in #focusTracker', () => {
+		it( 'should register child views #element in #focusTracker', () => {
 			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] } );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.backButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.settingsButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.displayedTextInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.urlInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.saveButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.bookmarksButton.element );
 
 			view.destroy();
 		} );
@@ -156,6 +179,8 @@ describe( 'LinkFormView', () => {
 			} );
 
 			it( 'so "shift + tab" focuses the previous focusable item', () => {
+				const spy = sinon.spy( view.bookmarksButton, 'focus' );
+
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: true,
@@ -165,11 +190,9 @@ describe( 'LinkFormView', () => {
 
 				// Mock the cancel button is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.cancelButtonView.element;
-
-				const spy = sinon.spy( view.saveButtonView, 'focus' );
-
+				view.focusTracker.focusedElement = view.backButton.element;
 				view.keystrokes.press( keyEvtData );
+
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				sinon.assert.calledOnce( spy );
