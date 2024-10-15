@@ -1945,6 +1945,70 @@ describe( 'PictureEditing', () => {
 						'</figure>'
 					);
 				} );
+
+				it( 'should keep existing picture element attributes when downcasting "sources" attribute', () => {
+					editor.model.schema.extend( 'imageBlock', {
+						allowAttributes: [ 'pictureClass' ]
+					} );
+
+					editor.conversion.for( 'upcast' ).add( dispatcher => {
+						dispatcher.on( 'element:picture', ( _evt, data, conversionApi ) => {
+							const viewItem = data.viewItem;
+							const modelElement = data.modelCursor.parent;
+
+							conversionApi.writer.setAttribute( 'pictureClass', viewItem.getAttribute( 'class' ), modelElement );
+						} );
+					} );
+
+					editor.conversion.for( 'downcast' ).add( dispatcher => {
+						dispatcher.on( 'attribute:pictureClass:imageBlock', ( evt, data, conversionApi ) => {
+							const element = conversionApi.mapper.toViewElement( data.item );
+							const pictureElement = element.getChild( 0 );
+
+							conversionApi.writer.setAttribute( 'class', data.attributeNewValue, pictureElement );
+						} );
+					} );
+
+					editor.setData(
+						'<figure class="image">' +
+							'<picture class="test-class">' +
+								'<source srcset="">' +
+								'<img src="/assets/sample.png">' +
+							'</picture>' +
+							'<figcaption>Caption</figcaption>' +
+						'</figure>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute(
+							'sources',
+							[
+								{
+									srcset: '/assets/sample2.png'
+								}
+							],
+							modelDocument.getRoot().getChild( 0 )
+						);
+					} );
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false">' +
+							'<picture class="test-class">' +
+								'<source srcset="/assets/sample2.png"></source>' +
+								'<img src="/assets/sample.png"></img>' +
+							'</picture>' +
+							'<figcaption ' +
+								'aria-label="Caption for the image" ' +
+								'class="ck-editor__editable ck-editor__nested-editable" ' +
+								'contenteditable="true" ' +
+								'data-placeholder="Enter image caption" ' +
+								'role="textbox" ' +
+								'tabindex="-1">' +
+									'Caption' +
+							'</figcaption>' +
+						'</figure>'
+					);
+				} );
 			} );
 		} );
 	} );
