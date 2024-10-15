@@ -5,42 +5,68 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-link-form {
-	display: flex;
-	align-items: flex-start;
-
-	& .ck-label {
-		display: none;
+.ck.ck-link__bookmarks-panel {
+	/* Header */
+	& .ck-form__header > * + * {
+		margin-left: var(--ck-spacing-medium);
 	}
 
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
+	/* Form */
+	& .ck-responsive-form.ck-link__form {
+		display: flex;
+		flex-direction: column;
 
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
+		& > * {
+			margin: 0;
+
+			@mixin ck-media-phone {
+				margin: var(--ck-spacing-medium);
+			}
 		}
 
-		& .ck-button {
-			flex-basis: 50%;
+		& > * + * {
+			margin-top: var(--ck-spacing-large);
+		}
+
+		input {
+			width: 100%;
+		}
+
+		/* "Link" input field and the "Insert" button */
+		& .ck-link-and-submit {
+			display: flex;
+
+			& .ck-button-insert {
+				margin-left: var(--ck-spacing-medium);
+				height: 30px;
+				font-weight: bold;
+			}
+
+			@mixin ck-media-phone {
+				flex-direction: column;
+
+				&>*,
+				& .ck-button-insert {
+					margin: 0;
+				}
+
+				& .ck-button-insert {
+					margin-top: var(--ck-spacing-large);
+				}
+			}
 		}
 	}
-}
+	
+	/* Bookmarks button */
+	& .ck-link__bookmarks-button {
+		margin-top: var(--ck-spacing-medium);
+		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+		width: 100%;
+		flex-direction: row-reverse;
+		border-top: 1px solid var(--ck-color-base-border);
 
-/*
- * Style link form differently when manual decorators are available.
- * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
- */
-.ck.ck-link-form_layout-vertical {
-	display: block;
-
-	/*
-	 * Whether the form is in the responsive mode or not, if there are decorator buttons
-	 * keep the top margin of action buttons medium.
-	 */
-	& .ck-button {
-		&.ck-button-save,
-		&.ck-button-cancel {
-			margin-top: var(--ck-spacing-medium);
+		& > .ck-button__label {
+			flex-grow: 1;
 		}
 	}
 }

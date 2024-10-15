@@ -184,13 +184,13 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Close the panel on esc key press when the **actions have focus**.
-		actionsView.keystrokes.set( 'Esc', ( data, cancel ) => {
+		actionsView.keystrokes.set( 'Esc', ( _data, cancel ) => {
 			this._hideUI();
 			cancel();
 		} );
 
 		// Open the form view on Ctrl+K when the **actions have focus**..
-		actionsView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
+		actionsView.keystrokes.set( LINK_KEYSTROKE, ( _data, cancel ) => {
 			this._addFormView();
 			cancel();
 		} );
@@ -206,9 +206,15 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
+		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )(
+			editor.locale,
+			linkCommand,
+			getFormValidators( editor )
+		);
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
+
+		// TODO: Bind to the "Displayed text" input
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
@@ -218,6 +224,7 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
+			// TODO: Does this need updating after adding the "Displayed text" input?
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
@@ -227,6 +234,10 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Update balloon position when form error changes.
+		this.listenTo( formView.displayedTextInputView, 'change:errorText', () => {
+			editor.ui.update();
+		} );
+
 		this.listenTo( formView.urlInputView, 'change:errorText', () => {
 			editor.ui.update();
 		} );
@@ -781,6 +792,8 @@ function findLinkElementAncestor( position: ViewPosition ): ViewAttributeElement
 function getFormValidators( editor: Editor ): Array<LinkFormValidatorCallback> {
 	const t = editor.t;
 	const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
+
+	// TODO: Validate the "Displayed text" input.
 
 	return [
 		form => {
