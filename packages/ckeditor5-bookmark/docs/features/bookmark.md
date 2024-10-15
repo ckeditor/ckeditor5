@@ -72,8 +72,6 @@ will be converted into a bookmark and the output will look like on the example b
 You can disable the automatic conversion by setting the {@link module:bookmark/bookmarkconfig~BookmarkConfig#enableNonEmptyAnchorConversion `config.bookmark.enableNonEmptyAnchorConversion`} to `false` in the editor configuration.
 
 ```js
-import { ClassicEditor, Bookmark } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Bookmark, /* ... */ ],
