@@ -25,7 +25,7 @@ import {
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import ContextualBalloon from '../../panel/balloon/contextualballoon.js';
 import ToolbarView, { ToolbarOptions } from '../toolbarview.js';
-import type { EditorUIUpdateEvent } from '../../editorui/editorui.js';
+import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
 /**
  * TODO (extracted from WidgetToolbarRepository
@@ -133,6 +133,7 @@ export default class ContextualToolbarRepository extends Plugin {
 			items,
 			removeItems,
 			toolbarOptions,
+			initializeOnReady,
 			getRelatedTarget,
 			balloonClassName = 'ck-toolbar-container'
 		}: {
@@ -140,6 +141,7 @@ export default class ContextualToolbarRepository extends Plugin {
 			items: Array<ToolbarConfigItem>;
 			removeItems?: Array<string>;
 			toolbarOptions?: ToolbarOptions;
+			initializeOnReady?: boolean;
 			getRelatedTarget: ( selection: ViewDocumentSelection ) => ( RectSource | ( () => RectSource ) | null );
 			balloonClassName?: string;
 		}
@@ -185,11 +187,16 @@ export default class ContextualToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
-		const toolbarDefinition = {
+		removeItems = removeItems || [];
+
+		const toolbarDefinition: ContextualToolbarDefinition = {
 			view: toolbarView,
 			getRelatedTarget,
 			balloonClassName,
-			itemsConfig: items,
+			itemsConfig: {
+				items,
+				removeItems
+			},
 			initialized: false
 		};
 
@@ -207,6 +214,15 @@ export default class ContextualToolbarRepository extends Plugin {
 				this._hideToolbar( toolbarDefinition );
 			}
 		} );
+
+		if ( initializeOnReady ) {
+			// Creates toolbar components based on given configuration.
+			// This needs to be done when all plugins are ready.
+			editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
+				toolbarDefinition.initialized = true;
+				toolbarView.fillFromConfig( toolbarDefinition.itemsConfig, this.editor.ui.componentFactory );
+			} );
+		}
 
 		this._toolbarDefinitions.set( toolbarId, toolbarDefinition );
 
@@ -363,7 +379,10 @@ interface ContextualToolbarDefinition {
 	 */
 	balloonClassName: string;
 
-	itemsConfig: Array<ToolbarConfigItem>;
+	itemsConfig: {
+		items: Array<ToolbarConfigItem>;
+		removeItems: Array<string>;
+	};
 
 	initialized: boolean;
 }

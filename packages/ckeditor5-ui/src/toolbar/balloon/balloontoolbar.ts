@@ -179,34 +179,35 @@ export default class BalloonToolbar extends Plugin {
 			}
 		} );
 
-		// if ( !this._balloonConfig.shouldNotGroupWhenFull ) {
-		// 	this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
-		// 		const editableElement = editor.ui.view.editable.element!;
-		//
-		// 		// Set #toolbarView's max-width on the initialization and update it on the editable resize.
-		// 		this._resizeObserver = new ResizeObserver( editableElement, entry => {
-		// 			// The max-width equals 90% of the editable's width for the best user experience.
-		// 			// The value keeps the balloon very close to the boundaries of the editable and limits the cases
-		// 			// when the balloon juts out from the editable element it belongs to.
-		// 			this.toolbarView.maxWidth = toPx( entry.contentRect.width * .9 );
-		// 		} );
-		// 	} );
-		// }
-		//
-		// // Listen to the toolbar view and whenever it changes its geometry due to some items being
-		// // grouped or ungrouped, update the position of the balloon because a shorter/longer toolbar
-		// // means the balloon could be pointing at the wrong place. Once updated, the balloon will point
-		// // at the right selection in the content again.
-		// // https://github.com/ckeditor/ckeditor5/issues/6444
-		// this.listenTo<ToolbarViewGroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
-		// 	this._updatePosition();
-		// } );
+		if ( !this._balloonConfig.shouldNotGroupWhenFull ) {
+			this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
+				const editableElement = editor.ui.view.editable.element!;
+
+				// Set #toolbarView's max-width on the initialization and update it on the editable resize.
+				this._resizeObserver = new ResizeObserver( editableElement, entry => {
+					// The max-width equals 90% of the editable's width for the best user experience.
+					// The value keeps the balloon very close to the boundaries of the editable and limits the cases
+					// when the balloon juts out from the editable element it belongs to.
+					this.toolbarView.maxWidth = toPx( entry.contentRect.width * .9 );
+				} );
+			} );
+		}
+
+		// Listen to the toolbar view and whenever it changes its geometry due to some items being
+		// grouped or ungrouped, update the position of the balloon because a shorter/longer toolbar
+		// means the balloon could be pointing at the wrong place. Once updated, the balloon will point
+		// at the right selection in the content again.
+		// https://github.com/ckeditor/ckeditor5/issues/6444
+		this.listenTo<ToolbarViewGroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
+			// this._updatePosition();
+			editor.ui.update();
+		} );
 
 		// Creates toolbar components based on given configuration.
 		// This needs to be done when all plugins are ready.
-		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
-			this.toolbarView.fillFromConfig( this._balloonConfig, this.editor.ui.componentFactory );
-		} );
+		// editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
+		// 	this.toolbarView.fillFromConfig( this._balloonConfig, this.editor.ui.componentFactory );
+		// } );
 	}
 
 	/**
@@ -225,6 +226,7 @@ export default class BalloonToolbar extends Plugin {
 				shouldGroupWhenFull,
 				isFloating: true
 			},
+			initializeOnReady: true,
 			balloonClassName: 'ck-toolbar-container',
 			getRelatedTarget: () => {
 				return this._shouldBeVisible ? this._getBalloonPositionData().target : null;
