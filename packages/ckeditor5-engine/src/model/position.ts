@@ -224,7 +224,7 @@ export default class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Node directly after this position or `null` if this position is in text node.
+	 * Node directly after this position. Returns `null` if this position is at the end of its parent, or if it is in a text node.
 	 */
 	public get nodeAfter(): Node | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
@@ -234,7 +234,7 @@ export default class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Node directly before this position or `null` if this position is in text node.
+	 * Node directly before this position. Returns `null` if this position is at the start of its parent, or if it is in a text node.
 	 */
 	public get nodeBefore(): Node | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
@@ -1071,10 +1071,11 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  * * {@link module:engine/model/position~getNodeAfterPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
+ * @param position
  * @param positionParent The parent of the given position.
  */
 export function getTextNodeAtPosition( position: Position, positionParent: Element | DocumentFragment ): Text | null {
-	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
+	const node = positionParent.getChildAtOffset( position.offset );
 
 	if ( node && node.is( '$text' ) && node.startOffset! < position.offset ) {
 		return node;
@@ -1102,6 +1103,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
+ * @param position
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
  */
@@ -1114,7 +1116,7 @@ export function getNodeAfterPosition(
 		return null;
 	}
 
-	return positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
+	return positionParent.getChildAtOffset( position.offset );
 }
 
 /**
@@ -1127,6 +1129,7 @@ export function getNodeAfterPosition(
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeAfterPosition}
  *
+ * @param position
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
  */
