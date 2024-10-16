@@ -35,6 +35,14 @@ describe( 'Alignment UI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AlignmentUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AlignmentUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'localizedOptionTitles()', () => {
 		it( 'should return localized titles of options', () => {
 			const editorMock = { t: str => str };

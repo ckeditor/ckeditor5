@@ -16,4 +16,12 @@ describe( 'Link', () => {
 	it( 'should be named', () => {
 		expect( Link.pluginName ).to.equal( 'Link' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Link.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Link.isPremiumPlugin ).to.be.false;
+	} );
 } );

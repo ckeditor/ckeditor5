@@ -15,4 +15,12 @@ describe( 'LinkImage', () => {
 	it( 'should be named', () => {
 		expect( LinkImage.pluginName ).to.equal( 'LinkImage' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LinkImage.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LinkImage.isPremiumPlugin ).to.be.false;
+	} );
 } );

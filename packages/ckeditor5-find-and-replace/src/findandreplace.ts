@@ -49,6 +49,13 @@ export default class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const ui = this.editor.plugins.get( 'FindAndReplaceUI' );
 		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );

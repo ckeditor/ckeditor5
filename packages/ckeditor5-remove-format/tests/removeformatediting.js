@@ -22,6 +22,14 @@ describe( 'RemoveFormat', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( RemoveFormatEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( RemoveFormatEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should register removeFormat command', () => {
 		expect( editor.commands.get( 'removeFormat' ) ).to.instanceof( RemoveFormatCommand );
 	} );

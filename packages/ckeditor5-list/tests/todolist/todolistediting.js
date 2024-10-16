@@ -58,6 +58,14 @@ describe( 'TodoListEditing', () => {
 		expect( TodoListEditing.pluginName ).to.equal( 'TodoListEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TodoListEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TodoListEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load ListEditing', () => {
 		expect( TodoListEditing.requires ).to.have.members( [ ListEditing ] );
 	} );

@@ -50,6 +50,13 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * An object storing the find and replace state within a given editor instance.
 	 */
 	public state?: FindAndReplaceState;

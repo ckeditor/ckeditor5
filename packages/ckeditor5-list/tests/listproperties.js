@@ -15,4 +15,12 @@ describe( 'ListProperties', () => {
 	it( 'should require ListPropertiesEditing and ListPropertiesUI', () => {
 		expect( ListProperties.requires ).to.deep.equal( [ ListPropertiesEditing, ListPropertiesUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListProperties.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListProperties.isPremiumPlugin ).to.be.false;
+	} );
 } );

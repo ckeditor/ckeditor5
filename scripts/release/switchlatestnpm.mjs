@@ -24,7 +24,7 @@ const GLOB_PATTERNS = [
 Promise.resolve()
 	// CKEditor 5 packages.
 	.then( () => releaseTools.reassignNpmTags( {
-		npmOwner: 'ckeditor1',
+		npmOwner: 'ckeditor',
 		version: rootPkgJson.version,
 		packages: globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
 			.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name )

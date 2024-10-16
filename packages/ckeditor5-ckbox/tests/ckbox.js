@@ -62,5 +62,13 @@ describe( 'CKBox', () => {
 	it( 'should have proper name', () => {
 		expect( CKBox.pluginName ).to.equal( 'CKBox' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBox.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBox.isPremiumPlugin ).to.be.false;
+	} );
 } );
 

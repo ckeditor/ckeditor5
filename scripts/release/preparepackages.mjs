@@ -272,8 +272,8 @@ const tasks = new Listr( [
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 
-						const cdnVersion = getCdnVersion( cliArguments, latestVersion );
-						const zipName = `ckeditor5-${ cdnVersion }`;
+						const cdnVersion = getCdnVersion( cliArguments );
+						const zipName = `ckeditor5-${ cdnVersion === 'staging' ? latestVersion : cdnVersion }`;
 
 						await tools.shExec(
 							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,

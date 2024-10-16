@@ -38,6 +38,14 @@ describe( 'SpecialCharactersLatin', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SpecialCharactersLatin.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SpecialCharactersLatin.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'adds new items', () => {
 		expect( addItemsSpy.callCount ).to.equal( 1 );
 	} );

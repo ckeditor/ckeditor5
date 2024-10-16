@@ -31,4 +31,11 @@ export default class Superscript extends Plugin {
 	public static get pluginName() {
 		return 'Superscript' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }
