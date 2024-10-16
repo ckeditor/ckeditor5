@@ -949,7 +949,7 @@ However, some packages cannot import modules from CKEditor&nbsp;5 as it could le
 
 Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
-👎&nbsp; Examples of an incorrect code for this rule:
+👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
 // Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
@@ -1049,7 +1049,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 Importing anything from the `src` directory to extend a CKEditor&nbsp;5 build is not allowed. Other directories from a predefined build are not published on npm, so such imports will not work.
 
-👎&nbsp; Examples of an incorrect code for this rule:
+👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
@@ -1079,7 +1079,7 @@ This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined i
 
 This rule ensures that all imports from the `@ckeditor/*` packages are done through the main package entry points. This is required for the editor types to work properly and to ease migration to the installation methods introduced in CKEditor&nbsp;5 v42.0.0.
 
-👎&nbsp; Example of an incorrect code for this rule:
+👎&nbsp; Example of incorrect code for this rule:
 
 ```ts
 // Importing from the `/src/` folder is not allowed.
@@ -1106,7 +1106,7 @@ In TypeScript, the types inferred from some values are simplified. For example, 
 
 The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
 
-👎&nbsp; Examples of an incorrect code for this rule:
+👎&nbsp; Examples of incorrect code for this rule:
 
 ```ts
 export default class Delete extends Plugin {
@@ -1175,12 +1175,12 @@ In such cases, you must add the file extension manually. Imports with file exten
 	This rule should only be used on `.ts` files.
 </info-box>
 
-This rule ensures that plugin flags are correctly set or not set at all. It checks if the flags have the correct type and value, preventing common mistakes and ensuring compliance with the CKEditor&nbsp;5 plugin API.
+This rule ensures that plugin flags are either correctly set or not set at all. It checks whether the flags have the correct type and value, preventing common mistakes and ensuring compliance with the CKEditor&nbsp;5 plugin API.
 
 Options:
 
-* `requiredFlags` - (optional) An array of flags that must be set in the plugin.
-* `disallowedFlags` - (optional) An array of flags that must not be set in the plugin.
+* `requiredFlags` &ndash; (optional) An array of flags that must be set in the plugin.
+* `disallowedFlags` &ndash; (optional) An array of flags that must not be set in the plugin.
 
 The example configuration below requires the `isFooPlugin` flag to be set to `true` and disallows the `isBarPlugin` flag:
 
@@ -1210,7 +1210,7 @@ export default class MyPlugin extends Plugin {
 }
 ```
 
-This is incorrect because the `isBarPlugin` flag is disallowed, and the plugin has it set to `false`. Additionally, the `isFooPlugin` flag is required but not defined.
+The `isBarPlugin` flag is disallowed, and the plugin has it set to `false`. Additionally, the `isFooPlugin` flag is required but not defined.
 
 👍&nbsp; Examples of correct code for this rule:
 
@@ -1226,13 +1226,13 @@ export default class MyPlugin extends Plugin {
 }
 ```
 
-This is correct because the `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag is not defined.
+The `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag is not defined.
 
 ### No legacy imports
 
 This rule ensures that imports are done using the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. All imports should be done using either the `ckeditor5` package to get the editor core and all open-source plugins, or `ckeditor5-premium-features` to get the premium features.
 
-👎&nbsp; Examples of an incorrect code for this rule:
+👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
 // Import from `ckeditor5/src/*`.
