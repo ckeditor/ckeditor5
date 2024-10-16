@@ -332,6 +332,9 @@ export default class LinkFormView extends View {
 		} );
 	}
 
+	/**
+	 * Creates a form view for the link form.
+	 */
 	private _createFormView(): View {
 		const form = new View();
 
@@ -355,6 +358,9 @@ export default class LinkFormView extends View {
 		return form;
 	}
 
+	/**
+	 * Creates a bookmarks button view.
+	 */
 	private _createBookmarksButton(): ButtonView {
 		const t = this.locale!.t;
 		const bookmarksButton = new ButtonView();
