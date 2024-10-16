@@ -1,0 +1,44 @@
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "A toolbar button tooltip for opening the file browser that allows inserting an image or a file to the editor."
+msgid "Open file manager"
+msgstr ""
+
+msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
+msgid "Cannot determine a category for the uploaded file."
+msgstr ""
+
+msgctxt "A message is displayed when the user is not authorised to access the CKBox workspace configured as default one."
+msgid "Cannot access default workspace."
+msgstr ""
+
+msgctxt "The title of the notification displayed when there is no permission to edit assets."
+msgid "You have no image editing permissions."
+msgstr ""
+
+msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
+msgid "Edit image"
+msgstr ""
+
+msgctxt "A message stating that image editing is in progress."
+msgid "Processing the edited image."
+msgstr ""
+
+msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
+msgid "Server failed to process the image."
+msgstr ""
+
+msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
+msgid "Failed to determine category of edited image."
+msgstr ""

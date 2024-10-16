@@ -125,7 +125,6 @@ Techlab
 textarea
 toolset
 (?i)tooltip
-Transifex
 (?i)transpilation
 (?i)transpile
 UI
