@@ -258,15 +258,12 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Cleans up the supplementary error and information text of the
-	 * {@link #displayedTextInputView} and the {@link #urlInputView}
-	 * inputs bringing them back to the state when the form has been
-	 * displayed for the first time.
+	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * bringing them back to the state when the form has been displayed for the first time.
 	 *
 	 * See {@link #isValid}.
 	 */
 	public resetFormStatus(): void {
-		this.displayedTextInputView.errorText = null;
 		this.urlInputView.errorText = null;
 	}
 
