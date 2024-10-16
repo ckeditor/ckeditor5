@@ -234,10 +234,6 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Update balloon position when form error changes.
-		this.listenTo( formView.displayedTextInputView, 'change:errorText', () => {
-			editor.ui.update();
-		} );
-
 		this.listenTo( formView.urlInputView, 'change:errorText', () => {
 			editor.ui.update();
 		} );
@@ -792,8 +788,6 @@ function findLinkElementAncestor( position: ViewPosition ): ViewAttributeElement
 function getFormValidators( editor: Editor ): Array<LinkFormValidatorCallback> {
 	const t = editor.t;
 	const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
-
-	// TODO: Validate the "Displayed text" input.
 
 	return [
 		form => {

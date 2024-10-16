@@ -505,22 +505,6 @@ export default class LinkFormView extends View {
 
 		return element.value.trim();
 	}
-
-	/**
-	 * The native DOM `value` of the {@link #displayedTextInputView} element.
-	 *
-	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
-	 * which works one way only and may not represent the actual state of the component in the DOM.
-	 */
-	public get displayedText(): string | null {
-		const { element } = this.displayedTextInputView.fieldView;
-
-		if ( !element ) {
-			return null;
-		}
-
-		return element.value.trim();
-	}
 }
 
 /**
