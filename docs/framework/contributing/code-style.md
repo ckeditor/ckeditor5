@@ -1179,7 +1179,7 @@ This rule ensures that plugin flags are correctly set or not set at all. It chec
 
 Options:
 
-* `requirePluginFlags` - (optional) An array of flags that must be set in the plugin.
+* `requiredFlags` - (optional) An array of flags that must be set in the plugin.
 * `disallowedFlags` - (optional) An array of flags that must not be set in the plugin.
 
 The example configuration below requires the `isFooPlugin` flag to be set to `true` and disallows the `isBarPlugin` flag:
