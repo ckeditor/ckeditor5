@@ -237,9 +237,9 @@ describe( 'getEditorUsageData()', () => {
 			} );
 
 			expect( getEditorUsageData( editor ).plugins ).to.deep.equal( [
-				makeBasePluginUsageData( 'BoldEditing' ),
-				makeBasePluginUsageData( 'BoldUI' ),
-				makeBasePluginUsageData( 'Bold' )
+				makeBasePluginUsageData( 'BoldEditing', { isOfficial: true } ),
+				makeBasePluginUsageData( 'BoldUI', { isOfficial: true } ),
+				makeBasePluginUsageData( 'Bold', { isOfficial: true } )
 			] );
 		} );
 
