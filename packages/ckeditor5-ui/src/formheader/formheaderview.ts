@@ -53,11 +53,6 @@ export default class FormHeaderView extends View {
 	public readonly iconView?: IconView;
 
 	/**
-	 * Form header options passed to the constructor.
-	 */
-	private _options: FormHeaderViewOptions;
-
-	/**
 	 * Creates an instance of the form header class.
 	 *
 	 * @param locale The locale instance.
@@ -66,33 +61,20 @@ export default class FormHeaderView extends View {
 	 */
 	constructor(
 		locale: Locale | undefined,
-		options: FormHeaderViewOptions = {}
+		options: {
+			label?: string | null;
+			class?: string | null;
+			icon?: string | null;
+		} = {}
 	) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this._options = options;
-		this.iconView = this._createIcon();
-
 		this.set( 'label', options.label || '' );
 		this.set( 'class', options.class || null );
 
 		this.children = this.createCollection();
-
-		if ( this._options.leftSlot ) {
-			this.children.add( this._options.leftSlot );
-		}
-
-		if ( this.iconView ) {
-			this.children.add( this.iconView );
-		}
-
-		this.children.add( this._createLabel() );
-
-		if ( this._options.rightSlot ) {
-			this.children.add( this._options.rightSlot );
-		}
 
 		this.setTemplate( {
 			tag: 'div',
@@ -101,34 +83,19 @@ export default class FormHeaderView extends View {
 					'ck',
 					'ck-form__header',
 					bind.to( 'class' )
-				],
-
-				// https://github.com/ckeditor/ckeditor5-link/issues/90
-				tabindex: '-1'
+				]
 			},
 			children: this.children
 		} );
-	}
 
-	/**
-	 * Creates an icon view instance.
-	 */
-	private _createIcon(): IconView | undefined {
-		if ( !this._options.icon ) {
-			return;
+		if ( options.icon ) {
+			this.iconView = new IconView();
+			this.iconView.content = options.icon;
+
+			this.children.add( this.iconView );
 		}
 
-		const icon = new IconView();
-		icon.content = this._options.icon;
-
-		return icon;
-	}
-
-	/**
-	 * Creates a label view instance.
-	 */
-	private _createLabel(): View {
-		const label = new View( this.locale );
+		const label = new View( locale );
 
 		label.setTemplate( {
 			tag: 'h2',
@@ -140,18 +107,10 @@ export default class FormHeaderView extends View {
 				role: 'presentation'
 			},
 			children: [
-				{ text: this.bindTemplate.to( 'label' ) }
+				{ text: bind.to( 'label' ) }
 			]
 		} );
 
-		return label;
+		this.children.add( label );
 	}
-}
-
-interface FormHeaderViewOptions {
-	label?: string | null;
-	class?: string | null;
-	icon?: string | null;
-	leftSlot?: View | null;
-	rightSlot?: View | null;
 }

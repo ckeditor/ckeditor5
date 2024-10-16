@@ -5,10 +5,18 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-link__bookmarks-panel {
+.ck.ck-link__panel {
+	&:focus {
+		outline: none;
+	}
+
 	/* Header */
-	& .ck-form__header > * + * {
-		margin-left: var(--ck-spacing-medium);
+	& .ck-form__header {
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+
+		& > * + * {
+			margin-left: var(--ck-spacing-small);
+		}
 	}
 
 	/* Form */
@@ -59,12 +67,16 @@
 	}
 	
 	/* Bookmarks button */
-	& .ck-link__bookmarks-button {
+	& .ck-link__footer-button {
 		margin-top: var(--ck-spacing-medium);
 		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
 		width: 100%;
 		flex-direction: row-reverse;
-		border-top: 1px solid var(--ck-color-base-border);
+		border-radius: 0;
+
+		&:not(:focus) {
+			border-top: 1px solid var(--ck-color-base-border);
+		}
 
 		& > .ck-button__label {
 			flex-grow: 1;

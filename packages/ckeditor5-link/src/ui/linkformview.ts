@@ -92,7 +92,7 @@ export default class LinkFormView extends View {
 	/**
 	 * A collection of child views in the form.
 	 */
-	public readonly formChildren: ViewCollection;
+	public readonly children: ViewCollection;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -138,7 +138,7 @@ export default class LinkFormView extends View {
 		this.urlInputView = this._createUrlInput();
 
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
-		this.formChildren = this._createFormChildren( linkCommand.manualDecorators );
+		this.children = this._createFormChildren( linkCommand.manualDecorators );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -154,10 +154,13 @@ export default class LinkFormView extends View {
 		} );
 
 		this.setTemplate( {
-			tag: 'div',
+			tag: 'form',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__bookmarks-panel' ]
+				class: [ 'ck', 'ck-link__panel' ],
+
+				// https://github.com/ckeditor/ckeditor5-link/issues/90
+				tabindex: '-1'
 			},
 
 			children: [
@@ -195,13 +198,13 @@ export default class LinkFormView extends View {
 		} );
 
 		const childViews = [
-			this.backButton,
-			this.settingsButton,
-			this.displayedTextInputView,
 			this.urlInputView,
 			...this._manualDecoratorSwitches, // TODO: Move to a separate panel
 			this.saveButtonView,
-			this.bookmarksButton
+			this.bookmarksButton,
+			this.backButton,
+			this.settingsButton,
+			this.displayedTextInputView
 		];
 
 		childViews.forEach( v => {
@@ -230,7 +233,7 @@ export default class LinkFormView extends View {
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	public focus(): void {
-		this.urlInputView.focus();
+		this._focusCycler.focusFirst();
 	}
 
 	/**
@@ -325,11 +328,14 @@ export default class LinkFormView extends View {
 	private _createHeaderView(): FormHeaderView {
 		const t = this.locale!.t;
 
-		return new FormHeaderView( this.locale, {
-			label: t( 'Link' ),
-			leftSlot: this.backButton,
-			rightSlot: this.settingsButton
+		const form = new FormHeaderView( this.locale, {
+			label: t( 'Link' )
 		} );
+
+		form.children.add( this.backButton, 0 );
+		form.children.add( this.settingsButton );
+
+		return form;
 	}
 
 	/**
@@ -339,20 +345,17 @@ export default class LinkFormView extends View {
 		const form = new View();
 
 		form.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 
 			attributes: {
 				class: [
 					'ck',
 					'ck-link__form',
 					'ck-responsive-form'
-				],
-
-				// https://github.com/ckeditor/ckeditor5-link/issues/90
-				tabindex: '-1'
+				]
 			},
 
-			children: this.formChildren
+			children: this.children
 		} );
 
 		return form;
@@ -369,7 +372,7 @@ export default class LinkFormView extends View {
 			label: t( 'Bookmarks' ),
 			withText: true,
 			icon: icons.nextArrow,
-			class: 'ck-link__bookmarks-button'
+			class: 'ck-link__footer-button'
 		} );
 
 		return bookmarksButton;
