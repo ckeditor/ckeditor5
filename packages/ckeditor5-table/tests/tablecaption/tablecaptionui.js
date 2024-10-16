@@ -37,6 +37,14 @@ describe( 'TableCaptionUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableCaptionUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableCaptionUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should register toggleTableCaption feature component', () => {
 		expect( tableCaption ).to.be.instanceOf( ButtonView );
 		expect( tableCaption.icon ).to.match( /<svg / );

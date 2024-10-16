@@ -62,6 +62,14 @@ describe( 'WidgetResize', () => {
 		it( 'is loaded', () => {
 			expect( editor.plugins.get( WidgetResize ) ).to.be.instanceOf( WidgetResize );
 		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( WidgetResize.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( WidgetResize.isPremiumPlugin ).to.be.false;
+		} );
 	} );
 
 	describe( 'mouse listeners', () => {

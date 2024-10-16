@@ -17,6 +17,14 @@ describe( 'Plugin', () => {
 		expect( Plugin.isContextPlugin ).to.false;
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `false`', () => {
+		expect( Plugin.isOfficialPlugin ).to.be.false;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Plugin.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should set the `editor` property', () => {
 			const plugin = new Plugin( editor );

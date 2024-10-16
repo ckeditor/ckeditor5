@@ -40,6 +40,14 @@ describe( 'Indent', () => {
 		expect( Indent.pluginName ).to.equal( 'Indent' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Indent.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Indent.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load the IndentUI plugin', () => {
 		expect( editor.plugins.get( IndentUI ) ).to.be.instanceOf( IndentUI );
 	} );

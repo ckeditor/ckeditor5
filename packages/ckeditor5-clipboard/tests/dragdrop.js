@@ -43,6 +43,14 @@ describe( 'Drag and Drop', () => {
 		expect( DragDrop.pluginName ).to.equal( 'DragDrop' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DragDrop.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DragDrop.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be disabled on Android', async () => {
 		env.isAndroid = true;
 

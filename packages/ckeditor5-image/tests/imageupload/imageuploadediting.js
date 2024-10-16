@@ -92,6 +92,14 @@ describe( 'ImageUploadEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageUploadEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageUploadEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should register proper schema rules when both ImageBlock and ImageInline are enabled', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;

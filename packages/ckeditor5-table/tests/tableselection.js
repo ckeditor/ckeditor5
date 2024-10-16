@@ -50,6 +50,14 @@ describe( 'TableSelection', () => {
 			expect( TableSelection.pluginName ).to.equal( 'TableSelection' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableSelection.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableSelection.isPremiumPlugin ).to.be.false;
+		} );
+
 		describe( 'plugin disabling support', () => {
 			it( 'should collapse multi-cell selection when the plugin gets disabled', () => {
 				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );

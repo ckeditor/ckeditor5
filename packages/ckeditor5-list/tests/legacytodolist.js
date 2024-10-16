@@ -15,4 +15,12 @@ describe( 'LegacyTodoList', () => {
 	it( 'should require LegacyTodoListEditing and TodoListUI', () => {
 		expect( LegacyTodoList.requires ).to.deep.equal( [ LegacyTodoListEditing, TodoListUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyTodoList.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyTodoList.isPremiumPlugin ).to.be.false;
+	} );
 } );

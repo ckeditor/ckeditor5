@@ -8,6 +8,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
+import HeadingElementSupport from '../../src/integrations/heading.js';
 
 /* global document */
 
@@ -51,6 +52,14 @@ describe( 'HeadingElementSupport', () => {
 				classes: true,
 				styles: true
 			} ] );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( HeadingElementSupport.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( HeadingElementSupport.isPremiumPlugin ).to.be.false;
 		} );
 
 		it( 'should be named', () => {
