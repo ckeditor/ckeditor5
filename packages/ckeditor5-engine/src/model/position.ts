@@ -177,7 +177,7 @@ export default class Position extends TypeCheckable {
 		let parent: any = this.root;
 
 		for ( let i = 0; i < this.path.length - 1; i++ ) {
-			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
+			parent = parent.getChildAtOffset( this.path[ i ] );
 
 			if ( !parent ) {
 				/**
@@ -255,6 +255,27 @@ export default class Position extends TypeCheckable {
 	 */
 	public get isAtEnd(): boolean {
 		return this.offset == this.parent.maxOffset;
+	}
+
+	/**
+	 * Checks whether the position is valid in current model tree, that is whether it points to an existing place in the model.
+	 */
+	public isValid(): boolean {
+		if ( this.offset < 0 ) {
+			return false;
+		}
+
+		let parent: any = this.root;
+
+		for ( let i = 0; i < this.path.length - 1; i++ ) {
+			parent = parent.getChildAtOffset( this.path[ i ] );
+
+			if ( !parent ) {
+				return false;
+			}
+		}
+
+		return parent.maxOffset >= this.offset;
 	}
 
 	/**
