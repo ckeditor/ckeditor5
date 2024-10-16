@@ -37,6 +37,7 @@
 			display: flex;
 
 			& .ck-button-insert {
+				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
 				margin-left: var(--ck-spacing-medium);
 				height: 30px;
 				font-weight: bold;
