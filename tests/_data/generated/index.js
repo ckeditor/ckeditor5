@@ -17,5 +17,4 @@ import mixed from './mixed.js';
 
 export default {
 	paragraphs, lists, tableHuge, tablesMany, formattingLongP, formattingShortP, inlineStyles, mixed
-	//, images, paragraphsLong
 };

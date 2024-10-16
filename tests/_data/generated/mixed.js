@@ -1,9 +1,9 @@
-import { makeList } from './lists';
-
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+import { makeList } from './lists.js';
 
 // Creates long mixed content, including all kinds of features: paragraphs, list items, formatted content, tables and images.
 // This is a sum of all other data sets, where each data set has smaller volume.

@@ -9,9 +9,7 @@ import config from '../../_utils/performance-config.js';
 import allDataSets from '../../_data/generated/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-//////////////////
-// TEST CONFIG. //
-//////////////////
+/* TEST CONFIG. */
 
 // Number of tries per data set.
 const TRIES_PER_DATA_SET = 10;
@@ -22,9 +20,7 @@ const DATA_SETS_NAMES = null;
 // Change to `0` to keep all values in the results. Change to higher value to remove more outliers.
 const REMOVE_OUTLIERS = 1;
 
-/////////////////////////
-// END OF TEST CONFIG. //
-/////////////////////////
+/* END OF TEST CONFIG. */
 
 // If `DATA_SETS_NAMES` is defined, keep only that data set.
 const dataSetsNames = DATA_SETS_NAMES ? DATA_SETS_NAMES : Object.keys( allDataSets );
