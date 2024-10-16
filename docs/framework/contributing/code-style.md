@@ -1169,6 +1169,65 @@ The second case is common for the documentation files, because its pieces are lo
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
+### Require or disallow certain plugin flags: `ckeditor5/ckeditor-plugin-flags`
+
+<info-box warning>
+	This rule should only be used on `.ts` files.
+</info-box>
+
+This rule ensures that plugin flags are correctly set or not set at all. It checks if the flags have the correct type and value, preventing common mistakes and ensuring compliance with the CKEditor&nbsp;5 plugin API.
+
+Options:
+
+* `requirePluginFlags` - (optional) An array of flags that must be set in the plugin.
+* `disallowPluginFlags` - (optional) An array of flags that must not be set in the plugin.
+
+The example configuration below requires the `isFooPlugin` flag to be set to `true` and disallows the `isBarPlugin` flag:
+
+```json
+{
+	"requiredFlags": [
+		{
+			"name": "isFooPlugin",
+			"returnValue": true
+		}
+	],
+	"disallowPluginFlags": [ "isBarPlugin" ]
+}
+```
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+export default class MyPlugin extends Plugin {
+	static get pluginName() {
+		return 'MyPlugin';
+	}
+
+	public static override get isBarPlugin(): false {
+		return false;
+	}
+}
+```
+
+This is incorrect because the `isBarPlugin` flag is disallowed, and the plugin has it set to `false`. Additionally, the `isFooPlugin` flag is required but not defined.
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+export default class MyPlugin extends Plugin {
+	static get pluginName() {
+		return 'MyPlugin';
+	}
+
+	public static override get isFooPlugin(): true {
+		return true;
+	}
+}
+```
+
+This is correct because the `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag is not defined.
+
 ### No legacy imports
 
 This rule ensures that imports are done using the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. All imports should be done using either the `ckeditor5` package to get the editor core and all open-source plugins, or `ckeditor5-premium-features` to get the premium features.
