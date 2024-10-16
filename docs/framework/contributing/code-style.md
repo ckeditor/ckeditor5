@@ -1169,7 +1169,7 @@ The second case is common for the documentation files, because its pieces are lo
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
-### Require or disallow certain plugin flags: `ckeditor5/ckeditor-plugin-flags`
+### Require or disallow certain plugin flags: `ckeditor5-rules/ckeditor-plugin-flags`
 
 <info-box warning>
 	This rule should only be used on `.ts` files.
