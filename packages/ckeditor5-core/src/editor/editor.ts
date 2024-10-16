@@ -71,7 +71,7 @@ declare global {
  */
 export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
-	 * An required name of the editor class. The name should reflect the constructor name.
+	 * A required name of the editor class. The name should reflect the constructor name.
 	 */
 	public static get editorName(): `${ string }Editor` {
 		return 'Editor';
