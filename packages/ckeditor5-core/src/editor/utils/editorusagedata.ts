@@ -141,7 +141,7 @@ function getSessionId(): string {
 }
 
 function getPageSessionID() {
-	global.window.CKEDITOR_PAGE_SESSION_ID ||= crypto.randomUUID();
+	global.window.CKEDITOR_PAGE_SESSION_ID = global.window.CKEDITOR_PAGE_SESSION_ID || crypto.randomUUID();
 
 	return global.window.CKEDITOR_PAGE_SESSION_ID;
 }
