@@ -20,7 +20,8 @@ export function parseArguments( args ) {
 		string: [
 			'cwd',
 			'packages',
-			'ignore'
+			'ignore',
+			'config'
 		],
 
 		boolean: [
@@ -34,6 +35,7 @@ export function parseArguments( args ) {
 			cwd: process.cwd(),
 			packages: [],
 			ignore: [],
+			config: '',
 			'include-external-directory': false,
 			'ignore-unused-core-package-contexts': false,
 			'validate-only': false,
