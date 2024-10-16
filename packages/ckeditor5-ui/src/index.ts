@@ -123,6 +123,7 @@ export { default as ToolbarLineBreakView } from './toolbar/toolbarlinebreakview.
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview.js';
 export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarconfig.js';
 export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar.js';
+export { default as ContextualToolbarRepository } from './toolbar/balloon/contextualtoolbarrepository.js';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar.js';
 
 export { default as ViewCollection } from './viewcollection.js';
