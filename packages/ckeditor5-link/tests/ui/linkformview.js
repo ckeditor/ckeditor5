@@ -40,7 +40,7 @@ describe( 'LinkFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link__bookmarks-panel' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
