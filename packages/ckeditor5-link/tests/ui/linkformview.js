@@ -136,12 +136,12 @@ describe( 'LinkFormView', () => {
 
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.backButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.settingsButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.displayedTextInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.urlInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.saveButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.bookmarksButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.bookmarksButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.settingsButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.displayedTextInputView.element );
 
 			view.destroy();
 		} );
