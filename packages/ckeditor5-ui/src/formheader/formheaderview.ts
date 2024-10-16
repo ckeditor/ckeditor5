@@ -55,7 +55,7 @@ export default class FormHeaderView extends View {
 	/**
 	 * Form header options passed to the constructor.
 	 */
-	private options: FormHeaderViewOptions;
+	private _options: FormHeaderViewOptions;
 
 	/**
 	 * Creates an instance of the form header class.
@@ -72,7 +72,7 @@ export default class FormHeaderView extends View {
 
 		const bind = this.bindTemplate;
 
-		this.options = options;
+		this._options = options;
 		this.iconView = this._createIcon();
 
 		this.set( 'label', options.label || '' );
@@ -80,8 +80,8 @@ export default class FormHeaderView extends View {
 
 		this.children = this.createCollection();
 
-		if ( this.options.left ) {
-			this.children.add( this.options.left );
+		if ( this._options.leftSlot ) {
+			this.children.add( this._options.leftSlot );
 		}
 
 		if ( this.iconView ) {
@@ -90,8 +90,8 @@ export default class FormHeaderView extends View {
 
 		this.children.add( this._createLabel() );
 
-		if ( this.options.right ) {
-			this.children.add( this.options.right );
+		if ( this._options.rightSlot ) {
+			this.children.add( this._options.rightSlot );
 		}
 
 		this.setTemplate( {
@@ -114,12 +114,12 @@ export default class FormHeaderView extends View {
 	 * Creates an icon view instance.
 	 */
 	private _createIcon(): IconView | undefined {
-		if ( !this.options.icon ) {
+		if ( !this._options.icon ) {
 			return;
 		}
 
 		const icon = new IconView();
-		icon.content = this.options.icon;
+		icon.content = this._options.icon;
 
 		return icon;
 	}
@@ -152,6 +152,6 @@ interface FormHeaderViewOptions {
 	label?: string | null;
 	class?: string | null;
 	icon?: string | null;
-	left?: View | null;
-	right?: View | null;
+	leftSlot?: View | null;
+	rightSlot?: View | null;
 }

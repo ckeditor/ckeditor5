@@ -327,8 +327,8 @@ export default class LinkFormView extends View {
 
 		return new FormHeaderView( this.locale, {
 			label: t( 'Link' ),
-			left: this.backButton,
-			right: this.settingsButton
+			leftSlot: this.backButton,
+			rightSlot: this.settingsButton
 		} );
 	}
 
