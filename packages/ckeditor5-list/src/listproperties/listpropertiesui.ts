@@ -59,6 +59,13 @@ export default class ListPropertiesUI extends Plugin {
 		return 'ListPropertiesUI' as const;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;

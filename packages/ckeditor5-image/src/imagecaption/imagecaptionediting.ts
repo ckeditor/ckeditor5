@@ -39,6 +39,13 @@ export default class ImageCaptionEditing extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * A map that keeps saved JSONified image captions and image model elements they are
 	 * associated with.
 	 *

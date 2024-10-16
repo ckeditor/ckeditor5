@@ -46,6 +46,14 @@ describe( 'FileRepository', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FileRepository.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FileRepository.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be initialized', () => {
 		expect( fileRepository ).to.be.instanceOf( FileRepository );
 	} );

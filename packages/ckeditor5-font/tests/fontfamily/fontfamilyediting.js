@@ -33,6 +33,14 @@ describe( 'FontFamilyEditing', () => {
 		expect( FontFamilyEditing.pluginName ).to.equal( 'FontFamilyEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontFamilyEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontFamilyEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontFamily' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontFamily' ) ).to.be.true;

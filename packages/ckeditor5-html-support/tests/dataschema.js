@@ -28,6 +28,14 @@ describe( 'DataSchema', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DataSchema.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DataSchema.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'registerInlineElement()', () => {
 		it( 'should register proper definition', () => {
 			dataSchema.registerInlineElement( { model: 'htmlDef', view: 'def' } );

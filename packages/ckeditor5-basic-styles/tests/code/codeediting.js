@@ -37,6 +37,14 @@ describe( 'CodeEditing', () => {
 		expect( CodeEditing.pluginName ).to.equal( 'CodeEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CodeEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CodeEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CodeEditing ) ).to.be.instanceOf( CodeEditing );
 	} );

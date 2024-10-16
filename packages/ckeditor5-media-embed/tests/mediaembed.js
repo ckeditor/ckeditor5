@@ -56,4 +56,12 @@ describe( 'MediaEmbed', () => {
 	it( 'has proper name', () => {
 		expect( MediaEmbed.pluginName ).to.equal( 'MediaEmbed' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MediaEmbed.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MediaEmbed.isPremiumPlugin ).to.be.false;
+	} );
 } );

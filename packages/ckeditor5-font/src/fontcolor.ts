@@ -34,4 +34,11 @@ export default class FontColor extends Plugin {
 	public static get pluginName() {
 		return 'FontColor' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

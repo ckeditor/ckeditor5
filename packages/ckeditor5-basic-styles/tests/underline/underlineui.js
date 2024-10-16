@@ -39,6 +39,14 @@ describe( 'Underline', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( UnderlineUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( UnderlineUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
 		beforeEach( () => {
 			underlineView = editor.ui.componentFactory.create( 'underline' );

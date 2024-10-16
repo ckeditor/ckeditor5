@@ -11,4 +11,12 @@ describe( 'Alignment', () => {
 	it( 'requires AlignmentEditing and AlignmentUI', () => {
 		expect( Alignment.requires ).to.deep.equal( [ AlignmentEditing, AlignmentUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Alignment.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Alignment.isPremiumPlugin ).to.be.false;
+	} );
 } );

@@ -29,6 +29,14 @@ describe( 'IndentBlock', () => {
 		expect( IndentBlock.pluginName ).to.equal( 'IndentBlock' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( IndentBlock.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( IndentBlock.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		return createTestEditor()
 			.then( newEditor => {

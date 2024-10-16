@@ -35,6 +35,14 @@ describe( 'Paragraph feature', () => {
 		expect( editor.plugins.get( Paragraph ) ).to.be.instanceOf( Paragraph );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Paragraph.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Paragraph.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.isRegistered( 'paragraph' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root' ], 'paragraph' ) ).to.be.true;

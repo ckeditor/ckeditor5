@@ -41,4 +41,11 @@ export default class ImageBlock extends Plugin {
 	public static get pluginName() {
 		return 'ImageBlock' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

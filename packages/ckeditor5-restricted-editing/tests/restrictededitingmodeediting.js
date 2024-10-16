@@ -49,6 +49,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( RestrictedEditingModeEditing.pluginName ).to.equal( 'RestrictedEditingModeEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( RestrictedEditingModeEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( RestrictedEditingModeEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should be loaded', () => {
 			expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 		} );

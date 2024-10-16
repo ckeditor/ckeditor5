@@ -57,6 +57,14 @@ describe( 'ImageCustomResizeUI', () => {
 		expect( ImageCustomResizeUI.pluginName ).to.equal( 'ImageCustomResizeUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageCustomResizeUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageCustomResizeUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'dropdown button', () => {
 		it( 'should be present in image resize dropdown', () => {
 			expect( button ).not.to.be.undefined;

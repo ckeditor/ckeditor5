@@ -29,6 +29,14 @@ describe( 'FindAndReplaceUI', () => {
 		expect( FindAndReplaceUI.pluginName ).to.equal( 'FindAndReplaceUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FindAndReplaceUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FindAndReplaceUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		describe( 'with the default UI type config (dialog)', () => {
 			let toolbarButtonView, menuBarButtonView, dialogPlugin, dialogView;

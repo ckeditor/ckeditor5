@@ -40,6 +40,13 @@ export default class ImageUploadProgress extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * The image placeholder that is displayed before real image data can be accessed.
 	 *
 	 * For the record, this image is a 1x1 px GIF with an aspect ratio set by CSS.

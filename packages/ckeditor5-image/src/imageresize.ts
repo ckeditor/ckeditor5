@@ -34,4 +34,11 @@ export default class ImageResize extends Plugin {
 	public static get pluginName() {
 		return 'ImageResize' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

@@ -33,6 +33,14 @@ describe( 'FontColorEditing', () => {
 		expect( FontColorEditing.pluginName ).to.equal( 'FontColorEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontColorEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontColorEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontColor' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontColor' ) ).to.be.true;

@@ -16,6 +16,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import LinkStyleSupport from '../../src/integrations/link.js';
 
 import Style from '../../src/style.js';
 
@@ -42,6 +43,14 @@ describe( 'LinkStyleSupport', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LinkStyleSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LinkStyleSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'enabled styles', () => {

@@ -32,4 +32,11 @@ export default class TableColumnResize extends Plugin {
 	public static get pluginName() {
 		return 'TableColumnResize' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }
