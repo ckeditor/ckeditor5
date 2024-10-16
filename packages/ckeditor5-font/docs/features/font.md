@@ -23,6 +23,7 @@ Use the toolbar dropdowns in the demo below to control the font size {@icon @cke
 The font styles, just like the {@link features/basic-styles basic text styles}, can serve many purposes. You can apply the font size setting globally or to a selected part of the text to make it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (like main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors that stand out even more and draw attention.
 
 The plugin enables the following features in the rich-text editor:
+
 * {@link module:font/fontfamily~FontFamily} &ndash; Change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
 * {@link module:font/fontsize~FontSize} &ndash; Control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
 * {@link module:font/fontcolor~FontColor} &ndash; Control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
@@ -42,6 +43,7 @@ The plugin enables the following features in the rich-text editor:
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Font } from 'ckeditor5';
 
@@ -61,9 +63,11 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, FontFamily } from 'ckeditor5';
 
@@ -75,6 +79,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring the font family feature
 

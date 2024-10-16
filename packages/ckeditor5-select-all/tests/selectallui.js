@@ -41,6 +41,14 @@ describe( 'SelectAllUI', () => {
 		expect( SelectAllUI.pluginName ).to.equal( 'SelectAllUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SelectAllUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SelectAllUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "selectAll" button', () => {
 		it( 'should be an instance of ButtonView', () => {
 			expect( button ).to.be.instanceOf( ButtonView );

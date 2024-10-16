@@ -74,6 +74,7 @@ This means that if you did not enable, for instance, {@link features/font font f
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, PasteFromOffice } from 'ckeditor5';
 
@@ -85,6 +86,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Known issues
 

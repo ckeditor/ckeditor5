@@ -11,6 +11,7 @@ The basic styles feature lets you apply the most essential formatting such as bo
 ## Demo
 
 You may apply basic formatting options with toolbar buttons. You can also make use of the {@link features/autoformat autoformatting feature} that changes Markdown code to formatted text as you type. Use one of these to format text:
+
 * Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`.
 * Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`.
 * Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```.
@@ -74,6 +75,7 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of code
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the plugins which you need to your plugin list. Then, simply configure the toolbar items to make the features available in the user interface.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from 'ckeditor5';
 
@@ -88,6 +90,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Related features
 

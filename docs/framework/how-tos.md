@@ -302,6 +302,7 @@ for ( const range of wordRanges ) {
 
 ### How to listen on a double-click (for example, link elements)?
 
+<code-switcher>
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:
 import { DomEventObserver } from 'ckeditor5';
@@ -334,11 +335,13 @@ editor.listenTo(
 	{ context: 'a' }
 );
 ```
+</code-switcher>
 
 There are many observers provided with our features, and you should check if there is no conflicting observer that already fires for the given DOM event.
 
 ### How to create a widget with a single view element and multiple/nested model elements?
 
+<code-switcher>
 ```js
 import { Plugin, toWidget, toWidgetEditable } from 'ckeditor5'
 
@@ -447,9 +450,11 @@ class Forms extends Plugin {
 	}
 }
 ```
+</code-switcher>
 
 ### How to add a custom button to the link dialog?
 
+<code-switcher>
 ```js
 import { ButtonView, Plugin, LinkUI } from 'ckeditor5';
 
@@ -506,6 +511,7 @@ class InternalLink extends Plugin {
 	}
 }
 ```
+</code-switcher>
 
 ## Framework integrations
 

@@ -31,6 +31,7 @@ Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.
 <textarea id="editor" placeholder="Type the content here!"></textarea>
 ```
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials } from 'ckeditor5';
 
@@ -46,6 +47,7 @@ ClassicEditor
 		console.error( error );
 	} );
 ```
+</code-switcher>
 
 ### Using the editor configuration
 

@@ -355,6 +355,7 @@ See the <!-- update to builder preset when ready-->{@link examples/builds/balloo
 
 To add this feature to your editor, add the `BlockToolbar` to your plugin list and configure the feature using the `blockToolbar` property:
 
+<code-switcher>
 ```js
 import { BlockToolbar, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 
@@ -372,6 +373,7 @@ BalloonEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( /* ... */ );
 ```
+</code-switcher>
 
 ### Block toolbar configuration
 

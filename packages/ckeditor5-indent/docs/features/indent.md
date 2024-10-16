@@ -28,6 +28,7 @@ Use the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} or
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
@@ -43,6 +44,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring the block indentation feature
 

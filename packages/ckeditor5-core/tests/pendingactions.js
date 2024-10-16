@@ -31,6 +31,14 @@ describe( 'PendingActions', () => {
 		expect( PendingActions.isContextPlugin ).to.true;
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PendingActions.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PendingActions.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should have hasAny observable', () => {
 			const spy = sinon.spy();

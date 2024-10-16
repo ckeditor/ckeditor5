@@ -33,6 +33,14 @@ describe( 'FontBackgroundColorEditing', () => {
 		expect( FontBackgroundColorEditing.pluginName ).to.equal( 'FontBackgroundColorEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontBackgroundColorEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontBackgroundColorEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontBackgroundColor' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontBackgroundColor' ) ).to.be.true;

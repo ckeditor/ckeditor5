@@ -35,4 +35,11 @@ export default class Alignment extends Plugin {
 	public static get pluginName() {
 		return 'Alignment' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

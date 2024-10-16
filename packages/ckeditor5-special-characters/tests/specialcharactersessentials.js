@@ -25,4 +25,12 @@ describe( 'SpecialCharactersEssentials', () => {
 	it( 'should be named', () => {
 		expect( SpecialCharactersEssentials.pluginName ).to.equal( 'SpecialCharactersEssentials' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SpecialCharactersEssentials.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SpecialCharactersEssentials.isPremiumPlugin ).to.be.false;
+	} );
 } );

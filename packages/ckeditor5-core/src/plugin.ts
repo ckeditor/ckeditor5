@@ -146,14 +146,14 @@ export default class Plugin extends /* #__PURE__ */ ObservableMixin() implements
 	/**
 	 * @inheritDoc
 	 */
-	public static get isOfficialPlugin(): false {
+	public static get isOfficialPlugin(): boolean {
 		return false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get isPremiumPlugin(): false {
+	public static get isPremiumPlugin(): boolean {
 		return false;
 	}
 }

@@ -41,4 +41,11 @@ export default class ImageInline extends Plugin {
 	public static get pluginName() {
 		return 'ImageInline' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

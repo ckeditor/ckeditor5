@@ -34,6 +34,13 @@ export default class TableStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ StyleUtils ] as const;
 	}

@@ -13,6 +13,7 @@ modified_at: 2023-02-22
 The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
 
 ## Demo
+
 Use the insert table button {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 
 Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its edge.
@@ -189,6 +190,7 @@ The above model structure will be rendered to the data and to the editing view a
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
 
@@ -204,6 +206,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ### Table contextual toolbar
 
@@ -220,7 +223,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
 
 ### Default table headers
 
@@ -267,6 +269,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
 <info-box>
 	Check the {@link tutorials/crash-course/editor step-by-step tutorial} if you need more information about the technical side of this solution.
 </info-box>
@@ -274,7 +277,6 @@ ClassicEditor
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
 
 ## Common API
 

@@ -19,6 +19,7 @@ The simple upload adapter lets you upload images to your server using the [`XMLH
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
@@ -34,6 +35,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 

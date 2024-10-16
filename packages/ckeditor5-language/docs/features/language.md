@@ -34,6 +34,7 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
@@ -49,6 +50,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring available languages
 

@@ -29,6 +29,7 @@ Select the text you want to highlight. Then use the highlight toolbar button {@i
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Highlight } from 'ckeditor5';
 
@@ -44,6 +45,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring the highlight options
 
@@ -195,6 +197,7 @@ Then, update the classes in the style sheet so the content corresponds to the UI
 ## Related features
 
 CKEditor&nbsp;5 has more features that can help you style your content:
+
 * {@link features/style Styles} &ndash; Apply pre-configured styles like highlight or spoiler to existing content elements.
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.

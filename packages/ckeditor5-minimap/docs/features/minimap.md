@@ -35,6 +35,7 @@ Scroll the content, and the minimap in the sidebar will show your current locati
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { DecoupledEditor, Minimap } from 'ckeditor5';
 
@@ -49,6 +50,7 @@ DecoupledEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 

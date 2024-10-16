@@ -46,6 +46,14 @@ describe( 'Base64UploadAdapter', () => {
 		expect( Base64UploadAdapter.pluginName ).to.equal( 'Base64UploadAdapter' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Base64UploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Base64UploadAdapter.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should set the loader', () => {
 			return ClassicTestEditor

@@ -28,19 +28,21 @@ This tutorial will reference various parts of the {@link framework/architecture/
 
 ## Let's start
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to start the editor.
-
-The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/starter-files), run the `npm install` command, and you can start coding right away.
+The easiest way to get started is to grab the starter project using the commands below.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/block-widget/starter-files
+npx -y degit ckeditor/ckeditor5-tutorials-examples/block-widget/starter-files block-widget
+cd block-widget
 
 npm install
 npm run dev
 ```
 
-You should see a CKEditor&nbsp;5 instance in your browser like this:
+This will create a new directory called `block-widget` with the necessary files. The `npm install` command will install all the dependencies, and `npm run dev` will start the development server.
+
+The editor with some basic plugins is created in the `main.js` file.
+
+Open the URL displayed in your terminal. If everything went well, you should see a CKEditor&nbsp;5 instance in your browser like this:
 
 {@img assets/img/tutorial-implementing-a-widget-1.png Screenshot of a classic editor initialized from source.}
 
@@ -111,16 +113,6 @@ Finally, you need to load the `SimpleBox` plugin in your `main.js` file:
 ```js
 // main.js
 
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Essentials,
-	Heading,
-	List,
-	Paragraph
-} from 'ckeditor5';
-
 import SimpleBox from './simplebox/simplebox';                                 // ADDED
 
 ClassicEditor
@@ -131,15 +123,6 @@ ClassicEditor
 			SimpleBox                                                          // ADDED
 		],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 
@@ -369,16 +352,6 @@ To learn that, use the official {@link framework/development-tools/inspector CKE
 ```js
 // main.js
 
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Essentials,
-	Heading,
-	List,
-	Paragraph
-} from 'ckeditor5';
-
 import SimpleBox from './simplebox/simplebox';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';                 // ADDED
@@ -398,9 +371,6 @@ ClassicEditor
 		CKEditorInspector.attach( { 'editor': editor } );
 
 		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 
@@ -843,8 +813,8 @@ You can see the block widget implementation in action in the editor below. You c
 If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project) available.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/block-widget/final-project
+npx -y degit ckeditor/ckeditor5-tutorials-examples/block-widget/final-project final-project
+cd final-project
 
 npm install
 npm run dev
