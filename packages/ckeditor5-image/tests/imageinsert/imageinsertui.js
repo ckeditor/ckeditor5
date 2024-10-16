@@ -40,6 +40,14 @@ describe( 'ImageInsertUI', () => {
 		expect( ImageInsertUI.pluginName ).to.equal( 'ImageInsertUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageInsertUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageInsertUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( '#constructor()', () => {
 		beforeEach( async () => {
 			await createEditor( { plugins: [ ImageInsertUI ] } );

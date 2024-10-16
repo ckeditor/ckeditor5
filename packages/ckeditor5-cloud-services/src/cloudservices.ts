@@ -72,6 +72,13 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ CloudServicesCore ] as const;
 	}

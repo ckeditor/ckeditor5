@@ -30,6 +30,14 @@ describe( 'Notification', () => {
 		await editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Notification.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Notification.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should create notification plugin', () => {
 			expect( notification ).to.instanceof( Notification );

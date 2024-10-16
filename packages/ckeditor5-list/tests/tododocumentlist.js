@@ -16,6 +16,14 @@ describe( 'TodoDocumentList', () => {
 		expect( TodoDocumentList.pluginName ).to.equal( 'TodoDocumentList' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TodoDocumentList.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TodoDocumentList.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require TodoList', () => {
 		expect( TodoDocumentList.requires ).to.deep.equal( [ TodoList ] );
 	} );

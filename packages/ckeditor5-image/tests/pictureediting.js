@@ -54,6 +54,14 @@ describe( 'PictureEditing', () => {
 		expect( PictureEditing.pluginName ).to.equal( 'PictureEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PictureEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PictureEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( PictureEditing ) ).to.be.instanceOf( PictureEditing );
 	} );

@@ -72,6 +72,14 @@ describe( 'CodeBlockEditing', () => {
 		expect( CodeBlockEditing.pluginName ).to.equal( 'CodeBlockEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CodeBlockEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CodeBlockEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'defines plugin dependencies', () => {
 		expect( CodeBlockEditing.requires ).to.have.members( [ ShiftEnter ] );
 	} );

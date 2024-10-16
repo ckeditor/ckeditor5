@@ -38,6 +38,23 @@ module.exports = {
 	},
 	overrides: [
 		{
+			files: [ './packages/*/src/**/*.ts' ],
+			rules: {
+				'ckeditor5-rules/ckeditor-plugin-flags': [
+					'error',
+					{
+						requiredFlags: [
+							{
+								name: 'isOfficialPlugin',
+								returnValue: true
+							}
+						],
+						disallowedFlags: [ 'isPremiumPlugin' ]
+					}
+				]
+			}
+		},
+		{
 			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
 				'no-unused-expressions': 'off',
