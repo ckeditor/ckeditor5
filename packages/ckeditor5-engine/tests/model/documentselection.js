@@ -2181,6 +2181,16 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	it( 'should throw if one of ranges has invalid position (position not exisitng in current model tree)', () => {
+		expectToThrowCKEditorError( () => {
+			doc.selection._setTo( new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 2, 22 ] ) ) );
+		}, /document-selection-wrong-position/, model );
+
+		expectToThrowCKEditorError( () => {
+			doc.selection._setTo( new Range( new Position( root, [ 1, 22 ] ), new Position( root, [ 2, 0 ] ) ) );
+		}, /document-selection-wrong-position/, model );
+	} );
+
 	it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {
 		root._removeChildren( 0, root.childCount );
 		root._appendChild( '\uD83D\uDCA9' );
