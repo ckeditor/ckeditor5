@@ -299,7 +299,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 
 	/**
-	 * TODO
+	 * Clears the asynchronous blur event timeout on demand. See {@link #_blur} to learn more.
 	 */
 	private _clearBlurTimeout(): void {
 		clearTimeout( this._blurTimeout! );
