@@ -21,4 +21,12 @@ describe( 'Bookmark', () => {
 			Widget
 		] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Bookmark.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Bookmark.isPremiumPlugin ).to.be.false;
+	} );
 } );

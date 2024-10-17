@@ -31,4 +31,11 @@ export default class Bookmark extends Plugin {
 	public static get requires() {
 		return [ BookmarkEditing, BookmarkUI, Widget ] as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }
