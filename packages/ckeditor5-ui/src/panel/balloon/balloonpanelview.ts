@@ -289,6 +289,7 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthEast,
 				defaultPositions.viewportStickyNorth
 			],
+			// TODO ShadowRoot
 			limiter: global.document.body,
 			fitInViewport: true
 		}, options ) as PositionOptions;
@@ -400,6 +401,9 @@ export default class BalloonPanelView extends View {
 		let targetElement = getDomElement( options.target );
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
 
+		// TODO ShadowRoot
+		//  - we need to listen to the scroll event on every ShadowRoot
+		//  (it is not composed and does not propagate to parent DOM)
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
 			const scrollTarget = domEvt.target as Element;

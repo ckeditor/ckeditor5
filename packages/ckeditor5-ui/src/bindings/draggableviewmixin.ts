@@ -77,6 +77,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * Attaches the listeners for the dragging and drag end.
 		 */
 		private _attachDragListeners() {
+			// TODO ShadowRoot - those events will propagate across the shadow DOM boundary (bubbles and composed flags set)
 			this.listenTo( global.document, 'mouseup', this._onDragEndBound );
 			this.listenTo( global.document, 'touchend', this._onDragEndBound );
 			this.listenTo( global.document, 'mousemove', this._onDragBound );
@@ -87,6 +88,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * Detaches the listeners after the drag end.
 		 */
 		private _detachDragListeners() {
+			// TODO ShadowRoot - those events will propagate across the shadow DOM boundary (bubbles and composed flags set)
 			this.stopListening( global.document, 'mouseup', this._onDragEndBound );
 			this.stopListening( global.document, 'touchend', this._onDragEndBound );
 			this.stopListening( global.document, 'mousemove', this._onDragBound );

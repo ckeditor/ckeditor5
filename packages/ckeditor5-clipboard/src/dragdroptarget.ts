@@ -29,6 +29,7 @@ import {
 	DomEmitterMixin,
 	delay,
 	ResizeObserver,
+	getParentOrHostElement,
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
@@ -528,7 +529,9 @@ function findScrollableElement( domNode: HTMLElement ): HTMLElement {
 	let domElement: HTMLElement = domNode;
 
 	do {
-		domElement = domElement.parentElement!;
+		// TODO ShadowRoot
+		//  - use helper for easier parent element access
+		domElement = getParentOrHostElement( domElement ) as HTMLElement;
 
 		const overflow = global.window.getComputedStyle( domElement ).overflowY;
 

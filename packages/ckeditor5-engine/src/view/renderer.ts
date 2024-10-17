@@ -23,6 +23,7 @@ import {
 	isText,
 	remove,
 	indexOf,
+	getSelection,
 	type DiffResult,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
@@ -993,12 +994,14 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
-		const domSelection = domDocument.getSelection()!;
+		const domSelection = getSelection( domRoot )!;
 		const domRange = domDocument.createRange();
 
-		domSelection.removeAllRanges();
 		domRange.selectNodeContents( container );
-		domSelection.addRange( domRange );
+		domSelection.setBaseAndExtent(
+			domRange.startContainer, domRange.startOffset,
+			domRange.endContainer, domRange.endOffset
+		);
 	}
 
 	/**
@@ -1007,7 +1010,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param domRoot A valid DOM root where the DOM selection should be rendered.
 	 */
 	private _updateDomSelection( domRoot: DomElement ) {
-		const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( domRoot )!;
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
@@ -1070,7 +1073,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	private _fakeSelectionNeedsUpdate( domRoot: DomElement ): boolean {
 		const container = this._fakeSelectionContainer;
-		const domSelection = domRoot.ownerDocument.getSelection()!;
+		const domSelection = getSelection( domRoot )!;
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
@@ -1090,10 +1093,12 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * Removes the DOM selection.
 	 */
 	private _removeDomSelection(): void {
+		// TODO ShadowRoot - this currently does not work in Shadow DOM but also looks like it has no effect
 		for ( const doc of this.domDocuments ) {
 			const domSelection = doc.getSelection()!;
 
 			if ( domSelection.rangeCount ) {
+				// TODO ShadowRoot - the activeElement of the closest ShadowRoot?
 				const activeDomElement = doc.activeElement!;
 				const viewElement = this.domConverter.mapDomToView( activeDomElement as DomElement );
 
@@ -1250,6 +1255,7 @@ function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPosition
 	// To stay on the safe side, the fix being as specific as possible, it targets only the
 	// selection which is at the very end of the element and preceded by <br />.
 	if ( childAtOffset && ( childAtOffset as DomElement ).tagName == 'BR' ) {
+		// TODO ShadowRoot
 		domSelection.addRange( domSelection.getRangeAt( 0 ) );
 	}
 }

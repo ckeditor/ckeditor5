@@ -239,8 +239,12 @@ export default class TableSelection extends Plugin {
 				highlighted.add( viewElement );
 			}
 
-			const lastViewCell = conversionApi.mapper.toViewElement( selectedCells[ selectedCells.length - 1 ] );
-			viewWriter.setSelection( lastViewCell, 0 );
+			// TODO ShadowRoot - find nearest selectable position so browser won't try to fix it
+			const lastModelCell = selectedCells[ selectedCells.length - 1 ];
+			const modelRange = editor.model.schema.getNearestSelectionRange( editor.model.createPositionAt( lastModelCell, 0 ), 'forward' );
+			const viewRange = conversionApi.mapper.toViewRange( modelRange );
+
+			viewWriter.setSelection( viewRange.start );
 		}, { priority: 'lowest' } ) );
 
 		function clearHighlightedTableCells( viewWriter: DowncastWriter ) {
