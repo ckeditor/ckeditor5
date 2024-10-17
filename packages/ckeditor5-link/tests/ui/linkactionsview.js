@@ -6,6 +6,7 @@
 /* globals window, document, Event */
 
 import LinkActionsView from '../../src/ui/linkactionsview.js';
+import { createBookmarkCallbacks } from '../../src/utils.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
@@ -19,7 +20,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bookmark, BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 describe( 'LinkActionsView', () => {
-	let view, editor, editorElement, bookmarkEditing;
+	let view, editor, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,8 +32,7 @@ describe( 'LinkActionsView', () => {
 			plugins: [ Essentials, Paragraph, Bookmark, BookmarkEditing ]
 		} );
 
-		bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-		view = new LinkActionsView( { t: () => {} }, undefined, bookmarkEditing );
+		view = new LinkActionsView( { t: () => {} }, undefined, createBookmarkCallbacks( editor ) );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -162,8 +162,6 @@ describe( 'LinkActionsView', () => {
 							view.href = '#foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
-							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_self' );
-							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -180,8 +178,6 @@ describe( 'LinkActionsView', () => {
 							view.href = '#foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
-							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
-							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );

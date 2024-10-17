@@ -18,6 +18,7 @@ import type {
 	ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
+import type { Editor } from 'ckeditor5/src/core.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 import type { BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
@@ -197,32 +198,44 @@ export function openLink( link: string ): void {
 }
 
 /**
- * Scrolls the view to the desired bookmark or open a link in new window.
+ * Creates the bookmark callbacks for handling link opening experience.
  */
-export function handleLinkOpening( link: string, bookmarkEditing: BookmarkEditing | null ): void {
-	if ( !link.startsWith( '#' ) || !bookmarkEditing ) {
-		openLink( link );
+export function createBookmarkCallbacks( editor: Editor ): Record<string, Function> {
+	const bookmarkEditing: BookmarkEditing | null = editor.plugins.has( 'BookmarkEditing' ) ?
+		editor.plugins.get( 'BookmarkEditing' ) :
+		null;
 
-		return;
+	/**
+	 * Returns `true` when bookmark `id` matches the hash from `link`.
+	 */
+	function isScrollableToTarget( link: string | null ): boolean {
+		return !!link &&
+			link.startsWith( '#' ) &&
+			!!bookmarkEditing &&
+			!!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
 	}
 
-	const bookmarkId = link.slice( 1 );
-	const modelBookmark = bookmarkEditing.getElementForBookmarkId( bookmarkId );
+	/**
+	 * Scrolls the view to the desired bookmark or open a link in new window.
+	 */
+	function scrollToTarget( link: string ): void {
+		const bookmarkId = link.slice( 1 );
+		const modelBookmark = bookmarkEditing!.getElementForBookmarkId( bookmarkId );
 
-	if ( !modelBookmark ) {
-		openLink( link );
+		editor.model.change( writer => {
+			writer.setSelection( modelBookmark!, 'on' );
+		} );
 
-		return;
+		editor.editing.view.scrollToTheSelection( {
+			alignToTop: true,
+			forceScroll: true
+		} );
 	}
 
-	bookmarkEditing.editor.model.change( writer => {
-		writer.setSelection( modelBookmark, 'before' );
-	} );
-
-	bookmarkEditing.editor.editing.view.scrollToTheSelection( {
-		alignToTop: true,
-		forceScroll: true
-	} );
+	return {
+		isScrollableToTarget,
+		scrollToTarget
+	};
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };

@@ -10,9 +10,8 @@
 import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
-import { type BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
-import { ensureSafeUrl, handleLinkOpening } from '../utils.js';
+import { ensureSafeUrl, openLink } from '../utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -71,19 +70,19 @@ export default class LinkActionsView extends View {
 
 	private readonly _linkConfig: LinkConfig;
 
-	private readonly _bookmarkEditing: BookmarkEditing | null;
+	private readonly _options: Record<string, Function> | undefined;
 
 	declare public t: LocaleTranslate;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, linkConfig: LinkConfig = {}, bookmarkEditing: BookmarkEditing | null = null ) {
+	constructor( locale: Locale, linkConfig: LinkConfig = {}, options?: Record<string, Function> ) {
 		super( locale );
 
 		const t = locale.t;
 
-		this._bookmarkEditing = bookmarkEditing;
+		this._options = options;
 		this.previewButtonView = this._createPreviewButton();
 		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
@@ -211,31 +210,25 @@ export default class LinkActionsView extends View {
 					'ck-link-actions__preview'
 				],
 				href: bind.to( 'href', href => href && ensureSafeUrl( href, this._linkConfig.allowedProtocols ) ),
-				target: bind.to( 'href', href => {
-					if ( isScrollableToBookmark( href, this._bookmarkEditing ) ) {
-						return '_self';
-					}
-
-					return '_blank';
-				} ),
-				rel: bind.to( 'href', href => {
-					if ( isScrollableToBookmark( href, this._bookmarkEditing ) ) {
-						return 'noopener';
-					}
-
-					return 'noopener noreferrer';
-				} )
+				target: '_blank',
+				rel: 'noopener noreferrer'
 			},
 			on: {
-				click: bind.to( () => {
-					handleLinkOpening( this.href!, this._bookmarkEditing );
+				click: bind.to( evt => {
+					if ( this._options && this._options.isScrollableToTarget( this.href ) ) {
+						evt.preventDefault();
+
+						this._options.scrollToTarget( this.href );
+					} else {
+						openLink( this.href! );
+					}
 				} )
 			}
 		} );
 
 		button.bind( 'tooltip' ).to( this, 'href', href => {
-			if ( isScrollableToBookmark( href, this._bookmarkEditing ) ) {
-				return t( 'Scroll to bookmark' );
+			if ( this._options && this._options.isScrollableToTarget( href ) ) {
+				return t( 'Scroll to target' );
 			}
 
 			return t( 'Open link in new tab' );
@@ -249,15 +242,11 @@ export default class LinkActionsView extends View {
 
 		button.template!.tag = 'a';
 
+		// When `eventListeners` is "cleaned" the binding to the `click` event is removed.
+		// button.template!.eventListeners = {};
+
 		return button;
 	}
-}
-
-/**
- * Checks if clicking the link can be scrolled to bookmark when bookmark `id` matches hash `url`.
- */
-function isScrollableToBookmark( link: string | undefined, bookmarkEditing: BookmarkEditing | null ): boolean {
-	return !!link && link.startsWith( '#' ) && !!bookmarkEditing && !!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
 }
 
 /**
