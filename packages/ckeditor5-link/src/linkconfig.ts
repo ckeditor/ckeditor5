@@ -180,6 +180,11 @@ export interface LinkConfig {
 	 * See also the {@glink features/link#custom-link-attributes-decorators link feature guide} for more information.
 	 */
 	decorators?: Record<string, LinkDecoratorDefinition>;
+
+	/**
+	 * TODO
+	 */
+	toolbar?: Array<string>;
 }
 
 /**

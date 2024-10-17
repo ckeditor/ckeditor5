@@ -7,7 +7,7 @@
  * @module link/linkui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -21,18 +21,22 @@ import {
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	MenuBarMenuListItemButtonView,
+	ToolbarView,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
+import LinkPreviewButtonView from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
-import LinkActionsView from './ui/linkactionsview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
-import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils.js';
+import { addLinkProtocolIfApplicable, ensureSafeUrl, isLinkElement, LINK_KEYSTROKE } from './utils.js';
 
 import linkIcon from '../theme/icons/link.svg';
+import unlinkIcon from '../theme/icons/unlink.svg';
+
+import '../theme/linktoolbar.css';
 
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
@@ -44,9 +48,9 @@ const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
  */
 export default class LinkUI extends Plugin {
 	/**
-	 * The actions view displayed inside of the balloon.
+	 * The toolbar view displayed inside of the balloon.
 	 */
-	public actionsView: LinkActionsView | null = null;
+	public toolbarView: ToolbarView | null = null;
 
 	/**
 	 * The form view displayed inside the balloon.
@@ -91,8 +95,9 @@ export default class LinkUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		// Create toolbar buttons.
-		this._createToolbarLinkButton();
+		this._registerToolbarLinkButton();
 		this._enableBalloonActivators();
+		this._registerLinkToolbarButtons();
 
 		// Renders a fake visual selection marker on an expanded selection.
 		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
@@ -150,8 +155,8 @@ export default class LinkUI extends Plugin {
 			this.formView.destroy();
 		}
 
-		if ( this.actionsView ) {
-			this.actionsView.destroy();
+		if ( this.toolbarView ) {
+			this.toolbarView.destroy();
 		}
 	}
 
@@ -159,7 +164,7 @@ export default class LinkUI extends Plugin {
 	 * Creates views.
 	 */
 	private _createViews() {
-		this.actionsView = this._createActionsView();
+		this.toolbarView = this._createToolbarView();
 		this.formView = this._createFormView();
 
 		// Attach lifecycle actions to the the balloon.
@@ -167,42 +172,29 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:link/ui/linkactionsview~LinkActionsView} instance.
+	 * Creates the ToolbarView instance.
 	 */
-	private _createActionsView(): LinkActionsView {
+	private _createToolbarView(): ToolbarView {
 		const editor = this.editor;
-		const actionsView = new LinkActionsView( editor.locale, editor.config.get( 'link' ) );
-		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
-		const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
+		const toolbarView = new ToolbarView( editor.locale );
 
-		actionsView.bind( 'href' ).to( linkCommand, 'value' );
-		actionsView.editButtonView.bind( 'isEnabled' ).to( linkCommand );
-		actionsView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
+		toolbarView.class = 'ck-link-toolbar';
 
-		// Execute unlink command after clicking on the "Edit" button.
-		this.listenTo( actionsView, 'edit', () => {
-			this._addFormView();
-		} );
+		toolbarView.fillFromConfig( editor.config.get( 'link.toolbar' )!, editor.ui.componentFactory );
 
-		// Execute unlink command after clicking on the "Unlink" button.
-		this.listenTo( actionsView, 'unlink', () => {
-			editor.execute( 'unlink' );
-			this._hideUI();
-		} );
-
-		// Close the panel on esc key press when the **actions have focus**.
-		actionsView.keystrokes.set( 'Esc', ( data, cancel ) => {
+		// Close the panel on esc key press when the **link toolbar have focus**.
+		toolbarView.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideUI();
 			cancel();
 		} );
 
-		// Open the form view on Ctrl+K when the **actions have focus**..
-		actionsView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
+		// Open the form view on Ctrl+K when the **link toolbar have focus**..
+		toolbarView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
 			this._addFormView();
 			cancel();
 		} );
 
-		return actionsView;
+		return toolbarView;
 	}
 
 	/**
@@ -256,7 +248,7 @@ export default class LinkUI extends Plugin {
 	 * Creates a toolbar Link button. Clicking this button will show
 	 * a {@link #_balloon} attached to the selection.
 	 */
-	private _createToolbarLinkButton(): void {
+	private _registerToolbarLinkButton(): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'link', () => {
@@ -274,6 +266,75 @@ export default class LinkUI extends Plugin {
 
 			button.set( {
 				role: 'menuitemcheckbox'
+			} );
+
+			return button;
+		} );
+	}
+
+	/**
+	 * Registers link toolbar buttons in the component factory.
+	 */
+	private _registerLinkToolbarButtons(): void {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'linkPreview', locale => {
+			const button = new LinkPreviewButtonView( locale );
+			const allowedProtocols = editor.config.get( 'link.allowedProtocols' )!;
+			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+			const t = locale.t;
+
+			button.tooltip = t( 'Open link in new tab' );
+
+			button.bind( 'href' ).to( linkCommand, 'value', href => {
+				return href && ensureSafeUrl( href, allowedProtocols );
+			} );
+
+			button.bind( 'label' ).to( linkCommand, 'value', href => {
+				return href || t( 'This link has no URL' );
+			} );
+
+			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'unlink', locale => {
+			const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
+			const button = new ButtonView( locale );
+			const t = locale.t;
+
+			button.set( {
+				label: t( 'Unlink' ),
+				icon: unlinkIcon,
+				tooltip: true
+			} );
+
+			button.bind( 'isEnabled' ).to( unlinkCommand );
+
+			this.listenTo( button, 'execute', () => {
+				editor.execute( 'unlink' );
+				this._hideUI();
+			} );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'editLink', locale => {
+			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+			const button = new ButtonView( locale );
+			const t = locale.t;
+
+			button.set( {
+				label: t( 'Edit link' ),
+				icon: icons.pencil,
+				tooltip: true
+			} );
+
+			button.bind( 'isEnabled' ).to( linkCommand );
+
+			this.listenTo( button, 'execute', () => {
+				this._addFormView();
 			} );
 
 			return button;
@@ -343,8 +404,8 @@ export default class LinkUI extends Plugin {
 	private _enableUserBalloonInteractions(): void {
 		// Focus the form if the balloon is visible and the Tab key has been pressed.
 		this.editor.keystrokes.set( 'Tab', ( data, cancel ) => {
-			if ( this._areActionsVisible && !this.actionsView!.focusTracker.isFocused ) {
-				this.actionsView!.focus();
+			if ( this._isToolbarVisible && !this.toolbarView!.focusTracker.isFocused ) {
+				this.toolbarView!.focus();
 				cancel();
 			}
 		}, {
@@ -372,21 +433,21 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Adds the {@link #actionsView} to the {@link #_balloon}.
+	 * Adds the {@link #toolbarView} to the {@link #_balloon}.
 	 *
 	 * @internal
 	 */
 	public _addActionsView(): void {
-		if ( !this.actionsView ) {
+		if ( !this.toolbarView ) {
 			this._createViews();
 		}
 
-		if ( this._areActionsInPanel ) {
+		if ( this._isToolbarInPanel ) {
 			return;
 		}
 
 		this._balloon.add( {
-			view: this.actionsView!,
+			view: this.toolbarView!,
 			position: this._getBalloonPositionData()
 		} );
 	}
@@ -474,7 +535,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Shows the correct UI type. It is either {@link #formView} or {@link #actionsView}.
+	 * Shows the correct UI type. It is either {@link #formView} or {@link #toolbarView}.
 	 *
 	 * @internal
 	 */
@@ -501,7 +562,7 @@ export default class LinkUI extends Plugin {
 		// If there's a link under the selection...
 		else {
 			// Go to the editing UI if actions are already visible.
-			if ( this._areActionsVisible ) {
+			if ( this._isToolbarVisible ) {
 				this._addFormView();
 			}
 			// Otherwise display just the actions UI.
@@ -525,24 +586,26 @@ export default class LinkUI extends Plugin {
 	 * See {@link #_addFormView}, {@link #_addActionsView}.
 	 */
 	private _hideUI(): void {
-		if ( !this._isUIInPanel ) {
-			return;
-		}
-
 		const editor = this.editor;
-
-		this.stopListening( editor.ui, 'update' );
-		this.stopListening( this._balloon, 'change:visibleView' );
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
 		editor.editing.view.focus();
 
+		if ( !this._isUIInPanel ) {
+			return;
+		}
+
+		this.stopListening( editor.ui, 'update' );
+		this.stopListening( this._balloon, 'change:visibleView' );
+
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();
 
-		// Then remove the actions view because it's beneath the form.
-		this._balloon.remove( this.actionsView! );
+		// Then remove the link toolbar view because it's beneath the form.
+		if ( this._isToolbarInPanel ) {
+			this._balloon.remove( this.toolbarView! );
+		}
 
 		this._hideFakeVisualSelection();
 	}
@@ -570,7 +633,7 @@ export default class LinkUI extends Plugin {
 			//   of the link,
 			// * the selection went to a different parent when creating a NEW link. E.g. someone
 			//   else modified the document.
-			// * the selection has expanded (e.g. displaying link actions then pressing SHIFT+Right arrow).
+			// * the selection has expanded (e.g. displaying link toolbar then pressing SHIFT+Right arrow).
 			//
 			// Note: #_getSelectedLinkElement will return a link for a non-collapsed selection only
 			// when fully selected.
@@ -611,35 +674,35 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #toolbarView} is in the {@link #_balloon}.
 	 */
-	private get _areActionsInPanel(): boolean {
-		return !!this.actionsView && this._balloon.hasView( this.actionsView );
+	private get _isToolbarInPanel(): boolean {
+		return !!this.toolbarView && this._balloon.hasView( this.toolbarView );
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #toolbarView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
-	private get _areActionsVisible(): boolean {
-		return !!this.actionsView && this._balloon.visibleView === this.actionsView;
+	private get _isToolbarVisible(): boolean {
+		return !!this.toolbarView && this._balloon.visibleView === this.toolbarView;
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #toolbarView} or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
-		return this._isFormInPanel || this._areActionsInPanel;
+		return this._isFormInPanel || this._isToolbarInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #toolbarView} or {@link #formView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
 	private get _isUIVisible(): boolean {
 		const visibleView = this._balloon.visibleView;
 
-		return !!this.formView && visibleView == this.formView || this._areActionsVisible;
+		return !!this.formView && visibleView == this.formView || this._isToolbarVisible;
 	}
 
 	/**
