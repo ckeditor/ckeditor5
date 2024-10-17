@@ -38,7 +38,8 @@ class TextView extends View {
 	constructor() {
 		super();
 
-		this.element = document.createTextNode( 'Sample text' );
+		this.element = document.createElement( 'span' );
+		this.element.innerHTML = 'Sample text';
 	}
 }
 

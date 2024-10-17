@@ -12,7 +12,8 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "lodash-es": "4.17.21"
+    "lodash-es": "4.17.21",
+    "@ckeditor/ckeditor5-ui": "43.2.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "43.2.0",

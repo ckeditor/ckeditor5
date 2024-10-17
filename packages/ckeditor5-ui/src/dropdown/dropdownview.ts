@@ -223,6 +223,7 @@ export default class DropdownView extends View<HTMLDivElement> {
 
 		this.keystrokes = new KeystrokeHandler();
 		this.focusTracker = new FocusTracker();
+		// this.focusTracker._label = 'DropdownView';
 
 		this.setTemplate( {
 			tag: 'div',
