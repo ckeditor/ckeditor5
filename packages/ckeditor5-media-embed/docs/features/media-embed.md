@@ -129,7 +129,7 @@ Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure t
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor&nbsp;5 can predict the `<iframe>` code: YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter (X) or Instagram, the editor cannot produce an `<iframe>` code. It also does not allow retrieving this code from an external oEmbed service. Therefore, for non-previewable media, it produces the default semantic output:
+Currently, the preview is only available for content providers for which CKEditor&nbsp;5 can predict the `<iframe>` code: YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like X (Twitter) or Instagram, the editor cannot produce an `<iframe>` code. It also does not allow retrieving this code from an external oEmbed service. Therefore, for non-previewable media, it produces the default semantic output:
 
 ```html
 <figure class="media">
@@ -250,11 +250,11 @@ First, having [secured the API key](https://iframely.com/docs/allow-origins), lo
 
 #### Semantic data
 
-You can convert all `<oembed>` elements like the following Twitter (X) post produced by CKEditor&nbsp;5:
+You can convert all `<oembed>` elements like the following X (Twitter) post produced by CKEditor&nbsp;5:
 
 ```html
 <figure class="media">
-	<oembed url="https://twitter.com/ckeditor/status/1021777799844126720"></oembed>
+	<oembed url="https://x.com/ckeditor/status/1021777799844126720"></oembed>
 </figure>
 ```
 
@@ -274,7 +274,7 @@ When you configure the feature to [include media previews](#including-previews-i
 
 ```html
 <figure class="media">
-	<div data-oembed-url="https://twitter.com/ckeditor/status/1021777799844126720">
+	<div data-oembed-url="https://x.com/ckeditor/status/1021777799844126720">
 		[Media preview]
 	</div>
 </figure>
@@ -316,7 +316,7 @@ You can convert `<oembed>` elements like the following Twitter (X) post produced
 
 ```html
 <figure class="media">
-	<oembed url="https://twitter.com/ckeditor/status/1021777799844126720"></oembed>
+	<oembed url="https://x.com/ckeditor/status/1021777799844126720"></oembed>
 </figure>
 ```
 
@@ -377,7 +377,7 @@ If the automatic embedding was unexpected, for instance when the link was meant 
 
 ## Styling media in the editor content
 
-While the editor comes with default styles for popular media providers like Facebook, Instagram or Twitter, you can create additional styles for non-previewable media in your editor content to help users identify them.
+While the editor comes with default styles for popular media providers like Facebook, Instagram or X, you can create additional styles for non-previewable media in your editor content to help users identify them.
 
 ### Styling non-previewable media
 

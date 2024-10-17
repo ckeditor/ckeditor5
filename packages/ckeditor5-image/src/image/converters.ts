@@ -229,13 +229,6 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 		const attributeNewValue = data.attributeNewValue as null | Array<ViewElementAttributes>;
 
 		if ( attributeNewValue && attributeNewValue.length ) {
-			// Make sure <picture> does not break attribute elements, for instance <a> in linked images.
-			const pictureElement = viewWriter.createContainerElement( 'picture', null,
-				attributeNewValue.map( sourceAttributes => {
-					return viewWriter.createEmptyElement( 'source', sourceAttributes );
-				} )
-			);
-
 			// Collect all wrapping attribute elements.
 			const attributeElements = [];
 			let viewElement = imgElement.parent;
@@ -249,8 +242,23 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 				viewElement = parentElement;
 			}
 
-			// Insert the picture and move img into it.
-			viewWriter.insert( viewWriter.createPositionBefore( imgElement ), pictureElement );
+			const hasPictureElement = imgElement.parent!.is( 'element', 'picture' );
+
+			// Reuse existing <picture> element (ckeditor5#17192) or create a new one.
+			const pictureElement = hasPictureElement ? imgElement.parent : viewWriter.createContainerElement( 'picture', null );
+
+			if ( !hasPictureElement ) {
+				viewWriter.insert( viewWriter.createPositionBefore( imgElement ), pictureElement );
+			}
+
+			viewWriter.remove( viewWriter.createRangeIn( pictureElement ) );
+
+			viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ),
+				attributeNewValue.map( sourceAttributes => {
+					return viewWriter.createEmptyElement( 'source', sourceAttributes );
+				} )
+			);
+
 			viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionAt( pictureElement, 'end' ) );
 
 			// Apply collected attribute elements over the new picture element.
