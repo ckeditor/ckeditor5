@@ -18,13 +18,13 @@ import parseArguments from './utils/parsearguments.mjs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import { RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
+import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const githubToken = await getGitHubToken( cliArguments );
 
 const { version: latestVersion } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
-
-let githubToken;
 
 const tasks = new Listr( [
 	{
@@ -90,8 +90,7 @@ const tasks = new Listr( [
 				version: latestVersion
 			} );
 		},
-		// Nightly releases are not stored in the repository.
-		skip: cliArguments.nightly || cliArguments.nightlyAlpha
+		skip: isNonCommittableRelease( cliArguments )
 	},
 	{
 		title: 'Creating the release page.',
@@ -107,23 +106,29 @@ const tasks = new Listr( [
 		options: {
 			persistentOutput: true
 		},
-		// Nightly releases are not described in the changelog.
-		skip: cliArguments.nightly || cliArguments.nightlyAlpha
+		skip: isNonCommittableRelease( cliArguments )
 	}
 ], getListrOptions( cliArguments ) );
 
-( async () => {
-	try {
-		if ( process.env.CKE5_RELEASE_TOKEN ) {
-			githubToken = process.env.CKE5_RELEASE_TOKEN;
-		} else if ( !( cliArguments.nightly || cliArguments.nightlyAlpha ) ) {
-			githubToken = await releaseTools.provideToken();
-		}
-
-		await tasks.run();
-	} catch ( err ) {
+tasks.run()
+	.catch( err => {
 		process.exitCode = 1;
 
 		console.error( err );
+	} );
+
+/**
+ * @param {ReleaseOptions} cliArguments
+ * @returns {Promise.<string|null>}
+ */
+async function getGitHubToken( cliArguments ) {
+	if ( process.env.CKE5_RELEASE_TOKEN ) {
+		return process.env.CKE5_RELEASE_TOKEN;
 	}
-} )();
+
+	if ( !isNonCommittableRelease( cliArguments ) ) {
+		return releaseTools.provideToken();
+	}
+
+	return null;
+}
