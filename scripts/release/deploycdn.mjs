@@ -42,12 +42,10 @@ const tasks = new Listr( [
 	}
 ], getListrOptions( cliArguments ) );
 
-( async () => {
-	try {
-		await tasks.run();
-	} catch ( err ) {
-		process.exitCode = 1;
+try {
+	await tasks.run();
+} catch ( err ) {
+	process.exitCode = 1;
 
-		console.error( err );
-	}
-} )();
+	console.error( err );
+}

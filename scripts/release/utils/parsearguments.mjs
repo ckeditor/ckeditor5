@@ -15,6 +15,7 @@ import os from 'os';
 export default function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
+			'internal',
 			'nightly',
 			'nightly-alpha',
 			'verbose',
@@ -35,6 +36,7 @@ export default function parseArguments( cliArguments ) {
 		],
 
 		default: {
+			internal: false,
 			nightly: false,
 			'nightly-alpha': false,
 			concurrency: os.cpus().length / 2,
@@ -69,6 +71,10 @@ export default function parseArguments( cliArguments ) {
 		options.npmTag = 'alpha';
 	}
 
+	if ( options.internal ) {
+		options.npmTag = 'internal';
+	}
+
 	if ( process.env.CI ) {
 		options.ci = true;
 	}
@@ -94,6 +100,8 @@ function replaceKebabCaseWithCamelCase( options, keys ) {
 
 /**
  * @typedef {Object} ReleaseOptions
+ *
+ * @property {Boolean} internal
  *
  * @property {Boolean} nightly
  *
