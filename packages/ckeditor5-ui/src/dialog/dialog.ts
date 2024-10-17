@@ -62,6 +62,13 @@ export default class Dialog extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 

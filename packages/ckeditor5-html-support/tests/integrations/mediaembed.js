@@ -9,6 +9,7 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { range } from 'lodash-es';
+import MediaEmbedElementSupport from '../../src/integrations/mediaembed.js';
 
 /* global document */
 
@@ -36,6 +37,14 @@ describe( 'MediaEmbedElementSupport', () => {
 			editorElement.remove();
 
 			return editor.destroy();
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( MediaEmbedElementSupport.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( MediaEmbedElementSupport.isPremiumPlugin ).to.be.false;
 		} );
 
 		it( 'should be named', () => {

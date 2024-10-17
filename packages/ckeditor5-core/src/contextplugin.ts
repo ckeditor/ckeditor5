@@ -63,6 +63,20 @@ export default class ContextPlugin extends /* #__PURE__ */ ObservableMixin() imp
 	public static get isContextPlugin(): true {
 		return true;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get isOfficialPlugin(): boolean {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get isPremiumPlugin(): boolean {
+		return false;
+	}
 }
 
 /**

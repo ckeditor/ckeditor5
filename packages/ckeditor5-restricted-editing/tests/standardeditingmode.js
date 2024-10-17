@@ -34,6 +34,14 @@ describe( 'StandardEditingMode', () => {
 		expect( StandardEditingMode.pluginName ).to.equal( 'StandardEditingMode' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StandardEditingMode.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StandardEditingMode.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load the StandardEditingModeEditing plugin', () => {
 		expect( editor.plugins.get( StandardEditingModeEditing ) ).to.be.instanceOf( StandardEditingModeEditing );
 	} );

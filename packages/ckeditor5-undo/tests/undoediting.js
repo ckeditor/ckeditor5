@@ -30,6 +30,14 @@ describe( 'UndoEditing', () => {
 		expect( UndoEditing.pluginName ).to.equal( 'UndoEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( UndoEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( UndoEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 			label: 'Undo',

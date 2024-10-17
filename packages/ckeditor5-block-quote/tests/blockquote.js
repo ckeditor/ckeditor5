@@ -11,4 +11,12 @@ describe( 'BlockQuote', () => {
 	it( 'requires BlockQuoteEditing and BlockQuoteUI', () => {
 		expect( BlockQuote.requires ).to.deep.equal( [ BlockQuoteEditing, BlockQuoteUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BlockQuote.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BlockQuote.isPremiumPlugin ).to.be.false;
+	} );
 } );

@@ -92,6 +92,14 @@ describe( 'BlockToolbar', () => {
 		expect( BlockToolbar.pluginName ).to.equal( 'BlockToolbar' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BlockToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BlockToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should not throw when empty config is provided', async () => {
 		// Remove default editor instance.
 		await editor.destroy();

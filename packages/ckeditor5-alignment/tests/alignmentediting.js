@@ -29,6 +29,14 @@ describe( 'AlignmentEditing', () => {
 		await editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AlignmentEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AlignmentEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should have pluginName', () => {
 		expect( AlignmentEditing.pluginName ).to.equal( 'AlignmentEditing' );
 	} );

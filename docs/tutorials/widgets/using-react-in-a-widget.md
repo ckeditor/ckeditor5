@@ -31,19 +31,21 @@ There are a couple of things you should know before you start:
 
 ## Let's start
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/react-widget/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to start the editor.
-
-The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the starter-files directory, run the `npm install` command, and you can start coding right away.
+The easiest way to get started is to grab the starter project using the commands below.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/react-widget/starter-files
+npx -y degit ckeditor/ckeditor5-tutorials-examples/react-widget/starter-files react-widget
+cd react-widget
 
 npm install
 npm run dev
 ```
 
-You should see a "Hello world" application in your web browser, which might not be much but it is a good start:
+This will create a new directory called `react-widget` with the necessary files. The `npm install` command will install all the dependencies, and `npm run dev` will start the development server.
+
+The editor with some basic plugins is created in the `main.js` file.
+
+Open the URL displayed in your terminal. If everything goes well, you should see a "Hello world" application in your web browser, which might not be much, but it is a good start:
 
 {@img assets/img/using-react-in-a-widget-1.png Screenshot of the "Hello world" application in web browser.}
 
@@ -729,8 +731,8 @@ You can see the entire application working below. Click the products in the side
 If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/react-widget/final-project) available.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/react-widget/final-project
+npx -y degit ckeditor/ckeditor5-tutorials-examples/react-widget/final-project final-project
+cd final-project
 
 npm install
 npm run dev

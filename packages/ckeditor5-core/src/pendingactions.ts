@@ -87,6 +87,13 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		this.set( 'hasAny', false );
 

@@ -46,6 +46,14 @@ describe( 'EasyImage', () => {
 		expect( EasyImage.requires ).to.include( 'ImageUpload' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( EasyImage.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( EasyImage.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be able to initialize editor with itself', () => {
 		const div = window.document.createElement( 'div' );
 		window.document.body.appendChild( div );

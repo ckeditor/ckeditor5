@@ -61,6 +61,13 @@ export default class DataSchema extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		for ( const definition of defaultConfig.block ) {
 			this.registerBlockElement( definition );

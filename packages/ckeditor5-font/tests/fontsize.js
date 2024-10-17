@@ -38,6 +38,14 @@ describe( 'FontSize', () => {
 		expect( FontSize.pluginName ).to.equal( 'FontSize' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontSize.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontSize.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'normalizeSizeOptions()', () => {
 		// More tests can be found in tests/fontsize/utils.
 		it( 'normalizes size options', () => {

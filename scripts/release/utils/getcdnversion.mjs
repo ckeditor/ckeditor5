@@ -7,10 +7,9 @@
 
 /**
  * @param {ReleaseOptions} cliArguments
- * @param {String} pkgJsonVersion
- * @returns {String}
+ * @returns {'alpha'|'nightly'|'staging'}
  */
-export default function getCdnVersion( cliArguments, pkgJsonVersion ) {
+export default function getCdnVersion( cliArguments ) {
 	if ( cliArguments.nightly ) {
 		return 'nightly';
 	}
@@ -19,5 +18,5 @@ export default function getCdnVersion( cliArguments, pkgJsonVersion ) {
 		return 'alpha';
 	}
 
-	return pkgJsonVersion;
+	return 'staging';
 }
