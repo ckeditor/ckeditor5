@@ -58,6 +58,7 @@ import image from './../theme/icons/image.svg';
 import imageUpload from './../theme/icons/image-upload.svg';
 import imageAssetManager from './../theme/icons/image-asset-manager.svg';
 import imageUrl from './../theme/icons/image-url.svg';
+import settings from './../theme/icons/settings.svg';
 
 import alignBottom from './../theme/icons/align-bottom.svg';
 import alignMiddle from './../theme/icons/align-middle.svg';
@@ -144,6 +145,7 @@ export const icons = {
 	paragraph,
 	plus,
 	text,
+	settings,
 
 	alignBottom,
 	alignMiddle,
