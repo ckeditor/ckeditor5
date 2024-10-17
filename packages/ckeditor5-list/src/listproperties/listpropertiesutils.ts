@@ -27,6 +27,13 @@ export default class ListPropertiesUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Gets all the style types supported by given list type.
 	 */
 	public getAllSupportedStyleTypes(): Array<string> {

@@ -104,6 +104,14 @@ describe( 'BalloonToolbar', () => {
 		ResizeObserver._observerInstance = null;
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BalloonToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BalloonToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should create a plugin instance', () => {
 		expect( balloonToolbar ).to.instanceOf( Plugin );
 		expect( balloonToolbar ).to.instanceOf( BalloonToolbar );

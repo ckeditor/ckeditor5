@@ -70,6 +70,14 @@ describe( 'TableCaptionEditing', () => {
 		expect( TableCaptionEditing.pluginName ).to.equal( 'TableCaptionEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableCaptionEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableCaptionEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], '$text' ) ).to.be.true;

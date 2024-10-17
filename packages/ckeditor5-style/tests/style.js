@@ -40,6 +40,14 @@ describe( 'Style', () => {
 		expect( Style.pluginName ).to.equal( 'Style' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Style.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Style.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require StyleEditing and StyleUI', () => {
 		expect( Style.requires ).to.deep.equal( [ StyleEditing, StyleUI ] );
 	} );

@@ -24,6 +24,14 @@ describe( 'ImageTextAlternativeEditing', () => {
 		expect( ImageTextAlternativeEditing.pluginName ).to.equal( 'ImageTextAlternativeEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageTextAlternativeEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageTextAlternativeEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should register ImageAlternativeTextCommand', () => {
 		expect( editor.commands.get( 'imageTextAlternative' ) ).to.be.instanceOf( ImageTextAlternativeCommand );
 	} );

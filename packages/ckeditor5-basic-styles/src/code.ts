@@ -36,4 +36,11 @@ export default class Code extends Plugin {
 	public static get pluginName() {
 		return 'Code' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

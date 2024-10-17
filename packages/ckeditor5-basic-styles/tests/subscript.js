@@ -15,4 +15,12 @@ describe( 'Subscript', () => {
 	it( 'should be named', () => {
 		expect( Subscript.pluginName ).to.equal( 'Subscript' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Subscript.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Subscript.isPremiumPlugin ).to.be.false;
+	} );
 } );

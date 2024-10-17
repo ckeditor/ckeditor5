@@ -35,6 +35,14 @@ describe( 'Delete feature', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Delete.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Delete.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'creates two commands', () => {
 		expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
 		expect( editor.commands.get( 'deleteForward' ) ).to.have.property( 'direction', 'forward' );

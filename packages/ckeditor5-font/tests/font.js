@@ -17,4 +17,12 @@ describe( 'Font', () => {
 	it( 'defines plugin name', () => {
 		expect( Font.pluginName ).to.equal( 'Font' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Font.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Font.isPremiumPlugin ).to.be.false;
+	} );
 } );

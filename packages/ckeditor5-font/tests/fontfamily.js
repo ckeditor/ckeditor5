@@ -15,4 +15,12 @@ describe( 'FontFamily', () => {
 	it( 'defines plugin name', () => {
 		expect( FontFamily.pluginName ).to.equal( 'FontFamily' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontFamily.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontFamily.isPremiumPlugin ).to.be.false;
+	} );
 } );

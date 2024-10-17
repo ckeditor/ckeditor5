@@ -48,4 +48,12 @@ describe( 'Essentials preset', () => {
 		expect( editor.plugins.get( Typing ) ).to.be.instanceOf( Typing );
 		expect( editor.plugins.get( Undo ) ).to.be.instanceOf( Undo );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Essentials.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Essentials.isPremiumPlugin ).to.be.false;
+	} );
 } );

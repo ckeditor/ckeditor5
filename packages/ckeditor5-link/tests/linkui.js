@@ -67,6 +67,14 @@ describe( 'LinkUI', () => {
 		expect( LinkUI.pluginName ).to.equal( 'LinkUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LinkUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LinkUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load ContextualBalloon', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );

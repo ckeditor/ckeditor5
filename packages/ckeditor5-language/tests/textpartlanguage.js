@@ -15,4 +15,12 @@ describe( 'TextPartLanguage', () => {
 	it( 'should be named', () => {
 		expect( TextPartLanguage.pluginName ).to.equal( 'TextPartLanguage' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TextPartLanguage.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TextPartLanguage.isPremiumPlugin ).to.be.false;
+	} );
 } );
