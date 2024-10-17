@@ -6,12 +6,11 @@
 /* globals Event, document */
 
 import LinkFormView from '../../src/ui/linkformview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import LinkButtonView from '../../src/ui/linkbuttonview.js';
+import { ListView, View, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ManualDecorator from '../../src/utils/manualdecorator.js';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
@@ -46,7 +45,6 @@ describe( 'LinkFormView', () => {
 		it( 'should create child views', () => {
 			expect( view.backButton ).to.be.instanceOf( View );
 			expect( view.settingsButton ).to.be.instanceOf( View );
-			expect( view.bookmarksButton ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.displayedTextInputView ).to.be.instanceOf( View );
 			expect( view.urlInputView ).to.be.instanceOf( View );
@@ -98,21 +96,19 @@ describe( 'LinkFormView', () => {
 				 */
 
 			it( 'has url input view', () => {
-				const formChildren = view.template.children[ 1 ].template.children[ 0 ];
+				const formChildren = view.template.children[ 0 ].get( 1 ).template.children[ 0 ];
 
 				expect( formChildren.get( 0 ) ).to.equal( view.displayedTextInputView );
 				expect( formChildren.get( 1 ).template.children[ 0 ] ).to.equal( view.urlInputView );
 			} );
 
 			it( 'has button views', () => {
-				const headerChildren = view.template.children[ 0 ].template.children[ 0 ];
-				const formChildren = view.template.children[ 1 ].template.children[ 0 ];
-				const bookmarksButton = view.template.children[ 2 ];
+				const headerChildren = view.template.children[ 0 ].get( 0 ).template.children[ 0 ];
+				const formChildren = view.template.children[ 0 ].get( 1 ).template.children[ 0 ];
 
 				expect( headerChildren.get( 0 ) ).to.equal( view.backButton );
 				expect( headerChildren.get( 2 ) ).to.equal( view.settingsButton );
 				expect( formChildren.last.template.children[ 1 ] ).to.equal( view.saveButtonView );
-				expect( bookmarksButton ).to.equal( view.bookmarksButton );
 			} );
 		} );
 	} );
@@ -120,12 +116,11 @@ describe( 'LinkFormView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.backButton,
-				view.settingsButton,
-				view.displayedTextInputView,
 				view.urlInputView,
 				view.saveButtonView,
-				view.bookmarksButton
+				view.backButton,
+				view.settingsButton,
+				view.displayedTextInputView
 			] );
 		} );
 
@@ -138,10 +133,9 @@ describe( 'LinkFormView', () => {
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.bookmarksButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.settingsButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.displayedTextInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.backButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.settingsButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.displayedTextInputView.element );
 
 			view.destroy();
 		} );
@@ -179,7 +173,7 @@ describe( 'LinkFormView', () => {
 			} );
 
 			it( 'so "shift + tab" focuses the previous focusable item', () => {
-				const spy = sinon.spy( view.bookmarksButton, 'focus' );
+				const spy = sinon.spy( view.saveButtonView, 'focus' );
 
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
@@ -529,6 +523,58 @@ describe( 'LinkFormView', () => {
 
 		it( 'translates labels of manual decorators UI', () => {
 			expect( linkFormView._manualDecoratorSwitches.first.label ).to.equal( 'Otwórz w nowym oknie' );
+		} );
+	} );
+
+	describe( 'allows adding more form views', () => {
+		let button;
+
+		beforeEach( () => {
+			button = new LinkButtonView();
+
+			button.set( {
+				label: 'Button'
+			} );
+
+			view.listChildren.add( button );
+		} );
+
+		afterEach( () => {
+			button.destroy();
+		} );
+
+		it( 'adds list view', () => {
+			const listView = view.template.children[ 0 ].get( 2 );
+			const button = listView.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
+
+			expect( button ).to.be.instanceOf( LinkButtonView );
+			expect( listView ).to.be.instanceOf( ListView );
+		} );
+
+		it( 'should register list view items in #focusTracker', () => {
+			const view = new LinkFormView( { t: () => { } }, { manualDecorators: [] } );
+			const button = new LinkButtonView();
+
+			button.set( {
+				label: 'Button'
+			} );
+
+			view.listChildren.add( button );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+			const listView = view.template.children[ 0 ].get( 2 );
+			const { element } = listView.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
+
+			view.render();
+
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.settingsButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.displayedTextInputView.element );
+
+			view.destroy();
 		} );
 	} );
 } );

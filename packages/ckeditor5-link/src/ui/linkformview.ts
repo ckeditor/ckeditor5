@@ -9,6 +9,8 @@
 
 import {
 	ButtonView,
+	ListView,
+	ListItemView,
 	FocusCycler,
 	LabeledFieldView,
 	SwitchButtonView,
@@ -68,11 +70,6 @@ export default class LinkFormView extends View {
 	public saveButtonView: ButtonView;
 
 	/**
-	 * The Bookmarks button view displayed in the footer.
-	 */
-	public bookmarksButton: ButtonView;
-
-	/**
 	 * The "Displayed text" input view.
 	 */
 	public displayedTextInputView: LabeledFieldView<InputTextView>;
@@ -90,9 +87,19 @@ export default class LinkFormView extends View {
 	private readonly _manualDecoratorSwitches: ViewCollection<SwitchButtonView>;
 
 	/**
-	 * A collection of child views in the form.
+	 * A collection of children elements.
 	 */
 	public readonly children: ViewCollection;
+
+	/**
+	 * A collection of child views in the form.
+	 */
+	public readonly formChildren: ViewCollection;
+
+	/**
+	 * A collection of child views in the footer.
+	 */
+	public readonly listChildren: ViewCollection<ButtonView>;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -130,7 +137,6 @@ export default class LinkFormView extends View {
 		// Create buttons
 		this.backButton = this._createBackButton();
 		this.settingsButton = this._createSettingsButton();
-		this.bookmarksButton = this._createBookmarksButton();
 		this.saveButtonView = this._createSaveButton();
 
 		// Create input fields
@@ -138,7 +144,19 @@ export default class LinkFormView extends View {
 		this.urlInputView = this._createUrlInput();
 
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
-		this.children = this._createFormChildren( linkCommand.manualDecorators );
+		this.formChildren = this._createFormChildren( linkCommand.manualDecorators );
+		this.listChildren = this.createCollection();
+		this.children = this.createCollection( [
+			this._createHeaderView(),
+			this._createFormView()
+		] );
+
+		// Add list view to the children when the first item is added to the list.
+		// This is to avoid adding the list view when the form is empty.
+		this.listenTo( this.listChildren, 'add', () => {
+			this.stopListening( this.listChildren, 'add' );
+			this.children.add( this._createListView() );
+		} );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -163,11 +181,7 @@ export default class LinkFormView extends View {
 				tabindex: '-1'
 			},
 
-			children: [
-				this._createHeaderView(),
-				this._createFormView(),
-				this.bookmarksButton
-			]
+			children: this.children
 		} );
 	}
 
@@ -201,7 +215,7 @@ export default class LinkFormView extends View {
 			this.urlInputView,
 			...this._manualDecoratorSwitches, // TODO: Move to a separate panel
 			this.saveButtonView,
-			this.bookmarksButton,
+			...this.listChildren,
 			this.backButton,
 			this.settingsButton,
 			this.displayedTextInputView
@@ -339,7 +353,7 @@ export default class LinkFormView extends View {
 	 * Creates a form view for the link form.
 	 */
 	private _createFormView(): View {
-		const form = new View();
+		const form = new View( this.locale );
 
 		form.setTemplate( {
 			tag: 'div',
@@ -352,27 +366,35 @@ export default class LinkFormView extends View {
 				]
 			},
 
-			children: this.children
+			children: this.formChildren
 		} );
 
 		return form;
 	}
 
 	/**
-	 * Creates a bookmarks button view.
+	 * Creates a view for the list at the bottom.
 	 */
-	private _createBookmarksButton(): ButtonView {
-		const t = this.locale!.t;
-		const bookmarksButton = new ButtonView();
+	private _createListView(): ListView {
+		const listView = new ListView( this.locale );
 
-		bookmarksButton.set( {
-			label: t( 'Bookmarks' ),
-			withText: true,
-			icon: icons.nextArrow,
-			class: 'ck-link__footer-button'
+		listView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-link__list'
+				]
+			}
 		} );
 
-		return bookmarksButton;
+		listView.items.bindTo( this.listChildren ).using( def => {
+			const listItemView = new ListItemView( this.locale );
+
+			listItemView.children.add( def );
+
+			return listItemView;
+		} );
+
+		return listView;
 	}
 
 	/**

@@ -27,6 +27,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
+import LinkButtonView from './ui/linkbuttonview.js';
 import LinkActionsView from './ui/linkactionsview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
@@ -184,13 +185,13 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Close the panel on esc key press when the **actions have focus**.
-		actionsView.keystrokes.set( 'Esc', ( _data, cancel ) => {
+		actionsView.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideUI();
 			cancel();
 		} );
 
 		// Open the form view on Ctrl+K when the **actions have focus**..
-		actionsView.keystrokes.set( LINK_KEYSTROKE, ( _data, cancel ) => {
+		actionsView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
 			this._addFormView();
 			cancel();
 		} );
@@ -206,11 +207,11 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )(
-			editor.locale,
-			linkCommand,
-			getFormValidators( editor )
-		);
+		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
+
+		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
+			formView.listChildren.add( this._createBookmarksButton() );
+		}
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -278,6 +279,21 @@ export default class LinkUI extends Plugin {
 
 			return button;
 		} );
+	}
+
+	/**
+	 * Creates a bookmarks button view.
+	 */
+	private _createBookmarksButton(): LinkButtonView {
+		const locale = this.editor.locale!;
+		const t = locale.t;
+		const bookmarksButton = new LinkButtonView( locale );
+
+		bookmarksButton.set( {
+			label: t( 'Bookmarks' )
+		} );
+
+		return bookmarksButton;
 	}
 
 	/**

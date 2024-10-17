@@ -65,21 +65,21 @@
 			}
 		}
 	}
-	
-	/* Bookmarks button */
-	& .ck-link__footer-button {
+
+	/* Link list */
+	& .ck-link__list {
 		margin-top: var(--ck-spacing-medium);
-		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
-		width: 100%;
-		flex-direction: row-reverse;
-		border-radius: 0;
+		border-top: 1px solid var(--ck-color-base-border);
+		display: flex;
+		flex-direction: column;
 
-		&:not(:focus) {
-			border-top: 1px solid var(--ck-color-base-border);
-		}
-
-		& > .ck-button__label {
-			flex-grow: 1;
+		& .ck-link__button {
+			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+			border-radius: 0;
+	
+			&>.ck-button__label {
+				flex-grow: 1;
+			}
 		}
 	}
 }
