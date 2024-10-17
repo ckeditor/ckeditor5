@@ -65,6 +65,14 @@ describe( 'BookmarkEditing', () => {
 		expect( BookmarkEditing.pluginName ).to.equal( 'BookmarkEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BookmarkEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BookmarkEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init', () => {
 		it( 'adds an "insertBookmark" command', () => {
 			expect( editor.commands.get( 'insertBookmark' ) ).to.be.instanceOf( InsertBookmarkCommand );
