@@ -564,7 +564,64 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			} ).not.to.throw();
 		} );
 
-		it( 'should correctly handle item that is pasted without its parent', () => {
+		it( 'should correctly handle item that is pasted between list items without its parent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph listType="numbered" listItemId="a" listIndent="0">A</paragraph>' +
+					'<paragraph listType="numbered" listItemId="b" listIndent="1">B</paragraph>' +
+					'[]' +
+					'<paragraph listType="numbered" listItemId="c" listIndent="1">C</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<li>X</li>' )
+				} );
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="numbered">X[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="numbered">C</paragraph>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle item that is pasted between list items without its parent #2', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph listType="numbered" listItemId="a" listIndent="0">A</paragraph>' +
+					'<paragraph listType="numbered" listItemId="b" listIndent="1">B</paragraph>' +
+					'[]' +
+					'<paragraph listType="numbered" listItemId="c" listIndent="1">C</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+				} );
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a00" listType="numbered">Y[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="numbered">C</paragraph>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle item that is pasted after last list item without its parent', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
@@ -585,12 +642,12 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="numbered">X[]</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">X[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
-		it( 'should correctly handle item that is pasted without its parent #2', () => {
+		it( 'should correctly handle item that is pasted after last list item without its parent #2', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
@@ -611,8 +668,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a01" listType="numbered">X</paragraph>' +
-				'<paragraph listIndent="2" listItemId="a00" listType="numbered">Y[]</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );

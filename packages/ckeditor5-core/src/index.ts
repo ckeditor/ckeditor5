@@ -120,6 +120,8 @@ import outdent from './../theme/icons/outdent.svg';
 
 import table from './../theme/icons/table.svg';
 
+import remove from './../theme/icons/remove.svg';
+
 export const icons = {
 	bold,
 	cancel,
@@ -196,7 +198,9 @@ export const icons = {
 	indent,
 	outdent,
 
-	table
+	table,
+
+	remove
 };
 
 import './augmentation.js';

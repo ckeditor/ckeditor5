@@ -400,7 +400,68 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			} ).not.to.throw();
 		} );
 
-		it( 'should correctly handle item that is pasted without its parent', () => {
+		it( 'should correctly handle item that is pasted between list items without its parent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<listItem listType="numbered" listItemId="a" listIndent="0">A</listItem>' +
+					'<listItem listType="numbered" listItemId="b" listIndent="1">B</listItem>' +
+					'[]' +
+					'<listItem listType="numbered" listItemId="c" listIndent="1">C</listItem>' +
+					'<paragraph>Bar</paragraph>'
+				);
+
+				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<li>X</li>' )
+				} );
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>Foo</paragraph>' +
+				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
+				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
+				'<listItem listIndent="1" listItemId="a00" listType="numbered">X[]</listItem>' +
+				'<listItem listIndent="1" listItemId="c" listType="numbered">C</listItem>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle item that is pasted between list items without its parent #2', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<listItem listType="numbered" listItemId="a" listIndent="0">A</listItem>' +
+					'<listItem listType="numbered" listItemId="b" listIndent="1">B</listItem>' +
+					'[]' +
+					'<listItem listType="numbered" listItemId="c" listIndent="1">C</listItem>' +
+					'<paragraph>Bar</paragraph>'
+				);
+
+				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+				} );
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>Foo</paragraph>' +
+				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
+				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
+				'<listItem listIndent="1" listItemId="a01" listType="numbered">X</listItem>' +
+				'<listItem listIndent="2" listItemId="a00" listType="numbered">Y[]</listItem>' +
+				'<listItem listIndent="1" listItemId="c" listType="numbered">C</listItem>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle item that is pasted after last list item without its parent', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
@@ -423,12 +484,12 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
-				'<listItem listIndent="1" listItemId="a00" listType="numbered">X[]</listItem>' +
+				'<listItem listIndent="0" listItemId="a00" listType="bulleted">X[]</listItem>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
-		it( 'should correctly handle item that is pasted without its parent #2', () => {
+		it( 'should correctly handle item that is pasted after last list item without its parent #2', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
@@ -451,8 +512,8 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
-				'<listItem listIndent="1" listItemId="a01" listType="numbered">X</listItem>' +
-				'<listItem listIndent="2" listItemId="a00" listType="numbered">Y[]</listItem>' +
+				'<listItem listIndent="0" listItemId="a01" listType="bulleted">X</listItem>' +
+				'<listItem listIndent="1" listItemId="a00" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );

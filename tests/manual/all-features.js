@@ -50,6 +50,7 @@ import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import Style from '@ckeditor/ckeditor5-style/src/style.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -61,7 +62,7 @@ ClassicEditor
 			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
-			Alignment, IndentBlock,
+			Alignment, IndentBlock, Bookmark,
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
@@ -69,7 +70,7 @@ ClassicEditor
 		toolbar: [
 			'heading', 'style',
 			'|',
-			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
+			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link', 'bookmark',
 			'|',
 			'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 			'|',
