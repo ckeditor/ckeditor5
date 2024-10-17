@@ -37,6 +37,13 @@ export default class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );

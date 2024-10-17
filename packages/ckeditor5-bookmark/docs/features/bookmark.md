@@ -14,7 +14,7 @@ The bookmarks feature allows for adding and managing the bookmarks anchors attac
 
 Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-bookmark/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`).
 
-To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark panel will pop up.
+To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
 
 {@snippet features/bookmark}
 
@@ -72,8 +72,6 @@ will be converted into a bookmark and the output will look like on the example b
 You can disable the automatic conversion by setting the {@link module:bookmark/bookmarkconfig~BookmarkConfig#enableNonEmptyAnchorConversion `config.bookmark.enableNonEmptyAnchorConversion`} to `false` in the editor configuration.
 
 ```js
-import { ClassicEditor, Bookmark } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Bookmark, /* ... */ ],
@@ -85,6 +83,9 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+## Bookmarks on blocks
+
+At this time, if a bookmark is attached to a block, it appears before it. However, we plan to expand this solution in the future. We invite you to help us [gather feedback for linking directly to blocks and auto generating IDs](https://github.com/ckeditor/ckeditor5/issues/17264).
 
 ## Related features
 

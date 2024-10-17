@@ -59,6 +59,14 @@ describe( 'ImageToolbar', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ImageToolbar ) ).to.be.instanceOf( ImageToolbar );
 	} );

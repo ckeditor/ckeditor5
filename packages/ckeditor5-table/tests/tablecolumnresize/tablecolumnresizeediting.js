@@ -82,6 +82,14 @@ describe( 'TableColumnResizeEditing', () => {
 		expect( TableColumnResizeEditing.pluginName ).to.equal( 'TableColumnResizeEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableColumnResizeEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableColumnResizeEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should have defined column widths in model', () => {
 		setModelData( model, modelTable( [
 			[ '00', '01', '02' ],

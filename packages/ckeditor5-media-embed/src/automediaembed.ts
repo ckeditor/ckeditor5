@@ -40,6 +40,13 @@ export default class AutoMediaEmbed extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * The paste–to–embed `setTimeout` ID. Stored as a property to allow
 	 * cleaning of the timeout.
 	 */

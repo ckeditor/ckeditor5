@@ -52,6 +52,14 @@ describe( 'PasteFromOffice', () => {
 		expect( PasteFromOffice.pluginName ).to.equal( 'PasteFromOffice' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PasteFromOffice.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PasteFromOffice.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load Clipboard plugin', () => {
 		expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
 	} );

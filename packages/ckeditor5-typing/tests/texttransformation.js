@@ -43,6 +43,14 @@ describe( 'Text transformation feature', () => {
 		} );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TextTransformation.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TextTransformation.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( '#isEnabled', () => {
 		let plugin;
 

@@ -37,6 +37,14 @@ describe( 'ImageStyleEditing', () => {
 			expect( ImageStyleEditing.pluginName ).to.equal( 'ImageStyleEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( ImageStyleEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( ImageStyleEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'requires ImageUtils ', () => {
 			expect( ImageStyleEditing.requires ).to.deep.equal( [ ImageUtils ] );
 		} );

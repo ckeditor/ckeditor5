@@ -28,9 +28,8 @@ ClassicEditor
 				'bookmark',
 				'|', 'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent',
-				'|', 'sourceEditing'
+				'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent', 'sourceEditing'
 			]
 		},
 		menuBar: {

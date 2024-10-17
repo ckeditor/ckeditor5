@@ -55,6 +55,14 @@ describe( 'SourceEditing', () => {
 		expect( SourceEditing.pluginName ).to.equal( 'SourceEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SourceEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SourceEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'initialization', () => {
 		describe( 'in toolbar', () => {
 			testButton( 'Source', ButtonView );

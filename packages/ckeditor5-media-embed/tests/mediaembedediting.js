@@ -65,6 +65,14 @@ describe( 'MediaEmbedEditing', () => {
 		expect( MediaEmbedEditing.pluginName ).to.equal( 'MediaEmbedEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MediaEmbedEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MediaEmbedEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
 			describe( '#providers', () => {

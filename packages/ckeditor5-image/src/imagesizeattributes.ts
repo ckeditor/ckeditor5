@@ -33,6 +33,13 @@ export default class ImageSizeAttributes extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
 		this._registerSchema();
 		this._registerConverters( 'imageBlock' );

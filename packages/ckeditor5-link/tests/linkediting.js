@@ -77,6 +77,14 @@ describe( 'LinkEditing', () => {
 		expect( LinkEditing.pluginName ).to.equal( 'LinkEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LinkEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LinkEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( LinkEditing ) ).to.be.instanceOf( LinkEditing );
 	} );

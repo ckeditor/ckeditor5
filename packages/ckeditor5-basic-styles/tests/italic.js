@@ -15,4 +15,12 @@ describe( 'Italic', () => {
 	it( 'should be named', () => {
 		expect( Italic.pluginName ).to.equal( 'Italic' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Italic.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Italic.isPremiumPlugin ).to.be.false;
+	} );
 } );
