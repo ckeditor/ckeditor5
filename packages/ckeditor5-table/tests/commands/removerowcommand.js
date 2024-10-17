@@ -314,6 +314,103 @@ describe( 'RemoveRowCommand', () => {
 				] ) );
 			} );
 
+			it( 'should support removing multiple footers (removed rows in footer section)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { footerRows: 3 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '[]30', '31' ]
+				], { footerRows: 1 } ) );
+			} );
+
+			it( 'should support removing multiple footers (removed rows in footer and body section)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ],
+					[ '40', '41' ]
+				], { footerRows: 3 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 0 ] )
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '[]40', '41' ]
+				], { footerRows: 1 } ) );
+
+				// The editing view should also be properly downcasted.
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '40', '41' ]
+				], { footerRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should support removing mixed footer and cell rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '[]00', '01' ]
+				] ) );
+			} );
+
+			it( 'should support removing mixed header, footer, and body rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 1, footerRows: 2 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '[]30', '31' ]
+				], { footerRows: 1 } ) );
+			} );
+
 			it( 'should properly calculate truncated rowspans', () => {
 				setData( model, modelTable( [
 					[ '00', { contents: '01', rowspan: 3 } ],
@@ -538,6 +635,21 @@ describe( 'RemoveRowCommand', () => {
 				[ '00', '01' ],
 				[ '[]20', '21' ]
 			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should change footer rows if removing a footer row', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			], { footerRows: 2 } ) );
+
+			command.execute();
+
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
+				[ '00', '01' ],
+				[ '[]20', '21' ]
+			], { footerRows: 1 } ) );
 		} );
 
 		it( 'should decrease rowspan of table cells from previous rows', () => {

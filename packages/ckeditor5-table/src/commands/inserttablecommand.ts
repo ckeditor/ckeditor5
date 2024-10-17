@@ -51,6 +51,7 @@ export default class InsertTableCommand extends Command {
 	 * {@link module:table/tableconfig~TableConfig#defaultHeadings `config.table.defaultHeadings.rows`} table config.
 	 * @param options.headingColumns The number of heading columns. If not provided it will default to
 	 * {@link module:table/tableconfig~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`} table config.
+	 * @param options.footerRows The number of footer rows. Default value is 0.
 	 * @fires execute
 	 */
 	public override execute(
@@ -59,6 +60,7 @@ export default class InsertTableCommand extends Command {
 			columns?: number;
 			headingRows?: number;
 			headingColumns?: number;
+			footerRows?: number;
 		} = {}
 	): void {
 		const editor = this.editor;
