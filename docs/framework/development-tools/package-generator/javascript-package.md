@@ -45,7 +45,8 @@ An overview of the project's directory structure:
 ├─ ckeditor5-metadata.json # See link below for details.
 ├─ LICENSE.md              # All created packages fall under the MIT license.
 ├─ package.json            # See link below for details.
-└─ README.md               # Description of your project and usage instructions.
+├─ README.md               # Description of your project and usage instructions.
+└─ vitest.config.js        # Vitest configuration file.
 ```
 
 <info-box warning>
@@ -59,6 +60,7 @@ Guides for developing some of the files:
 * [.gitignore](https://git-scm.com/docs/gitignore)
 * {@link framework/contributing/package-metadata ckeditor5-metadata.json}
 * [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
+* [vitest.config.js](https://vitest.dev/config/)
 
 ## Npm scripts
 
@@ -91,12 +93,7 @@ npm run start -- --language=de
 
 ### `test`
 
-Allows executing unit tests for the package, specified in the `tests/` directory. The command accepts the following modifiers:
-
-* `--coverage` &ndash; Creates the code coverage report.
-* `--watch` &ndash; Observes the source files (the command does not end after executing tests).
-* `--source-map` &ndash; Generates source maps of the sources.
-* `--verbose` &ndash; Prints additional webpack logs.
+Allows executing unit tests for the package specified in the `tests/` directory using [Vitest](https://vitest.dev/) testing framework. To check the code coverage, add the `--coverage` modifier. See other [CLI flags](https://vitest.dev/guide/cli.html) in Vitest.
 
 Examples:
 
@@ -105,7 +102,18 @@ Examples:
 npm run test
 
 # Generate code coverage report after each change in the sources.
-npm run test -- --coverage --test
+npm run test -- --coverage --watch
+```
+
+### `test:debug`
+
+Allows executing unit tests for the package specified in the `tests/` directory using [Vitest](https://vitest.dev/) testing framework with the possibility of debugging them. Once Vitest starts, it will stop execution and wait for you to open developer tools that can connect to Node.js inspector.
+
+Examples:
+
+```bash
+# Execute tests in the debug mode.
+npm run test:debug
 ```
 
 ### `lint`
