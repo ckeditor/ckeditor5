@@ -16,7 +16,7 @@ import { DropdownRootMenuBehaviors } from './dropdownmenubehaviors.js';
 import type BodyCollection from '../../editorui/bodycollection.js';
 import type { DropdownMenuDefinition } from './utils.js';
 
-import { type Locale, type BaseEvent } from '@ckeditor/ckeditor5-utils';
+import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Creates and manages a multi-level menu UI structure, suitable to be used inside dropdown components.
