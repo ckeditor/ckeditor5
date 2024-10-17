@@ -57,14 +57,14 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	public _elements: Set<Element> = new Set();
 
 	/**
-	 * List of external focus trackers that contribute to the state of this focus tracker.
+	 * List of views with external focus trackers that contribute to the state of this focus tracker.
 	 *
 	 * @internal
 	 */
 	public _externalViews: Set<ViewWithFocusTracker> = new Set();
 
 	/**
-	 * Event loop timeout.
+	 * Asynchronous blur event timeout.
 	 */
 	private _blurTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -198,7 +198,8 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 
 	/**
-	 * Adds an external `FocusTracker` instance to this focus tracker and makes it contribute to this focus tracker's state.
+	 * Adds an external `View` instance to this focus tracker and makes it contribute to this focus tracker's state either by its
+	 * `View#element` or by its `View#focusTracker` instance.
 	 */
 	private _addView( view: ViewWithFocusTracker ): void {
 		if ( view.element ) {
@@ -264,8 +265,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 
 	/**
 	 * Clears currently {@link #focusedElement} and sets {@link #isFocused} `false`.
-	 *
-	 * This method uses `setTimeout()` to change order of fires `blur` and `focus` events ensuring that moving focus between
+	 * This method uses `setTimeout()` to change order of `blur` and `focus` events calls, ensuring that moving focus between
 	 * two elements within a single focus tracker's scope, will not cause `[ blurA, focusB ]` sequence but just `[ focusB ]`.
 	 * The former would cause a momentary change of `#isFocused` to `false` which is not desired because any logic listening to
 	 * a focus tracker state would experience UI flashes and glitches as the user focus travels across the UI.
