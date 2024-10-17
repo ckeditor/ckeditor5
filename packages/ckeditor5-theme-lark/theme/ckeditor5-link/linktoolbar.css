@@ -4,13 +4,11 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-link-actions {
-	& .ck-button.ck-link-actions__preview {
+.ck.ck-link-toolbar {
+	& .ck-button.ck-link-toolbar__preview {
 		padding-left: 0;
 		padding-right: 0;
 
@@ -45,39 +43,6 @@
 		&:focus {
 			& .ck-button__label {
 				text-decoration: underline;
-			}
-		}
-	}
-
-	@mixin ck-dir ltr {
-		& .ck-button:not(:first-child) {
-			margin-left: var(--ck-spacing-standard);
-		}
-	}
-
-	@mixin ck-dir rtl {
-		& .ck-button:not(:last-child) {
-			margin-left: var(--ck-spacing-standard);
-		}
-	}
-
-	@mixin ck-media-phone {
-		& .ck-button.ck-link-actions__preview {
-			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
-
-			& .ck-button__label {
-				min-width: 0;
-				max-width: 100%;
-			}
-		}
-
-		& .ck-button:not(.ck-link-actions__preview) {
-			@mixin ck-dir ltr {
-				margin-left: 0;
-			}
-
-			@mixin ck-dir rtl {
-				margin-left: 0;
 			}
 		}
 	}
