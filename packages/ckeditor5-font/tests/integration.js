@@ -213,6 +213,16 @@ describe( 'Integration test Font', () => {
 	} );
 
 	describe( 'color picker feature', () => {
+		let clock;
+
+		beforeEach( () => {
+			clock = sinon.useFakeTimers();
+		} );
+
+		afterEach( () => {
+			clock.restore();
+		} );
+
 		it( 'should set colors in model in hsl format by default', () => {
 			setModelData( model,
 				'<paragraph>' +
@@ -231,6 +241,7 @@ describe( 'Integration test Font', () => {
 			} );
 
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
+			clock.tick( 200 );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
 		} );
@@ -265,6 +276,7 @@ describe( 'Integration test Font', () => {
 			} );
 
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
+			clock.tick( 200 );
 
 			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
 
@@ -285,6 +297,7 @@ describe( 'Integration test Font', () => {
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.color = 'hsl( 100, 30%, 43% )';
 
 			dropdown.colorSelectorView.colorPickerFragmentView.cancelButtonView.fire( 'execute' );
+			clock.tick( 200 );
 
 			expect( getData( model ) ).to.equal( '<paragraph>' +
 			'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
