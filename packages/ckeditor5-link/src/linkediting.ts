@@ -89,7 +89,8 @@ export default class LinkEditing extends Plugin {
 
 		editor.config.define( 'link', {
 			allowCreatingEmptyLinks: false,
-			addTargetToExternalLinks: false
+			addTargetToExternalLinks: false,
+			toolbar: [ 'linkPreview', '|', 'editLink', 'unlink' ]
 		} );
 	}
 

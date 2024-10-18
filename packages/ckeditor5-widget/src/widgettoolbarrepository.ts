@@ -28,6 +28,7 @@ import {
 	CKEditorError,
 	logWarning,
 	type ObservableChangeEvent,
+	type PositioningFunction,
 	type RectSource
 } from '@ckeditor/ckeditor5-utils';
 
@@ -145,11 +146,18 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	public register(
 		toolbarId: string,
-		{ ariaLabel, items, getRelatedElement, balloonClassName = 'ck-toolbar-container' }: {
+		{
+			ariaLabel,
+			items,
+			getRelatedElement,
+			balloonClassName = 'ck-toolbar-container',
+			positions
+		}: {
 			ariaLabel?: string;
 			items: Array<ToolbarConfigItem>;
 			getRelatedElement: ( selection: ViewDocumentSelection ) => ( ViewElement | null );
 			balloonClassName?: string;
+			positions?: ReadonlyArray<PositioningFunction>;
 		}
 	): void {
 		// Trying to register a toolbar without any item.
@@ -189,11 +197,12 @@ export default class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
-		const toolbarDefinition = {
+		const toolbarDefinition: WidgetRepositoryToolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
 			balloonClassName,
 			itemsConfig: items,
+			positions,
 			initialized: false
 		};
 
@@ -269,9 +278,12 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * It might happen here that the toolbar's view is under another view. Then do nothing as the other toolbar view
 	 * should be still visible after the {@link module:ui/editorui/editorui~EditorUI#event:update}.
 	 */
-	private _showToolbar( toolbarDefinition: WidgetRepositoryToolbarDefinition, relatedElement: ViewElement ) {
+	private _showToolbar(
+		toolbarDefinition: WidgetRepositoryToolbarDefinition,
+		relatedElement: ViewElement
+	) {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
-			repositionContextualBalloon( this.editor, relatedElement );
+			repositionContextualBalloon( this.editor, relatedElement, toolbarDefinition.positions );
 		} else if ( !this._isToolbarInBalloon( toolbarDefinition ) ) {
 			if ( !toolbarDefinition.initialized ) {
 				toolbarDefinition.initialized = true;
@@ -280,7 +292,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 			this._balloon.add( {
 				view: toolbarDefinition.view,
-				position: getBalloonPositionData( this.editor, relatedElement ),
+				position: getBalloonPositionData( this.editor, relatedElement, toolbarDefinition.positions ),
 				balloonClassName: toolbarDefinition.balloonClassName
 			} );
 
@@ -292,7 +304,7 @@ export default class WidgetToolbarRepository extends Plugin {
 				for ( const definition of this._toolbarDefinitions.values() ) {
 					if ( this._isToolbarVisible( definition ) ) {
 						const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
-						repositionContextualBalloon( this.editor, relatedElement! );
+						repositionContextualBalloon( this.editor, relatedElement!, toolbarDefinition.positions );
 					}
 				}
 			} );
@@ -308,20 +320,20 @@ export default class WidgetToolbarRepository extends Plugin {
 	}
 }
 
-function repositionContextualBalloon( editor: Editor, relatedElement: ViewElement ) {
+function repositionContextualBalloon( editor: Editor, relatedElement: ViewElement, positions?: ReadonlyArray<PositioningFunction> ) {
 	const balloon: ContextualBalloon = editor.plugins.get( 'ContextualBalloon' );
-	const position = getBalloonPositionData( editor, relatedElement );
+	const position = getBalloonPositionData( editor, relatedElement, positions );
 
 	balloon.updatePosition( position );
 }
 
-function getBalloonPositionData( editor: Editor, relatedElement: ViewElement ) {
+function getBalloonPositionData( editor: Editor, relatedElement: ViewElement, positions?: ReadonlyArray<PositioningFunction> ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return {
 		target: editingView.domConverter.mapViewToDom( relatedElement ) as RectSource | undefined,
-		positions: [
+		positions: positions || [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,
 			defaultPositions.northArrowSouthEast,
@@ -365,6 +377,8 @@ interface WidgetRepositoryToolbarDefinition {
 	balloonClassName: string;
 
 	itemsConfig: Array<ToolbarConfigItem>;
+
+	positions?: ReadonlyArray<PositioningFunction>;
 
 	initialized: boolean;
 }
