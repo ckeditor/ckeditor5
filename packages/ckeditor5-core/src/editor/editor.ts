@@ -561,8 +561,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				const segments = hostname.split( '.' );
 
 				return licensedHosts
+					// Filter out hosts without wildcards.
 					.filter( host => host.includes( '*' ) )
+					// Split the hosts into segments.
 					.map( host => host.split( '.' ) )
+					// Filter out hosts that have more segments than the current hostname.
+					.filter( host => host.length <= segments.length )
+					// Pad the beginning of the licensed host if it's shorter than the current hostname.
+					.map( host => Array( segments.length - host.length ).fill( host[ 0 ] === '*' ? '*' : '' ).concat( host ) )
+					// Check if some license host matches the hostname.
 					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 		}
