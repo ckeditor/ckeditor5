@@ -43,10 +43,7 @@ order: -997
     </tr>
     <tr id="advanced-html-editing">
       <td>
-        <a
-          href="#"
-          >Advanced HTML Editing</a
-        >
+        <a href="#">Advanced HTML Editing</a>
       </td>
       <td>
         Advanced HTML Editing provides general HTML support, offering detailed
@@ -58,8 +55,7 @@ order: -997
     </tr>
     <tr id="links">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html"
           >Links</a
         >
       </td>
@@ -82,10 +78,7 @@ order: -997
     </tr>
     <tr id="block-formatting">
       <td>
-        <a
-          href="#"
-          >Block formatting</a
-        >
+        <a href="#">Block formatting</a>
       </td>
       <td>
         Block Formatting allows for the organization and emphasis of content
@@ -128,12 +121,14 @@ order: -997
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tableselection-TableSelection.html"
             >TableSelection</a
           ></code
-        > plugin introduces support for the custom selection system for tables
+        >
+        plugin introduces support for the custom selection system for tables
         that lets you:<br />• Select an arbitrary rectangular table fragment – a
         few cells from different rows, a column (or a few of them) or a row (or
         multiple rows).<br />• Apply formatting or add a link to all selected
@@ -162,10 +157,11 @@ order: -997
         >
       </td>
       <td>
-        Besides controlling <a
+        Besides controlling
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html"
           >text block indentation</a
-        >, the indent  and outdent  buttons allow for indenting list items
+        >, the indent and outdent buttons allow for indenting list items
         (nesting them).
       </td>
     </tr>
@@ -214,13 +210,15 @@ order: -997
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecolumnresize-TableColumnResize.html"
             >TableColumnResize</a
           ></code
-        > plugin lets you resize tables and individual table columns. It gives
-        you complete control over column width.
+        >
+        plugin lets you resize tables and individual table columns. It gives you
+        complete control over column width.
       </td>
     </tr>
     <tr id="tables-caption">
@@ -231,13 +229,15 @@ order: -997
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecaption-TableCaption.html"
             >TableCaption</a
           ></code
-        > plugin lets you add captions to your tables. Table captions also
-        improve accessibility as they are recognized by screen readers.
+        >
+        plugin lets you add captions to your tables. Table captions also improve
+        accessibility as they are recognized by screen readers.
       </td>
     </tr>
     <tr id="styling-tables">
@@ -358,8 +358,7 @@ order: -997
     </tr>
     <tr id="styles">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html"
           >Styles</a
         >
       </td>
@@ -391,12 +390,14 @@ order: -997
       </td>
       <td>
         By default, the editor filters out all HTML comments on initialization.
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_html-support_htmlcomment-HtmlComment.html"
             >HtmlComment</a
           ></code
-        > feature lets developers keep HTML comments in the document without
+        >
+        feature lets developers keep HTML comments in the document without
         displaying them to the user.
       </td>
     </tr>
@@ -436,14 +437,15 @@ order: -997
       </td>
       <td>
         Thanks to the full page HTML feature you can use CKEditor 5 to edit
-        entire HTML pages
-        (from <code>&lt;html&gt;</code> to <code>&lt;/html&gt;</code>),
-        including the page metadata. While the <a
+        entire HTML pages (from <code>&lt;html&gt;</code> to
+        <code>&lt;/html&gt;</code>), including the page metadata. While the
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html"
           >General HTML Support</a
-        > feature focuses on elements inside the content (the
-        document’s <code>&lt;body&gt;</code>), this feature enables markup
-        mostly invisible to the end user.
+        >
+        feature focuses on elements inside the content (the document’s
+        <code>&lt;body&gt;</code>), this feature enables markup mostly invisible
+        to the end user.
       </td>
     </tr>
     <tr id="remove-formatting">
@@ -488,8 +490,7 @@ order: -997
     </tr>
     <tr id="font-background-color">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font background color</a
         >
       </td>
@@ -499,8 +500,7 @@ order: -997
     </tr>
     <tr id="font-color">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font color</a
         >
       </td>
@@ -508,8 +508,7 @@ order: -997
     </tr>
     <tr id="font-size">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font size</a
         >
       </td>
@@ -517,8 +516,7 @@ order: -997
     </tr>
     <tr id="font-family">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font family</a
         >
       </td>
@@ -529,8 +527,7 @@ order: -997
     </tr>
     <tr id="font-formatting">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font formatting</a
         >
       </td>
@@ -591,7 +588,8 @@ order: -997
       </td>
       <td>
         The to-do list feature lets you create a list of interactive checkboxes
-        with labels. It supports all features of <a
+        with labels. It supports all features of
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html"
           >bulleted and numbered lists</a
         >, so you can nest a to-do list together with any combination of other
@@ -600,46 +598,31 @@ order: -997
     </tr>
     <tr id="superscript">
       <td>
-        <a
-          href="#"
-          >Superscript</a
-        >
+        <a href="#">Superscript</a>
       </td>
       <td>Fine print on top, like references in a book.</td>
     </tr>
     <tr id="subscript">
       <td>
-        <a
-          href="#"
-          >Subscript</a
-        >
+        <a href="#">Subscript</a>
       </td>
       <td>Fine print at the bottom, like atom numbers.</td>
     </tr>
     <tr id="code">
       <td>
-        <a
-          href="#"
-          >Code</a
-        >
+        <a href="#">Code</a>
       </td>
       <td>Snippet look, like a terminal from the 1990s movie.</td>
     </tr>
     <tr id="strikethrough">
       <td>
-        <a
-          href="#"
-          >Strikethrough</a
-        >
+        <a href="#">Strikethrough</a>
       </td>
       <td>Never mind, won’t need it anymore.</td>
     </tr>
     <tr id="underline">
       <td>
-        <a
-          href="#"
-          >Underline</a
-        >
+        <a href="#">Underline</a>
       </td>
       <td>Stuff looks important, yo. Or like a link, too.</td>
     </tr>
@@ -647,7 +630,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html"
-          >Multi-level lists</a
+          >Multi-level lists<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -667,7 +654,8 @@ order: -997
       </td>
       <td>
         The list style feature introduces some more styles for the list item
-        markers. When <a
+        markers. When
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/api/module_list_listconfig-ListPropertiesConfig.html#member-styles"
           >enabled</a
         >, it adds 3 styles for unordered lists and 6 styles for ordered lists
@@ -684,19 +672,17 @@ order: -997
         >
       </td>
       <td>
-        Besides controlling <a
+        Besides controlling
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html"
           >text block indentation</a
-        >, the indent  and outdent  buttons allow for indenting list items
+        >, the indent and outdent buttons allow for indenting list items
         (nesting them).
       </td>
     </tr>
     <tr id="lists">
       <td>
-        <a
-          href="#"
-          >Lists</a
-        >
+        <a href="#">Lists</a>
       </td>
       <td>
         Lists allow the creation and management of various list types, including
@@ -721,19 +707,13 @@ order: -997
     </tr>
     <tr id="italic">
       <td>
-        <a
-          href="#"
-          >Italic</a
-        >
+        <a href="#">Italic</a>
       </td>
       <td>Making the letters look like seashore pines.</td>
     </tr>
     <tr id="bold">
       <td>
-        <a
-          href="#"
-          >Bold</a
-        >
+        <a href="#">Bold</a>
       </td>
       <td>Making the letters look like the good time were never gone.</td>
     </tr>
@@ -785,10 +765,12 @@ order: -997
         >
       </td>
       <td>
-        Inserting <a
+        Inserting
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html"
           >images</a
-        > into content created with CKEditor 5 is quite a common task. In a
+        >
+        into content created with CKEditor 5 is quite a common task. In a
         properly configured rich-text editor, there are several ways for the end
         user to insert images.
       </td>
@@ -801,12 +783,14 @@ order: -997
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_link_linkimage-LinkImage.html"
             >LinkImage</a
           ></code
-        > plugin lets you use images as links.
+        >
+        plugin lets you use images as links.
       </td>
     </tr>
     <tr id="image-styles">
@@ -846,7 +830,8 @@ order: -997
       </td>
       <td>
         The ability to have responsive images in the rich-text editor content is
-        a great modern feature provided by the <a
+        a great modern feature provided by the
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
           >CKBox asset manager</a
         >. With a single image upload, several optimized versions of that image
@@ -866,28 +851,36 @@ order: -997
       </td>
       <td>
         The image resize feature lets you change the width of images in your
-        content. It is implemented by the <code
+        content. It is implemented by the
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageresize-ImageResize.html"
             >ImageResize</a
           ></code
-        > plugin.
+        >
+        plugin.
       </td>
     </tr>
     <tr id="saas">
       <td>
-        <a
-          href="https://ckeditor.com/docs/cs/latest/guides/overview.html"
-          >SaaS</a
+        <a href="https://ckeditor.com/docs/cs/latest/guides/overview.html"
+          >SaaS<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>Real-time collaboration provided as a service by CKSource.</td>
     </tr>
     <tr id="on-premises">
       <td>
-        <a
-          href="https://ckeditor.com/docs/cs/latest/onpremises/index.html"
-          >On-premises</a
+        <a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html"
+          >On-premises<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -897,35 +890,50 @@ order: -997
     </tr>
     <tr id="local-data-storage">
       <td>
-        <a
-          href="#"
-          >Local data storage</a
+        <a href="#"
+          >Local data storage<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
-      <td>In asynchronous collaboration, data is maintained on the client’s servers.</td>
+      <td>
+        In asynchronous collaboration, data is maintained on the client’s
+        servers.
+      </td>
     </tr>
     <tr id="users-list-and-permissions">
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/users.html"
-          >Users list and permissions</a
+          >Users list and permissions<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_collaboration-core_users-Users.html"
             >Users</a
           ></code
-        > plugin and related plugins let you manage user data and permissions.
+        >
+        plugin and related plugins let you manage user data and permissions.
         This is essential when many users are working on the same document.
       </td>
     </tr>
     <tr id="co-authoring">
       <td>
-        <a
-          href="#"
-          >Co-authoring</a
+        <a href="#"
+          >Co-authoring<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>Multiple user real-time editing and content creation feature.</td>
@@ -934,7 +942,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html"
-          >Sidebar modes</a
+          >Sidebar modes<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -949,7 +961,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html"
-          >Revision history</a
+          >Revision history<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -965,7 +981,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html"
-          >Track changes</a
+          >Track changes<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -992,7 +1012,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html"
-          >Real-time collaboration</a
+          >Real-time collaboration<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1006,7 +1030,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html"
-          >Asynchronous collaboration</a
+          >Asynchronous collaboration<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1020,11 +1048,16 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-outside-editor.html"
-          >Comments outside editor</a
+          >Comments outside editor<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
-        The comments feature API, together with <code
+        The comments feature API, together with
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html"
             >Context</a
@@ -1037,7 +1070,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html"
-          >Sidebar modes</a
+          >Sidebar modes<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1052,7 +1089,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html"
-          >Comments archive</a
+          >Comments archive<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1068,7 +1109,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html"
-          >Comments</a
+          >Comments<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1091,10 +1136,7 @@ order: -997
     </tr>
     <tr id="content-generation">
       <td>
-        <a
-          href="#"
-          >Content generation</a
-        >
+        <a href="#">Content generation</a>
       </td>
       <td></td>
     </tr>
@@ -1142,7 +1184,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html"
-          >Export to PDF</a
+          >Export to PDF<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1155,7 +1201,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html"
-          >Export to Word</a
+          >Export to Word<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1169,7 +1219,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/import-word/import-word.html"
-          >Import from Word</a
+          >Import from Word<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1180,10 +1234,7 @@ order: -997
     </tr>
     <tr id="page-utilities">
       <td>
-        <a
-          href="#"
-          >Page utilities</a
-        >
+        <a href="#">Page utilities</a>
       </td>
       <td>
         CKEditor 5 Page Utilities enables users to dictate the structuring and
@@ -1194,7 +1245,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html"
-          >Pagination</a
+          >Pagination<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1237,8 +1292,7 @@ order: -997
     </tr>
     <tr id="document-title">
       <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html"
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html"
           >Document title</a
         >
       </td>
@@ -1251,7 +1305,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html"
-          >Table of contents</a
+          >Table of contents<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1267,7 +1325,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html"
-          >Document outline</a
+          >Document outline<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1284,7 +1346,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html"
-          >Merge fields</a
+          >Merge fields<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1326,10 +1392,7 @@ order: -997
     </tr>
     <tr id="automation">
       <td>
-        <a
-          href="#"
-          >Automation</a
-        >
+        <a href="#">Automation</a>
       </td>
       <td></td>
     </tr>
@@ -1355,7 +1418,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html"
-          >Format painter</a
+          >Format painter<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1372,7 +1439,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html"
-          >Case change</a
+          >Case change<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1390,7 +1461,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-overview.html"
-          >AI Assistant</a
+          >AI Assistant<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1420,7 +1495,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html"
-          >MathType</a
+          >MathType<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1449,7 +1528,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/template.html"
-          >Templates</a
+          >Templates<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1464,7 +1547,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html"
-          >Slash commands</a
+          >Slash commands<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1497,7 +1584,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html"
-          >Paste from Office Enhanced</a
+          >Paste from Office Enhanced<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1614,17 +1705,18 @@ order: -997
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tabletoolbar-TableToolbar.html"
             >TableToolbar</a
           ></code
-        > plugin introduces a contextual toolbar for table. The toolbar appears
+        >
+        plugin introduces a contextual toolbar for table. The toolbar appears
         when a table or a cell is selected and contains various table-related
-        buttons. These would typically include add or remove columns  and
-        rows  and merge or split cells . If these features are configured, the
-        toolbar will also contain buttons for captions  and table  and
-        cell  properties.
+        buttons. These would typically include add or remove columns and rows
+        and merge or split cells . If these features are configured, the toolbar
+        will also contain buttons for captions and table and cell properties.
       </td>
     </tr>
     <tr id="image-contextual-toolbar">
@@ -1635,24 +1727,33 @@ order: -997
         >
       </td>
       <td>
-        The <code
+        The
+        <code
           ><a
             href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagetoolbar-ImageToolbar.html"
             >ImageToolbar</a
           ></code
-        > plugin introduces a contextual toolbar for images. The toolbar appears
+        >
+        plugin introduces a contextual toolbar for images. The toolbar appears
         when an image is selected and can be configured to contain any buttons
-        you want. Usually, these will be image-related options such as the <a
+        you want. Usually, these will be image-related options such as the
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html"
           >text alternative</a
-        > button, the <a
+        >
+        button, the
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html"
           >image caption</a
-        > button, and <a
+        >
+        button, and
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html"
           >image styles</a
-        > buttons. The toolbar can also host the image editing button introduced
-        by the <a
+        >
+        buttons. The toolbar can also host the image editing button introduced
+        by the
+        <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
           >CKBox asset manager</a
         >. Shown below is an example contextual toolbar with an extended set of
@@ -1784,10 +1885,7 @@ order: -997
     </tr>
     <tr id="balloon-toolbar">
       <td>
-        <a
-          href="#"
-          >Balloon toolbar</a
-        >
+        <a href="#">Balloon toolbar</a>
       </td>
       <td>
         The block toolbar provides an additional configurable toolbar on the
@@ -1811,10 +1909,7 @@ order: -997
     </tr>
     <tr id="toolbar-and-menus">
       <td>
-        <a
-          href="#"
-          >Toolbar and menus</a
-        >
+        <a href="#">Toolbar and menus</a>
       </td>
       <td>
         The Toolbar Configuration feature provides different toolbar interfaces
@@ -1956,7 +2051,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html"
-          >WPRoofreader</a
+          >WPRoofreader<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -1991,19 +2090,13 @@ order: -997
     </tr>
     <tr id="cloud-services-rest-api">
       <td>
-        <a
-          href="#"
-          >Cloud Services REST API
-        </a>
+        <a href="#">Cloud Services REST API </a>
       </td>
       <td></td>
     </tr>
     <tr id="ckeditor5-inspector">
       <td>
-        <a
-          href="#"
-          >CKEditor 5 Inspector</a
-        >
+        <a href="#">CKEditor 5 Inspector</a>
       </td>
       <td></td>
     </tr>
@@ -2015,7 +2108,8 @@ order: -997
         >
       </td>
       <td>
-        The standard UI library of CKEditor 5 is <code
+        The standard UI library of CKEditor 5 is
+        <code
           ><a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
             >@ckeditor/ckeditor5-ui</a
           ></code
@@ -2038,10 +2132,7 @@ order: -997
     </tr>
     <tr id="editor-sdk">
       <td>
-        <a
-          href="#"
-          >Editor SDK</a
-        >
+        <a href="#">Editor SDK</a>
       </td>
       <td>
         Select from numerous toolbar styles and over 100 plugins to tailor an
@@ -2050,15 +2141,18 @@ order: -997
         enables the creation of custom plugins or modification of the
         editor&#x27;s functionality. To assist the development process,
         dedicated resources such as a package generator and the CKEditor 5
-        Inspector - a comprehensive suite of debugging tools - are provided, helping
-        accelerate development work.
+        Inspector - a comprehensive suite of debugging tools - are provided,
+        helping accelerate development work.
       </td>
     </tr>
     <tr id="uploadcare">
       <td>
-        <a
-          href="#"
-          >Uploadcare</a
+        <a href="#"
+          >Uploadcare<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -2112,7 +2206,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckfinder.html"
-          >CKFinder</a
+          >CKFinder<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
@@ -2125,7 +2223,11 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
-          >CKBox</a
+          >CKBox<span
+            class="tree__item__badge tree__item__badge_premium"
+            data-badge-tooltip="Premium feature"
+            ><span class="tree__item__badge__text">Premium feature</span></span
+          ></a
         >
       </td>
       <td>
