@@ -7,59 +7,44 @@
 
 /* eslint-env node */
 
-import upath from 'upath';
-import fs from 'fs-extra';
 import { Listr } from 'listr2';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import parseArguments from './utils/parsearguments.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-import { CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } from './utils/constants.mjs';
+import { CDN_S3_BUCKET, RELEASE_CDN_DIRECTORY, S3_CONTENT_TYPE, S3_COPY_ARGS } from './utils/constants.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
-const { version: packageJsonVersion } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
-const cdnVersion = getCdnVersion( cliArguments, packageJsonVersion );
+const cdnVersion = getCdnVersion( cliArguments );
+const shellModifiers = { verbosity: 'error', async: true };
 
 const tasks = new Listr( [
 	{
-		title: 'Upload files to CDN.',
+		title: 'Remove existing files.',
 		task: async () => {
 			await tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
-				 --exclude "*" --include "*.js" --content-type 'text/javascript; charset=utf-8'`,
-				{ verbosity: 'error', async: true }
+				`aws s3 rm s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion } --recursive`,
+				{ ...shellModifiers }
 			);
-			await tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
-				 --exclude "*" --include "*.ts" --content-type 'application/typescript; charset=utf-8'`,
-				{ verbosity: 'error', async: true }
-			);
-			await tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
-				 --exclude "*" --include "*.css" --content-type 'text/css; charset=utf-8'`,
-				{ verbosity: 'error', async: true }
-			);
-			await tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
-				 --exclude "*" --include "*.zip" --content-type 'application/zip'`,
-				{ verbosity: 'error', async: true }
-			);
-			await tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
-				--exclude "*" --include "*.map" --content-type 'application/json; charset=utf-8'`,
-				{ verbosity: 'error', async: true }
-			);
+		}
+	},
+	{
+		title: 'Upload new files to CDN.',
+		task: async () => {
+			for ( const [ pattern, value ] of Object.entries( S3_CONTENT_TYPE ) ) {
+				await tools.shExec(
+					`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
+					 --exclude "*" --include "${ pattern }" --content-type "${ value }"`,
+					{ ...shellModifiers }
+				);
+			}
 		}
 	}
 ], getListrOptions( cliArguments ) );
 
-( async () => {
-	try {
-		await tasks.run();
-	} catch ( err ) {
+tasks.run()
+	.catch( err => {
 		process.exitCode = 1;
 
 		console.error( err );
-	}
-} )();
+	} );

@@ -40,6 +40,14 @@ describe( 'PageBreakUI', () => {
 			} );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PageBreakUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PageBreakUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "pageBreak" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'pageBreak' );

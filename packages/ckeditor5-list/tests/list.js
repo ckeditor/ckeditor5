@@ -15,4 +15,12 @@ describe( 'List', () => {
 	it( 'should require ListEditing and ListUI', () => {
 		expect( List.requires ).to.deep.equal( [ ListEditing, ListUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( List.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( List.isPremiumPlugin ).to.be.false;
+	} );
 } );

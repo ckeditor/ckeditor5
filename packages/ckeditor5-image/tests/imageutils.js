@@ -47,6 +47,14 @@ describe( 'ImageUtils plugin', () => {
 		expect( ImageUtils.pluginName ).to.equal( 'ImageUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toImageWidget()', () => {
 		it( 'should be widgetized', () => {
 			expect( isWidget( element ) ).to.be.true;

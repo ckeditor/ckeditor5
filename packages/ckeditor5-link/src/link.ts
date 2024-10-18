@@ -32,4 +32,11 @@ export default class Link extends Plugin {
 	public static get pluginName() {
 		return 'Link' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

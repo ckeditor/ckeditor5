@@ -17,4 +17,12 @@ describe( 'ImageResize', () => {
 	it( 'should be named', () => {
 		expect( ImageResize.pluginName ).to.equal( 'ImageResize' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageResize.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageResize.isPremiumPlugin ).to.be.false;
+	} );
 } );

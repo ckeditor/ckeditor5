@@ -20,6 +20,14 @@ describe( 'LegacyListUtils', () => {
 		expect( LegacyListUtils.pluginName ).to.equal( 'LegacyListUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyListUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyListUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'coverage checks', () => {
 		it( 'getListTypeFromListStyleType', () => {
 			const mock = 'mock';

@@ -50,4 +50,12 @@ describe( 'ImageBlock', () => {
 	it( 'should load ImageInsertUI plugin', () => {
 		expect( editor.plugins.get( ImageInsertUI ) ).to.instanceOf( ImageInsertUI );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageBlock.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageBlock.isPremiumPlugin ).to.be.false;
+	} );
 } );

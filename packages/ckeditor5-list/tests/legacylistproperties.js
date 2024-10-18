@@ -15,4 +15,12 @@ describe( 'LegacyListProperties', () => {
 	it( 'should require LegacyListPropertiesEditing and ListPropertiesUI', () => {
 		expect( LegacyListProperties.requires ).to.deep.equal( [ LegacyListPropertiesEditing, ListPropertiesUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyListProperties.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyListProperties.isPremiumPlugin ).to.be.false;
+	} );
 } );

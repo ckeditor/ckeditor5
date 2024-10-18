@@ -66,6 +66,14 @@ describe( 'FindAndReplace', () => {
 		expect( FindAndReplace.pluginName ).to.equal( 'FindAndReplace' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FindAndReplace.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FindAndReplace.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require other plugins', () => {
 		expect( FindAndReplace.requires ).to.deep.equal( [ FindAndReplaceEditing, FindAndReplaceUI ] );
 	} );

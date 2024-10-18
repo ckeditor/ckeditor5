@@ -46,6 +46,14 @@ describe( 'TableEditing', () => {
 		expect( TableEditing.pluginName ).to.equal( 'TableEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		// Table:
 		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
