@@ -902,7 +902,7 @@ order: -997
           >Local data storage</a
         >
       </td>
-      <td>In async collaboration data is maintained on client’s servers.</td>
+      <td>In asynchronous collaboration, data is maintained on the client’s servers.</td>
     </tr>
     <tr id="users-list-and-permissions">
       <td>
@@ -928,7 +928,7 @@ order: -997
           >Co-authoring</a
         >
       </td>
-      <td>Multiuser real-time editing and content creation feature.</td>
+      <td>Multiple user real-time editing and content creation feature.</td>
     </tr>
     <tr id="sidebar-modes">
       <td>
@@ -2050,7 +2050,7 @@ order: -997
         enables the creation of custom plugins or modification of the
         editor&#x27;s functionality. To assist the development process,
         dedicated resources such as a package generator and the CKEditor 5
-        Inspector—a comprehensive suite of debugging tools—are provided, helping
+        Inspector - a comprehensive suite of debugging tools - are provided, helping
         accelerate development work.
       </td>
     </tr>
