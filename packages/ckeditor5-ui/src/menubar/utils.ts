@@ -524,9 +524,9 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 		label: 'View',
  * 		groups: [
  * 			{
- * 				groupId: 'sourceEditingDialog',
+ * 				groupId: 'sourceEditingEnhanced',
  * 				items: [
- * 					'menuBar:sourceEditingDialog'
+ * 					'menuBar:sourceEditingEnhanced'
  * 				]
  * 			},
  * 			{
@@ -787,9 +787,9 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 		label: 'View',
 		groups: [
 			{
-				groupId: 'sourceEditingDialog',
+				groupId: 'sourceEditingEnhanced',
 				items: [
-					'menuBar:sourceEditingDialog'
+					'menuBar:sourceEditingEnhanced'
 				]
 			},
 			{
