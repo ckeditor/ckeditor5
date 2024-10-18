@@ -307,8 +307,10 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// Also, if the element has a class `ck-with-instant-tooltip`, the tooltip should be pinned immediately.
 		// This is useful for elements that have their content partially hidden (e.g. a long text in a small container)
 		// and should show a tooltip on hover, like merge field.
-		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ||
-			elementWithTooltipAttribute.matches( '.ck-with-instant-tooltip' ) ) {
+		if ( 
+			evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ||
+			elementWithTooltipAttribute.matches( '.ck-with-instant-tooltip' )
+		) {
 			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 		} else {
 			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
