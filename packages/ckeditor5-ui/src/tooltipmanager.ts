@@ -366,6 +366,14 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
 				this._pinTooltipDebounced.cancel();
 
+				// If the currently visible tooltip is instant, unpin it immediately.
+				if (
+					this._currentElementWithTooltip && this._currentElementWithTooltip.matches( '[data-cke-tooltip-instant]' ) ||
+					descendantWithTooltip && descendantWithTooltip.matches( '[data-cke-tooltip-instant]' )
+				) {
+					this._unpinTooltip();
+				}
+
 				this._unpinTooltipDebounced();
 			}
 		} else {

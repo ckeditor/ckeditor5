@@ -712,6 +712,19 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
+			it( 'should remove the tooltip immediately if the element has `data-cke-tooltip-instant` attribute', () => {
+				elements.a.dataset.ckeTooltipInstant = true;
+
+				utils.dispatchMouseEnter( elements.a );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
+
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
 			it( 'should not work if the tooltip is currently pinned and the event target is different than the current element', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
