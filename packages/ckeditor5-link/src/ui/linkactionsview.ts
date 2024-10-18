@@ -70,14 +70,14 @@ export default class LinkActionsView extends View {
 
 	private readonly _linkConfig: LinkConfig;
 
-	private readonly _options: Record<string, Function> | undefined;
+	private readonly _options?: LinkActionsViewOptions;
 
 	declare public t: LocaleTranslate;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, linkConfig: LinkConfig = {}, options?: Record<string, Function> ) {
+	constructor( locale: Locale, linkConfig: LinkConfig = {}, options?: LinkActionsViewOptions ) {
 		super( locale );
 
 		const t = locale.t;
@@ -217,8 +217,7 @@ export default class LinkActionsView extends View {
 				click: bind.to( evt => {
 					if ( this._options && this._options.isScrollableToTarget( this.href ) ) {
 						evt.preventDefault();
-
-						this._options.scrollToTarget( this.href );
+						this._options.scrollToTarget( this.href! );
 					} else {
 						openLink( this.href! );
 					}
@@ -242,9 +241,6 @@ export default class LinkActionsView extends View {
 
 		button.template!.tag = 'a';
 
-		// When `eventListeners` is "cleaned" the binding to the `click` event is removed.
-		// button.template!.eventListeners = {};
-
 		return button;
 	}
 }
@@ -267,4 +263,20 @@ export type EditEvent = {
 export type UnlinkEvent = {
 	name: 'unlink';
 	args: [];
+};
+
+/**
+ * The options that are passed to the {@link LinkActionsView} constructor.
+ */
+export type LinkActionsViewOptions = {
+
+	/**
+	 * Returns `true` when bookmark `id` matches the hash from `link`.
+	 */
+	isScrollableToTarget: ( href: string | undefined ) => boolean;
+
+	/**
+	 * Scrolls the view to the desired bookmark or open a link in new window.
+	 */
+	scrollToTarget: ( href: string ) => void;
 };

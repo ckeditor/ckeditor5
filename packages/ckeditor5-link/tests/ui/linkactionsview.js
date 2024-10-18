@@ -6,7 +6,6 @@
 /* globals window, document, Event */
 
 import LinkActionsView from '../../src/ui/linkactionsview.js';
-import { createBookmarkCallbacks } from '../../src/utils.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
@@ -14,13 +13,9 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bookmark, BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 describe( 'LinkActionsView', () => {
-	let view, editor, editorElement;
+	let view, editorElement, isScrollableToTarget, scrollToTarget;
 
 	testUtils.createSinonSandbox();
 
@@ -28,11 +23,15 @@ describe( 'LinkActionsView', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Essentials, Paragraph, Bookmark, BookmarkEditing ]
-		} );
+		isScrollableToTarget = sinon.stub();
+		scrollToTarget = sinon.stub();
 
-		view = new LinkActionsView( { t: () => {} }, undefined, createBookmarkCallbacks( editor ) );
+		const createBookmarkCallbacks = {
+			isScrollableToTarget,
+			scrollToTarget
+		};
+
+		view = new LinkActionsView( { t: () => {} }, undefined, createBookmarkCallbacks );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -41,8 +40,6 @@ describe( 'LinkActionsView', () => {
 		view.element.remove();
 		view.destroy();
 		editorElement.remove();
-
-		return editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -157,9 +154,9 @@ describe( 'LinkActionsView', () => {
 				describe( 'when href starts with `#`', () => {
 					describe( 'and Bookmark plugin is loaded', () => {
 						it( 'should scroll to bookmark when bookmark `id` matches hash `url`', () => {
-							editor.setData( '<p><a id="foo"></a></p>' );
-
 							view.href = '#foo';
+
+							isScrollableToTarget.returns( true );
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 
@@ -169,13 +166,14 @@ describe( 'LinkActionsView', () => {
 							view.previewButtonView.on( 'execute', spy );
 							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
 							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( scrollToTarget, 1 );
 							sinon.assert.callCount( windowOpenStub, 0 );
 						} );
 
 						it( 'should open link when bookmark `id` does not matches hash `url`', () => {
-							editor.setData( '<p><a id="bar"></a></p>' );
-
 							view.href = '#foo';
+
+							isScrollableToTarget.returns( false );
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 
@@ -185,12 +183,13 @@ describe( 'LinkActionsView', () => {
 							view.previewButtonView.on( 'execute', spy );
 							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
 							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( scrollToTarget, 0 );
 							sinon.assert.callCount( windowOpenStub, 1 );
 						} );
 					} );
 
 					describe( 'and Bookmark plugin is not loaded', () => {
-						let view, editor, editorElement;
+						let view, editorElement, isScrollableToTarget, scrollToTarget;
 
 						testUtils.createSinonSandbox();
 
@@ -198,11 +197,15 @@ describe( 'LinkActionsView', () => {
 							editorElement = document.createElement( 'div' );
 							document.body.appendChild( editorElement );
 
-							editor = await ClassicTestEditor.create( editorElement, {
-								plugins: [ Essentials, Paragraph ]
-							} );
+							isScrollableToTarget = sinon.stub();
+							scrollToTarget = sinon.stub();
 
-							view = new LinkActionsView( { t: () => {} } );
+							const createBookmarkCallbacks = {
+								isScrollableToTarget,
+								scrollToTarget
+							};
+
+							view = new LinkActionsView( { t: () => {} }, undefined, createBookmarkCallbacks );
 							view.render();
 							document.body.appendChild( view.element );
 						} );
@@ -211,18 +214,14 @@ describe( 'LinkActionsView', () => {
 							view.element.remove();
 							view.destroy();
 							editorElement.remove();
-
-							return editor.destroy();
 						} );
 
 						it( 'should open link', () => {
-							editor.setData( '<p><a id="foo"></a></p>' );
-
 							view.href = '#foo';
 
+							isScrollableToTarget.returns( false );
+
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
-							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
-							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -230,6 +229,7 @@ describe( 'LinkActionsView', () => {
 							view.previewButtonView.on( 'execute', spy );
 							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
 							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( scrollToTarget, 0 );
 							sinon.assert.callCount( windowOpenStub, 1 );
 						} );
 					} );
@@ -238,13 +238,11 @@ describe( 'LinkActionsView', () => {
 				describe( 'when href not starts with `#`', () => {
 					describe( 'and Bookmark plugin is loaded', () => {
 						it( 'should open link', () => {
-							editor.setData( '<p><a id="foo"></a></p>' );
-
 							view.href = 'foo';
 
+							isScrollableToTarget.returns( false );
+
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
-							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
-							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -252,12 +250,13 @@ describe( 'LinkActionsView', () => {
 							view.previewButtonView.on( 'execute', spy );
 							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
 							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( scrollToTarget, 0 );
 							sinon.assert.callCount( windowOpenStub, 1 );
 						} );
 					} );
 
 					describe( 'and Bookmark plugin is not loaded', () => {
-						let view, editor, editorElement;
+						let view, editorElement, isScrollableToTarget, scrollToTarget;
 
 						testUtils.createSinonSandbox();
 
@@ -265,11 +264,15 @@ describe( 'LinkActionsView', () => {
 							editorElement = document.createElement( 'div' );
 							document.body.appendChild( editorElement );
 
-							editor = await ClassicTestEditor.create( editorElement, {
-								plugins: [ Essentials, Paragraph ]
-							} );
+							isScrollableToTarget = sinon.stub();
+							scrollToTarget = sinon.stub();
 
-							view = new LinkActionsView( { t: () => {} } );
+							const createBookmarkCallbacks = {
+								isScrollableToTarget,
+								scrollToTarget
+							};
+
+							view = new LinkActionsView( { t: () => {} }, undefined, createBookmarkCallbacks );
 							view.render();
 							document.body.appendChild( view.element );
 						} );
@@ -278,18 +281,14 @@ describe( 'LinkActionsView', () => {
 							view.element.remove();
 							view.destroy();
 							editorElement.remove();
-
-							return editor.destroy();
 						} );
 
 						it( 'should open link', () => {
-							editor.setData( '<p><a id="foo"></a></p>' );
-
 							view.href = 'foo';
 
+							isScrollableToTarget.returns( false );
+
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
-							expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
-							expect( view.previewButtonView.element.getAttribute( 'rel' ) ).to.equal( 'noopener noreferrer' );
 
 							const spy = sinon.spy();
 							const windowOpenStub = sinon.stub( window, 'open' );
@@ -297,6 +296,7 @@ describe( 'LinkActionsView', () => {
 							view.previewButtonView.on( 'execute', spy );
 							view.previewButtonView.element.dispatchEvent( new Event( 'click' ) );
 							sinon.assert.callCount( spy, 1 );
+							sinon.assert.callCount( scrollToTarget, 0 );
 							sinon.assert.callCount( windowOpenStub, 1 );
 						} );
 					} );

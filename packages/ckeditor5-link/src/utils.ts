@@ -28,6 +28,8 @@ import type {
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
 
+import type { LinkActionsViewOptions } from './ui/linkactionsview.js';
+
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
@@ -200,7 +202,7 @@ export function openLink( link: string ): void {
 /**
  * Creates the bookmark callbacks for handling link opening experience.
  */
-export function createBookmarkCallbacks( editor: Editor ): Record<string, Function> {
+export function createBookmarkCallbacks( editor: Editor ): LinkActionsViewOptions {
 	const bookmarkEditing: BookmarkEditing | null = editor.plugins.has( 'BookmarkEditing' ) ?
 		editor.plugins.get( 'BookmarkEditing' ) :
 		null;
@@ -208,7 +210,7 @@ export function createBookmarkCallbacks( editor: Editor ): Record<string, Functi
 	/**
 	 * Returns `true` when bookmark `id` matches the hash from `link`.
 	 */
-	function isScrollableToTarget( link: string | null ): boolean {
+	function isScrollableToTarget( link: string | undefined ): boolean {
 		return !!link &&
 			link.startsWith( '#' ) &&
 			!!bookmarkEditing &&
