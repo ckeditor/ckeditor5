@@ -43,10 +43,29 @@ export default class LinkPreviewButtonView extends ButtonView {
 				href: bind.to( 'href' ),
 				target: '_blank',
 				rel: 'noopener noreferrer'
+			},
+
+			on: {
+				click: bind.to( evt => {
+					if ( this.href ) {
+						const cancel = () => evt.preventDefault();
+
+						this.fire<LinkPreviewButtonExecuteEvent>( 'execute', this.href, cancel );
+					}
+				} )
 			}
 		} );
 
 		this.template!.tag = 'a';
-		this.template!.eventListeners = {};
 	}
 }
+
+/**
+ * Fired when the button view is clicked.
+ *
+ * @eventName ~LinkPreviewButtonView#execute
+ */
+export type LinkPreviewButtonExecuteEvent = {
+	name: 'execute';
+	args: [ string, () => void ];
+};

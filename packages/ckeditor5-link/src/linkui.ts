@@ -31,7 +31,11 @@ import LinkPreviewButtonView from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
-import { addLinkProtocolIfApplicable, ensureSafeUrl, isLinkElement, LINK_KEYSTROKE } from './utils.js';
+import {
+	addLinkProtocolIfApplicable,
+	ensureSafeUrl, isLinkElement, createBookmarkCallbacks,
+	LINK_KEYSTROKE
+} from './utils.js';
 
 import linkIcon from '../theme/icons/link.svg';
 import unlinkIcon from '../theme/icons/unlink.svg';
@@ -284,7 +288,7 @@ export default class LinkUI extends Plugin {
 			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 			const t = locale.t;
 
-			button.tooltip = t( 'Open link in new tab' );
+			const { isScrollableToTarget, scrollToTarget } = createBookmarkCallbacks( editor );
 
 			button.bind( 'href' ).to( linkCommand, 'value', href => {
 				return href && ensureSafeUrl( href, allowedProtocols );
@@ -295,6 +299,17 @@ export default class LinkUI extends Plugin {
 			} );
 
 			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+
+			button.bind( 'tooltip' ).to( linkCommand, 'value',
+				url => isScrollableToTarget( url ) ? t( 'Scroll to target' ) : t( 'Open link in new tab' )
+			);
+
+			this.listenTo( button, 'execute', ( evt, href, cancel ) => {
+				if ( isScrollableToTarget( href ) ) {
+					cancel();
+					scrollToTarget( href! );
+				}
+			} );
 
 			return button;
 		} );

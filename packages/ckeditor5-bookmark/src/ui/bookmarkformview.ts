@@ -93,7 +93,7 @@ export default class BookmarkFormView extends View {
 
 		this.idInputView = this._createIdInput();
 
-		this.buttonView = this._createButton( t( 'Insert' ), 'ck-button-action' );
+		this.buttonView = this._createButton( t( 'Insert' ), 'ck-button-action ck-button-bold' );
 		this.buttonView.type = 'submit';
 
 		this.children = this._createViewChildren();
