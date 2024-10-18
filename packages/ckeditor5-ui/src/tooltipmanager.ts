@@ -56,11 +56,19 @@ const BALLOON_CLASS = 'ck-tooltip';
  *
  * # Disabling tooltips
  *
- * In order to disable the tooltip  temporarily, use the `data-cke-tooltip-disabled` attribute:
+ * In order to disable the tooltip temporarily, use the `data-cke-tooltip-disabled` attribute:
  *
  * ```ts
  * domElement.dataset.ckeTooltipText = 'Disabled. For now.';
  * domElement.dataset.ckeTooltipDisabled = 'true';
+ * ```
+ *
+ * # Instant tooltips
+ *
+ * To remove the delay before showing or hiding the tooltip, use the `data-cke-tooltip-instant` attribute:
+ *
+ * ```ts
+ * domElement.dataset.ckeTooltipInstant = 'true';
  * ```
  *
  * # Styling tooltips
@@ -304,12 +312,12 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// The tooltip should be pinned immediately when the element gets focused using keyboard.
 		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
 		// See https://github.com/ckeditor/ckeditor5/issues/16383
-		// Also, if the element has a class `ck-with-instant-tooltip`, the tooltip should be pinned immediately.
+		// Also, if the element has an attribute `data-cke-tooltip-instant`, the tooltip should be pinned immediately.
 		// This is useful for elements that have their content partially hidden (e.g. a long text in a small container)
 		// and should show a tooltip on hover, like merge field.
-		if ( 
+		if (
 			evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ||
-			elementWithTooltipAttribute.matches( '.ck-with-instant-tooltip' )
+			elementWithTooltipAttribute.matches( '[data-cke-tooltip-instant]' )
 		) {
 			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 		} else {
@@ -337,6 +345,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			// Do not hide the tooltip when the user moves the cursor over it.
 			if ( isEnteringBalloon ) {
 				this._unpinTooltipDebounced.cancel();
+
 				return;
 			}
 

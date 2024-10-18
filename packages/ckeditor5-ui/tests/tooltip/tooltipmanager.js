@@ -306,8 +306,8 @@ describe( 'TooltipManager', () => {
 					} );
 				} );
 
-				it( 'should pin a tooltip instantly if element has a `ck-with-instant-tooltip` class', () => {
-					elements.a.classList.add( 'ck-with-instant-tooltip' );
+				it( 'should pin a tooltip instantly if element has a `data-cke-tooltip-instant` attribute', () => {
+					elements.a.dataset.ckeTooltipInstant = true;
 
 					utils.dispatchMouseEnter( elements.a );
 
