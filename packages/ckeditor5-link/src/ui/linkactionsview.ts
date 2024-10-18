@@ -266,7 +266,7 @@ export type UnlinkEvent = {
 };
 
 /**
- * The options that are passed to the {@link LinkActionsView} constructor.
+ * The options that are passed to the {@link ~LinkActionsView#constructor} constructor.
  */
 export type LinkActionsViewOptions = {
 
