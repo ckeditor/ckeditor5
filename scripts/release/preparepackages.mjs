@@ -15,6 +15,7 @@ import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import { Listr } from 'listr2';
 import { ListrInquirerPromptAdapter } from '@listr2/prompt-adapter-inquirer';
 import { confirm } from '@inquirer/prompts';
+
 import updateVersionReferences from './utils/updateversionreferences.mjs';
 import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcallback.mjs';
 import buildTsAndDllForCKEditor5Root from './utils/buildtsanddllforckeditor5root.mjs';
@@ -27,6 +28,8 @@ import prepareDllBuildsCallback from './utils/preparedllbuildscallback.mjs';
 import buildCKEditor5BuildsCallback from './utils/buildckeditor5buildscallback.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
+import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
+import getReleaseDescription from './utils/getreleasedescription.mjs';
 import {
 	PACKAGES_DIRECTORY,
 	RELEASE_DIRECTORY,
@@ -36,18 +39,15 @@ import {
 } from './utils/constants.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
-
-// `executeInParallel()` is executed thrice.
-EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
-
-let latestVersion;
-let versionChangelog;
-
+const [ latestVersion, versionChangelog ] = await getReleaseDescription( cliArguments );
 const taskOptions = {
 	rendererOptions: {
 		collapseSubtasks: false
 	}
 };
+
+// The number of `executeInParallel()` executions.
+EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 5 + 1 );
 
 const tasks = new Listr( [
 	{
@@ -66,8 +66,7 @@ const tasks = new Listr( [
 			return Promise.reject( 'Aborted due to errors.\n' + errors.map( message => `* ${ message }` ).join( '\n' ) );
 		},
 		skip: () => {
-			// Nightly releases are not described in the changelog.
-			if ( cliArguments.nightly || cliArguments.nightlyAlpha ) {
+			if ( isNonCommittableRelease( cliArguments ) ) {
 				return true;
 			}
 
@@ -272,8 +271,8 @@ const tasks = new Listr( [
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 
-						const cdnVersion = getCdnVersion( cliArguments, latestVersion );
-						const zipName = `ckeditor5-${ cdnVersion }`;
+						const cdnVersion = getCdnVersion( cliArguments );
+						const zipName = `ckeditor5-${ cdnVersion === 'staging' ? latestVersion : cdnVersion }`;
 
 						await tools.shExec(
 							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,
@@ -320,8 +319,7 @@ const tasks = new Listr( [
 			} );
 		},
 		skip: () => {
-			// Nightly releases are not stored in the repository.
-			if ( cliArguments.nightly || cliArguments.nightlyAlpha ) {
+			if ( isNonCommittableRelease( cliArguments ) ) {
 				return true;
 			}
 
@@ -335,25 +333,11 @@ const tasks = new Listr( [
 	}
 ], getListrOptions( cliArguments ) );
 
-( async () => {
-	try {
-		if ( cliArguments.nightlyAlpha ) {
-			const CKE5_NEXT_RELEASE_VERSION = process.env.CKE5_NEXT_RELEASE_VERSION.trim();
+console.log( 'Version', latestVersion );
 
-			latestVersion = await releaseTools.getNextPreRelease( `${ CKE5_NEXT_RELEASE_VERSION }-alpha` );
-		} else if ( cliArguments.nightly ) {
-			latestVersion = await releaseTools.getNextNightly();
-		} else {
-			latestVersion = releaseTools.getLastFromChangelog();
-			versionChangelog = releaseTools.getChangesForVersion( latestVersion );
-		}
-
-		console.log( 'Version', latestVersion );
-
-		await tasks.run();
-	} catch ( err ) {
+tasks.run()
+	.catch( err => {
 		process.exitCode = 1;
 
 		console.error( err );
-	}
-} )();
+	} );

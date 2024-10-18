@@ -30,6 +30,13 @@ export default class StandardEditingMode extends Plugin {
 		return 'StandardEditingMode' as const;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
 	public static get requires() {
 		return [ StandardEditingModeEditing, StandardEditingModeUI ] as const;
 	}

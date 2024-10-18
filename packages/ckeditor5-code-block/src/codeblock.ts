@@ -35,4 +35,11 @@ export default class CodeBlock extends Plugin {
 	public static get pluginName() {
 		return 'CodeBlock' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

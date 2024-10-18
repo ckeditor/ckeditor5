@@ -36,6 +36,14 @@ describe( 'HtmlEmbedUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HtmlEmbedUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HtmlEmbedUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "htmlEmbed" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'htmlEmbed' );

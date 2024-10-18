@@ -73,6 +73,14 @@ describe( 'ListEditing', () => {
 		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).label ).to.equal(
 			'Keystrokes that can be used in a list'

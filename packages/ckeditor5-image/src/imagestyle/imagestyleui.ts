@@ -40,6 +40,13 @@ export default class ImageStyleUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Returns the default localized style titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with

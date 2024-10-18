@@ -84,6 +84,14 @@ describe( 'CKBoxImageEditUI', () => {
 		expect( CKBoxImageEditUI.pluginName ).to.equal( 'CKBoxImageEditUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxImageEditUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxImageEditUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "editImage" button', () => {
 		it( 'should be an instance of ButtonView', () => {
 			expect( button ).to.be.instanceOf( ButtonView );

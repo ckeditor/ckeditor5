@@ -14,6 +14,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import List from '@ckeditor/ckeditor5-list/src/list.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ListStyleSupport from '../../src/integrations/list.js';
 
 import Style from '../../src/style.js';
 
@@ -50,6 +51,14 @@ describe( 'ListStyleSupport', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListStyleSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListStyleSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'enabled styles', () => {

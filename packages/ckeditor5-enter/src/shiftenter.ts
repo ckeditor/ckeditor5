@@ -26,6 +26,13 @@ export default class ShiftEnter extends Plugin {
 		return 'ShiftEnter' as const;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
 	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;

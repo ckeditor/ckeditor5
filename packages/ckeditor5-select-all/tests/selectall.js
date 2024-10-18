@@ -15,4 +15,12 @@ describe( 'SelectAll', () => {
 	it( 'should be named', () => {
 		expect( SelectAll.pluginName ).to.equal( 'SelectAll' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SelectAll.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SelectAll.isPremiumPlugin ).to.be.false;
+	} );
 } );

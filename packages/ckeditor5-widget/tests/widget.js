@@ -146,6 +146,14 @@ describe( 'Widget', () => {
 		expect( Widget.pluginName ).to.equal( 'Widget' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Widget.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Widget.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).label ).to.equal(
 			'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)'

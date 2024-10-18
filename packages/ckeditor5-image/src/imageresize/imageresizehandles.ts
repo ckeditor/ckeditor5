@@ -49,6 +49,13 @@ export default class ImageResizeHandles extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const command: ResizeImageCommand = this.editor.commands.get( 'resizeImage' )!;
 		this.bind( 'isEnabled' ).to( command );

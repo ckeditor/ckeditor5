@@ -41,6 +41,14 @@ describe( 'table cell properties', () => {
 			expect( TableCellPropertiesEditing.pluginName ).to.equal( 'TableCellPropertiesEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableCellPropertiesEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableCellPropertiesEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should define table.tableCellProperties config', () => {
 			const config = editor.config.get( 'table.tableCellProperties' );
 

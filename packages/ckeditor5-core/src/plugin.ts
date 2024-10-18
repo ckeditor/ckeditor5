@@ -142,6 +142,20 @@ export default class Plugin extends /* #__PURE__ */ ObservableMixin() implements
 	public static get isContextPlugin(): false {
 		return false;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get isOfficialPlugin(): boolean {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get isPremiumPlugin(): boolean {
+		return false;
+	}
 }
 
 /**
@@ -314,6 +328,16 @@ export interface PluginStaticMembers<TContext = Editor> {
 	 * A flag which defines if a plugin is allowed or not allowed to be used directly by a {@link module:core/context~Context}.
 	 */
 	readonly isContextPlugin?: boolean;
+
+	/**
+	 * A flag which defines if a plugin is an official CKEditor 5 plugin.
+	 */
+	readonly isOfficialPlugin?: boolean;
+
+	/**
+	 * A flag which defines if a plugin is a premium CKEditor 5 plugin.
+	 */
+	readonly isPremiumPlugin?: boolean;
 }
 
 export type PluginDependencies<TContext = Editor> = ReadonlyArray<PluginConstructor<TContext> | string>;

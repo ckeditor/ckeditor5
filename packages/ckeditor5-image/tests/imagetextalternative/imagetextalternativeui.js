@@ -50,6 +50,14 @@ describe( 'ImageTextAlternativeUI', () => {
 		expect( ImageTextAlternativeUI.pluginName ).to.equal( 'ImageTextAlternativeUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageTextAlternativeUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageTextAlternativeUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
 		it( 'should be registered in component factory', () => {
 			expect( button ).to.be.instanceOf( ButtonView );

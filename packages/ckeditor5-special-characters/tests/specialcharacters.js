@@ -56,6 +56,14 @@ describe( 'SpecialCharacters', () => {
 		expect( SpecialCharacters.pluginName ).to.equal( 'SpecialCharacters' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SpecialCharacters.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SpecialCharacters.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'specialCharacters' );
