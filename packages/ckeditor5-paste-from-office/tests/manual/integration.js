@@ -21,6 +21,7 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
@@ -55,10 +56,14 @@ ClassicEditor
 			PasteFromOffice,
 			FontColor,
 			FontBackgroundColor,
-			ListProperties
+			ListProperties,
+			Bookmark
 		],
+		bookmark: {
+			enableNonEmptyAnchorConversion: false
+		},
 		list: { properties: { styles: true, startIndex: true } },
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'bookmark',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'pageBreak', 'undo', 'redo' ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]

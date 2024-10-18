@@ -16,6 +16,7 @@ import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon.js';
 // Plugins.
 import '@ckeditor/ckeditor5-image/build/image.js';
 import '@ckeditor/ckeditor5-link/build/link.js';
+import '@ckeditor/ckeditor5-bookmark/build/bookmark.js';
 import '@ckeditor/ckeditor5-basic-styles/build/basic-styles.js';
 import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace.js';
 import '@ckeditor/ckeditor5-font/build/font.js';
@@ -53,6 +54,7 @@ const { BalloonEditor } = window.CKEditor5.editorBalloon;
 
 const { AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } = window.CKEditor5.image;
 const { AutoLink, Link, LinkImage } = window.CKEditor5.link;
+const { Bookmark } = window.CKEditor5.bookmark;
 const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } = window.CKEditor5.basicStyles;
 const { FindAndReplace } = window.CKEditor5.findAndReplace;
 const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
@@ -113,7 +115,7 @@ const config = {
 		Alignment,
 		Autoformat,
 		AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
-		AutoLink, Link, LinkImage,
+		AutoLink, Link, LinkImage, Bookmark,
 		BlockQuote,
 		Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code,
 		CloudServices,
@@ -145,7 +147,7 @@ const config = {
 		'|',
 		'ad-hoc-button',
 		'|',
-		'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
+		'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link', 'bookmark',
 		'|',
 		'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 		'|',

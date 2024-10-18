@@ -8,6 +8,7 @@
 	"Open link in new tab": "Button opening the link in new browser tab.",
 	"This link has no URL": "Label explaining that a link has no URL set (the URL is empty).",
 	"Open in a new tab": "The label of the switch button that controls whether the edited link will open in a new tab.",
+	"Scroll to target": "Button scrolling to the link target.",
 	"Downloadable": "The label of the switch button that controls whether the edited link refers to downloadable resource.",
 	"Create link": "Keystroke description for assistive technologies: keystroke for creating a link.",
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link."
