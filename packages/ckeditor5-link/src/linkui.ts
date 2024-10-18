@@ -448,7 +448,8 @@ export default class LinkUI extends Plugin {
 
 		this._balloon.add( {
 			view: this.toolbarView!,
-			position: this._getBalloonPositionData()
+			position: this._getBalloonPositionData(),
+			balloonClassName: 'ck-toolbar-container'
 		} );
 	}
 

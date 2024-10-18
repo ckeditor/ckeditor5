@@ -48,4 +48,9 @@ export interface BookmarkConfig {
 	 * @default true
 	 */
 	enableNonEmptyAnchorConversion?: boolean;
+
+	/**
+	 * TODO
+	 */
+	toolbar?: Array<string>;
 }

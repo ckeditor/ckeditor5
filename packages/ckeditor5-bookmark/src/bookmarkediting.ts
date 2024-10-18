@@ -49,6 +49,17 @@ export default class BookmarkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'bookmark', {
+			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const { editor } = this;
 
@@ -130,6 +141,7 @@ export default class BookmarkEditing extends Plugin {
 					class: 'ck-bookmark'
 				}, [ this._createBookmarkUIElement( writer ) ] );
 
+				writer.setCustomProperty( 'bookmark', true, containerElement );
 				this._bookmarkElements.set( modelElement, id );
 
 				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.

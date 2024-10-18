@@ -3,47 +3,38 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
-@import "../mixins/_focus.css";
-@import "../mixins/_shadow.css";
+.ck.ck-button.ck-link-toolbar__preview {
+	& .ck.ck-button__label {
+		padding: 0 var(--ck-spacing-medium);
+		color: var(--ck-color-link-default);
+		text-overflow: ellipsis;
+		cursor: pointer;
 
-.ck.ck-link-toolbar {
-	& .ck-button.ck-link-toolbar__preview {
-		padding-left: 0;
-		padding-right: 0;
+		/* Match the box model of the link editor form's input so the balloon
+		does not change width when moving between actions and the form. */
+		max-width: var(--ck-input-width);
+		min-width: 3em;
+		text-align: center;
 
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&,
+	&:hover,
+	&:focus,
+	&:active {
+		background: none;
+	}
+
+	&:active {
+		box-shadow: none;
+	}
+
+	&:focus {
 		& .ck-button__label {
-			padding: 0 var(--ck-spacing-medium);
-			color: var(--ck-color-link-default);
-			text-overflow: ellipsis;
-			cursor: pointer;
-
-			/* Match the box model of the link editor form's input so the balloon
-			does not change width when moving between actions and the form. */
-			max-width: var(--ck-input-width);
-			min-width: 3em;
-			text-align: center;
-
-			&:hover {
-				text-decoration: underline;
-			}
-		}
-
-		&,
-		&:hover,
-		&:focus,
-		&:active {
-			background: none;
-		}
-
-		&:active {
-			box-shadow: none;
-		}
-
-		&:focus {
-			& .ck-button__label {
-				text-decoration: underline;
-			}
+			text-decoration: underline;
 		}
 	}
 }
