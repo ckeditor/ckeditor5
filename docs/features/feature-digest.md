@@ -19,7 +19,7 @@ order: -997
     <tr id="table-headers">
       <td>
         <a
-          href="https://www.notion.so/Table-headers-960cbaf3dc3147c29a02180f59488be9?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#default-table-headers"
           >Table headers</a
         >
       </td>
@@ -32,7 +32,7 @@ order: -997
     <tr id="highlight">
       <td>
         <a
-          href="https://www.notion.so/Highlight-051a548603db40c191426029fb03cd69?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html"
           >Highlight</a
         >
       </td>
@@ -44,7 +44,7 @@ order: -997
     <tr id="advanced-html-editing">
       <td>
         <a
-          href="https://www.notion.so/Advanced-HTML-Editing-d6df1769db1c459eb5972a8a23a314bf?pvs=21"
+          href="#"
           >Advanced HTML Editing</a
         >
       </td>
@@ -59,7 +59,7 @@ order: -997
     <tr id="links">
       <td>
         <a
-          href="https://www.notion.so/Links-e624ea7f06434f04bbf5564af5a862ec?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html"
           >Links</a
         >
       </td>
@@ -72,7 +72,7 @@ order: -997
     <tr id="clipboard">
       <td>
         <a
-          href="https://www.notion.so/Clipboard-4ea5f3b4e3c54ea5896ccc3c1888d32d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/clipboard.html"
           >Clipboard</a
         >
       </td>
@@ -83,7 +83,7 @@ order: -997
     <tr id="block-formatting">
       <td>
         <a
-          href="https://www.notion.so/Block-formatting-c236e20f551441fd910d5f4c00e14198?pvs=21"
+          href="#"
           >Block formatting</a
         >
       </td>
@@ -99,7 +99,7 @@ order: -997
     <tr id="merge-and-split-cells">
       <td>
         <a
-          href="https://www.notion.so/Merge-split-cells-768ac3f669894f21bda1966b2b06608b?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar"
           >Merge &amp; split cells</a
         >
       </td>
@@ -111,7 +111,7 @@ order: -997
     <tr id="insert-delete-columns-and-rows">
       <td>
         <a
-          href="https://www.notion.so/Insert-delete-Columns-Rows-ec66252befdb48f9b0f8063348d06e2c?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar"
           >Insert/delete Columns &amp; Rows</a
         >
       </td>
@@ -123,7 +123,7 @@ order: -997
     <tr id="table-selection">
       <td>
         <a
-          href="https://www.notion.so/Table-selection-defe4d8620604f8aaa6a6cd3b42060bb?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-selection"
           >Table selection</a
         >
       </td>
@@ -144,7 +144,7 @@ order: -997
     <tr id="nesting">
       <td>
         <a
-          href="https://www.notion.so/Nesting-1a5580bb66c84115aa5259920bd62956?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#nesting-tables"
           >Nesting</a
         >
       </td>
@@ -157,7 +157,7 @@ order: -997
     <tr id="nested-lists">
       <td>
         <a
-          href="https://www.notion.so/Nested-lists-d2961d59f39a4b078895a7ee7ec35823?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists"
           >Nested lists</a
         >
       </td>
@@ -172,7 +172,7 @@ order: -997
     <tr id="unordered-lists">
       <td>
         <a
-          href="https://www.notion.so/Unordered-lists-41be5c2c394049f0aa920d10d692a9a7?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html"
           >Unordered lists</a
         >
       </td>
@@ -187,7 +187,7 @@ order: -997
     <tr id="block-indentation">
       <td>
         <a
-          href="https://www.notion.so/Block-indentation-1a1ed0e4e6d34730a1a7a5bd640ecd68?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html"
           >Block indentation</a
         >
       </td>
@@ -200,7 +200,7 @@ order: -997
     <tr id="undo-redo">
       <td>
         <a
-          href="https://www.notion.so/Undo-redo-91dab13699f7455faa7388ef20a28d59?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/undo-redo.html"
           >Undo/redo</a
         >
       </td>
@@ -209,7 +209,7 @@ order: -997
     <tr id="columns-resizing">
       <td>
         <a
-          href="https://www.notion.so/Columns-resizing-3d3249f8224d458ba490f81594e0d06f?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-resize.html"
           >Columns resizing</a
         >
       </td>
@@ -226,7 +226,7 @@ order: -997
     <tr id="tables-caption">
       <td>
         <a
-          href="https://www.notion.so/Tables-caption-8e0200daea644200a69a284858a5fb7d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-caption.html"
           >Tables caption</a
         >
       </td>
@@ -243,7 +243,7 @@ order: -997
     <tr id="styling-tables">
       <td>
         <a
-          href="https://www.notion.so/Styling-tables-cells-dc338e09f2714da8aede1a05316b3e32?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html"
           >Styling tables &amp; cells</a
         >
       </td>
@@ -256,7 +256,7 @@ order: -997
     <tr id="tables">
       <td>
         <a
-          href="https://www.notion.so/Tables-52029e9f26d947fca5594a9c14c54c50?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html"
           >Tables</a
         >
       </td>
@@ -270,7 +270,7 @@ order: -997
     <tr id="select-all">
       <td>
         <a
-          href="https://www.notion.so/Select-all-48a857dbb6494d55b2c0577e02c97b5e?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html"
           >Select all</a
         >
       </td>
@@ -282,7 +282,7 @@ order: -997
     <tr id="horizontal-line">
       <td>
         <a
-          href="https://www.notion.so/Horizontal-line-afe17574c99f4f75925b64accc228dcb?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html"
           >Horizontal line</a
         >
       </td>
@@ -295,7 +295,7 @@ order: -997
     <tr id="drag-and-drop">
       <td>
         <a
-          href="https://www.notion.so/Drag-and-drop-4f1b49ce17f54a508a333f4a73c96dcd?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/drag-drop.html"
           >Drag and drop</a
         >
       </td>
@@ -307,7 +307,7 @@ order: -997
     <tr id="show-blocks">
       <td>
         <a
-          href="https://www.notion.so/Show-blocks-aa9e3302a64c4662984cb1373ce214e4?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html"
           >Show blocks</a
         >
       </td>
@@ -321,7 +321,7 @@ order: -997
     <tr id="code-blocks">
       <td>
         <a
-          href="https://www.notion.so/Code-blocks-1d3964dbe5444336a40631bfb56319cb?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html"
           >Code blocks</a
         >
       </td>
@@ -333,7 +333,7 @@ order: -997
     <tr id="block-quotes">
       <td>
         <a
-          href="https://www.notion.so/Block-quotes-0ef1370ab7794ac0ad180aa9e3445df6?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html"
           >Block quotes</a
         >
       </td>
@@ -346,7 +346,7 @@ order: -997
     <tr id="html-embed">
       <td>
         <a
-          href="https://www.notion.so/HTML-embed-c8a7093115944d2db6b4a8634c46eb93?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html"
           >HTML embed</a
         >
       </td>
@@ -359,7 +359,7 @@ order: -997
     <tr id="styles">
       <td>
         <a
-          href="https://www.notion.so/Styles-eaafc1d0cad34749bb51c941767978f5?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html"
           >Styles</a
         >
       </td>
@@ -371,7 +371,7 @@ order: -997
     <tr id="mermaid">
       <td>
         <a
-          href="https://www.notion.so/Mermaid-9d35d02a170d4ef7b8022da72b6bb7e9?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/mermaid.html"
           >Mermaid</a
         >
       </td>
@@ -385,7 +385,7 @@ order: -997
     <tr id="html-comment">
       <td>
         <a
-          href="https://www.notion.so/HTML-comment-da7275f39ba7471295ed4fb837ead7c9?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-comments.html"
           >HTML comment</a
         >
       </td>
@@ -403,7 +403,7 @@ order: -997
     <tr id="general-html-support">
       <td>
         <a
-          href="https://www.notion.so/General-HTML-Support-GHS-9ff76969769941c7a6a5df9c4caf0ce7?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html"
           >General HTML Support (GHS)</a
         >
       </td>
@@ -418,7 +418,7 @@ order: -997
     <tr id="source-editing">
       <td>
         <a
-          href="https://www.notion.so/Source-editing-50846c824d1a48018b2f9e0ca194258f?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html"
           >Source editing</a
         >
       </td>
@@ -430,7 +430,7 @@ order: -997
     <tr id="full-page-html">
       <td>
         <a
-          href="https://www.notion.so/Full-page-HTML-7374fd3e37c74faea69d6133c2ce2462?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/full-page-html.html"
           >Full page HTML</a
         >
       </td>
@@ -449,7 +449,7 @@ order: -997
     <tr id="remove-formatting">
       <td>
         <a
-          href="https://www.notion.so/Remove-formatting-f431b2c3ab7b49e38da98c4cc1af1e94?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html"
           >Remove formatting</a
         >
       </td>
@@ -464,7 +464,7 @@ order: -997
     <tr id="text-alignment">
       <td>
         <a
-          href="https://www.notion.so/Text-alignment-ba7ed8d77bbf40f28942c0cadcdf6c00?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html"
           >Text alignment</a
         >
       </td>
@@ -476,7 +476,7 @@ order: -997
     <tr id="headings-paragraph">
       <td>
         <a
-          href="https://www.notion.so/Headings-paragraph-f5c1aca41f7e4ad698552a34ec8c0ef0?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html"
           >Headings/paragraph</a
         >
       </td>
@@ -489,7 +489,7 @@ order: -997
     <tr id="font-background-color">
       <td>
         <a
-          href="https://www.notion.so/Font-background-color-f2f00caeae824aa1be6e3ae0a1bfa509?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font background color</a
         >
       </td>
@@ -500,7 +500,7 @@ order: -997
     <tr id="font-color">
       <td>
         <a
-          href="https://www.notion.so/Font-color-ab2a3a36f91d49acabe0d14b6c974106?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font color</a
         >
       </td>
@@ -509,7 +509,7 @@ order: -997
     <tr id="font-size">
       <td>
         <a
-          href="https://www.notion.so/Font-size-683ccb3974e3416d97db7ea306196c42?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font size</a
         >
       </td>
@@ -518,7 +518,7 @@ order: -997
     <tr id="font-family">
       <td>
         <a
-          href="https://www.notion.so/Font-family-3e66400451fa45818732cdb5d97eee8f?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font family</a
         >
       </td>
@@ -530,7 +530,7 @@ order: -997
     <tr id="font-formatting">
       <td>
         <a
-          href="https://www.notion.so/Font-formatting-038ce2719a2b41f689d6e6594e1ba842?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
           >Font formatting</a
         >
       </td>
@@ -542,7 +542,7 @@ order: -997
     <tr id="reversed-list">
       <td>
         <a
-          href="https://www.notion.so/Reversed-list-846cd263eb3c4e29938bb1761cd9ccd2?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#reversed-list"
           >Reversed list</a
         >
       </td>
@@ -556,7 +556,7 @@ order: -997
     <tr id="list-start-index">
       <td>
         <a
-          href="https://www.notion.so/List-start-index-68799d532db3464896bf9cfa808dcf03?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-start-index"
           >List start index</a
         >
       </td>
@@ -570,7 +570,7 @@ order: -997
     <tr id="ordered-lists">
       <td>
         <a
-          href="https://www.notion.so/Ordered-lists-54be47b6c759460e887172f1d1bca2ef?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html"
           >Ordered lists</a
         >
       </td>
@@ -585,7 +585,7 @@ order: -997
     <tr id="to-do-lists">
       <td>
         <a
-          href="https://www.notion.so/To-do-lists-18b80ccc2a97469084c49df0af68696d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html"
           >To-do lists</a
         >
       </td>
@@ -601,7 +601,7 @@ order: -997
     <tr id="superscript">
       <td>
         <a
-          href="https://www.notion.so/Superscript-3b9ea7e554e44fa9ae82c49640112a5f?pvs=21"
+          href="#"
           >Superscript</a
         >
       </td>
@@ -610,7 +610,7 @@ order: -997
     <tr id="subscript">
       <td>
         <a
-          href="https://www.notion.so/Subscript-86f305e89ece4c3f860eea118e2a59ad?pvs=21"
+          href="#"
           >Subscript</a
         >
       </td>
@@ -619,7 +619,7 @@ order: -997
     <tr id="code">
       <td>
         <a
-          href="https://www.notion.so/Code-3e64b4ee2bd249f2b40c9a5ce5a627ae?pvs=21"
+          href="#"
           >Code</a
         >
       </td>
@@ -628,7 +628,7 @@ order: -997
     <tr id="strikethrough">
       <td>
         <a
-          href="https://www.notion.so/Strikethrough-8b4bd4a71ff143359d37b1e5148bc0a9?pvs=21"
+          href="#"
           >Strikethrough</a
         >
       </td>
@@ -637,7 +637,7 @@ order: -997
     <tr id="underline">
       <td>
         <a
-          href="https://www.notion.so/Underline-91a99a95f1e54af4b48fac2d4c7afe59?pvs=21"
+          href="#"
           >Underline</a
         >
       </td>
@@ -646,7 +646,7 @@ order: -997
     <tr id="multi-level-lists">
       <td>
         <a
-          href="https://www.notion.so/Multi-level-lists-2c5dac6a58484be58e906ecbc3f308ae?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html"
           >Multi-level lists</a
         >
       </td>
@@ -661,7 +661,7 @@ order: -997
     <tr id="list-styles">
       <td>
         <a
-          href="https://www.notion.so/List-styles-d75c4c7d3d044e889ac9e09b8278cd77?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles"
           >List styles</a
         >
       </td>
@@ -679,7 +679,7 @@ order: -997
     <tr id="list-indentation">
       <td>
         <a
-          href="https://www.notion.so/List-indentation-5f86d4f7dadd46a5b2dc22c085566085?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists"
           >List indentation</a
         >
       </td>
@@ -694,7 +694,7 @@ order: -997
     <tr id="lists">
       <td>
         <a
-          href="https://www.notion.so/Lists-b3fa4677a88d4a3180482b582d19342a?pvs=21"
+          href="#"
           >Lists</a
         >
       </td>
@@ -709,7 +709,7 @@ order: -997
     <tr id="image-insert-via-url">
       <td>
         <a
-          href="https://www.notion.so/Image-insert-via-URL-cd2364443f7f43538f405910e71eb1a4?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-inserting.html"
           >Image insert via URL</a
         >
       </td>
@@ -722,7 +722,7 @@ order: -997
     <tr id="italic">
       <td>
         <a
-          href="https://www.notion.so/Italic-793300e8ec634ee9a06cc26fe1f9bd09?pvs=21"
+          href="#"
           >Italic</a
         >
       </td>
@@ -731,7 +731,7 @@ order: -997
     <tr id="bold">
       <td>
         <a
-          href="https://www.notion.so/Bold-4b737b0197b7416cbb6482f0d9b5e810?pvs=21"
+          href="#"
           >Bold</a
         >
       </td>
@@ -740,7 +740,7 @@ order: -997
     <tr id="text-formatting">
       <td>
         <a
-          href="https://www.notion.so/Text-formatting-7e1fcaadecd7448896e513531a75dcf3?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html"
           >Text formatting</a
         >
       </td>
@@ -756,7 +756,7 @@ order: -997
     <tr id="image-all-text">
       <td>
         <a
-          href="https://www.notion.so/Image-alt-text-dafbece9757544ec8950834e57040184?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html"
           >Image alt text</a
         >
       </td>
@@ -769,7 +769,7 @@ order: -997
     <tr id="image-captions">
       <td>
         <a
-          href="https://www.notion.so/Image-captions-de8d80ae2b9047ad9671717005588e10?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html"
           >Image captions</a
         >
       </td>
@@ -780,7 +780,7 @@ order: -997
     <tr id="image-upload">
       <td>
         <a
-          href="https://www.notion.so/Image-upload-5a8cb18919ae47348f09ce114c07a03b?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html"
           >Image upload</a
         >
       </td>
@@ -796,7 +796,7 @@ order: -997
     <tr id="image-linking">
       <td>
         <a
-          href="https://www.notion.so/Image-linking-cd10aa6e437f47d4bafb8b796822739d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-linking.html"
           >Image linking</a
         >
       </td>
@@ -812,7 +812,7 @@ order: -997
     <tr id="image-styles">
       <td>
         <a
-          href="https://www.notion.so/Image-styles-f4502bdd9aa1485395f743939a7e0337?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html"
           >Image styles</a
         >
       </td>
@@ -825,7 +825,7 @@ order: -997
     <tr id="image">
       <td>
         <a
-          href="https://www.notion.so/Image-4f667bdc96a04a9da875615a37bb4fca?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html"
           >Image</a
         >
       </td>
@@ -840,7 +840,7 @@ order: -997
     <tr id="responsive-images">
       <td>
         <a
-          href="https://www.notion.so/Responsive-images-97337c1995af42da84afc2c8d500b7bf?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-responsive.html"
           >Responsive images</a
         >
       </td>
@@ -860,7 +860,7 @@ order: -997
     <tr id="image-resize">
       <td>
         <a
-          href="https://www.notion.so/Image-resize-c81e75c4f9514874bbd36d585990d584?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html"
           >Image resize</a
         >
       </td>
@@ -877,7 +877,7 @@ order: -997
     <tr id="saas">
       <td>
         <a
-          href="https://www.notion.so/SaaS-f8ca0d50a2974731a87ec847339d9985?pvs=21"
+          href="https://ckeditor.com/docs/cs/latest/guides/overview.html"
           >SaaS</a
         >
       </td>
@@ -886,7 +886,7 @@ order: -997
     <tr id="on-premises">
       <td>
         <a
-          href="https://www.notion.so/On-premises-637a4d59c5a54c5397c9811a2b3da1b2?pvs=21"
+          href="https://ckeditor.com/docs/cs/latest/onpremises/index.html"
           >On-premises</a
         >
       </td>
@@ -898,7 +898,7 @@ order: -997
     <tr id="local-data-storage">
       <td>
         <a
-          href="https://www.notion.so/Local-data-storage-26c9176b4fca41f096ada19b6ba4077a?pvs=21"
+          href="#"
           >Local data storage</a
         >
       </td>
@@ -907,7 +907,7 @@ order: -997
     <tr id="users-list-and-permissions">
       <td>
         <a
-          href="https://www.notion.so/Users-list-and-permissions-b86dbab6dfd74056b9d10e74bc29f8cf?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/users.html"
           >Users list and permissions</a
         >
       </td>
@@ -924,7 +924,7 @@ order: -997
     <tr id="co-authoring">
       <td>
         <a
-          href="https://www.notion.so/Co-authoring-c6ee69be62094ab7ad78fc8f2a4f5cdd?pvs=21"
+          href="#"
           >Co-authoring</a
         >
       </td>
@@ -933,7 +933,7 @@ order: -997
     <tr id="sidebar-modes">
       <td>
         <a
-          href="https://www.notion.so/Sidebar-modes-8b9151fc3bac4c05b54dde9dc1d4306b?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html"
           >Sidebar modes</a
         >
       </td>
@@ -948,7 +948,7 @@ order: -997
     <tr id="revision-history">
       <td>
         <a
-          href="https://www.notion.so/Revision-history-688a5d8a80a14d5d95ac93db3efbd951?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html"
           >Revision history</a
         >
       </td>
@@ -964,7 +964,7 @@ order: -997
     <tr id="track-changes">
       <td>
         <a
-          href="https://www.notion.so/Track-changes-dc4ea8ac485441ceb52434eab61da3e5?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html"
           >Track changes</a
         >
       </td>
@@ -978,7 +978,7 @@ order: -997
     <tr id="mentions">
       <td>
         <a
-          href="https://www.notion.so/Mentions-43bab84e90c246588d33c72066f59767?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html"
           >Mentions</a
         >
       </td>
@@ -991,7 +991,7 @@ order: -997
     <tr id="real-time-collaboration">
       <td>
         <a
-          href="https://www.notion.so/Real-time-collaboration-9ea51537fa02485bb926e821694e9898?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html"
           >Real-time collaboration</a
         >
       </td>
@@ -1005,7 +1005,7 @@ order: -997
     <tr id="asynchronous-collaboration">
       <td>
         <a
-          href="https://www.notion.so/Asynchronous-collaboration-370051b7e8cc4e5c8a45873db6e9ef7d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html"
           >Asynchronous collaboration</a
         >
       </td>
@@ -1019,7 +1019,7 @@ order: -997
     <tr id="comments-outside-editor">
       <td>
         <a
-          href="https://www.notion.so/Comments-outside-editor-75674da4fa1241bba29f2fc366a08a25?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-outside-editor.html"
           >Comments outside editor</a
         >
       </td>
@@ -1036,7 +1036,7 @@ order: -997
     <tr id="sidebar-modes">
       <td>
         <a
-          href="https://www.notion.so/Sidebar-modes-1963d8b1eac440c58f8fcb6f3d1ce7b3?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html"
           >Sidebar modes</a
         >
       </td>
@@ -1051,7 +1051,7 @@ order: -997
     <tr id="comments-archive">
       <td>
         <a
-          href="https://www.notion.so/Comments-archive-36446fead2c0420d939b6be5977dc3df?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html"
           >Comments archive</a
         >
       </td>
@@ -1067,7 +1067,7 @@ order: -997
     <tr id="comments">
       <td>
         <a
-          href="https://www.notion.so/Comments-c5ae3578ee6e4789b0718cb33929ec47?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html"
           >Comments</a
         >
       </td>
@@ -1080,7 +1080,7 @@ order: -997
     <tr id="xml-output">
       <td>
         <a
-          href="https://www.notion.so/XML-output-9943fe5029674cccac61aea6c602bd52?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_xmldataprocessor-XmlDataProcessor.html"
           >XML output</a
         >
       </td>
@@ -1092,7 +1092,7 @@ order: -997
     <tr id="content-generation">
       <td>
         <a
-          href="https://www.notion.so/Content-generation-12ded1477ac74b07a269b280e51fb9bd?pvs=21"
+          href="#"
           >Content generation</a
         >
       </td>
@@ -1101,7 +1101,7 @@ order: -997
     <tr id="markdown-output">
       <td>
         <a
-          href="https://www.notion.so/Markdown-output-621188708a164fcb83bf851e83bf73bd?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html"
           >Markdown output</a
         >
       </td>
@@ -1115,7 +1115,7 @@ order: -997
     <tr id="media-embed">
       <td>
         <a
-          href="https://www.notion.so/Media-embed-8a982f62f09d40f082750f0bdc8a5675?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html"
           >Media embed</a
         >
       </td>
@@ -1128,7 +1128,7 @@ order: -997
     <tr id="paste-markdown">
       <td>
         <a
-          href="https://www.notion.so/Paste-Markdown-1538a9cafd3540b6bd02ed3cb831386f?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html"
           >Paste Markdown</a
         >
       </td>
@@ -1141,7 +1141,7 @@ order: -997
     <tr id="export-to-pdf">
       <td>
         <a
-          href="https://www.notion.so/Export-to-PDF-a948aaa9b0694e868cf81974d9d7024d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html"
           >Export to PDF</a
         >
       </td>
@@ -1154,7 +1154,7 @@ order: -997
     <tr id="export-to-word">
       <td>
         <a
-          href="https://www.notion.so/Export-to-Word-c0a057ee3a7648aeacccc909762565d3?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html"
           >Export to Word</a
         >
       </td>
@@ -1168,7 +1168,7 @@ order: -997
     <tr id="import-from-word">
       <td>
         <a
-          href="https://www.notion.so/Import-from-Word-77fe4452ad3f4632a6b37a103d66a4b0?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/import-word/import-word.html"
           >Import from Word</a
         >
       </td>
@@ -1181,7 +1181,7 @@ order: -997
     <tr id="page-utilities">
       <td>
         <a
-          href="https://www.notion.so/Page-utilities-b2520aeebede4858861c28173806d59b?pvs=21"
+          href="#"
           >Page utilities</a
         >
       </td>
@@ -1193,7 +1193,7 @@ order: -997
     <tr id="pagination">
       <td>
         <a
-          href="https://www.notion.so/Pagination-9765d4c8f3ee40f2ae683417d48e5e79?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html"
           >Pagination</a
         >
       </td>
@@ -1213,7 +1213,7 @@ order: -997
     <tr id="page-break">
       <td>
         <a
-          href="https://www.notion.so/Page-break-b09f2ea94505497eb174f13fc31467e7?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html"
           >Page break</a
         >
       </td>
@@ -1226,7 +1226,7 @@ order: -997
     <tr id="content-minimap">
       <td>
         <a
-          href="https://www.notion.so/Content-minimap-2b40dd4fafbb4184a569f6fac08099dd?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html"
           >Content minimap</a
         >
       </td>
@@ -1238,7 +1238,7 @@ order: -997
     <tr id="document-title">
       <td>
         <a
-          href="https://www.notion.so/Document-title-f8fbbcc3899d4822b120fe9bd79c40b0?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html"
           >Document title</a
         >
       </td>
@@ -1250,7 +1250,7 @@ order: -997
     <tr id="table-of-contents">
       <td>
         <a
-          href="https://www.notion.so/Table-of-contents-3dd411002acc44cca1b3af84d7394c26?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html"
           >Table of contents</a
         >
       </td>
@@ -1266,7 +1266,7 @@ order: -997
     <tr id="document-outline">
       <td>
         <a
-          href="https://www.notion.so/Document-outline-e12b48bd26ab4cb0b4b8992f02ccefe1?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html"
           >Document outline</a
         >
       </td>
@@ -1283,7 +1283,7 @@ order: -997
     <tr id="merge-fields">
       <td>
         <a
-          href="https://www.notion.so/Merge-fields-662551b5e7a94b4da532fa43fc44bca3?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html"
           >Merge fields</a
         >
       </td>
@@ -1299,7 +1299,7 @@ order: -997
     <tr id="autosave">
       <td>
         <a
-          href="https://www.notion.so/Autosave-c033f394c7064d71a2f2225e7db4355e?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/autosave.html"
           >Autosave</a
         >
       </td>
@@ -1313,7 +1313,7 @@ order: -997
     <tr id="autolink">
       <td>
         <a
-          href="https://www.notion.so/Autolink-0e5bce8976c4403697eb5425a6e70839?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html#autolink-feature"
           >Autolink</a
         >
       </td>
@@ -1327,7 +1327,7 @@ order: -997
     <tr id="automation">
       <td>
         <a
-          href="https://www.notion.so/Automation-3b3334bfa02a40cf9a337e00a25da7b2?pvs=21"
+          href="#"
           >Automation</a
         >
       </td>
@@ -1336,7 +1336,7 @@ order: -997
     <tr id="special-characters">
       <td>
         <a
-          href="https://www.notion.so/Special-characters-3793db7824c34be991a54bb811bdbdd9?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html"
           >Special characters</a
         >
       </td>
@@ -1354,7 +1354,7 @@ order: -997
     <tr id="format-painter">
       <td>
         <a
-          href="https://www.notion.so/Format-painter-f9c978016d564f8cb978158129f57f4e?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html"
           >Format painter</a
         >
       </td>
@@ -1371,7 +1371,7 @@ order: -997
     <tr id="case-change">
       <td>
         <a
-          href="https://www.notion.so/Case-change-21ce59719e8745dcb3659f922b639471?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html"
           >Case change</a
         >
       </td>
@@ -1389,7 +1389,7 @@ order: -997
     <tr id="ai-assistant">
       <td>
         <a
-          href="https://www.notion.so/AI-Assistant-77eee7c6646741358909be60ae42fe47?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-overview.html"
           >AI Assistant</a
         >
       </td>
@@ -1405,7 +1405,7 @@ order: -997
     <tr id="find-and-replace">
       <td>
         <a
-          href="https://www.notion.so/Find-and-replace-3152d6b251dc4adf88ae52d8011e4f37?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html"
           >Find and replace</a
         >
       </td>
@@ -1419,7 +1419,7 @@ order: -997
     <tr id="mathtype">
       <td>
         <a
-          href="https://www.notion.so/MathType-c233ed8946af4388b19aae0a705a816c?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html"
           >MathType</a
         >
       </td>
@@ -1436,7 +1436,7 @@ order: -997
     <tr id="keyboard-shortcuts">
       <td>
         <a
-          href="https://www.notion.so/Keyboard-shortcuts-f40cae865d924b6693513e3ce6b8855d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html#keyboard-shortcuts"
           >Keyboard shortcuts</a
         >
       </td>
@@ -1448,7 +1448,7 @@ order: -997
     <tr id="templates">
       <td>
         <a
-          href="https://www.notion.so/Templates-7fdc631bb8cf4a589e5fdf9ca4220f68?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/template.html"
           >Templates</a
         >
       </td>
@@ -1463,7 +1463,7 @@ order: -997
     <tr id="slash-commands">
       <td>
         <a
-          href="https://www.notion.so/Slash-commands-8f3921d37bce4672b51be0c030e3b7d4?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html"
           >Slash commands</a
         >
       </td>
@@ -1480,7 +1480,7 @@ order: -997
     <tr id="paste-plain-text">
       <td>
         <a
-          href="https://www.notion.so/Paste-plain-text-6fc31f4af2bd41dbbe2d08be2ecf0e08?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-plain-text.html"
           >Paste plain text</a
         >
       </td>
@@ -1496,7 +1496,7 @@ order: -997
     <tr id="paste-from-office-enhanced">
       <td>
         <a
-          href="https://www.notion.so/Paste-from-Office-Enhanced-2eb758aee7014544992a826498576152?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html"
           >Paste from Office Enhanced</a
         >
       </td>
@@ -1511,7 +1511,7 @@ order: -997
     <tr id="paste-from-google-docs">
       <td>
         <a
-          href="https://www.notion.so/Paste-from-Google-Docs-0e928e8b9b3648b288a2341a52c189ba?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html"
           >Paste from Google Docs</a
         >
       </td>
@@ -1524,7 +1524,7 @@ order: -997
     <tr id="paste-from-office">
       <td>
         <a
-          href="https://www.notion.so/Paste-from-Office-24cf0e305d7643bfbe06e9c8198f3f0d?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html"
           >Paste from Office</a
         >
       </td>
@@ -1537,7 +1537,7 @@ order: -997
     <tr id="automatic-text-transformation">
       <td>
         <a
-          href="https://www.notion.so/Automatic-text-transformations-8b6b1f713222437396cdd69bc9dcf902?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html"
           >Automatic text transformations</a
         >
       </td>
@@ -1553,7 +1553,7 @@ order: -997
     <tr id="autoformatting">
       <td>
         <a
-          href="https://www.notion.so/Autoformatting-0bf7eed9ddcf48269380d9bbe0378343?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html"
           >Autoformatting</a
         >
       </td>
@@ -1567,7 +1567,7 @@ order: -997
     <tr id="watchdog">
       <td>
         <a
-          href="https://www.notion.so/Watchdog-3326d7f2c4984ca8a8655f7b5f410d46?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html"
           >Watchdog</a
         >
       </td>
@@ -1580,7 +1580,7 @@ order: -997
     <tr id="editor-placeholder">
       <td>
         <a
-          href="https://www.notion.so/Editor-placeholder-5492f9a9c73d450b88ee5993cee215c6?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html"
           >Editor placeholder</a
         >
       </td>
@@ -1594,7 +1594,7 @@ order: -997
     <tr id="sidebar-annotations-bar">
       <td>
         <a
-          href="https://www.notion.so/Sidebar-annotations-bar-b7cd29e79c0743fe824a84fdd7107f9e?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html#wide-sidebar"
           >Sidebar / annotations bar</a
         >
       </td>
@@ -1609,7 +1609,7 @@ order: -997
     <tr id="table-contextual-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Table-contextual-toolbar-9006d2c6611c4f5faff207fdea062e91?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar"
           >Table contextual toolbar</a
         >
       </td>
@@ -1630,7 +1630,7 @@ order: -997
     <tr id="image-contextual-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Image-contextual-toolbar-6f2fd4a0112844ab9eb3cab506d630e1?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar"
           >Image contextual toolbar</a
         >
       </td>
@@ -1662,7 +1662,7 @@ order: -997
     <tr id="nesting-toolbars-in-dropdowns">
       <td>
         <a
-          href="https://www.notion.so/Nesting-toolbars-in-dropdowns-a256ca73b48447dea0a8e2fe4a4a3c0a?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#grouping-toolbar-items-in-dropdowns-nested-toolbars"
           >Nesting toolbars in dropdowns</a
         >
       </td>
@@ -1671,7 +1671,7 @@ order: -997
     <tr id="multi-root-editor">
       <td>
         <a
-          href="https://www.notion.so/Multi-root-editor-2220d283b16a40269906c64878d588da?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#multi-root-editor"
           >Multi-root editor</a
         >
       </td>
@@ -1687,7 +1687,7 @@ order: -997
     <tr id="collapsible-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Collapsible-toolbar-b47203da39134650845e216019bf1753?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#extended-toolbar-configuration-format"
           >Collapsible toolbar</a
         >
       </td>
@@ -1696,7 +1696,7 @@ order: -997
     <tr id="multiline-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Multiline-toolbar-b52d73df2d154328a456bc265610ef33?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#multiline-wrapping-toolbar"
           >Multiline toolbar</a
         >
       </td>
@@ -1705,7 +1705,7 @@ order: -997
     <tr id="professionally-translated-language-packs">
       <td>
         <a
-          href="https://www.notion.so/Professionally-translated-language-packs-81f6de8e1ec34e26a1123c78bd598a3c?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/ui-language.html"
           >Professionally translated language packs</a
         >
       </td>
@@ -1721,7 +1721,7 @@ order: -997
     <tr id="inline-editor">
       <td>
         <a
-          href="https://www.notion.so/Inline-editor-a9019ee1dbf2433fa34b2ad188beeff9?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#inline-editor"
           >Inline editor</a
         >
       </td>
@@ -1737,7 +1737,7 @@ order: -997
     <tr id="decoupled-editor">
       <td>
         <a
-          href="https://www.notion.so/Decoupled-editor-c1475a9e6b3f4e99b490db5c17446633?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#decoupled-editor-document"
           >Decoupled editor</a
         >
       </td>
@@ -1751,7 +1751,7 @@ order: -997
     <tr id="menu-bar">
       <td>
         <a
-          href="https://www.notion.so/Menu-bar-3bb01b60f1e4497fb2a08551474062a4?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/menubar.html"
           >Menu bar</a
         >
       </td>
@@ -1772,7 +1772,7 @@ order: -997
     <tr id="block-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Block-toolbar-7484e8d1dcb448cca0abe21ebc17b3e0?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#block-toolbar"
           >Block toolbar</a
         >
       </td>
@@ -1785,7 +1785,7 @@ order: -997
     <tr id="balloon-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Balloon-toolbar-8048794b335c4e03926e005e2396776f?pvs=21"
+          href="#"
           >Balloon toolbar</a
         >
       </td>
@@ -1798,7 +1798,7 @@ order: -997
     <tr id="classic-toolbar">
       <td>
         <a
-          href="https://www.notion.so/Classic-toolbar-7eb835c2f1ce40359d5d08ba8eaa466b?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#main-editor-toolbar"
           >Classic toolbar</a
         >
       </td>
@@ -1812,7 +1812,7 @@ order: -997
     <tr id="toolbar-and-menus">
       <td>
         <a
-          href="https://www.notion.so/Toolbar-and-menus-cf255e2a405249d38e3745ad55e8341d?pvs=21"
+          href="#"
           >Toolbar and menus</a
         >
       </td>
@@ -1830,7 +1830,7 @@ order: -997
     <tr id="balloon-block-editor">
       <td>
         <a
-          href="https://www.notion.so/Balloon-block-editor-0e70548f90cf4fac9158c8117da7a431?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor"
           >Balloon block editor</a
         >
       </td>
@@ -1844,7 +1844,7 @@ order: -997
     <tr id="balloon-editor">
       <td>
         <a
-          href="https://www.notion.so/Balloon-editor-efc7a52f0905445787ad84693063310a?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor"
           >Balloon editor</a
         >
       </td>
@@ -1857,7 +1857,7 @@ order: -997
     <tr id="classic-editor">
       <td>
         <a
-          href="https://www.notion.so/Classic-editor-1f276a74877c40d8a40beb6167292658?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#classic-editor"
           >Classic editor</a
         >
       </td>
@@ -1871,7 +1871,7 @@ order: -997
     <tr id="editor-ui-types">
       <td>
         <a
-          href="https://www.notion.so/Editor-UI-types-d574c2e5134948ada07421b2c1248367?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html"
           >Editor UI types</a
         >
       </td>
@@ -1885,7 +1885,7 @@ order: -997
     <tr id="restricted-editing">
       <td>
         <a
-          href="https://www.notion.so/Restricted-editing-7d025ff52ca74fdcb0a2ef8dd33cc1d5?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html"
           >Restricted editing</a
         >
       </td>
@@ -1904,7 +1904,7 @@ order: -997
     <tr id="read-only-support">
       <td>
         <a
-          href="https://www.notion.so/Read-only-support-d4f670ac43484771a475a5a883f7e0d5?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/read-only.html"
           >Read-only support</a
         >
       </td>
@@ -1922,7 +1922,7 @@ order: -997
     <tr id="text-part-language">
       <td>
         <a
-          href="https://www.notion.so/Text-part-language-4ce6bd2b1c0a452cb20b938eddbd4e52?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html"
           >Text part language</a
         >
       </td>
@@ -1941,7 +1941,7 @@ order: -997
     <tr id="word-and-character-counter">
       <td>
         <a
-          href="https://www.notion.so/Word-and-character-counter-7fbe0b4325c34ff6bcdd04c836588536?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html"
           >Word and character counter</a
         >
       </td>
@@ -1955,7 +1955,7 @@ order: -997
     <tr id="wproofreader">
       <td>
         <a
-          href="https://www.notion.so/WPRoofreader-9592d8d79b604313ad3970f4621fd171?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html"
           >WPRoofreader</a
         >
       </td>
@@ -1973,7 +1973,7 @@ order: -997
     <tr id="accessibility-support">
       <td>
         <a
-          href="https://www.notion.so/Accessibility-support-a3a4bd60776a4599a18c8d27a30b00d0?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html"
           >Accessibility support</a
         >
       </td>
@@ -1992,7 +1992,7 @@ order: -997
     <tr id="cloud-services-rest-api">
       <td>
         <a
-          href="https://www.notion.so/Cloud-Services-REST-API-692944f644f943808f4069cf579898e0?pvs=21"
+          href="#"
           >Cloud Services REST API
         </a>
       </td>
@@ -2001,7 +2001,7 @@ order: -997
     <tr id="ckeditor5-inspector">
       <td>
         <a
-          href="https://www.notion.so/CKEditor-5-Inspector-c8efc8d6b641411e94a37eb5c496fa5f?pvs=21"
+          href="#"
           >CKEditor 5 Inspector</a
         >
       </td>
@@ -2010,7 +2010,7 @@ order: -997
     <tr id="ui-library">
       <td>
         <a
-          href="https://www.notion.so/UI-Library-2a9cf54fe9d1473e9521137b5f64c655?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/ui-library.html"
           >UI Library</a
         >
       </td>
@@ -2027,7 +2027,7 @@ order: -997
     <tr id="themes">
       <td>
         <a
-          href="https://www.notion.so/Themes-5bdcb94cac6c483ab1f662380d4dc038?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/ui/theme-customization.html"
           >Themes</a
         >
       </td>
@@ -2039,7 +2039,7 @@ order: -997
     <tr id="editor-sdk">
       <td>
         <a
-          href="https://www.notion.so/Editor-SDK-cbe13a27f370427eb763aa735f980f0e?pvs=21"
+          href="#"
           >Editor SDK</a
         >
       </td>
@@ -2057,7 +2057,7 @@ order: -997
     <tr id="uploadcare">
       <td>
         <a
-          href="https://www.notion.so/Uploadcare-3b7dadaf1f88473796594bd51b19deb5?pvs=21"
+          href="#"
           >Uploadcare</a
         >
       </td>
@@ -2074,7 +2074,7 @@ order: -997
     <tr id="custom-upload-adapter">
       <td>
         <a
-          href="https://www.notion.so/Custom-Upload-Adapter-b2d383223ee64b8a9f0b1d20ec7d0f6e?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html#implementing-your-own-upload-adapter"
           >Custom Upload Adapter</a
         >
       </td>
@@ -2086,7 +2086,7 @@ order: -997
     <tr id="simple-upload-adapter">
       <td>
         <a
-          href="https://www.notion.so/Simple-Upload-Adapter-4057ae2806f9445ebd8df93906b7177c?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/simple-upload-adapter.html"
           >Simple Upload Adapter</a
         >
       </td>
@@ -2098,7 +2098,7 @@ order: -997
     <tr id="base64-upload-adapter">
       <td>
         <a
-          href="https://www.notion.so/Base-64-Upload-Adapter-2f408598d82343e08133ea2455c37bb0?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html"
           >Base 64 Upload Adapter</a
         >
       </td>
@@ -2111,7 +2111,7 @@ order: -997
     <tr id="ckfinder">
       <td>
         <a
-          href="https://www.notion.so/CKFinder-89ad696bc39e4c2cad11864332f54d0c?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckfinder.html"
           >CKFinder</a
         >
       </td>
@@ -2124,7 +2124,7 @@ order: -997
     <tr id="ckbox">
       <td>
         <a
-          href="https://www.notion.so/CKBox-a9fbf694a4034d34881526cf9707d65f?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
           >CKBox</a
         >
       </td>
@@ -2142,7 +2142,7 @@ order: -997
     <tr id="easy-image">
       <td>
         <a
-          href="https://www.notion.so/Easy-Image-3a7edf71e5ed47a585105f7eb8e1e0ae?pvs=21"
+          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html"
           >Easy Image</a
         >
       </td>
