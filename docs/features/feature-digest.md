@@ -371,7 +371,7 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/mermaid.html"
-          >Mermaid</a
+          >Mermaid<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="New or updated content">Experimental</span></a
         >
       </td>
       <td>
@@ -1171,7 +1171,7 @@ order: -997
       <td>
         <a
           href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html"
-          >Paste Markdown</a
+          >Paste Markdown<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="New or updated content">Experimental</span></a
         >
       </td>
       <td>
