@@ -5,12 +5,9 @@
 
 /* eslint-env node */
 
-import path from 'path';
-import fs from 'fs';
+import upath from 'upath';
 import minimist from 'minimist';
 import { globSync } from 'glob';
-
-export const TRANSLATION_DIRECTORY_PATH = 'build/.transifex';
 
 /**
  * Parses CLI arguments and prepares configuration for the crawler.
@@ -23,33 +20,41 @@ export function parseArguments( args ) {
 		string: [
 			'cwd',
 			'packages',
-			'ignore'
+			'ignore',
+			'config'
 		],
 
 		boolean: [
 			'include-external-directory',
-			'ignore-unused-core-package-contexts'
+			'ignore-unused-core-package-contexts',
+			'validate-only',
+			'skip-license-header'
 		],
 
 		default: {
 			cwd: process.cwd(),
 			packages: [],
 			ignore: [],
+			config: '',
 			'include-external-directory': false,
-			'ignore-unused-core-package-contexts': false
+			'ignore-unused-core-package-contexts': false,
+			'validate-only': false,
+			'skip-license-header': false
 		}
 	};
 
 	const options = minimist( args, config );
 
 	// Convert to camelCase.
-	options.includeExternalDirectory = options[ 'include-external-directory' ];
-	delete options[ 'include-external-directory' ];
-	options.ignoreUnusedCorePackageContexts = options[ 'ignore-unused-core-package-contexts' ];
-	delete options[ 'ignore-unused-core-package-contexts' ];
+	replaceKebabCaseWithCamelCase( options, [
+		'include-external-directory',
+		'ignore-unused-core-package-contexts',
+		'validate-only',
+		'skip-license-header'
+	] );
 
 	// Normalize the current work directory path.
-	options.cwd = normalizePath( path.resolve( options.cwd ) );
+	options.cwd = upath.resolve( options.cwd );
 
 	// Convert packages to an array.
 	if ( typeof options.packages === 'string' ) {
@@ -81,8 +86,10 @@ export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
 
 	const globOptions = { cwd, absolute: true };
 
-	return patterns.map( item => globSync( item, globOptions ) )
+	return patterns
+		.map( item => globSync( item, globOptions ) )
 		.flat()
+		.map( srcPath => upath.normalize( srcPath ) )
 		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) )
 		.filter( srcPath => !srcPath.endsWith( '.d.ts' ) );
 }
@@ -102,70 +109,44 @@ export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
 		patterns.push( 'external/*/packages/*' );
 	}
 
-	return patterns.map( item => globSync( item, { cwd } ) ).flat();
+	return patterns
+		.map( item => globSync( item, { cwd } ) )
+		.flat()
+		.map( srcPath => upath.normalize( srcPath ) );
 }
 
 /**
- * Returns an array of entries containing the package's name (resource) used on the Transifex service and a relative path
- * to the package on a file system. The relative path depends on the `transifexProcess` argument.
+ * Replaces all kebab-case keys in the `options` object with camelCase entries.
+ * Kebab-case keys will be removed.
  *
- * When uploading translations, returned path points to a directory containing translation sources.
- * For the download process, it points to a directory containing the source code.
- *
- * @param {'upload'|'download'} transifexProcess A control flag.
- * @param {TranslationOptions} options
- * @return {Array.<CKEditor5Entry>}
+ * @param {object} options
+ * @param {Array.<string>} keys Kebab-case keys in `options` object.
  */
-export function getCKEditor5PackageNames( transifexProcess, { cwd, packages, ignore } ) {
-	const packagesPath = normalizePath( cwd, 'packages' );
+function replaceKebabCaseWithCamelCase( options, keys ) {
+	for ( const key of keys ) {
+		const camelCaseKey = toCamelCase( key );
 
-	return fs.readdirSync( packagesPath )
-		.filter( item => item.startsWith( 'ckeditor5-' ) )
-		.filter( item => {
-			// If no packages to process have been specified, handle all found.
-			if ( packages.length === 0 ) {
-				return true;
-			}
-
-			// Otherwise, process only specified packages.
-			return packages.includes( item );
-		} )
-		.map( packageName => {
-			let resourceName = packageName;
-
-			if ( packageName === 'ckeditor5-letters' ) {
-				resourceName = 'letters';
-			}
-
-			let absolutePath;
-
-			if ( transifexProcess === 'upload' ) {
-				absolutePath = normalizePath( cwd, TRANSLATION_DIRECTORY_PATH, packageName );
-			} else if ( transifexProcess === 'download' ) {
-				absolutePath = normalizePath( cwd, 'packages', packageName );
-			}
-
-			const relativePath = path.posix.relative( cwd, absolutePath );
-
-			return [ resourceName, relativePath ];
-		} )
-		.filter( ( [ packageName ] ) => {
-			if ( ignore.includes( packageName ) ) {
-				return false;
-			}
-
-			return true;
-		} );
+		options[ camelCaseKey ] = options[ key ];
+		delete options[ key ];
+	}
 }
 
 /**
- * Returns a path that always uses the UNIX separator for directories.
+ * Returns a camelCase value for specified kebab-case `value`.
  *
- * @param {Array.<String>} values
- * @returns {String}
+ * @param {string} value Kebab-case string.
+ * @returns {string}
  */
-export function normalizePath( ...values ) {
-	return values.join( '/' ).split( /[\\/]/g ).join( '/' );
+function toCamelCase( value ) {
+	return value.split( '-' )
+		.map( ( item, index ) => {
+			if ( index == 0 ) {
+				return item.toLowerCase();
+			}
+
+			return item.charAt( 0 ).toUpperCase() + item.slice( 1 ).toLowerCase();
+		} )
+		.join( '' );
 }
 
 /**
@@ -175,16 +156,13 @@ export function normalizePath( ...values ) {
  *
  * @property {Array.<String>} packages Package names to be processed. If empty, all found packages will be processed.
  *
- * @property {Array.<String>} [ignore] Name of packages that should be skipped while processing then.
+ * @property {Array.<String>} ignore Name of packages that should be skipped while processing then.
  *
  * @property {Boolean} includeExternalDirectory Whether to look for packages located in the `external/` directory.
  *
  * @property {Boolean} ignoreUnusedCorePackageContexts Whether to allow having unused contexts by the `ckeditor5-core` package.
- */
-
-/**
- * @typedef {[String, String]} CKEditor5Entry
  *
- * The first element of the array represents a package (resource) name in the Transifex service.
- * The second element of the array represents a relative path where to look for translations source.
+ * @property {Boolean} validateOnly Whether to validate the translation contexts against the source messages only. No files will be updated.
+ *
+ * @property {Boolean} skipLicenseHeader Whether to skip adding the license header to newly created translation files.
  */
