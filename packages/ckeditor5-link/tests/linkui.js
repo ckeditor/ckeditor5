@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -26,6 +27,7 @@ import { toWidget } from '@ckeditor/ckeditor5-widget';
 import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
+import LinkButtonView from '../src/ui/linkbuttonview.js';
 import LinkActionsView from '../src/ui/linkactionsview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
@@ -297,7 +299,6 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.isEnabled ).to.be.true;
 			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.false;
 			expect( formView.saveButtonView.isEnabled ).to.be.true;
-			expect( formView.cancelButtonView.isEnabled ).to.be.true;
 
 			expect( actionsView.unlinkButtonView.isEnabled ).to.be.true;
 			expect( actionsView.editButtonView.isEnabled ).to.be.true;
@@ -308,7 +309,6 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.isEnabled ).to.be.false;
 			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.true;
 			expect( formView.saveButtonView.isEnabled ).to.be.false;
-			expect( formView.cancelButtonView.isEnabled ).to.be.true;
 
 			expect( actionsView.unlinkButtonView.isEnabled ).to.be.false;
 			expect( actionsView.editButtonView.isEnabled ).to.be.false;
@@ -1980,5 +1980,55 @@ describe( 'LinkUI', () => {
 				} );
 			} );
 		} );
+	} );
+} );
+
+describe( 'LinkUI with Bookmark', () => {
+	let editor, linkUIFeature, balloon, editorElement;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote, Bookmark ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+
+				linkUIFeature = editor.plugins.get( LinkUI );
+				balloon = editor.plugins.get( ContextualBalloon );
+
+				// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+				testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+				testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
+			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
+	} );
+
+	it( 'should create #formView with bookmarks button', () => {
+		setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+		linkUIFeature._showUI();
+
+		const formView = linkUIFeature.formView;
+		const button = formView
+			.template.children[ 0 ]
+			.last // ul
+			.template.children[ 0 ]
+			.get( 0 ) // li
+			.template.children[ 0 ]
+			.get( 0 ); // button
+
+		expect( linkUIFeature.formView ).to.be.instanceOf( LinkFormView );
+		expect( button ).to.be.instanceOf( LinkButtonView );
 	} );
 } );
