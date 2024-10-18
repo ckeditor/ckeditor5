@@ -154,9 +154,9 @@ describe( 'LinkActionsView', () => {
 				describe( 'when href starts with `#`', () => {
 					describe( 'and Bookmark plugin is loaded', () => {
 						it( 'should scroll to bookmark when bookmark `id` matches hash `url`', () => {
-							view.href = '#foo';
-
 							isScrollableToTarget.returns( true );
+
+							view.href = '#foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 
@@ -171,9 +171,9 @@ describe( 'LinkActionsView', () => {
 						} );
 
 						it( 'should open link when bookmark `id` does not matches hash `url`', () => {
-							view.href = '#foo';
-
 							isScrollableToTarget.returns( false );
+
+							view.href = '#foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 
@@ -217,9 +217,9 @@ describe( 'LinkActionsView', () => {
 						} );
 
 						it( 'should open link', () => {
-							view.href = '#foo';
-
 							isScrollableToTarget.returns( false );
+
+							view.href = '#foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#foo' );
 
@@ -238,9 +238,9 @@ describe( 'LinkActionsView', () => {
 				describe( 'when href not starts with `#`', () => {
 					describe( 'and Bookmark plugin is loaded', () => {
 						it( 'should open link', () => {
-							view.href = 'foo';
-
 							isScrollableToTarget.returns( false );
+
+							view.href = 'foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
 
@@ -284,9 +284,9 @@ describe( 'LinkActionsView', () => {
 						} );
 
 						it( 'should open link', () => {
-							view.href = 'foo';
-
 							isScrollableToTarget.returns( false );
+
+							view.href = 'foo';
 
 							expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
 
