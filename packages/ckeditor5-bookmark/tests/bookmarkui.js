@@ -59,6 +59,14 @@ describe( 'BookmarkUI', () => {
 		expect( BookmarkUI.pluginName ).to.equal( 'BookmarkUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BookmarkUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BookmarkUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load ContextualBalloon', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );

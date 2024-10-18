@@ -30,7 +30,12 @@ import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.
 import LinkActionsView from './ui/linkactionsview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
-import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils.js';
+import {
+	addLinkProtocolIfApplicable,
+	isLinkElement,
+	createBookmarkCallbacks,
+	LINK_KEYSTROKE
+} from './utils.js';
 
 import linkIcon from '../theme/icons/link.svg';
 
@@ -171,7 +176,11 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createActionsView(): LinkActionsView {
 		const editor = this.editor;
-		const actionsView = new LinkActionsView( editor.locale, editor.config.get( 'link' ) );
+		const actionsView = new LinkActionsView(
+			editor.locale,
+			editor.config.get( 'link' ),
+			createBookmarkCallbacks( editor )
+		);
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
 
