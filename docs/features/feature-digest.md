@@ -790,22 +790,6 @@ order: -997
 				integration is enabling comments on non-editor form fields.
 			</td>
 		</tr>
-		<tr id="sidebar-modes">
-			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
-					modes<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
-			</td>
-			<td>
-				There are three built-in UIs to display comment threads and suggestion
-				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-				You can also display them together in more advanced scenarios where
-				various annotation sources (comments, suggestions) are connected to
-				different UIs, or even create your own UI for annotations.
-			</td>
-		</tr>
 		<tr id="mentions">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mentions</a>
@@ -1405,9 +1389,287 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td></td>
-			<td></td>
+		<tr id="editor-placeholder">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html">Editor
+					placeholder</a>
+			</td>
+			<td>
+				You can prompt the user to input content by displaying a configurable
+				placeholder text when the editor is empty. This works similarly to the
+				native DOM placeholder attribute used by inputs. Not to be confused with
+				content placeholder.
+			</td>
+		</tr>
+		<tr id="editor-ui-types">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html">Editor UI
+					types</a>
+			</td>
+			<td>
+				The editor’s user interface is dependent on the editor types. The editor
+				provides functionality through specialized features accessible via a
+				configurable toolbar or keyboard shortcuts. Some of these features are
+				only available with certain editor types.
+			</td>
+		</tr>
+		<tr id="balloon-block-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor">Balloon
+					block editor</a>
+			</td>
+			<td>
+				Balloon block is essentially the balloon editor with an extra block
+				toolbar, which can be accessed using the button attached to the editable
+				content area and following the selection in the document. The toolbar
+				gives access to additional block–level editing features.
+			</td>
+		</tr>
+		<tr id="balloon-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor">Balloon
+					editor</a>
+			</td>
+			<td>
+				Balloon editor is similar to inline editor. The difference between them
+				is that the toolbar appears in a balloon next to the selection (when the
+				selection is not empty).
+			</td>
+		</tr>
+		<tr id="classic-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#classic-editor">Classic
+					editor</a>
+			</td>
+			<td>
+				Classic editor is what most users traditionally learned to associate
+				with a rich-text editor – a toolbar with an editing area placed in a
+				specific position on the page, usually as a part of a form that you use
+				to submit some content to the server.
+			</td>
+		</tr>
+		<tr id="decoupled-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#decoupled-editor-document">Decoupled
+					editor</a>
+			</td>
+			<td>
+				The document editor focuses on a rich-text editing experience similar to
+				large editing packages such as Google Docs or Microsoft Word. It works
+				best for creating documents, which are usually later printed or exported
+				to PDF files.
+			</td>
+		</tr>
+		<tr id="inline-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#inline-editor">Inline
+					editor</a>
+			</td>
+			<td>
+				The inline editor comes with a floating toolbar that becomes visible
+				when the editor is focused (for example, by clicking it). A common
+				scenario for using the inline editor is offering users the possibility
+				to edit content (such as headings and other small areas) in its real
+				location on a web page instead of doing it in a separate administration
+				section.
+			</td>
+		</tr>
+		<tr id="multi-root-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#multi-root-editor">Multi-root
+					editor</a>
+			</td>
+			<td>
+				The multi-root editor is an editor type that features multiple, separate
+				editable areas. The main difference between using a multi-root editor
+				and using multiple separate editors is the fact that in a multi-root
+				editor, the editors are “connected.” All editable areas of the same
+				editor instance share the same configuration, toolbar, undo stack, and
+				produce one document.
+			</td>
+		</tr>
+		<tr id="professionally-translated-language-packs">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/ui-language.html">Professionally
+					translated language packs</a>
+			</td>
+			<td>
+				CKEditor 5 provides 38 professionally translated language options, along
+				with additional languages provided by community translations. CKEditor 5
+				also supports right-to-left (RTL) languages natively. When an RTL
+				language is selected, the editor automatically adjusts its interface,
+				including elements like toolbars, dropdowns, and buttons, to ensure an
+				optimal editing experience.1
+			</td>
+		</tr>
+		<tr id="toolbar-and-menus">
+			<td>
+				<a href="#">Toolbar and menus</a>
+			</td>
+			<td>
+				The Toolbar Configuration feature provides different toolbar interfaces
+				for editing content. The default toolbar includes dropdown menus and
+				buttons for various editing functions. The Balloon Toolbar appears when
+				text is selected, showing relevant tools. The Block Toolbar is accessed
+				by clicking a button on the left-hand side of the editor, providing
+				tools for the active block of content. Additionally, the Multiline
+				Toolbar option allows for the expansion of the standard toolbar over
+				multiple lines, to display more tools simultaneously.
+			</td>
+		</tr>
+		<tr id="balloon-toolbar">
+			<td>
+				<a href="#">Balloon toolbar</a>
+			</td>
+			<td>
+				The block toolbar provides an additional configurable toolbar on the
+				left-hand side of the content area, useful when the main toolbar is not
+				accessible (for example in certain layouts, like balloon block editor).
+			</td>
+		</tr>
+		<tr id="block-toolbar">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#block-toolbar">Block
+					toolbar</a>
+			</td>
+			<td>
+				The block toolbar provides an additional configurable toolbar on the
+				left-hand side of the content area, useful when the main toolbar is not
+				accessible (for example in certain layouts, like balloon block editor).
+			</td>
+		</tr>
+		<tr id="classic-toolbar">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#main-editor-toolbar">Classic
+					toolbar</a>
+			</td>
+			<td>
+				The toolbar is the most basic user interface element of CKEditor 5 that
+				gives you convenient access to all its features. It has buttons and
+				dropdowns that you can use to format, manage, insert, and change
+				elements of your content.
+			</td>
+		</tr>
+		<tr id="collapsible-toolbar">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#extended-toolbar-configuration-format">Collapsible
+					toolbar</a>
+			</td>
+			<td>Collapsible toolbar for UI space efficiency.</td>
+		</tr>
+		<tr id="image-contextual-toolbar">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">Image
+					contextual toolbar</a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagetoolbar-ImageToolbar.html"
+				  >ImageToolbar</a
+				></code>
+				plugin introduces a contextual toolbar for images. The toolbar appears
+				when an image is selected and can be configured to contain any buttons
+				you want. Usually, these will be image-related options such as the
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html">text
+					alternative</a>
+				button, the
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">image
+					caption</a>
+				button, and
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">image styles</a>
+				buttons. The toolbar can also host the image editing button introduced
+				by the
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox asset
+					manager</a>. Shown below is an example contextual toolbar with an extended set of
+				buttons.
+			</td>
+		</tr>
+		<tr id="menu-bar">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/menubar.html">Menu bar</a>
+			</td>
+			<td>
+				The menu bar is a user interface component that gives you access to all
+				features provided by the editor, organized in menus and categories. This
+				familiar experience popular in large editing desktop and online packages
+				improves usability of the editor.<br /><br />As the menu bar gathers all
+				the editor features, the toolbar can be simple and tidy, providing only
+				the most essential and commonly used features. This is especially
+				welcome in heavily-featured editor integrations.<br /><br />For your
+				convenience, the menu bar provides a default preset structure, based on
+				the plugins loaded in the editor. However, you can arrange it to suit
+				your needs, remove unnecessary items, as well as add menu items related
+				to your custom features.<br />
+			</td>
+		</tr>
+		<tr id="multiline-toolbar">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#multiline-wrapping-toolbar">Multiline
+					toolbar</a>
+			</td>
+			<td>Multiline toolbar for easy access to all functions.</td>
+		</tr>
+		<tr id="nesting-toolbars-in-dropdowns">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#grouping-toolbar-items-in-dropdowns-nested-toolbars">Nesting
+					toolbars in dropdowns</a>
+			</td>
+			<td>Nested toolbars for space efficiency and task-oriented acces</td>
+		</tr>
+		<tr id="sidebar-annotations-bar">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html#wide-sidebar">Sidebar
+					/ annotations bar</a>
+			</td>
+			<td>
+				There are three built-in UIs to display comment threads and suggestion
+				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
+				You can also display them together in more advanced scenarios where
+				various annotation sources (comments, suggestions) are connected to
+				different UIs, or even create your own UI for annotations.
+			</td>
+		</tr>
+		<tr id="table-contextual-toolbar">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Table
+					contextual toolbar</a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tabletoolbar-TableToolbar.html"
+				  >TableToolbar</a
+				></code>
+				plugin introduces a contextual toolbar for table. The toolbar appears
+				when a table or a cell is selected and contains various table-related
+				buttons. These would typically include add or remove columns and rows
+				and merge or split cells . If these features are configured, the toolbar
+				will also contain buttons for captions and table and cell properties.
+			</td>
+		</tr>
+		<tr id="watchdog">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html">Watchdog</a>
+			</td>
+			<td>
+				The watchdog utility protects you from data loss in case the editor
+				crashes. It saves your content just before the crash and creates a new
+				instance of the editor with your content intact.
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -1471,328 +1733,22 @@ order: -997
     </tr>
   </thead>
   <tbody>
-    <tr id="watchdog">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html"
-          >Watchdog</a
-        >
-      </td>
-      <td>
-        The watchdog utility protects you from data loss in case the editor
-        crashes. It saves your content just before the crash and creates a new
-        instance of the editor with your content intact.
-      </td>
-    </tr>
-    <tr id="editor-placeholder">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html"
-          >Editor placeholder</a
-        >
-      </td>
-      <td>
-        You can prompt the user to input content by displaying a configurable
-        placeholder text when the editor is empty. This works similarly to the
-        native DOM placeholder attribute used by inputs. Not to be confused with
-        content placeholder.
-      </td>
-    </tr>
-    <tr id="sidebar-annotations-bar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html#wide-sidebar"
-          >Sidebar / annotations bar</a
-        >
-      </td>
-      <td>
-        There are three built-in UIs to display comment threads and suggestion
-        annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-        You can also display them together in more advanced scenarios where
-        various annotation sources (comments, suggestions) are connected to
-        different UIs, or even create your own UI for annotations.
-      </td>
-    </tr>
-    <tr id="table-contextual-toolbar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar"
-          >Table contextual toolbar</a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tabletoolbar-TableToolbar.html"
-            >TableToolbar</a
-          ></code
-        >
-        plugin introduces a contextual toolbar for table. The toolbar appears
-        when a table or a cell is selected and contains various table-related
-        buttons. These would typically include add or remove columns and rows
-        and merge or split cells . If these features are configured, the toolbar
-        will also contain buttons for captions and table and cell properties.
-      </td>
-    </tr>
-    <tr id="image-contextual-toolbar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar"
-          >Image contextual toolbar</a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagetoolbar-ImageToolbar.html"
-            >ImageToolbar</a
-          ></code
-        >
-        plugin introduces a contextual toolbar for images. The toolbar appears
-        when an image is selected and can be configured to contain any buttons
-        you want. Usually, these will be image-related options such as the
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html"
-          >text alternative</a
-        >
-        button, the
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html"
-          >image caption</a
-        >
-        button, and
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html"
-          >image styles</a
-        >
-        buttons. The toolbar can also host the image editing button introduced
-        by the
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
-          >CKBox asset manager</a
-        >. Shown below is an example contextual toolbar with an extended set of
-        buttons.
-      </td>
-    </tr>
-    <tr id="nesting-toolbars-in-dropdowns">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#grouping-toolbar-items-in-dropdowns-nested-toolbars"
-          >Nesting toolbars in dropdowns</a
-        >
-      </td>
-      <td>Nested toolbars for space efficiency and task-oriented acces</td>
-    </tr>
-    <tr id="multi-root-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#multi-root-editor"
-          >Multi-root editor</a
-        >
-      </td>
-      <td>
-        The multi-root editor is an editor type that features multiple, separate
-        editable areas. The main difference between using a multi-root editor
-        and using multiple separate editors is the fact that in a multi-root
-        editor, the editors are “connected.” All editable areas of the same
-        editor instance share the same configuration, toolbar, undo stack, and
-        produce one document.
-      </td>
-    </tr>
-    <tr id="collapsible-toolbar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#extended-toolbar-configuration-format"
-          >Collapsible toolbar</a
-        >
-      </td>
-      <td>Collapsible toolbar for UI space efficiency.</td>
-    </tr>
-    <tr id="multiline-toolbar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#multiline-wrapping-toolbar"
-          >Multiline toolbar</a
-        >
-      </td>
-      <td>Multiline toolbar for easy access to all functions.</td>
-    </tr>
-    <tr id="professionally-translated-language-packs">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/ui-language.html"
-          >Professionally translated language packs</a
-        >
-      </td>
-      <td>
-        CKEditor 5 provides 38 professionally translated language options, along
-        with additional languages provided by community translations. CKEditor 5
-        also supports right-to-left (RTL) languages natively. When an RTL
-        language is selected, the editor automatically adjusts its interface,
-        including elements like toolbars, dropdowns, and buttons, to ensure an
-        optimal editing experience.1
-      </td>
-    </tr>
-    <tr id="inline-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#inline-editor"
-          >Inline editor</a
-        >
-      </td>
-      <td>
-        The inline editor comes with a floating toolbar that becomes visible
-        when the editor is focused (for example, by clicking it). A common
-        scenario for using the inline editor is offering users the possibility
-        to edit content (such as headings and other small areas) in its real
-        location on a web page instead of doing it in a separate administration
-        section.
-      </td>
-    </tr>
-    <tr id="decoupled-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#decoupled-editor-document"
-          >Decoupled editor</a
-        >
-      </td>
-      <td>
-        The document editor focuses on a rich-text editing experience similar to
-        large editing packages such as Google Docs or Microsoft Word. It works
-        best for creating documents, which are usually later printed or exported
-        to PDF files.
-      </td>
-    </tr>
-    <tr id="menu-bar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/menubar.html"
-          >Menu bar</a
-        >
-      </td>
-      <td>
-        The menu bar is a user interface component that gives you access to all
-        features provided by the editor, organized in menus and categories. This
-        familiar experience popular in large editing desktop and online packages
-        improves usability of the editor.<br /><br />As the menu bar gathers all
-        the editor features, the toolbar can be simple and tidy, providing only
-        the most essential and commonly used features. This is especially
-        welcome in heavily-featured editor integrations.<br /><br />For your
-        convenience, the menu bar provides a default preset structure, based on
-        the plugins loaded in the editor. However, you can arrange it to suit
-        your needs, remove unnecessary items, as well as add menu items related
-        to your custom features.<br />
-      </td>
-    </tr>
-    <tr id="block-toolbar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#block-toolbar"
-          >Block toolbar</a
-        >
-      </td>
-      <td>
-        The block toolbar provides an additional configurable toolbar on the
-        left-hand side of the content area, useful when the main toolbar is not
-        accessible (for example in certain layouts, like balloon block editor).
-      </td>
-    </tr>
-    <tr id="balloon-toolbar">
-      <td>
-        <a href="#">Balloon toolbar</a>
-      </td>
-      <td>
-        The block toolbar provides an additional configurable toolbar on the
-        left-hand side of the content area, useful when the main toolbar is not
-        accessible (for example in certain layouts, like balloon block editor).
-      </td>
-    </tr>
-    <tr id="classic-toolbar">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#main-editor-toolbar"
-          >Classic toolbar</a
-        >
-      </td>
-      <td>
-        The toolbar is the most basic user interface element of CKEditor 5 that
-        gives you convenient access to all its features. It has buttons and
-        dropdowns that you can use to format, manage, insert, and change
-        elements of your content.
-      </td>
-    </tr>
-    <tr id="toolbar-and-menus">
-      <td>
-        <a href="#">Toolbar and menus</a>
-      </td>
-      <td>
-        The Toolbar Configuration feature provides different toolbar interfaces
-        for editing content. The default toolbar includes dropdown menus and
-        buttons for various editing functions. The Balloon Toolbar appears when
-        text is selected, showing relevant tools. The Block Toolbar is accessed
-        by clicking a button on the left-hand side of the editor, providing
-        tools for the active block of content. Additionally, the Multiline
-        Toolbar option allows for the expansion of the standard toolbar over
-        multiple lines, to display more tools simultaneously.
-      </td>
-    </tr>
-    <tr id="balloon-block-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor"
-          >Balloon block editor</a
-        >
-      </td>
-      <td>
-        Balloon block is essentially the balloon editor with an extra block
-        toolbar, which can be accessed using the button attached to the editable
-        content area and following the selection in the document. The toolbar
-        gives access to additional block–level editing features.
-      </td>
-    </tr>
-    <tr id="balloon-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor"
-          >Balloon editor</a
-        >
-      </td>
-      <td>
-        Balloon editor is similar to inline editor. The difference between them
-        is that the toolbar appears in a balloon next to the selection (when the
-        selection is not empty).
-      </td>
-    </tr>
-    <tr id="classic-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#classic-editor"
-          >Classic editor</a
-        >
-      </td>
-      <td>
-        Classic editor is what most users traditionally learned to associate
-        with a rich-text editor – a toolbar with an editing area placed in a
-        specific position on the page, usually as a part of a form that you use
-        to submit some content to the server.
-      </td>
-    </tr>
-    <tr id="editor-ui-types">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html"
-          >Editor UI types</a
-        >
-      </td>
-      <td>
-        The editor’s user interface is dependent on the editor types. The editor
-        provides functionality through specialized features accessible via a
-        configurable toolbar or keyboard shortcuts. Some of these features are
-        only available with certain editor types.
-      </td>
-    </tr>
+  	<tr id="sidebar-modes">
+		<td>
+			<a
+				href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
+				modes<span class="tree__item__badge tree__item__badge_premium"
+					data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+						feature</span></span></a>
+		</td>
+		<td>
+			There are three built-in UIs to display comment threads and suggestion
+			annotations: the wide sidebar, the narrow sidebar, and inline balloons.
+			You can also display them together in more advanced scenarios where
+			various annotation sources (comments, suggestions) are connected to
+			different UIs, or even create your own UI for annotations.
+		</td>
+	</tr>
     <tr id="restricted-editing">
       <td>
         <a
