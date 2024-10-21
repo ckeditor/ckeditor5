@@ -720,9 +720,208 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td></td>
-			<td></td>
+		<tr id="asynchronous-collaboration">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html">Asynchronous
+					collaboration<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Asynchronous Collaboration in CKEditor 5 is designed for teams using a
+				turn-based approach to collaboratively write, review, and discuss
+				content within the application. It integrates Track Changes, Comments,
+				and Revision History features to facilitate collaboration.
+			</td>
+		</tr>
+		<tr id="local-data-storage">
+			<td>
+				<a href="#">Local data storage<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				In asynchronous collaboration, data is maintained on the client’s
+				servers.
+			</td>
+		</tr>
+		<tr id="comments">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				Users can add side notes to marked fragments of the document, including
+				text and block elements such as images. It also allows the users to
+				discuss in threads and remove comments when they finish the discussion.
+			</td>
+		</tr>
+		<tr id="comments-archive">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments
+					archive<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Comments threads can be either deleted or resolved. The latter provides
+				a way to archive comments that are no longer relevant, reducing clutter
+				and making it easier to focus on the most important feedback. Users can
+				access the comments archive from the toolbar and use it to view and
+				restore archived comments if necessary. It helps to simplify the
+				feedback management process.
+			</td>
+		</tr>
+		<tr id="comments-outside-editor">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-outside-editor.html">Comments
+					outside editor<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The comments feature API, together with
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html"
+				  >Context</a
+				></code>, lets you create deeper integrations with your application. One such
+				integration is enabling comments on non-editor form fields.
+			</td>
+		</tr>
+		<tr id="sidebar-modes">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
+					modes<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				There are three built-in UIs to display comment threads and suggestion
+				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
+				You can also display them together in more advanced scenarios where
+				various annotation sources (comments, suggestions) are connected to
+				different UIs, or even create your own UI for annotations.
+			</td>
+		</tr>
+		<tr id="mentions">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mentions</a>
+			</td>
+			<td>
+				The mention feature supports smart autocompletion triggered by user
+				input. Typing a predetermined marker, like @ or #, prompts a panel to
+				appear, offering autocomplete suggestions.
+			</td>
+		</tr>
+		<tr id="real-time-collaboration">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">Real-time
+					collaboration<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Real-Time Collaboration in CKEditor 5 is designed for users who are
+				writing, reviewing, and commenting on content simultaneously. It also
+				automatically solves all conflicts if users make changes at the same
+				time.
+			</td>
+		</tr>
+		<tr id="co-authoring">
+			<td>
+				<a href="#">Co-authoring<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>Multiple user real-time editing and content creation feature.</td>
+		</tr>
+		<tr id="on-premises">
+			<td>
+				<a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html">On-premises<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				On-premises real-time collaboration version to deploy to client’s own
+				infrastructure, includes a private cloud.
+			</td>
+		</tr>
+		<tr id="saas">
+			<td>
+				<a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">SaaS<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>Real-time collaboration provided as a service by CKSource.</td>
+		</tr>
+		<tr id="revision-history">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html">Revision
+					history<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The revision history feature is a document versioning tool. It allows
+				CKEditor 5 users to create and view the chronological revision history
+				of their content. These versions are listed in the side panel. The
+				preview mode allows for easy viewing of content development between
+				revisions. You can rename, compare, and restore older revisions on the
+				go.
+			</td>
+		</tr>
+		<tr id="track-changes">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">Track
+					changes<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The track changes feature brings automatic suggestion marking for the
+				document as you change it. When editing the document, the user can
+				switch to the track changes mode. All their changes will then create
+				suggestions that they can accept or discard.
+			</td>
+		</tr>
+		<tr id="sidebar-modes">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
+					modes<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				There are three built-in UIs to display comment threads and suggestion
+				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
+				You can also display them together in more advanced scenarios where
+				various annotation sources (comments, suggestions) are connected to
+				different UIs, or even create your own UI for annotations.
+			</td>
+		</tr>
+		<tr id="users-list-and-permissions">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/users.html">Users list and
+					permissions<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_collaboration-core_users-Users.html"
+				  >Users</a
+				></code>
+				plugin and related plugins let you manage user data and permissions.
+				This is essential when many users are working on the same document.
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -854,267 +1053,6 @@ order: -997
     </tr>
   </thead>
   <tbody>
-    <tr id="saas">
-      <td>
-        <a href="https://ckeditor.com/docs/cs/latest/guides/overview.html"
-          >SaaS<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>Real-time collaboration provided as a service by CKSource.</td>
-    </tr>
-    <tr id="on-premises">
-      <td>
-        <a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html"
-          >On-premises<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        On-premises real-time collaboration version to deploy to client’s own
-        infrastructure, includes a private cloud.
-      </td>
-    </tr>
-    <tr id="local-data-storage">
-      <td>
-        <a href="#"
-          >Local data storage<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        In asynchronous collaboration, data is maintained on the client’s
-        servers.
-      </td>
-    </tr>
-    <tr id="users-list-and-permissions">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/users.html"
-          >Users list and permissions<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_collaboration-core_users-Users.html"
-            >Users</a
-          ></code
-        >
-        plugin and related plugins let you manage user data and permissions.
-        This is essential when many users are working on the same document.
-      </td>
-    </tr>
-    <tr id="co-authoring">
-      <td>
-        <a href="#"
-          >Co-authoring<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>Multiple user real-time editing and content creation feature.</td>
-    </tr>
-    <tr id="sidebar-modes">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html"
-          >Sidebar modes<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        There are three built-in UIs to display comment threads and suggestion
-        annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-        You can also display them together in more advanced scenarios where
-        various annotation sources (comments, suggestions) are connected to
-        different UIs, or even create your own UI for annotations.
-      </td>
-    </tr>
-    <tr id="revision-history">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html"
-          >Revision history<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The revision history feature is a document versioning tool. It allows
-        CKEditor 5 users to create and view the chronological revision history
-        of their content. These versions are listed in the side panel. The
-        preview mode allows for easy viewing of content development between
-        revisions. You can rename, compare, and restore older revisions on the
-        go.
-      </td>
-    </tr>
-    <tr id="track-changes">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html"
-          >Track changes<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The track changes feature brings automatic suggestion marking for the
-        document as you change it. When editing the document, the user can
-        switch to the track changes mode. All their changes will then create
-        suggestions that they can accept or discard.
-      </td>
-    </tr>
-    <tr id="mentions">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html"
-          >Mentions</a
-        >
-      </td>
-      <td>
-        The mention feature supports smart autocompletion triggered by user
-        input. Typing a predetermined marker, like @ or #, prompts a panel to
-        appear, offering autocomplete suggestions.
-      </td>
-    </tr>
-    <tr id="real-time-collaboration">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html"
-          >Real-time collaboration<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Real-Time Collaboration in CKEditor 5 is designed for users who are
-        writing, reviewing, and commenting on content simultaneously. It also
-        automatically solves all conflicts if users make changes at the same
-        time.
-      </td>
-    </tr>
-    <tr id="asynchronous-collaboration">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html"
-          >Asynchronous collaboration<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Asynchronous Collaboration in CKEditor 5 is designed for teams using a
-        turn-based approach to collaboratively write, review, and discuss
-        content within the application. It integrates Track Changes, Comments,
-        and Revision History features to facilitate collaboration.
-      </td>
-    </tr>
-    <tr id="comments-outside-editor">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-outside-editor.html"
-          >Comments outside editor<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The comments feature API, together with
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html"
-            >Context</a
-          ></code
-        >, lets you create deeper integrations with your application. One such
-        integration is enabling comments on non-editor form fields.
-      </td>
-    </tr>
-    <tr id="sidebar-modes">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html"
-          >Sidebar modes<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        There are three built-in UIs to display comment threads and suggestion
-        annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-        You can also display them together in more advanced scenarios where
-        various annotation sources (comments, suggestions) are connected to
-        different UIs, or even create your own UI for annotations.
-      </td>
-    </tr>
-    <tr id="comments-archive">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html"
-          >Comments archive<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Comments threads can be either deleted or resolved. The latter provides
-        a way to archive comments that are no longer relevant, reducing clutter
-        and making it easier to focus on the most important feedback. Users can
-        access the comments archive from the toolbar and use it to view and
-        restore archived comments if necessary. It helps to simplify the
-        feedback management process.
-      </td>
-    </tr>
-    <tr id="comments">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html"
-          >Comments<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Users can add side notes to marked fragments of the document, including
-        text and block elements such as images. It also allows the users to
-        discuss in threads and remove comments when they finish the discussion.
-      </td>
-    </tr>
     <tr id="xml-output">
       <td>
         <a
