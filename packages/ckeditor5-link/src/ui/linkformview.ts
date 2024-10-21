@@ -343,10 +343,10 @@ export default class LinkFormView extends View {
 			label: t( 'Link' )
 		} );
 
-		form.children.add( this.backButton, 0 );
-		form.children.add( this.settingsButton );
+		header.children.add( this.backButton, 0 );
+		header.children.add( this.settingsButton );
 
-		return form;
+		return header;
 	}
 
 	/**
