@@ -131,6 +131,14 @@ describe( 'DialogView', () => {
 				it( 'should host the dialog', () => {
 					expect( overlayElement.firstChild.classList.contains( 'ck-dialog' ) ).to.be.true;
 				} );
+
+				it( 'should set the CSS class on the dialog element in the modal mode', () => {
+					view.isModal = false;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).to.be.false;
+
+					view.isModal = true;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).to.be.true;
+				} );
 			} );
 
 			describe( 'dialog', () => {
@@ -562,6 +570,16 @@ describe( 'DialogView', () => {
 		} );
 
 		it( 'should not provide #dragHandleElement when #headerView does not exist', () => {
+			expect( view.dragHandleElement ).to.be.null;
+		} );
+
+		it( 'should not provide #dragHandleElement when in a modal mode because modals should not be draggable', () => {
+			view.setupParts( {
+				title: 'foo'
+			} );
+
+			view.isModal = true;
+
 			expect( view.dragHandleElement ).to.be.null;
 		} );
 
