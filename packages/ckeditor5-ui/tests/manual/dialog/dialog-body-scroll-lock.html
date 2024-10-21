@@ -1,0 +1,53 @@
+<form>
+	<fieldset>
+		<legend>Is document scrollable?</legend>
+		<div>
+			<input type="radio" id="isScrollable-yes" name="isScrollable" value="yes" />
+			<label for="isScrollable-yes">yes</label>
+		</div>
+		<div>
+			<input type="radio" id="isScrollable-no" name="isScrollable" value="no" checked />
+			<label for="isScrollable-no">no</label>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Has &lt;body&gt; position?</legend>
+		<div>
+			<input type="radio" id="hasPosition-yes" name="hasPosition" value="yes" />
+			<label for="hasPosition-yes">yes</label>
+		</div>
+		<div>
+			<input type="radio" id="hasPosition-no" name="hasPosition" value="no" checked />
+			<label for="hasPosition-no">no</label>
+		</div>
+	</fieldset>
+</form>
+
+<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+
+<div id="editor">Editor content.</div>
+
+<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+
+<style>
+	.ck.ck-editor {
+		margin-top: 300px;
+	}
+
+	body {
+		outline: 2px dashed blue;
+		outline-offset: -2px;
+	}
+
+	body::before {
+		content: "<BODY>";
+		position: absolute;
+		display: block;
+		top: 10px;
+		right: 10px;
+		background: blue;
+		color: white;
+		padding: 2px 4px;
+		font-size: 8px;
+	}
+</style>
