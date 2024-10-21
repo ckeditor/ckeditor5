@@ -6,7 +6,7 @@
 /* globals console, window, document, sessionStorage, navigator, alert */
 
 import config from '../../_utils/performance-config.js';
-import allDataSets from '../../_data/generated/index.js';
+import allDataSets from '../../_data/data-sets/index.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 /* TEST CONFIG. */

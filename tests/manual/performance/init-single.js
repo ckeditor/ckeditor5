@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import config from '../../_utils/performance-config.js';
-import dataSet from '../../_data/generated/mixed.js';
+import dataSet from '../../_data/data-sets/mixed.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 const initialData = dataSet();
