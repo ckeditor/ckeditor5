@@ -87,7 +87,7 @@ export default class LinkFormView extends View {
 	private readonly _manualDecoratorSwitches: ViewCollection<SwitchButtonView>;
 
 	/**
-	 * A collection of children elements.
+	 * A collection of child views.
 	 */
 	public readonly children: ViewCollection;
 
@@ -327,7 +327,7 @@ export default class LinkFormView extends View {
 			tooltip: true,
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-insert ck-button-action'
+			class: 'ck-button-insert ck-button-action ck-button-bold'
 		} );
 
 		return saveButton;
@@ -339,7 +339,7 @@ export default class LinkFormView extends View {
 	private _createHeaderView(): FormHeaderView {
 		const t = this.locale!.t;
 
-		const form = new FormHeaderView( this.locale, {
+		const header = new FormHeaderView( this.locale, {
 			label: t( 'Link' )
 		} );
 
