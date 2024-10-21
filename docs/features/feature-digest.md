@@ -936,9 +936,95 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
+		<tr id="content-generation">
+			<td>
+				<a href="#">Content generation</a>
+			</td>
 			<td></td>
-			<td></td>
+		</tr>
+		<tr id="export-to-pdf">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html">Export to
+					PDF<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Create a PDF from in-editor content seamlessly. Customize headers and
+				footers, include page breaks, embed images, and choose from various
+				fonts.
+			</td>
+		</tr>
+		<tr id="export-to-word">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html">Export to
+					Word<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Instantly convert content from the editor to a Word document with a
+				single click, maintaining its appearance and formatting. The final
+				document includes suggestions, comments, page breaks, and embedded
+				images.
+			</td>
+		</tr>
+		<tr id="import-from-word">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/import-word/import-word.html">Import
+					from Word<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Effortlessly transform Word documents into clean HTML within CKEditor 5
+				while retaining the original styling, as well as comments and change
+				tracking annotations.
+			</td>
+		</tr>
+		<tr id="markdown-output">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html">Markdown output</a>
+			</td>
+			<td>
+				nable Markdown as the default output format instead of HTML with the
+				Markdown plugin. Combined with Autoformatting, CKEditor becomes an
+				efficient Markdown editor, allowing the creation of text documents using
+				the simplified formatting syntax favored by developers.
+			</td>
+		</tr>
+		<tr id="media-embed">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">Media embed</a>
+			</td>
+			<td>
+				Use the insert media button in the toolbar Insert media to embed media.
+				Pasting a media URL directly into the editor content automatically
+				embeds the media.
+			</td>
+		</tr>
+		<tr id="paste-markdown">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html">Paste
+					Markdown<span class="tree__item__badge tree__item__badge_new"
+						data-badge-tooltip="New or updated content">Experimental</span></a>
+			</td>
+			<td>
+				The paste Markdown feature lets users paste Markdown-formatted content
+				straight into the editor. It will be then converted into rich text on
+				the fly.
+			</td>
+		</tr>
+		<tr id="xml-output">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_xmldataprocessor-XmlDataProcessor.html">XML
+					output</a>
+			</td>
+			<td>
+				Turn your content into parsable XML files for automation and
+				cross-platform interoperability.
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -1053,116 +1139,6 @@ order: -997
     </tr>
   </thead>
   <tbody>
-    <tr id="xml-output">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_xmldataprocessor-XmlDataProcessor.html"
-          >XML output</a
-        >
-      </td>
-      <td>
-        Turn your content into parsable XML files for automation and
-        cross-platform interoperability.
-      </td>
-    </tr>
-    <tr id="content-generation">
-      <td>
-        <a href="#">Content generation</a>
-      </td>
-      <td></td>
-    </tr>
-    <tr id="markdown-output">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html"
-          >Markdown output</a
-        >
-      </td>
-      <td>
-        nable Markdown as the default output format instead of HTML with the
-        Markdown plugin. Combined with Autoformatting, CKEditor becomes an
-        efficient Markdown editor, allowing the creation of text documents using
-        the simplified formatting syntax favored by developers.
-      </td>
-    </tr>
-    <tr id="media-embed">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html"
-          >Media embed</a
-        >
-      </td>
-      <td>
-        Use the insert media button in the toolbar Insert media to embed media.
-        Pasting a media URL directly into the editor content automatically
-        embeds the media.
-      </td>
-    </tr>
-    <tr id="paste-markdown">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html"
-          >Paste Markdown<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="New or updated content">Experimental</span></a
-        >
-      </td>
-      <td>
-        The paste Markdown feature lets users paste Markdown-formatted content
-        straight into the editor. It will be then converted into rich text on
-        the fly.
-      </td>
-    </tr>
-    <tr id="export-to-pdf">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html"
-          >Export to PDF<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Create a PDF from in-editor content seamlessly. Customize headers and
-        footers, include page breaks, embed images, and choose from various
-        fonts.
-      </td>
-    </tr>
-    <tr id="export-to-word">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html"
-          >Export to Word<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Instantly convert content from the editor to a Word document with a
-        single click, maintaining its appearance and formatting. The final
-        document includes suggestions, comments, page breaks, and embedded
-        images.
-      </td>
-    </tr>
-    <tr id="import-from-word">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/import-word/import-word.html"
-          >Import from Word<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Effortlessly transform Word documents into clean HTML within CKEditor 5
-        while retaining the original styling, as well as comments and change
-        tracking annotations.
-      </td>
-    </tr>
     <tr id="page-utilities">
       <td>
         <a href="#">Page utilities</a>
