@@ -42,7 +42,7 @@ import selectAll from '@ckeditor/ckeditor5-select-all/theme/icons/select-all.svg
 
 import showBlocks from '@ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg';
 
-import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg';
+import sourceEditing from '@ckeditor/ckeditor5-core/theme/icons/source.svg';
 
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
