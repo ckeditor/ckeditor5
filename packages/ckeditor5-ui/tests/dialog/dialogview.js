@@ -806,7 +806,7 @@ describe( 'DialogView', () => {
 			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
 		} );
 
-		it( 'should consider viewport offset configuration', () => {
+		it( 'should consider viewport offset configuration (dialog mode)', () => {
 			getViewportOffsetStub.returns( {
 				top: 10,
 				right: 20,
@@ -832,6 +832,37 @@ describe( 'DialogView', () => {
 			view.moveTo( 1000, 5000 );
 
 			expect( view.element.firstChild.style.left ).to.equal( '380px' );
+			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
+		} );
+
+		it( 'should ignore viewport offset configuration (modal mode)', () => {
+			getViewportOffsetStub.returns( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40
+			} );
+
+			view.isModal = true;
+
+			view.moveTo( 50, 5 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '50px' );
+			expect( view.element.firstChild.style.top ).to.equal( '5px' );
+
+			view.moveTo( 0, 20 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '0px' );
+			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+
+			view.moveTo( 1000, 20 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '400px' );
+			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+
+			view.moveTo( 1000, 5000 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '400px' );
 			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
 		} );
 	} );
@@ -1128,7 +1159,7 @@ describe( 'DialogView', () => {
 			} );
 		} );
 
-		it( 'should consider viewport offsets', () => {
+		it( 'should consider viewport offsets (dialog mode)', () => {
 			getViewportOffsetStub.returns( {
 				top: 100,
 				right: 0,
@@ -1144,6 +1175,26 @@ describe( 'DialogView', () => {
 
 			expect( view.element.firstChild.style.left ).to.equal( '115px' );
 			expect( view.element.firstChild.style.top ).to.equal( '115px' );
+		} );
+
+		it( 'should ignore viewport offsets (modal mode)', () => {
+			view.isModal = true;
+
+			getViewportOffsetStub.returns( {
+				top: 100,
+				right: 0,
+				bottom: 0,
+				left: 100
+			} );
+
+			view.position = DialogViewPosition.EDITOR_TOP_SIDE;
+
+			testUtils.sinon.stub( locale, 'contentLanguageDirection' ).get( () => 'rtl' );
+
+			view.updatePosition();
+
+			expect( view.element.firstChild.style.left ).to.equal( '25px' );
+			expect( view.element.firstChild.style.top ).to.equal( '25px' );
 		} );
 
 		it( 'should not warn or throw if the view has not been rendered yet', () => {
