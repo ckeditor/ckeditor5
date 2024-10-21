@@ -1,7 +1,7 @@
 ---
 category: features
-menu-title: Bookmark
-meta-title: Bookmark | CKEditor 5 Documentation
+menu-title: Bookmarks
+meta-title: Bookmarks | CKEditor 5 Documentation
 meta-description: The bookmarks feature allows for adding and managing bookmark anchors attached to the content.
 modified_at: 2024-10-21
 ---
