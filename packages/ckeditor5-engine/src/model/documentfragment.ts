@@ -341,6 +341,14 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 		return nodes;
 	}
 
+	public _removeChildrenArray( nodes: Array<Node> ) {
+		this._children._removeNodesArray( nodes );
+
+		for ( const node of nodes ) {
+			( node as any ).parent = null;
+		}
+	}
+
 	// @if CK_DEBUG_ENGINE // public override toString(): 'documentFragment' {
 	// @if CK_DEBUG_ENGINE // 	return 'documentFragment';
 	// @if CK_DEBUG_ENGINE // }

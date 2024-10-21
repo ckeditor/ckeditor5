@@ -247,6 +247,29 @@ export default class NodeList implements Iterable<Node> {
 		return nodes;
 	}
 
+	public _removeNodesArray( nodes: Array<Node> ): void {
+		if ( nodes.length == 0 ) {
+			return;
+		}
+
+		for ( const node of nodes ) {
+			node._index = null;
+			node._startOffset = null;
+		}
+
+		this._nodes = this._nodes.filter( node => node.index !== null );
+		this._offsetToNode = this._offsetToNode.filter( node => node.index !== null );
+
+		let offset = 0;
+
+		for ( let i = 0; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
+	}
+
 	/**
 	 * Converts `NodeList` instance to an array containing nodes that were inserted in the node list. Nodes
 	 * are also converted to their plain object representation.
