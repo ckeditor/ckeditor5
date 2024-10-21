@@ -29,6 +29,7 @@ import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkPreviewButtonView from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
+import LinkButtonView from './ui/linkbuttonview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
 import {
@@ -211,7 +212,13 @@ export default class LinkUI extends Plugin {
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
 
+		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
+			formView.listChildren.add( this._createBookmarksButton() );
+		}
+
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
+
+		// TODO: Bind to the "Displayed text" input
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
@@ -221,6 +228,7 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
+			// TODO: Does this need updating after adding the "Displayed text" input?
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
@@ -354,6 +362,21 @@ export default class LinkUI extends Plugin {
 
 			return button;
 		} );
+	}
+
+	/**
+	 * Creates a bookmarks button view.
+	 */
+	private _createBookmarksButton(): LinkButtonView {
+		const locale = this.editor.locale!;
+		const t = locale.t;
+		const bookmarksButton = new LinkButtonView( locale );
+
+		bookmarksButton.set( {
+			label: t( 'Bookmarks' )
+		} );
+
+		return bookmarksButton;
 	}
 
 	/**

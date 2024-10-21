@@ -9,9 +9,12 @@
 
 import {
 	ButtonView,
+	ListView,
+	ListItemView,
 	FocusCycler,
 	LabeledFieldView,
 	SwitchButtonView,
+	FormHeaderView,
 	View,
 	ViewCollection,
 	createLabeledInputText,
@@ -52,9 +55,14 @@ export default class LinkFormView extends View {
 	public readonly keystrokes = new KeystrokeHandler();
 
 	/**
-	 * The URL input view.
+	 * The Back button view displayed in the header.
 	 */
-	public urlInputView: LabeledFieldView<InputTextView>;
+	public backButton: ButtonView;
+
+	/**
+	 * The Settings button view displayed in the header.
+	 */
+	public settingsButton: ButtonView;
 
 	/**
 	 * The Save button view.
@@ -62,9 +70,14 @@ export default class LinkFormView extends View {
 	public saveButtonView: ButtonView;
 
 	/**
-	 * The Cancel button view.
+	 * The "Displayed text" input view.
 	 */
-	public cancelButtonView: ButtonView;
+	public displayedTextInputView: LabeledFieldView<InputTextView>;
+
+	/**
+	 * The URL input view.
+	 */
+	public urlInputView: LabeledFieldView<InputTextView>;
 
 	/**
 	 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
@@ -74,9 +87,19 @@ export default class LinkFormView extends View {
 	private readonly _manualDecoratorSwitches: ViewCollection<SwitchButtonView>;
 
 	/**
-	 * A collection of child views in the form.
+	 * A collection of child views.
 	 */
 	public readonly children: ViewCollection;
+
+	/**
+	 * A collection of child views in the form.
+	 */
+	public readonly formChildren: ViewCollection;
+
+	/**
+	 * A collection of child views in the footer.
+	 */
+	public readonly listChildren: ViewCollection<ButtonView>;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -102,18 +125,38 @@ export default class LinkFormView extends View {
 	 * @param linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
 	 * @param validators  Form validators used by {@link #isValid}.
 	 */
-	constructor( locale: Locale, linkCommand: LinkCommand, validators: Array<LinkFormValidatorCallback> ) {
+	constructor(
+		locale: Locale,
+		linkCommand: LinkCommand,
+		validators: Array<LinkFormValidatorCallback>
+	) {
 		super( locale );
 
-		const t = locale.t;
-
 		this._validators = validators;
+
+		// Create buttons
+		this.backButton = this._createBackButton();
+		this.settingsButton = this._createSettingsButton();
+		this.saveButtonView = this._createSaveButton();
+
+		// Create input fields
+		this.displayedTextInputView = this._createDisplayedTextInput();
 		this.urlInputView = this._createUrlInput();
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
-		this.saveButtonView.type = 'submit';
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
+
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
-		this.children = this._createFormChildren( linkCommand.manualDecorators );
+		this.formChildren = this._createFormChildren( linkCommand.manualDecorators );
+		this.listChildren = this.createCollection();
+		this.children = this.createCollection( [
+			this._createHeaderView(),
+			this._createFormView()
+		] );
+
+		// Add list view to the children when the first item is added to the list.
+		// This is to avoid adding the list view when the form is empty.
+		this.listenTo( this.listChildren, 'add', () => {
+			this.stopListening( this.listChildren, 'add' );
+			this.children.add( this._createListView() );
+		} );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -128,17 +171,11 @@ export default class LinkFormView extends View {
 			}
 		} );
 
-		const classList = [ 'ck', 'ck-link-form', 'ck-responsive-form' ];
-
-		if ( linkCommand.manualDecorators.length ) {
-			classList.push( 'ck-link-form_layout-vertical', 'ck-vertical-form' );
-		}
-
 		this.setTemplate( {
 			tag: 'form',
 
 			attributes: {
-				class: classList,
+				class: [ 'ck', 'ck-link__panel' ],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
@@ -176,9 +213,12 @@ export default class LinkFormView extends View {
 
 		const childViews = [
 			this.urlInputView,
-			...this._manualDecoratorSwitches,
+			...this._manualDecoratorSwitches, // TODO: Move to a separate panel
 			this.saveButtonView,
-			this.cancelButtonView
+			...this.listChildren,
+			this.backButton,
+			this.settingsButton,
+			this.displayedTextInputView
 		];
 
 		childViews.forEach( v => {
@@ -242,7 +282,135 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates a labeled input view.
+	 * Creates a back button view that cancels the form.
+	 */
+	private _createBackButton(): ButtonView {
+		const t = this.locale!.t;
+		const backButton = new ButtonView( this.locale );
+
+		backButton.set( {
+			label: t( 'Cancel' ),
+			icon: icons.previousArrow,
+			tooltip: true
+		} );
+
+		backButton.delegate( 'execute' ).to( this, 'cancel' );
+
+		return backButton;
+	}
+
+	/**
+	 * Creates a settings button view that opens the advanced settings panel.
+	 */
+	private _createSettingsButton(): ButtonView {
+		const t = this.locale!.t;
+		const settingsButton = new ButtonView( this.locale );
+
+		settingsButton.set( {
+			label: t( 'Advanced' ),
+			icon: icons.settings,
+			tooltip: true
+		} );
+
+		return settingsButton;
+	}
+
+	/**
+	 * Creates a save button view that inserts the link.
+	 */
+	private _createSaveButton(): ButtonView {
+		const t = this.locale!.t;
+		const saveButton = new ButtonView( this.locale );
+
+		saveButton.set( {
+			label: t( 'Insert' ),
+			tooltip: true,
+			withText: true,
+			type: 'submit',
+			class: 'ck-button-insert ck-button-action ck-button-bold'
+		} );
+
+		return saveButton;
+	}
+
+	/**
+	 * Creates a header view for the form.
+	 */
+	private _createHeaderView(): FormHeaderView {
+		const t = this.locale!.t;
+
+		const header = new FormHeaderView( this.locale, {
+			label: t( 'Link' )
+		} );
+
+		header.children.add( this.backButton, 0 );
+		header.children.add( this.settingsButton );
+
+		return header;
+	}
+
+	/**
+	 * Creates a form view for the link form.
+	 */
+	private _createFormView(): View {
+		const form = new View( this.locale );
+
+		form.setTemplate( {
+			tag: 'div',
+
+			attributes: {
+				class: [
+					'ck',
+					'ck-link__form',
+					'ck-responsive-form'
+				]
+			},
+
+			children: this.formChildren
+		} );
+
+		return form;
+	}
+
+	/**
+	 * Creates a view for the list at the bottom.
+	 */
+	private _createListView(): ListView {
+		const listView = new ListView( this.locale );
+
+		listView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-link__list'
+				]
+			}
+		} );
+
+		listView.items.bindTo( this.listChildren ).using( def => {
+			const listItemView = new ListItemView( this.locale );
+
+			listItemView.children.add( def );
+
+			return listItemView;
+		} );
+
+		return listView;
+	}
+
+	/**
+	 * Creates a labeled input view for the "Displayed text" field.
+	 */
+	private _createDisplayedTextInput(): LabeledFieldView<InputTextView> {
+		const t = this.locale!.t;
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+
+		labeledInput.label = t( 'Displayed text' );
+
+		return labeledInput;
+	}
+
+	/**
+	 * Creates a labeled input view for the URL field.
 	 *
 	 * @returns Labeled field view instance.
 	 */
@@ -254,37 +422,6 @@ export default class LinkFormView extends View {
 		labeledInput.label = t( 'Link URL' );
 
 		return labeledInput;
-	}
-
-	/**
-	 * Creates a button view.
-	 *
-	 * @param label The button label.
-	 * @param icon The button icon.
-	 * @param className The additional button CSS class name.
-	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
-	 * @returns The button view instance.
-	 */
-	private _createButton( label: string, icon: string, className: string, eventName?: string ): ButtonView {
-		const button = new ButtonView( this.locale );
-
-		button.set( {
-			label,
-			icon,
-			tooltip: true
-		} );
-
-		button.extendTemplate( {
-			attributes: {
-				class: className
-			}
-		} );
-
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
-
-		return button;
 	}
 
 	/**
@@ -334,8 +471,7 @@ export default class LinkFormView extends View {
 	private _createFormChildren( manualDecorators: Collection<ManualDecorator> ): ViewCollection {
 		const children = this.createCollection();
 
-		children.add( this.urlInputView );
-
+		// TODO: Remove decorators to a separate panel
 		if ( manualDecorators.length ) {
 			const additionalButtonsView = new View();
 
@@ -362,8 +498,22 @@ export default class LinkFormView extends View {
 			children.add( additionalButtonsView );
 		}
 
-		children.add( this.saveButtonView );
-		children.add( this.cancelButtonView );
+		children.add( this.displayedTextInputView );
+
+		const linkInputAndSubmit = new View();
+
+		linkInputAndSubmit.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [ 'ck', 'ck-link-and-submit', 'ck-labeled-field-view' ]
+			},
+			children: [
+				this.urlInputView,
+				this.saveButtonView
+			]
+		} );
+
+		children.add( linkInputAndSubmit );
 
 		return children;
 	}

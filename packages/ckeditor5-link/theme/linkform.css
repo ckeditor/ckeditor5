@@ -5,42 +5,80 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-link-form {
-	display: flex;
-	align-items: flex-start;
-
-	& .ck-label {
-		display: none;
+.ck.ck-link__panel {
+	&:focus {
+		outline: none;
 	}
 
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
+	/* Header */
+	& .ck-form__header {
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
 
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
-		}
-
-		& .ck-button {
-			flex-basis: 50%;
+		& > .ck:not(:first-child) {
+			margin-left: var(--ck-spacing-small);
 		}
 	}
-}
 
-/*
- * Style link form differently when manual decorators are available.
- * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
- */
-.ck.ck-link-form_layout-vertical {
-	display: block;
+	/* Form */
+	& .ck-responsive-form.ck-link__form {
+		display: flex;
+		flex-direction: column;
 
-	/*
-	 * Whether the form is in the responsive mode or not, if there are decorator buttons
-	 * keep the top margin of action buttons medium.
-	 */
-	& .ck-button {
-		&.ck-button-save,
-		&.ck-button-cancel {
-			margin-top: var(--ck-spacing-medium);
+		& > * {
+			margin: 0;
+
+			@mixin ck-media-phone {
+				margin: var(--ck-spacing-large) var(--ck-spacing-medium)  var(--ck-spacing-medium)  var(--ck-spacing-medium);
+			}
+		}
+
+		& > .ck:not(:first-child) {
+			margin-top: var(--ck-spacing-large);
+		}
+
+		input {
+			width: 100%;
+		}
+
+		/* "Link" input field and the "Insert" button */
+		& .ck-link-and-submit {
+			display: flex;
+
+			& .ck-button-insert {
+				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
+				margin-left: var(--ck-spacing-medium);
+				height: 30px;
+			}
+
+			@mixin ck-media-phone {
+				flex-direction: column;
+
+				& > .ck {
+					margin: 0;
+				}
+
+				& .ck-button-insert {
+					margin-top: var(--ck-spacing-large);
+					justify-content: center;
+				}
+			}
+		}
+	}
+
+	/* Link list */
+	& .ck-link__list {
+		margin-top: var(--ck-spacing-medium);
+		border-top: 1px solid var(--ck-color-base-border);
+		display: flex;
+		flex-direction: column;
+
+		& .ck-link__button {
+			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+			border-radius: 0;
+	
+			& > .ck-button__label {
+				flex-grow: 1;
+			}
 		}
 	}
 }
