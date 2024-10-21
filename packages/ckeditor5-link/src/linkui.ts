@@ -27,6 +27,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
+import LinkAdvancedView from './ui/linkadvancedview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
 import LinkActionsView from './ui/linkactionsview.js';
 import type LinkCommand from './linkcommand.js';
@@ -58,6 +59,11 @@ export default class LinkUI extends Plugin {
 	 * The form view displayed inside the balloon.
 	 */
 	public formView: LinkFormView & ViewWithCssTransitionDisabler | null = null;
+
+	/**
+	 * The form view displaying advanced link settings.
+	 */
+	public advancedView: LinkAdvancedView | null = null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -167,6 +173,7 @@ export default class LinkUI extends Plugin {
 	private _createViews() {
 		this.actionsView = this._createActionsView();
 		this.formView = this._createFormView();
+		this.advancedView = this._createAdvancedView();
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
@@ -223,7 +230,7 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
+		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
 
 		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
 			formView.listChildren.add( this._createBookmarksButton() );
@@ -245,7 +252,8 @@ export default class LinkUI extends Plugin {
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-				editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
+				// TODO
+				editor.execute( 'link', parsedUrl, /* formView.getDecoratorSwitchesState() */ {} );
 				this._closeFormView();
 			}
 		} );
@@ -260,6 +268,15 @@ export default class LinkUI extends Plugin {
 			this._closeFormView();
 		} );
 
+		this.listenTo( formView, 'showAdvanced', () => {
+			this._balloon.add( {
+				view: this.advancedView!,
+				position: this._getBalloonPositionData()
+			} );
+
+			this.advancedView!.focus();
+		} );
+
 		// Close the panel on esc key press when the **form has focus**.
 		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._closeFormView();
@@ -267,6 +284,31 @@ export default class LinkUI extends Plugin {
 		} );
 
 		return formView;
+	}
+
+	private _createAdvancedView(): LinkAdvancedView {
+		const editor = this.editor;
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+		const view = new LinkAdvancedView( this.editor.locale, linkCommand );
+
+		// Hide the panel after clicking the "Cancel" button.
+		this.listenTo( view, 'cancel', () => {
+			this._balloon.remove( this.advancedView! );
+			this.formView!.focus();
+		} );
+
+		// Close the panel on esc key press when the **form has focus**.
+		view.keystrokes.set( 'Esc', ( data, cancel ) => {
+			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
+			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
+			editor.editing.view.focus();
+
+			this._balloon.remove( this.advancedView! );
+			this.formView!.focus();
+			cancel();
+		} );
+
+		return view;
 	}
 
 	/**
