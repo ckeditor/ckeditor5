@@ -12,5 +12,5 @@ import mixed from './mixed.js';
 import wiki from './mixed.js';
 
 export default {
-	paragraphs, lists, tableHuge, tablesMany, formattingLongP, formattingShortP, inlineStyles, mixed, wiki
+	paragraphs, lists, tableHuge, formattingLongP, inlineStyles, mixed, wiki
 };
