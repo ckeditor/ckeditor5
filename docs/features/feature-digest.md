@@ -1684,9 +1684,99 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td></td>
-			<td></td>
+		<tr id="accessibility-support">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html">Accessibility
+					support</a>
+			</td>
+			<td>
+				CKEditor 5 includes accessibility functionality designed to ensure
+				content is accessible to all users. These features encompass keyboard
+				navigation for easier content access without a mouse, screen reader
+				compatibility facilitated by ARIA attributes, and semantic output markup
+				for clearer interpretation of content structures. CKEditor 5 meets the
+				requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at
+				levels A and AA, as well as Section 508 of the Rehabilitation Act, as
+				detailed in the Accessibility Conformance Report, ensuring broad
+				accessibility compliance.
+			</td>
+		</tr>
+		<tr id="read-only-support">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/read-only.html">Read-only support</a>
+			</td>
+			<td>
+				The Read-Only Mode feature enables content to be locked from editing
+				while still allowing it to be viewed. This mode is often used for
+				restricting editing access based on user roles, allowing only specific
+				users or groups to view the content without being able to modify it.
+				Common uses include viewing sensitive documents like financial reports,
+				software logs, or copyrighted stories that should not be altered but
+				need to be accessible for copying or by screen readers. This mode can be
+				toggled on and off by system triggers.
+			</td>
+		</tr>
+		<tr id="restricted-editing">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">Restricted
+					editing</a>
+			</td>
+			<td>
+				The Restricted Editing feature allows some sections of a document to be
+				designated as non editable while others remain editable. This feature
+				supports two modes: the standard editing mode, where all content can be
+				edited, and the restricted editing mode, where users can only modify
+				parts of the content that are specifically marked as editable. This
+				functionality is useful for workflows where one group of users creates
+				document templates that include protected sections, and a second group
+				fills in editable details such as names, dates, or product names without
+				altering the rest of the document.
+			</td>
+		</tr>
+		<tr id="text-part-language">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">Text part language</a>
+			</td>
+			<td>
+				The Text Part Language feature allows users to specify the language of
+				individual sections of text. This capability helps in creating documents
+				that include multiple languages by ensuring that browsers and screen
+				readers correctly interpret each part according to its designated
+				language. This feature is particularly valuable for content that
+				contains text in varying directions, such as an English document with
+				Arabic citations. It supports the WCAG 3.1.2 Language of Parts
+				specification, facilitating the creation of more accessible and
+				comprehensible multilingual content.
+			</td>
+		</tr>
+		<tr id="word-and-character-counter">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html">Word and character
+					counter</a>
+			</td>
+			<td>
+				The Word and Character Count feature provides a real-time tracking tool
+				for monitoring the number of words and characters within the editor.
+				This functionality assists in managing content length and ensuring it
+				meets specific requirements or limits.
+			</td>
+		</tr>
+		<tr id="wproofreader">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html">WPRoofreader<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The Spelling and Grammar Checker is a proofreading tool that supports
+				over 80 languages and dialects. It checks spelling and grammar in real
+				time and through a separate dialog. Features include spelling
+				autocorrect, text autocomplete, and suggestions that appear on hover.<br />Users
+				can create custom dictionaries for specific terms related to their brand
+				or company. The tool is compliant with WCAG 2.1 and Section 508
+				accessibility standards. It also detects sentence-level errors and
+				offers context-based correction suggestions.<br />
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -1749,117 +1839,6 @@ order: -997
 			different UIs, or even create your own UI for annotations.
 		</td>
 	</tr>
-    <tr id="restricted-editing">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html"
-          >Restricted editing</a
-        >
-      </td>
-      <td>
-        The Restricted Editing feature allows some sections of a document to be
-        designated as non editable while others remain editable. This feature
-        supports two modes: the standard editing mode, where all content can be
-        edited, and the restricted editing mode, where users can only modify
-        parts of the content that are specifically marked as editable. This
-        functionality is useful for workflows where one group of users creates
-        document templates that include protected sections, and a second group
-        fills in editable details such as names, dates, or product names without
-        altering the rest of the document.
-      </td>
-    </tr>
-    <tr id="read-only-support">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/read-only.html"
-          >Read-only support</a
-        >
-      </td>
-      <td>
-        The Read-Only Mode feature enables content to be locked from editing
-        while still allowing it to be viewed. This mode is often used for
-        restricting editing access based on user roles, allowing only specific
-        users or groups to view the content without being able to modify it.
-        Common uses include viewing sensitive documents like financial reports,
-        software logs, or copyrighted stories that should not be altered but
-        need to be accessible for copying or by screen readers. This mode can be
-        toggled on and off by system triggers.
-      </td>
-    </tr>
-    <tr id="text-part-language">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html"
-          >Text part language</a
-        >
-      </td>
-      <td>
-        The Text Part Language feature allows users to specify the language of
-        individual sections of text. This capability helps in creating documents
-        that include multiple languages by ensuring that browsers and screen
-        readers correctly interpret each part according to its designated
-        language. This feature is particularly valuable for content that
-        contains text in varying directions, such as an English document with
-        Arabic citations. It supports the WCAG 3.1.2 Language of Parts
-        specification, facilitating the creation of more accessible and
-        comprehensible multilingual content.
-      </td>
-    </tr>
-    <tr id="word-and-character-counter">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html"
-          >Word and character counter</a
-        >
-      </td>
-      <td>
-        The Word and Character Count feature provides a real-time tracking tool
-        for monitoring the number of words and characters within the editor.
-        This functionality assists in managing content length and ensuring it
-        meets specific requirements or limits.
-      </td>
-    </tr>
-    <tr id="wproofreader">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html"
-          >WPRoofreader<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Spelling and Grammar Checker is a proofreading tool that supports
-        over 80 languages and dialects. It checks spelling and grammar in real
-        time and through a separate dialog. Features include spelling
-        autocorrect, text autocomplete, and suggestions that appear on hover.<br />Users
-        can create custom dictionaries for specific terms related to their brand
-        or company. The tool is compliant with WCAG 2.1 and Section 508
-        accessibility standards. It also detects sentence-level errors and
-        offers context-based correction suggestions.<br />
-      </td>
-    </tr>
-    <tr id="accessibility-support">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html"
-          >Accessibility support</a
-        >
-      </td>
-      <td>
-        CKEditor 5 includes accessibility functionality designed to ensure
-        content is accessible to all users. These features encompass keyboard
-        navigation for easier content access without a mouse, screen reader
-        compatibility facilitated by ARIA attributes, and semantic output markup
-        for clearer interpretation of content structures. CKEditor 5 meets the
-        requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at
-        levels A and AA, as well as Section 508 of the Rehabilitation Act, as
-        detailed in the Accessibility Conformance Report, ensuring broad
-        accessibility compliance.
-      </td>
-    </tr>
     <tr id="cloud-services-rest-api">
       <td>
         <a href="#">Cloud Services REST API </a>
