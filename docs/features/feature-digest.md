@@ -1141,9 +1141,256 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
+		<tr id="ai-assistant">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-overview.html">AI
+					Assistant<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The AI Assistant feature enhances editing efficiency and creativity with
+				artificial intelligence capabilities. It allows users to generate new
+				content and process data through custom queries or utilize a set of
+				predefined commands that are also customizable. The feature supports
+				integration with multiple AI API providers: OpenAI, Azure OpenAI, and
+				Amazon Bedrock. You can also integrate it with custom models.
+			</td>
+		</tr>
+		<tr id="automation">
+			<td>
+				<a href="#">Automation</a>
+			</td>
 			<td></td>
-			<td></td>
+		</tr>
+		<tr id="autoformatting">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">Autoformatting</a>
+			</td>
+			<td>
+				Use <strong>Autoformatting </strong>to get Markdown-like shortcodes for
+				quick formatting without needing to navigate through toolbar buttons or
+				drop-down menus. This feature caters to the most common formatting needs
+				effortlessly.
+			</td>
+		</tr>
+		<tr id="autolink">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html#autolink-feature">Autolink</a>
+			</td>
+			<td>
+				With <strong>Autolink</strong>, typing or pasting URLs and email
+				addresses automatically transforms them into clickable links. This
+				functionality is enabled by default, ensuring that links are always
+				ready to use.
+			</td>
+		</tr>
+		<tr id="automatic-text-transformation">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">Automatic text
+					transformations</a>
+			</td>
+			<td>
+				The <strong>Automatic Text Transformation </strong>autocorrects or
+				transforms predefined text fragments into their designated forms. It
+				comes with a range of popular text transformations pre-configured, and
+				accepts customization by adding or removing autocorrect entries. It is
+				commonly used to automate the expansion of abbreviations or short
+				phrases into their full forms.
+			</td>
+		</tr>
+		<tr id="autosave">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/autosave.html">Autosave</a>
+			</td>
+			<td>
+				The <strong>Autosave </strong>feature guarantees that your work is never
+				lost. It automatically saves changes - for instance, when content is
+				modified. This could involve sending the latest version of the document
+				to the server, providing peace of mind through continuous backup.
+			</td>
+		</tr>
+		<tr id="case-change">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html">Case change<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The Case Change feature simplifies adjusting text cases within a
+				document. With just a single click, users can shift text between
+				UPPERCASE, lowercase, and Title Case options. The case transformation
+				can be applied to various text blocks (paragraph, heading, or list item)
+				by placing the cursor within the block. Alternatively, users can select
+				a specific fragment of text they wish to modify.<br />This feature
+				enhances the editing workflow by removing the need for manual case
+				adjustments.<br />
+			</td>
+		</tr>
+		<tr id="find-and-replace">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">Find and replace</a>
+			</td>
+			<td>
+				The Find and Replace feature in CKEditor 5&#x27;s Productivity tools
+				allows you to search for words or phrases in your document and replace
+				them with different text. This function helps speed up editing and
+				maintain content consistency.
+			</td>
+		</tr>
+		<tr id="format-painter">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html">Format painter<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The Format Painter feature lets users clone formatting from one section
+				and apply it to others within a document. This tool speeds up
+				maintaining style consistency across the document.<br />Once initiated,
+				Format Painter can continue to apply the copied formatting to multiple
+				sections consecutively. This &quot;continuous painting&quot; ensures a
+				uniform style is achieved quickly without the need to repeatedly select
+				the formatting options for each new section. <br />
+			</td>
+		</tr>
+		<tr id="keyboard-shortcuts">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html#keyboard-shortcuts">Keyboard
+					shortcuts</a>
+			</td>
+			<td>
+				CKEditor 5 supports various keyboard shortcuts that boost productivity
+				and provide necessary accessibility to screen reader users.
+			</td>
+		</tr>
+		<tr id="mathtype">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">MathType<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				Math Equations allows you to add properly formatted mathematical
+				notation and chemical formulas to your documents. This feature supports
+				the inclusion of math equations, which can be handwritten on a tablet
+				and automatically converted into well-formed digital text. It also
+				offers simple numbering of equations and the ability to customize with
+				various fonts and colors, enhancing readability and presentation in your
+				content.
+			</td>
+		</tr>
+		<tr id="merge-fields">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">Merge fields<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				Merge Fields allows the inclusion of placeholders in your content,
+				facilitating the creation of document templates, especially useful for
+				email templates and document automation. These placeholders can later be
+				replaced with dynamic values by the customer&#x27;s application,
+				enabling tasks like mass email distribution or generation of
+				personalized documents.
+			</td>
+		</tr>
+		<tr id="paste-from-google-docs">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste
+					from Google Docs</a>
+			</td>
+			<td>
+				Paste from Office features let you paste content from Microsoft Word and
+				Microsoft Excel and preserve its original structure and formatting. This
+				is the basic, open-source Paste from Office feature.
+			</td>
+		</tr>
+		<tr id="paste-from-office">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html">Paste from
+					Office</a>
+			</td>
+			<td>
+				Paste from Office features let you paste content from Microsoft Word and
+				Microsoft Excel and preserve its original structure and formatting. This
+				is the basic, open-source Paste from Office feature.
+			</td>
+		</tr>
+		<tr id="paste-from-office-enhanced">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html">Paste
+					from Office Enhanced<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The Enhanced Paste from Word/Excel feature accurately retains formatting
+				and structure when content is pasted from Microsoft Word documents into
+				the editor. This includes preserving text styles, lists, tables, and
+				layouts. The feature facilitates the transfer of documents from Word to
+				CKEditor 5 without compromising on formatting.
+			</td>
+		</tr>
+		<tr id="paste-plain-text">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-plain-text.html">Paste plain
+					text</a>
+			</td>
+			<td>
+				The Paste as Plain Text feature strips formatting from the pasted text.
+				This feature ensures that text pasted into the document adopts the style
+				of the surrounding content, effectively described as &quot;pasting
+				without formatting.&quot; Additionally, it intelligently converts double
+				line breaks into paragraphs and single line breaks into soft breaks,
+				aiding in maintaining the structural integrity of the document.
+			</td>
+		</tr>
+		<tr id="slash-commands">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html">Slash commands<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The Slash Commands feature lets users insert block elements and apply
+				styles using just the keyboard. By pressing the / key, a panel with
+				suggested commands appears, enabling quick and mouse-free actions. Users
+				can filter through these commands by typing additional phrases after the
+				/, making it easier to find specific commands. Additionally, the option
+				to customize personal commands is available, allowing for a tailored
+				editing experience.
+			</td>
+		</tr>
+		<tr id="special-characters">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">Special
+					characters</a>
+			</td>
+			<td>
+				Insert a variety of unique symbols and characters into your document
+				with CKEditor 5’s Special Characters feature. This includes mathematical
+				operators, currency symbols, punctuation, graphic symbols like arrows or
+				bullets, and Unicode letters that are not typically available on
+				standard keyboards, such as umlauts or diacritics. Additionally, the
+				feature supports the insertion of emojis. This tool is particularly
+				useful for enhancing the detail and accuracy of content that requires
+				specialized symbols.
+			</td>
+		</tr>
+		<tr id="templates">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/template.html">Templates<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The Templates feature enables insertion of predefined content structures
+				into documents, ranging from small content pieces, like formatted
+				tables, to complete document frameworks, like formal letter templates.
+				Templates accelerate the document creation process while ensuring
+				adherence to the company&#x27;s content and document policies.
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -1224,319 +1471,6 @@ order: -997
     </tr>
   </thead>
   <tbody>
-    <tr id="merge-fields">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html"
-          >Merge fields<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Merge Fields allows the inclusion of placeholders in your content,
-        facilitating the creation of document templates, especially useful for
-        email templates and document automation. These placeholders can later be
-        replaced with dynamic values by the customer&#x27;s application,
-        enabling tasks like mass email distribution or generation of
-        personalized documents.
-      </td>
-    </tr>
-    <tr id="autosave">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/autosave.html"
-          >Autosave</a
-        >
-      </td>
-      <td>
-        The <strong>Autosave </strong>feature guarantees that your work is never
-        lost. It automatically saves changes - for instance, when content is
-        modified. This could involve sending the latest version of the document
-        to the server, providing peace of mind through continuous backup.
-      </td>
-    </tr>
-    <tr id="autolink">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html#autolink-feature"
-          >Autolink</a
-        >
-      </td>
-      <td>
-        With <strong>Autolink</strong>, typing or pasting URLs and email
-        addresses automatically transforms them into clickable links. This
-        functionality is enabled by default, ensuring that links are always
-        ready to use.
-      </td>
-    </tr>
-    <tr id="automation">
-      <td>
-        <a href="#">Automation</a>
-      </td>
-      <td></td>
-    </tr>
-    <tr id="special-characters">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html"
-          >Special characters</a
-        >
-      </td>
-      <td>
-        Insert a variety of unique symbols and characters into your document
-        with CKEditor 5’s Special Characters feature. This includes mathematical
-        operators, currency symbols, punctuation, graphic symbols like arrows or
-        bullets, and Unicode letters that are not typically available on
-        standard keyboards, such as umlauts or diacritics. Additionally, the
-        feature supports the insertion of emojis. This tool is particularly
-        useful for enhancing the detail and accuracy of content that requires
-        specialized symbols.
-      </td>
-    </tr>
-    <tr id="format-painter">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html"
-          >Format painter<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Format Painter feature lets users clone formatting from one section
-        and apply it to others within a document. This tool speeds up
-        maintaining style consistency across the document.<br />Once initiated,
-        Format Painter can continue to apply the copied formatting to multiple
-        sections consecutively. This &quot;continuous painting&quot; ensures a
-        uniform style is achieved quickly without the need to repeatedly select
-        the formatting options for each new section. <br />
-      </td>
-    </tr>
-    <tr id="case-change">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html"
-          >Case change<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Case Change feature simplifies adjusting text cases within a
-        document. With just a single click, users can shift text between
-        UPPERCASE, lowercase, and Title Case options. The case transformation
-        can be applied to various text blocks (paragraph, heading, or list item)
-        by placing the cursor within the block. Alternatively, users can select
-        a specific fragment of text they wish to modify.<br />This feature
-        enhances the editing workflow by removing the need for manual case
-        adjustments.<br />
-      </td>
-    </tr>
-    <tr id="ai-assistant">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-overview.html"
-          >AI Assistant<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The AI Assistant feature enhances editing efficiency and creativity with
-        artificial intelligence capabilities. It allows users to generate new
-        content and process data through custom queries or utilize a set of
-        predefined commands that are also customizable. The feature supports
-        integration with multiple AI API providers: OpenAI, Azure OpenAI, and
-        Amazon Bedrock. You can also integrate it with custom models.
-      </td>
-    </tr>
-    <tr id="find-and-replace">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html"
-          >Find and replace</a
-        >
-      </td>
-      <td>
-        The Find and Replace feature in CKEditor 5&#x27;s Productivity tools
-        allows you to search for words or phrases in your document and replace
-        them with different text. This function helps speed up editing and
-        maintain content consistency.
-      </td>
-    </tr>
-    <tr id="mathtype">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html"
-          >MathType<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Math Equations allows you to add properly formatted mathematical
-        notation and chemical formulas to your documents. This feature supports
-        the inclusion of math equations, which can be handwritten on a tablet
-        and automatically converted into well-formed digital text. It also
-        offers simple numbering of equations and the ability to customize with
-        various fonts and colors, enhancing readability and presentation in your
-        content.
-      </td>
-    </tr>
-    <tr id="keyboard-shortcuts">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html#keyboard-shortcuts"
-          >Keyboard shortcuts</a
-        >
-      </td>
-      <td>
-        CKEditor 5 supports various keyboard shortcuts that boost productivity
-        and provide necessary accessibility to screen reader users.
-      </td>
-    </tr>
-    <tr id="templates">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/template.html"
-          >Templates<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Templates feature enables insertion of predefined content structures
-        into documents, ranging from small content pieces, like formatted
-        tables, to complete document frameworks, like formal letter templates.
-        Templates accelerate the document creation process while ensuring
-        adherence to the company&#x27;s content and document policies.
-      </td>
-    </tr>
-    <tr id="slash-commands">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html"
-          >Slash commands<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Slash Commands feature lets users insert block elements and apply
-        styles using just the keyboard. By pressing the / key, a panel with
-        suggested commands appears, enabling quick and mouse-free actions. Users
-        can filter through these commands by typing additional phrases after the
-        /, making it easier to find specific commands. Additionally, the option
-        to customize personal commands is available, allowing for a tailored
-        editing experience.
-      </td>
-    </tr>
-    <tr id="paste-plain-text">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-plain-text.html"
-          >Paste plain text</a
-        >
-      </td>
-      <td>
-        The Paste as Plain Text feature strips formatting from the pasted text.
-        This feature ensures that text pasted into the document adopts the style
-        of the surrounding content, effectively described as &quot;pasting
-        without formatting.&quot; Additionally, it intelligently converts double
-        line breaks into paragraphs and single line breaks into soft breaks,
-        aiding in maintaining the structural integrity of the document.
-      </td>
-    </tr>
-    <tr id="paste-from-office-enhanced">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html"
-          >Paste from Office Enhanced<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Enhanced Paste from Word/Excel feature accurately retains formatting
-        and structure when content is pasted from Microsoft Word documents into
-        the editor. This includes preserving text styles, lists, tables, and
-        layouts. The feature facilitates the transfer of documents from Word to
-        CKEditor 5 without compromising on formatting.
-      </td>
-    </tr>
-    <tr id="paste-from-google-docs">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html"
-          >Paste from Google Docs</a
-        >
-      </td>
-      <td>
-        Paste from Office features let you paste content from Microsoft Word and
-        Microsoft Excel and preserve its original structure and formatting. This
-        is the basic, open-source Paste from Office feature.
-      </td>
-    </tr>
-    <tr id="paste-from-office">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html"
-          >Paste from Office</a
-        >
-      </td>
-      <td>
-        Paste from Office features let you paste content from Microsoft Word and
-        Microsoft Excel and preserve its original structure and formatting. This
-        is the basic, open-source Paste from Office feature.
-      </td>
-    </tr>
-    <tr id="automatic-text-transformation">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html"
-          >Automatic text transformations</a
-        >
-      </td>
-      <td>
-        The <strong>Automatic Text Transformation </strong>autocorrects or
-        transforms predefined text fragments into their designated forms. It
-        comes with a range of popular text transformations pre-configured, and
-        accepts customization by adding or removing autocorrect entries. It is
-        commonly used to automate the expansion of abbreviations or short
-        phrases into their full forms.
-      </td>
-    </tr>
-    <tr id="autoformatting">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html"
-          >Autoformatting</a
-        >
-      </td>
-      <td>
-        Use <strong>Autoformatting </strong>to get Markdown-like shortcodes for
-        quick formatting without needing to navigate through toolbar buttons or
-        drop-down menus. This feature caters to the most common formatting needs
-        effortlessly.
-      </td>
-    </tr>
     <tr id="watchdog">
       <td>
         <a
