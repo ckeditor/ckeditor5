@@ -790,6 +790,22 @@ order: -997
 				integration is enabling comments on non-editor form fields.
 			</td>
 		</tr>
+		<tr id="sidebar-modes">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
+					modes<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				There are three built-in UIs to display comment threads and suggestion
+				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
+				You can also display them together in more advanced scenarios where
+				various annotation sources (comments, suggestions) are connected to
+				different UIs, or even create your own UI for annotations.
+			</td>
+		</tr>
 		<tr id="mentions">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mentions</a>
@@ -1855,145 +1871,84 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td></td>
-			<td></td>
+		<tr id="base64-upload-adapter">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">Base
+					64 Upload Adapter</a>
+			</td>
+			<td>
+				Convert inserted images into Base64-encoded strings in the editor
+				output. Images are stored with other content in the database without
+				server-side processing.
+			</td>
+		</tr>
+		<tr id="ckbox">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				Securely upload, store, edit, and utilize your images and files in
+				CKEditor 5. Simplify media discovery in your uploads with the media
+				browser, alongside an intuitive Image Editor for image adjustments.
+				Designed to facilitate organization, CKBox enables integrations,
+				maintains permissions, and uses Workspaces for categorizing files
+				according to the user, document, or customer. It guarantees fast loading
+				and optimal display of your images across devices through an efficient
+				CDN.<br />Deployable on-premise or as cloud SaaS.<br />
+			</td>
+		</tr>
+		<tr id="ckfinder">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckfinder.html">CKFinder<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The CKFinder feature lets you insert images and links to files into your
+				content. CKFinder is a powerful file manager with various image editing
+				and image upload options.
+			</td>
+		</tr>
+		<tr id="custom-upload-adapter">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html#implementing-your-own-upload-adapter">Custom
+					Upload Adapter</a>
+			</td>
+			<td>
+				Have your own file management solution? Use this adapter to integrate
+				your preferred software with CKEditor.
+			</td>
+		</tr>
+		<tr id="simple-upload-adapter">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/simple-upload-adapter.html">Simple
+					Upload Adapter</a>
+			</td>
+			<td>
+				Upload images to your server using the `XMLHttpRequest` API with a
+				minimal editor configuration.
+			</td>
+		</tr>
+		<tr id="uploadcare">
+			<td>
+				<a href="#">Uploadcare<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Upload, store, transform, optimize, and deliver images, videos, and
+				documents with this cloud-based file handler. Upload media from local
+				storage, web cameras, cloud services, and social networks with automated
+				media optimization through a CDN for responsive image delivery. Popular
+				features include adaptive image quality, automated image format
+				conversion, progressive JPEG, and options for preview, resize, stretch,
+				crop, content-aware crop, and setting fill color.
+			</td>
 		</tr>
 	</tbody>
-</table>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-  	<tr id="sidebar-modes">
-		<td>
-			<a
-				href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
-				modes<span class="tree__item__badge tree__item__badge_premium"
-					data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-						feature</span></span></a>
-		</td>
-		<td>
-			There are three built-in UIs to display comment threads and suggestion
-			annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-			You can also display them together in more advanced scenarios where
-			various annotation sources (comments, suggestions) are connected to
-			different UIs, or even create your own UI for annotations.
-		</td>
-	</tr>
-    <tr id="uploadcare">
-      <td>
-        <a href="#"
-          >Uploadcare<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Upload, store, transform, optimize, and deliver images, videos, and
-        documents with this cloud-based file handler. Upload media from local
-        storage, web cameras, cloud services, and social networks with automated
-        media optimization through a CDN for responsive image delivery. Popular
-        features include adaptive image quality, automated image format
-        conversion, progressive JPEG, and options for preview, resize, stretch,
-        crop, content-aware crop, and setting fill color.
-      </td>
-    </tr>
-    <tr id="custom-upload-adapter">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html#implementing-your-own-upload-adapter"
-          >Custom Upload Adapter</a
-        >
-      </td>
-      <td>
-        Have your own file management solution? Use this adapter to integrate
-        your preferred software with CKEditor.
-      </td>
-    </tr>
-    <tr id="simple-upload-adapter">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/simple-upload-adapter.html"
-          >Simple Upload Adapter</a
-        >
-      </td>
-      <td>
-        Upload images to your server using the `XMLHttpRequest` API with a
-        minimal editor configuration.
-      </td>
-    </tr>
-    <tr id="base64-upload-adapter">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html"
-          >Base 64 Upload Adapter</a
-        >
-      </td>
-      <td>
-        Convert inserted images into Base64-encoded strings in the editor
-        output. Images are stored with other content in the database without
-        server-side processing.
-      </td>
-    </tr>
-    <tr id="ckfinder">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckfinder.html"
-          >CKFinder<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The CKFinder feature lets you insert images and links to files into your
-        content. CKFinder is a powerful file manager with various image editing
-        and image upload options.
-      </td>
-    </tr>
-    <tr id="ckbox">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
-          >CKBox<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Securely upload, store, edit, and utilize your images and files in
-        CKEditor 5. Simplify media discovery in your uploads with the media
-        browser, alongside an intuitive Image Editor for image adjustments.
-        Designed to facilitate organization, CKBox enables integrations,
-        maintains permissions, and uses Workspaces for categorizing files
-        according to the user, document, or customer. It guarantees fast loading
-        and optimal display of your images across devices through an efficient
-        CDN.<br />Deployable on-premise or as cloud SaaS.<br />
-      </td>
-    </tr>
-    <tr id="easy-image">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html"
-          >Easy Image</a
-        >
-      </td>
-      <td>
-        <strong>DON’T ADD TO DOCS. </strong>The Easy Image is an intuitive tool
-        for uploading images. Unlike the CKBox feature, which is a full-fledged
-        file manager, Easy Image concentrates on upload only.
-      </td>
-    </tr>
-  </tbody>
 </table>
