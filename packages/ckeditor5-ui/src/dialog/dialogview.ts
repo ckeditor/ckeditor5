@@ -266,6 +266,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 						class: [
 							'ck',
 							'ck-dialog',
+							bind.if( 'isModal', 'ck-dialog_modal' ),
 							bind.to( 'className' )
 						],
 						role: 'dialog',
@@ -340,7 +341,8 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	 * Returns the element that should be used as a drag handle.
 	 */
 	public override get dragHandleElement(): HTMLElement | null {
-		if ( this.headerView ) {
+		// Modals should not be draggable.
+		if ( this.headerView && !this.isModal ) {
 			return this.headerView.element;
 		} else {
 			return null;
