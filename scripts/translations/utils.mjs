@@ -75,19 +75,18 @@ export function parseArguments( args ) {
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
  */
-export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
+export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory, packages } ) {
 	const patterns = [
-		'packages/*/src/**/*.[jt]s'
+		`packages/${ getGlobPatternForRequestedPackages( packages ) }/src/**/*.ts`
 	];
 
 	if ( includeExternalDirectory ) {
-		patterns.push( 'external/*/packages/*/src/**/*.[jt]s' );
+		patterns.push( `external/*/packages/${ getGlobPatternForRequestedPackages( packages ) }/src/**/*.ts` );
 	}
 
 	const globOptions = { cwd, absolute: true };
 
-	return patterns
-		.map( item => globSync( item, globOptions ) )
+	return globSync( patterns, globOptions )
 		.flat()
 		.map( srcPath => upath.normalize( srcPath ) )
 		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) )
@@ -100,19 +99,37 @@ export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
  */
-export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
+export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory, packages } ) {
 	const patterns = [
-		'packages/*'
+		`packages/${ getGlobPatternForRequestedPackages( packages ) }`
 	];
 
 	if ( includeExternalDirectory ) {
-		patterns.push( 'external/*/packages/*' );
+		patterns.push( `external/*/packages/${ getGlobPatternForRequestedPackages( packages ) }` );
 	}
 
-	return patterns
-		.map( item => globSync( item, { cwd } ) )
+	return globSync( patterns, { cwd } )
 		.flat()
 		.map( srcPath => upath.normalize( srcPath ) );
+}
+
+/**
+ * Creates glob pattern to match all requested packages. If no packages have been provided, the "*" wildcard is used to match all packages.
+ * It supports full package name (e.g. "ckeditor5-table") or the name without the "ckeditor5-" prefix (e.g. "table").
+ *
+ * @param {Array.<String>} packages
+ * @returns {String}
+ */
+function getGlobPatternForRequestedPackages( packages ) {
+	if ( !packages.length ) {
+		return '*';
+	}
+
+	const packageNames = packages
+		.map( packageName => packageName.split( 'ckeditor5-' ).pop() )
+		.join( '|' );
+
+	return 'ckeditor5-@(' + packageNames + ')';
 }
 
 /**
