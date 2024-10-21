@@ -7,7 +7,7 @@
  * @module engine/conversion/mapper
  */
 
-import ModelPosition from '../model/position.js';
+import ModelPosition, { getNodeBeforePosition, getTextNodeAtPosition } from '../model/position.js';
 import ModelRange from '../model/range.js';
 
 import ViewPosition from '../view/position.js';
@@ -52,6 +52,8 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _viewToModelMapping = new WeakMap<ViewElement | ViewDocumentFragment, ModelElement | ModelDocumentFragment>();
 
+	private _cachedModelPositionToView = new WeakMap<ModelElement, Map<number, ViewPosition>>();
+
 	/**
 	 * A map containing callbacks between view element names and functions evaluating length of view elements
 	 * in model.
@@ -84,6 +86,24 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _unboundMarkerNames = new Set<string>();
 
+	private _cache( modelParent: ModelElement, modelOffset: number, viewPosition: ViewPosition ) {
+		const cacheArray = this._cachedModelPositionToView.get( modelParent ) || new Map();
+
+		cacheArray.set( modelOffset, viewPosition );
+
+		this._cachedModelPositionToView.set( modelParent, cacheArray );
+	}
+
+	private _getCached( modelParent: ModelElement, modelOffset: number ): ViewPosition | undefined {
+		if ( !this._cachedModelPositionToView.has( modelParent ) ) {
+			return;
+		}
+
+		const cacheArray = this._cachedModelPositionToView.get( modelParent )!;
+
+		return cacheArray.get( modelOffset );
+	}
+
 	/**
 	 * Creates an instance of the mapper.
 	 */
@@ -96,21 +116,53 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 				return;
 			}
 
-			const viewContainer = this._modelToViewMapping.get( data.modelPosition.parent as ModelElement );
+			const modelPosition = data.modelPosition;
+			const modelParent = data.modelPosition.parent as ModelElement;
 
-			if ( !viewContainer ) {
-				/**
-				 * A model position could not be mapped to the view because the parent of the model position
-				 * does not have a mapped view element (might have not been converted yet or it has no converter).
-				 *
-				 * Make sure that the model element is correctly converted to the view.
-				 *
-				 * @error mapping-model-position-view-parent-not-found
-				 */
-				throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition: data.modelPosition } );
+			const viewContainer = this._modelToViewMapping.get( modelParent ) as ViewElement;
+
+			if ( modelPosition.offset == 0 ) {
+				data.viewPosition = ViewPosition._createAt( viewContainer, 0 );
+
+				return;
 			}
 
+			if ( !data.isPhantom ) {
+				const modelTextNode = getTextNodeAtPosition( modelPosition, modelParent );
+
+				if ( modelTextNode === null ) {
+					const modelNodeBefore = getNodeBeforePosition( modelPosition, modelParent, null );
+
+					if ( modelNodeBefore && modelNodeBefore.is( 'element' ) ) {
+						data.viewPosition = ViewPosition._createAfter( this._modelToViewMapping.get( modelNodeBefore ) as ViewElement );
+
+						return;
+					}
+				}
+			}
+
+			// if ( !viewContainer ) {
+			// 	/**
+			// 	 * A model position could not be mapped to the view because the parent of the model position
+			// 	 * does not have a mapped view element (might have not been converted yet or it has no converter).
+			// 	 *
+			// 	 * Make sure that the model element is correctly converted to the view.
+			// 	 *
+			// 	 * @error mapping-model-position-view-parent-not-found
+			// 	 */
+			// 	throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition: data.modelPosition } );
+			// }
+
+			// const cached = this._getCached( modelParent, modelPosition.offset );
+
+			// if ( cached ) {
+			// 	data.viewPosition = cached;
+			//
+			// 	return;
+			// }
+
 			data.viewPosition = this.findPositionIn( viewContainer, data.modelPosition.offset );
+			// this._cache( modelParent, modelPosition.offset, data.viewPosition );
 		}, { priority: 'low' } );
 
 		// Default mapper algorithm for mapping view position to model position.
