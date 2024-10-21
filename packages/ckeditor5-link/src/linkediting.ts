@@ -39,8 +39,8 @@ import {
 	getLocalizedDecorators,
 	normalizeDecorators,
 	addLinkProtocolIfApplicable,
-	createBookmarkCallbacks,
 	openLink,
+	scrollToTarget,
 	type NormalizedLinkDecoratorAutomaticDefinition,
 	type NormalizedLinkDecoratorManualDefinition
 } from './utils.js';
@@ -262,12 +262,9 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
-		const bookmarkCallbacks = createBookmarkCallbacks( editor );
 
 		function handleLinkOpening( url: string ): void {
-			if ( bookmarkCallbacks.isScrollableToTarget( url ) ) {
-				bookmarkCallbacks.scrollToTarget( url );
-			} else {
+			if ( !scrollToTarget( editor, url ) ) {
 				openLink( url );
 			}
 		}

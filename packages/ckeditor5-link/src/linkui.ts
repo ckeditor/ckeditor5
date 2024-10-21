@@ -32,9 +32,13 @@ import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.
 import LinkButtonView from './ui/linkbuttonview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
+
 import {
 	addLinkProtocolIfApplicable,
-	ensureSafeUrl, isLinkElement, createBookmarkCallbacks,
+	ensureSafeUrl,
+	isLinkElement,
+	isScrollableToTarget,
+	scrollToTarget,
 	LINK_KEYSTROKE
 } from './utils.js';
 
@@ -296,8 +300,6 @@ export default class LinkUI extends Plugin {
 			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 			const t = locale.t;
 
-			const { isScrollableToTarget, scrollToTarget } = createBookmarkCallbacks( editor );
-
 			button.bind( 'href' ).to( linkCommand, 'value', href => {
 				return href && ensureSafeUrl( href, allowedProtocols );
 			} );
@@ -309,13 +311,12 @@ export default class LinkUI extends Plugin {
 			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
 
 			button.bind( 'tooltip' ).to( linkCommand, 'value',
-				url => isScrollableToTarget( url ) ? t( 'Scroll to target' ) : t( 'Open link in new tab' )
+				url => isScrollableToTarget( editor, url ) ? t( 'Scroll to target' ) : t( 'Open link in new tab' )
 			);
 
 			this.listenTo( button, 'execute', ( evt, href, cancel ) => {
-				if ( isScrollableToTarget( href ) ) {
+				if ( scrollToTarget( editor, href ) ) {
 					cancel();
-					scrollToTarget( href! );
 				}
 			} );
 
