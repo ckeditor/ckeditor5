@@ -403,10 +403,6 @@ export default class BookmarkUI extends Plugin {
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 */
 	private _removeFormView(): void {
-		if ( !this._isFormInPanel ) {
-			return;
-		}
-
 		// Blur the input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
 		this.formView!.buttonView.focus();
@@ -424,7 +420,7 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Shows the correct UI type. It is either {@link #formView} or {@link #toolbarView}.
+	 * Shows the {@link #formView}.
 	 */
 	private _showFormView(): void {
 		if ( !this.formView ) {
