@@ -260,11 +260,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @fires change
 	 */
 	public _fireChange( type: ChangeType, node: Node ): void {
-		this.fire<ViewNodeChangeEvent>( `change:${ type }`, node );
-
-		if ( this.parent ) {
-			this.parent._fireChange( type, node );
-		}
+		this.root.fire<ViewNodeChangeEvent>( `change:${ type }`, node );
 	}
 
 	/**
