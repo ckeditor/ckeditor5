@@ -1791,9 +1791,56 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
+		<tr id="editor-sdk">
+			<td>
+				<a href="#">Editor SDK</a>
+			</td>
+			<td>
+				Select from numerous toolbar styles and over 100 plugins to tailor an
+				editor that perfectly fits your requirements, all without needing any
+				development expertise. For those looking to go further, the CKEditor API
+				enables the creation of custom plugins or modification of the
+				editor&#x27;s functionality. To assist the development process,
+				dedicated resources such as a package generator and the CKEditor 5
+				Inspector - a comprehensive suite of debugging tools - are provided,
+				helping accelerate development work.
+			</td>
+		</tr>
+		<tr id="ckeditor5-inspector">
+			<td>
+				<a href="#">CKEditor 5 Inspector</a>
+			</td>
 			<td></td>
+		</tr>
+		<tr id="cloud-services-rest-api">
+			<td>
+				<a href="#">Cloud Services REST API </a>
+			</td>
 			<td></td>
+		</tr>
+		<tr id="themes">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/ui/theme-customization.html">Themes</a>
+			</td>
+			<td>
+				The default theme of CKEditor 5 can be customized to match most visual
+				integration requirements.
+			</td>
+		</tr>
+		<tr id="ui-library">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/ui-library.html">UI
+					Library</a>
+			</td>
+			<td>
+				The standard UI library of CKEditor 5 is
+				<code><a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
+				  >@ckeditor/ckeditor5-ui</a
+				></code>. It provides base classes and helpers that allow for building a
+				modular UI that seamlessly integrates with other components of the
+				ecosystem.
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -1839,63 +1886,6 @@ order: -997
 			different UIs, or even create your own UI for annotations.
 		</td>
 	</tr>
-    <tr id="cloud-services-rest-api">
-      <td>
-        <a href="#">Cloud Services REST API </a>
-      </td>
-      <td></td>
-    </tr>
-    <tr id="ckeditor5-inspector">
-      <td>
-        <a href="#">CKEditor 5 Inspector</a>
-      </td>
-      <td></td>
-    </tr>
-    <tr id="ui-library">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/ui-library.html"
-          >UI Library</a
-        >
-      </td>
-      <td>
-        The standard UI library of CKEditor 5 is
-        <code
-          ><a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
-            >@ckeditor/ckeditor5-ui</a
-          ></code
-        >. It provides base classes and helpers that allow for building a
-        modular UI that seamlessly integrates with other components of the
-        ecosystem.
-      </td>
-    </tr>
-    <tr id="themes">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/ui/theme-customization.html"
-          >Themes</a
-        >
-      </td>
-      <td>
-        The default theme of CKEditor 5 can be customized to match most visual
-        integration requirements.
-      </td>
-    </tr>
-    <tr id="editor-sdk">
-      <td>
-        <a href="#">Editor SDK</a>
-      </td>
-      <td>
-        Select from numerous toolbar styles and over 100 plugins to tailor an
-        editor that perfectly fits your requirements, all without needing any
-        development expertise. For those looking to go further, the CKEditor API
-        enables the creation of custom plugins or modification of the
-        editor&#x27;s functionality. To assist the development process,
-        dedicated resources such as a package generator and the CKEditor 5
-        Inspector - a comprehensive suite of debugging tools - are provided,
-        helping accelerate development work.
-      </td>
-    </tr>
     <tr id="uploadcare">
       <td>
         <a href="#"
