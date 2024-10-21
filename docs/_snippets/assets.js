@@ -87,6 +87,8 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 			}
 		} );
 	}
+
+	return tooltip;
 };
 
 /**
