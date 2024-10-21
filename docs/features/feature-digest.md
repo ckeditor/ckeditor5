@@ -1039,9 +1039,94 @@ order: -997
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td></td>
-			<td></td>
+		<tr id="document-outline">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html">Document
+					outline<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The Document Outline feature automatically detects and lists document
+				headings in a sidebar, enabling faster navigation through large
+				documents. Headings are organized in a structured list, so users can
+				click and jump to different sections quickly.<br />This feature also
+				allows for customization of the outline&#x27;s location within the user
+				interface, catering to different user preferences for workspace layout.
+				<br />
+			</td>
+		</tr>
+		<tr id="page-utilities">
+			<td>
+				<a href="#">Page utilities</a>
+			</td>
+			<td>
+				CKEditor 5 Page Utilities enables users to dictate the structuring and
+				print formatting of their documents effectively.
+			</td>
+		</tr>
+		<tr id="content-minimap">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html">Content minimap</a>
+			</td>
+			<td>
+				Offers a concise, birds-eye view of the document&#x27;s content,
+				allowing for quick navigation and content management.
+			</td>
+		</tr>
+		<tr id="document-title">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html">Document title</a>
+			</td>
+			<td>
+				llows users to set and modify the document&#x27;s title within the
+				editing interface, ensuring accurate reflection of the contents.
+			</td>
+		</tr>
+		<tr id="page-break">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">Page break</a>
+			</td>
+			<td>
+				Facilitates the insertion of manual breaks within the document, enabling
+				the definition of page endings and beginnings for optimal layout and
+				print clarity.
+			</td>
+		</tr>
+		<tr id="pagination">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">Pagination<span
+						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
+							class="tree__item__badge__text">Premium feature</span></span></a>
+			</td>
+			<td>
+				The Pagination feature visually indicates where pages begin and end
+				within a document. This feature is designed to assist users in preparing
+				their documents for printing or for export to various document formats,
+				ensuring that the transition between pages is seamless and accurately
+				reflected in the final output.<br />Users may adjust content
+				distribution across pages as they like, ensuring well-organized
+				documents with clearly presented content, whether in digital form or in
+				print. By providing a clear view of how text and elements will appear
+				page-by-page, Pagination aids in the creation of professional and
+				polished documents.<br />
+			</td>
+		</tr>
+		<tr id="table-of-contents">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html">Table of
+					contents<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				The Table of Contents feature is a dynamic tool for organizing
+				documents. It allows for the insertion of a linked table of contents
+				that automatically updates in real time as the document’s content
+				changes. This means changes made to headings or structured sections
+				within the document are reflected immediately in the table of contents,
+				accurately representing the document structure.
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -1139,116 +1224,6 @@ order: -997
     </tr>
   </thead>
   <tbody>
-    <tr id="page-utilities">
-      <td>
-        <a href="#">Page utilities</a>
-      </td>
-      <td>
-        CKEditor 5 Page Utilities enables users to dictate the structuring and
-        print formatting of their documents effectively.
-      </td>
-    </tr>
-    <tr id="pagination">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html"
-          >Pagination<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Pagination feature visually indicates where pages begin and end
-        within a document. This feature is designed to assist users in preparing
-        their documents for printing or for export to various document formats,
-        ensuring that the transition between pages is seamless and accurately
-        reflected in the final output.<br />Users may adjust content
-        distribution across pages as they like, ensuring well-organized
-        documents with clearly presented content, whether in digital form or in
-        print. By providing a clear view of how text and elements will appear
-        page-by-page, Pagination aids in the creation of professional and
-        polished documents.<br />
-      </td>
-    </tr>
-    <tr id="page-break">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html"
-          >Page break</a
-        >
-      </td>
-      <td>
-        Facilitates the insertion of manual breaks within the document, enabling
-        the definition of page endings and beginnings for optimal layout and
-        print clarity.
-      </td>
-    </tr>
-    <tr id="content-minimap">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html"
-          >Content minimap</a
-        >
-      </td>
-      <td>
-        Offers a concise, birds-eye view of the document&#x27;s content,
-        allowing for quick navigation and content management.
-      </td>
-    </tr>
-    <tr id="document-title">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html"
-          >Document title</a
-        >
-      </td>
-      <td>
-        llows users to set and modify the document&#x27;s title within the
-        editing interface, ensuring accurate reflection of the contents.
-      </td>
-    </tr>
-    <tr id="table-of-contents">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html"
-          >Table of contents<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Table of Contents feature is a dynamic tool for organizing
-        documents. It allows for the insertion of a linked table of contents
-        that automatically updates in real time as the document’s content
-        changes. This means changes made to headings or structured sections
-        within the document are reflected immediately in the table of contents,
-        accurately representing the document structure.
-      </td>
-    </tr>
-    <tr id="document-outline">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html"
-          >Document outline<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        The Document Outline feature automatically detects and lists document
-        headings in a sidebar, enabling faster navigation through large
-        documents. Headings are organized in a structured list, so users can
-        click and jump to different sections quickly.<br />This feature also
-        allows for customization of the outline&#x27;s location within the user
-        interface, catering to different user preferences for workspace layout.
-        <br />
-      </td>
-    </tr>
     <tr id="merge-fields">
       <td>
         <a
