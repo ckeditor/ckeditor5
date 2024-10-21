@@ -8,6 +8,844 @@ modified_at: 2024-10-17
 order: -997
 ---
 
+## Core editing
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="advanced-html-editing">
+			<td>
+				<a href="#">Advanced HTML Editing</a>
+			</td>
+			<td>
+				Advanced HTML Editing provides general HTML support, offering detailed
+				control over permissible HTML elements, attributes, and styles. It
+				further allows HTML Source Code Editing, handling any HTML elements,
+				HTML comments, and editing of the full page content, including meta
+				tags.
+			</td>
+		</tr>
+		<tr id="full-page-html">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/full-page-html.html">Full page
+					HTML</a>
+			</td>
+			<td>
+				Thanks to the full page HTML feature you can use CKEditor 5 to edit
+				entire HTML pages (from <code>&lt;html&gt;</code> to
+				<code>&lt;/html&gt;</code>), including the page metadata. While the
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html">General
+					HTML Support</a>
+				feature focuses on elements inside the content (the document’s
+				<code>&lt;body&gt;</code>), this feature enables markup mostly invisible
+				to the end user.
+			</td>
+		</tr>
+		<tr id="general-html-support">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html">General
+					HTML Support (GHS)</a>
+			</td>
+			<td>
+				With the General HTML Support (GHS) feature, developers can enable HTML
+				features that are not supported by any other dedicated CKEditor 5
+				plugins. GHS lets you add elements, attributes, classes, and styles to
+				the source. It also ensures this markup stays in the editor window and
+				in the output.
+			</td>
+		</tr>
+		<tr id="html-comment">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-comments.html">HTML comment</a>
+			</td>
+			<td>
+				By default, the editor filters out all HTML comments on initialization.
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_html-support_htmlcomment-HtmlComment.html"
+				  >HtmlComment</a
+				></code>
+				feature lets developers keep HTML comments in the document without
+				displaying them to the user.
+			</td>
+		</tr>
+		<tr id="html-embed">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html">HTML embed</a>
+			</td>
+			<td>
+				The HTML embed feature lets you embed any HTML snippet in your content.
+				The feature is meant for more advanced users who want to directly
+				interact with HTML fragments.
+			</td>
+		</tr>
+		<tr id="show-blocks">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">Show blocks</a>
+			</td>
+			<td>
+				The show blocks feature allows the content creators to visualize all
+				block-level elements (except for widgets). It surrounds them with an
+				outline and displays their element name in the top-left corner of the
+				box.
+			</td>
+		</tr>
+		<tr id="source-editing">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html">Source editing</a>
+			</td>
+			<td>
+				he source editing feature lets you view and edit the source of your
+				document.
+			</td>
+		</tr>
+		<tr id="block-formatting">
+			<td>
+				<a href="#">Block formatting</a>
+			</td>
+			<td>
+				Block Formatting allows for the organization and emphasis of content
+				through the use of Headings, Style Headings, Block Quotes, and
+				Horizontal Lines. Users can select from different levels of headings to
+				outline sections and subsections, apply various styles to these headings
+				for visual hierarchy, insert horizontal lines to delineate sections, and
+				use block quotes to highlight excerpts or important passages.
+			</td>
+		</tr>
+		<tr id="block-quotes">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">Block quotes</a>
+			</td>
+			<td>
+				The block quote feature lets you easily include block quotations or pull
+				quotes in your content. It is also an attractive way to draw the
+				readers’ attention to selected parts of the text.
+			</td>
+		</tr>
+		<tr id="headings-paragraph">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Headings/paragraph</a>
+			</td>
+			<td>
+				The heading feature helps you structure your document by adding headings
+				to parts of the text. They make your content easier to scan by both
+				readers and search engines.
+			</td>
+		</tr>
+		<tr id="horizontal-line">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">Horizontal line</a>
+			</td>
+			<td>
+				The horizontal line feature lets you visually divide your content into
+				sections by inserting horizontal lines (also known as horizontal rules).
+				It is an easy way to organize the content or indicate a change of topic.
+			</td>
+		</tr>
+		<tr id="block-indentation">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">Block indentation</a>
+			</td>
+			<td>
+				The block indentation feature lets you set indentation for text blocks
+				such as paragraphs, headings, or lists. This way you can visually
+				distinguish parts of your content.
+			</td>
+		</tr>
+		<tr id="clipboard">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/clipboard.html">Clipboard</a>
+			</td>
+			<td>
+				Copy, cut, and paste content within the editor or from external sources.
+			</td>
+		</tr>
+		<tr id="code-blocks">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">Code blocks</a>
+			</td>
+			<td>
+				Supports the insertion and management of preformatted code snippets with
+				distinct styling.
+			</td>
+		</tr>
+		<tr id="drag-and-drop">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/drag-drop.html">Drag and drop</a>
+			</td>
+			<td>
+				Rearrange elements within a document, including moving text blocks,
+				images, or other content types.
+			</td>
+		</tr>
+		<tr id="font-formatting">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font formatting</a>
+			</td>
+			<td>
+				The font feature lets you change font family, size, and color (including
+				background color). All of these options are configurable.
+			</td>
+		</tr>
+		<tr id="font-background-color">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font background color</a>
+			</td>
+			<td>
+				Effortless make the words stand out even more with a colored background.
+			</td>
+		</tr>
+		<tr id="font-color">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font color</a>
+			</td>
+			<td>Effortlessly make the letters stand out with their own color.</td>
+		</tr>
+		<tr id="font-family">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font family</a>
+			</td>
+			<td>
+				Choose from a predefined set of fonts, depending on the type of content
+				and its destination - print, screen, etc.
+			</td>
+		</tr>
+		<tr id="font-size">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font size</a>
+			</td>
+			<td>Easily control the size of the letters.</td>
+		</tr>
+		<tr id="image">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">Image</a>
+			</td>
+			<td>
+				The image feature allows adding images of various kinds to the rich
+				content inside the editor. A large set of subfeatures lets the users
+				fully control this process.<br /><br />Upload or paste images, insert
+				via URL, use responsive images, resize images, add captions, set
+				different image styles, link images<br />
+			</td>
+		</tr>
+		<tr id="image-all-text">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html">Image
+					alt text</a>
+			</td>
+			<td>
+				Add description text, AKA alternative text, for images. Alt text
+				improves accessibility by telling screen readers and search engines what
+				the image depicts.
+			</td>
+		</tr>
+		<tr id="image-captions">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">Image
+					captions</a>
+			</td>
+			<td>
+				Add optional captions for images, which are shown below the picture.
+			</td>
+		</tr>
+		<tr id="image-insert-via-url">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-inserting.html">Image insert
+					via URL</a>
+			</td>
+			<td>
+				You can insert images by uploading them directly from your disk, but you
+				can also configure CKEditor 5 to let you insert images using URLs. This
+				way you can save time by adding images that are already online.
+			</td>
+		</tr>
+		<tr id="image-linking">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-linking.html">Image
+					linking</a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_link_linkimage-LinkImage.html"
+				  >LinkImage</a
+				></code>
+				plugin lets you use images as links.
+			</td>
+		</tr>
+		<tr id="image-resize">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">Image
+					resize</a>
+			</td>
+			<td>
+				The image resize feature lets you change the width of images in your
+				content. It is implemented by the
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageresize-ImageResize.html"
+				  >ImageResize</a
+				></code>
+				plugin.
+			</td>
+		</tr>
+		<tr id="image-styles">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">Image styles</a>
+			</td>
+			<td>
+				The image styles feature lets you adjust the appearance of images. It
+				works by applying CSS classes to images or changing their type from
+				inline to block or vice versa.
+			</td>
+		</tr>
+		<tr id="image-upload">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">Image
+					upload</a>
+			</td>
+			<td>
+				Inserting
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">images</a>
+				into content created with CKEditor 5 is quite a common task. In a
+				properly configured rich-text editor, there are several ways for the end
+				user to insert images.
+			</td>
+		</tr>
+		<tr id="responsive-images">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-responsive.html">Responsive
+					images</a>
+			</td>
+			<td>
+				The ability to have responsive images in the rich-text editor content is
+				a great modern feature provided by the
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox asset
+					manager</a>. With a single image upload, several optimized versions of that image
+				are created, each for a different size of the display. The CKBox feature
+				produces a <code>&lt;picture&gt;</code> element with a set of optimized
+				images. The browser will automatically load the image with the
+				dimensions most suitable for the presented page resolution, which makes
+				the image load much faster and saves bandwidth.
+			</td>
+		</tr>
+		<tr id="links">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">Links</a>
+			</td>
+			<td>
+				Facilitates the addition of hyperlinks to text, automatically converting
+				typed or pasted URLs into clickable links, and allowing manual insertion
+				and editing of links.
+			</td>
+		</tr>
+		<tr id="lists">
+			<td>
+				<a href="#">Lists</a>
+			</td>
+			<td>
+				Lists allow the creation and management of various list types, including
+				to-do lists, bulleted and numbered lists, with additional customization
+				options such as list styles, setting the start number for lists,
+				creating reversed lists, adjusting list indentation, and crafting nested
+				lists.
+			</td>
+		</tr>
+		<tr id="list-indentation">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists">List
+					indentation</a>
+			</td>
+			<td>
+				Besides controlling
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">text block indentation</a>,
+				the indent and outdent buttons allow for indenting list items
+				(nesting them).
+			</td>
+		</tr>
+		<tr id="list-start-index">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-start-index">List
+					start index</a>
+			</td>
+			<td>
+				The list start index feature allows the user to choose the starting
+				point of an ordered list. By default, this would be 1 (or A, or I – see
+				the list styles section). Sometimes you may want to start a list with
+				some other digit or letter, though.
+			</td>
+		</tr>
+		<tr id="list-styles">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles">List
+					styles</a>
+			</td>
+			<td>
+				The list style feature introduces some more styles for the list item
+				markers. When
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/api/module_list_listconfig-ListPropertiesConfig.html#member-styles">enabled</a>,
+				it adds 3 styles for unordered lists and 6 styles for ordered lists
+				to choose from. The user will be able to set or change the list style
+				via the dropdown. It opens when you click the arrow next to the
+				appropriate list button in the toolbar.
+			</td>
+		</tr>
+		<tr id="multi-level-lists">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html">Multi-level
+					lists<span class="tree__item__badge tree__item__badge_premium"
+						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
+							feature</span></span></a>
+			</td>
+			<td>
+				Multi-level lists with the legal style numbering feature allows for easy
+				creation and modification of numbered lists with counters (1, 1.1,
+				1.1.1). These are crucial for clear referencing and hierarchical
+				organization in complex documents. The feature offers full compatibility
+				with Microsoft Word.
+			</td>
+		</tr>
+		<tr id="nested-lists">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists">Nested
+					lists</a>
+			</td>
+			<td>
+				Besides controlling
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">text block indentation</a>,
+				the indent and outdent buttons allow for indenting list items
+				(nesting them).
+			</td>
+		</tr>
+		<tr id="ordered-lists">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">Ordered lists</a>
+			</td>
+			<td>
+				The list feature lets you create ordered (numbered) lists. The unique
+				thing about them is that you can put any content inside each list item
+				(including block elements like paragraphs and tables), retaining the
+				continuity of numbering and indentation. You can also easily control the
+				list markers type.
+			</td>
+		</tr>
+		<tr id="reversed-list">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#reversed-list">Reversed
+					list</a>
+			</td>
+			<td>
+				The reversed list feature lets the user reverse the numbering order of a
+				list, changing it from ascending to descending. This is useful in
+				countdowns and things-to-do lists that need to reproduce steps in a
+				reversed order (for example, in disassembly instructions).
+			</td>
+		</tr>
+		<tr id="to-do-lists">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">To-do lists</a>
+			</td>
+			<td>
+				The to-do list feature lets you create a list of interactive checkboxes
+				with labels. It supports all features of
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">bulleted and numbered
+					lists</a>, so you can nest a to-do list together with any combination of other
+				lists.
+			</td>
+		</tr>
+		<tr id="unordered-lists">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">Unordered lists</a>
+			</td>
+			<td>
+				The list feature lets you create unordered (bulleted) lists. The unique
+				thing about them is that you can put any content inside each list item
+				(including block elements like paragraphs and tables), retaining the
+				continuity of numbering and indentation. You can also easily control the
+				list markers’ shape.
+			</td>
+		</tr>
+		<tr id="mermaid">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mermaid.html">Mermaid<span
+						class="tree__item__badge tree__item__badge_new"
+						data-badge-tooltip="New or updated content">Experimental</span></a>
+			</td>
+			<td>
+				You can create flowcharts and diagrams in CKEditor 5 thanks to the
+				experimental integration with the Mermaid library. Mermaid uses a
+				Markdown-inspired syntax to create and dynamically modify flowcharts,
+				Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
+			</td>
+		</tr>
+		<tr id="remove-formatting">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html">Remove formatting</a>
+			</td>
+			<td>
+				The remove format feature lets you quickly remove any text formatting
+				applied using inline HTML elements and CSS styles, like basic text
+				styles (bold, italic) or font family, size, and color. This feature does
+				not remove block-level formatting (headings, images) or semantic data
+				(links).
+			</td>
+		</tr>
+		<tr id="select-all">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html">Select all</a>
+			</td>
+			<td>
+				Enables the selection of all content within the editor with a single
+				command or shortcut.
+			</td>
+		</tr>
+		<tr id="tables">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html">Tables</a>
+			</td>
+			<td>
+				CKEditor 5 provides robust support for tables, with the ability to merge
+				and split cells, resize columns, style tables and individual cells,
+				insert and delete columns and rows, as well as create nested tables for
+				complex data presentation.
+			</td>
+		</tr>
+		<tr id="columns-resizing">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-resize.html">Columns
+					resizing</a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecolumnresize-TableColumnResize.html"
+				  >TableColumnResize</a
+				></code>
+				plugin lets you resize tables and individual table columns. It gives you
+				complete control over column width.
+			</td>
+		</tr>
+		<tr id="insert-delete-columns-and-rows">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Insert/delete
+					Columns &amp; Rows</a>
+			</td>
+			<td>
+				The basic table features allow users to insert tables into content, add
+				or remove columns and rows and merge or split cells.
+			</td>
+		</tr>
+		<tr id="merge-and-split-cells">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Merge
+					&amp; split cells</a>
+			</td>
+			<td>
+				The basic table features allow users to insert tables into content, add
+				or remove columns and rows and merge or split cells.
+			</td>
+		</tr>
+		<tr id="nesting">
+			<td>
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#nesting-tables">Nesting</a>
+			</td>
+			<td>
+				CKEditor 5 allows nesting tables inside other table’s cells. This may be
+				used for creating advanced charts or layouts based on tables. The nested
+				table can be formatted just like a regular one.
+			</td>
+		</tr>
+		<tr id="styling-tables-and-cells">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html">Styling tables
+					&amp; cells</a>
+			</td>
+			<td>
+				CKEditor 5 comes with some additional tools that help you change the
+				look of tables and table cells. You can control border color and style,
+				background color, padding, or text alignment.
+			</td>
+		</tr>
+		<tr id="table-headers">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#default-table-headers">Table
+					headers</a>
+			</td>
+			<td>
+				To make every inserted table have <code>n</code> number of rows and
+				columns as table headers by default, set an optional table configuration
+				property <code>defaultHeadings</code> .
+			</td>
+		</tr>
+		<tr id="table-selection">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-selection">Table
+					selection</a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tableselection-TableSelection.html"
+				  >TableSelection</a
+				></code>
+				plugin introduces support for the custom selection system for tables
+				that lets you:<br />• Select an arbitrary rectangular table fragment – a
+				few cells from different rows, a column (or a few of them) or a row (or
+				multiple rows).<br />• Apply formatting or add a link to all selected
+				cells at once.<br />The table selection plugin is loaded automatically
+				by the <br /><code>Table</code> plugin.
+			</td>
+		</tr>
+		<tr id="tables-caption">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-caption.html">Tables
+					caption</a>
+			</td>
+			<td>
+				The
+				<code><a
+				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecaption-TableCaption.html"
+				  >TableCaption</a
+				></code>
+				plugin lets you add captions to your tables. Table captions also improve
+				accessibility as they are recognized by screen readers.
+			</td>
+		</tr>
+		<tr id="text-alignment">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">Text alignment</a>
+			</td>
+			<td>
+				Allows the adjustment of text alignment to the left, right, center, or
+				justify and permits the alteration of indentation.
+			</td>
+		</tr>
+		<tr id="text-formatting">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Text formatting</a>
+			</td>
+			<td>
+				CKEditor 5 provides developers with text editing and formatting features
+				such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript,
+				Inline Code, Highlight, and Font Styles. These features allow users to
+				style and present their content as needed. This ensures users can style
+				their text to improve readability, match branding guidelines, or
+				highlight important content sections.
+			</td>
+		</tr>
+		<tr id="bold">
+			<td>
+				<a href="#">Bold</a>
+			</td>
+			<td>Making the letters look like the good time were never gone.</td>
+		</tr>
+		<tr id="code">
+			<td>
+				<a href="#">Code</a>
+			</td>
+			<td>Snippet look, like a terminal from the 1990s movie.</td>
+		</tr>
+		<tr id="highlight">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">Highlight</a>
+			</td>
+			<td>
+				Highlight makes important content stand out, either with font color or
+				background fill.
+			</td>
+		</tr>
+		<tr id="italic">
+			<td>
+				<a href="#">Italic</a>
+			</td>
+			<td>Making the letters look like seashore pines.</td>
+		</tr>
+		<tr id="strikethrough">
+			<td>
+				<a href="#">Strikethrough</a>
+			</td>
+			<td>Never mind, won’t need it anymore.</td>
+		</tr>
+		<tr id="styles">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html">Styles</a>
+			</td>
+			<td>
+				The styles feature lets you easily apply predefines styles available for
+				block and inline content.
+			</td>
+		</tr>
+		<tr id="subscript">
+			<td>
+				<a href="#">Subscript</a>
+			</td>
+			<td>Fine print at the bottom, like atom numbers.</td>
+		</tr>
+		<tr id="superscript">
+			<td>
+				<a href="#">Superscript</a>
+			</td>
+			<td>Fine print on top, like references in a book.</td>
+		</tr>
+		<tr id="underline">
+			<td>
+				<a href="#">Underline</a>
+			</td>
+			<td>Stuff looks important, yo. Or like a link, too.</td>
+		</tr>
+		<tr id="undo-redo">
+			<td>
+				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/undo-redo.html">Undo/redo</a>
+			</td>
+			<td>Backtrack or repeat actions for editing purposes.</td>
+		</tr>
+	</tbody>
+</table>
+
+## Collaboration
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## Content conversion & embedding
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## Page management
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## Productivity
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## Configurations
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## Compliance
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## Customization
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+## File management
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
 <table>
   <thead>
     <tr>
@@ -16,851 +854,6 @@ order: -997
     </tr>
   </thead>
   <tbody>
-    <tr id="table-headers">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#default-table-headers"
-          >Table headers</a
-        >
-      </td>
-      <td>
-        To make every inserted table have <code>n</code> number of rows and
-        columns as table headers by default, set an optional table configuration
-        property <code>defaultHeadings</code> .
-      </td>
-    </tr>
-    <tr id="highlight">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html"
-          >Highlight</a
-        >
-      </td>
-      <td>
-        Highlight makes important content stand out, either with font color or
-        background fill.
-      </td>
-    </tr>
-    <tr id="advanced-html-editing">
-      <td>
-        <a href="#">Advanced HTML Editing</a>
-      </td>
-      <td>
-        Advanced HTML Editing provides general HTML support, offering detailed
-        control over permissible HTML elements, attributes, and styles. It
-        further allows HTML Source Code Editing, handling any HTML elements,
-        HTML comments, and editing of the full page content, including meta
-        tags.
-      </td>
-    </tr>
-    <tr id="links">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html"
-          >Links</a
-        >
-      </td>
-      <td>
-        Facilitates the addition of hyperlinks to text, automatically converting
-        typed or pasted URLs into clickable links, and allowing manual insertion
-        and editing of links.
-      </td>
-    </tr>
-    <tr id="clipboard">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/clipboard.html"
-          >Clipboard</a
-        >
-      </td>
-      <td>
-        Copy, cut, and paste content within the editor or from external sources.
-      </td>
-    </tr>
-    <tr id="block-formatting">
-      <td>
-        <a href="#">Block formatting</a>
-      </td>
-      <td>
-        Block Formatting allows for the organization and emphasis of content
-        through the use of Headings, Style Headings, Block Quotes, and
-        Horizontal Lines. Users can select from different levels of headings to
-        outline sections and subsections, apply various styles to these headings
-        for visual hierarchy, insert horizontal lines to delineate sections, and
-        use block quotes to highlight excerpts or important passages.
-      </td>
-    </tr>
-    <tr id="merge-and-split-cells">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar"
-          >Merge &amp; split cells</a
-        >
-      </td>
-      <td>
-        The basic table features allow users to insert tables into content, add
-        or remove columns and rows and merge or split cells.
-      </td>
-    </tr>
-    <tr id="insert-delete-columns-and-rows">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar"
-          >Insert/delete Columns &amp; Rows</a
-        >
-      </td>
-      <td>
-        The basic table features allow users to insert tables into content, add
-        or remove columns and rows and merge or split cells.
-      </td>
-    </tr>
-    <tr id="table-selection">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-selection"
-          >Table selection</a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tableselection-TableSelection.html"
-            >TableSelection</a
-          ></code
-        >
-        plugin introduces support for the custom selection system for tables
-        that lets you:<br />• Select an arbitrary rectangular table fragment – a
-        few cells from different rows, a column (or a few of them) or a row (or
-        multiple rows).<br />• Apply formatting or add a link to all selected
-        cells at once.<br />The table selection plugin is loaded automatically
-        by the <br /><code>Table</code> plugin.
-      </td>
-    </tr>
-    <tr id="nesting">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#nesting-tables"
-          >Nesting</a
-        >
-      </td>
-      <td>
-        CKEditor 5 allows nesting tables inside other table’s cells. This may be
-        used for creating advanced charts or layouts based on tables. The nested
-        table can be formatted just like a regular one.
-      </td>
-    </tr>
-    <tr id="nested-lists">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists"
-          >Nested lists</a
-        >
-      </td>
-      <td>
-        Besides controlling
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html"
-          >text block indentation</a
-        >, the indent and outdent buttons allow for indenting list items
-        (nesting them).
-      </td>
-    </tr>
-    <tr id="unordered-lists">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html"
-          >Unordered lists</a
-        >
-      </td>
-      <td>
-        The list feature lets you create unordered (bulleted) lists. The unique
-        thing about them is that you can put any content inside each list item
-        (including block elements like paragraphs and tables), retaining the
-        continuity of numbering and indentation. You can also easily control the
-        list markers’ shape.
-      </td>
-    </tr>
-    <tr id="block-indentation">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html"
-          >Block indentation</a
-        >
-      </td>
-      <td>
-        The block indentation feature lets you set indentation for text blocks
-        such as paragraphs, headings, or lists. This way you can visually
-        distinguish parts of your content.
-      </td>
-    </tr>
-    <tr id="undo-redo">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/undo-redo.html"
-          >Undo/redo</a
-        >
-      </td>
-      <td>Backtrack or repeat actions for editing purposes.</td>
-    </tr>
-    <tr id="columns-resizing">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-resize.html"
-          >Columns resizing</a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecolumnresize-TableColumnResize.html"
-            >TableColumnResize</a
-          ></code
-        >
-        plugin lets you resize tables and individual table columns. It gives you
-        complete control over column width.
-      </td>
-    </tr>
-    <tr id="tables-caption">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-caption.html"
-          >Tables caption</a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecaption-TableCaption.html"
-            >TableCaption</a
-          ></code
-        >
-        plugin lets you add captions to your tables. Table captions also improve
-        accessibility as they are recognized by screen readers.
-      </td>
-    </tr>
-    <tr id="styling-tables">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html"
-          >Styling tables &amp; cells</a
-        >
-      </td>
-      <td>
-        CKEditor 5 comes with some additional tools that help you change the
-        look of tables and table cells. You can control border color and style,
-        background color, padding, or text alignment.
-      </td>
-    </tr>
-    <tr id="tables">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html"
-          >Tables</a
-        >
-      </td>
-      <td>
-        CKEditor 5 provides robust support for tables, with the ability to merge
-        and split cells, resize columns, style tables and individual cells,
-        insert and delete columns and rows, as well as create nested tables for
-        complex data presentation.
-      </td>
-    </tr>
-    <tr id="select-all">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html"
-          >Select all</a
-        >
-      </td>
-      <td>
-        Enables the selection of all content within the editor with a single
-        command or shortcut.
-      </td>
-    </tr>
-    <tr id="horizontal-line">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html"
-          >Horizontal line</a
-        >
-      </td>
-      <td>
-        The horizontal line feature lets you visually divide your content into
-        sections by inserting horizontal lines (also known as horizontal rules).
-        It is an easy way to organize the content or indicate a change of topic.
-      </td>
-    </tr>
-    <tr id="drag-and-drop">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/drag-drop.html"
-          >Drag and drop</a
-        >
-      </td>
-      <td>
-        Rearrange elements within a document, including moving text blocks,
-        images, or other content types.
-      </td>
-    </tr>
-    <tr id="show-blocks">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html"
-          >Show blocks</a
-        >
-      </td>
-      <td>
-        The show blocks feature allows the content creators to visualize all
-        block-level elements (except for widgets). It surrounds them with an
-        outline and displays their element name in the top-left corner of the
-        box.
-      </td>
-    </tr>
-    <tr id="code-blocks">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html"
-          >Code blocks</a
-        >
-      </td>
-      <td>
-        Supports the insertion and management of preformatted code snippets with
-        distinct styling.
-      </td>
-    </tr>
-    <tr id="block-quotes">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html"
-          >Block quotes</a
-        >
-      </td>
-      <td>
-        The block quote feature lets you easily include block quotations or pull
-        quotes in your content. It is also an attractive way to draw the
-        readers’ attention to selected parts of the text.
-      </td>
-    </tr>
-    <tr id="html-embed">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html"
-          >HTML embed</a
-        >
-      </td>
-      <td>
-        The HTML embed feature lets you embed any HTML snippet in your content.
-        The feature is meant for more advanced users who want to directly
-        interact with HTML fragments.
-      </td>
-    </tr>
-    <tr id="styles">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html"
-          >Styles</a
-        >
-      </td>
-      <td>
-        The styles feature lets you easily apply predefines styles available for
-        block and inline content.
-      </td>
-    </tr>
-    <tr id="mermaid">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/mermaid.html"
-          >Mermaid<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="New or updated content">Experimental</span></a
-        >
-      </td>
-      <td>
-        You can create flowcharts and diagrams in CKEditor 5 thanks to the
-        experimental integration with the Mermaid library. Mermaid uses a
-        Markdown-inspired syntax to create and dynamically modify flowcharts,
-        Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
-      </td>
-    </tr>
-    <tr id="html-comment">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-comments.html"
-          >HTML comment</a
-        >
-      </td>
-      <td>
-        By default, the editor filters out all HTML comments on initialization.
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_html-support_htmlcomment-HtmlComment.html"
-            >HtmlComment</a
-          ></code
-        >
-        feature lets developers keep HTML comments in the document without
-        displaying them to the user.
-      </td>
-    </tr>
-    <tr id="general-html-support">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html"
-          >General HTML Support (GHS)</a
-        >
-      </td>
-      <td>
-        With the General HTML Support (GHS) feature, developers can enable HTML
-        features that are not supported by any other dedicated CKEditor 5
-        plugins. GHS lets you add elements, attributes, classes, and styles to
-        the source. It also ensures this markup stays in the editor window and
-        in the output.
-      </td>
-    </tr>
-    <tr id="source-editing">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html"
-          >Source editing</a
-        >
-      </td>
-      <td>
-        he source editing feature lets you view and edit the source of your
-        document.
-      </td>
-    </tr>
-    <tr id="full-page-html">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/full-page-html.html"
-          >Full page HTML</a
-        >
-      </td>
-      <td>
-        Thanks to the full page HTML feature you can use CKEditor 5 to edit
-        entire HTML pages (from <code>&lt;html&gt;</code> to
-        <code>&lt;/html&gt;</code>), including the page metadata. While the
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html"
-          >General HTML Support</a
-        >
-        feature focuses on elements inside the content (the document’s
-        <code>&lt;body&gt;</code>), this feature enables markup mostly invisible
-        to the end user.
-      </td>
-    </tr>
-    <tr id="remove-formatting">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html"
-          >Remove formatting</a
-        >
-      </td>
-      <td>
-        The remove format feature lets you quickly remove any text formatting
-        applied using inline HTML elements and CSS styles, like basic text
-        styles (bold, italic) or font family, size, and color. This feature does
-        not remove block-level formatting (headings, images) or semantic data
-        (links).
-      </td>
-    </tr>
-    <tr id="text-alignment">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html"
-          >Text alignment</a
-        >
-      </td>
-      <td>
-        Allows the adjustment of text alignment to the left, right, center, or
-        justify and permits the alteration of indentation.
-      </td>
-    </tr>
-    <tr id="headings-paragraph">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html"
-          >Headings/paragraph</a
-        >
-      </td>
-      <td>
-        The heading feature helps you structure your document by adding headings
-        to parts of the text. They make your content easier to scan by both
-        readers and search engines.
-      </td>
-    </tr>
-    <tr id="font-background-color">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
-          >Font background color</a
-        >
-      </td>
-      <td>
-        Effortless make the words stand out even more with a colored background.
-      </td>
-    </tr>
-    <tr id="font-color">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
-          >Font color</a
-        >
-      </td>
-      <td>Effortlessly make the letters stand out with their own color.</td>
-    </tr>
-    <tr id="font-size">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
-          >Font size</a
-        >
-      </td>
-      <td>Easily control the size of the letters.</td>
-    </tr>
-    <tr id="font-family">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
-          >Font family</a
-        >
-      </td>
-      <td>
-        Choose from a predefined set of fonts, depending on the type of content
-        and its destination - print, screen, etc.
-      </td>
-    </tr>
-    <tr id="font-formatting">
-      <td>
-        <a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html"
-          >Font formatting</a
-        >
-      </td>
-      <td>
-        The font feature lets you change font family, size, and color (including
-        background color). All of these options are configurable.
-      </td>
-    </tr>
-    <tr id="reversed-list">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#reversed-list"
-          >Reversed list</a
-        >
-      </td>
-      <td>
-        The reversed list feature lets the user reverse the numbering order of a
-        list, changing it from ascending to descending. This is useful in
-        countdowns and things-to-do lists that need to reproduce steps in a
-        reversed order (for example, in disassembly instructions).
-      </td>
-    </tr>
-    <tr id="list-start-index">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-start-index"
-          >List start index</a
-        >
-      </td>
-      <td>
-        The list start index feature allows the user to choose the starting
-        point of an ordered list. By default, this would be 1 (or A, or I – see
-        the list styles section). Sometimes you may want to start a list with
-        some other digit or letter, though.
-      </td>
-    </tr>
-    <tr id="ordered-lists">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html"
-          >Ordered lists</a
-        >
-      </td>
-      <td>
-        The list feature lets you create ordered (numbered) lists. The unique
-        thing about them is that you can put any content inside each list item
-        (including block elements like paragraphs and tables), retaining the
-        continuity of numbering and indentation. You can also easily control the
-        list markers type.
-      </td>
-    </tr>
-    <tr id="to-do-lists">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html"
-          >To-do lists</a
-        >
-      </td>
-      <td>
-        The to-do list feature lets you create a list of interactive checkboxes
-        with labels. It supports all features of
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html"
-          >bulleted and numbered lists</a
-        >, so you can nest a to-do list together with any combination of other
-        lists.
-      </td>
-    </tr>
-    <tr id="superscript">
-      <td>
-        <a href="#">Superscript</a>
-      </td>
-      <td>Fine print on top, like references in a book.</td>
-    </tr>
-    <tr id="subscript">
-      <td>
-        <a href="#">Subscript</a>
-      </td>
-      <td>Fine print at the bottom, like atom numbers.</td>
-    </tr>
-    <tr id="code">
-      <td>
-        <a href="#">Code</a>
-      </td>
-      <td>Snippet look, like a terminal from the 1990s movie.</td>
-    </tr>
-    <tr id="strikethrough">
-      <td>
-        <a href="#">Strikethrough</a>
-      </td>
-      <td>Never mind, won’t need it anymore.</td>
-    </tr>
-    <tr id="underline">
-      <td>
-        <a href="#">Underline</a>
-      </td>
-      <td>Stuff looks important, yo. Or like a link, too.</td>
-    </tr>
-    <tr id="multi-level-lists">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html"
-          >Multi-level lists<span
-            class="tree__item__badge tree__item__badge_premium"
-            data-badge-tooltip="Premium feature"
-            ><span class="tree__item__badge__text">Premium feature</span></span
-          ></a
-        >
-      </td>
-      <td>
-        Multi-level lists with the legal style numbering feature allows for easy
-        creation and modification of numbered lists with counters (1, 1.1,
-        1.1.1). These are crucial for clear referencing and hierarchical
-        organization in complex documents. The feature offers full compatibility
-        with Microsoft Word.
-      </td>
-    </tr>
-    <tr id="list-styles">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles"
-          >List styles</a
-        >
-      </td>
-      <td>
-        The list style feature introduces some more styles for the list item
-        markers. When
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/api/module_list_listconfig-ListPropertiesConfig.html#member-styles"
-          >enabled</a
-        >, it adds 3 styles for unordered lists and 6 styles for ordered lists
-        to choose from. The user will be able to set or change the list style
-        via the dropdown. It opens when you click the arrow next to the
-        appropriate list button in the toolbar.
-      </td>
-    </tr>
-    <tr id="list-indentation">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists"
-          >List indentation</a
-        >
-      </td>
-      <td>
-        Besides controlling
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html"
-          >text block indentation</a
-        >, the indent and outdent buttons allow for indenting list items
-        (nesting them).
-      </td>
-    </tr>
-    <tr id="lists">
-      <td>
-        <a href="#">Lists</a>
-      </td>
-      <td>
-        Lists allow the creation and management of various list types, including
-        to-do lists, bulleted and numbered lists, with additional customization
-        options such as list styles, setting the start number for lists,
-        creating reversed lists, adjusting list indentation, and crafting nested
-        lists.
-      </td>
-    </tr>
-    <tr id="image-insert-via-url">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-inserting.html"
-          >Image insert via URL</a
-        >
-      </td>
-      <td>
-        You can insert images by uploading them directly from your disk, but you
-        can also configure CKEditor 5 to let you insert images using URLs. This
-        way you can save time by adding images that are already online.
-      </td>
-    </tr>
-    <tr id="italic">
-      <td>
-        <a href="#">Italic</a>
-      </td>
-      <td>Making the letters look like seashore pines.</td>
-    </tr>
-    <tr id="bold">
-      <td>
-        <a href="#">Bold</a>
-      </td>
-      <td>Making the letters look like the good time were never gone.</td>
-    </tr>
-    <tr id="text-formatting">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html"
-          >Text formatting</a
-        >
-      </td>
-      <td>
-        CKEditor 5 provides developers with text editing and formatting features
-        such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript,
-        Inline Code, Highlight, and Font Styles. These features allow users to
-        style and present their content as needed. This ensures users can style
-        their text to improve readability, match branding guidelines, or
-        highlight important content sections.
-      </td>
-    </tr>
-    <tr id="image-all-text">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html"
-          >Image alt text</a
-        >
-      </td>
-      <td>
-        Add description text, AKA alternative text, for images. Alt text
-        improves accessibility by telling screen readers and search engines what
-        the image depicts.
-      </td>
-    </tr>
-    <tr id="image-captions">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html"
-          >Image captions</a
-        >
-      </td>
-      <td>
-        Add optional captions for images, which are shown below the picture.
-      </td>
-    </tr>
-    <tr id="image-upload">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html"
-          >Image upload</a
-        >
-      </td>
-      <td>
-        Inserting
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html"
-          >images</a
-        >
-        into content created with CKEditor 5 is quite a common task. In a
-        properly configured rich-text editor, there are several ways for the end
-        user to insert images.
-      </td>
-    </tr>
-    <tr id="image-linking">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-linking.html"
-          >Image linking</a
-        >
-      </td>
-      <td>
-        The
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_link_linkimage-LinkImage.html"
-            >LinkImage</a
-          ></code
-        >
-        plugin lets you use images as links.
-      </td>
-    </tr>
-    <tr id="image-styles">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html"
-          >Image styles</a
-        >
-      </td>
-      <td>
-        The image styles feature lets you adjust the appearance of images. It
-        works by applying CSS classes to images or changing their type from
-        inline to block or vice versa.
-      </td>
-    </tr>
-    <tr id="image">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html"
-          >Image</a
-        >
-      </td>
-      <td>
-        The image feature allows adding images of various kinds to the rich
-        content inside the editor. A large set of subfeatures lets the users
-        fully control this process.<br /><br />Upload or paste images, insert
-        via URL, use responsive images, resize images, add captions, set
-        different image styles, link images<br />
-      </td>
-    </tr>
-    <tr id="responsive-images">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-responsive.html"
-          >Responsive images</a
-        >
-      </td>
-      <td>
-        The ability to have responsive images in the rich-text editor content is
-        a great modern feature provided by the
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html"
-          >CKBox asset manager</a
-        >. With a single image upload, several optimized versions of that image
-        are created, each for a different size of the display. The CKBox feature
-        produces a <code>&lt;picture&gt;</code> element with a set of optimized
-        images. The browser will automatically load the image with the
-        dimensions most suitable for the presented page resolution, which makes
-        the image load much faster and saves bandwidth.
-      </td>
-    </tr>
-    <tr id="image-resize">
-      <td>
-        <a
-          href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html"
-          >Image resize</a
-        >
-      </td>
-      <td>
-        The image resize feature lets you change the width of images in your
-        content. It is implemented by the
-        <code
-          ><a
-            href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageresize-ImageResize.html"
-            >ImageResize</a
-          ></code
-        >
-        plugin.
-      </td>
-    </tr>
     <tr id="saas">
       <td>
         <a href="https://ckeditor.com/docs/cs/latest/guides/overview.html"
