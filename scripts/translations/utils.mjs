@@ -8,6 +8,7 @@
 import upath from 'upath';
 import minimist from 'minimist';
 import { globSync } from 'glob';
+import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
  * Parses CLI arguments and prepares configuration for the crawler.
@@ -130,40 +131,6 @@ function getGlobPatternForRequestedPackages( packages ) {
 		.join( '|' );
 
 	return 'ckeditor5-@(' + packageNames + ')';
-}
-
-/**
- * Replaces all kebab-case keys in the `options` object with camelCase entries.
- * Kebab-case keys will be removed.
- *
- * @param {object} options
- * @param {Array.<string>} keys Kebab-case keys in `options` object.
- */
-function replaceKebabCaseWithCamelCase( options, keys ) {
-	for ( const key of keys ) {
-		const camelCaseKey = toCamelCase( key );
-
-		options[ camelCaseKey ] = options[ key ];
-		delete options[ key ];
-	}
-}
-
-/**
- * Returns a camelCase value for specified kebab-case `value`.
- *
- * @param {string} value Kebab-case string.
- * @returns {string}
- */
-function toCamelCase( value ) {
-	return value.split( '-' )
-		.map( ( item, index ) => {
-			if ( index == 0 ) {
-				return item.toLowerCase();
-			}
-
-			return item.charAt( 0 ).toUpperCase() + item.slice( 1 ).toLowerCase();
-		} )
-		.join( '' );
 }
 
 /**
