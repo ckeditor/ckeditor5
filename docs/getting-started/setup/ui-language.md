@@ -322,7 +322,7 @@ ClassicEditor
 There are community translations available for Australian and British variations of English, too, as well as various others.
 
 <info-box>
-	You can help {@link framework/contributing/contributing#translating translate} CKEditor&nbsp;5 into your native language. You do not need to be a programmer to contribute to the project. Your help will be much appreciated!
+	You can help {@link framework/contributing/contributing#translating translating} CKEditor&nbsp;5 into your native language. You do not need to be a programmer to contribute to the project. Your help will be much appreciated!
 </info-box>
 
 ## Related features
