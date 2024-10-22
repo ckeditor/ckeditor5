@@ -1124,7 +1124,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
- * @param position
+ * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
  */
@@ -1150,7 +1150,7 @@ export function getNodeAfterPosition(
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeAfterPosition}
  *
- * @param position
+ * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
  */
