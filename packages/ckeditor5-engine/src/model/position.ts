@@ -275,7 +275,7 @@ export default class Position extends TypeCheckable {
 			}
 		}
 
-		return parent.maxOffset >= this.offset;
+		return this.offset <= parent.maxOffset;
 	}
 
 	/**
