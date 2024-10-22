@@ -177,7 +177,7 @@ export default class NodeList implements Iterable<Node> {
 		}
 
 		const nodesArray = Array.from( nodes );
-		const offsetsArray = this._makeOffsetsArray( nodesArray );
+		const offsetsArray = makeOffsetsArray( nodesArray );
 
 		let offset = this.indexToOffset( index );
 
@@ -192,23 +192,6 @@ export default class NodeList implements Iterable<Node> {
 
 			offset += this._nodes[ i ].offsetSize;
 		}
-	}
-
-	/**
-	 * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~NodeList#_offsetToNode}, i.e. one node will
-	 * occupy multiple items if its offset is greather than one.
-	 */
-	private _makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
-		const offsets: Array<Node> = [];
-
-		for ( const node of nodes ) {
-			const start = offsets.length;
-
-			offsets.length += node.offsetSize;
-			offsets.fill( node, start );
-		}
-
-		return offsets;
 	}
 
 	/**
@@ -257,4 +240,21 @@ export default class NodeList implements Iterable<Node> {
 	public toJSON(): unknown {
 		return this._nodes.map( node => node.toJSON() );
 	}
+}
+
+/**
+ * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~NodeList#_offsetToNode}, i.e. one node will
+ * occupy multiple items if its offset is greather than one.
+ */
+function makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
+	const offsets: Array<Node> = [];
+
+	for ( const node of nodes ) {
+		const start = offsets.length;
+
+		offsets.length += node.offsetSize;
+		offsets.fill( node, start );
+	}
+
+	return offsets;
 }
