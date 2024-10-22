@@ -202,9 +202,10 @@ export default class NodeList implements Iterable<Node> {
 		const offsets: Array<Node> = [];
 
 		for ( const node of nodes ) {
-			const nodeOffsets = Array( node.offsetSize ).fill( node );
+			const start = offsets.length;
 
-			offsets.splice( offsets.length, 0, ...nodeOffsets );
+			offsets.length += node.offsetSize;
+			offsets.fill( node, start );
 		}
 
 		return offsets;
