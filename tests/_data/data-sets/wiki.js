@@ -3,8 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-	// This is main Wikipedia page source copied four times. This is to test content with a lot of messy / unsupported markup.
-	// After it is loaded in the editor, it is ~150 A4 pages (however there are a lot of very short paragraphs and list items).
+// This is main Wikipedia page source copied four times. This is to test content with a lot of messy / unsupported markup.
+// After it is loaded in the editor, it is ~150 A4 pages (however there are a lot of very short paragraphs and list items).
+
+/* eslint-disable */
+
 const initialData = `<div class="vector-header-container">
 \t<header class="vector-header mw-header">
 \t\t<div class="vector-header-start">
