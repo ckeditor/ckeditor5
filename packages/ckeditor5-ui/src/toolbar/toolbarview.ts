@@ -193,8 +193,6 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		// this.focusTracker._label = 'ToolbarView';
-
 		this.set( 'class', undefined );
 		this.set( 'isCompact', false );
 
