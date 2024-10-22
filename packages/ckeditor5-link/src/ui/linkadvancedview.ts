@@ -15,6 +15,8 @@ import {
 	View,
 	ViewCollection,
 	submitHandler,
+	ListView,
+	ListItemView,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import {
@@ -53,16 +55,16 @@ export default class LinkAdvancedView extends View {
 	public backButton: ButtonView;
 
 	/**
+	 * A collection of child views.
+	 */
+	public readonly children: ViewCollection;
+
+	/**
 	 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
 	 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
 	 * configured in the editor.
 	 */
-	private readonly _manualDecoratorSwitches: ViewCollection<SwitchButtonView>;
-
-	/**
-	 * A collection of child views.
-	 */
-	public readonly children: ViewCollection;
+	public readonly listChildren: ViewCollection<SwitchButtonView>;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -81,7 +83,6 @@ export default class LinkAdvancedView extends View {
 	 *
 	 * @param locale The localization services instance.
 	 * @param linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
-	 * @param validators  Form validators used by {@link #isValid}.
 	 */
 	constructor(
 		locale: Locale,
@@ -90,7 +91,7 @@ export default class LinkAdvancedView extends View {
 		super( locale );
 
 		this.backButton = this._createBackButton();
-		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
+		this.listChildren = this._createSwitches( linkCommand );
 
 		this.children = this.createCollection( [
 			this._createHeaderView(),
@@ -133,7 +134,7 @@ export default class LinkAdvancedView extends View {
 	 */
 	public getDecoratorSwitchesState(): Record<string, boolean> {
 		return Array
-			.from( this._manualDecoratorSwitches as Iterable<SwitchButtonView & { name: string }> )
+			.from( this.listChildren as Iterable<SwitchButtonView & { name: string }> )
 			.reduce( ( accumulator, switchButton ) => {
 				accumulator[ switchButton.name ] = switchButton.isOn;
 				return accumulator;
@@ -151,7 +152,7 @@ export default class LinkAdvancedView extends View {
 		} );
 
 		const childViews = [
-			...this._manualDecoratorSwitches,
+			...this.listChildren,
 			this.backButton
 		];
 
@@ -209,7 +210,7 @@ export default class LinkAdvancedView extends View {
 		const t = this.locale!.t;
 
 		const header = new FormHeaderView( this.locale, {
-			label: t( 'Link' )
+			label: t( 'Advanced' )
 		} );
 
 		header.children.add( this.backButton, 0 );
@@ -218,108 +219,77 @@ export default class LinkAdvancedView extends View {
 	}
 
 	/**
-	 * Creates a form view for the link form.
-	 */
-	private _createFormView(): View {
-		const form = new View( this.locale );
-
-		form.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-link__form',
-					'ck-responsive-form'
-				]
-			},
-
-			children: this._createFormChildren()
-		} );
-
-		return form;
-	}
-
-	/**
-	 * Populates {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
-	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}.
+	 * Populates the {@link #listChildren} collection of the form
+	 * based on {@link module:link/linkcommand~LinkCommand#manualDecorators}.
 	 *
 	 * @param linkCommand A reference to the link command.
 	 * @returns ViewCollection of switch buttons.
 	 */
-	private _createManualDecoratorSwitches( linkCommand: LinkCommand ): ViewCollection<SwitchButtonView> {
+	private _createSwitches( linkCommand: LinkCommand ): ViewCollection<SwitchButtonView> {
 		const switches = this.createCollection<SwitchButtonView>();
 
 		for ( const manualDecorator of linkCommand.manualDecorators ) {
-			const switchButton: SwitchButtonView & { name?: string } = new SwitchButtonView( this.locale );
+			const button: SwitchButtonView & { name?: string } = new SwitchButtonView( this.locale );
 
-			switchButton.set( {
+			button.set( {
 				name: manualDecorator.id,
 				label: manualDecorator.label,
 				withText: true
 			} );
 
-			switchButton.bind( 'isOn' ).toMany( [ manualDecorator, linkCommand ], 'value', ( decoratorValue, commandValue ) => {
+			button.bind( 'isOn' ).toMany( [ manualDecorator, linkCommand ], 'value', ( decoratorValue, commandValue ) => {
 				return commandValue === undefined && decoratorValue === undefined ? !!manualDecorator.defaultValue : !!decoratorValue;
 			} );
 
-			switchButton.on( 'execute', () => {
-				manualDecorator.set( 'value', !switchButton.isOn );
+			button.on( 'execute', () => {
+				manualDecorator.set( 'value', !button.isOn );
+
+				if ( linkCommand.value ) {
+					// TODO: Should the state be immediately updated if the link value is set?
+					linkCommand.execute(
+						linkCommand.value,
+						this.getDecoratorSwitchesState(),
+						false
+					);
+				}
 			} );
 
-			switches.add( switchButton );
+			switches.add( button );
 		}
 
 		return switches;
 	}
 
 	/**
-	 * Populates the {@link #children} collection of the form.
+	 * Creates a form view that displays the {@link #listChildren} collection.
 	 *
-	 * If {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators} are configured in the editor, it creates an
-	 * additional `View` wrapping all {@link #_manualDecoratorSwitches} switch buttons corresponding
-	 * to these decorators.
-	 *
-	 * @param manualDecorators A reference to
-	 * the collection of manual decorators stored in the link command.
 	 * @returns The children of link form view.
 	 */
-	private _createFormChildren(): ViewCollection {
-		const children = this.createCollection();
+	private _createFormView(): ListView {
+		const listView = new ListView( this.locale );
 
-		if ( this._manualDecoratorSwitches.length ) {
-			const additionalButtonsView = new View();
+		listView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-link__list'
+				]
+			}
+		} );
 
-			additionalButtonsView.setTemplate( {
-				tag: 'ul',
-				// TODO: Change to ListView
-				children: this._manualDecoratorSwitches.map( switchButton => ( {
-					tag: 'li',
-					children: [ switchButton ],
-					attributes: {
-						class: [
-							'ck',
-							'ck-list__item'
-						]
-					}
-				} ) ),
-				attributes: {
-					class: [
-						'ck',
-						'ck-reset',
-						'ck-list'
-					]
-				}
-			} );
-			children.add( additionalButtonsView );
-		}
+		listView.items.bindTo( this.listChildren ).using( def => {
+			const listItemView = new ListItemView( this.locale );
 
-		return children;
+			listItemView.children.add( def );
+
+			return listItemView;
+		} );
+
+		return listView;
 	}
 }
 
 /**
- * Fired when the form view is canceled, for example with a click on {@link ~LinkAdvancedView#cancelButtonView}.
+ * Fired when the form view is canceled, for example with a click on {@link ~LinkAdvancedView#backButton}.
  *
  * @eventName ~LinkAdvancedView#cancel
  */

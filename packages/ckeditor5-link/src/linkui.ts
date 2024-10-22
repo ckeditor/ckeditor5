@@ -252,8 +252,7 @@ export default class LinkUI extends Plugin {
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-				// TODO
-				editor.execute( 'link', parsedUrl, /* formView.getDecoratorSwitchesState() */ {} );
+				editor.execute( 'link', parsedUrl, this.advancedView!.getDecoratorSwitchesState() );
 				this._closeFormView();
 			}
 		} );
@@ -514,14 +513,26 @@ export default class LinkUI extends Plugin {
 	private _closeFormView(): void {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
-		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
-		// when the user cancels the editing form.
-		linkCommand.restoreManualDecoratorStates();
-
 		if ( linkCommand.value !== undefined ) {
+			this._removeAdvancedView();
 			this._removeFormView();
 		} else {
 			this._hideUI();
+		}
+	}
+
+	/**
+	 * Removes the {@link #advancedView} from the {@link #_balloon}.
+	 */
+	private _removeAdvancedView(): void {
+		if ( this._isAdvancedInPanel ) {
+			this._balloon.remove( this.advancedView! );
+
+			// Because the form has an input which has focus, the focus must be brought back
+			// to the editor. Otherwise, it would be lost.
+			this.editor.editing.view.focus();
+
+			this._hideFakeVisualSelection();
 		}
 	}
 
@@ -612,10 +623,15 @@ export default class LinkUI extends Plugin {
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
 		editor.editing.view.focus();
 
-		// Remove form first because it's on top of the stack.
+		// TODO: Remove dynamically registered views
+
+		// Remove the advanced form view first because it's on top of the stack.
+		this._removeAdvancedView();
+
+		// Then remove the form view because it's beneath the advanced form.
 		this._removeFormView();
 
-		// Then remove the actions view because it's beneath the form.
+		// Finally, remove the actions view because it's last in the stack.
 		this._balloon.remove( this.actionsView! );
 
 		this._hideFakeVisualSelection();
@@ -675,6 +691,13 @@ export default class LinkUI extends Plugin {
 
 		this.listenTo( editor.ui, 'update', update );
 		this.listenTo( this._balloon, 'change:visibleView', update );
+	}
+
+	/**
+	 * Returns `true` when {@link #advancedView} is in the {@link #_balloon}.
+	 */
+	private get _isAdvancedInPanel(): boolean {
+		return !!this.advancedView && this._balloon.hasView( this.advancedView );
 	}
 
 	/**

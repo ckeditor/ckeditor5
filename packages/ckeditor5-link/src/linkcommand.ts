@@ -139,7 +139,11 @@ export default class LinkCommand extends Command {
 	 * @param href Link destination.
 	 * @param manualDecoratorIds The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
+	public override execute(
+		href: string,
+		manualDecoratorIds: Record<string, boolean> = {},
+		changeSelection = true
+	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
@@ -179,6 +183,10 @@ export default class LinkCommand extends Command {
 						writer.removeAttribute( item, linkRange );
 					} );
 
+					if ( !changeSelection ) {
+						return;
+					}
+
 					// Put the selection at the end of the updated link.
 					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
 				}
@@ -195,6 +203,10 @@ export default class LinkCommand extends Command {
 					} );
 
 					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
+
+					if ( !changeSelection ) {
+						return;
+					}
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
@@ -222,6 +234,10 @@ export default class LinkCommand extends Command {
 
 				// Ranges that accept the `linkHref` attribute. Since we will iterate over `allowedRanges`, let's clone it.
 				const rangesToUpdate = allowedRanges.slice();
+
+				if ( !changeSelection ) {
+					return;
+				}
 
 				// For all selection ranges we want to check whether given range is inside an element that accepts the `linkHref` attribute.
 				// If so, we don't want to propagate applying the attribute to its children.

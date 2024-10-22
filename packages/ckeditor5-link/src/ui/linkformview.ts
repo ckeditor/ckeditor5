@@ -52,12 +52,12 @@ export default class LinkFormView extends View {
 	/**
 	 * The Back button view displayed in the header.
 	 */
-	public backButton: ButtonView;
+	public backButtonView: ButtonView;
 
 	/**
 	 * The Settings button view displayed in the header.
 	 */
-	public settingsButton: ButtonView;
+	public settingsButtonView: ButtonView;
 
 	/**
 	 * The Save button view.
@@ -121,8 +121,8 @@ export default class LinkFormView extends View {
 		this._validators = validators;
 
 		// Create buttons
-		this.backButton = this._createBackButton();
-		this.settingsButton = this._createSettingsButton(); // TODO: Check if there are any link decorators
+		this.backButtonView = this._createBackButton();
+		this.settingsButtonView = this._createSettingsButton(); // TODO: Check if there are any link decorators
 		this.saveButtonView = this._createSaveButton();
 
 		// Create input fields
@@ -184,8 +184,8 @@ export default class LinkFormView extends View {
 			this.urlInputView,
 			this.saveButtonView,
 			...this.listChildren,
-			this.backButton,
-			this.settingsButton,
+			this.backButtonView,
+			this.settingsButtonView,
 			this.displayedTextInputView
 		];
 
@@ -240,7 +240,7 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * Cleans up the supplementary error and information text of the {@link #urlInput}
 	 * bringing them back to the state when the form has been displayed for the first time.
 	 *
 	 * See {@link #isValid}.
@@ -313,8 +313,8 @@ export default class LinkFormView extends View {
 			label: t( 'Link' )
 		} );
 
-		header.children.add( this.backButton, 0 );
-		header.children.add( this.settingsButton );
+		header.children.add( this.backButtonView, 0 );
+		header.children.add( this.settingsButtonView );
 
 		return header;
 	}
@@ -351,7 +351,8 @@ export default class LinkFormView extends View {
 		listView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-link__list'
+					'ck-link__list',
+					'ck-link__list-border-top'
 				]
 			}
 		} );
@@ -406,7 +407,7 @@ export default class LinkFormView extends View {
 		linkInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-link-and-submit', 'ck-labeled-field-view' ]
+				class: [ 'ck', 'ck-link-and-submit' ]
 			},
 			children: [
 				this.urlInputView,
@@ -421,7 +422,7 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * The native DOM `value` of the {@link #urlInputView} element.
+	 * The native DOM `value` of the {@link #urlInput} element.
 	 *
 	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
 	 * which works one way only and may not represent the actual state of the component in the DOM.
@@ -447,7 +448,7 @@ export type LinkFormValidatorCallback = ( form: LinkFormView ) => string | undef
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),
- * for example with a click on {@link ~LinkFormView#saveButtonView}.
+ * for example with a click on {@link ~LinkFormView#saveButton}.
  *
  * @eventName ~LinkFormView#submit
  */
@@ -457,7 +458,7 @@ export type SubmitEvent = {
 };
 
 /**
- * Fired when the form view is canceled, for example with a click on {@link ~LinkFormView#cancelButtonView}.
+ * Fired when the form view is canceled, for example with a click on {@link ~LinkFormView#backButtonView}.
  *
  * @eventName ~LinkFormView#cancel
  */
