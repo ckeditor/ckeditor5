@@ -266,11 +266,11 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
 
 			dialogPlugin.destroy();
 
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 		} );
 	} );
 
@@ -448,7 +448,7 @@ describe( 'Dialog', () => {
 		} );
 
 		it( 'should lock document scroll if the dialog is a modal', () => {
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 
 			dialogPlugin._show( {
 				position: DialogViewPosition.EDITOR_CENTER,
@@ -456,18 +456,18 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
 		} );
 
 		it( 'should not lock document scroll if the dialog is not a modal', () => {
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 
 			dialogPlugin._show( {
 				position: DialogViewPosition.EDITOR_CENTER,
 				className: 'foo'
 			} );
 
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 		} );
 	} );
 
@@ -541,7 +541,7 @@ describe( 'Dialog', () => {
 		} );
 
 		it( 'should unlock document scroll if the dialog is a modal', () => {
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 
 			dialogPlugin._show( {
 				position: DialogViewPosition.EDITOR_CENTER,
@@ -549,11 +549,11 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
 
 			dialogPlugin._hide();
 
-			expect( document.body.classList.contains( 'ck-dialog-body-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 		} );
 	} );
 } );
