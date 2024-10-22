@@ -21,7 +21,7 @@ import ReplaceCommand from './replacecommand.js';
 import ReplaceAllCommand from './replaceallcommand.js';
 import FindNextCommand from './findnextcommand.js';
 import FindPreviousCommand from './findpreviouscommand.js';
-import FindAndReplaceState, { type FindCallback } from './findandreplacestate.js';
+import FindAndReplaceState, { sortSearchResultsByMarkerPositions, type FindCallback } from './findandreplacestate.js';
 import FindAndReplaceUtils from './findandreplaceutils.js';
 import type { ResultType } from './findandreplace.js';
 
@@ -216,6 +216,20 @@ export default class FindAndReplaceEditing extends Plugin {
 		const model = this.editor.model;
 		const { results } = this.state!;
 
+		// We save highlight offset here, as the information about the highlighted result will be lost after the changes.
+		//
+		// It happens because result list is partially regenerated if the result is removed from the paragraph.
+		// Partially means that all sibling result items that are placed in the same paragraph are removed and added again,
+		// which causes the highlighted result to be malformed (usually it's set to first but it's not guaranteed).
+		//
+		// Keep in mind that the highlighted offset is indexed from 1, as it's displayed to the user. It's why we subtract 1 here.
+		//
+		// More info: https://github.com/ckeditor/ckeditor5/issues/16648
+		const oldHighlightOffset = Math.max(
+			this.state!.highlightedOffset - 1,
+			0
+		);
+
 		const changes = model.document.differ.getChanges() as Array<Exclude<DiffItem, DiffItemAttribute>>;
 		const changedMarkers = model.document.differ.getChangedMarkers();
 
@@ -287,9 +301,15 @@ export default class FindAndReplaceEditing extends Plugin {
 			}
 		} );
 
+		// If currently highlighted result was removed, select the next one after removed one.
+		// It stays at the same offset as previous one.
 		if ( !this.state!.highlightedResult && changedSearchResults.length ) {
+			// Use modulo to avoid out of bounds error, just wrap around.
+			const sortedResults = sortSearchResultsByMarkerPositions( this.state!.results );
+			const restoreNextResult = sortedResults.get( oldHighlightOffset % sortedResults.length );
+
 			// If there are found phrases but none is selected, select the first one.
-			this.state!.highlightedResult = changedSearchResults[ 0 ];
+			this.state!.highlightedResult = restoreNextResult;
 		} else {
 			// If there is already highlight item then refresh highlight offset after appending new items.
 			this.state!.refreshHighlightOffset();

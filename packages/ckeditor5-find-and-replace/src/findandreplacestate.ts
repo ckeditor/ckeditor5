@@ -151,16 +151,28 @@ export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin
 	 */
 	public refreshHighlightOffset(): void {
 		const { highlightedResult, results } = this;
-		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
 
 		if ( highlightedResult ) {
-			this.highlightedOffset = Array.from( results )
-				.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
-				.indexOf( highlightedResult ) + 1;
+			this.highlightedOffset = sortSearchResultsByMarkerPositions( results ).getIndex( highlightedResult ) + 1;
 		} else {
 			this.highlightedOffset = 0;
 		}
 	}
+}
+
+/**
+ * Sorts search results by marker positions. Make sure that the results are sorted in the same order as they appear in the document
+ * to avoid issues with the `find next` command. Apparently, the order of the results in the state might be different than the order
+ * of the markers in the model.
+ */
+export function sortSearchResultsByMarkerPositions( results: Collection<ResultType> ): Collection<ResultType> {
+	const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
+
+	return new Collection(
+		Array
+			.from( results )
+			.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
+	);
 }
 
 /**
