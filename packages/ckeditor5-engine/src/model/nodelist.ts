@@ -244,7 +244,7 @@ export default class NodeList implements Iterable<Node> {
 
 /**
  * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~NodeList#_offsetToNode}, i.e. one node will
- * occupy multiple items if its offset is greather than one.
+ * occupy multiple items if its offset size is greater than one.
  */
 function makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
 	const offsets: Array<Node> = [];
