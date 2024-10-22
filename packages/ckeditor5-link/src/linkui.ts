@@ -158,6 +158,10 @@ export default class LinkUI extends Plugin {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		if ( this.advancedView ) {
+			this.advancedView.destroy();
+		}
+
 		if ( this.formView ) {
 			this.formView.destroy();
 		}
@@ -285,6 +289,9 @@ export default class LinkUI extends Plugin {
 		return formView;
 	}
 
+	/**
+	 * Creates the {@link module:link/ui/linkadvancedview~LinkAdvancedView} instance.
+	 */
 	private _createAdvancedView(): LinkAdvancedView {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
