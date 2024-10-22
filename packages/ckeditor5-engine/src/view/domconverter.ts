@@ -32,6 +32,9 @@ import {
 	isComment,
 	isValidAttributeName,
 	first,
+	getSelection,
+	getParentOrHostElement,
+	getActiveElement,
 	env
 } from '@ckeditor/ckeditor5-utils';
 
@@ -1089,8 +1092,10 @@ export default class DomConverter {
 	 */
 	public focus( viewEditable: EditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
+		const activeElement = domEditable && getActiveElement( domEditable );
 
-		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
+		// TODO ShadowRoot
+		if ( domEditable && activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
 			const scrollPositions: Array<[ number, number ]> = [];
@@ -1135,7 +1140,7 @@ export default class DomConverter {
 		}
 
 		// Check if DOM selection is inside editor editable element.
-		const domSelection = domEditable.ownerDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( domEditable )!;
 		const newViewSelection = this.domSelectionToView( domSelection );
 		const selectionInEditable = newViewSelection && newViewSelection.rangeCount > 0;
 
@@ -1203,7 +1208,8 @@ export default class DomConverter {
 	 * @param DOM Selection instance to check.
 	 */
 	public isDomSelectionBackward( selection: DomSelection ): boolean {
-		if ( selection.isCollapsed ) {
+		// TODO ShadowRoot have invalid isCollapsed, check first range and if this issue is not resolved in Chrome.
+		if ( selection.isCollapsed && ( !selection.rangeCount || selection.getRangeAt( 0 ).collapsed ) ) {
 			return false;
 		}
 
@@ -1851,7 +1857,8 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 
 	while ( node ) {
 		callback( node );
-		node = node.parentElement;
+		// TODO ShadowRoot
+		node = getParentOrHostElement( node ) as DomElement | null;
 	}
 }
 

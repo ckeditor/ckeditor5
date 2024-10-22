@@ -75,6 +75,8 @@ export default class DragDropBlockToolbar extends Plugin {
 			const element = blockToolbar.buttonView.element!;
 
 			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
+
+			// TODO ShadowRoot - those events will propagate across the shadow DOM boundary (bubbles and composed flags set)
 			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
@@ -132,10 +134,20 @@ export default class DragDropBlockToolbar extends Plugin {
 			return;
 		}
 
+		const view = this.editor.editing.view;
+
 		const clientX = domEvent.clientX + ( this.editor.locale.contentLanguageDirection == 'ltr' ? 100 : -100 );
 		const clientY = domEvent.clientY;
-		const target = document.elementFromPoint( clientX, clientY );
-		const view = this.editor.editing.view;
+
+		let target = document.elementFromPoint( clientX, clientY );
+
+		// TODO ShadowRoot
+		//  - this is a workaround, works this way only in open shadow root
+		//  - we should use map of known shadow roots and not depend on the shadowRoot property (it's there only for open mode)
+		//  - the ShadowRoot#elementFromPoint() is non-standard but available in all browsers.
+		if ( target && target.shadowRoot && target.shadowRoot.elementFromPoint ) {
+			target = target.shadowRoot.elementFromPoint( clientX, clientY );
+		}
 
 		if ( !target || !target.closest( '.ck-editor__editable' ) ) {
 			return;

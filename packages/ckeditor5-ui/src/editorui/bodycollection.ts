@@ -86,7 +86,13 @@ export default class BodyCollection extends ViewCollection {
 
 		if ( !wrapper ) {
 			wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
+			// TODO ShadowRoot
 			document.body.appendChild( wrapper );
+		}
+
+		// TODO ShadowRoot (this won't work for closed shadow root)
+		if ( wrapper.shadowRoot ) {
+			wrapper = wrapper.shadowRoot;
 		}
 
 		wrapper.appendChild( this._bodyCollectionContainer );
@@ -103,6 +109,7 @@ export default class BodyCollection extends ViewCollection {
 			this._bodyCollectionContainer.remove();
 		}
 
+		// TODO ShadowRoot
 		const wrapper = document.querySelector( '.ck-body-wrapper' );
 
 		if ( wrapper && wrapper.childElementCount == 0 ) {

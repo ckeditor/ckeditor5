@@ -512,5 +512,5 @@ function extractCoordinates( event: MouseEvent ) {
 }
 
 function existsInDom( element: Node | DocumentFragment | undefined | null ) {
-	return element && element.ownerDocument && element.ownerDocument.contains( element );
+	return element && element.isConnected;
 }

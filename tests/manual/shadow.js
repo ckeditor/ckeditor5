@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, CSSStyleSheet */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
@@ -55,8 +55,31 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
+const editorComponent = document.querySelector( '#editor-component' );
+
+const editorShadow = editorComponent.attachShadow( { mode: 'open' } );
+const bodyCollectionWrapperShadow = document.querySelector( '.ck-body-wrapper' ).attachShadow( { mode: 'open' } );
+
+const editorElement = document.createElement( 'div' );
+
+editorShadow.appendChild( editorElement );
+
+for ( const sheet of document.styleSheets ) {
+	if ( sheet.ownerNode?.dataset?.cke ) {
+		const shadowSheet = new CSSStyleSheet();
+		shadowSheet.replaceSync( sheet.ownerNode.textContent.replace( /:root/g, ':host' ) );
+
+		editorShadow.adoptedStyleSheets = [ shadowSheet ];
+		bodyCollectionWrapperShadow.adoptedStyleSheets = [ shadowSheet ];
+
+		sheet.disabled = true;
+		break;
+	}
+}
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( editorElement, {
+		initialData: document.querySelector( '#editor-data' ).innerHTML,
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
@@ -246,49 +269,6 @@ ClassicEditor
 
 		editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
 			console.log( `Characters: ${ stats.characters }, words: ${ stats.words }.` );
-		} );
-
-		document.getElementById( 'clear-content' ).addEventListener( 'click', () => {
-			editor.setData( '' );
-		} );
-
-		// The "Print editor data" button logic.
-		document.getElementById( 'print-data-action' ).addEventListener( 'click', () => {
-			const iframeElement = document.getElementById( 'print-data-container' );
-
-			/* eslint-disable max-len */
-			iframeElement.srcdoc = '<html>' +
-				'<head>' +
-					`<title>${ document.title }</title>` +
-					'<link rel="stylesheet" href="https://ckeditor.com/docs/ckeditor5/latest/snippets/features/page-break/snippet.css" type="text/css">' +
-				'</head>' +
-				'<body class="ck-content">' +
-					editor.getData() +
-					'<script>' +
-						'window.addEventListener( \'DOMContentLoaded\', () => { window.print(); } );' +
-					'</script>' +
-				'</body>' +
-			'</html>';
-			/* eslint-enable max-len */
-		} );
-
-		const button = document.getElementById( 'read-only' );
-		let isReadOnly = false;
-
-		button.addEventListener( 'click', () => {
-			isReadOnly = !isReadOnly;
-
-			if ( isReadOnly ) {
-				editor.enableReadOnlyMode( 'manual-test' );
-			} else {
-				editor.disableReadOnlyMode( 'manual-test' );
-			}
-
-			button.textContent = isReadOnly ?
-				'Turn off read-only mode' :
-				'Turn on read-only mode';
-
-			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

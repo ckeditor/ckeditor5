@@ -86,6 +86,7 @@ export default class MutationObserver extends Observer {
 		this._domElements.add( domElement );
 
 		if ( this.isEnabled ) {
+			// TODO ShadowRoot - will this work if widget has its own Shadow DOM?
 			this._mutationObserver.observe( domElement, this._config );
 		}
 	}
