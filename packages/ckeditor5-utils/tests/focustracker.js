@@ -27,7 +27,6 @@ describe( 'FocusTracker', () => {
 		clock = testUtils.sinon.useFakeTimers();
 
 		focusTracker = new FocusTracker();
-		focusTracker._label = 'Root';
 	} );
 
 	afterEach( () => {
@@ -1040,7 +1039,6 @@ describe( 'FocusTracker', () => {
 			] );
 
 			this.focusTracker = new FocusTracker();
-			this.focusTracker._label = elementName;
 		}
 
 		render() {

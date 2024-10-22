@@ -220,8 +220,6 @@ function addMenuToOpenDropdown(
 	const dropdownMenuRootListView = dropdownView.menuView!;
 	const t = dropdownView.locale!.t;
 
-	// dropdownView.focusTracker._label = 'MenuDropdownView';
-
 	dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
 	dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
 		if ( !isOpen ) {
