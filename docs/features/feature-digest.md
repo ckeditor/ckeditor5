@@ -5,7 +5,7 @@ meta-title: Feature digest | CKEditor 5 Documentation
 classes: main__content--no-toc
 toc: false
 modified_at: 2024-10-17
-order: -997
+order: -998
 ---
 
 ## Core editing
@@ -474,7 +474,7 @@ order: -997
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mermaid.html">Mermaid<span
 						class="tree__item__badge tree__item__badge_new"
-						data-badge-tooltip="New or updated content">Experimental</span></a>
+						data-badge-tooltip="Experimental feature">Exp</span></a>
 			</td>
 			<td>
 				You can create flowcharts and diagrams in CKEditor 5 thanks to the
@@ -1007,7 +1007,7 @@ order: -997
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html">Paste
 					Markdown<span class="tree__item__badge tree__item__badge_new"
-						data-badge-tooltip="New or updated content">Experimental</span></a>
+						data-badge-tooltip="Experimental feature">Exp</span></a>
 			</td>
 			<td>
 				The paste Markdown feature lets users paste Markdown-formatted content
@@ -1930,7 +1930,7 @@ order: -997
 					Upload Adapter</a>
 			</td>
 			<td>
-				Upload images to your server using the `XMLHttpRequest` API with a
+				Upload images to your server using the <code>XMLHttpRequest</code> API with a
 				minimal editor configuration.
 			</td>
 		</tr>

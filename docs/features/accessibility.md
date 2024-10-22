@@ -3,7 +3,7 @@ category: features
 classes: keyboard-shortcuts
 meta-title: Accessibility support | CKEditor 5 Documentation
 modified_at: 2024-04-05
-order: -998
+order: -997
 ---
 
 # Accessibility support
