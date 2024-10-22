@@ -16,7 +16,8 @@ import { type View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'lodash-es';
 
 /**
- * Allows observing a group of DOM `Element`s whether at least one of them (or their child) is focused.
+ * Allows observing a group of DOM `Element`s or {@link module:ui/view~View view instances} whether at least one of them (or their child)
+ * is focused.
  *
  * Used by the {@link module:core/editor/editor~Editor} in order to track whether the focus is still within the application,
  * or were used outside of its UI.
@@ -42,7 +43,8 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	 * While {@link #isFocused `isFocused`} remains `true`, the focus can move between different UI elements. This property tracks those
 	 * elements and tells which one is currently focused.
 	 *
-	 * **Note**: The values of this property are restricted to {@link #elements} or elements registered in {@link #externalViews}.
+	 * **Note**: The values of this property are restricted to {@link #elements} or {@link module:ui/view~View#element elements}
+	 * registered in {@link #externalViews}.
 	 *
 	 * @readonly
 	 * @observable
@@ -50,7 +52,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	declare public focusedElement: Element | null;
 
 	/**
-	 * List of registered elements.
+	 * List of registered DOM elements.
 	 *
 	 * @internal
 	 */
@@ -198,8 +200,8 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 
 	/**
-	 * Adds an external `View` instance to this focus tracker and makes it contribute to this focus tracker's state either by its
-	 * `View#element` or by its `View#focusTracker` instance.
+	 * Adds an external {@link module:ui/view~View view instance} to this focus tracker and makes it contribute to this focus tracker's
+	 * state either by its `View#element` or by its `View#focusTracker` instance.
 	 */
 	private _addView( view: ViewWithFocusTracker ): void {
 		if ( view.element ) {
@@ -225,7 +227,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 	}
 
 	/**
-	 * Removes an external `FocusTracker` instance from this focus tracker.
+	 * Removes an external {@link module:ui/view~View view instance} from this focus tracker.
 	 */
 	private _removeView( view: ViewWithFocusTracker ): void {
 		if ( view.element ) {
@@ -238,8 +240,8 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 
 	/**
 	 * Destroys the focus tracker by:
-	 * - Disabling all event listeners attached to tracked elements.
-	 * - Removing all tracked elements that were previously added.
+	 * - Disabling all event listeners attached to tracked elements or external views.
+	 * - Removing all tracked elements and views that were previously added.
 	 */
 	public destroy(): void {
 		this.stopListening();
@@ -265,6 +267,7 @@ export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #_
 
 	/**
 	 * Clears currently {@link #focusedElement} and sets {@link #isFocused} `false`.
+	 *
 	 * This method uses `setTimeout()` to change order of `blur` and `focus` events calls, ensuring that moving focus between
 	 * two elements within a single focus tracker's scope, will not cause `[ blurA, focusB ]` sequence but just `[ focusB ]`.
 	 * The former would cause a momentary change of `#isFocused` to `false` which is not desired because any logic listening to
