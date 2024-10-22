@@ -7,11 +7,12 @@
  * @module link/ui/linkpreviewbuttonview
  */
 
-import { ButtonView, type ButtonLabel } from 'ckeditor5/src/ui.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 
 /**
- * TODO
+ * The link button class. Rendered as an `<a>` tag with link opening in a new tab.
+ * Provides a custom `execute` cancelable event.
  */
 export default class LinkPreviewButtonView extends ButtonView {
 	/**
@@ -24,8 +25,8 @@ export default class LinkPreviewButtonView extends ButtonView {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, labelView?: ButtonLabel ) {
-		super( locale, labelView );
+	constructor( locale: Locale ) {
+		super( locale );
 
 		const bind = this.bindTemplate;
 
@@ -50,7 +51,7 @@ export default class LinkPreviewButtonView extends ButtonView {
 					if ( this.href ) {
 						const cancel = () => evt.preventDefault();
 
-						this.fire<LinkPreviewButtonExecuteEvent>( 'execute', this.href, cancel );
+						this.fire<LinkPreviewButtonNavigateEvent>( 'navigate', this.href, cancel );
 					}
 				} )
 			}
@@ -63,9 +64,9 @@ export default class LinkPreviewButtonView extends ButtonView {
 /**
  * Fired when the button view is clicked.
  *
- * @eventName ~LinkPreviewButtonView#execute
+ * @eventName ~LinkPreviewButtonView#navigate
  */
-export type LinkPreviewButtonExecuteEvent = {
-	name: 'execute';
-	args: [ string, () => void ];
+export type LinkPreviewButtonNavigateEvent = {
+	name: 'navigate';
+	args: [ href: string, cancel: () => void ];
 };

@@ -22,12 +22,13 @@ import {
 	CssTransitionDisablerMixin,
 	MenuBarMenuListItemButtonView,
 	ToolbarView,
-	type ViewWithCssTransitionDisabler
+	type ViewWithCssTransitionDisabler,
+	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
-import LinkPreviewButtonView from './ui/linkpreviewbuttonview.js';
+import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
 import type LinkCommand from './linkcommand.js';
@@ -314,7 +315,7 @@ export default class LinkUI extends Plugin {
 				url => isScrollableToTarget( editor, url ) ? t( 'Scroll to target' ) : t( 'Open link in new tab' )
 			);
 
-			this.listenTo( button, 'execute', ( evt, href, cancel ) => {
+			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
 				if ( scrollToTarget( editor, href ) ) {
 					cancel();
 				}
@@ -336,7 +337,7 @@ export default class LinkUI extends Plugin {
 
 			button.bind( 'isEnabled' ).to( unlinkCommand );
 
-			this.listenTo( button, 'execute', () => {
+			this.listenTo<ButtonExecuteEvent>( button, 'execute', () => {
 				editor.execute( 'unlink' );
 				this._hideUI();
 			} );
@@ -357,7 +358,7 @@ export default class LinkUI extends Plugin {
 
 			button.bind( 'isEnabled' ).to( linkCommand );
 
-			this.listenTo( button, 'execute', () => {
+			this.listenTo<ButtonExecuteEvent>( button, 'execute', () => {
 				this._addFormView();
 			} );
 
@@ -401,7 +402,7 @@ export default class LinkUI extends Plugin {
 		view.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 		// Show the panel on button click.
-		this.listenTo( view, 'execute', () => this._showUI( true ) );
+		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => this._showUI( true ) );
 
 		return view;
 	}
@@ -601,11 +602,11 @@ export default class LinkUI extends Plugin {
 		}
 		// If there's a link under the selection...
 		else {
-			// Go to the editing UI if actions are already visible.
+			// Go to the editing UI if toolbar is already visible.
 			if ( this._isToolbarVisible ) {
 				this._addFormView();
 			}
-			// Otherwise display just the actions UI.
+			// Otherwise display just the toolbar.
 			else {
 				this._addActionsView();
 			}
