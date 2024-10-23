@@ -84,6 +84,13 @@ export default class BookmarkEditing extends Plugin {
 	}
 
 	/**
+	 * Returns all bookmark names existing in the content.
+	 */
+	public getAllBookmarkNames(): Set<string> {
+		return new Set( Array.from( this._bookmarkElements.values() ) );
+	}
+
+	/**
 	 * Defines the schema for the bookmark feature.
 	 */
 	private _defineSchema() {

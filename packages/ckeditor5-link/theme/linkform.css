@@ -75,10 +75,16 @@
 		& .ck-link__button {
 			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
 			border-radius: 0;
-	
+
 			& > .ck-button__label {
 				flex-grow: 1;
 			}
 		}
+	}
+
+	& .ck-link__empty-prompt {
+		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+		text-align: center;
+		font-style: italic;
 	}
 }

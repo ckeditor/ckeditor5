@@ -17,16 +17,20 @@ import {
 } from 'ckeditor5/src/engine.js';
 import {
 	ButtonView,
+	ListItemView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	MenuBarMenuListItemButtonView,
-	type ViewWithCssTransitionDisabler
+	type ViewWithCssTransitionDisabler,
+	ListView
 } from 'ckeditor5/src/ui.js';
+
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
+import LinkBookmarksView from './ui/linkbookmarksview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
 import LinkActionsView from './ui/linkactionsview.js';
 import type LinkCommand from './linkcommand.js';
@@ -58,6 +62,11 @@ export default class LinkUI extends Plugin {
 	 * The form view displayed inside the balloon.
 	 */
 	public formView: LinkFormView & ViewWithCssTransitionDisabler | null = null;
+
+	/**
+	 * The view displaying bookmarks list.
+	 */
+	public bookmarksView: LinkBookmarksView | null = null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -168,6 +177,10 @@ export default class LinkUI extends Plugin {
 		this.actionsView = this._createActionsView();
 		this.formView = this._createFormView();
 
+		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
+			this.bookmarksView = this._createBookmarksView();
+		}
+
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
 	}
@@ -225,8 +238,20 @@ export default class LinkUI extends Plugin {
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
 
-		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
+		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
 			formView.listChildren.add( this._createBookmarksButton() );
+
+			this._createBookmarksListView().forEach( buttonView => {
+				this.bookmarksView!.listChildren.add( buttonView );
+			} );
+
+			this.listenTo( this, 'showBookmarks', () => {
+				this._balloon.add( {
+					view: this.bookmarksView!,
+					position: this._getBalloonPositionData()
+				} );
+				this.bookmarksView!.focus();
+			} );
 		}
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
@@ -269,6 +294,52 @@ export default class LinkUI extends Plugin {
 		return formView;
 	}
 
+	private _createBookmarksListView(): Array<ButtonView> {
+		const editor = this.editor;
+		const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+		const view = new ListView( this.editor.locale );
+		const bookmarksNames = bookmarkEditing.getAllBookmarkNames();
+
+		const buttonsArray: Array<ButtonView> = [];
+
+		bookmarksNames.forEach( bookmarkName => {
+			const listItemView = new ListItemView( this.editor.locale );
+
+			const buttonView = new ButtonView();
+
+			buttonView.withText = true;
+			buttonView.label = bookmarkName;
+			listItemView.children.add( buttonView );
+
+			view.items.add( listItemView );
+			buttonsArray.push( buttonView );
+		} );
+
+		return buttonsArray;
+	}
+
+	private _createBookmarksView(): LinkBookmarksView {
+		const editor = this.editor;
+		const view = new LinkBookmarksView( this.editor.locale );
+
+		// Hide the panel after clicking the "Cancel" button.
+		this.listenTo( view, 'cancel', () => {
+			this._balloon.remove( this.bookmarksView! );
+			this.formView!.focus();
+		} );
+		// Close the panel on esc key press when the **form has focus**.
+		view.keystrokes.set( 'Esc', ( data, cancel ) => {
+			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
+			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
+			editor.editing.view.focus();
+			this._balloon.remove( this.bookmarksView! );
+			this.formView!.focus();
+			cancel();
+		} );
+
+		return view;
+	}
+
 	/**
 	 * Creates a toolbar Link button. Clicking this button will show
 	 * a {@link #_balloon} attached to the selection.
@@ -309,7 +380,28 @@ export default class LinkUI extends Plugin {
 			label: t( 'Bookmarks' )
 		} );
 
+		bookmarksButton.delegate( 'execute' ).to( this, 'showBookmarks' );
+
 		return bookmarksButton;
+	}
+
+	private _createEmptyBookmarksListItemView(): ListItemView {
+		const listItemView = new ListItemView( this.editor.locale );
+		const t = this.editor.locale.t;
+
+		listItemView.setTemplate( {
+			tag: 'p',
+
+			attributes: {
+				class: 'ck ck-link__empty-prompt'
+			},
+
+			children: [
+				t( 'No bookmarks available.' )
+			]
+		} );
+
+		return listItemView;
 	}
 
 	/**
@@ -515,6 +607,19 @@ export default class LinkUI extends Plugin {
 			this._createViews();
 		}
 
+		// To make bindings works.
+		// Clear the collection of bookmarks.
+		this.bookmarksView!.listChildren.clear();
+
+		// Add bookmarks to the collection.
+		this._createBookmarksListView().forEach( buttonView => {
+			this.bookmarksView!.listChildren.add( buttonView );
+		} );
+
+		if ( !this._createBookmarksListView().length ) {
+			this.bookmarksView!.listChildren.add( this._createEmptyBookmarksListItemView() );
+		}
+
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
 			// Show visual selection on a text without a link when the contextual balloon is displayed.
@@ -575,6 +680,7 @@ export default class LinkUI extends Plugin {
 
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView! );
+		this._balloon.remove( this.bookmarksView! );
 
 		this._hideFakeVisualSelection();
 	}
