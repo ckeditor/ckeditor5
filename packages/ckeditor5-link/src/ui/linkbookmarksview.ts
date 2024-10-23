@@ -50,12 +50,15 @@ export default class LinkBookmarksView extends View {
 
 	// public readonly listBookmarksChildren: ViewCollection<ListView>;
 
-	public readonly listChildren: ViewCollection<ButtonView | ListItemView>;
+	public readonly listChildren: ViewCollection<ButtonView>;
+
+	public emptyListInformation: View;
 
 	/**
 	 * A collection of child views.
 	 */
 	public children: ViewCollection;
+	// public childrenButtons: ViewCollection<ButtonView>;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -81,16 +84,29 @@ export default class LinkBookmarksView extends View {
 
 		this.backButton = this._createBackButton();
 		this.listChildren = this.createCollection();
+		this.emptyListInformation = this._createEmptyBookmarksListItemView();
 
 		this.children = this.createCollection( [
-			this._createHeaderView()
+			this._createHeaderView(),
+			this.emptyListInformation
 		] );
+
+		// this.childrenButtons = this.createCollection();
 
 		// Add list view to the children when the first item is added to the list.
 		// This is to avoid adding the list view when the form is empty.
 		this.listenTo( this.listChildren, 'add', () => {
 			this.stopListening( this.listChildren, 'add' );
 			this.children.add( this._createListView() );
+			// this.childrenButtons.add( this._createBookmarksButtonsForFocus() );
+		} );
+
+		this.listenTo( this.listChildren, 'remove', () => {
+			if ( !this.children.has( this.emptyListInformation ) ) {
+				this.children.add( this.emptyListInformation );
+			}
+
+			console.log( 'REMOVE !!!!!!' );
 		} );
 
 		this._focusCycler = new FocusCycler( {
@@ -107,7 +123,7 @@ export default class LinkBookmarksView extends View {
 		} );
 
 		this.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 
 			attributes: {
 				class: [ 'ck', 'ck-link__panel' ],
@@ -132,7 +148,7 @@ export default class LinkBookmarksView extends View {
 
 		// TODO: focusable list items
 		const childViews = [
-			// ...this._manualDecoratorSwitches,
+			...this.children, // Need only bookmarks buttons
 			this.backButton
 		];
 
@@ -183,6 +199,11 @@ export default class LinkBookmarksView extends View {
 			const listItemView = new ListItemView( this.locale );
 
 			listItemView.children.add( def );
+			// this.childrenButtons.add( def );
+
+			if ( this.children.has( this.emptyListInformation ) ) {
+				this.children.remove( this.emptyListInformation );
+			}
 
 			return listItemView;
 		} );
@@ -221,6 +242,23 @@ export default class LinkBookmarksView extends View {
 		header.children.add( this.backButton, 0 );
 
 		return header;
+	}
+
+	private _createEmptyBookmarksListItemView(): View {
+		const t = this.locale!.t;
+		const view = new View( this.locale );
+
+		view.setTemplate( {
+			tag: 'p',
+			attributes: {
+				class: [ 'ck ck-link__empty-prompt' ]
+			},
+			children: [
+				t( 'No bookmarks available.' )
+			]
+		} );
+
+		return view;
 	}
 }
 

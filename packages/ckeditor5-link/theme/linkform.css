@@ -87,4 +87,8 @@
 		text-align: center;
 		font-style: italic;
 	}
+
+	& .ck-link__items:empty {
+		display: none;
+	}
 }
