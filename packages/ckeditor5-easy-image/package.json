@@ -21,7 +21,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-clipboard": "43.2.0",
     "@ckeditor/ckeditor5-cloud-services": "43.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^44.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
     "@ckeditor/ckeditor5-editor-classic": "43.2.0",
     "@ckeditor/ckeditor5-image": "43.2.0",
     "@ckeditor/ckeditor5-paragraph": "43.2.0",

@@ -6,6 +6,7 @@
 /* eslint-env node */
 
 import minimist from 'minimist';
+import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
  * @param {Array.<String>} args An array containing modifiers for the executed command.
@@ -54,22 +55,6 @@ export default function parseArguments( args ) {
 	] );
 
 	return options;
-}
-
-/**
- * Replaces all kebab-case keys in the `options` object with camelCase entries.
- * Kebab-case keys will be removed.
- *
- * @param {Object} options
- * @param {Array.<String>} keys Kebab-case keys in `options` object.
- */
-function replaceKebabCaseWithCamelCase( options, keys ) {
-	for ( const key of keys ) {
-		const camelCaseKey = key.replace( /-./g, match => match[ 1 ].toUpperCase() );
-
-		options[ camelCaseKey ] = options[ key ];
-		delete options[ key ];
-	}
 }
 
 /**
