@@ -34,6 +34,7 @@ import {
 	global,
 	priorities,
 	logWarning,
+	type FocusTracker,
 	type Collection,
 	type Locale,
 	type ObservableChangeEvent
@@ -198,6 +199,7 @@ export function addMenuToDropdown(
 		ariaLabel?: string;
 	} = {} ): void {
 	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+	dropdownView.focusTracker.add( dropdownView.menuView );
 
 	if ( dropdownView.isOpen ) {
 		addMenuToOpenDropdown( dropdownView, options );
@@ -231,7 +233,7 @@ function addMenuToOpenDropdown(
 	// Nested menu panels are added to body collection, so they are not children of the `dropdownView` from DOM perspective.
 	// Add these panels to `dropdownView` focus tracker, so they are treated like part of the `dropdownView` for focus-related purposes.
 	for ( const menu of dropdownMenuRootListView.menus ) {
-		dropdownView.focusTracker.add( menu.panelView.element! );
+		dropdownView.focusTracker.add( menu );
 	}
 
 	dropdownMenuRootListView.ariaLabel = options.ariaLabel || t( 'Dropdown menu' );
@@ -360,6 +362,7 @@ function addToolbarToOpenDropdown(
 	}
 
 	dropdownView.panelView.children.add( toolbarView );
+	dropdownView.focusTracker.add( toolbarView );
 	toolbarView.items.delegate( 'execute' ).to( dropdownView );
 }
 
@@ -537,9 +540,23 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 		},
 		contextElements: () => [
 			dropdownView.element!,
-			...dropdownView.focusTracker.elements
+			// Include all elements connected to the dropdown's focus tracker, but exclude those that are direct children
+			// of DropdownView#element. They would be identified as descendants of #element anyway upon clicking and would
+			// not contribute to the logic.
+			...getFocusTrackerTreeElements( dropdownView.focusTracker ).filter( element => !dropdownView.element!.contains( element ) )
 		]
 	} );
+}
+
+/**
+ * Returns all DOM elements connected to a DropdownView's focus tracker, either directly (same DOM sub-tree)
+ * or indirectly (external views registered in the focus tracker).
+ */
+function getFocusTrackerTreeElements( focusTracker: FocusTracker ): Array<Element> {
+	return [
+		...focusTracker.elements,
+		...focusTracker.externalViews.flatMap( view => getFocusTrackerTreeElements( view.focusTracker ) )
+	];
 }
 
 /**

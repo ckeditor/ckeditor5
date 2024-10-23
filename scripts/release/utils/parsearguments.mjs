@@ -7,6 +7,7 @@
 
 import minimist from 'minimist';
 import os from 'os';
+import replaceKebabCaseWithCamelCase from '../../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
  * @param {Array.<String>} cliArguments
@@ -15,6 +16,7 @@ import os from 'os';
 export default function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
+			'internal',
 			'nightly',
 			'nightly-alpha',
 			'verbose',
@@ -35,6 +37,7 @@ export default function parseArguments( cliArguments ) {
 		],
 
 		default: {
+			internal: false,
 			nightly: false,
 			'nightly-alpha': false,
 			concurrency: os.cpus().length / 2,
@@ -69,6 +72,10 @@ export default function parseArguments( cliArguments ) {
 		options.npmTag = 'alpha';
 	}
 
+	if ( options.internal ) {
+		options.npmTag = 'internal';
+	}
+
 	if ( process.env.CI ) {
 		options.ci = true;
 	}
@@ -77,23 +84,9 @@ export default function parseArguments( cliArguments ) {
 }
 
 /**
- * Replaces all kebab-case keys in the `options` object with camelCase entries.
- * Kebab-case keys will be removed.
- *
- * @param {Object} options
- * @param {Array.<String>} keys Kebab-case keys in `options` object.
- */
-function replaceKebabCaseWithCamelCase( options, keys ) {
-	for ( const key of keys ) {
-		const camelCaseKey = key.replace( /-./g, match => match[ 1 ].toUpperCase() );
-
-		options[ camelCaseKey ] = options[ key ];
-		delete options[ key ];
-	}
-}
-
-/**
  * @typedef {Object} ReleaseOptions
+ *
+ * @property {Boolean} internal
  *
  * @property {Boolean} nightly
  *
