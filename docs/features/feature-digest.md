@@ -18,7 +18,7 @@ order: -998
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="advanced-html-editing">
+		<tr id="advanced-html-editing" class="background-blue">
 			<td>
 				<a href="#">Advanced HTML Editing</a>
 			</td>
@@ -30,7 +30,7 @@ order: -998
 				tags.
 			</td>
 		</tr>
-		<tr id="full-page-html">
+		<tr id="full-page-html" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/full-page-html.html">Full page
 					HTML</a>
@@ -46,7 +46,7 @@ order: -998
 				to the end user.
 			</td>
 		</tr>
-		<tr id="general-html-support">
+		<tr id="general-html-support" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html">General
 					HTML Support (GHS)</a>
@@ -59,14 +59,13 @@ order: -998
 				in the output.
 			</td>
 		</tr>
-		<tr id="html-comment">
+		<tr id="html-comment" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-comments.html">HTML comment</a>
 			</td>
-			<td>
+			<td class="subfeature">
 				By default, the editor filters out all HTML comments on initialization.
-				The
-				<code><a
+				The <code><a
 				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_html-support_htmlcomment-HtmlComment.html"
 				  >HtmlComment</a
 				></code>
@@ -74,8 +73,8 @@ order: -998
 				displaying them to the user.
 			</td>
 		</tr>
-		<tr id="html-embed">
-			<td>
+		<tr id="html-embed" class="background-blue">
+			<td class="subfeature">
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html">HTML embed</a>
 			</td>
 			<td>
@@ -84,7 +83,7 @@ order: -998
 				interact with HTML fragments.
 			</td>
 		</tr>
-		<tr id="show-blocks">
+		<tr id="show-blocks" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">Show blocks</a>
 			</td>
@@ -95,7 +94,7 @@ order: -998
 				box.
 			</td>
 		</tr>
-		<tr id="source-editing">
+		<tr id="source-editing" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html">Source editing</a>
 			</td>
@@ -104,7 +103,7 @@ order: -998
 				document.
 			</td>
 		</tr>
-		<tr id="block-formatting">
+		<tr id="block-formatting" class="background-yellow">
 			<td>
 				<a href="#">Block formatting</a>
 			</td>
@@ -117,7 +116,7 @@ order: -998
 				use block quotes to highlight excerpts or important passages.
 			</td>
 		</tr>
-		<tr id="block-quotes">
+		<tr id="block-quotes" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">Block quotes</a>
 			</td>
@@ -127,7 +126,7 @@ order: -998
 				readers’ attention to selected parts of the text.
 			</td>
 		</tr>
-		<tr id="headings-paragraph">
+		<tr id="headings-paragraph" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Headings/paragraph</a>
 			</td>
@@ -137,7 +136,7 @@ order: -998
 				readers and search engines.
 			</td>
 		</tr>
-		<tr id="horizontal-line">
+		<tr id="horizontal-line" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">Horizontal line</a>
 			</td>
@@ -183,7 +182,7 @@ order: -998
 				images, or other content types.
 			</td>
 		</tr>
-		<tr id="font-formatting">
+		<tr id="font-formatting" class="background-blue">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font formatting</a>
 			</td>
@@ -192,7 +191,7 @@ order: -998
 				background color). All of these options are configurable.
 			</td>
 		</tr>
-		<tr id="font-background-color">
+		<tr id="font-background-color" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font background color</a>
 			</td>
@@ -200,13 +199,13 @@ order: -998
 				Effortless make the words stand out even more with a colored background.
 			</td>
 		</tr>
-		<tr id="font-color">
+		<tr id="font-color" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font color</a>
 			</td>
 			<td>Effortlessly make the letters stand out with their own color.</td>
 		</tr>
-		<tr id="font-family">
+		<tr id="font-family" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font family</a>
 			</td>
@@ -215,13 +214,13 @@ order: -998
 				and its destination - print, screen, etc.
 			</td>
 		</tr>
-		<tr id="font-size">
+		<tr id="font-size" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font size</a>
 			</td>
 			<td>Easily control the size of the letters.</td>
 		</tr>
-		<tr id="image">
+		<tr id="image" class="background-yellow">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">Image</a>
 			</td>
@@ -233,7 +232,7 @@ order: -998
 				different image styles, link images<br />
 			</td>
 		</tr>
-		<tr id="image-all-text">
+		<tr id="image-all-text" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html">Image
 					alt text</a>
@@ -244,7 +243,7 @@ order: -998
 				the image depicts.
 			</td>
 		</tr>
-		<tr id="image-captions">
+		<tr id="image-captions" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">Image
 					captions</a>
@@ -253,7 +252,7 @@ order: -998
 				Add optional captions for images, which are shown below the picture.
 			</td>
 		</tr>
-		<tr id="image-insert-via-url">
+		<tr id="image-insert-via-url" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-inserting.html">Image insert
 					via URL</a>
@@ -264,7 +263,7 @@ order: -998
 				way you can save time by adding images that are already online.
 			</td>
 		</tr>
-		<tr id="image-linking">
+		<tr id="image-linking" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-linking.html">Image
 					linking</a>
@@ -278,7 +277,7 @@ order: -998
 				plugin lets you use images as links.
 			</td>
 		</tr>
-		<tr id="image-resize">
+		<tr id="image-resize" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">Image
 					resize</a>
@@ -293,7 +292,7 @@ order: -998
 				plugin.
 			</td>
 		</tr>
-		<tr id="image-styles">
+		<tr id="image-styles" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">Image styles</a>
 			</td>
@@ -303,7 +302,7 @@ order: -998
 				inline to block or vice versa.
 			</td>
 		</tr>
-		<tr id="image-upload">
+		<tr id="image-upload" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">Image
 					upload</a>
@@ -316,7 +315,7 @@ order: -998
 				user to insert images.
 			</td>
 		</tr>
-		<tr id="responsive-images">
+		<tr id="responsive-images" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-responsive.html">Responsive
 					images</a>
@@ -343,7 +342,7 @@ order: -998
 				and editing of links.
 			</td>
 		</tr>
-		<tr id="lists">
+		<tr id="lists" class="background-blue">
 			<td>
 				<a href="#">Lists</a>
 			</td>
@@ -355,7 +354,7 @@ order: -998
 				lists.
 			</td>
 		</tr>
-		<tr id="list-indentation">
+		<tr id="list-indentation" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists">List
 					indentation</a>
@@ -367,7 +366,7 @@ order: -998
 				(nesting them).
 			</td>
 		</tr>
-		<tr id="list-start-index">
+		<tr id="list-start-index" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-start-index">List
 					start index</a>
@@ -379,7 +378,7 @@ order: -998
 				some other digit or letter, though.
 			</td>
 		</tr>
-		<tr id="list-styles">
+		<tr id="list-styles" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles">List
 					styles</a>
@@ -395,7 +394,7 @@ order: -998
 				appropriate list button in the toolbar.
 			</td>
 		</tr>
-		<tr id="multi-level-lists">
+		<tr id="multi-level-lists" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html">Multi-level
 					lists<span class="tree__item__badge tree__item__badge_premium"
@@ -410,7 +409,7 @@ order: -998
 				with Microsoft Word.
 			</td>
 		</tr>
-		<tr id="nested-lists">
+		<tr id="nested-lists" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists">Nested
 					lists</a>
@@ -422,7 +421,7 @@ order: -998
 				(nesting them).
 			</td>
 		</tr>
-		<tr id="ordered-lists">
+		<tr id="ordered-lists" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">Ordered lists</a>
 			</td>
@@ -434,7 +433,7 @@ order: -998
 				list markers type.
 			</td>
 		</tr>
-		<tr id="reversed-list">
+		<tr id="reversed-list" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#reversed-list">Reversed
 					list</a>
@@ -446,7 +445,7 @@ order: -998
 				reversed order (for example, in disassembly instructions).
 			</td>
 		</tr>
-		<tr id="to-do-lists">
+		<tr id="to-do-lists" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">To-do lists</a>
 			</td>
@@ -458,7 +457,7 @@ order: -998
 				lists.
 			</td>
 		</tr>
-		<tr id="unordered-lists">
+		<tr id="unordered-lists" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">Unordered lists</a>
 			</td>
@@ -504,7 +503,7 @@ order: -998
 				command or shortcut.
 			</td>
 		</tr>
-		<tr id="tables">
+		<tr id="tables" class="background-blue">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html">Tables</a>
 			</td>
@@ -515,7 +514,7 @@ order: -998
 				complex data presentation.
 			</td>
 		</tr>
-		<tr id="columns-resizing">
+		<tr id="columns-resizing" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-resize.html">Columns
 					resizing</a>
@@ -530,7 +529,7 @@ order: -998
 				complete control over column width.
 			</td>
 		</tr>
-		<tr id="insert-delete-columns-and-rows">
+		<tr id="insert-delete-columns-and-rows" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Insert/delete
@@ -541,7 +540,7 @@ order: -998
 				or remove columns and rows and merge or split cells.
 			</td>
 		</tr>
-		<tr id="merge-and-split-cells">
+		<tr id="merge-and-split-cells" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Merge
@@ -552,7 +551,7 @@ order: -998
 				or remove columns and rows and merge or split cells.
 			</td>
 		</tr>
-		<tr id="nesting">
+		<tr id="nesting" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#nesting-tables">Nesting</a>
@@ -563,7 +562,7 @@ order: -998
 				table can be formatted just like a regular one.
 			</td>
 		</tr>
-		<tr id="styling-tables-and-cells">
+		<tr id="styling-tables-and-cells" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html">Styling tables
 					&amp; cells</a>
@@ -574,7 +573,7 @@ order: -998
 				background color, padding, or text alignment.
 			</td>
 		</tr>
-		<tr id="table-headers">
+		<tr id="table-headers" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#default-table-headers">Table
 					headers</a>
@@ -585,7 +584,7 @@ order: -998
 				property <code>defaultHeadings</code> .
 			</td>
 		</tr>
-		<tr id="table-selection">
+		<tr id="table-selection" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-selection">Table
 					selection</a>
@@ -604,7 +603,7 @@ order: -998
 				by the <br /><code>Table</code> plugin.
 			</td>
 		</tr>
-		<tr id="tables-caption">
+		<tr id="tables-caption" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-caption.html">Tables
 					caption</a>
@@ -628,7 +627,7 @@ order: -998
 				justify and permits the alteration of indentation.
 			</td>
 		</tr>
-		<tr id="text-formatting">
+		<tr id="text-formatting" class="background-yellow">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Text formatting</a>
 			</td>
@@ -641,19 +640,19 @@ order: -998
 				highlight important content sections.
 			</td>
 		</tr>
-		<tr id="bold">
+		<tr id="bold" class="background-yellow subfeature">
 			<td>
 				<a href="#">Bold</a>
 			</td>
 			<td>Making the letters look like the good time were never gone.</td>
 		</tr>
-		<tr id="code">
+		<tr id="code" class="background-yellow subfeature">
 			<td>
 				<a href="#">Code</a>
 			</td>
 			<td>Snippet look, like a terminal from the 1990s movie.</td>
 		</tr>
-		<tr id="highlight">
+		<tr id="highlight" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">Highlight</a>
 			</td>
@@ -662,19 +661,19 @@ order: -998
 				background fill.
 			</td>
 		</tr>
-		<tr id="italic">
+		<tr id="italic" class="background-yellow subfeature">
 			<td>
 				<a href="#">Italic</a>
 			</td>
 			<td>Making the letters look like seashore pines.</td>
 		</tr>
-		<tr id="strikethrough">
+		<tr id="strikethrough" class="background-yellow subfeature">
 			<td>
 				<a href="#">Strikethrough</a>
 			</td>
 			<td>Never mind, won’t need it anymore.</td>
 		</tr>
-		<tr id="styles">
+		<tr id="styles" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html">Styles</a>
 			</td>
@@ -683,19 +682,19 @@ order: -998
 				block and inline content.
 			</td>
 		</tr>
-		<tr id="subscript">
+		<tr id="subscript" class="background-yellow subfeature">
 			<td>
 				<a href="#">Subscript</a>
 			</td>
 			<td>Fine print at the bottom, like atom numbers.</td>
 		</tr>
-		<tr id="superscript">
+		<tr id="superscript" class="background-yellow subfeature">
 			<td>
 				<a href="#">Superscript</a>
 			</td>
 			<td>Fine print on top, like references in a book.</td>
 		</tr>
-		<tr id="underline">
+		<tr id="underline" class="background-yellow subfeature">
 			<td>
 				<a href="#">Underline</a>
 			</td>
@@ -720,7 +719,7 @@ order: -998
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="asynchronous-collaboration">
+		<tr id="asynchronous-collaboration" class="background-blue">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html">Asynchronous
 					collaboration<span class="tree__item__badge tree__item__badge_premium"
@@ -734,7 +733,7 @@ order: -998
 				and Revision History features to facilitate collaboration.
 			</td>
 		</tr>
-		<tr id="local-data-storage">
+		<tr id="local-data-storage" class="background-blue subfeature">
 			<td>
 				<a href="#">Local data storage<span class="tree__item__badge tree__item__badge_premium"
 						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
@@ -745,7 +744,7 @@ order: -998
 				servers.
 			</td>
 		</tr>
-		<tr id="comments">
+		<tr id="comments" class="background-yellow">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments<span
 						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
@@ -757,7 +756,7 @@ order: -998
 				discuss in threads and remove comments when they finish the discussion.
 			</td>
 		</tr>
-		<tr id="comments-archive">
+		<tr id="comments-archive" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments
 					archive<span class="tree__item__badge tree__item__badge_premium"
@@ -773,7 +772,7 @@ order: -998
 				feedback management process.
 			</td>
 		</tr>
-		<tr id="comments-outside-editor">
+		<tr id="comments-outside-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-outside-editor.html">Comments
@@ -790,7 +789,7 @@ order: -998
 				integration is enabling comments on non-editor form fields.
 			</td>
 		</tr>
-		<tr id="sidebar-modes">
+		<tr id="sidebar-modes" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
@@ -816,7 +815,7 @@ order: -998
 				appear, offering autocomplete suggestions.
 			</td>
 		</tr>
-		<tr id="real-time-collaboration">
+		<tr id="real-time-collaboration" class="background-blue">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">Real-time
@@ -831,7 +830,7 @@ order: -998
 				time.
 			</td>
 		</tr>
-		<tr id="co-authoring">
+		<tr id="co-authoring" class="background-blue subfeature">
 			<td>
 				<a href="#">Co-authoring<span class="tree__item__badge tree__item__badge_premium"
 						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
@@ -839,7 +838,7 @@ order: -998
 			</td>
 			<td>Multiple user real-time editing and content creation feature.</td>
 		</tr>
-		<tr id="on-premises">
+		<tr id="on-premises" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html">On-premises<span
 						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
@@ -850,7 +849,7 @@ order: -998
 				infrastructure, includes a private cloud.
 			</td>
 		</tr>
-		<tr id="saas">
+		<tr id="saas" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">SaaS<span
 						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
@@ -875,7 +874,7 @@ order: -998
 				go.
 			</td>
 		</tr>
-		<tr id="track-changes">
+		<tr id="track-changes" class="background-yellow">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">Track
@@ -890,7 +889,7 @@ order: -998
 				suggestions that they can accept or discard.
 			</td>
 		</tr>
-		<tr id="sidebar-modes">
+		<tr id="sidebar-modes" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
@@ -936,13 +935,13 @@ order: -998
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="content-generation">
+		<tr id="content-generation" class="background-blue">
 			<td>
 				<a href="#">Content generation</a>
 			</td>
 			<td></td>
 		</tr>
-		<tr id="export-to-pdf">
+		<tr id="export-to-pdf" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html">Export to
 					PDF<span class="tree__item__badge tree__item__badge_premium"
@@ -955,7 +954,7 @@ order: -998
 				fonts.
 			</td>
 		</tr>
-		<tr id="export-to-word">
+		<tr id="export-to-word" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html">Export to
 					Word<span class="tree__item__badge tree__item__badge_premium"
@@ -969,7 +968,7 @@ order: -998
 				images.
 			</td>
 		</tr>
-		<tr id="import-from-word">
+		<tr id="import-from-word" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/import-word/import-word.html">Import
 					from Word<span class="tree__item__badge tree__item__badge_premium"
@@ -1056,7 +1055,7 @@ order: -998
 				<br />
 			</td>
 		</tr>
-		<tr id="page-utilities">
+		<tr id="page-utilities" class="background-yellow">
 			<td>
 				<a href="#">Page utilities</a>
 			</td>
@@ -1065,7 +1064,7 @@ order: -998
 				print formatting of their documents effectively.
 			</td>
 		</tr>
-		<tr id="content-minimap">
+		<tr id="content-minimap" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html">Content minimap</a>
 			</td>
@@ -1074,7 +1073,7 @@ order: -998
 				allowing for quick navigation and content management.
 			</td>
 		</tr>
-		<tr id="document-title">
+		<tr id="document-title" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html">Document title</a>
 			</td>
@@ -1083,7 +1082,7 @@ order: -998
 				editing interface, ensuring accurate reflection of the contents.
 			</td>
 		</tr>
-		<tr id="page-break">
+		<tr id="page-break" class="background-yellow subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">Page break</a>
 			</td>
@@ -1157,13 +1156,13 @@ order: -998
 				Amazon Bedrock. You can also integrate it with custom models.
 			</td>
 		</tr>
-		<tr id="automation">
+		<tr id="automation" class="background-blue">
 			<td>
 				<a href="#">Automation</a>
 			</td>
 			<td></td>
 		</tr>
-		<tr id="autoformatting">
+		<tr id="autoformatting" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">Autoformatting</a>
 			</td>
@@ -1174,7 +1173,7 @@ order: -998
 				effortlessly.
 			</td>
 		</tr>
-		<tr id="autolink">
+		<tr id="autolink" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html#autolink-feature">Autolink</a>
 			</td>
@@ -1185,7 +1184,7 @@ order: -998
 				ready to use.
 			</td>
 		</tr>
-		<tr id="automatic-text-transformation">
+		<tr id="automatic-text-transformation" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">Automatic text
 					transformations</a>
@@ -1199,7 +1198,7 @@ order: -998
 				phrases into their full forms.
 			</td>
 		</tr>
-		<tr id="autosave">
+		<tr id="autosave" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/autosave.html">Autosave</a>
 			</td>
@@ -1417,7 +1416,7 @@ order: -998
 				content placeholder.
 			</td>
 		</tr>
-		<tr id="editor-ui-types">
+		<tr id="editor-ui-types" class="background-yellow">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html">Editor UI
 					types</a>
@@ -1429,7 +1428,7 @@ order: -998
 				only available with certain editor types.
 			</td>
 		</tr>
-		<tr id="balloon-block-editor">
+		<tr id="balloon-block-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor">Balloon
@@ -1442,7 +1441,7 @@ order: -998
 				gives access to additional block–level editing features.
 			</td>
 		</tr>
-		<tr id="balloon-editor">
+		<tr id="balloon-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor">Balloon
@@ -1454,7 +1453,7 @@ order: -998
 				selection is not empty).
 			</td>
 		</tr>
-		<tr id="classic-editor">
+		<tr id="classic-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#classic-editor">Classic
@@ -1467,7 +1466,7 @@ order: -998
 				to submit some content to the server.
 			</td>
 		</tr>
-		<tr id="decoupled-editor">
+		<tr id="decoupled-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#decoupled-editor-document">Decoupled
@@ -1480,7 +1479,7 @@ order: -998
 				to PDF files.
 			</td>
 		</tr>
-		<tr id="inline-editor">
+		<tr id="inline-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#inline-editor">Inline
@@ -1495,7 +1494,7 @@ order: -998
 				section.
 			</td>
 		</tr>
-		<tr id="multi-root-editor">
+		<tr id="multi-root-editor" class="background-yellow subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#multi-root-editor">Multi-root
@@ -1524,7 +1523,7 @@ order: -998
 				optimal editing experience.1
 			</td>
 		</tr>
-		<tr id="toolbar-and-menus">
+		<tr id="toolbar-and-menus" class="background-blue">
 			<td>
 				<a href="#">Toolbar and menus</a>
 			</td>
@@ -1539,7 +1538,7 @@ order: -998
 				multiple lines, to display more tools simultaneously.
 			</td>
 		</tr>
-		<tr id="balloon-toolbar">
+		<tr id="balloon-toolbar" class="background-blue subfeature">
 			<td>
 				<a href="#">Balloon toolbar</a>
 			</td>
@@ -1549,7 +1548,7 @@ order: -998
 				accessible (for example in certain layouts, like balloon block editor).
 			</td>
 		</tr>
-		<tr id="block-toolbar">
+		<tr id="block-toolbar" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#block-toolbar">Block
 					toolbar</a>
@@ -1560,7 +1559,7 @@ order: -998
 				accessible (for example in certain layouts, like balloon block editor).
 			</td>
 		</tr>
-		<tr id="classic-toolbar">
+		<tr id="classic-toolbar" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#main-editor-toolbar">Classic
@@ -1573,7 +1572,7 @@ order: -998
 				elements of your content.
 			</td>
 		</tr>
-		<tr id="collapsible-toolbar">
+		<tr id="collapsible-toolbar" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#extended-toolbar-configuration-format">Collapsible
@@ -1581,7 +1580,7 @@ order: -998
 			</td>
 			<td>Collapsible toolbar for UI space efficiency.</td>
 		</tr>
-		<tr id="image-contextual-toolbar">
+		<tr id="image-contextual-toolbar" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">Image
@@ -1610,7 +1609,7 @@ order: -998
 				buttons.
 			</td>
 		</tr>
-		<tr id="menu-bar">
+		<tr id="menu-bar" class="background-blue subfeature">
 			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/menubar.html">Menu bar</a>
 			</td>
@@ -1628,7 +1627,7 @@ order: -998
 				to your custom features.<br />
 			</td>
 		</tr>
-		<tr id="multiline-toolbar">
+		<tr id="multiline-toolbar" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#multiline-wrapping-toolbar">Multiline
@@ -1636,7 +1635,7 @@ order: -998
 			</td>
 			<td>Multiline toolbar for easy access to all functions.</td>
 		</tr>
-		<tr id="nesting-toolbars-in-dropdowns">
+		<tr id="nesting-toolbars-in-dropdowns" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#grouping-toolbar-items-in-dropdowns-nested-toolbars">Nesting
@@ -1644,7 +1643,7 @@ order: -998
 			</td>
 			<td>Nested toolbars for space efficiency and task-oriented acces</td>
 		</tr>
-		<tr id="sidebar-annotations-bar">
+		<tr id="sidebar-annotations-bar" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html#wide-sidebar">Sidebar
@@ -1658,7 +1657,7 @@ order: -998
 				different UIs, or even create your own UI for annotations.
 			</td>
 		</tr>
-		<tr id="table-contextual-toolbar">
+		<tr id="table-contextual-toolbar" class="background-blue subfeature">
 			<td>
 				<a
 					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Table
@@ -1807,7 +1806,7 @@ order: -998
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="editor-sdk">
+		<tr id="editor-sdk" class="background-yellow">
 			<td>
 				<a href="#">Editor SDK</a>
 			</td>
@@ -1822,13 +1821,13 @@ order: -998
 				helping accelerate development work.
 			</td>
 		</tr>
-		<tr id="ckeditor5-inspector">
+		<tr id="ckeditor5-inspector" class="background-yellow subfeature">
 			<td>
 				<a href="#">CKEditor 5 Inspector</a>
 			</td>
 			<td></td>
 		</tr>
-		<tr id="cloud-services-rest-api">
+		<tr id="cloud-services-rest-api" class="background-yellow subfeature">
 			<td>
 				<a href="#">Cloud Services REST API </a>
 			</td>
@@ -1952,3 +1951,30 @@ order: -998
 		</tr>
 	</tbody>
 </table>
+
+<style>
+	tr {
+		display: flex;
+	}
+
+	td:first-child, th:first-child {
+		flex: 1;
+	}
+
+	td:nth-child(2), th:nth-child(2) {
+		flex: 3;
+	}
+
+	.background-blue {
+		background-color: #f2f5f7;
+	}
+
+	.background-yellow {
+		background-color: rgba(255, 230, 0, 0.1);
+	}
+
+	tr.subfeature > td:first-child > * {
+		display: inline-block;
+		margin-left: 12px;
+	}
+</style>
