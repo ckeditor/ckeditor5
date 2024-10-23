@@ -243,15 +243,6 @@ export default class LinkAdvancedView extends View {
 
 			button.on( 'execute', () => {
 				manualDecorator.set( 'value', !button.isOn );
-
-				if ( linkCommand.value ) {
-					// TODO: Should the state be immediately updated if the link value is set?
-					linkCommand.execute(
-						linkCommand.value,
-						this.getDecoratorSwitchesState(),
-						false
-					);
-				}
 			} );
 
 			switches.add( button );
