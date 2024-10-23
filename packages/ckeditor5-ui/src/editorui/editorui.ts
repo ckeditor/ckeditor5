@@ -778,7 +778,7 @@ function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ): n
 
 	// Prioritize contextual toolbars. They are displayed at the selection.
 	if ( options.isContextual ) {
-		weight--;
+		weight -= 2;
 	}
 
 	return weight;

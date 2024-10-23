@@ -204,6 +204,19 @@ export default class LinkUI extends Plugin {
 			cancel();
 		} );
 
+		// Register the toolbar, so it becomes available for Alt+F10 and Esc navigation.
+		editor.ui.addToolbar( toolbarView, {
+			isContextual: true,
+			beforeFocus: () => {
+				if ( this._getSelectedLinkElement() && !this._isToolbarVisible ) {
+					this._showUI( true );
+				}
+			},
+			afterBlur: () => {
+				this._hideUI( false );
+			}
+		} );
+
 		return toolbarView;
 	}
 
@@ -626,12 +639,14 @@ export default class LinkUI extends Plugin {
 	 *
 	 * See {@link #_addFormView}, {@link #_addActionsView}.
 	 */
-	private _hideUI(): void {
+	private _hideUI( updateFocus: boolean = true ): void {
 		const editor = this.editor;
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-		editor.editing.view.focus();
+		if ( updateFocus ) {
+			editor.editing.view.focus();
+		}
 
 		if ( !this._isUIInPanel ) {
 			return;
