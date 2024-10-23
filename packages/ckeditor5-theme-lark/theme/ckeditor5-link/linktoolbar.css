@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-button.ck-link-toolbar__preview {
+	& .ck.ck-button__label {
+		padding: 0 var(--ck-spacing-medium);
+		color: var(--ck-color-link-default);
+		text-overflow: ellipsis;
+		cursor: pointer;
+
+		/* Match the box model of the link editor form's input so the balloon
+		does not change width when moving between actions and the form. */
+		max-width: var(--ck-input-width);
+		min-width: 3em;
+		text-align: center;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&,
+	&:hover,
+	&:focus,
+	&:active {
+		background: none;
+	}
+
+	&:active {
+		box-shadow: none;
+	}
+
+	&:focus {
+		& .ck-button__label {
+			text-decoration: underline;
+		}
+	}
+}
