@@ -8,7 +8,9 @@ menu-title: License key and activation
 
 # License key and activation
 
-This article explains how to activate a commercial license for CKEditor&nbsp;5 and the following CKEditor premium features:
+This article explains how to activate a commercial license for CKEditor&nbsp;5 and the CKEditor premium features.
+
+There are two types of premiums: standalone features and services. Standalone ones require a simple license key and include:
 
 * Asynchronous collaboration features, including:
 	* {@link features/track-changes Track changes}
