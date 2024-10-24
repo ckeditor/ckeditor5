@@ -249,6 +249,8 @@ function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	const keyCodes: { [keyCode: string]: number } = {
 		pageup: 33,
 		pagedown: 34,
+		end: 35,
+		home: 36,
 		arrowleft: 37,
 		arrowup: 38,
 		arrowright: 39,
