@@ -165,6 +165,22 @@ describe( 'InsertImageCommand', () => {
 				);
 		} );
 
+		it( 'should be possible to break the block with an inserted image', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			command.execute( {
+				imageType: 'imageBlock',
+				source: imgSrc,
+				breakBlock: true
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				`<paragraph>f</paragraph>[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>oo</paragraph>`
+			);
+		} );
+
 		it( 'should insert multiple images at selection position as other widgets for inline type images', () => {
 			const imgSrc1 = 'foo/bar.jpg';
 			const imgSrc2 = 'foo/baz.jpg';
