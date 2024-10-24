@@ -73,9 +73,11 @@ will be converted into a bookmark and the output will look like on the example b
 
 You can disable the automatic conversion by setting the {@link module:bookmark/bookmarkconfig~BookmarkConfig#enableNonEmptyAnchorConversion `config.bookmark.enableNonEmptyAnchorConversion`} to `false` in the editor configuration.
 
+<code-switcher>
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bookmark, /* ... */ ],
 		toolbar: [ 'bookmark', /* ... */ ],
 		bookmark: {
@@ -85,6 +87,8 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
+
 ## Bookmarks on blocks
 
 At this time, if a bookmark is attached to a block, it appears before it. However, we plan to expand this solution in the future. We invite you to help us [gather feedback for linking directly to blocks and auto generating IDs](https://github.com/ckeditor/ckeditor5/issues/17264).
