@@ -34,7 +34,7 @@ import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import linkIcon from '../theme/icons/link.svg';
 
 describe( 'LinkUI', () => {
-	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
+	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, advancedView, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -969,6 +969,7 @@ describe( 'LinkUI', () => {
 
 			formView = linkUIFeature.formView;
 			actionsView = linkUIFeature.actionsView;
+			advancedView = linkUIFeature.advancedView;
 		} );
 
 		it( 'should remove the UI from the balloon', () => {
@@ -1036,6 +1037,23 @@ describe( 'LinkUI', () => {
 			expect( () => {
 				linkUIFeature._hideUI();
 			} ).to.not.throw();
+		} );
+
+		it( 'should remove the advanced view UI from the balloon', () => {
+			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			formView.fire( 'showAdvanced' );
+
+			expect( balloon.hasView( formView ) ).to.be.true;
+			expect( balloon.hasView( actionsView ) ).to.be.true;
+			expect( balloon.hasView( advancedView ) ).to.be.true;
+
+			linkUIFeature._hideUI();
+
+			expect( balloon.hasView( formView ) ).to.be.false;
+			expect( balloon.hasView( actionsView ) ).to.be.false;
+			expect( balloon.hasView( advancedView ) ).to.be.false;
+
+			sinon.assert.calledThrice( spy );
 		} );
 	} );
 
@@ -1898,7 +1916,7 @@ describe( 'LinkUI', () => {
 			} );
 
 			describe( 'support manual decorators', () => {
-				let editorElement, editor, model, formView, linkUIFeature;
+				let editorElement, editor, model, formView, advancedView, linkUIFeature;
 
 				beforeEach( () => {
 					editorElement = document.createElement( 'div' );
@@ -1933,12 +1951,14 @@ describe( 'LinkUI', () => {
 							const balloon = editor.plugins.get( ContextualBalloon );
 
 							formView = linkUIFeature.formView;
+							advancedView = linkUIFeature.advancedView;
 
 							// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
 							testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
 							testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
 
 							formView.render();
+							advancedView.render();
 						} );
 				} );
 
@@ -1952,7 +1972,7 @@ describe( 'LinkUI', () => {
 
 					setModelData( model, 'f[<$text linkHref="url" linkIsFoo="true">ooba</$text>]r' );
 					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
-					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkIsFoo: true } );
+					expect( advancedView.getDecoratorSwitchesState() ).to.deep.equal( { linkIsFoo: true } );
 
 					formView.fire( 'submit' );
 
@@ -1965,7 +1985,7 @@ describe( 'LinkUI', () => {
 
 					const manualDecorators = editor.commands.get( 'link' ).manualDecorators;
 					const firstDecoratorModel = manualDecorators.first;
-					const firstDecoratorSwitch = formView._manualDecoratorSwitches.first;
+					const firstDecoratorSwitch = advancedView.listChildren.first;
 
 					expect( firstDecoratorModel.value, 'Initial value should be read from the model (true)' ).to.be.true;
 					expect( firstDecoratorSwitch.isOn, 'Initial value should be read from the model (true)' ).to.be.true;

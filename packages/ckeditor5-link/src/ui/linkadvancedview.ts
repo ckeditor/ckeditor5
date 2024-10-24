@@ -31,7 +31,7 @@ import type LinkCommand from '../linkcommand.js';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../../theme/linkform.css'; // TODO: Split into more granular stylesheets?
+import '../../theme/linkform.css';
 
 /**
  * The link form view controller class.
@@ -52,7 +52,7 @@ export default class LinkAdvancedView extends View {
 	/**
 	 * The Back button view displayed in the header.
 	 */
-	public backButton: ButtonView;
+	public backButtonView: ButtonView;
 
 	/**
 	 * A collection of child views.
@@ -90,7 +90,7 @@ export default class LinkAdvancedView extends View {
 	) {
 		super( locale );
 
-		this.backButton = this._createBackButton();
+		this.backButtonView = this._createBackButton();
 		this.listChildren = this._createSwitches( linkCommand );
 
 		this.children = this.createCollection( [
@@ -129,8 +129,6 @@ export default class LinkAdvancedView extends View {
 	 * Obtains the state of the {@link module:ui/button/switchbuttonview~SwitchButtonView switch buttons} representing
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators manual link decorators}
 	 * in the {@link module:link/ui/linkadvancedview~LinkAdvancedView}.
-	 *
-	 * @returns Key-value pairs, where the key is the name of the decorator and the value is its state.
 	 */
 	public getDecoratorSwitchesState(): Record<string, boolean> {
 		return Array
@@ -153,7 +151,7 @@ export default class LinkAdvancedView extends View {
 
 		const childViews = [
 			...this.listChildren,
-			this.backButton
+			this.backButtonView
 		];
 
 		childViews.forEach( v => {
@@ -213,7 +211,7 @@ export default class LinkAdvancedView extends View {
 			label: t( 'Advanced' )
 		} );
 
-		header.children.add( this.backButton, 0 );
+		header.children.add( this.backButtonView, 0 );
 
 		return header;
 	}
@@ -221,9 +219,6 @@ export default class LinkAdvancedView extends View {
 	/**
 	 * Populates the {@link #listChildren} collection of the form
 	 * based on {@link module:link/linkcommand~LinkCommand#manualDecorators}.
-	 *
-	 * @param linkCommand A reference to the link command.
-	 * @returns ViewCollection of switch buttons.
 	 */
 	private _createSwitches( linkCommand: LinkCommand ): ViewCollection<SwitchButtonView> {
 		const switches = this.createCollection<SwitchButtonView>();
@@ -253,8 +248,6 @@ export default class LinkAdvancedView extends View {
 
 	/**
 	 * Creates a form view that displays the {@link #listChildren} collection.
-	 *
-	 * @returns The children of link form view.
 	 */
 	private _createFormView(): ListView {
 		const listView = new ListView( this.locale );
@@ -280,7 +273,7 @@ export default class LinkAdvancedView extends View {
 }
 
 /**
- * Fired when the form view is canceled, for example with a click on {@link ~LinkAdvancedView#backButton}.
+ * Fired when the form view is canceled, for example with a click on {@link ~LinkAdvancedView#backButtonView}.
  *
  * @eventName ~LinkAdvancedView#cancel
  */

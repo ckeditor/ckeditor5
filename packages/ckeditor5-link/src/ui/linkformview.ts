@@ -122,8 +122,8 @@ export default class LinkFormView extends View {
 
 		// Create buttons
 		this.backButtonView = this._createBackButton();
-		this.settingsButtonView = this._createSettingsButton(); // TODO: Check if there are any link decorators
-		this.saveButtonView = this._createSaveButton(); // TODO: Change to `Update` when editing a link.
+		this.settingsButtonView = this._createSettingsButton();
+		this.saveButtonView = this._createSaveButton();
 
 		// Create input fields
 		this.displayedTextInputView = this._createDisplayedTextInput();

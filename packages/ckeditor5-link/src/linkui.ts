@@ -231,6 +231,7 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createFormView(): LinkFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
+		const t = editor.locale.t;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
@@ -249,6 +250,12 @@ export default class LinkUI extends Plugin {
 
 		// Disable the "save" button if the command is disabled.
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
+
+		// Enable the "Advanced" button only when there are manual decorators.
+		formView.settingsButtonView.bind( 'isEnabled' ).to( linkCommand, 'manualDecorators', decorators => decorators.length > 0 );
+
+		// Change the "Save" button label depending on the command state.
+		formView.saveButtonView.bind( 'label' ).to( linkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
@@ -519,6 +526,11 @@ export default class LinkUI extends Plugin {
 	 */
 	private _closeFormView(): void {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
+		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
+		// when the user cancels the editing form.
+		// TODO: Is this necessary?
+		linkCommand.restoreManualDecoratorStates();
 
 		if ( linkCommand.value !== undefined ) {
 			this._removeAdvancedView();
