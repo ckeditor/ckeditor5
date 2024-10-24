@@ -240,18 +240,6 @@ export default class LinkUI extends Plugin {
 			this.bookmarksView = this._createBookmarksView();
 
 			formView.listChildren.add( this._createBookmarksButton() );
-
-			this._createBookmarksListView().forEach( buttonView => {
-				this.bookmarksView!.listChildren.add( buttonView );
-			} );
-
-			this.listenTo( this, 'showBookmarks', () => {
-				this._balloon.add( {
-					view: this.bookmarksView!,
-					position: this._getBalloonPositionData()
-				} );
-				this.bookmarksView!.focus();
-			} );
 		}
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
@@ -294,14 +282,18 @@ export default class LinkUI extends Plugin {
 		return formView;
 	}
 
+	/**
+	 * TODO
+	 */
 	private _createBookmarksListView(): Array<ButtonView> {
 		const editor = this.editor;
 		const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-		const bookmarksNames = bookmarkEditing.getAllBookmarkNames();
+		const bookmarksNames = Array.from( bookmarkEditing.getAllBookmarkNames() );
 
-		const buttonsArray: Array<ButtonView> = [];
+		bookmarksNames.sort( ( a, b ) => a.localeCompare( b ) );
 
-		bookmarksNames.forEach( bookmarkName => {
+		// TODO maybe this should bind 2 lists so we do not need to clear the whole list each time we display the form
+		return bookmarksNames.map( bookmarkName => {
 			const buttonView = new ButtonView();
 
 			// TODO: icon
@@ -314,25 +306,28 @@ export default class LinkUI extends Plugin {
 			buttonView.on( 'execute', () => {
 				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
 				this._balloon.remove( this.bookmarksView! );
-				this.formView!.focus();
+				this.formView!.focus(); // TODO check if this won't be a problem
 			} );
 
-			buttonsArray.push( buttonView );
+			return buttonView;
 		} );
-
-		return buttonsArray;
 	}
 
+	/**
+	 * TODO
+	 */
 	private _createBookmarksView(): LinkBookmarksView {
 		const editor = this.editor;
-		const view = new LinkBookmarksView( this.editor.locale );
+		const view = new LinkBookmarksView( editor.locale );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
 			this._balloon.remove( this.bookmarksView! );
-			this.formView!.focus();
+			this.formView!.focus(); // TODO make sure this works correctly
 		} );
+
 		// Close the panel on esc key press when the **form has focus**.
+		// TODO maybe this should be inside the LinkBookmarksView and fire the above cancel event
 		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
@@ -385,7 +380,13 @@ export default class LinkUI extends Plugin {
 			label: t( 'Bookmarks' )
 		} );
 
-		bookmarksButton.delegate( 'execute' ).to( this, 'showBookmarks' );
+		this.listenTo( bookmarksButton, 'execute', () => {
+			this._balloon.add( {
+				view: this.bookmarksView!,
+				position: this._getBalloonPositionData()
+			} );
+			this.bookmarksView!.focus();
+		} );
 
 		return bookmarksButton;
 	}
@@ -514,6 +515,16 @@ export default class LinkUI extends Plugin {
 		}
 
 		const editor = this.editor;
+
+		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
+			// To make bindings works.
+			// Clear the collection of bookmarks.
+			this.bookmarksView!.listChildren.clear();
+
+			// Add bookmarks to the collection.
+			this.bookmarksView!.listChildren.addMany( this._createBookmarksListView() );
+		}
+
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		this.formView!.disableCssTransitions();
@@ -591,17 +602,6 @@ export default class LinkUI extends Plugin {
 	public _showUI( forceVisible: boolean = false ): void {
 		if ( !this.formView ) {
 			this._createViews();
-		}
-
-		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
-			// To make bindings works.
-			// Clear the collection of bookmarks.
-			this.bookmarksView!.listChildren.clear();
-
-			// Add bookmarks to the collection.
-			this._createBookmarksListView().forEach( buttonView => {
-				this.bookmarksView!.listChildren.add( buttonView );
-			} );
 		}
 
 		// When there's no link under the selection, go straight to the editing UI.

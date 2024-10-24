@@ -87,7 +87,7 @@ export default class BookmarkEditing extends Plugin {
 	 * Returns all bookmark names existing in the content.
 	 */
 	public getAllBookmarkNames(): Set<string> {
-		return new Set( Array.from( this._bookmarkElements.values() ) );
+		return new Set( this._bookmarkElements.values() );
 	}
 
 	/**

@@ -15,7 +15,6 @@ import {
 	ListView,
 	ListItemView,
 	ViewCollection,
-	submitHandler,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 
@@ -34,6 +33,12 @@ import { icons } from 'ckeditor5/src/core.js';
  */
 export default class LinkBookmarksView extends View {
 	/**
+	 * TODO
+	 * @observable
+	 */
+	declare public hasItems: boolean;
+
+	/**
 	 * Tracks information about DOM focus in the form.
 	 */
 	public readonly focusTracker = new FocusTracker();
@@ -47,6 +52,11 @@ export default class LinkBookmarksView extends View {
 	 * The Back button view displayed in the header.
 	 */
 	public backButton: ButtonView;
+
+	/**
+	 * TODO
+	 */
+	public listView: ListView;
 
 	// public readonly listBookmarksChildren: ViewCollection<ListView>;
 
@@ -82,8 +92,10 @@ export default class LinkBookmarksView extends View {
 	constructor( locale: Locale ) {
 		super( locale );
 
-		this.backButton = this._createBackButton();
 		this.listChildren = this.createCollection();
+
+		this.backButton = this._createBackButton();
+		this.listView = this._createListView();
 		this.emptyListInformation = this._createEmptyBookmarksListItemView();
 
 		this.children = this.createCollection( [
@@ -91,18 +103,18 @@ export default class LinkBookmarksView extends View {
 			this.emptyListInformation
 		] );
 
-		// this.childrenButtons = this.createCollection();
+		this.set( 'hasItems', false );
 
-		// Add list view to the children when the first item is added to the list.
-		// This is to avoid adding the list view when the form is empty.
-		this.listenTo( this.listChildren, 'add', () => {
-			this.stopListening( this.listChildren, 'add' );
-			this.children.add( this._createListView() );
-			// this.childrenButtons.add( this._createBookmarksButtonsForFocus() );
+		this.listenTo( this.listChildren, 'change', () => {
+			this.hasItems = this.listChildren.length > 0;
 		} );
 
-		this.listenTo( this.listChildren, 'remove', () => {
-			if ( !this.children.has( this.emptyListInformation ) ) {
+		this.on( 'change:hasItems', ( evt, propName, hasItems ) => {
+			if ( hasItems ) {
+				this.children.remove( this.emptyListInformation );
+				this.children.add( this.listView );
+			} else {
+				this.children.remove( this.listView );
 				this.children.add( this.emptyListInformation );
 			}
 		} );
@@ -140,13 +152,8 @@ export default class LinkBookmarksView extends View {
 	public override render(): void {
 		super.render();
 
-		submitHandler( {
-			view: this
-		} );
-
-		// TODO: focusable list items
 		const childViews = [
-			...this.children, // Need only bookmarks buttons
+			this.listView,
 			this.backButton
 		];
 
@@ -193,15 +200,10 @@ export default class LinkBookmarksView extends View {
 			}
 		} );
 
-		listView.items.bindTo( this.listChildren ).using( def => {
+		listView.items.bindTo( this.listChildren ).using( button => {
 			const listItemView = new ListItemView( this.locale );
 
-			listItemView.children.add( def );
-			// this.childrenButtons.add( def );
-
-			if ( this.children.has( this.emptyListInformation ) ) {
-				this.children.remove( this.emptyListInformation );
-			}
+			listItemView.children.add( button );
 
 			return listItemView;
 		} );
