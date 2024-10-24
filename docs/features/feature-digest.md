@@ -8,7 +8,11 @@ modified_at: 2024-10-17
 order: -998
 ---
 
+CKEditor 5 offers over 150 various features, from basic editing capabilities like bold or italics to full-blown real-time collaboration, where multiple people can work on one document at the same time. This page collects them all and groups them into capabilities, features, and sub-features. Let's hope this list will help you grasp and easily digest everything CKEditor 5 has to offer.
+
 ## Core editing
+
+Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their toolbelt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
 
 <table>
 	<thead>
@@ -711,6 +715,8 @@ order: -998
 
 ## Collaboration
 
+Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.
+
 <table>
 	<thead>
 		<tr>
@@ -927,6 +933,8 @@ order: -998
 
 ## Content conversion & embedding
 
+Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.
+
 <table>
 	<thead>
 		<tr>
@@ -1030,6 +1038,8 @@ order: -998
 
 ## Page management
 
+Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.
+
 <table>
 	<thead>
 		<tr>
@@ -1131,6 +1141,8 @@ order: -998
 </table>
 
 ## Productivity
+
+Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.
 
 <table>
 	<thead>
@@ -1395,6 +1407,8 @@ order: -998
 </table>
 
 ## Configurations
+
+Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.
 
 <table>
 	<thead>
@@ -1691,6 +1705,8 @@ order: -998
 
 ## Compliance
 
+Make your content accessible to any person or restrict it to specific users.
+
 <table>
 	<thead>
 		<tr>
@@ -1798,6 +1814,8 @@ order: -998
 
 ## Customization
 
+Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.
+
 <table>
 	<thead>
 		<tr>
@@ -1861,6 +1879,8 @@ order: -998
 </table>
 
 ## File management
+
+Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.
 
 <table>
 	<thead>
