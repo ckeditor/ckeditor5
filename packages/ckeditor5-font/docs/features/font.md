@@ -55,7 +55,7 @@ ClassicEditor
 		fontFamily: {
 			// Configuration.
 		}
-		fontCOlor: {
+		fontColor: {
 			// Configuration.
 		}
 		// ...
