@@ -73,8 +73,8 @@ order: -998
 				displaying them to the user.
 			</td>
 		</tr>
-		<tr id="html-embed" class="background-blue">
-			<td class="subfeature">
+		<tr id="html-embed" class="background-blue subfeature">
+			<td>
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html">HTML embed</a>
 			</td>
 			<td>
