@@ -37,7 +37,8 @@ ClassicEditor
 		},
 		findAndReplace: {
 			uiType: 'dropdown'
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editorWithDropdown = editor;

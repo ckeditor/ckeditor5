@@ -1,13 +1,14 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component | CKEditor 5 documentation
-category: react
+meta-title: React rich text editor component (npm) | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the default React component with npm.
+category: react-npm
 order: 10
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text editor component
+# React rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -15,21 +16,13 @@ order: 10
 	</a>
 </p>
 
-React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components.
+CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
+This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 {@snippet getting-started/use-builder}
 
 ## Quick start
-
-### Setting up the project
-
-This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
-
-### Installing from npm
 
 First, install the CKEditor&nbsp;5 packages:
 
@@ -63,13 +56,9 @@ function App() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: {
 					// Mention configuration
 				},
@@ -121,24 +110,15 @@ import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
-	<CKEditorContext
-		context={ Context }
-		contextWatchdog={ ContextWatchdog }
-		onChangeInitializedEditors={ ( editors ) => {
-			console.info( editors.editor1?.instance, editors.editor1?.yourAdditionalData );
-		} }
-	>
+	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
 		data='<p>Hello from the first editor working with the context!</p>'
-		contextItemMetadata={{
-			name: 'editor1',
-			yourAdditionalData: 2
-		}}
 		onReady={ ( editor ) => {
 		  // You can store the "editor" and use when it is needed.
 		  console.log( 'Editor 1 is ready to use!', editor );
@@ -148,6 +128,7 @@ function App() {
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
+		  licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		  plugins: [ Essentials, Bold, Italic, Paragraph ],
 		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 		} }
@@ -171,8 +152,8 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
-* `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. It receives a dictionary of fully initialized editors, where the key is the value of the `contextItemMetadata.name` property set on the `CKEditor` component. The editor's ID is the key if the `contextItemMetadata` property is absent. Additional data can be added to the `contextItemMetadata` in the `CKEditor` component, which will be passed to the `onChangeInitializedEditors` function.
-* `onReady` &ndash; A function called when the context is initialized but before the editors in the tree are set up. After this function is executed, you can track additions and removals in the context tree using the `context.editors.on('change', () => {})` method.
+* `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. It receives a dictionary of fully initialized editors, where the key is the value of the `contextItemMetadata.name` property set on the `CKEditor` component. The editor's ID is the key if the `contextItemMetadata` property is absent. Additional data can be added to the `contextItemMetadata` in the `CKEditor` component, which will be passed to the `onChangeInitializedEditors` function.
+* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
   * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
   * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
@@ -215,6 +196,7 @@ function App() {
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
+		  					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
@@ -261,15 +243,14 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// Style sheets imports...
-
 function App() {
 	return (
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
+				// ... Other configuration options ...
 				translations: [ coreTranslations, premiumFeaturesTranslations ],
-				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
+				initialData: '<p>Hola desde CKEditor 5 en React!</p>'
 			} }
 		/>
 	);

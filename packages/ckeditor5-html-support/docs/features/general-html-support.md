@@ -61,18 +61,24 @@ Therefore, the main use cases for GHS would be:
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, GeneralHtmlSupport } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ GeneralHtmlSupport, /* ... */ ],
+		htmlSupport: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -81,6 +87,7 @@ By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHt
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		htmlSupport: {
 			allow: [ /* HTML features to allow. */ ],
 			disallow: [ /* HTML features to disallow. */ ]
@@ -218,6 +225,7 @@ To enable such elements and add attributes or classes to them, you need to use t
 
 Base implementation example:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials, Paragraph, Plugin, SourceEditing, GeneralHtmlSupport } from 'ckeditor5';
 
@@ -278,6 +286,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 You can treat both inline and block elements as object elements. To make it possible, it is necessary to set the {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.
 

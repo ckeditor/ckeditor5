@@ -1,14 +1,15 @@
 ---
 menu-title: Multi-root integration
-meta-title: React rich text editor component | CKEditor 5 documentation
-category: react
+meta-title: React rich text editor multi-root hook with CDN | CKEditor 5 documentation
+meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with CDN.
+category: react-cdn
 order: 20
 modified_at: 2024-04-25
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# React rich text multi-root editor hook
+# React rich text multi-root editor hook with CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -16,17 +17,21 @@ modified_at: 2024-04-25
 	</a>
 </p>
 
-This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react in this guide}.
+This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react-default-npm in this guide}.
+
+This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
 <info-box hint>
 	The multi-root editors in React are supported since version 6.2.0 of this package.
 
-	Unlike the {@link getting-started/integrations/react default integration}, we prepared the multi-root editor integration based on the hooks and new React mechanisms.
+	Unlike the {@link getting-started/integrations/react-default-npm default integration}, we prepared the multi-root editor integration based on the hooks and new React mechanisms.
 </info-box>
 
 ## Quick start
 
-This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
+<info-box>
+	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+</info-box>
 
 Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/setup/editor-types#multi-root-editor multi-root editor type}.
 
@@ -36,51 +41,67 @@ npm install ckeditor5 @ckeditor/ckeditor5-react
 
 Use the `useMultiRootEditor` hook inside your project:
 
-```tsx
-// App.jsx / App.tsx
+```jsx
+import React from "react";
+import { useMultiRootEditor, withCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
-import { MultiRootEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
-import { useMultiRootEditor } from '@ckeditor/ckeditor5-react';
+const withCKCloud = withCKEditorCloud( {
+	cloud: {
+		version: "{@var ckeditor5-version}",
+		languages: [ "es" ],
+		premium: true,
+	},
 
-import 'ckeditor5/ckeditor5.css';
+	// Optional:
+	renderError: ( error ) => <div>Error!</div>,
 
-const App = () => {
-	const editorProps = {
-		editor: MultiRootEditor,
-		data: {
-			intro: '<h1>React multi-root editor</h1>',
-			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
-		},
-		config: {
-			plugins: [ Essentials, Bold, Italic, Paragraph ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			},
+	// Optional:
+	renderLoader: () => <div>Loading...</div>,
+} );
+
+const MultiRootEditorDemo = withCKCloud(
+	( { data, cloud } ) => {
+		const {
+			MultiRootEditor: MultiRootEditorBase,
+			Essentials,
+			Paragraph
+			Bold,
+			Italic,
+			Mention
+		} = cloud.CKEditor;
+
+		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+
+		class MultiRootEditor extends MultiRootEditorBase {
+			static builtinPlugins = [
+				Essentials,
+				Paragraph,
+				Bold,
+				Italic,
+				Mention,
+				SlashCommand
+			];
+
+			static defaultConfig = {
+				toolbar: {
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+			};
 		}
-	};
 
-	const {
-		editor,
-		toolbarElement,
-		editableElements,
-		data,
-		setData,
-		attributes,
-		setAttributes
-	} = useMultiRootEditor( editorProps );
+		const { toolbarElement, editableElements } = useMultiRootEditor( {
+			editor: MultiRootEditor,
+			data,
+		} );
 
-	return (
-		<div className="App">
-			<h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
-
-			{ toolbarElement }
-
-			{ editableElements }
-		</div>
-	);
-}
-
-export default App;
+		return (
+			<div>
+				{ toolbarElement }
+				{ editableElements }
+			</div>
+		);
+	}
+);
 ```
 
 ## Hook properties
@@ -124,7 +145,7 @@ The `useMultiRootEditor` hook returns the following values:
 
 ## Context feature
 
-The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described in the main {@link getting-started/integrations/react#context-feature React integration} guide.
+The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described in the main {@link getting-started/integrations/react-default-npm#context-feature React integration} guide.
 
 However, as the multi-root editor addresses most use cases of the context feature, consider if you need to employ it.
 
@@ -137,16 +158,6 @@ By default, the two-way data binding is enabled. It means that every change done
 
 	The recommended approach for achieving this is based on utilizing the {@link features/autosave autosave plugin}. The second approach involves providing the `onChange` callback, which is called on each editor update.
 </info-box>
-
-## How to?
-
-### Using the editor with collaboration plugins
-
-We provide several **ready-to-use integration** featuring collaborative editing with multi-root in React applications:
-
-* [CKEditor&nbsp;5 multi-root with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-editor-multi-root-for-react)
-
-It is not necessary to build applications on top of the above samples, however, they should help you get started.
 
 ## Contributing and reporting issues
 

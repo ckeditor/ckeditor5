@@ -32,7 +32,8 @@ ClassicEditor
 			'|',
 			'outdent', 'indent'
 		],
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

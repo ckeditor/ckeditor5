@@ -12,6 +12,7 @@
 import ComponentFactory from '../componentfactory.js';
 import TooltipManager from '../tooltipmanager.js';
 import PoweredBy from './poweredby.js';
+import EvaluationBadge from './evaluationbadge.js';
 import AriaLiveAnnouncer from '../arialiveannouncer.js';
 
 import type EditorUIView from './editoruiview.js';
@@ -65,6 +66,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * A helper that enables the "powered by" feature in the editor and renders a link to the project's webpage.
 	 */
 	public readonly poweredBy: PoweredBy;
+
+	/**
+	 * A helper that enables the "evaluation badge" feature in the editor.
+	 */
+	public readonly evaluationBadge: EvaluationBadge;
 
 	/**
 	 * A helper that manages the content of an `aria-live` regions used by editor features to announce status changes
@@ -154,6 +160,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.focusTracker = new FocusTracker();
 		this.tooltipManager = new TooltipManager( editor );
 		this.poweredBy = new PoweredBy( editor );
+		this.evaluationBadge = new EvaluationBadge( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
@@ -206,6 +213,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.focusTracker.destroy();
 		this.tooltipManager.destroy( this.editor );
 		this.poweredBy.destroy();
+		this.evaluationBadge.destroy();
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {
