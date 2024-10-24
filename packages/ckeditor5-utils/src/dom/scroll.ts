@@ -113,7 +113,25 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 
 		// Obtain the rect of the target after it has been scrolled within its ancestors.
 		// It's time to scroll the viewport.
-		const targetRect = getRectRelativeToWindow( target, currentWindow );
+		let targetRect = getRectRelativeToWindow( target, currentWindow );
+
+		// Detect situation where the target is higher than the first scrollable ancestor.
+		// In such case scrolling the viewport to reveal the target might be malfunctioning because
+		// the target `.top` position is lower than the ancestor's `.top` position. If it's large enough it can be negative.
+		// It causes the `scrollWindowToShowRect` to scroll the viewport to the negative top position which is not possible
+		// and leads to the viewport being scrolled to the absolute top of the document. To prevent this, the target's rect
+		// must be shifted to the ancestor's top position. It should not affect the target's visibility because the ancestor
+		// is already scrolled to reveal the target.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/17079
+		const ancestorWindowRelativeRect = getRectRelativeToWindow( firstAncestorToScroll, currentWindow );
+
+		if ( targetRect.height > ancestorWindowRelativeRect.height ) {
+			const ancestorTargetIntersection = targetRect.getIntersection( ancestorWindowRelativeRect );
+
+			if ( ancestorTargetIntersection ) {
+				targetRect = ancestorTargetIntersection;
+			}
+		}
 
 		scrollWindowToShowRect( {
 			window: currentWindow,
