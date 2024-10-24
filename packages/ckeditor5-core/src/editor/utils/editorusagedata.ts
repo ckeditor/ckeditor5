@@ -14,9 +14,9 @@ import type { ToolbarConfig, ToolbarConfigItem } from '../editorconfig.js';
 import type PluginCollection from '../../plugincollection.js';
 
 /**
- * This part of the code is not executed in open-source implementations (GPL key).
- * It only runs when a specific license key is provided. If you're uncertain whether
- * this applies to your application, please contact our support team.
+ * This part of the code is not executed in open-source implementations using a GPL key.
+ * It only runs when a specific license key is provided. If you are uncertain whether
+ * this applies to your installation, please contact our support team.
  *
  * @internal
  */
