@@ -105,8 +105,6 @@ export default class LinkBookmarksView extends View {
 			if ( !this.children.has( this.emptyListInformation ) ) {
 				this.children.add( this.emptyListInformation );
 			}
-
-			console.log( 'REMOVE !!!!!!' );
 		} );
 
 		this._focusCycler = new FocusCycler( {

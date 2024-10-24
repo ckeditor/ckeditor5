@@ -308,8 +308,7 @@ export default class LinkUI extends Plugin {
 			buttonView.set( {
 				label: bookmarkName,
 				tooltip: true,
-				withText: true // ,
-				// class: 'ck-button-insert ck-button-action ck-button-bold'
+				withText: true
 			} );
 
 			buttonView.on( 'execute', () => {
