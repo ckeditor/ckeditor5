@@ -49,6 +49,7 @@ import { ClassicEditor, Bookmark } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bookmark, /* ... */ ],
 		toolbar: [ 'bookmark', /* ... */ ]
 	} )
@@ -77,9 +78,7 @@ You can disable the automatic conversion by setting the {@link module:bookmark/b
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bookmark, /* ... */ ],
-		toolbar: [ 'bookmark', /* ... */ ],
+		// ... Other configuration options ...
 		bookmark: {
 			enableNonEmptyAnchorConversion: false
 		}
