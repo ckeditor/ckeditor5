@@ -126,7 +126,11 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 		const ancestorWindowRelativeRect = getRectRelativeToWindow( firstAncestorToScroll, currentWindow );
 
 		if ( targetRect.height > ancestorWindowRelativeRect.height ) {
-			targetRect = ancestorWindowRelativeRect;
+			const ancestorTargetIntersection = targetRect.getIntersection( ancestorWindowRelativeRect );
+
+			if ( ancestorTargetIntersection ) {
+				targetRect = ancestorTargetIntersection;
+			}
 		}
 
 		scrollWindowToShowRect( {

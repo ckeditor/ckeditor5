@@ -449,8 +449,6 @@ describe( 'scrollViewportToShowTarget()', () => {
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( targetAncestor, { scrollLeft: 200, scrollTop: -1100 } );
 			assertScrollPosition( iframeAncestor, { scrollTop: -200, scrollLeft: 100 } );
-			sinon.assert.notCalled( iframeWindow.scrollTo );
-			sinon.assert.notCalled( window.scrollTo );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/930
