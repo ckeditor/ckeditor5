@@ -105,7 +105,9 @@ export function getColumnMinWidthAsPercentage( modelTable: Element, editor: Edit
  */
 export function getTableWidthInPixels( modelTable: Element, editor: Editor ): number {
 	// It is possible for a table to not have a <tbody> element - see #11878.
-	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
+	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) ||
+		getChildrenViewElement( modelTable, 'thead', editor ) ||
+		getChildrenViewElement( modelTable, 'tfoot', editor );
 	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! )!;
 
 	return getElementWidthInPixels( domReferenceElement );
