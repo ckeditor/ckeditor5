@@ -16,7 +16,7 @@ ClassicEditor
 				'undo', 'redo', '|', 'heading',
 				'|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'bookmark', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
