@@ -6,6 +6,8 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-link__panel {
+	width: 340px; /* TODO: 340px instead of 300px, because of generic min-width on inputs */
+
 	&:focus {
 		outline: none;
 	}
@@ -83,7 +85,7 @@
 	}
 
 	& .ck-link__empty-prompt {
-		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
 		text-align: center;
 		font-style: italic;
 	}
