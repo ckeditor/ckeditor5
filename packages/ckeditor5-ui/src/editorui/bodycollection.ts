@@ -82,7 +82,7 @@ export default class BodyCollection extends ViewCollection {
 			children: this
 		} ).render() as HTMLElement;
 
-		let wrapper = document.querySelector( '.ck-body-wrapper' );
+		let wrapper = Array.from( document.body.children ).find( el => el.classList.contains( 'ck-body-wrapper' ) );
 
 		if ( !wrapper ) {
 			wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
@@ -103,7 +103,7 @@ export default class BodyCollection extends ViewCollection {
 			this._bodyCollectionContainer.remove();
 		}
 
-		const wrapper = document.querySelector( '.ck-body-wrapper' );
+		const wrapper = Array.from( document.body.children ).find( el => el.classList.contains( 'ck-body-wrapper' ) );
 
 		if ( wrapper && wrapper.childElementCount == 0 ) {
 			wrapper.remove();
