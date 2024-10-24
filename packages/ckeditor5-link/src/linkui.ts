@@ -283,7 +283,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a sorted array of buttons with bookmark names.
 	 */
 	private _createBookmarksListView(): Array<ButtonView> {
 		const editor = this.editor;
@@ -305,8 +305,8 @@ export default class LinkUI extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
+				this.formView!.focus();
 				this._balloon.remove( this.bookmarksView! );
-				this.formView!.focus(); // TODO check if this won't be a problem
 			} );
 
 			return buttonView;
@@ -314,7 +314,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a view for bookmarks.
 	 */
 	private _createBookmarksView(): LinkBookmarksView {
 		const editor = this.editor;
@@ -322,19 +322,8 @@ export default class LinkUI extends Plugin {
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
-			this._balloon.remove( this.bookmarksView! );
-			this.formView!.focus(); // TODO make sure this works correctly
-		} );
-
-		// Close the panel on esc key press when the **form has focus**.
-		// TODO maybe this should be inside the LinkBookmarksView and fire the above cancel event
-		view.keystrokes.set( 'Esc', ( data, cancel ) => {
-			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
-			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-			editor.editing.view.focus();
-			this._balloon.remove( this.bookmarksView! );
 			this.formView!.focus();
-			cancel();
+			this._balloon.remove( this.bookmarksView! );
 		} );
 
 		return view;

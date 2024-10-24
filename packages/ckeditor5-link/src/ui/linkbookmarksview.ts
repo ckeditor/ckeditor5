@@ -54,21 +54,24 @@ export default class LinkBookmarksView extends View {
 	public backButton: ButtonView;
 
 	/**
-	 * TODO
+	 * The List view of bookmarks buttons.
 	 */
 	public listView: ListView;
 
-	// public readonly listBookmarksChildren: ViewCollection<ListView>;
-
+	/**
+	 * The collection of child views, which is bind with the `listView`.
+	 */
 	public readonly listChildren: ViewCollection<ButtonView>;
 
+	/**
+	 * The view displayed when the list is empty.
+	 */
 	public emptyListInformation: View;
 
 	/**
 	 * A collection of child views.
 	 */
 	public children: ViewCollection;
-	// public childrenButtons: ViewCollection<ButtonView>;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -117,6 +120,11 @@ export default class LinkBookmarksView extends View {
 				this.children.remove( this.listView );
 				this.children.add( this.emptyListInformation );
 			}
+		} );
+
+		// Close the panel on esc key press.
+		this.keystrokes.set( 'Esc', () => {
+			this.fire( 'cancel' );
 		} );
 
 		this._focusCycler = new FocusCycler( {
