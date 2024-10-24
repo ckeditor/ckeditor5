@@ -11,7 +11,7 @@ import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } fro
 import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
 
-import { ensureSafeUrl } from '../utils.js';
+import { ensureSafeUrl, openLink } from '../utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -70,16 +70,19 @@ export default class LinkActionsView extends View {
 
 	private readonly _linkConfig: LinkConfig;
 
+	private readonly _options?: LinkActionsViewOptions;
+
 	declare public t: LocaleTranslate;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, linkConfig: LinkConfig = {} ) {
+	constructor( locale: Locale, linkConfig: LinkConfig = {}, options?: LinkActionsViewOptions ) {
 		super( locale );
 
 		const t = locale.t;
 
+		this._options = options;
 		this.previewButtonView = this._createPreviewButton();
 		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
@@ -197,8 +200,7 @@ export default class LinkActionsView extends View {
 		const t = this.t;
 
 		button.set( {
-			withText: true,
-			tooltip: t( 'Open link in new tab' )
+			withText: true
 		} );
 
 		button.extendTemplate( {
@@ -210,7 +212,25 @@ export default class LinkActionsView extends View {
 				href: bind.to( 'href', href => href && ensureSafeUrl( href, this._linkConfig.allowedProtocols ) ),
 				target: '_blank',
 				rel: 'noopener noreferrer'
+			},
+			on: {
+				click: bind.to( evt => {
+					if ( this._options && this._options.isScrollableToTarget( this.href ) ) {
+						evt.preventDefault();
+						this._options.scrollToTarget( this.href! );
+					} else {
+						openLink( this.href! );
+					}
+				} )
 			}
+		} );
+
+		button.bind( 'tooltip' ).to( this, 'href', href => {
+			if ( this._options && this._options.isScrollableToTarget( href ) ) {
+				return t( 'Scroll to target' );
+			}
+
+			return t( 'Open link in new tab' );
 		} );
 
 		button.bind( 'label' ).to( this, 'href', href => {
@@ -220,7 +240,6 @@ export default class LinkActionsView extends View {
 		button.bind( 'isEnabled' ).to( this, 'href', href => !!href );
 
 		button.template!.tag = 'a';
-		button.template!.eventListeners = {};
 
 		return button;
 	}
@@ -244,4 +263,20 @@ export type EditEvent = {
 export type UnlinkEvent = {
 	name: 'unlink';
 	args: [];
+};
+
+/**
+ * The options that are passed to the {@link ~LinkActionsView#constructor} constructor.
+ */
+export type LinkActionsViewOptions = {
+
+	/**
+	 * Returns `true` when bookmark `id` matches the hash from `link`.
+	 */
+	isScrollableToTarget: ( href: string | undefined ) => boolean;
+
+	/**
+	 * Scrolls the view to the desired bookmark or open a link in new window.
+	 */
+	scrollToTarget: ( href: string ) => void;
 };

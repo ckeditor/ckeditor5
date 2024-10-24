@@ -21,6 +21,7 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
 
 import PasteFromOffice from '../../src/pastefromoffice.js';
 import { generateTests } from '../_utils/utils.js';
@@ -143,6 +144,13 @@ describe( 'PasteFromOffice - integration', () => {
 		input: 'smart-tags',
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice, FontColor ]
+		}
+	} );
+
+	generateIntegrationTests( {
+		input: 'bookmark',
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Bookmark, Table, TableProperties, TableCellProperties, Bold, Image, PasteFromOffice ]
 		}
 	} );
 

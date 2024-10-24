@@ -876,7 +876,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 
 		if ( isListItemBlock( position.parent ) ) {
 			refItem = position.parent;
-		} else if ( isListItemBlock( position.nodeBefore ) ) {
+		} else if ( isListItemBlock( position.nodeBefore ) && isListItemBlock( position.nodeAfter ) ) {
 			refItem = position.nodeBefore;
 		} else {
 			return; // Content is not copied into a list.
