@@ -41,6 +41,14 @@ describe( 'FindAndReplaceEditing', () => {
 		expect( FindAndReplaceEditing.pluginName ).to.equal( 'FindAndReplaceEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FindAndReplaceEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FindAndReplaceEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'highlight', () => {
 		it( 'when document is empty and user enters search phrase then it is highlighted', () => {
 			editor.setData( '' );

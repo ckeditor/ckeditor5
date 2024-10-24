@@ -110,7 +110,7 @@
 		outline: none;
 	}
 
-	@nest .ck-toolbar-container & {
+	.ck-toolbar-container & {
 		border: 0;
 	}
 }

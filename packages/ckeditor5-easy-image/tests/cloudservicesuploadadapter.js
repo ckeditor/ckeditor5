@@ -40,6 +40,14 @@ describe( 'CloudServicesUploadAdapter', () => {
 		window.document.body.removeChild( div );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CloudServicesUploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CloudServicesUploadAdapter.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should set loader', () => {
 			UploadGatewayMock.lastToken = undefined;

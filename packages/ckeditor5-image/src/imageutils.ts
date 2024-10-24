@@ -46,6 +46,13 @@ export default class ImageUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Checks if the provided model element is an `image` or `imageInline`.
 	 */
 	public isImage( modelElement?: Element | null ): modelElement is Element & { name: 'imageInline' | 'imageBlock' } {

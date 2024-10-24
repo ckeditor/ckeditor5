@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-undo": "43.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^43.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
     "@ckeditor/ckeditor5-editor-classic": "43.2.0",
     "@ckeditor/ckeditor5-highlight": "43.2.0",
     "@ckeditor/ckeditor5-paragraph": "43.2.0",
@@ -53,6 +53,6 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

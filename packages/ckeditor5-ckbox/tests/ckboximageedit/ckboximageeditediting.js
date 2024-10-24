@@ -59,6 +59,14 @@ describe( 'CKBoxImageEditEditing', () => {
 		expect( CKBoxImageEditEditing.pluginName ).to.equal( 'CKBoxImageEditEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxImageEditEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxImageEditEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should register the "ckboxImageEdit" command', () => {
 		const command = editor.commands.get( 'ckboxImageEdit' );
 

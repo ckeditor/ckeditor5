@@ -18,6 +18,14 @@ describe( 'ShowBlocks', () => {
 		expect( ShowBlocks.pluginName ).to.equal( 'ShowBlocks' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ShowBlocks.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ShowBlocks.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		let domElement, editor;
 

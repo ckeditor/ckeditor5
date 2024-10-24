@@ -15,4 +15,12 @@ describe( 'FontBackgroundColor', () => {
 	it( 'defines plugin name', () => {
 		expect( FontBackgroundColor.pluginName ).to.equal( 'FontBackgroundColor' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontBackgroundColor.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontBackgroundColor.isPremiumPlugin ).to.be.false;
+	} );
 } );

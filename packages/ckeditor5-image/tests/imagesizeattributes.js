@@ -43,6 +43,14 @@ describe( 'ImageSizeAttributes', () => {
 		expect( ImageSizeAttributes.pluginName ).to.equal( 'ImageSizeAttributes' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageSizeAttributes.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageSizeAttributes.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ImageSizeAttributes ) ).to.be.instanceOf( ImageSizeAttributes );
 	} );

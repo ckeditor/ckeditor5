@@ -44,6 +44,14 @@ describe( 'table properties', () => {
 			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TablePropertiesEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TablePropertiesEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		describe( 'init()', () => {
 			it( 'should define table.tableProperties config', () => {
 				const config = editor.config.get( 'table.tableProperties' );

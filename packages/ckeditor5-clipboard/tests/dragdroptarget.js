@@ -65,6 +65,14 @@ describe( 'Drag and Drop target', () => {
 		editorElement.remove();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DragDropTarget.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DragDropTarget.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'getFinalDropRange', () => {
 		it( 'should return drop position after paragraph', () => {
 			setModelData( model,

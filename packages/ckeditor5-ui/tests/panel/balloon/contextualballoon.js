@@ -66,6 +66,14 @@ describe( 'ContextualBalloon', () => {
 		editorElement.remove();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ContextualBalloon.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ContextualBalloon.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should create a plugin instance', () => {
 		expect( balloon ).to.instanceof( Plugin );
 		expect( balloon ).to.instanceof( ContextualBalloon );

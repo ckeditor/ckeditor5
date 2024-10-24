@@ -58,6 +58,13 @@ export default class ImageCustomResizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override destroy(): void {
 		super.destroy();
 

@@ -33,6 +33,14 @@ describe( 'SelectAllEditing', () => {
 		expect( SelectAllEditing.pluginName ).to.equal( 'SelectAllEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SelectAllEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SelectAllEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 			label: 'Select all',

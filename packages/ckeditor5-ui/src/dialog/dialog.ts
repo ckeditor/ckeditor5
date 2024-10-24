@@ -62,6 +62,13 @@ export default class Dialog extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -85,6 +92,15 @@ export default class Dialog extends Plugin {
 				mayRequireFn: true
 			} ]
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this._unlockBodyScroll();
 	}
 
 	/**
@@ -295,6 +311,10 @@ export default class Dialog extends Plugin {
 			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.EDITOR_CENTER;
 		}
 
+		if ( isModal ) {
+			this._lockBodyScroll();
+		}
+
 		view.set( {
 			position,
 			_isVisible: true,
@@ -342,6 +362,10 @@ export default class Dialog extends Plugin {
 		const editor = this.editor;
 		const view = this.view;
 
+		if ( view.isModal ) {
+			this._unlockBodyScroll();
+		}
+
 		// Reset the content view to prevent its children from being destroyed in the standard
 		// View#destroy() (and collections) chain. If the content children were left in there,
 		// they would have to be re-created by the feature using the dialog every time the dialog
@@ -360,6 +384,20 @@ export default class Dialog extends Plugin {
 		this.id = null;
 		this.isOpen = false;
 		Dialog._visibleDialogPlugin = null;
+	}
+
+	/**
+	 * Makes the <body> unscrollable (e.g. when the modal shows up).
+	 */
+	private _lockBodyScroll(): void {
+		document.documentElement.classList.add( 'ck-dialog-scroll-locked' );
+	}
+
+	/**
+	 * Makes the <body> scrollable again (e.g. once the modal hides).
+	 */
+	private _unlockBodyScroll(): void {
+		document.documentElement.classList.remove( 'ck-dialog-scroll-locked' );
 	}
 }
 

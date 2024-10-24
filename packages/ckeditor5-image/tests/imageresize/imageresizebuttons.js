@@ -81,6 +81,14 @@ describe( 'ImageResizeButtons', () => {
 		it( 'should be named', () => {
 			expect( ImageResizeButtons.pluginName ).to.equal( 'ImageResizeButtons' );
 		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( ImageResizeButtons.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( ImageResizeButtons.isPremiumPlugin ).to.be.false;
+		} );
 	} );
 
 	describe( 'constructor()', () => {

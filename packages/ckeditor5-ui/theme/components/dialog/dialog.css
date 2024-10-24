@@ -27,13 +27,16 @@
 
 	& .ck.ck-form__header  {
 		flex-shrink: 0;
+	}
 
-		& .ck-form__header__label {
+	/* Modals should not be draggable. */
+	&:not(.ck-dialog_modal) {
+		& .ck.ck-form__header .ck-form__header__label {
 			cursor: grab;
 		}
 	}
 
-	@nest .ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {
+	.ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {
 		pointer-events: all;
 	}
 }

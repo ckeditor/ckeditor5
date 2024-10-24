@@ -54,6 +54,14 @@ describe( 'PastePlainText', () => {
 		await editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PastePlainText.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PastePlainText.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should inherit selection attributes (collapsed selection)', () => {
 		let insertedNode;
 

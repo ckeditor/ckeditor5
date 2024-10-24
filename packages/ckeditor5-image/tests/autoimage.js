@@ -61,6 +61,14 @@ describe( 'AutoImage - integration', () => {
 		expect( AutoImage.pluginName ).to.equal( 'AutoImage' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AutoImage.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AutoImage.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'use fake timers', () => {
 		let clock;
 

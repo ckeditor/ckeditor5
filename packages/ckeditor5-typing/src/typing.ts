@@ -28,4 +28,11 @@ export default class Typing extends Plugin {
 	public static get pluginName() {
 		return 'Typing' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

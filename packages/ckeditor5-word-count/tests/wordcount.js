@@ -124,6 +124,14 @@ describe( 'WordCount', () => {
 		it( 'has a name', () => {
 			expect( WordCount.pluginName ).to.equal( 'WordCount' );
 		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( WordCount.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( WordCount.isPremiumPlugin ).to.be.false;
+		} );
 	} );
 
 	describe( 'functionality', () => {
