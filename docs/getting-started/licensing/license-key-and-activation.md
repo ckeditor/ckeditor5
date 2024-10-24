@@ -68,7 +68,7 @@ Follow this guide to get the license key necessary to create an account and use 
 
 ### Create an account
 
-Create an account by [signing up for the CKEditor Premium Features free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard). During the process, you will see a list of features available from the 14-day free trial. You may check the ones you are the most interested in. However, this will not affect the trial package - all of them will be available.
+Create an account by [signing up for the CKEditor Premium Features free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard). During the process, you will see a list of features available from the 14-day free trial. You may check the ones you are the most interested in. However, this will not affect the trial package &ndash; all of them will be available.
 
 ### Log in to the Customer Portal
 
