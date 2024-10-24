@@ -10,6 +10,7 @@
 import ShiftEnterCommand from './shiftentercommand.js';
 import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { ViewElement, EditingView, DomConverter } from '@ckeditor/ckeditor5-engine';
 
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
@@ -39,6 +40,7 @@ export default class ShiftEnter extends Plugin {
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const domConverter = editor.data.htmlProcessor.domConverter;
 		const t = this.editor.t;
 
 		// Configure the schema.
@@ -48,11 +50,40 @@ export default class ShiftEnter extends Plugin {
 		} );
 
 		// Configure converters.
-		conversion.for( 'upcast' )
-			.elementToElement( {
-				model: 'softBreak',
-				view: 'br'
-			} );
+		conversion.for( 'upcast' ).elementToElement( {
+			view: 'br',
+			model: ( viewElement, { writer } ) => {
+				// Find view sibling nodes (threat inline elements as transparent, but not an inline objects):
+				// <p><strong>foo[<br>]</strong></p>[<p>bar</p>]
+				// <p><strong>foo[<br>]</strong></p>[]
+				// <p><strong>foo[<br>]</strong>[bar]</p>
+				// <p><strong>foo[<br>][bar]</strong></p>
+				// <p>foo[<br>][<img/>]</p>
+				const nextSibling = findSibling( viewElement, 'forward', view, domConverter );
+				const previousSibling = findSibling( viewElement, 'backward', view, domConverter );
+
+				const nextSiblingIsBlock = domConverter.isBlockViewElement( nextSibling );
+				const previousSiblingIsBlock = domConverter.isBlockViewElement( previousSibling );
+
+				// If the <br> is surrounded by blocks then convert it to a paragraph:
+				// * <p>foo</p>[<br>]<p>bar</p> -> <p>foo</p>[<p></p>]<p>bar</p>
+				// * <p>foo</p>[<br>] -> <p>foo</p>[<p></p>]
+				// * [<br>]<p>foo</p> -> [<p></p>]<p>foo</p>
+				//
+				// But don't convert if it's a <br> alone:
+				// * <br> -> <br>
+				if (
+					( previousSibling || nextSibling ) &&
+					( !previousSibling || previousSiblingIsBlock ) &&
+					( !nextSibling || nextSiblingIsBlock )
+				) {
+					return writer.createElement( 'paragraph' );
+				}
+
+				// Just convert a <br>.
+				return writer.createElement( 'softBreak' );
+			}
+		} );
 
 		conversion.for( 'downcast' )
 			.elementToElement( {
@@ -90,4 +121,30 @@ export default class ShiftEnter extends Plugin {
 			]
 		} );
 	}
+}
+
+/**
+ * Returns sibling node, threats inline elements as transparent (but should stop on an inline objects).
+ */
+function findSibling(
+	viewElement: ViewElement,
+	direction: 'forward' | 'backward',
+	view: EditingView,
+	domConverter: DomConverter
+) {
+	let position = view.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );
+
+	// Find first position that is just before a first:
+	// * text node,
+	// * BR element,
+	// * block element,
+	// * inline object element.
+	// It's ignoring any inline (non-object) elements like span, strong, etc.
+	position = position.getLastMatchingPosition( ( { item } ) => (
+		!item.is( '$textProxy' ) &&
+		!domConverter.isBlockViewElement( item ) &&
+		!domConverter.isInlineObjectElement( item )
+	), { direction } );
+
+	return direction == 'forward' ? position.nodeAfter : position.nodeBefore;
 }

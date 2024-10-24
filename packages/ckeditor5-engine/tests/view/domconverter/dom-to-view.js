@@ -644,37 +644,43 @@ describe( 'DomConverter', () => {
 			it( 'not before a <br>', () => {
 				const domP = createElement( document, 'p', {}, [
 					document.createTextNode( 'foo ' ),
-					createElement( document, 'br' )
+					createElement( document, 'br' ),
+					document.createTextNode( 'bar' )
 				] );
 
 				const viewP = converter.domToView( domP );
 
-				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
 			} );
 
 			it( 'not before a <br> (space+nbsp)', () => {
 				const domP = createElement( document, 'p', {}, [
 					document.createTextNode( 'foo \u00a0' ),
-					createElement( document, 'br' )
+					createElement( document, 'br' ),
+					document.createTextNode( 'bar' )
 				] );
 
 				const viewP = converter.domToView( domP );
 
-				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo  ' );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
 			} );
 
 			it( 'before a <br> (space+space=>space)', () => {
 				const domP = createElement( document, 'p', {}, [
 					document.createTextNode( 'foo  ' ),
-					createElement( document, 'br' )
+					createElement( document, 'br' ),
+					document.createTextNode( 'bar' )
 				] );
 
 				const viewP = converter.domToView( domP );
 
-				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
 			} );
 
 			it( 'not before a <br> – when text before that <br> is nested', () => {
@@ -682,13 +688,15 @@ describe( 'DomConverter', () => {
 					createElement( document, 'b', {}, [
 						document.createTextNode( 'foo ' )
 					] ),
-					createElement( document, 'br' )
+					createElement( document, 'br' ),
+					document.createTextNode( 'bar' )
 				] );
 
 				const viewP = converter.domToView( domP );
 
-				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo ' );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
 			} );
 
 			//
@@ -912,9 +920,9 @@ describe( 'DomConverter', () => {
 			const domFiller = document.createTextNode( INLINE_FILLER );
 			const domBr1 = createElement( document, 'br' );
 			const domBr2 = createElement( document, 'br' );
-			const domP = createElement( document, 'p', null, [ domBr1, domFiller, domBr2 ] );
+			const domP = createElement( document, 'p', null, [ domBr1, domFiller, domBr2, document.createTextNode( 'foo' ) ] );
 
-			const viewP = parse( '<p><br/><br/></p>' );
+			const viewP = parse( '<p><br/><br/>foo</p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domBr1, viewP.getChild( 0 ) );
@@ -922,7 +930,7 @@ describe( 'DomConverter', () => {
 
 			const viewPosition = converter.domPositionToView( domP, 2 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p><br></br>[]<br></br></p>' );
+			expect( stringify( viewP, viewPosition ) ).to.equal( '<p><br></br>[]<br></br>foo</p>' );
 		} );
 
 		it( 'should convert position after a block filler', () => {
