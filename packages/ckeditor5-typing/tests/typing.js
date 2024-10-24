@@ -14,4 +14,12 @@ describe( 'Typing feature', () => {
 		expect( typingRequirements ).to.contain( Input );
 		expect( typingRequirements ).to.contain( Delete );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Typing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Typing.isPremiumPlugin ).to.be.false;
+	} );
 } );

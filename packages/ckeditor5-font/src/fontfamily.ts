@@ -34,4 +34,11 @@ export default class FontFamily extends Plugin {
 	public static get pluginName() {
 		return 'FontFamily' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

@@ -25,6 +25,8 @@ export {
 	type ClipboardMarkerConfiguration
 } from './clipboardmarkersutils.js';
 
+export { default as plainTextToHtml } from './utils/plaintexttohtml.js';
+
 export type {
 	ClipboardEventData
 } from './clipboardobserver.js';

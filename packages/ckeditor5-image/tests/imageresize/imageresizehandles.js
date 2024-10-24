@@ -52,6 +52,14 @@ describe( 'ImageResizeHandles', () => {
 		expect( ImageResizeHandles.pluginName ).to.equal( 'ImageResizeHandles' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageResizeHandles.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageResizeHandles.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'for block image', () => {
 		it( 'uses percents by default', async () => {
 			const localEditor = await createEditor( {

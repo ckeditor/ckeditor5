@@ -46,6 +46,14 @@ describe( 'ImageBlockEditing', () => {
 		expect( ImageBlockEditing.pluginName ).to.equal( 'ImageBlockEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageBlockEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageBlockEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ImageBlockEditing ) ).to.be.instanceOf( ImageBlockEditing );
 	} );

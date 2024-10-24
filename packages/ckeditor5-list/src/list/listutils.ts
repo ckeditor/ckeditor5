@@ -33,6 +33,13 @@ export default class ListUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Expands the given list of selected blocks to include all the items of the lists they're in.
 	 *
 	 * @param blocks The list of selected blocks.

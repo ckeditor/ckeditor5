@@ -34,6 +34,14 @@ describe( 'SuperEditing', () => {
 		expect( SuperEditing.pluginName ).to.equal( 'SuperscriptEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SuperEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SuperEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( SuperEditing ) ).to.be.instanceOf( SuperEditing );
 	} );

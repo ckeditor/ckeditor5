@@ -40,6 +40,14 @@ describe( 'HorizontalLineUI', () => {
 			} );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HorizontalLineUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HorizontalLineUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "horizontalLine" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'horizontalLine' );

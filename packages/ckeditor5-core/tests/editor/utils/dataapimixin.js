@@ -7,11 +7,14 @@ import DataApiMixin from '../../../src/editor/utils/dataapimixin.js';
 import Editor from '../../../src/editor/editor.js';
 
 describe( 'DataApiMixin', () => {
-	it( 'it returns the passed parameter for compatibility reasons', () => {
+	it( 'it returns the passed parameter for compatibility reasons', async () => {
 		class CustomEditor extends Editor {}
 
 		const editor = new CustomEditor();
 
 		expect( DataApiMixin( editor ) ).to.equal( editor );
+
+		editor.fire( 'ready' );
+		await editor.destroy();
 	} );
 } );

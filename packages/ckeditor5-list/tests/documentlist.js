@@ -16,6 +16,14 @@ describe( 'DocumentList', () => {
 		expect( DocumentList.pluginName ).to.equal( 'DocumentList' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DocumentList.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DocumentList.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require List', () => {
 		expect( DocumentList.requires ).to.deep.equal( [ List ] );
 	} );

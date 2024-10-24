@@ -25,6 +25,14 @@ describe( 'AutoLink', () => {
 		expect( AutoLink.pluginName ).to.equal( 'AutoLink' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AutoLink.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AutoLink.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded without Enter & ShiftEnter features', async () => {
 		const editor = await ModelTestEditor.create( {
 			plugins: [ Paragraph, Input, LinkEditing, AutoLink ]

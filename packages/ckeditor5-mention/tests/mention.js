@@ -43,6 +43,14 @@ describe( 'Mention', () => {
 		expect( Mention.pluginName ).to.equal( 'Mention' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Mention.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Mention.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load MentionEditing plugin', () => {
 		expect( editor.plugins.get( MentionEditing ) ).to.instanceOf( MentionEditing );
 	} );

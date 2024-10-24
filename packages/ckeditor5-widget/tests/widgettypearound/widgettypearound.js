@@ -47,6 +47,14 @@ describe( 'WidgetTypeAround', () => {
 			expect( WidgetTypeAround.pluginName ).to.equal( 'WidgetTypeAround' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( WidgetTypeAround.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( WidgetTypeAround.isPremiumPlugin ).to.be.false;
+		} );
+
 		describe( '#isEnabled support', () => {
 			it( 'should add class to the editing view root when becoming disabled', () => {
 				editor.plugins.get( WidgetTypeAround ).isEnabled = false;

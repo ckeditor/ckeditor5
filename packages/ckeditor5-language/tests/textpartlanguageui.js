@@ -44,6 +44,14 @@ describe( 'TextPartLanguageUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TextPartLanguageUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TextPartLanguageUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		describe( 'toolbar drop-down', () => {
 			let dropdownView;

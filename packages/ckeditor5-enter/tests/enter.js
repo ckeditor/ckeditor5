@@ -39,6 +39,14 @@ describe( 'Enter feature', () => {
 		expect( Enter.pluginName ).to.equal( 'Enter' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Enter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Enter.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 			label: 'Insert a hard break (a new paragraph)',

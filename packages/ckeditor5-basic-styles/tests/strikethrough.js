@@ -15,4 +15,12 @@ describe( 'Strikethrough', () => {
 	it( 'should be named', () => {
 		expect( Strikethrough.pluginName ).to.equal( 'Strikethrough' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Strikethrough.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Strikethrough.isPremiumPlugin ).to.be.false;
+	} );
 } );

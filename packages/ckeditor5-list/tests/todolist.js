@@ -15,4 +15,12 @@ describe( 'TodoList', () => {
 	it( 'should require TodoListEditing and TodoListUI', () => {
 		expect( TodoList.requires ).to.deep.equal( [ TodoListEditing, TodoListUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TodoList.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TodoList.isPremiumPlugin ).to.be.false;
+	} );
 } );

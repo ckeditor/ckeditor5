@@ -86,6 +86,14 @@ describe( 'CKBoxUploadAdapter', () => {
 		expect( CKBoxUploadAdapter.pluginName ).to.equal( 'CKBoxUploadAdapter' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxUploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxUploadAdapter.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require its dependencies', () => {
 		expect( CKBoxUploadAdapter.requires ).to.deep.equal( [
 			'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing

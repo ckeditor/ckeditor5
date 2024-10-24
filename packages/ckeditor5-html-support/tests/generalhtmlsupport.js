@@ -29,6 +29,14 @@ describe( 'GeneralHtmlSupport', () => {
 		await editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( GeneralHtmlSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( GeneralHtmlSupport.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'getGhsAttributeNameForElement()', () => {
 		beforeEach( () => {
 			dataSchema.registerBlockElement( { model: 'def', view: 'def1' } );

@@ -44,6 +44,13 @@ export default class CodeBlockElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		if ( !this.editor.plugins.has( 'CodeBlockEditing' ) ) {
 			return;

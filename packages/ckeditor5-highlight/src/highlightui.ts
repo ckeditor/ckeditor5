@@ -84,6 +84,13 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const options = this.editor.config.get( 'highlight.options' )!;
 

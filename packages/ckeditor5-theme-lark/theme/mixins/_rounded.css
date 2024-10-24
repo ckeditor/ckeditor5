@@ -11,7 +11,7 @@
 @define-mixin ck-rounded-corners {
 	border-radius: 0;
 
-	@nest .ck-rounded-corners &,
+	.ck-rounded-corners &,
 	&.ck-rounded-corners {
 		border-radius: var(--ck-border-radius);
 		@mixin-content;

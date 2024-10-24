@@ -30,8 +30,8 @@ describe( 'upcastTable()', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	function expectModel( data ) {

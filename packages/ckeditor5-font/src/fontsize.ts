@@ -38,6 +38,13 @@ export default class FontSize extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Normalizes and translates the {@link module:font/fontconfig~FontSizeConfig#options configuration options}
 	 * to the {@link module:font/fontconfig~FontSizeOption} format.
 	 *

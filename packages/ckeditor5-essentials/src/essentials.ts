@@ -46,4 +46,11 @@ export default class Essentials extends Plugin {
 	public static get pluginName() {
 		return 'Essentials' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

@@ -39,6 +39,14 @@ describe( 'ImageCaptionUI', () => {
 		expect( ImageCaptionUI.pluginName ).to.equal( 'ImageCaptionUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageCaptionUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageCaptionUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'button component', () => {
 		let buttonView;
 

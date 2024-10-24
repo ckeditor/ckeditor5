@@ -49,6 +49,13 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
 	 * model elements during the upload.
 	 *

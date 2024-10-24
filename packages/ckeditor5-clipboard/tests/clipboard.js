@@ -38,6 +38,14 @@ describe( 'Clipboard Feature', () => {
 		expect( Clipboard.pluginName ).to.equal( 'Clipboard' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Clipboard.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Clipboard.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should provide keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 			label: 'Copy selected content',

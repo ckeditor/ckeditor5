@@ -15,4 +15,12 @@ describe( 'Undo', () => {
 	it( 'should require UndoEditing and UndoUI', () => {
 		expect( Undo.requires ).to.deep.equal( [ UndoEditing, UndoUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Undo.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Undo.isPremiumPlugin ).to.be.false;
+	} );
 } );

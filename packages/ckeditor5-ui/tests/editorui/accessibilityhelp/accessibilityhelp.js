@@ -40,6 +40,14 @@ describe( 'AccessibilityHelp', () => {
 		expect( AccessibilityHelp.pluginName ).to.equal( 'AccessibilityHelp' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AccessibilityHelp.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AccessibilityHelp.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should have #contentView', () => {
 			expect( plugin.contentView ).to.be.null;

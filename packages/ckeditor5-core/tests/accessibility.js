@@ -16,7 +16,11 @@ describe( 'Accessibility', () => {
 	} );
 
 	afterEach( async () => {
-		editor.destroy();
+		if ( editor.state === 'initializing' ) {
+			editor.fire( 'ready' );
+		}
+
+		await editor.destroy();
 	} );
 
 	it( 'should provide default categories, groups, and keystrokes', () => {
@@ -95,7 +99,7 @@ describe( 'Accessibility', () => {
 		] );
 	} );
 
-	it( 'should add info specific to the menu bar when available', () => {
+	it( 'should add info specific to the menu bar when available', async () => {
 		const editor = new Editor( {
 			menuBar: {
 				isVisible: true
@@ -111,7 +115,8 @@ describe( 'Accessibility', () => {
 			mayRequireFn: true
 		} );
 
-		editor.destroy();
+		editor.fire( 'ready' );
+		await editor.destroy();
 	} );
 
 	describe( 'addKeystrokeInfoCategory()', () => {

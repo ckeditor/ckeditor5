@@ -15,4 +15,12 @@ describe( 'Superscript', () => {
 	it( 'should be named', () => {
 		expect( Superscript.pluginName ).to.equal( 'Superscript' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Superscript.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Superscript.isPremiumPlugin ).to.be.false;
+	} );
 } );

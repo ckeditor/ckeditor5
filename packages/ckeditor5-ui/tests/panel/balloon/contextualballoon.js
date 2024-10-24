@@ -61,9 +61,17 @@ describe( 'ContextualBalloon', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 		editorElement.remove();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ContextualBalloon.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ContextualBalloon.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should create a plugin instance', () => {
@@ -850,8 +858,8 @@ describe( 'ContextualBalloon', () => {
 					expect( balloon.view.pin.calledTwice );
 					expect( balloon.view.pin.secondCall.args[ 0 ].viewportOffsetConfig.top ).to.equal( 200 );
 
-					newEditor.destroy();
 					editorElement.remove();
+					return newEditor.destroy();
 				} );
 		} );
 

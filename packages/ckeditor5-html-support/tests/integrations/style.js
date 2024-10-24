@@ -8,6 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import StyleElementSupport from '../../src/integrations/style.js';
 
 /* global console, document */
 
@@ -40,6 +41,14 @@ describe( 'StyleElementSupport', () => {
 
 	it( 'should be named', () => {
 		expect( editor.plugins.has( 'StyleElementSupport' ) ).to.be.true;
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StyleElementSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StyleElementSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should allow element', () => {

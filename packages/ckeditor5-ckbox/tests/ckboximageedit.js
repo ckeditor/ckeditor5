@@ -23,6 +23,14 @@ describe( 'CKBoxImageEdit', () => {
 		expect( CKBoxImageEdit.pluginName ).to.equal( 'CKBoxImageEdit' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxImageEdit.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxImageEdit.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		let domElement, editor;
 

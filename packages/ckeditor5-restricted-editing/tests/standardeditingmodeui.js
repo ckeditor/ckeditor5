@@ -35,6 +35,14 @@ describe( 'StandardEditingModeUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StandardEditingModeUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StandardEditingModeUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "restrictedEditingException" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'restrictedEditingException' );

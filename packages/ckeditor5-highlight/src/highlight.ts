@@ -34,4 +34,11 @@ export default class Highlight extends Plugin {
 	public static get pluginName() {
 		return 'Highlight' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

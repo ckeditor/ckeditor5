@@ -37,12 +37,20 @@ describe( 'ImageStyleEditing', () => {
 			expect( ImageStyleEditing.pluginName ).to.equal( 'ImageStyleEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( ImageStyleEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( ImageStyleEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'requires ImageUtils ', () => {
 			expect( ImageStyleEditing.requires ).to.deep.equal( [ ImageUtils ] );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 	} );
 
@@ -87,7 +95,7 @@ describe( 'ImageStyleEditing', () => {
 						]
 					} );
 
-					editor.destroy();
+					await editor.destroy();
 				} );
 
 				it( 'should not set a default config if neither image editing plugins are loaded', async () => {
@@ -201,7 +209,7 @@ describe( 'ImageStyleEditing', () => {
 
 			expect( editor.commands.get( 'imageStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 
@@ -225,8 +233,8 @@ describe( 'ImageStyleEditing', () => {
 			document = model.document;
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value', () => {

@@ -20,6 +20,14 @@ describe( 'ListPropertiesUtils', () => {
 		expect( ListPropertiesUtils.pluginName ).to.equal( 'ListPropertiesUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListPropertiesUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListPropertiesUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'coverage checks', () => {
 		it( 'getAllSupportedStyleTypes', () => {
 			expect( plugin.getAllSupportedStyleTypes() ).to.be.an( 'array' );

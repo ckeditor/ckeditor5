@@ -40,6 +40,8 @@ export { default as ImageUtils } from './imageutils.js';
 export { default as ImageBlockEditing } from './image/imageblockediting.js';
 export { default as ImageCaptionUI } from './imagecaption/imagecaptionui.js';
 
+export { createImageTypeRegExp } from './imageupload/utils.js';
+
 export type { ImageConfig } from './imageconfig.js';
 export type { default as ImageTypeCommand } from './image/imagetypecommand.js';
 export type { default as InsertImageCommand } from './image/insertimagecommand.js';

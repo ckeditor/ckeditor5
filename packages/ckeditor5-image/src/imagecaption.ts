@@ -32,4 +32,11 @@ export default class ImageCaption extends Plugin {
 	public static get pluginName() {
 		return 'ImageCaption' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

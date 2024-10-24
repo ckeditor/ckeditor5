@@ -56,6 +56,14 @@ describe( 'RemoveFormatUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( RemoveFormatUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( RemoveFormatUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "removeFormat" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'removeFormat' );

@@ -585,20 +585,23 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			return;
 		}
 
-		const domAttrKeys = Array.from( ( domElement as DomElement ).attributes ).map( attr => attr.name );
-		const viewAttrKeys = viewElement.getAttributeKeys();
+		// Remove attributes from DOM elements if they do not exist in the view.
+		//
+		// Note: It is important to first remove DOM attributes and then set new ones, because some view attributes may be renamed
+		// as they are set on DOM (due to unsafe attributes handling). If we set the view attribute first, and then remove
+		// non-existing DOM attributes, then we would remove the attribute that we just set.
+		for ( const domAttr of ( domElement as DomElement ).attributes ) {
+			const key = domAttr.name;
 
-		// Add or overwrite attributes.
-		for ( const key of viewAttrKeys ) {
-			this.domConverter.setDomElementAttribute( domElement as DomElement, key, viewElement.getAttribute( key )!, viewElement );
-		}
-
-		// Remove from DOM attributes which do not exists in the view.
-		for ( const key of domAttrKeys ) {
 			// All other attributes not present in the DOM should be removed.
 			if ( !viewElement.hasAttribute( key ) ) {
 				this.domConverter.removeDomElementAttribute( domElement as DomElement, key );
 			}
+		}
+
+		// Add or overwrite attributes.
+		for ( const key of viewElement.getAttributeKeys() ) {
+			this.domConverter.setDomElementAttribute( domElement as DomElement, key, viewElement.getAttribute( key )!, viewElement );
 		}
 	}
 

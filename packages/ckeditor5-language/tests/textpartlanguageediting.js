@@ -33,6 +33,14 @@ describe( 'TextPartLanguageEditing', () => {
 		expect( TextPartLanguageEditing.pluginName ).to.equal( 'TextPartLanguageEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TextPartLanguageEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TextPartLanguageEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( TextPartLanguageEditing ) ).to.be.instanceOf( TextPartLanguageEditing );
 	} );
@@ -159,7 +167,7 @@ describe( 'TextPartLanguageEditing', () => {
 
 			expect( customEditor.config.get( 'language' ) ).to.deep.equal( languageConfig );
 
-			customEditor.destroy();
+			await customEditor.destroy();
 		} );
 	} );
 } );

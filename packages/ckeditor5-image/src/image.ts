@@ -40,4 +40,11 @@ export default class Image extends Plugin {
 	public static get pluginName() {
 		return 'Image' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

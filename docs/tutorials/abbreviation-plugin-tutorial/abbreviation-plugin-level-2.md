@@ -10,7 +10,15 @@ modified_at: 2022-07-15
 
 In this part of the tutorial we will focus on creating a dialog, which will get the user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-1).
+We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there} or grab our starter files for this part using the commands below.
+
+```bash
+npx -y degit ckeditor/ckeditor5-tutorials-examples/abbreviation-plugin/part-1 abbreviation-plugin
+cd abbreviation-plugin
+
+npm install
+npm run dev
+```
 
 <info-box>
 	As we will mostly work on the UI, we recommend reading about our {@link framework/architecture/ui-library UI library} before you start coding.

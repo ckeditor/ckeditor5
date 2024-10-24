@@ -42,6 +42,14 @@ describe( 'ShowBlocksUI', () => {
 		expect( ShowBlocksUI.pluginName ).to.equal( 'ShowBlocksUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ShowBlocksUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ShowBlocksUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "showBlocks" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'showBlocks' );

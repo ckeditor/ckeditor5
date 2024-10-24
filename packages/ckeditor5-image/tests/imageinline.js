@@ -50,4 +50,12 @@ describe( 'ImageInline', () => {
 	it( 'should load ImageInsertUI plugin', () => {
 		expect( editor.plugins.get( ImageInsertUI ) ).to.instanceOf( ImageInsertUI );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageInline.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageInline.isPremiumPlugin ).to.be.false;
+	} );
 } );

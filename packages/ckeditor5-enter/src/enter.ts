@@ -26,6 +26,13 @@ export default class Enter extends Plugin {
 		return 'Enter' as const;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
 	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;

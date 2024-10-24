@@ -47,6 +47,14 @@ describe( 'Input', () => {
 			expect( Input.pluginName ).to.equal( 'Input' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( Input.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( Input.isPremiumPlugin ).to.be.false;
+		} );
+
 		describe( 'basic typing', () => {
 			beforeEach( () => {
 				insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );

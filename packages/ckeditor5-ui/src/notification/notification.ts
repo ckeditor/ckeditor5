@@ -32,6 +32,13 @@ export default class Notification extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		// Each unhandled and not stopped `show:warning` event is displayed as a system alert.
 		this.on<NotificationShowWarningEvent>( 'show:warning', ( evt, data ) => {

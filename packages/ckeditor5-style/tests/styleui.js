@@ -41,6 +41,14 @@ describe( 'StyleUI', () => {
 		expect( StyleUI.pluginName ).to.equal( 'StyleUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StyleUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StyleUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded by the Style plugin', () => {
 		expect( editor.plugins.has( 'StyleUI' ) ).to.be.true;
 	} );

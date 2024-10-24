@@ -616,8 +616,8 @@ describe( 'LinkCommand', () => {
 	} );
 
 	describe( 'manual decorators', () => {
-		beforeEach( () => {
-			editor.destroy();
+		beforeEach( async () => {
+			await editor.destroy();
 			return ModelTestEditor.create()
 				.then( newEditor => {
 					editor = newEditor;

@@ -36,6 +36,14 @@ describe( 'BoldEditing', () => {
 		expect( BoldEditing.pluginName ).to.equal( 'BoldEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BoldEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BoldEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( BoldEditing ) ).to.be.instanceOf( BoldEditing );
 	} );

@@ -72,6 +72,14 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		editorElement.remove();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DragDropBlockToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DragDropBlockToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init', () => {
 		it( 'should toggle read only mode', () => {
 			expect( dragDropBlockToolbar.isEnabled ).to.be.true;

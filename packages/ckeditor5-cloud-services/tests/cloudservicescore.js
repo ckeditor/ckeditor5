@@ -41,6 +41,14 @@ describe( 'CloudServicesCore', () => {
 		expect( CloudServicesCore.pluginName ).to.equal( 'CloudServicesCore' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CloudServicesCore.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CloudServicesCore.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'createToken()', () => {
 		it( 'should throw an error when no tokenUrl provided', () => {
 			expect( () => cloudServicesCorePlugin.createToken() ).to.throw(

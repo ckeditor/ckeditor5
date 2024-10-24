@@ -32,4 +32,11 @@ export default class ListProperties extends Plugin {
 	public static get pluginName() {
 		return 'ListProperties' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

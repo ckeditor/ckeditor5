@@ -24,6 +24,13 @@ export default class CloudServicesCore extends ContextPlugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Creates the {@link module:cloud-services/token/token~Token} instance.
 	 *
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the

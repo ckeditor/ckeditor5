@@ -38,6 +38,14 @@ describe( 'SpecialCharactersText', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SpecialCharactersText.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SpecialCharactersText.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'adds new items', () => {
 		expect( addItemsSpy.callCount ).to.equal( 1 );
 	} );

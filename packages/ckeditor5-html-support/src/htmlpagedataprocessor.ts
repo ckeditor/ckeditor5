@@ -19,7 +19,7 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 	 */
 	public override toView( data: string ): ViewDocumentFragment {
 		// Ignore content that is not a full page source.
-		if ( !data.match( /<(?:html|body|head|meta)(?:\s[^>]*)?>/i ) ) {
+		if ( !/<(?:html|body|head|meta)(?:\s[^>]*)?>/i.test( data.trim().slice( 0, 10_000 ) ) ) {
 			return super.toView( data );
 		}
 
@@ -27,14 +27,14 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 		let docType = '';
 		let xmlDeclaration = '';
 
-		data = data.replace( /<!DOCTYPE[^>]*>/i, match => {
-			docType = match;
+		data = data.trim().replace( /<\?xml\s[^?]*\?>/i, match => {
+			xmlDeclaration = match;
 
 			return '';
 		} );
 
-		data = data.replace( /<\?xml\s[^?]*\?>/i, match => {
-			xmlDeclaration = match;
+		data = data.trim().replace( /^<!DOCTYPE\s[^>]*?>/i, match => {
+			docType = match;
 
 			return '';
 		} );

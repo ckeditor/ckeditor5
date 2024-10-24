@@ -446,7 +446,7 @@ class MultiRootEditorIntegration extends Plugin {
 			this.listenTo( view, 'execute', () => {
 				const root = editor.model.document.selection.getFirstRange()!.root;
 
-				editor.detachRoot( root, true );
+				editor.detachRoot( root.rootName!, true );
 			} );
 
 			return view;

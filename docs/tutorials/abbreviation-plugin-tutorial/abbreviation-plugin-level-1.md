@@ -18,17 +18,19 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to start the editor.
-
-The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
+The easiest way to get started is to grab the starter project using the commands below.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/abbreviation-plugin/starter-files
+npx -y degit ckeditor/ckeditor5-tutorials-examples/abbreviation-plugin/starter-files abbreviation-plugin
+cd abbreviation-plugin
 
 npm install
 npm run dev
 ```
+
+This will create a new directory called `abbreviation-plugin` with the necessary files. The `npm install` command will install all the dependencies, and `npm run dev` will start the development server.
+
+The editor with some basic plugins is created in the `main.js` file.
 
 <info-box>
 	The starter files come with the {@link framework/development-tools/inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
@@ -105,18 +107,6 @@ Now, we need to load the `Abbreviation` plugin in our `main.js` file. The editor
 ```js
 // main.js
 
-import { 
-	ClassicEditor,
-	Essentials,
-	Paragraph,
-	Heading,
-	List,
-	Bold,
-	Italic
-} from 'ckeditor5';
-
-import 'ckeditor5/ckeditor5.css';
-
 import Abbreviation from './abbreviation/abbreviation';					// ADDED
 
 ClassicEditor
@@ -126,12 +116,6 @@ ClassicEditor
 			Abbreviation												// ADDED
 		],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 
@@ -327,18 +311,6 @@ We passed the name of the button in the `componentFactory.add`, so it is now ava
 ```js
 // main.js
 
-import { 
-	ClassicEditor,
-	Essentials,
-	Paragraph,
-	Heading,
-	List,
-	Bold,
-	Italic
-} from 'ckeditor5';
-
-import 'ckeditor5/ckeditor5.css';
-
 import Abbreviation from './abbreviation/abbreviation';
 
 ClassicEditor
@@ -351,12 +323,6 @@ ClassicEditor
 			'|',
 			'abbreviation'												 // ADDED
 		]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 

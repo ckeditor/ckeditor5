@@ -15,4 +15,12 @@ describe( 'CodeBlock', () => {
 	it( 'should define pluginName', () => {
 		expect( CodeBlock.pluginName ).to.equal( 'CodeBlock' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CodeBlock.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CodeBlock.isPremiumPlugin ).to.be.false;
+	} );
 } );

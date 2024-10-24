@@ -40,8 +40,8 @@ The second step is to install the dependencies needed to build the editor. The l
 
 ```bash
 npm install --save \
-	@ckeditor/ckeditor5-dev-translations \
-	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-dev-translations@43 \
+	@ckeditor/ckeditor5-dev-utils@43 \
 	css-loader@5 \
 	postcss-loader@4 \
 	raw-loader@4 \

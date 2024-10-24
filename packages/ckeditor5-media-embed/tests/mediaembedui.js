@@ -46,6 +46,14 @@ describe( 'MediaEmbedUI', () => {
 		expect( MediaEmbedUI.pluginName ).to.equal( 'MediaEmbedUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MediaEmbedUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MediaEmbedUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should allow creating two instances', () => {
 		let secondInstance;
 

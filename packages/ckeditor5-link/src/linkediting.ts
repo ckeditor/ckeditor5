@@ -68,6 +68,13 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		// Clipboard is required for handling cut and paste events while typing over the link.
 		return [ TwoStepCaretMovement, Input, ClipboardPipeline ] as const;

@@ -49,6 +49,13 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * A reference to the find and replace form view.
 	 */
 	public formView: FindAndReplaceFormView & ViewWithCssTransitionDisabler | null;

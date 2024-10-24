@@ -73,6 +73,14 @@ describe( 'ImageUploadProgress', () => {
 			} );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageUploadProgress.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageUploadProgress.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'uploadImage', { file: createNativeFileMock() } );

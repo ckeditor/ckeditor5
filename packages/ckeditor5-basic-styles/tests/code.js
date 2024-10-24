@@ -15,4 +15,12 @@ describe( 'Code', () => {
 	it( 'should be named', () => {
 		expect( Code.pluginName ).to.equal( 'Code' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Code.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Code.isPremiumPlugin ).to.be.false;
+	} );
 } );

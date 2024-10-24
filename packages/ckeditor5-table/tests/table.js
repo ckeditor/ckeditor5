@@ -22,4 +22,12 @@ describe( 'Table', () => {
 	it( 'has proper name', () => {
 		expect( Table.pluginName ).to.equal( 'Table' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Table.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Table.isPremiumPlugin ).to.be.false;
+	} );
 } );

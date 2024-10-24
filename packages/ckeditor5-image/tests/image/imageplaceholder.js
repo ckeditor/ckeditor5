@@ -29,6 +29,14 @@ describe( 'ImagePlaceholder', () => {
 		expect( ImagePlaceholder.requires ).to.deep.equal( [ ImageUtils ] );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImagePlaceholder.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImagePlaceholder.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'imageBlock', () => {
 		beforeEach( async () => {
 			element = document.createElement( 'div' );

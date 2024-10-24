@@ -14,6 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
+import CustomElementSupport from '../../src/integrations/customelement.js';
 
 /* global document, console */
 
@@ -44,6 +45,14 @@ describe( 'CustomElementSupport', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CustomElementSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CustomElementSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be named', () => {

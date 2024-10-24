@@ -53,6 +53,13 @@ export default class ImageResizeButtons extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * The resize unit.
 	 * @default '%'
 	 */

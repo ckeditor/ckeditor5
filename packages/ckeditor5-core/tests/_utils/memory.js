@@ -6,8 +6,8 @@
 /* global window, document, setTimeout */
 
 const TEST_RETRIES = 2;
-const TEST_TIMEOUT = 5000;
-const GARBAGE_COLLECTOR_TIMEOUT = 500;
+const TEST_TIMEOUT = 6500;
+const GARBAGE_COLLECTOR_TIMEOUT = 800;
 
 /**
  * Memory tests suite definition that:
@@ -83,10 +83,15 @@ function runTest( createEditor ) {
 		} )
 		// Run create&destroy multiple times. Helps scaling up the issue.
 		.then( createAndDestroy ) // #1
+		.then( () => timeout( 300 ) )
 		.then( createAndDestroy ) // #2
+		.then( () => timeout( 300 ) )
 		.then( createAndDestroy ) // #3
+		.then( () => timeout( 300 ) )
 		.then( createAndDestroy ) // #4
+		.then( () => timeout( 300 ) )
 		.then( createAndDestroy ) // #5
+		.then( () => timeout( 300 ) )
 		.then( collectMemoryStats )
 		.then( memory => {
 			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
@@ -163,4 +168,8 @@ function isWindows() {
 	const userAgent = window.navigator.userAgent.toLowerCase();
 
 	return userAgent.indexOf( 'windows' ) > -1;
+}
+
+function timeout( ms ) {
+	return new Promise( resolve => setTimeout( resolve, ms ) );
 }

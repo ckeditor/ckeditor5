@@ -34,4 +34,11 @@ export default class PageBreak extends Plugin {
 	public static get pluginName() {
 		return 'PageBreak' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

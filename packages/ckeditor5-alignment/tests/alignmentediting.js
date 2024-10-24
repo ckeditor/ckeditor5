@@ -25,8 +25,16 @@ describe( 'AlignmentEditing', () => {
 		model = editor.model;
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AlignmentEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AlignmentEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should have pluginName', () => {
@@ -55,6 +63,10 @@ describe( 'AlignmentEditing', () => {
 				} );
 
 			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'is allowed on paragraph', () => {

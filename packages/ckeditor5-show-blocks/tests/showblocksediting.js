@@ -38,6 +38,14 @@ describe( 'ShowBlocksEditing', () => {
 		expect( ShowBlocksEditing.pluginName ).to.equal( 'ShowBlocksEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ShowBlocksEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ShowBlocksEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should register the "showBlocks" command', () => {
 		const command = editor.commands.get( 'showBlocks' );
 

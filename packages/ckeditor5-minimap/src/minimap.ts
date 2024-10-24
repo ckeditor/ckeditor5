@@ -34,6 +34,13 @@ export default class Minimap extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * The reference to the view of the minimap.
 	 */
 	private _minimapView!: MinimapView | null;

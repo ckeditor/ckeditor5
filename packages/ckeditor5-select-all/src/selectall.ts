@@ -33,4 +33,11 @@ export default class SelectAll extends Plugin {
 	public static get pluginName() {
 		return 'SelectAll' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

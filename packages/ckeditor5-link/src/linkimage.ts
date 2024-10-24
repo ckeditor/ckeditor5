@@ -33,4 +33,11 @@ export default class LinkImage extends Plugin {
 	public static get pluginName() {
 		return 'LinkImage' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

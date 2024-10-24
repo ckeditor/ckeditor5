@@ -15,4 +15,12 @@ describe( 'LegacyList', () => {
 	it( 'should require LegacyListEditing and ListUI', () => {
 		expect( LegacyList.requires ).to.deep.equal( [ LegacyListEditing, ListUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyList.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyList.isPremiumPlugin ).to.be.false;
+	} );
 } );

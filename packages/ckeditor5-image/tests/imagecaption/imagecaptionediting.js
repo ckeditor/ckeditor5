@@ -87,6 +87,14 @@ describe( 'ImageCaptionEditing', () => {
 		expect( editor.plugins.get( ImageCaptionEditing ) ).to.be.instanceOf( ImageCaptionEditing );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageCaptionEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageCaptionEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'schema', () => {
 		it( 'should set proper schema rules for caption', () => {
 			expect( model.schema.checkChild( [ '$root', 'imageBlock' ], 'caption' ) ).to.be.true;

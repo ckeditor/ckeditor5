@@ -16,4 +16,12 @@ describe( 'HtmlEmbed', () => {
 	it( 'should be named', () => {
 		expect( HtmlEmbed.pluginName ).to.equal( 'HtmlEmbed' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HtmlEmbed.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HtmlEmbed.isPremiumPlugin ).to.be.false;
+	} );
 } );

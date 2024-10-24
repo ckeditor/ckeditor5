@@ -54,6 +54,14 @@ describe( 'TableKeyboard', () => {
 		expect( TableKeyboard.pluginName ).to.equal( 'TableKeyboard' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableKeyboard.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableKeyboard.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).label ).to.equal(
 			'Keystrokes that can be used in a table cell'

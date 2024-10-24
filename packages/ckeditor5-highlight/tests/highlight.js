@@ -36,4 +36,12 @@ describe( 'Highlight', () => {
 	it( 'requires HighlightEditing and HighlightUI', () => {
 		expect( Highlight.requires ).to.deep.equal( [ HighlightEditing, HighlightUI ] );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Highlight.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Highlight.isPremiumPlugin ).to.be.false;
+	} );
 } );

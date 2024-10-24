@@ -49,6 +49,14 @@ describe( 'LinkImageUI', () => {
 		expect( LinkImageUI.pluginName ).to.equal( 'LinkImageUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LinkImageUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LinkImageUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require ImageBlockEditing by name', () => {
 		expect( LinkImageUI.requires ).to.include( 'ImageBlockEditing' );
 	} );

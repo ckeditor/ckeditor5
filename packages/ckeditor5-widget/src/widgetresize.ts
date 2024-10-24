@@ -85,6 +85,13 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editing = this.editor.editing;
 		const domDocument = global.window.document;

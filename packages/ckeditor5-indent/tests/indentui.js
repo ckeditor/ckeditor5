@@ -43,6 +43,14 @@ describe( 'IndentUI', () => {
 		expect( IndentUI.pluginName ).to.equal( 'IndentUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( IndentUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( IndentUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( IndentUI ) ).to.be.instanceOf( IndentUI );
 	} );

@@ -21,6 +21,14 @@ describe( 'ListPropertiesEditing', () => {
 		expect( ListPropertiesEditing.pluginName ).to.equal( 'ListPropertiesEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListPropertiesEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListPropertiesEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'config', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {

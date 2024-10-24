@@ -26,8 +26,8 @@ describe( 'PasteFromOffice - filters', () => {
 						} );
 				} );
 
-				afterEach( () => {
-					editor.destroy();
+				afterEach( async () => {
+					await editor.destroy();
 				} );
 
 				it( 'should handle correctly empty RTF data', () => {

@@ -32,4 +32,11 @@ export default class LegacyList extends Plugin {
 	public static get pluginName() {
 		return 'LegacyList' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

@@ -51,6 +51,14 @@ describe( 'TableUtils', () => {
 		it( 'should provide plugin name', () => {
 			expect( TableUtils.pluginName ).to.equal( 'TableUtils' );
 		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableUtils.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableUtils.isPremiumPlugin ).to.be.false;
+		} );
 	} );
 
 	describe( 'getCellLocation()', () => {

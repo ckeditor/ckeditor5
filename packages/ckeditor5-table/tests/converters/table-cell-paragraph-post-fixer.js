@@ -25,8 +25,8 @@ describe( 'Table cell paragraph post-fixer', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should omit elements that are not table rows (on table insert)', () => {

@@ -60,6 +60,14 @@ describe( 'CKBoxUtils', () => {
 		expect( CKBoxUtils.pluginName ).to.equal( 'CKBoxUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( ckboxUtils ).to.be.instanceOf( CKBoxUtils );
 	} );

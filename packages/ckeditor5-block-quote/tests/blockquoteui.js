@@ -33,6 +33,14 @@ describe( 'BlockQuoteUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BlockQuoteUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BlockQuoteUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar block quote button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'blockQuote' );

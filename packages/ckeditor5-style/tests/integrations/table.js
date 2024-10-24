@@ -18,6 +18,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import Style from '../../src/style.js';
+import TableStyleSupport from '../../src/integrations/table.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'TableStyleSupport', () => {
@@ -82,6 +83,14 @@ describe( 'TableStyleSupport', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableStyleSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableStyleSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should add class to table element', () => {

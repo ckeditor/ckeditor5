@@ -299,6 +299,14 @@ describe( 'Styles utils', () => {
 			expect( getShorthandValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
 
+		it( 'should trim truncate analyzed content to 1500 characters', () => {
+			const attribute = 'abc(10, 1)'.repeat( 160 );
+
+			expect( getShorthandValues( '   ' + attribute ) ).to.be.deep.equal(
+				[ ...Array( 150 ) ].fill( 'abc(10, 1)' )
+			);
+		} );
+
 		it( 'should split string to separate values when value contain grouping parens', () => {
 			expect( getShorthandValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
 				.to.deep.equal( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );

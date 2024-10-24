@@ -24,6 +24,14 @@ import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeli
 describe( 'TableToolbar', () => {
 	testUtils.createSinonSandbox();
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'contentToolbar', () => {
 		let editor, model, doc, widgetToolbarRepository, toolbar, balloon, editorElement;
 

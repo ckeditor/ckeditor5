@@ -17,4 +17,12 @@ describe( 'PageBreak', () => {
 	it( 'should be named', () => {
 		expect( PageBreak.pluginName ).to.equal( 'PageBreak' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PageBreak.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PageBreak.isPremiumPlugin ).to.be.false;
+	} );
 } );

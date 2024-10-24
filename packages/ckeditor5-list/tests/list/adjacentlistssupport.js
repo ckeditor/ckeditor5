@@ -52,6 +52,14 @@ describe( 'AdjacentListsSupport', () => {
 		expect( AdjacentListsSupport.pluginName ).to.equal( 'AdjacentListsSupport' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AdjacentListsSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AdjacentListsSupport.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( AdjacentListsSupport ) ).to.be.instanceOf( AdjacentListsSupport );
 	} );

@@ -40,5 +40,13 @@ describe( 'table properties', () => {
 		it( 'should have pluginName', () => {
 			expect( TableProperties.pluginName ).to.equal( 'TableProperties' );
 		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableProperties.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableProperties.isPremiumPlugin ).to.be.false;
+		} );
 	} );
 } );

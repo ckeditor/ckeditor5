@@ -104,6 +104,14 @@ describe( 'BalloonToolbar', () => {
 		ResizeObserver._observerInstance = null;
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BalloonToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BalloonToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should create a plugin instance', () => {
 		expect( balloonToolbar ).to.instanceOf( Plugin );
 		expect( balloonToolbar ).to.instanceOf( BalloonToolbar );
@@ -237,6 +245,13 @@ describe( 'BalloonToolbar', () => {
 			editor.ui.getEditableElement().dispatchEvent( new Event( 'focus' ) );
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+		} );
+
+		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		it( 'should track the ToolbarView instance (not just its element) to allow using complex toolbar items scattered across DOM ' +
+			'sub-trees and keep track of the focus',
+		() => {
+			expect( balloonToolbar.focusTracker.externalViews ).to.include( balloonToolbar.toolbarView );
 		} );
 
 		it( 'it should track the focus of the toolbarView#element', () => {
@@ -828,7 +843,7 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	describe( 'MultiRoot editor integration', () => {
-		let rootsElements, addEditableOnRootAdd;
+		let rootsElements, addEditableOnRootAdd, focusHolder;
 
 		beforeEach( async () => {
 			addEditableOnRootAdd = true;
@@ -849,6 +864,9 @@ describe( 'BalloonToolbar', () => {
 
 			editor = await createMultiRootEditor();
 			balloonToolbar = editor.plugins.get( BalloonToolbar );
+
+			focusHolder = document.createElement( 'input' );
+			document.body.appendChild( focusHolder );
 		} );
 
 		afterEach( async () => {
@@ -858,6 +876,8 @@ describe( 'BalloonToolbar', () => {
 
 			await editor.destroy();
 			editor = null;
+
+			focusHolder.remove();
 		} );
 
 		it( 'should create plugin instance', () => {
@@ -877,11 +897,11 @@ describe( 'BalloonToolbar', () => {
 			for ( const editableName of editables ) {
 				const editableElement = editor.ui.getEditableElement( editableName );
 
-				editableElement.dispatchEvent( new Event( 'focus' ) );
+				editableElement.focus();
 				clock.tick( 50 );
 				expect( balloonToolbar.focusTracker.isFocused ).to.true;
 
-				editableElement.dispatchEvent( new Event( 'blur' ) );
+				focusHolder.focus();
 				clock.tick( 50 );
 				expect( balloonToolbar.focusTracker.isFocused ).to.false;
 			}
@@ -893,24 +913,24 @@ describe( 'BalloonToolbar', () => {
 			const clock = sinon.useFakeTimers();
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
 
 			editor.addRoot( 'dynamicRoot' );
 
 			// Check if newly added editable is tracked in focus tracker.
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 5 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 5 );
 
 			// Check if element is added to focus tracker.
 			const editableElement = editor.ui.getEditableElement( 'dynamicRoot' );
 			expect( balloonToolbar.focusTracker._elements ).contain( editableElement );
 
 			// Watch focus and blur events.
-			editableElement.dispatchEvent( new Event( 'focus' ) );
+			editableElement.focus();
 			clock.tick( 50 );
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 
-			editableElement.dispatchEvent( new Event( 'blur' ) );
+			focusHolder.focus();
 			clock.tick( 50 );
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
 
@@ -922,21 +942,21 @@ describe( 'BalloonToolbar', () => {
 			const clock = sinon.useFakeTimers();
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
 
 			editor.addRoot( 'dynamicRoot' );
 			const editableElement = editor.ui.getEditableElement( 'dynamicRoot' );
 
 			// Check if newly added editable is tracked in focus tracker.
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 5 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 5 );
 
 			editor.detachRoot( 'dynamicRoot' );
 
 			// Check if element is removed from focus tracker.
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
 
 			// Focus is no longer tracked.
-			editableElement.dispatchEvent( new Event( 'focus' ) );
+			editableElement.focus();
 			clock.tick( 50 );
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
@@ -950,29 +970,29 @@ describe( 'BalloonToolbar', () => {
 			addEditableOnRootAdd = false;
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
 
 			editor.addRoot( 'dynamicRoot' );
 			const root = editor.model.document.getRoot( 'dynamicRoot' );
 
 			// Editable is not yet attached
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
 
 			// Focus is no longer tracked.
 			const editableElement = editor.createEditable( root );
 
 			global.document.body.appendChild( editableElement );
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 5 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 5 );
 
 			// Lets test focus
-			editableElement.dispatchEvent( new Event( 'focus' ) );
+			editableElement.focus();
 			clock.tick( 50 );
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 
 			// Detach editable element
 			editor.detachEditable( root );
-			expect( balloonToolbar.focusTracker._elements.size ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
 
 			editableElement.remove();
 			clock.restore();

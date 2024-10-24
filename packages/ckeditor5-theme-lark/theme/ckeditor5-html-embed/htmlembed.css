@@ -56,18 +56,18 @@
 		margin-left: 50px;
 	}
 
-	@nest .ck.ck-editor__editable.ck-blurred &.ck-widget_selected::before {
+	.ck.ck-editor__editable.ck-blurred &.ck-widget_selected::before {
 		top: 0px;
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
 	}
 
-	@nest .ck.ck-editor__editable:not(.ck-blurred) &.ck-widget_selected::before {
+	.ck.ck-editor__editable:not(.ck-blurred) &.ck-widget_selected::before {
 		top: 0;
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
 		background: var(--ck-color-focus-border);
 	}
 
-	@nest .ck.ck-editor__editable &:not(.ck-widget_selected):hover::before {
+	.ck.ck-editor__editable &:not(.ck-widget_selected):hover::before {
 		top: 0px;
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
 	}
@@ -135,7 +135,7 @@
 		width: var(--ck-html-embed-content-width);
 
 		/* Disable all mouse interaction as long as the editor is not read–only. */
-		@nest .ck-editor__editable:not(.ck-read-only) & {
+		.ck-editor__editable:not(.ck-read-only) & {
 			pointer-events: none;
 		}
 	}

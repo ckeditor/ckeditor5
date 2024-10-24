@@ -6,7 +6,7 @@
 /* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { global, keyCodes, Locale } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker, global, keyCodes, Locale } from '@ckeditor/ckeditor5-utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -192,6 +192,42 @@ describe( 'utils', () => {
 					expect( dropdownView.isOpen ).to.be.true;
 
 					documentElement.remove();
+				} );
+
+				it( 'considers DOM elements in different DOM sub-trees but connected via focus trackers', () => {
+					// <body>
+					//   <DropdownView#element />
+					//   <child-view />
+					//   <secondary-child-view />
+					// </body>
+					const childView = new View();
+					const secondaryChildView = new View();
+
+					childView.setTemplate( { tag: 'child-view' } );
+					secondaryChildView.setTemplate( { tag: 'secondary-child-view' } );
+
+					childView.focusTracker = new FocusTracker();
+
+					childView.render();
+					secondaryChildView.render();
+					document.body.appendChild( childView.element );
+					document.body.appendChild( secondaryChildView.element );
+
+					// DropdownView#focusTracker -> child-view#focusTracker -> secondary-child-view#focusTracker
+					dropdownView.focusTracker.add( childView );
+					childView.focusTracker.add( secondaryChildView );
+
+					dropdownView.isOpen = true;
+
+					secondaryChildView.element.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// External view's element is logically connected to the dropdown view's element via focus tracker.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					childView.element.remove();
+					secondaryChildView.element.remove();
 				} );
 			} );
 
@@ -688,6 +724,15 @@ describe( 'utils', () => {
 
 			afterEach( () => {
 				dropdownView.element.remove();
+			} );
+
+			// https://github.com/cksource/ckeditor5-commercial/issues/6633
+			it( 'should add the ToolbarView instance of dropdown\'s focus tracker to allow for using toolbar items distributed ' +
+				'across the DOM sub-trees', () => {
+				// Lazy load.
+				dropdownView.isOpen = true;
+
+				expect( dropdownView.focusTracker.externalViews ).to.include( dropdownView.toolbarView );
 			} );
 
 			it( 'focuses active item upon dropdown opening', () => {
@@ -1389,6 +1434,22 @@ describe( 'utils', () => {
 
 			expect( dropdownView.panelView.children.length ).to.equal( 1 );
 			expect( dropdownView.menuView.render.calledOnce ).to.be.true;
+		} );
+
+		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		it( 'should add the menu view to dropdown\'s focus tracker to allow for linking focus trackers and keeping track of the focus ' +
+			'when it goes to sub-menus in other DOM sub-trees',
+		() => {
+			const addSpy = sinon.spy( dropdownView.focusTracker, 'add' );
+
+			addMenuToDropdown( dropdownView, body, definition );
+
+			dropdownView.isOpen = true;
+
+			sinon.assert.calledThrice( addSpy );
+			sinon.assert.calledWithExactly( addSpy.firstCall, dropdownView.menuView );
+			sinon.assert.calledWithExactly( addSpy.secondCall, dropdownView.menuView.menus[ 0 ] );
+			sinon.assert.calledWithExactly( addSpy.thirdCall, dropdownView.menuView.menus[ 1 ] );
 		} );
 
 		it( 'should focus dropdown menu view after dropdown is opened', () => {

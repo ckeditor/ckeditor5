@@ -69,6 +69,14 @@ describe( 'LegacyListEditing', () => {
 		expect( LegacyListEditing.pluginName ).to.equal( 'LegacyListEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyListEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyListEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( LegacyListEditing ) ).to.be.instanceOf( LegacyListEditing );
 	} );

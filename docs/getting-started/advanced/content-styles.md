@@ -49,5 +49,5 @@ The content in the frontend of your application should now look the same as when
 Below there is a full list of content styles used by the editor features. You can copy it and use it straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-frontend-and-backend)).
 
 ```css
-{@exec ../scripts/docs/read-content-styles-file.js}
+{@exec ../scripts/docs/read-content-styles-file.cjs}
 ```

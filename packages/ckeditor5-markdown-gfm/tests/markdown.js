@@ -12,6 +12,14 @@ describe( 'Markdown', () => {
 		expect( Markdown.pluginName ).to.equal( 'Markdown' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Markdown.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Markdown.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set editor.data.processor', () => {
 		return ClassicTestEditor
 			.create( '', {
@@ -20,7 +28,7 @@ describe( 'Markdown', () => {
 			.then( editor => {
 				expect( editor.data.processor ).to.be.an.instanceof( GFMDataProcessor );
 
-				editor.destroy(); // Tests cleanup.
+				return editor.destroy(); // Tests cleanup.
 			} );
 	} );
 } );

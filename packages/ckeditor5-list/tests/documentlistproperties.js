@@ -20,6 +20,14 @@ describe( 'DocumentListProperties', () => {
 		expect( DocumentListProperties.requires ).to.deep.equal( [ ListProperties ] );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DocumentListProperties.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DocumentListProperties.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should emit warning when instantiated', () => {
 		sinon.stub( console, 'warn' );
 

@@ -34,6 +34,13 @@ export default class MediaEmbedUI extends Plugin {
 		return 'MediaEmbedUI' as const;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
 	private _formView: MediaFormView | undefined;
 
 	/**

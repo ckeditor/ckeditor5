@@ -8,7 +8,8 @@
 const locale = new Locale();
 
 const text = new View();
-text.element = document.createTextNode( 'Toolbar text' );
+text.element = document.createElement( 'span' );
+text.element.innerHTML = 'Toolbar text';
 
 const toolbarText = new ToolbarView( locale );
 toolbarText.items.add( text );

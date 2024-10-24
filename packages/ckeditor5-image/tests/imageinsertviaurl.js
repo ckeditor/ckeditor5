@@ -42,4 +42,12 @@ describe( 'ImageInsertViaUrl', () => {
 	it( 'should not load ImageUpload plugin', () => {
 		expect( editor.plugins.has( 'ImageUpload' ) ).to.be.false;
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageInsertViaUrl.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageInsertViaUrl.isPremiumPlugin ).to.be.false;
+	} );
 } );

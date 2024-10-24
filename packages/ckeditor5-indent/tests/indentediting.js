@@ -32,6 +32,14 @@ describe( 'IndentEditing', () => {
 		expect( IndentEditing.pluginName ).to.equal( 'IndentEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( IndentEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( IndentEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( IndentEditing ) ).to.be.instanceOf( IndentEditing );
 	} );

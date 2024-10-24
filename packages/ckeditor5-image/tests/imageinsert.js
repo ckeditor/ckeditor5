@@ -44,4 +44,12 @@ describe( 'ImageInsert', () => {
 	it( 'should load ImageInsertViaUrl plugin', () => {
 		expect( editor.plugins.get( 'ImageInsertViaUrl' ) ).to.instanceOf( ImageInsertViaUrl );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageInsert.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageInsert.isPremiumPlugin ).to.be.false;
+	} );
 } );

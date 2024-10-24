@@ -419,7 +419,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.nodeBefore;
-			}, 'model-nodelist-offset-out-of-bounds', position );
+			}, 'model-position-path-incorrect', position );
 		} );
 	} );
 
@@ -450,7 +450,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.nodeAfter;
-			}, 'model-nodelist-offset-out-of-bounds', position );
+			}, 'model-position-path-incorrect', position );
 		} );
 	} );
 
@@ -486,7 +486,31 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.textNode;
-			}, 'model-nodelist-offset-out-of-bounds', position );
+			}, 'model-position-path-incorrect', position );
+		} );
+	} );
+
+	describe( 'isValid()', () => {
+		it( 'should return true for a position that points to a place that exists in current model tree', () => {
+			const p1 = new Position( root, [ 0 ] );
+			const p2 = new Position( root, [ 2 ] );
+			const p3 = new Position( root, [ 1, 0, 2 ] );
+
+			expect( p1.isValid() ).to.be.true;
+			expect( p2.isValid() ).to.be.true;
+			expect( p3.isValid() ).to.be.true;
+		} );
+
+		it( 'should return false for a position that points to a place that exists in current model tree', () => {
+			const p1 = new Position( root, [ -1 ] );
+			const p2 = new Position( root, [ 3 ] );
+			const p3 = new Position( root, [ 1, 4, 0 ] );
+			const p4 = new Position( root, [ 1, 0, 0, 0 ] );
+
+			expect( p1.isValid() ).to.be.false;
+			expect( p2.isValid() ).to.be.false;
+			expect( p3.isValid() ).to.be.false;
+			expect( p4.isValid() ).to.be.false;
 		} );
 	} );
 

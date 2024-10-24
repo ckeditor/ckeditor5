@@ -26,8 +26,8 @@ describe( 'table ascii-art and model helpers', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'for the table with only one cell', () => {
@@ -138,7 +138,7 @@ describe( 'table ascii-art and model helpers', () => {
 
 			assertSameCodeString( modelDataString,
 				`[
-					[ '00' ], 
+					[ '00' ],
 					[ '10' ]
 				]`
 			);

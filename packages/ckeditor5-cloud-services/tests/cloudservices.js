@@ -41,6 +41,14 @@ describe( 'CloudServices', () => {
 		expect( CloudServices.pluginName ).to.equal( 'CloudServices' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CloudServices.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CloudServices.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should expose its properties based on config', () => {
 			return Context

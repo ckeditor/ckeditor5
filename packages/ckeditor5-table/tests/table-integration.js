@@ -34,8 +34,8 @@ describe( 'Table feature – integration', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'pastes td as p when pasting into the table', () => {
@@ -98,8 +98,8 @@ describe( 'Table feature – integration', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'fixing empty roots should be transparent to undo', () => {
@@ -169,8 +169,8 @@ describe( 'Table feature – integration', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'merges elements without throwing errors', () => {
@@ -202,8 +202,8 @@ describe( 'Table feature – integration', () => {
 describe( 'Table feature – integration with markers', () => {
 	let editor;
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/pull/9780

@@ -66,6 +66,14 @@ describe( 'TwoStepCaretMovement', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TwoStepCaretMovement.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TwoStepCaretMovement.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'moving right', () => {
 		it( 'should do nothing for unrelated attribute (at the beginning)', () => {
 			setData( model, '[]<$text c="true">foo</$text>' );

@@ -149,8 +149,8 @@ describe( 'Heading integration', () => {
 					expect( editor.getData() )
 						.to.equal( '<h2>Heading 2</h2><h2 class="fancy">Fancy Heading 2</h2>' );
 
-					editor.destroy();
 					element.remove();
+					return editor.destroy();
 				} );
 		} );
 	} );

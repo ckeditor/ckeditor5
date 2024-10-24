@@ -36,6 +36,14 @@ describe( 'PasteFromMarkdownExperimental', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PasteFromMarkdownExperimental.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PasteFromMarkdownExperimental.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'text/plain', () => {
 		it( 'should convert to HTML the pasted markdown content', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );

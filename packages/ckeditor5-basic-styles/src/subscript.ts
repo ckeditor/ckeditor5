@@ -31,4 +31,11 @@ export default class Subscript extends Plugin {
 	public static get pluginName() {
 		return 'Subscript' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

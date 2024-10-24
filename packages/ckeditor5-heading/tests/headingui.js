@@ -65,6 +65,14 @@ describe( 'HeadingUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HeadingUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HeadingUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'init()', () => {
 		describe( 'toolbar dropdown', () => {
 			let dropdown;

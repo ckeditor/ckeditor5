@@ -1,20 +1,14 @@
 # Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Uyghur (https://app.transifex.com/ckeditor/teams/11143/ug/)\n"
 "Language: ug\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
@@ -55,39 +49,39 @@ msgstr "مول تېكىست تەھرىرلىگۈچ. تەھرىرلەش رايو�
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "ھۆججەت باشقۇرغۇچ بىلەن قىستۇر"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "ھۆججەت باشقۇرغۇچتا ئالماشتۇر"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "سۈرەتنى ھۆججەت باشقۇرغۇچ بىلەن قىستۇرىدۇ"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "سۈرەتنى ھۆججەت باشقۇرغۇچ بىلەن ئالماشتۇرىدۇ"
 
 msgctxt "The label for a button that opens a file manager in order to insert a file."
 msgid "File"
-msgstr ""
+msgstr "ھۆججەت"
 
 msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
 msgid "With file manager"
-msgstr ""
+msgstr "ھۆججەت باشقۇرغۇچ بىلەن"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "جەدۋەل ماۋزۇسى تاقاق"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "جەدۋەل ماۋزۇسى ئوچۇق"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "مەزمۇن تەھرىرلەش كۇنۇپكا بېسىلىشى"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."
@@ -132,3 +126,11 @@ msgstr ""
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"
 msgstr "قوشۇل"
+
+msgctxt "Dropdown option label for the paragraph format."
+msgid "Paragraph"
+msgstr "ئابزاس"
+
+msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
+msgid "Color picker"
+msgstr "رەڭ تاللىغۇچ"

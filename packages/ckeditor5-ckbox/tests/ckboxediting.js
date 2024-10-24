@@ -61,6 +61,14 @@ describe( 'CKBoxEditing', () => {
 		expect( CKBoxEditing.pluginName ).to.equal( 'CKBoxEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CKBoxEditing ) ).to.be.instanceOf( CKBoxEditing );
 	} );
@@ -1870,6 +1878,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.true;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+
+			await editor.destroy();
 		} );
 
 		it( 'should disable image upload command if access not allowed', async () => {
@@ -1894,6 +1904,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.false;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+
+			await editor.destroy();
 		} );
 
 		it( 'should not disable image upload command if access allowed ( CKBox loaded first )', async () => {
@@ -1918,6 +1930,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.true;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+
+			await editor.destroy();
 		} );
 
 		it( 'should disable image upload command if access not allowed ( CKBox loaded first )', async () => {
@@ -1942,6 +1956,8 @@ describe( 'CKBoxEditing', () => {
 
 			expect( uploadImageCommand.isEnabled ).to.be.false;
 			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+
+			await editor.destroy();
 		} );
 	} );
 } );

@@ -38,6 +38,14 @@ describe( 'SpecialCharactersMathematical', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SpecialCharactersMathematical.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SpecialCharactersMathematical.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'adds new items', () => {
 		expect( addItemsSpy.callCount ).to.equal( 1 );
 	} );

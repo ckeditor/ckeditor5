@@ -48,6 +48,13 @@ describe( 'ClassicEditor', () => {
 			editor = new ClassicEditor( editorElement );
 		} );
 
+		afterEach( async () => {
+			if ( editor.state !== 'destroyed' ) {
+				editor.fire( 'ready' );
+				await editor.destroy();
+			}
+		} );
+
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
@@ -102,16 +109,19 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			describe( 'automatic toolbar items groupping', () => {
-				it( 'should be on by default', () => {
+				it( 'should be on by default', async () => {
 					const editorElement = document.createElement( 'div' );
 					const editor = new ClassicEditor( editorElement );
 
 					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.true;
 
+					editor.fire( 'ready' );
+					await editor.destroy();
+
 					editorElement.remove();
 				} );
 
-				it( 'can be disabled using config.toolbar.shouldNotGroupWhenFull', () => {
+				it( 'can be disabled using config.toolbar.shouldNotGroupWhenFull', async () => {
 					const editorElement = document.createElement( 'div' );
 					const editor = new ClassicEditor( editorElement, {
 						toolbar: {
@@ -121,34 +131,48 @@ describe( 'ClassicEditor', () => {
 
 					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.false;
 
+					editor.fire( 'ready' );
+					await editor.destroy();
+
 					editorElement.remove();
 				} );
 			} );
 		} );
 
 		describe( 'config.initialData', () => {
-			it( 'if not set, is set using DOM element data', () => {
+			it( 'if not set, is set using DOM element data', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
 				const editor = new ClassicEditor( editorElement );
 
 				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+
+				editorElement.remove();
 			} );
 
-			it( 'if not set, is set using data passed in constructor', () => {
+			it( 'if not set, is set using data passed in constructor', async () => {
 				const editor = new ClassicEditor( '<p>Foo</p>' );
 
 				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
 			} );
 
-			it( 'if set, is not overwritten with DOM element data', () => {
+			it( 'if set, is not overwritten with DOM element data', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
 				const editor = new ClassicEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
 				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
 			} );
 
 			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
@@ -222,7 +246,7 @@ describe( 'ClassicEditor', () => {
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 
@@ -233,7 +257,7 @@ describe( 'ClassicEditor', () => {
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 
@@ -245,7 +269,7 @@ describe( 'ClassicEditor', () => {
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 

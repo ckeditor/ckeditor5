@@ -41,4 +41,11 @@ export default class MediaEmbed extends Plugin {
 	public static get pluginName() {
 		return 'MediaEmbed' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

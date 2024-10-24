@@ -16,18 +16,24 @@ describe( 'VirtualTestEditor', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
-		it( 'creates an instance of editor', () => {
+		it( 'creates an instance of editor', async () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'creates main root element', () => {
+		it( 'creates main root element', async () => {
 			const editor = new VirtualTestEditor();
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 

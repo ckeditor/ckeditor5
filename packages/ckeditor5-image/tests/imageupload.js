@@ -37,6 +37,14 @@ describe( 'ImageUpload', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageUpload.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageUpload.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should include ImageUploadEditing', () => {
 		expect( editor.plugins.get( ImageUploadEditing ) ).to.be.instanceOf( ImageUploadEditing );
 	} );

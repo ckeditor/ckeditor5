@@ -14,6 +14,11 @@ describe( 'ComponentFactory', () => {
 	beforeEach( () => {
 		editor = new Editor();
 		factory = new ComponentFactory( editor );
+		editor.state = 'ready';
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {

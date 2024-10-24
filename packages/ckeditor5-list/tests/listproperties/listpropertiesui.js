@@ -63,6 +63,14 @@ describe( 'ListPropertiesUI', () => {
 		expect( ListPropertiesUI.pluginName ).to.equal( 'ListPropertiesUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListPropertiesUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListPropertiesUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListPropertiesUI ) ).to.be.instanceOf( ListPropertiesUI );
 	} );

@@ -40,6 +40,13 @@ export default class ImagePlaceholder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
 		this._setupSchema();
 		this._setupConversion();

@@ -34,6 +34,14 @@ describe( 'SubEditing', () => {
 		expect( SubEditing.pluginName ).to.equal( 'SubscriptEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SubEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SubEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( SubEditing ) ).to.be.instanceOf( SubEditing );
 	} );

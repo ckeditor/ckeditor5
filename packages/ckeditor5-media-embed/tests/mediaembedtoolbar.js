@@ -46,6 +46,14 @@ describe( 'MediaEmbedToolbar', () => {
 			.then( () => element.remove() );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MediaEmbedToolbar.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MediaEmbedToolbar.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( MediaEmbedToolbar ) ).to.be.instanceOf( MediaEmbedToolbar );
 	} );

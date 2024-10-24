@@ -31,6 +31,13 @@ export default class MediaEmbedEditing extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * The media registry managing the media providers in the editor.
 	 */
 	public registry: MediaRegistry;

@@ -4,7 +4,7 @@
  */
 
 @define-mixin ck-dir $direction {
-	@nest [dir="$(direction)"] & {
+	[dir="$(direction)"] & {
 		@mixin-content;
 	}
 }

@@ -3,7 +3,7 @@
 	"slug": "ckeditor5",
 	"hooks": {
 		"beforeHexo": [
-			"../scripts/docs/build-content-styles.js"
+			"../scripts/docs/build-content-styles.mjs"
 		]
 	},
 	"reportIssueWidget": {
@@ -369,8 +369,8 @@
 		"examples/framework/content-placeholder.html": "features/merge-fields.html"
 	},
 	"scripts": {
-		"snippet-adapter": "../scripts/docs/snippetadapter",
-		"import-path": "../scripts/docs/getrealimportpath"
+		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
+		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",

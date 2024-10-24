@@ -15,4 +15,12 @@ describe( 'FontColor', () => {
 	it( 'defines plugin name', () => {
 		expect( FontColor.pluginName ).to.equal( 'FontColor' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontColor.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontColor.isPremiumPlugin ).to.be.false;
+	} );
 } );

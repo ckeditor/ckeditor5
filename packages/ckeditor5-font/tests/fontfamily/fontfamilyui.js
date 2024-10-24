@@ -56,6 +56,14 @@ describe( 'FontFamilyUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontFamilyUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontFamilyUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar dropdown', () => {
 		let dropdown;
 

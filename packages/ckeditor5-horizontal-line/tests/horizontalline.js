@@ -17,4 +17,12 @@ describe( 'HorizontalLine', () => {
 	it( 'should be named', () => {
 		expect( HorizontalLine.pluginName ).to.equal( 'HorizontalLine' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HorizontalLine.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HorizontalLine.isPremiumPlugin ).to.be.false;
+	} );
 } );

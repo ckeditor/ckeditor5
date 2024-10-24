@@ -5,24 +5,22 @@
 
 /* eslint-env node */
 
-import fs from 'fs';
+import fs from 'fs-extra';
 import { parseArgs } from 'util';
-import { createRequire } from 'module';
 import chalk from 'chalk';
 import upath from 'upath';
 import { parse } from 'acorn';
 import { walk } from 'estree-walker';
 import { globSync } from 'glob';
-import constants from './release/utils/constants.js';
-
-const require = createRequire( import.meta.url );
+import { CKEDITOR5_INDEX, CKEDITOR5_PREMIUM_FEATURES_INDEX } from './constants.mjs';
+import { PACKAGES_DIRECTORY } from './release/utils/constants.mjs';
 
 /**
  * List of paths to the allowed `input` packages.
  */
 const paths = {
-	'ckeditor5': constants.CKEDITOR5_INDEX,
-	'ckeditor5-premium-features': constants.CKEDITOR5_PREMIUM_FEATURES_INDEX
+	'ckeditor5': CKEDITOR5_INDEX,
+	'ckeditor5-premium-features': CKEDITOR5_PREMIUM_FEATURES_INDEX
 };
 
 /**
@@ -77,10 +75,10 @@ if ( !inputPath ) {
 /**
  * Get names of all packages in the `packages` directory.
  */
-const globPath = upath.join( process.cwd(), constants.PACKAGES_DIRECTORY, '*', 'package.json' );
+const globPath = upath.join( process.cwd(), PACKAGES_DIRECTORY, '*', 'package.json' );
 
 const packages = globSync( globPath )
-	.map( path => require( path ) )
+	.map( path => fs.readJsonSync( path ) )
 	.map( pkg => pkg.name );
 
 /**

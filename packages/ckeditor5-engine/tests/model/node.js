@@ -10,7 +10,6 @@ import Element from '../../src/model/element.js';
 import Text from '../../src/model/text.js';
 import RootElement from '../../src/model/rootelement.js';
 import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'Node', () => {
@@ -93,27 +92,19 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getIndex()', () => {
-		it( 'should return null if the parent is null', () => {
-			expect( root.index ).to.be.null;
+	describe( 'index', () => {
+		it( 'should return null if not set', () => {
+			const a = new Node();
+
+			expect( a.index ).to.equal( null );
 		} );
 
-		it( 'should return index in the parent', () => {
-			expect( one.index ).to.equal( 0 );
-			expect( two.index ).to.equal( 1 );
-			expect( three.index ).to.equal( 2 );
+		it( 'should return _index value', () => {
+			const a = new Node();
 
-			expect( textBA.index ).to.equal( 0 );
-			expect( img.index ).to.equal( 1 );
-			expect( textR.index ).to.equal( 2 );
-		} );
+			a._index = 2;
 
-		it( 'should throw an error if parent does not contain element', () => {
-			node.parent = new Element( 'parent' );
-
-			expectToThrowCKEditorError( () => {
-				node.index;
-			}, /model-node-not-found-in-parent/, node.parent );
+			expect( a.index ).to.equal( 2 );
 		} );
 	} );
 
@@ -160,42 +151,39 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'startOffset', () => {
-		it( 'should return null if the parent is null', () => {
-			expect( root.startOffset ).to.be.null;
+		it( 'should return null after node is created', () => {
+			const a = new Node();
+
+			expect( a.startOffset ).to.equal( null );
 		} );
 
-		it( 'should return offset in the parent', () => {
-			expect( one.startOffset ).to.equal( 0 );
-			expect( two.startOffset ).to.equal( 1 );
-			expect( three.startOffset ).to.equal( 2 );
+		it( 'should return _startOffset value', () => {
+			const a = new Node();
+			a._startOffset = 7;
 
-			expect( textBA.startOffset ).to.equal( 0 );
-			expect( img.startOffset ).to.equal( 2 );
-			expect( textR.startOffset ).to.equal( 3 );
-		} );
-
-		it( 'should throw an error if parent does not contain element', () => {
-			node.parent = new Element( 'parent' );
-
-			expectToThrowCKEditorError( () => {
-				node.startOffset;
-			}, /model-node-not-found-in-parent/, node.parent );
+			expect( a.startOffset ).to.equal( 7 );
 		} );
 	} );
 
 	describe( 'endOffset', () => {
-		it( 'should return null if the parent is null', () => {
-			expect( root.endOffset ).to.be.null;
+		it( 'should return null if start offset is null', () => {
+			const a = new Node();
+
+			expect( a.endOffset ).to.equal( null );
 		} );
 
 		it( 'should return offset at which the node ends', () => {
-			expect( one.endOffset ).to.equal( 1 );
-			expect( two.endOffset ).to.equal( 2 );
-			expect( three.endOffset ).to.equal( 3 );
+			class MyNode extends Node {
+				get offsetSize() {
+					return 5;
+				}
+			}
 
-			expect( textBA.endOffset ).to.equal( 2 );
-			expect( img.endOffset ).to.equal( 3 );
-			expect( textR.endOffset ).to.equal( 4 );
+			const a = new MyNode();
+
+			a._startOffset = 2;
+
+			expect( a.endOffset ).to.equal( 7 );
 		} );
 	} );
 

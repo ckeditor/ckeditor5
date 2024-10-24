@@ -433,7 +433,8 @@ export default class Document extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns `true` if `range` is valid, `false` otherwise.
 	 */
 	public _validateSelectionRange( range: Range ): boolean {
-		return validateTextNodePosition( range.start ) && validateTextNodePosition( range.end );
+		return range.start.isValid() && range.end.isValid() &&
+			validateTextNodePosition( range.start ) && validateTextNodePosition( range.end );
 	}
 
 	/**

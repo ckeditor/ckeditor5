@@ -29,6 +29,14 @@ describe( 'HeadingEditing', () => {
 		expect( HeadingEditing.pluginName ).to.equal( 'HeadingEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HeadingEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HeadingEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( HeadingEditing ) ).to.be.instanceOf( HeadingEditing );
 	} );

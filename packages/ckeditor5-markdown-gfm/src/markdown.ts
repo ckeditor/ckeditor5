@@ -31,4 +31,11 @@ export default class Markdown extends Plugin {
 	public static get pluginName() {
 		return 'Markdown' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

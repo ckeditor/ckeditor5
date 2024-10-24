@@ -19,4 +19,12 @@ describe( 'RemoveFormat', () => {
 	it( 'should have pluginName property', () => {
 		expect( RemoveFormat.pluginName ).to.equal( 'RemoveFormat' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( RemoveFormat.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( RemoveFormat.isPremiumPlugin ).to.be.false;
+	} );
 } );

@@ -45,6 +45,14 @@ describe( 'ImageResizeEditing', () => {
 		expect( ImageResizeEditing.pluginName ).to.equal( 'ImageResizeEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageResizeEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageResizeEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		beforeEach( async () => {
 			editor = await createEditor( {

@@ -54,4 +54,12 @@ describe( 'CKFinder', () => {
 	it( 'has proper name', () => {
 		expect( CKFinder.pluginName ).to.equal( 'CKFinder' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKFinder.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKFinder.isPremiumPlugin ).to.be.false;
+	} );
 } );

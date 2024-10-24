@@ -38,6 +38,13 @@ export default class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
 		const editor = this.editor;
 		const t = editor.t;

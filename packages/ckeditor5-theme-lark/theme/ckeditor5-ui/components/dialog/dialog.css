@@ -32,10 +32,15 @@
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
 	border: 1px solid var(--ck-color-base-border);
+	overscroll-behavior: contain;
 
 	& .ck.ck-form__header {
 		border-bottom: 1px solid var(--ck-color-dialog-form-header-border);
 	}
+}
+
+.ck-dialog-scroll-locked {
+	overflow: hidden;
 }
 
 @keyframes ck-dialog-fade-in {

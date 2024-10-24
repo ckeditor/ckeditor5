@@ -103,6 +103,13 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ContextualBalloon ] as const;
 	}
@@ -119,7 +126,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Track focusable elements in the toolbar and the editable elements.
 		this._trackFocusableEditableElements();
-		this.focusTracker.add( this.toolbarView.element! );
+		this.focusTracker.add( this.toolbarView );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		editor.ui.addToolbar( this.toolbarView, {

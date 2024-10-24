@@ -15,4 +15,12 @@ describe( 'Underline', () => {
 	it( 'should be named', () => {
 		expect( Underline.pluginName ).to.equal( 'Underline' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Underline.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Underline.isPremiumPlugin ).to.be.false;
+	} );
 } );

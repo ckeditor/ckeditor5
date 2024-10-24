@@ -26,6 +26,14 @@ describe( 'FullPage', () => {
 		expect( FullPage.pluginName ).to.equal( 'FullPage' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FullPage.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FullPage.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set editor.data.processor', async () => {
 		await createEditor( '' );
 

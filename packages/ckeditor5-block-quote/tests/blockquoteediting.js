@@ -35,6 +35,14 @@ describe( 'BlockQuoteEditing', () => {
 		expect( BlockQuoteEditing.pluginName ).to.equal( 'BlockQuoteEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( BlockQuoteEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( BlockQuoteEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'adds a blockQuote command', () => {
 		expect( editor.commands.get( 'blockQuote' ) ).to.be.instanceOf( BlockQuoteCommand );
 	} );
@@ -88,6 +96,8 @@ describe( 'BlockQuoteEditing', () => {
 				editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
 				expect( editor.getData() ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
+
+				return editor.destroy();
 			} );
 	} );
 

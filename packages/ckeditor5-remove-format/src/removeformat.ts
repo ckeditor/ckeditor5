@@ -34,4 +34,11 @@ export default class RemoveFormat extends Plugin {
 	public static get pluginName() {
 		return 'RemoveFormat' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

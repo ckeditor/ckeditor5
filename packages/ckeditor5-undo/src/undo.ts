@@ -122,4 +122,11 @@ export default class Undo extends Plugin {
 	public static get pluginName() {
 		return 'Undo' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

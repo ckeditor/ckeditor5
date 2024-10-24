@@ -31,4 +31,11 @@ export default class List extends Plugin {
 	public static get pluginName() {
 		return 'List' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

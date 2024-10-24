@@ -29,6 +29,14 @@ describe( 'image captioning utils', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageCaptionUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageCaptionUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be a plugin loaded by the ImageCaptionEditing', () => {
 		expect( editor.plugins.get( 'ImageCaptionUtils' ) ).to.be.instanceOf( ImageCaptionUtils );
 	} );

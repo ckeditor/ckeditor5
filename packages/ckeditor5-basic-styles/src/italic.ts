@@ -34,4 +34,11 @@ export default class Italic extends Plugin {
 	public static get pluginName() {
 		return 'Italic' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

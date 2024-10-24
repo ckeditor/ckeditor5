@@ -66,6 +66,14 @@ describe( 'table properties', () => {
 			expect( TablePropertiesUI.pluginName ).to.equal( 'TablePropertiesUI' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TablePropertiesUI.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TablePropertiesUI.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should load ContextualBalloon', () => {
 			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 		} );

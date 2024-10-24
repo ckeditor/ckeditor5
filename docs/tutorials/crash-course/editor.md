@@ -11,14 +11,17 @@ modified_at: 2023-08-16
 
 ## Test environment
 
-For the purposes of this tutorial, we have created a repository with the minimal setup required to use the editor. To follow along:
+For this tutorial, we have created a minimal setup required to use the editor. To follow along, run the commands below:
 
-1. Clone [this repository](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/crash-course).
-2. Run the `npm install` command to install the dependencies.
-3. Run the `npm run dev` command to start the project.
-4. Open the URL displayed in your terminal.
+```bash
+npx -y degit ckeditor/ckeditor5-tutorials-examples/crash-course crash-course
+cd crash-course
 
-If everything went well, you should see a "Hello world!" text displayed on the page.
+npm install
+npm run dev
+```
+
+Open the URL displayed in your terminal. If everything went well, you should see a "Hello world!" text displayed on the page.
 
 We encourage you to follow the steps in the tutorial and type the code yourself to build the muscle and mental memory.
 

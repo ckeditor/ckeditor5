@@ -54,6 +54,14 @@ describe( 'AutoMediaEmbed - integration', () => {
 		expect( AutoMediaEmbed.pluginName ).to.equal( 'AutoMediaEmbed' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AutoMediaEmbed.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AutoMediaEmbed.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'use fake timers', () => {
 		let clock;
 

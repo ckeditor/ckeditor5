@@ -25,6 +25,13 @@ export default class FindAndReplaceUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Executes findCallback and updates search results list.
 	 *
 	 * @param range The model range to scan for matches.

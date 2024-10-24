@@ -20,6 +20,14 @@ describe( 'ListUtils', () => {
 		expect( ListUtils.pluginName ).to.equal( 'ListUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'coverage checks', () => {
 		it( 'isFirstBlockOfListItem', () => {
 			const mock = { getAttribute: () => false };

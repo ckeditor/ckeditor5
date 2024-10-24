@@ -28,6 +28,14 @@ describe( 'MentionEditing', () => {
 		expect( MentionEditing.pluginName ).to.equal( 'MentionEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MentionEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MentionEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		return createTestEditor()
 			.then( newEditor => {

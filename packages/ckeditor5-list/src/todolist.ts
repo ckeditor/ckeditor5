@@ -33,4 +33,11 @@ export default class TodoList extends Plugin {
 	public static get pluginName() {
 		return 'TodoList' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

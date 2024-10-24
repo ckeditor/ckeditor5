@@ -12,6 +12,14 @@ describe( 'ContextPlugin', () => {
 		expect( ContextPlugin.isContextPlugin ).to.true;
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `false`', () => {
+		expect( ContextPlugin.isOfficialPlugin ).to.be.false;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ContextPlugin.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should set the `context` property', () => {
 			const plugin = new ContextPlugin( contextMock );

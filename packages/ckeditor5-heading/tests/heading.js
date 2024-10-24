@@ -15,4 +15,12 @@ describe( 'Heading', () => {
 	it( 'should be named', () => {
 		expect( Heading.pluginName ).to.equal( 'Heading' );
 	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Heading.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Heading.isPremiumPlugin ).to.be.false;
+	} );
 } );

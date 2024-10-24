@@ -195,6 +195,13 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] as const;
 	}
@@ -696,7 +703,7 @@ export default class DragDrop extends Plugin {
 			preview.style.backgroundColor = 'white';
 		}
 
-		preview.innerHTML = dataTransfer.getData( 'text/html' );
+		view.domConverter.setContentOf( preview, dataTransfer.getData( 'text/html' ) );
 
 		dataTransfer.setDragImage( preview, 0, 0 );
 

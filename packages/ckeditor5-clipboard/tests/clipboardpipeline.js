@@ -45,6 +45,18 @@ describe( 'ClipboardPipeline feature', () => {
 			} );
 	} );
 
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ClipboardPipeline.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ClipboardPipeline.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'registers ClipboardObserver', () => {
 			expect( view.getObserver( ClipboardObserver ) ).to.be.instanceOf( ClipboardObserver );

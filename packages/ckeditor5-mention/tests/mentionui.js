@@ -52,6 +52,14 @@ describe( 'MentionUI', () => {
 		}
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MentionUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MentionUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should create a plugin instance', () => {
 		return createClassicTestEditor().then( () => {
 			expect( mentionUI ).to.instanceOf( Plugin );
