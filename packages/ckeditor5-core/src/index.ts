@@ -122,6 +122,9 @@ import table from './../theme/icons/table.svg';
 
 import remove from './../theme/icons/remove.svg';
 
+import bookmark from './../theme/icons/bookmark.svg';
+import bookmarkInline from './../theme/icons/bookmark_inline.svg';
+
 export const icons = {
 	bold,
 	cancel,
@@ -200,7 +203,10 @@ export const icons = {
 
 	table,
 
-	remove
+	remove,
+
+	bookmark,
+	bookmarkInline
 };
 
 import './augmentation.js';

@@ -7,7 +7,7 @@
  * @module bookmark/bookmarkediting
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin, icons } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
 import type { EventInfo } from 'ckeditor5/src/utils.js';
@@ -28,7 +28,7 @@ import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
 import '../theme/bookmark.css';
 
-import bookmarkIcon from '../theme/icons/bookmark_inline.svg';
+const bookmarkIcon = icons.bookmarkInline;
 
 /**
  * The bookmark editing plugin.
