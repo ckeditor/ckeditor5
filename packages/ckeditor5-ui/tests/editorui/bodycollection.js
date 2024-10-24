@@ -26,6 +26,7 @@ describe( 'BodyCollection', () => {
 		for ( const wrapper of wrappers ) {
 			wrapper.remove();
 		}
+		delete BodyCollection._bodyWrapper;
 	} );
 
 	describe( 'constructor', () => {
@@ -55,6 +56,7 @@ describe( 'BodyCollection', () => {
 
 			expect( wrappers.length ).to.equal( 1 );
 			expect( wrappers[ 0 ].parentNode ).to.equal( document.body );
+			expect( BodyCollection._bodyWrapper ).to.equal( wrappers[ 0 ] );
 
 			const el = body.bodyCollectionContainer;
 
@@ -111,6 +113,7 @@ describe( 'BodyCollection', () => {
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 1 );
 			expect( bodyElements.length ).to.equal( 2 );
 			expect( bodyElements[ 0 ].parentNode ).to.equal( bodyElements[ 1 ].parentNode );
+			expect( BodyCollection._bodyWrapper ).to.equal( bodyElements[ 0 ].parentNode );
 		} );
 
 		it( 'should render views in proper body collections', () => {

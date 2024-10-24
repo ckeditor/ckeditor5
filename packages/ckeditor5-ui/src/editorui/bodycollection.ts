@@ -44,6 +44,12 @@ export default class BodyCollection extends ViewCollection {
 	private _bodyCollectionContainer?: HTMLElement;
 
 	/**
+	 * The wrapper element that holds all of the
+	 * {@link #_bodyCollectionContainer} elements.
+	 */
+	private static _bodyWrapper?: HTMLElement;
+
+	/**
 	 * Creates a new instance of the {@link module:ui/editorui/bodycollection~BodyCollection}.
 	 *
 	 * @param locale The {@link module:core/editor/editor~Editor editor's locale} instance.
@@ -82,14 +88,12 @@ export default class BodyCollection extends ViewCollection {
 			children: this
 		} ).render() as HTMLElement;
 
-		let wrapper = document.querySelector( '.ck-body-wrapper' );
-
-		if ( !wrapper ) {
-			wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
-			document.body.appendChild( wrapper );
+		if ( !BodyCollection._bodyWrapper ) {
+			BodyCollection._bodyWrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
+			document.body.appendChild( BodyCollection._bodyWrapper );
 		}
 
-		wrapper.appendChild( this._bodyCollectionContainer );
+		BodyCollection._bodyWrapper.appendChild( this._bodyCollectionContainer );
 	}
 
 	/**
@@ -103,10 +107,9 @@ export default class BodyCollection extends ViewCollection {
 			this._bodyCollectionContainer.remove();
 		}
 
-		const wrapper = document.querySelector( '.ck-body-wrapper' );
-
-		if ( wrapper && wrapper.childElementCount == 0 ) {
-			wrapper.remove();
+		if ( BodyCollection._bodyWrapper && BodyCollection._bodyWrapper.childElementCount == 0 ) {
+			BodyCollection._bodyWrapper.remove();
+			delete BodyCollection._bodyWrapper;
 		}
 	}
 }
