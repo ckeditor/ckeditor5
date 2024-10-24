@@ -497,6 +497,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						editor: collectUsageData( editor )
 					};
 
+					/**
+					 * This part of the code is not executed in open-source implementations using a GPL key.
+					 * It only runs when a specific license key is provided. If you are uncertain whether
+					 * this applies to your installation, please contact our support team.
+					 */
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
 						const { status, message } = response;
 
@@ -1020,6 +1025,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this._showLicenseError = () => {};
 	}
 
+	/**
+	 * This part of the code is not executed in open-source implementations using a GPL key.
+	 * It only runs when a specific license key is provided. If you are uncertain whether
+	 * this applies to your installation, please contact our support team.
+	 */
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
 		const headers = new Headers( { 'Content-Type': 'application/json' } );
 		const response = await fetch( new URL( endpoint ), {
