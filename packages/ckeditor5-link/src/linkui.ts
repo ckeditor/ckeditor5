@@ -529,7 +529,6 @@ export default class LinkUI extends Plugin {
 
 		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
 		// when the user cancels the editing form.
-		// TODO: Is this necessary?
 		linkCommand.restoreManualDecoratorStates();
 
 		if ( linkCommand.value !== undefined ) {
