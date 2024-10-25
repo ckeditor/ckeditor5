@@ -34,6 +34,13 @@ import { isElement as _isElement } from 'lodash-es';
  */
 export default class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
+	 * @inheritdoc
+	 */
+	public static override get editorName(): 'BalloonEditor' {
+		return 'BalloonEditor';
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public readonly ui: BalloonEditorUI;

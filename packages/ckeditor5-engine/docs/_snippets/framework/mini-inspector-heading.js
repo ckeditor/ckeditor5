@@ -19,7 +19,8 @@ function CustomHeading( editor ) {
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-heading' ), {
 	plugins: [ Essentials, CustomHeading ],
-	toolbar: []
+	toolbar: [],
+	licenseKey: 'GPL'
 } )
 	.then( editor => {
 		window.editor = editor;

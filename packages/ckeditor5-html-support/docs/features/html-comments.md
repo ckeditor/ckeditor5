@@ -31,26 +31,21 @@ The editor below is configured to keep HTML comments in the document content. Yo
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-This package is part of our open-source aggregate package.
-
-```bash
-npm install ckeditor5
-```
-
-Then add it to the editor configuration:
-
+<code-switcher>
 ```js
 import { HtmlComment } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HtmlComment, ... ],
 	} )
 	.then( ... )
 	.catch( ... );
 ```
+</code-switcher>
 
 HTML comment feature does not require any configuration.
 

@@ -121,6 +121,10 @@ import outdent from './../theme/icons/outdent.svg';
 import table from './../theme/icons/table.svg';
 
 import source from './../theme/icons/source.svg';
+import remove from './../theme/icons/remove.svg';
+
+import bookmark from './../theme/icons/bookmark.svg';
+import bookmarkInline from './../theme/icons/bookmark_inline.svg';
 
 export const icons = {
 	bold,
@@ -200,7 +204,11 @@ export const icons = {
 
 	table,
 
-	source
+	source,
+	remove,
+
+	bookmark,
+	bookmarkInline
 };
 
 import './augmentation.js';

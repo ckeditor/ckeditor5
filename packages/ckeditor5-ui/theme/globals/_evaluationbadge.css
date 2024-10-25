@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-evaluation-badge-font-size: 7.5px;
+	--ck-evaluation-badge-line-height: 7.5px;
+	--ck-evaluation-badge-padding-vertical: 2px;
+	--ck-evaluation-badge-padding-horizontal: 4px;
+	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
+	--ck-evaluation-badge-border-radius: var(--ck-border-radius);
+	--ck-evaluation-badge-background: hsl(0, 0%, 100%);
+	--ck-evaluation-badge-border-color: var(--ck-color-focus-border);
+}
+
+.ck.ck-balloon-panel.ck-evaluation-badge-balloon {
+	--ck-border-radius: var(--ck-evaluation-badge-border-radius);
+
+	box-shadow: none;
+	background: var(--ck-evaluation-badge-background);
+	min-height: unset;
+	z-index: calc( var(--ck-z-panel) - 1 );
+
+	& .ck.ck-evaluation-badge {
+		line-height: var(--ck-evaluation-badge-line-height);
+		padding: var(--ck-evaluation-badge-padding-vertical) var(--ck-evaluation-badge-padding-horizontal);
+
+		& .ck-evaluation-badge__label {
+			font-size: var(--ck-evaluation-badge-font-size);
+			letter-spacing: -.2px;
+			padding-left: 2px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-right: 4px;
+			line-height: normal;
+			color: var(--ck-evaluation-badge-text-color);
+		}
+	}
+
+	&[class*="position_inside"] {
+		border-color: transparent;
+	}
+
+	&[class*="position_border"] {
+		border: var(--ck-focus-ring);
+		border-color: var(--ck-evaluation-badge-border-color);
+	}
+}
+

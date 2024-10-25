@@ -17,13 +17,18 @@ import type {
 	ViewNode,
 	ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
+
+import type { Editor } from 'ckeditor5/src/core.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
+import type { BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
 	LinkDecoratorDefinition,
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
+
+import type { LinkActionsViewOptions } from './ui/linkactionsview.js';
 
 import { upperFirst } from 'lodash-es';
 
@@ -192,6 +197,47 @@ export function linkHasProtocol( link: string ): boolean {
  */
 export function openLink( link: string ): void {
 	window.open( link, '_blank', 'noopener' );
+}
+
+/**
+ * Creates the bookmark callbacks for handling link opening experience.
+ */
+export function createBookmarkCallbacks( editor: Editor ): LinkActionsViewOptions {
+	const bookmarkEditing: BookmarkEditing | null = editor.plugins.has( 'BookmarkEditing' ) ?
+		editor.plugins.get( 'BookmarkEditing' ) :
+		null;
+
+	/**
+	 * Returns `true` when bookmark `id` matches the hash from `link`.
+	 */
+	function isScrollableToTarget( link: string | undefined ): boolean {
+		return !!link &&
+			link.startsWith( '#' ) &&
+			!!bookmarkEditing &&
+			!!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
+	}
+
+	/**
+	 * Scrolls the view to the desired bookmark or open a link in new window.
+	 */
+	function scrollToTarget( link: string ): void {
+		const bookmarkId = link.slice( 1 );
+		const modelBookmark = bookmarkEditing!.getElementForBookmarkId( bookmarkId );
+
+		editor.model.change( writer => {
+			writer.setSelection( modelBookmark!, 'on' );
+		} );
+
+		editor.editing.view.scrollToTheSelection( {
+			alignToTop: true,
+			forceScroll: true
+		} );
+	}
+
+	return {
+		isScrollableToTarget,
+		scrollToTarget
+	};
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };

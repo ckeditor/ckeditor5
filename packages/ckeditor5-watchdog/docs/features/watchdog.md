@@ -31,10 +31,10 @@ There are two available types of watchdogs:
 
 ### Editor watchdog
 
-After {@link getting-started/quick-start installing the editor}, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
 
+<code-switcher>
 ```js
-
 import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } from 'ckeditor5';
 
 // Create a watchdog for the given editor type.
@@ -42,10 +42,12 @@ const watchdog = new EditorWatchdog( ClassicEditor );
 
 // Create a new editor instance.
 watchdog.create( document.querySelector( '#editor' ), {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	plugins: [ Essentials, Paragraph, Bold, Italic ],
 	toolbar: [ 'bold', 'italic', 'alignment' ]
 } );
 ```
+</code-switcher>
 
 In other words, your goal is to create a watchdog instance and make the watchdog create an instance of the editor you want to use. The watchdog will then create a new editor and if it ever crashes, restart it by creating a new editor.
 
@@ -139,8 +141,9 @@ watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 
 ### Context watchdog
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, ContextWatchdog, Bold, Italic, Context, Essentials, Paragraph } from 'ckeditor5';
 
@@ -204,6 +207,7 @@ await watchdog.add( {
 	creator: ( element, config ) => ClassicEditor.create( element, config )
 } );
 ```
+</code-switcher>
 
 To destroy one of the item instances, use {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove`}:
 

@@ -49,6 +49,10 @@ describe( 'InlineEditor', () => {
 			editor = new InlineEditor( editorElement );
 		} );
 
+		it( 'it\'s possible to extract editor name from editor instance', () => {
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'InlineEditor' );
+		} );
+
 		it( 'creates the UI using BoxedEditorUI classes', () => {
 			expect( editor.ui ).to.be.instanceof( InlineEditorUI );
 			expect( editor.ui.view ).to.be.instanceof( InlineEditorUIView );

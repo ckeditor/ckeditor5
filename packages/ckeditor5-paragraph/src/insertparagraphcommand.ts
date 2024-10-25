@@ -46,7 +46,7 @@ export default class InsertParagraphCommand extends Command {
 	public override execute( options: {
 		position: Position;
 		attributes?: Record<string, unknown>;
-	} ): void {
+	} ): Position | null {
 		const model = this.editor.model;
 		const attributes = options.attributes;
 
@@ -54,14 +54,14 @@ export default class InsertParagraphCommand extends Command {
 
 		// Don't execute command if position is in non-editable place.
 		if ( !model.canEditAt( position ) ) {
-			return;
+			return null;
 		}
 
-		model.change( writer => {
+		return model.change( writer => {
 			position = this._findPositionToInsertParagraph( position!, writer );
 
 			if ( !position ) {
-				return;
+				return null;
 			}
 
 			const paragraph = writer.createElement( 'paragraph' );
@@ -72,6 +72,8 @@ export default class InsertParagraphCommand extends Command {
 
 			model.insertContent( paragraph, position );
 			writer.setSelection( paragraph, 'in' );
+
+			return writer.createPositionAt( paragraph, 0 );
 		} );
 	}
 

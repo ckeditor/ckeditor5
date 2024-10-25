@@ -1,0 +1,51 @@
+<div class="ck ck-content" id="snippet-inline-editor">
+	<div id="toolbar"></div>
+
+	<header id="header">
+		<h2>Gone traveling</h2>
+		<h3>Monthly travel news and inspiration</h3>
+	</header>
+
+	<div id="content">
+		<h3>Destination of the Month</h3>
+		<h4>Valletta</h4>
+		<p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> is the top destination this summer. It’s home to cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine, and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take a tour through locations familiar to you from Game of Thrones, Gladiator, Troy, and many more.</p>
+	</div>
+
+	<div class="demo-row">
+		<div class="demo-row__half">
+			<div id="footer-left">
+				<h3>The three greatest things you learn from traveling</h3>
+				<p><a href="#">Find out more</a></p>
+			</div>
+		</div>
+
+		<div class="demo-row__half">
+			<div id="footer-right">
+				<h3>Walking the capitals of Europe: Warsaw</h3>
+				<p><a href="#">Find out more</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	/* Give the toolbar some space so it does not look like it belongs to the header root only. */
+	#snippet-inline-editor #toolbar {
+		margin-bottom: 1em;
+	}
+
+	.ck.ck-editor__editable_inline {
+		border-color: lightgray;
+		margin-bottom: 8px;
+	}
+
+	.demo-row {
+		display: flex;
+		gap: 8px;
+	}
+
+	.demo-row__half {
+		flex: 1;
+	}
+</style>

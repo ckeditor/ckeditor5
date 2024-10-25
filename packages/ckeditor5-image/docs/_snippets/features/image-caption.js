@@ -43,7 +43,8 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editorCaption = editor;

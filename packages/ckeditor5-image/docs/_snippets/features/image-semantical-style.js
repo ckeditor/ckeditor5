@@ -33,7 +33,8 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'ckboxImageEdit' ]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editorStyleSemantical = editor;

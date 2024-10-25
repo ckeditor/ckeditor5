@@ -33,22 +33,24 @@ Scroll the content, and the minimap in the sidebar will show your current locati
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { DecoupledEditor, Minimap } from 'ckeditor5';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Minimap, /* ... */ ],
 		minimap: {
-			// Reference to the container element as shown in the configuration section of the guide
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -61,11 +63,9 @@ DecoupledEditor
 The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimapconfig~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
 
 ```js
-import { DecoupledEditor, Minimap } from 'ckeditor5';
-
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Minimap, /* ... */ ],
+		// ... Other configuration options ...
 		minimap: {
 			container: document.querySelector( '.minimap-container' )
 		}
@@ -167,11 +167,9 @@ Employ the following CSS:
 Finally, the JavaScript to run the editor (learn how to [install](#installation) the feature):
 
 ```js
-import { DecoupledEditor, Minimap } from 'ckeditor5';
-
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
-		plugins: [ Minimap, /* ... */ ],
+		// ... Other configuration options ...
 		minimap: {
 			container: document.querySelector( '.minimap-container' ),
 		}

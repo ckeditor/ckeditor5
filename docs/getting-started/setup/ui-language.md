@@ -2,6 +2,7 @@
 category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
+meta-description: Configuring and handling the language of the editor user interface and content.
 order: 60
 modified_at: 2024-06-25
 ---
@@ -56,7 +57,7 @@ After installing the editor from npm, translations can be imported from `ckedito
 For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the translation object to the editor configuration. Please note that if you use premium features, you need to separately import their translations from the proper package.
 
 ```js
-import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
 
 import coreTranslations from 'ckeditor5/translations/pl.js';
@@ -64,13 +65,16 @@ import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			Essentials,
 			Paragraph,
+			Bold,
+			Italic,
 			TableOfContents
 		],
 		toolbar: {
-			items: [ 'undo', 'redo', 'tableOfContents' ]
+			items: [ 'undo', 'redo', 'bold', 'italic', 'tableOfContents' ]
 		},
 		translations: [
 			coreTranslations,
@@ -81,54 +85,57 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
+See the {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
 ### CDN
 
-To use different language than the default one (English), you need to load the editor together with the preferred language. For example:
+Load translation scripts alongside editor scripts to use the editor with a language different than English. Note that you do not need to pass the translations to the configuration. The editor from CDN will automatically load translations from the attached scripts.
 
 ```html
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css">
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
 
-<script type="importmap">
-{
-	"imports": {
-		"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-		"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
-		"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
-		"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
-	}
-}
-</script>
-<script type="module">
-import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import { TableOfContents } from 'ckeditor5-premium-features';
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css">
+		<!-- Scripts with translations -->
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/translations/es.umd.js"></script>
 
-import coreTranslations from 'ckeditor5/translations/pl.js';
-import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+	</head>
+	<body>
+		<div id="editor"></div>    
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Essentials,
-			Paragraph,
-			TableOfContents
-		],
-		toolbar: {
-			items: [ 'undo', 'redo' 'tableOfContents' ]
-		},
-		translations: [
-			coreTranslations,
-			premiumFeaturesTranslations
-		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-</script>
+		<script>
+			const { ClassicEditor, Essentials, Paragraph, Bold, Italic } = CKEDITOR;
+			const { TableOfContents } = CKEDITOR_PREMIUM_FEATURES;
+
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>',
+					plugins: [
+						Essentials,
+						Paragraph,
+						Bold,
+						Italic
+					],
+					toolbar: {
+						items: [ 'undo', 'redo', 'bold', 'italic', 'tableOfContents' ]
+					}
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
+</html>
 ```
 
-See the {@link getting-started/quick-start#installing-ckeditor-5-from-cdn CDN installation guide} for more information.
+See the {@link getting-started/integrations-cdn/quick-start#installing-ckeditor-5-from-cdn CDN installation guide} for more information.
 
 ## Setting the language of the content
 
@@ -139,6 +146,7 @@ Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.l
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other con figuration options ...
 		language: {
 			// The UI will be English.
 			ui: 'en',
