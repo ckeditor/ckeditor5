@@ -422,7 +422,7 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * The native DOM `value` of the {@link #urlInput} element.
+	 * The native DOM `value` of the {@link #urlInputView} element.
 	 *
 	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
 	 * which works one way only and may not represent the actual state of the component in the DOM.
@@ -448,7 +448,7 @@ export type LinkFormValidatorCallback = ( form: LinkFormView ) => string | undef
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),
- * for example with a click on {@link ~LinkFormView#saveButton}.
+ * for example with a click on {@link ~LinkFormView#saveButtonView}.
  *
  * @eventName ~LinkFormView#submit
  */
