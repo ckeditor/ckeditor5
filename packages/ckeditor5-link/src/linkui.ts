@@ -7,7 +7,7 @@
  * @module link/linkui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -42,6 +42,7 @@ import {
 
 import linkIcon from '../theme/icons/link.svg';
 
+const bookmarkIcon = icons.bookmark;
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
 /**
@@ -295,10 +296,10 @@ export default class LinkUI extends Plugin {
 		return bookmarksNames.map( bookmarkName => {
 			const buttonView = new ButtonView();
 
-			// TODO: icon
 			buttonView.set( {
 				label: bookmarkName,
-				tooltip: true,
+				tooltip: false,
+				icon: bookmarkIcon,
 				withText: true
 			} );
 
