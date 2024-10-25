@@ -33,7 +33,7 @@ import { icons } from 'ckeditor5/src/core.js';
  */
 export default class LinkBookmarksView extends View {
 	/**
-	 * TODO
+	 * Tracks information about the list of bookmarks.
 	 * @observable
 	 */
 	declare public hasItems: boolean;
@@ -127,6 +127,7 @@ export default class LinkBookmarksView extends View {
 			this.fire( 'cancel' );
 			cancel();
 		} );
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
