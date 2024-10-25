@@ -281,7 +281,7 @@ export default class LinkUI extends Plugin {
 			this._closeFormView();
 		} );
 
-		this.listenTo( formView, 'showAdvanced', () => {
+		this.listenTo( formView.settingsButtonView, 'execute', () => {
 			this._balloon.add( {
 				view: this.advancedView!,
 				position: this._getBalloonPositionData()

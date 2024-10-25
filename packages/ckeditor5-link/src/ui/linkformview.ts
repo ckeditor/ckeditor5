@@ -280,8 +280,6 @@ export default class LinkFormView extends View {
 			tooltip: true
 		} );
 
-		settingsButton.delegate( 'execute' ).to( this, 'showAdvanced' );
-
 		return settingsButton;
 	}
 
