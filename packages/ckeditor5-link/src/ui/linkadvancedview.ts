@@ -108,7 +108,7 @@ export default class LinkAdvancedView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel' ],
+				class: [ 'ck', 'ck-link__panel', 'ck-link__advanced' ],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
