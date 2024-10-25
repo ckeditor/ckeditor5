@@ -240,7 +240,7 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Cleans up the supplementary error and information text of the {@link #urlInput}
+	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
 	 * bringing them back to the state when the form has been displayed for the first time.
 	 *
 	 * See {@link #isValid}.
