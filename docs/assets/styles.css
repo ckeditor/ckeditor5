@@ -73,7 +73,8 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 	margin: 1.5em 0;
 
 	--tabs-active-background: hsl(0, 0%, 96%);
-	--tabs-active-border: hsl(0, 0%, 80%);
+	--tabs-active-border: hsl(231.35deg 89.21% 52.75%);
+	--tabs-list-border-color: hsl(0deg 0% 91.37%);
 }
 
 .tabs ul.tabs__list {
@@ -82,15 +83,15 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 	padding: 0;
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
+	justify-content: flex-start;
+	border-bottom: 1px solid var(--tabs-list-border-color);
 }
 
 .tabs ul.tabs__list li {
 	margin: 0;
 	display: inline-block;
-	flex-grow: 1;
 	text-align: center;
-	border-top: 3px solid transparent;
+	border-bottom: 2px solid transparent;
 }
 
 .tabs ul.tabs__list li a.tabs__list__tab-text {
@@ -99,22 +100,20 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 8px;
+	padding: 8px 16px;
 }
 
 .tabs ul.tabs__list li.tabs__list__tab_selected {
-	background: var(--tabs-active-background);
-	border-top: 3px solid var(--tabs-active-border);
+	border-bottom: 2px solid var(--tabs-active-border);
 }
 
 .tabs ul.tabs__list li.tabs__list__tab_selected a.tabs__list__tab-text {
-	font-weight: bold;
+	color: var(--tabs-active-border);
 }
 
 .tabs .tabs__panel {
-	padding: 1.333em;
+	padding: 1.333em 0;
 	display: none;
-	background: var(--tabs-active-background);
 }
 
 .tabs .tabs__panel.tabs__panel_selected {
