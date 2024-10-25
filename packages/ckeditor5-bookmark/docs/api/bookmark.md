@@ -14,7 +14,7 @@ Check out the {@link features/bookmarks#demo demo in the bookmarks feature guide
 
 ## Documentation
 
-See the {@link features/bookmarks bookmarks feature guide} and the {@link module:block-quote/blockquote~BlockQuote} plugin documentation.
+See the {@link features/bookmarks bookmarks feature guide} and the {@link module:bookmark/bookmark~Bookmark} plugin documentation.
 
 ## Installation
 
