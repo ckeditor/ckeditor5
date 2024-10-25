@@ -292,7 +292,6 @@ export default class LinkUI extends Plugin {
 
 		bookmarksNames.sort( ( a, b ) => a.localeCompare( b ) );
 
-		// TODO maybe this should bind 2 lists so we do not need to clear the whole list each time we display the form
 		return bookmarksNames.map( bookmarkName => {
 			const buttonView = new ButtonView();
 
@@ -305,8 +304,11 @@ export default class LinkUI extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
-				this.formView!.focus();
+				// Set focus to the editing view to prevent from losing it while current view is removed.
+				editor.editing.view.focus();
 				this._balloon.remove( this.bookmarksView! );
+				// Set the focus to the URL input field.
+				this.formView!.focus();
 			} );
 
 			return buttonView;
@@ -322,8 +324,11 @@ export default class LinkUI extends Plugin {
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
-			this.formView!.focus();
+			// Set focus to the editing view to prevent from losing it while current view is removed.
+			editor.editing.view.focus();
 			this._balloon.remove( this.bookmarksView! );
+			// Set the focus to the URL input field.
+			this.formView!.focus();
 		} );
 
 		return view;

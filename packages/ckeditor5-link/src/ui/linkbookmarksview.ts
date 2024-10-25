@@ -123,10 +123,10 @@ export default class LinkBookmarksView extends View {
 		} );
 
 		// Close the panel on esc key press.
-		this.keystrokes.set( 'Esc', () => {
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this.fire( 'cancel' );
+			cancel();
 		} );
-
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
