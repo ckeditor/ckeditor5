@@ -5,8 +5,12 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
+:root {
+	--ck-link-panel-width: 300px;
+}
+
 .ck.ck-link__panel {
-	width: 340px; /* TODO: 340px instead of 300px, because of generic min-width on inputs */
+	width: var(--ck-link-panel-width);
 
 	&:focus {
 		outline: none;
@@ -40,11 +44,16 @@
 
 		input {
 			width: 100%;
+			min-width: auto;
 		}
 
 		/* "Link" input field and the "Insert" button */
 		& .ck-link-and-submit {
 			display: flex;
+
+			& > .ck-labeled-field-view {
+				flex: 1;
+			}
 
 			& .ck-button-insert {
 				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
