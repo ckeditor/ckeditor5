@@ -105,7 +105,7 @@ export default class LinkAdvancedView extends View {
 		} );
 
 		this.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 
 			attributes: {
 				class: [ 'ck', 'ck-link__panel' ],
