@@ -29,6 +29,7 @@ import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkButtonView from '../src/ui/linkbuttonview.js';
 import LinkActionsView from '../src/ui/linkactionsview.js';
+import LinkAdvancedView from '../src/ui/linkadvancedview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -960,6 +961,30 @@ describe( 'LinkUI', () => {
 			linkUIFeature._addFormView();
 
 			expect( linkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
+		} );
+	} );
+
+	describe( '_createAdvancedView()', () => {
+		beforeEach( () => {
+			editor.editing.view.document.isFocused = true;
+		} );
+
+		it( 'should create #advancedView', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( linkUIFeature.advancedView ).to.be.instanceOf( LinkAdvancedView );
+		} );
+
+		it( 'should add #advancedView to the balloon and attach the balloon', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+			advancedView = linkUIFeature.advancedView;
+
+			expect( balloon.visibleView ).to.equal( advancedView );
 		} );
 	} );
 
@@ -1999,6 +2024,50 @@ describe( 'LinkUI', () => {
 					expect( firstDecoratorSwitch.isOn, 'Close form view without submit resets value to initial state' ).to.be.true;
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'advanced view', () => {
+		it( 'can be opened by clicking the settings button', () => {
+			const spy = sinon.spy();
+
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.listenTo( linkUIFeature.formView, 'showAdvanced', spy );
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			expect( balloon.visibleView ).to.equal( linkUIFeature.advancedView );
+		} );
+
+		it( 'can be closed by clicking the back button', () => {
+			const spy = sinon.spy();
+
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.listenTo( linkUIFeature.advancedView, 'cancel', spy );
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+			linkUIFeature.advancedView.backButtonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+		} );
+
+		it( 'can be closed by clicking the "esc" button', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+
+			linkUIFeature.advancedView.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
 		} );
 	} );
 } );

@@ -131,47 +131,6 @@ describe( 'LinkAdvancedView', () => {
 	} );
 
 	describe( 'manual decorators', () => {
-		let view, collection, linkCommand;
-
-		beforeEach( () => {
-			collection = new Collection();
-			collection.add( new ManualDecorator( {
-				id: 'decorator1',
-				label: 'Foo',
-				attributes: {
-					foo: 'bar'
-				}
-			} ) );
-			collection.add( new ManualDecorator( {
-				id: 'decorator2',
-				label: 'Download',
-				attributes: {
-					download: 'download'
-				},
-				defaultValue: true
-			} ) );
-			collection.add( new ManualDecorator( {
-				id: 'decorator3',
-				label: 'Multi',
-				attributes: {
-					class: 'fancy-class',
-					target: '_blank',
-					rel: 'noopener noreferrer'
-				}
-			} ) );
-
-			linkCommand = mockLinkCommand( collection );
-			view = new LinkAdvancedView( mockLocale, linkCommand );
-			view.render();
-			document.body.appendChild( view.element );
-		} );
-
-		afterEach( () => {
-			view.element.remove();
-			view.destroy();
-			collection.clear();
-		} );
-
 		it( 'switch buttons reflects state of manual decorators', () => {
 			expect( view.listChildren.length ).to.equal( 3 );
 
@@ -465,6 +424,3 @@ describe( 'LinkAdvancedView', () => {
 		} );
 	} );
 } );
-
-// TODO: getDecoratorSwitchesState
-// TODO: Flow from form view to advanced view
