@@ -6,7 +6,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-link__panel {
-	width: 340px; /* TODO: 340px instead of 300px, because of generic min-width on inputs */
+	width: 340px;
 
 	&:focus {
 		outline: none;
