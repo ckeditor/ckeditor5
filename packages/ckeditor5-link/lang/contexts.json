@@ -14,7 +14,5 @@
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link.",
 	"Bookmarks": "Title for a feature displaying a list of bookmarks.",
 	"Advanced": "Title for a feature displaying advanced link settings.",
-	"Displayed text": "The label of the input field for the displayed text of the link.",
-	"Insert": "The button in the link form.",
-	"Update": "The button in the link form."
+	"Displayed text": "The label of the input field for the displayed text of the link."
 }
