@@ -17,6 +17,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 import {
 	ButtonView,
+	SwitchButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
@@ -263,7 +264,9 @@ export default class LinkUI extends Plugin {
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-				editor.execute( 'link', parsedUrl, this.advancedView!.getDecoratorSwitchesState() );
+
+				editor.execute( 'link', parsedUrl, this._getDecoratorSwitchesState() );
+
 				this._closeFormView();
 			}
 		} );
@@ -302,26 +305,60 @@ export default class LinkUI extends Plugin {
 	private _createAdvancedView(): LinkAdvancedView {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
-		const view = new LinkAdvancedView( this.editor.locale, linkCommand );
+		const view = new LinkAdvancedView( this.editor.locale );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
-			this._balloon.remove( this.advancedView! );
-			this.formView!.focus();
-		} );
-
-		// Close the panel on esc key press when the **form has focus**.
-		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
 			editor.editing.view.focus();
 
 			this._balloon.remove( this.advancedView! );
 			this.formView!.focus();
-			cancel();
+		} );
+
+		view.listChildren.bindTo( linkCommand.manualDecorators ).using( manualDecorator => {
+			const button: SwitchButtonView = new SwitchButtonView( editor.locale );
+
+			button.set( {
+				label: manualDecorator.label,
+				withText: true
+			} );
+
+			button.bind( 'isOn' ).toMany( [ manualDecorator, linkCommand ], 'value', ( decoratorValue, commandValue ) => {
+				return commandValue === undefined && decoratorValue === undefined ?
+					!!manualDecorator.defaultValue :
+					!!decoratorValue;
+			} );
+
+			button.on( 'execute', () => {
+				manualDecorator.set( 'value', !button.isOn );
+			} );
+
+			return button;
 		} );
 
 		return view;
+	}
+
+	/**
+	 * Obtains the state of the manual decorators.
+	 */
+	private _getDecoratorSwitchesState(): Record<string, boolean> {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
+		return Array
+			.from( linkCommand.manualDecorators )
+			.reduce( ( accumulator, manualDecorator ) => {
+				const value = linkCommand.value === undefined && manualDecorator.value === undefined ?
+					manualDecorator.defaultValue :
+					manualDecorator.value;
+
+				return {
+					...accumulator,
+					[ manualDecorator.id ]: !!value
+				};
+			}, {} as Record<string, boolean> );
 	}
 
 	/**

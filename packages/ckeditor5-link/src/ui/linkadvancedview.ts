@@ -10,13 +10,12 @@
 import {
 	ButtonView,
 	FocusCycler,
-	SwitchButtonView,
 	FormHeaderView,
 	View,
 	ViewCollection,
-	submitHandler,
 	ListView,
 	ListItemView,
+	type SwitchButtonView,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import {
@@ -25,8 +24,6 @@ import {
 	type Locale
 } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
-
-import type LinkCommand from '../linkcommand.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -82,20 +79,16 @@ export default class LinkAdvancedView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param locale The localization services instance.
-	 * @param linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
 	 */
-	constructor(
-		locale: Locale,
-		linkCommand: LinkCommand
-	) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		this.backButtonView = this._createBackButton();
-		this.listChildren = this._createSwitches( linkCommand );
+		this.listChildren = this.createCollection();
 
 		this.children = this.createCollection( [
 			this._createHeaderView(),
-			this._createFormView()
+			this._createListView()
 		] );
 
 		this._focusCycler = new FocusCycler( {
@@ -123,20 +116,12 @@ export default class LinkAdvancedView extends View {
 
 			children: this.children
 		} );
-	}
 
-	/**
-	 * Obtains the state of the {@link module:ui/button/switchbuttonview~SwitchButtonView switch buttons} representing
-	 * {@link module:link/linkcommand~LinkCommand#manualDecorators manual link decorators}
-	 * in the {@link module:link/ui/linkadvancedview~LinkAdvancedView}.
-	 */
-	public getDecoratorSwitchesState(): Record<string, boolean> {
-		return Array
-			.from( this.listChildren as Iterable<SwitchButtonView & { name: string }> )
-			.reduce( ( accumulator, switchButton ) => {
-				accumulator[ switchButton.name ] = switchButton.isOn;
-				return accumulator;
-			}, {} as Record<string, boolean> );
+		// Close the panel on esc key press when the **form has focus**.
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<CancelEvent>( 'cancel' );
+			cancel();
+		} );
 	}
 
 	/**
@@ -144,10 +129,6 @@ export default class LinkAdvancedView extends View {
 	 */
 	public override render(): void {
 		super.render();
-
-		submitHandler( {
-			view: this
-		} );
 
 		const childViews = [
 			...this.listChildren,
@@ -190,6 +171,7 @@ export default class LinkAdvancedView extends View {
 		const t = this.locale!.t;
 		const backButton = new ButtonView( this.locale );
 
+		// TODO: maybe we should have a dedicated BackButtonView in the UI library.
 		backButton.set( {
 			label: t( 'Cancel' ),
 			icon: icons.previousArrow,
@@ -217,39 +199,9 @@ export default class LinkAdvancedView extends View {
 	}
 
 	/**
-	 * Populates the {@link #listChildren} collection of the form
-	 * based on {@link module:link/linkcommand~LinkCommand#manualDecorators}.
-	 */
-	private _createSwitches( linkCommand: LinkCommand ): ViewCollection<SwitchButtonView> {
-		const switches = this.createCollection<SwitchButtonView>();
-
-		for ( const manualDecorator of linkCommand.manualDecorators ) {
-			const button: SwitchButtonView & { name?: string } = new SwitchButtonView( this.locale );
-
-			button.set( {
-				name: manualDecorator.id,
-				label: manualDecorator.label,
-				withText: true
-			} );
-
-			button.bind( 'isOn' ).toMany( [ manualDecorator, linkCommand ], 'value', ( decoratorValue, commandValue ) => {
-				return commandValue === undefined && decoratorValue === undefined ? !!manualDecorator.defaultValue : !!decoratorValue;
-			} );
-
-			button.on( 'execute', () => {
-				manualDecorator.set( 'value', !button.isOn );
-			} );
-
-			switches.add( button );
-		}
-
-		return switches;
-	}
-
-	/**
 	 * Creates a form view that displays the {@link #listChildren} collection.
 	 */
-	private _createFormView(): ListView {
+	private _createListView(): ListView {
 		const listView = new ListView( this.locale );
 
 		listView.extendTemplate( {
@@ -260,10 +212,10 @@ export default class LinkAdvancedView extends View {
 			}
 		} );
 
-		listView.items.bindTo( this.listChildren ).using( def => {
+		listView.items.bindTo( this.listChildren ).using( item => {
 			const listItemView = new ListItemView( this.locale );
 
-			listItemView.children.add( def );
+			listItemView.children.add( item );
 
 			return listItemView;
 		} );
