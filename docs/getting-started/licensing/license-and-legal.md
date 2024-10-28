@@ -7,6 +7,7 @@ meta-title: Editor license | CKEditor 5 Documentation
 meta-description: Choosing the right licence type for you needs.
 menu-title: Editor license
 order: 10
+modified_at: 2024-10-28
 ---
 
 # Editor license and legal terms

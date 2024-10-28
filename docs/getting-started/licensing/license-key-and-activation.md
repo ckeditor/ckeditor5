@@ -4,6 +4,7 @@ order: 20
 meta-title: License key and activation | CKEditor 5 Documentation
 meta-description: Managing your license keys and activating the editor.
 menu-title: License key and activation
+modified_at: 2024-10-28
 ---
 
 # License key and activation
