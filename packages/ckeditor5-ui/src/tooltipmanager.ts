@@ -372,9 +372,9 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 					descendantWithTooltip && descendantWithTooltip.matches( '[data-cke-tooltip-instant]' )
 				) {
 					this._unpinTooltip();
+				} else {
+					this._unpinTooltipDebounced();
 				}
-
-				this._unpinTooltipDebounced();
 			}
 		} else {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
