@@ -170,7 +170,7 @@ describe( 'LinkAdvancedView', () => {
 			view.destroy();
 		} );
 
-		describe( 'activates keyboard navigation for the toolbar', () => {
+		describe( 'activates keyboard navigation', () => {
 			it( 'so "tab" focuses the next focusable item', () => {
 				const spy = sinon.spy( view.backButtonView, 'focus' );
 

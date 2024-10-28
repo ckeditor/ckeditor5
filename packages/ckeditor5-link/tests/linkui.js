@@ -2052,11 +2052,13 @@ describe( 'LinkUI', () => {
 						linkDecorator3: false
 					} );
 
+					// Switch the first decorator on.
+					advancedView.listChildren.first.fire( 'execute' );
 					formView.fire( 'submit' );
 
 					sinon.assert.calledOnce( executeSpy );
 					sinon.assert.calledWithExactly( executeSpy, 'link', 'url', {
-						linkDecorator1: false,
+						linkDecorator1: true,
 						linkDecorator2: false,
 						linkDecorator3: false
 					} );
