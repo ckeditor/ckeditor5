@@ -2044,22 +2044,22 @@ describe( 'LinkUI', () => {
 				it( 'should gather information about manual decorators', () => {
 					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-					setModelData( model, 'f[<$text linkHref="url" foo="bar">ooba</$text>]r' );
+					setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
 					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
 					expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
-						linkDecorator1: false,
+						linkDecorator1: true,
 						linkDecorator2: false,
 						linkDecorator3: false
 					} );
 
 					// Switch the first decorator on.
-					advancedView.listChildren.first.fire( 'execute' );
+					advancedView.listChildren.get( 1 ).fire( 'execute' );
 					formView.fire( 'submit' );
 
 					sinon.assert.calledOnce( executeSpy );
 					sinon.assert.calledWithExactly( executeSpy, 'link', 'url', {
 						linkDecorator1: true,
-						linkDecorator2: false,
+						linkDecorator2: true,
 						linkDecorator3: false
 					} );
 				} );
