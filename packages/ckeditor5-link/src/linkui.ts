@@ -582,12 +582,6 @@ export default class LinkUI extends Plugin {
 	private _removeAdvancedView(): void {
 		if ( this._isAdvancedInPanel ) {
 			this._balloon.remove( this.advancedView! );
-
-			// Because the form has an input which has focus, the focus must be brought back
-			// to the editor. Otherwise, it would be lost.
-			this.editor.editing.view.focus();
-
-			this._hideFakeVisualSelection();
 		}
 	}
 
@@ -770,6 +764,22 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Returns `true` when {@link #advancedView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 */
+	private get _isAdvancedVisible(): boolean {
+		return !!this.advancedView && this._balloon.visibleView === this.advancedView;
+	}
+
+	/**
+	 * Returns `true` when {@link #formView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 */
+	private get _isFormVisible(): boolean {
+		return !!this.formView && this._balloon.visibleView == this.formView;
+	}
+
+	/**
 	 * Returns `true` when {@link #actionsView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
@@ -778,20 +788,18 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #advancedView}, {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
-		return this._isFormInPanel || this._areActionsInPanel;
+		return this._isAdvancedInPanel || this._isFormInPanel || this._areActionsInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
-	 * currently visible.
+	 * Returns `true` when {@link #advancedView}, {@link #actionsView} or {@link #formView} is in the {@link #_balloon}
+	 * and it is currently visible.
 	 */
 	private get _isUIVisible(): boolean {
-		const visibleView = this._balloon.visibleView;
-
-		return !!this.formView && visibleView == this.formView || this._areActionsVisible;
+		return this._isAdvancedVisible || this._isFormVisible || this._areActionsVisible;
 	}
 
 	/**
