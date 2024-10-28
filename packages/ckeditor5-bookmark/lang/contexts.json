@@ -1,7 +1,5 @@
 {
 	"Bookmark": "The label of the bookmark toolbar button. Also, a bookmark form header.",
-	"Insert": "The button in the bookmark insert form.",
-	"Update": "The button in the bookmark update form.",
 	"Edit bookmark": "Button opening the Bookmark editing balloon.",
 	"Remove bookmark": "Toolbar button tooltip for bookmark remove button.",
 	"Bookmark name": "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview.",

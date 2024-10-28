@@ -6,7 +6,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
-	--ck-link-panel-width: 300px;
+	--ck-link-panel-width: 340px;
 }
 
 .ck.ck-link__panel {
@@ -42,9 +42,12 @@
 			margin-top: var(--ck-spacing-large);
 		}
 
-		input {
-			width: 100%;
-			min-width: auto;
+		& .ck-labeled-field-view {
+			flex-grow: 1;
+
+			& input {
+				width: 100%;
+			}
 		}
 
 		/* "Link" input field and the "Insert" button */
@@ -78,10 +81,13 @@
 
 	/* Link list */
 	& .ck-link__list {
-		margin-top: var(--ck-spacing-medium);
-		border-top: 1px solid var(--ck-color-base-border);
 		display: flex;
 		flex-direction: column;
+
+		&.ck-link__list-border-top {
+			margin-top: var(--ck-spacing-medium);
+			border-top: 1px solid var(--ck-color-base-border);
+		}
 
 		& .ck-link__button {
 			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
