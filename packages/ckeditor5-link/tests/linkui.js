@@ -28,12 +28,13 @@ import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkButtonView from '../src/ui/linkbuttonview.js';
+import LinkAdvancedView from '../src/ui/linkadvancedview.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
 
 describe( 'LinkUI', () => {
-	let editor, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement;
+	let editor, linkUIFeature, linkButton, balloon, formView, toolbarView, advancedView, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -43,7 +44,35 @@ describe( 'LinkUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ]
+				plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ],
+				link: {
+					decorators: {
+						decorator1: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								foo: 'bar'
+							}
+						},
+						decorator2: {
+							mode: 'manual',
+							label: 'Download',
+							attributes: {
+								download: 'download'
+							},
+							defaultValue: true
+						},
+						decorator3: {
+							mode: 'manual',
+							label: 'Multi',
+							attributes: {
+								class: 'fancy-class',
+								target: '_blank',
+								rel: 'noopener noreferrer'
+							}
+						}
+					}
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -965,12 +994,37 @@ describe( 'LinkUI', () => {
 		} );
 	} );
 
+	describe( '_createAdvancedView()', () => {
+		beforeEach( () => {
+			editor.editing.view.document.isFocused = true;
+		} );
+
+		it( 'should create #advancedView', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( linkUIFeature.advancedView ).to.be.instanceOf( LinkAdvancedView );
+		} );
+
+		it( 'should add #advancedView to the balloon and attach the balloon', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+			advancedView = linkUIFeature.advancedView;
+
+			expect( balloon.visibleView ).to.equal( advancedView );
+		} );
+	} );
+
 	describe( '_hideUI()', () => {
 		beforeEach( () => {
 			linkUIFeature._showUI();
 
 			formView = linkUIFeature.formView;
 			toolbarView = linkUIFeature.toolbarView;
+			advancedView = linkUIFeature.advancedView;
 		} );
 
 		it( 'should remove the UI from the balloon', () => {
@@ -1038,6 +1092,23 @@ describe( 'LinkUI', () => {
 			expect( () => {
 				linkUIFeature._hideUI();
 			} ).to.not.throw();
+		} );
+
+		it( 'should remove the advanced view UI from the balloon', () => {
+			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			formView.settingsButtonView.fire( 'execute' );
+
+			expect( balloon.hasView( formView ) ).to.be.true;
+			expect( balloon.hasView( toolbarView ) ).to.be.true;
+			expect( balloon.hasView( advancedView ) ).to.be.true;
+
+			linkUIFeature._hideUI();
+
+			expect( balloon.hasView( formView ) ).to.be.false;
+			expect( balloon.hasView( toolbarView ) ).to.be.false;
+			expect( balloon.hasView( advancedView ) ).to.be.false;
+
+			sinon.assert.calledTwice( spy );
 		} );
 	} );
 
@@ -1770,7 +1841,7 @@ describe( 'LinkUI', () => {
 				formView.fire( 'submit' );
 
 				expect( getModelData( editor.model ) ).to.equal(
-					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
+					'<paragraph>[<$text linkDecorator2="true" linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
 				);
 			} );
 
@@ -1813,7 +1884,11 @@ describe( 'LinkUI', () => {
 				formView.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.be.true;
-				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {} ) ).to.be.true;
+				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {
+					linkDecorator1: false,
+					linkDecorator2: true,
+					linkDecorator3: false
+				} ) ).to.be.true;
 			} );
 
 			it( 'should should clear the fake visual selection on formView#submit event', () => {
@@ -1900,7 +1975,7 @@ describe( 'LinkUI', () => {
 			} );
 
 			describe( 'support manual decorators', () => {
-				let editorElement, editor, model, formView, linkUIFeature;
+				let editorElement, editor, model, formView, advancedView, linkUIFeature;
 
 				beforeEach( () => {
 					editorElement = document.createElement( 'div' );
@@ -1910,11 +1985,28 @@ describe( 'LinkUI', () => {
 							plugins: [ LinkEditing, LinkUI, Paragraph ],
 							link: {
 								decorators: {
-									isFoo: {
+									decorator1: {
 										mode: 'manual',
 										label: 'Foo',
 										attributes: {
 											foo: 'bar'
+										}
+									},
+									decorator2: {
+										mode: 'manual',
+										label: 'Download',
+										attributes: {
+											download: 'download'
+										},
+										defaultValue: true
+									},
+									decorator3: {
+										mode: 'manual',
+										label: 'Multi',
+										attributes: {
+											class: 'fancy-class',
+											target: '_blank',
+											rel: 'noopener noreferrer'
 										}
 									}
 								}
@@ -1935,12 +2027,14 @@ describe( 'LinkUI', () => {
 							const balloon = editor.plugins.get( ContextualBalloon );
 
 							formView = linkUIFeature.formView;
+							advancedView = linkUIFeature.advancedView;
 
 							// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
 							testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
 							testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
 
 							formView.render();
+							advancedView.render();
 						} );
 				} );
 
@@ -1952,14 +2046,24 @@ describe( 'LinkUI', () => {
 				it( 'should gather information about manual decorators', () => {
 					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-					setModelData( model, 'f[<$text linkHref="url" linkIsFoo="true">ooba</$text>]r' );
+					setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
 					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
-					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkIsFoo: true } );
+					expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+						linkDecorator1: true,
+						linkDecorator2: false,
+						linkDecorator3: false
+					} );
 
+					// Switch the first decorator on.
+					advancedView.listChildren.get( 1 ).fire( 'execute' );
 					formView.fire( 'submit' );
 
-					expect( executeSpy.calledOnce ).to.be.true;
-					expect( executeSpy.calledWithExactly( 'link', 'url', { linkIsFoo: true } ) ).to.be.true;
+					sinon.assert.calledOnce( executeSpy );
+					sinon.assert.calledWithExactly( executeSpy, 'link', 'url', {
+						linkDecorator1: true,
+						linkDecorator2: true,
+						linkDecorator3: false
+					} );
 				} );
 
 				it( 'should reset switch state when form view is closed', () => {
@@ -1967,20 +2071,204 @@ describe( 'LinkUI', () => {
 
 					const manualDecorators = editor.commands.get( 'link' ).manualDecorators;
 					const firstDecoratorModel = manualDecorators.first;
-					const firstDecoratorSwitch = formView._manualDecoratorSwitches.first;
+					const firstDecoratorSwitch = advancedView.listChildren.first;
 
-					expect( firstDecoratorModel.value, 'Initial value should be read from the model (true)' ).to.be.true;
-					expect( firstDecoratorSwitch.isOn, 'Initial value should be read from the model (true)' ).to.be.true;
+					expect( firstDecoratorModel.value, 'Initial value should be read from the model (true)' ).to.be.undefined;
+					expect( firstDecoratorSwitch.isOn, 'Initial value should be read from the model (true)' ).to.be.false;
 
 					firstDecoratorSwitch.fire( 'execute' );
-					expect( firstDecoratorModel.value, 'Pressing button toggles value' ).to.be.false;
-					expect( firstDecoratorSwitch.isOn, 'Pressing button toggles value' ).to.be.false;
+					expect( firstDecoratorModel.value, 'Pressing button toggles value' ).to.be.true;
+					expect( firstDecoratorSwitch.isOn, 'Pressing button toggles value' ).to.be.true;
 
 					linkUIFeature._closeFormView();
-					expect( firstDecoratorModel.value, 'Close form view without submit resets value to initial state' ).to.be.true;
-					expect( firstDecoratorSwitch.isOn, 'Close form view without submit resets value to initial state' ).to.be.true;
+					expect( firstDecoratorModel.value, 'Close form view without submit resets value to initial state' ).to.be.undefined;
+					expect( firstDecoratorSwitch.isOn, 'Close form view without submit resets value to initial state' ).to.be.false;
+				} );
+
+				it( 'switch buttons reflects state of manual decorators', () => {
+					expect( linkUIFeature.advancedView.listChildren.length ).to.equal( 3 );
+
+					expect( linkUIFeature.advancedView.listChildren.get( 0 ) ).to.deep.include( {
+						label: 'Foo',
+						isOn: false
+					} );
+					expect( linkUIFeature.advancedView.listChildren.get( 1 ) ).to.deep.include( {
+						label: 'Download',
+						isOn: true
+					} );
+					expect( linkUIFeature.advancedView.listChildren.get( 2 ) ).to.deep.include( {
+						label: 'Multi',
+						isOn: false
+					} );
+				} );
+
+				it( 'reacts on switch button changes', () => {
+					const linkCommand = editor.commands.get( 'link' );
+					const modelItem = linkCommand.manualDecorators.first;
+					const viewItem = linkUIFeature.advancedView.listChildren.first;
+
+					expect( modelItem.value ).to.be.undefined;
+					expect( viewItem.isOn ).to.be.false;
+
+					viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+					expect( modelItem.value ).to.be.true;
+					expect( viewItem.isOn ).to.be.true;
+
+					viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+					expect( modelItem.value ).to.be.false;
+					expect( viewItem.isOn ).to.be.false;
+				} );
+
+				it( 'reacts on switch button changes for the decorator with defaultValue', () => {
+					const linkCommand = editor.commands.get( 'link' );
+					const modelItem = linkCommand.manualDecorators.get( 1 );
+					const viewItem = linkUIFeature.advancedView.listChildren.get( 1 );
+
+					expect( modelItem.value ).to.be.undefined;
+					expect( viewItem.isOn ).to.be.true;
+
+					viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+					expect( modelItem.value ).to.be.false;
+					expect( viewItem.isOn ).to.be.false;
+
+					viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+					expect( modelItem.value ).to.be.true;
+					expect( viewItem.isOn ).to.be.true;
+				} );
+
+				describe( '_getDecoratorSwitchesState()', () => {
+					it( 'should provide object with decorators states', () => {
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: false,
+							linkDecorator2: true,
+							linkDecorator3: false
+						} );
+
+						linkUIFeature.advancedView.listChildren.map( item => {
+							item.element.dispatchEvent( new Event( 'click' ) );
+						} );
+
+						linkUIFeature.advancedView.listChildren.get( 2 ).element.dispatchEvent( new Event( 'click' ) );
+
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: true,
+							linkDecorator2: false,
+							linkDecorator3: false
+						} );
+					} );
+
+					it( 'should use decorator default value if command and decorator values are not set', () => {
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: false,
+							linkDecorator2: true,
+							linkDecorator3: false
+						} );
+					} );
+
+					it( 'should use a decorator value if decorator value is set', () => {
+						const linkCommand = editor.commands.get( 'link' );
+
+						for ( const decorator of linkCommand.manualDecorators ) {
+							decorator.value = true;
+						}
+
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: true,
+							linkDecorator2: true,
+							linkDecorator3: true
+						} );
+
+						for ( const decorator of linkCommand.manualDecorators ) {
+							decorator.value = false;
+						}
+
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: false,
+							linkDecorator2: false,
+							linkDecorator3: false
+						} );
+					} );
+					it( 'should use a decorator value if link command value is set', () => {
+						const linkCommand = editor.commands.get( 'link' );
+
+						linkCommand.value = '';
+
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: false,
+							linkDecorator2: false,
+							linkDecorator3: false
+						} );
+
+						for ( const decorator of linkCommand.manualDecorators ) {
+							decorator.value = false;
+						}
+
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: false,
+							linkDecorator2: false,
+							linkDecorator3: false
+						} );
+
+						for ( const decorator of linkCommand.manualDecorators ) {
+							decorator.value = true;
+						}
+
+						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
+							linkDecorator1: true,
+							linkDecorator2: true,
+							linkDecorator3: true
+						} );
+					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'advanced view', () => {
+		it( 'can be opened by clicking the settings button', () => {
+			const spy = sinon.spy();
+
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.listenTo( linkUIFeature.formView.settingsButtonView, 'execute', spy );
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			expect( balloon.visibleView ).to.equal( linkUIFeature.advancedView );
+		} );
+
+		it( 'can be closed by clicking the back button', () => {
+			const spy = sinon.spy();
+
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.listenTo( linkUIFeature.advancedView, 'cancel', spy );
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+			linkUIFeature.advancedView.backButtonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+		} );
+
+		it( 'can be closed by clicking the "esc" button', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
+
+			linkUIFeature.advancedView.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
 		} );
 	} );
 } );

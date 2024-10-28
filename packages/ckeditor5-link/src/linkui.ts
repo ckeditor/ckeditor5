@@ -17,6 +17,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 import {
 	ButtonView,
+	SwitchButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
@@ -30,6 +31,7 @@ import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
+import LinkAdvancedView from './ui/linkadvancedview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
@@ -66,6 +68,11 @@ export default class LinkUI extends Plugin {
 	 * The form view displayed inside the balloon.
 	 */
 	public formView: LinkFormView & ViewWithCssTransitionDisabler | null = null;
+
+	/**
+	 * The form view displaying advanced link settings.
+	 */
+	public advancedView: LinkAdvancedView | null = null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -161,6 +168,10 @@ export default class LinkUI extends Plugin {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		if ( this.advancedView ) {
+			this.advancedView.destroy();
+		}
+
 		if ( this.formView ) {
 			this.formView.destroy();
 		}
@@ -176,6 +187,7 @@ export default class LinkUI extends Plugin {
 	private _createViews() {
 		this.toolbarView = this._createToolbarView();
 		this.formView = this._createFormView();
+		this.advancedView = this._createAdvancedView();
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
@@ -225,10 +237,11 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createFormView(): LinkFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
+		const t = editor.locale.t;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
+		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
 
 		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
 			formView.listChildren.add( this._createBookmarksButton() );
@@ -244,13 +257,21 @@ export default class LinkUI extends Plugin {
 		// Disable the "save" button if the command is disabled.
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
+		// Enable the "Advanced" button only when there are manual decorators.
+		formView.settingsButtonView.bind( 'isEnabled' ).to( linkCommand, 'manualDecorators', decorators => decorators.length > 0 );
+
+		// Change the "Save" button label depending on the command state.
+		formView.saveButtonView.bind( 'label' ).to( linkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
+
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			// TODO: Does this need updating after adding the "Displayed text" input?
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-				editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
+
+				editor.execute( 'link', parsedUrl, this._getDecoratorSwitchesState() );
+
 				this._closeFormView();
 			}
 		} );
@@ -265,6 +286,15 @@ export default class LinkUI extends Plugin {
 			this._closeFormView();
 		} );
 
+		this.listenTo( formView.settingsButtonView, 'execute', () => {
+			this._balloon.add( {
+				view: this.advancedView!,
+				position: this._getBalloonPositionData()
+			} );
+
+			this.advancedView!.focus();
+		} );
+
 		// Close the panel on esc key press when the **form has focus**.
 		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._closeFormView();
@@ -272,6 +302,68 @@ export default class LinkUI extends Plugin {
 		} );
 
 		return formView;
+	}
+
+	/**
+	 * Creates the {@link module:link/ui/linkadvancedview~LinkAdvancedView} instance.
+	 */
+	private _createAdvancedView(): LinkAdvancedView {
+		const editor = this.editor;
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+		const view = new LinkAdvancedView( this.editor.locale );
+
+		// Hide the panel after clicking the "Cancel" button.
+		this.listenTo( view, 'cancel', () => {
+			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
+			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
+			editor.editing.view.focus();
+
+			this._removeAdvancedView();
+			this.formView!.focus();
+		} );
+
+		view.listChildren.bindTo( linkCommand.manualDecorators ).using( manualDecorator => {
+			const button: SwitchButtonView = new SwitchButtonView( editor.locale );
+
+			button.set( {
+				label: manualDecorator.label,
+				withText: true
+			} );
+
+			button.bind( 'isOn' ).toMany( [ manualDecorator, linkCommand ], 'value', ( decoratorValue, commandValue ) => {
+				return commandValue === undefined && decoratorValue === undefined ?
+					!!manualDecorator.defaultValue :
+					!!decoratorValue;
+			} );
+
+			button.on( 'execute', () => {
+				manualDecorator.set( 'value', !button.isOn );
+			} );
+
+			return button;
+		} );
+
+		return view;
+	}
+
+	/**
+	 * Obtains the state of the manual decorators.
+	 */
+	private _getDecoratorSwitchesState(): Record<string, boolean> {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
+		return Array
+			.from( linkCommand.manualDecorators )
+			.reduce( ( accumulator, manualDecorator ) => {
+				const value = linkCommand.value === undefined && manualDecorator.value === undefined ?
+					manualDecorator.defaultValue :
+					manualDecorator.value;
+
+				return {
+					...accumulator,
+					[ manualDecorator.id ]: !!value
+				};
+			}, {} as Record<string, boolean> );
 	}
 
 	/**
@@ -560,9 +652,19 @@ export default class LinkUI extends Plugin {
 		linkCommand.restoreManualDecoratorStates();
 
 		if ( linkCommand.value !== undefined ) {
+			this._removeAdvancedView();
 			this._removeFormView();
 		} else {
 			this._hideUI();
+		}
+	}
+
+	/**
+	 * Removes the {@link #advancedView} from the {@link #_balloon}.
+	 */
+	private _removeAdvancedView(): void {
+		if ( this._isAdvancedInPanel ) {
+			this._balloon.remove( this.advancedView! );
 		}
 	}
 
@@ -655,10 +757,15 @@ export default class LinkUI extends Plugin {
 			editor.editing.view.focus();
 		}
 
-		// Remove form first because it's on top of the stack.
+		// TODO: Remove dynamically registered views
+
+		// Remove the advanced form view first because it's on top of the stack.
+		this._removeAdvancedView();
+
+		// Then remove the form view because it's beneath the advanced form.
 		this._removeFormView();
 
-		// Then remove the link toolbar view because it's beneath the form.
+		// Finally, remove the link toolbar view because it's last in the stack.
 		if ( this._isToolbarInPanel ) {
 			this._balloon.remove( this.toolbarView! );
 		}
@@ -723,6 +830,13 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Returns `true` when {@link #advancedView} is in the {@link #_balloon}.
+	 */
+	private get _isAdvancedInPanel(): boolean {
+		return !!this.advancedView && this._balloon.hasView( this.advancedView );
+	}
+
+	/**
 	 * Returns `true` when {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isFormInPanel(): boolean {
@@ -737,6 +851,22 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Returns `true` when {@link #advancedView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 */
+	private get _isAdvancedVisible(): boolean {
+		return !!this.advancedView && this._balloon.visibleView === this.advancedView;
+	}
+
+	/**
+	 * Returns `true` when {@link #formView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 */
+	private get _isFormVisible(): boolean {
+		return !!this.formView && this._balloon.visibleView == this.formView;
+	}
+
+	/**
 	 * Returns `true` when {@link #toolbarView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
@@ -745,20 +875,18 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #toolbarView} or {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #advancedView}, {@link #toolbarView} or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
-		return this._isFormInPanel || this._isToolbarInPanel;
+		return this._isAdvancedInPanel || this._isFormInPanel || this._isToolbarInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #toolbarView} or {@link #formView} is in the {@link #_balloon} and it is
-	 * currently visible.
+	 * Returns `true` when {@link #advancedView}, {@link #toolbarView} or {@link #formView} is in the {@link #_balloon}
+	 * and it is currently visible.
 	 */
 	private get _isUIVisible(): boolean {
-		const visibleView = this._balloon.visibleView;
-
-		return !!this.formView && visibleView == this.formView || this._isToolbarVisible;
+		return this._isAdvancedVisible || this._isFormVisible || this._isToolbarVisible;
 	}
 
 	/**
