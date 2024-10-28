@@ -12,7 +12,7 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 
 ## Core editing
 
-Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their toolbelt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
+Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
 
 <table>
 	<thead>
@@ -29,7 +29,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				Advanced HTML Editing provides general HTML support, offering detailed
 				control over permissible HTML elements, attributes, and styles. It
-				further allows HTML Source Code Editing, handling any HTML elements,
+				further allows HTML Source Code Editing, handling HTML elements,
 				HTML comments, and editing of the full page content, including meta
 				tags.
 			</td>
@@ -40,13 +40,13 @@ Core editing capability provides tools to create, edit, and style content. Here 
 					HTML</a>
 			</td>
 			<td>
-				Thanks to the full page HTML feature you can use CKEditor 5 to edit
+				Thanks to the full page HTML feature, you can use CKEditor 5 to edit
 				entire HTML pages (from <code>&lt;html&gt;</code> to
 				<code>&lt;/html&gt;</code>), including the page metadata. While the
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html">General
 					HTML Support</a>
 				feature focuses on elements inside the content (the document’s
-				<code>&lt;body&gt;</code>), this feature enables markup mostly invisible
+				<code>&lt;body&gt;</code>), this feature enables markup invisible
 				to the end user.
 			</td>
 		</tr>
@@ -59,8 +59,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				With the General HTML Support (GHS) feature, developers can enable HTML
 				features that are not supported by any other dedicated CKEditor 5
 				plugins. GHS lets you add elements, attributes, classes, and styles to
-				the source. It also ensures this markup stays in the editor window and
-				in the output.
+				the source. It also ensures this markup stays in the editor window and the output.
 			</td>
 		</tr>
 		<tr id="html-comment" class="background-blue subfeature">
@@ -103,7 +102,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html">Source editing</a>
 			</td>
 			<td>
-				he source editing feature lets you view and edit the source of your
+				The source editing feature lets you view and edit the source of your
 				document.
 			</td>
 		</tr>
@@ -200,7 +199,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font background color</a>
 			</td>
 			<td>
-				Effortless make the words stand out even more with a colored background.
+				Effortlessly make the words stand out even more with a colored background.
 			</td>
 		</tr>
 		<tr id="font-color" class="background-blue subfeature">
@@ -231,9 +230,9 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				The image feature allows adding images of various kinds to the rich
 				content inside the editor. A large set of subfeatures lets the users
-				fully control this process.<br /><br />Upload or paste images, insert
+				fully control this process. Upload or paste images, insert
 				via URL, use responsive images, resize images, add captions, set
-				different image styles, link images<br />
+				different image styles, and link images.
 			</td>
 		</tr>
 		<tr id="image-all-text" class="background-yellow subfeature">
@@ -264,7 +263,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				You can insert images by uploading them directly from your disk, but you
 				can also configure CKEditor 5 to let you insert images using URLs. This
-				way you can save time by adding images that are already online.
+				way, you can save time by adding images that are already online.
 			</td>
 		</tr>
 		<tr id="image-linking" class="background-yellow subfeature">
@@ -378,7 +377,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				The list start index feature allows the user to choose the starting
 				point of an ordered list. By default, this would be 1 (or A, or I – see
-				the list styles section). Sometimes you may want to start a list with
+				the list styles section). Sometimes, you may want to start a list with
 				some other digit or letter, though.
 			</td>
 		</tr>
@@ -552,7 +551,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The basic table features allow users to insert tables into content, add
-				or remove columns and rows and merge or split cells.
+				or remove columns and rows, and merge or split cells.
 			</td>
 		</tr>
 		<tr id="nesting" class="background-blue subfeature">
@@ -600,11 +599,11 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				  >TableSelection</a
 				></code>
 				plugin introduces support for the custom selection system for tables
-				that lets you:<br />• Select an arbitrary rectangular table fragment – a
+				that lets you:• Select an arbitrary rectangular table fragment – a
 				few cells from different rows, a column (or a few of them) or a row (or
-				multiple rows).<br />• Apply formatting or add a link to all selected
-				cells at once.<br />The table selection plugin is loaded automatically
-				by the <br /><code>Table</code> plugin.
+				multiple rows).• Apply formatting or add a link to all selected
+				cells at once.The table selection plugin is loaded automatically
+				by the <code>Table</code> plugin.
 			</td>
 		</tr>
 		<tr id="tables-caption" class="background-blue subfeature">
@@ -654,7 +653,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				<a href="#">Code</a>
 			</td>
-			<td>Snippet look, like a terminal from the 1990s movie.</td>
+			<td>Snippet look like a terminal from the 1990s movie.</td>
 		</tr>
 		<tr id="highlight" class="background-yellow subfeature">
 			<td>
@@ -808,7 +807,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
 				You can also display them together in more advanced scenarios where
 				various annotation sources (comments, suggestions) are connected to
-				different UIs, or even create your own UI for annotations.
+				different UIs or even create your UI for annotations.
 			</td>
 		</tr>
 		<tr id="mentions">
@@ -947,7 +946,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 			<td>
 				<a href="#">Content generation</a>
 			</td>
-			<td></td>
+			<td>CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</td>
 		</tr>
 		<tr id="export-to-pdf" class="background-blue subfeature">
 			<td>
@@ -994,7 +993,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html">Markdown output</a>
 			</td>
 			<td>
-				nable Markdown as the default output format instead of HTML with the
+				Enable Markdown as the default output format instead of HTML with the
 				Markdown plugin. Combined with Autoformatting, CKEditor becomes an
 				efficient Markdown editor, allowing the creation of text documents using
 				the simplified formatting syntax favored by developers.
@@ -1005,7 +1004,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">Media embed</a>
 			</td>
 			<td>
-				Use the insert media button in the toolbar Insert media to embed media.
+				Use the insert media button in the toolbar to embed media.
 				Pasting a media URL directly into the editor content automatically
 				embeds the media.
 			</td>
@@ -1059,10 +1058,9 @@ Format, organize, and navigate your documents easily with page management featur
 				The Document Outline feature automatically detects and lists document
 				headings in a sidebar, enabling faster navigation through large
 				documents. Headings are organized in a structured list, so users can
-				click and jump to different sections quickly.<br />This feature also
-				allows for customization of the outline&#x27;s location within the user
+				click and jump to different sections quickly. This feature also
+				allows for customization of the outline's location within the user
 				interface, catering to different user preferences for workspace layout.
-				<br />
 			</td>
 		</tr>
 		<tr id="page-utilities" class="background-yellow">
@@ -1079,7 +1077,7 @@ Format, organize, and navigate your documents easily with page management featur
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html">Content minimap</a>
 			</td>
 			<td>
-				Offers a concise, birds-eye view of the document&#x27;s content,
+				Offers a concise, birds-eye view of the document's content,
 				allowing for quick navigation and content management.
 			</td>
 		</tr>
@@ -1088,7 +1086,7 @@ Format, organize, and navigate your documents easily with page management featur
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html">Document title</a>
 			</td>
 			<td>
-				llows users to set and modify the document&#x27;s title within the
+				Allows users to set and modify the document's title within the
 				editing interface, ensuring accurate reflection of the contents.
 			</td>
 		</tr>
@@ -1109,16 +1107,7 @@ Format, organize, and navigate your documents easily with page management featur
 							class="tree__item__badge__text">Premium feature</span></span></a>
 			</td>
 			<td>
-				The Pagination feature visually indicates where pages begin and end
-				within a document. This feature is designed to assist users in preparing
-				their documents for printing or for export to various document formats,
-				ensuring that the transition between pages is seamless and accurately
-				reflected in the final output.<br />Users may adjust content
-				distribution across pages as they like, ensuring well-organized
-				documents with clearly presented content, whether in digital form or in
-				print. By providing a clear view of how text and elements will appear
-				page-by-page, Pagination aids in the creation of professional and
-				polished documents.<br />
+				The Pagination feature visually indicates where pages begin and end within a document. This feature is designed to assist users in preparing their documents for printing or export to various document formats, ensuring that the transition between pages is seamless and accurately reflected in the final output. Users may adjust content distribution across pages as they like, ensuring well-organized documents with presented content, whether in digital form or print. By providing a clear view of how text and elements will appear page-by-page, Pagination aids in the creation of professional and polished documents.
 			</td>
 		</tr>
 		<tr id="table-of-contents">
@@ -1172,7 +1161,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 			<td>
 				<a href="#">Automation</a>
 			</td>
-			<td></td>
+			<td>Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!</td>
 		</tr>
 		<tr id="autoformatting" class="background-blue subfeature">
 			<td>
@@ -1181,8 +1170,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 			<td>
 				Use <strong>Autoformatting </strong>to get Markdown-like shortcodes for
 				quick formatting without needing to navigate through toolbar buttons or
-				drop-down menus. This feature caters to the most common formatting needs
-				effortlessly.
+				drop-down menus. This feature caters to the most common formatting needs.
 			</td>
 		</tr>
 		<tr id="autolink" class="background-blue subfeature">
@@ -1233,9 +1221,9 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				UPPERCASE, lowercase, and Title Case options. The case transformation
 				can be applied to various text blocks (paragraph, heading, or list item)
 				by placing the cursor within the block. Alternatively, users can select
-				a specific fragment of text they wish to modify.<br />This feature
+				a specific fragment of text they wish to modify. This feature
 				enhances the editing workflow by removing the need for manual case
-				adjustments.<br />
+				adjustments.
 			</td>
 		</tr>
 		<tr id="find-and-replace">
@@ -1243,7 +1231,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">Find and replace</a>
 			</td>
 			<td>
-				The Find and Replace feature in CKEditor 5&#x27;s Productivity tools
+				The Find and Replace feature in CKEditor 5's Productivity tools
 				allows you to search for words or phrases in your document and replace
 				them with different text. This function helps speed up editing and
 				maintain content consistency.
@@ -1258,11 +1246,11 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 			<td>
 				The Format Painter feature lets users clone formatting from one section
 				and apply it to others within a document. This tool speeds up
-				maintaining style consistency across the document.<br />Once initiated,
+				maintaining style consistency across the document. Once initiated,
 				Format Painter can continue to apply the copied formatting to multiple
-				sections consecutively. This &quot;continuous painting&quot; ensures a
+				sections consecutively. This "continuous painting" ensures a
 				uniform style is achieved quickly without the need to repeatedly select
-				the formatting options for each new section. <br />
+				the formatting options for each new section. 
 			</td>
 		</tr>
 		<tr id="keyboard-shortcuts">
@@ -1301,7 +1289,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				Merge Fields allows the inclusion of placeholders in your content,
 				facilitating the creation of document templates, especially useful for
 				email templates and document automation. These placeholders can later be
-				replaced with dynamic values by the customer&#x27;s application,
+				replaced with dynamic values by the customer's application,
 				enabling tasks like mass email distribution or generation of
 				personalized documents.
 			</td>
@@ -1349,12 +1337,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 					text</a>
 			</td>
 			<td>
-				The Paste as Plain Text feature strips formatting from the pasted text.
-				This feature ensures that text pasted into the document adopts the style
-				of the surrounding content, effectively described as &quot;pasting
-				without formatting.&quot; Additionally, it intelligently converts double
-				line breaks into paragraphs and single line breaks into soft breaks,
-				aiding in maintaining the structural integrity of the document.
+				The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text pasted into the document adopts the style of the surrounding content, effectively described as "pasting without formatting." Additionally, it intelligently converts double-line breaks into paragraphs and single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.
 			</td>
 		</tr>
 		<tr id="slash-commands">
@@ -1396,11 +1379,11 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 							class="tree__item__badge__text">Premium feature</span></span></a>
 			</td>
 			<td>
-				The Templates feature enables insertion of predefined content structures
+				The Templates feature enables the insertion of predefined content structures
 				into documents, ranging from small content pieces, like formatted
 				tables, to complete document frameworks, like formal letter templates.
 				Templates accelerate the document creation process while ensuring
-				adherence to the company&#x27;s content and document policies.
+				adherence to the company's content and document policies.
 			</td>
 		</tr>
 	</tbody>
@@ -1549,7 +1532,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				by clicking a button on the left-hand side of the editor, providing
 				tools for the active block of content. Additionally, the Multiline
 				Toolbar option allows for the expansion of the standard toolbar over
-				multiple lines, to display more tools simultaneously.
+				multiple lines to display more tools simultaneously.
 			</td>
 		</tr>
 		<tr id="balloon-toolbar" class="background-blue subfeature">
@@ -1559,7 +1542,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			<td>
 				The block toolbar provides an additional configurable toolbar on the
 				left-hand side of the content area, useful when the main toolbar is not
-				accessible (for example in certain layouts, like balloon block editor).
+				accessible (for example, in certain layouts, like balloon block editor).
 			</td>
 		</tr>
 		<tr id="block-toolbar" class="background-blue subfeature">
@@ -1608,7 +1591,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				></code>
 				plugin introduces a contextual toolbar for images. The toolbar appears
 				when an image is selected and can be configured to contain any buttons
-				you want. Usually, these will be image-related options such as the
+				you want. Usually, these will be image-related options, such as the
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html">text
 					alternative</a>
 				button, the
@@ -1628,17 +1611,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/menubar.html">Menu bar</a>
 			</td>
 			<td>
-				The menu bar is a user interface component that gives you access to all
-				features provided by the editor, organized in menus and categories. This
-				familiar experience popular in large editing desktop and online packages
-				improves usability of the editor.<br /><br />As the menu bar gathers all
-				the editor features, the toolbar can be simple and tidy, providing only
-				the most essential and commonly used features. This is especially
-				welcome in heavily-featured editor integrations.<br /><br />For your
-				convenience, the menu bar provides a default preset structure, based on
-				the plugins loaded in the editor. However, you can arrange it to suit
-				your needs, remove unnecessary items, as well as add menu items related
-				to your custom features.<br />
+				The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.
 			</td>
 		</tr>
 		<tr id="multiline-toolbar" class="background-blue subfeature">
@@ -1655,7 +1628,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#grouping-toolbar-items-in-dropdowns-nested-toolbars">Nesting
 					toolbars in dropdowns</a>
 			</td>
-			<td>Nested toolbars for space efficiency and task-oriented acces</td>
+			<td>Nested toolbars for space efficiency and task-oriented access.</td>
 		</tr>
 		<tr id="sidebar-annotations-bar" class="background-blue subfeature">
 			<td>
@@ -1683,11 +1656,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tabletoolbar-TableToolbar.html"
 				  >TableToolbar</a
 				></code>
-				plugin introduces a contextual toolbar for table. The toolbar appears
-				when a table or a cell is selected and contains various table-related
-				buttons. These would typically include add or remove columns and rows
-				and merge or split cells . If these features are configured, the toolbar
-				will also contain buttons for captions and table and cell properties.
+				plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
 			</td>
 		</tr>
 		<tr id="watchdog">
@@ -1754,7 +1723,7 @@ Make your content accessible to any person or restrict it to specific users.
 			</td>
 			<td>
 				The Restricted Editing feature allows some sections of a document to be
-				designated as non editable while others remain editable. This feature
+				designated as non-editable while others remain editable. This feature
 				supports two modes: the standard editing mode, where all content can be
 				edited, and the restricted editing mode, where users can only modify
 				parts of the content that are specifically marked as editable. This
@@ -1802,11 +1771,11 @@ Make your content accessible to any person or restrict it to specific users.
 				The Spelling and Grammar Checker is a proofreading tool that supports
 				over 80 languages and dialects. It checks spelling and grammar in real
 				time and through a separate dialog. Features include spelling
-				autocorrect, text autocomplete, and suggestions that appear on hover.<br />Users
+				autocorrect, text autocomplete, and suggestions that appear on hover. Users
 				can create custom dictionaries for specific terms related to their brand
 				or company. The tool is compliant with WCAG 2.1 and Section 508
 				accessibility standards. It also detects sentence-level errors and
-				offers context-based correction suggestions.<br />
+				offers context-based correction suggestions.
 			</td>
 		</tr>
 	</tbody>
@@ -1833,7 +1802,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 				editor that perfectly fits your requirements, all without needing any
 				development expertise. For those looking to go further, the CKEditor API
 				enables the creation of custom plugins or modification of the
-				editor&#x27;s functionality. To assist the development process,
+				editor's functionality. To assist the development process,
 				dedicated resources such as a package generator and the CKEditor 5
 				Inspector - a comprehensive suite of debugging tools - are provided,
 				helping accelerate development work.
@@ -1843,13 +1812,13 @@ Customize your editor even further. Use components and helpers from our UI libra
 			<td>
 				<a href="#">CKEditor 5 Inspector</a>
 			</td>
-			<td></td>
+			<td>The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like {@link framework/architecture/editing-engine#model model}, {@link framework/architecture/editing-engine#view view}, and {@link framework/architecture/core-editor-architecture#commands commands}.</td>
 		</tr>
 		<tr id="cloud-services-rest-api" class="background-yellow subfeature">
 			<td>
 				<a href="#">Cloud Services REST API </a>
 			</td>
-			<td></td>
+			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.</td>
 		</tr>
 		<tr id="themes">
 			<td>
@@ -1909,14 +1878,7 @@ Upload and manage your files using file management features. Take advantage of C
 							class="tree__item__badge__text">Premium feature</span></span></a>
 			</td>
 			<td>
-				Securely upload, store, edit, and utilize your images and files in
-				CKEditor 5. Simplify media discovery in your uploads with the media
-				browser, alongside an intuitive Image Editor for image adjustments.
-				Designed to facilitate organization, CKBox enables integrations,
-				maintains permissions, and uses Workspaces for categorizing files
-				according to the user, document, or customer. It guarantees fast loading
-				and optimal display of your images across devices through an efficient
-				CDN.<br />Deployable on-premise or as cloud SaaS.<br />
+				Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premise or as cloud SaaS.
 			</td>
 		</tr>
 		<tr id="ckfinder">
