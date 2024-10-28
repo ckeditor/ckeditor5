@@ -2227,6 +2227,16 @@ describe( 'LinkUI', () => {
 	} );
 
 	describe( 'advanced view', () => {
+		it( 'is not visible if there are no decorators', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			editor.commands.get( 'link' ).manualDecorators.clear();
+
+			linkUIFeature._showUI();
+
+			expect( linkUIFeature.formView.settingsButtonView.isVisible ).to.be.false;
+		} );
+
 		it( 'can be opened by clicking the settings button', () => {
 			const spy = sinon.spy();
 
