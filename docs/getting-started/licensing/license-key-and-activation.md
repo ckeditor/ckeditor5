@@ -84,17 +84,17 @@ Once logged in, you will have access to all the products available. Please note,
 
 The "License keys" section provides authorization for standalone features. You can copy the desired key and paste it in your editor configuration, [as shown further in this guide](#using-the-license-key).
 
-{@img assets/img/ckeditor-free-dashboard-keys.png 1542 License keys.}
+{@img assets/img/ckeditor-free-dashboard-keys.png 990 License keys.}
 
 For services such as document converters, you will need different kinds of authorization. For details on how to apply those credentials, please refer to respective feature guides. Or find out installation details available in the {@link @cs guides/overview Cloud Services section} of the documentation.
 
-To use the access credentials for services, you need to create an environment first.
+To use the access credentials for services, you first need to choose the environment. You may need to create one if there is none.
 
-{@img assets/img/ckeditor-free-dashboard-environments.png 1542 Environments section.}
+{@img assets/img/ckeditor-free-dashboard-environments.png 990 Environments section.}
 
-A token URL and other authentication methods will be assigned to this environment.
+A token URL and other authentication methods will be assigned to this specific environment. This way you can use separate instances of the editor.
 
-{@img assets/img/ckeditor-free-dashbboard-access-credentials.png 1542 Access credentials.}
+{@img assets/img/ckeditor-free-dashbboard-access-credentials.png 990 Access credentials.}
 
 ## License key types
 
