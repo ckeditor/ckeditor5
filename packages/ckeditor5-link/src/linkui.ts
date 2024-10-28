@@ -313,7 +313,7 @@ export default class LinkUI extends Plugin {
 			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
 			editor.editing.view.focus();
 
-			this._balloon.remove( this.advancedView! );
+			this._removeAdvancedView();
 			this.formView!.focus();
 		} );
 
