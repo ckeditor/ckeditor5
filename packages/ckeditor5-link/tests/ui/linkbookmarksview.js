@@ -36,9 +36,9 @@ describe( 'LinkBookmarksView', () => {
 		document.body.appendChild( view.element );
 
 		bookmarksButtonsArrayMock = [
-			new ButtonView( { label: 'Bookmark_1' } ),
-			new ButtonView( { label: 'Bookmark_2' } ),
-			new ButtonView( { label: 'Bookmark_3' } )
+			createButton( 'Mocked bookmark button 1' ),
+			createButton( 'Mocked bookmark button 2' ),
+			createButton( 'Mocked bookmark button 3' )
 		];
 	} );
 
@@ -168,8 +168,8 @@ describe( 'LinkBookmarksView', () => {
 			view.destroy();
 		} );
 
-		describe.skip( 'activates keyboard navigation for the toolbar', () => {
-			let view, bookmarksButtonsArrayMock;
+		describe( 'activates keyboard navigation for the toolbar', () => {
+			let view;
 
 			testUtils.createSinonSandbox();
 
@@ -178,11 +178,7 @@ describe( 'LinkBookmarksView', () => {
 				view.render();
 				document.body.appendChild( view.element );
 
-				bookmarksButtonsArrayMock = [
-					new ButtonView( { label: 'Bookmark_1' } ),
-					new ButtonView( { label: 'Bookmark_2' } ),
-					new ButtonView( { label: 'Bookmark_3' } )
-				];
+				view.listChildren.addMany( bookmarksButtonsArrayMock );
 			} );
 
 			afterEach( () => {
@@ -191,46 +187,29 @@ describe( 'LinkBookmarksView', () => {
 			} );
 
 			it( 'so "tab" focuses the next focusable item', () => {
-				const view = new LinkBookmarksView( mockLocale );
-
-				view.listChildren.addMany( bookmarksButtonsArrayMock );
-
 				expect( view.hasItems ).to.be.equal( true );
 
-				view.render();
-
-				// const spy = sinon.spy( view.listChildren, 'focus' );
 				const spy = sinon.spy( view.backButton, 'focus' );
-
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};
 
-				// const keyEvtData1 = {
-				// 	keyCode: keyCodes.arrowdown,
-				// 	preventDefault: sinon.spy(),
-				// 	stopPropagation: sinon.spy()
-				// };
-
-				// Mock the focus on list button.
+				// Mock the focus on list.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.listView.items.get( 0 ).children.first.element;
-
-				// console.log( 'CCC', view.listView.items.get( 0 ).children.first );
+				view.focusTracker.focusedElement = view.listView.element;
 				view.keystrokes.press( keyEvtData );
 
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				sinon.assert.calledOnce( spy );
-
-				view.destroy();
 			} );
 
 			it( 'so "shift + tab" focuses the previous focusable item', () => {
-				const spy = sinon.spy( view.listChildren.last, 'focus' );
+				expect( view.hasItems ).to.be.equal( true );
 
+				const spy = sinon.spy( view.listView, 'focus' );
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: true,
@@ -238,7 +217,7 @@ describe( 'LinkBookmarksView', () => {
 					stopPropagation: sinon.spy()
 				};
 
-				// Mock the cancel button is focused.
+				// Mock the back button is focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.backButton.element;
 				view.keystrokes.press( keyEvtData );
@@ -290,4 +269,15 @@ describe( 'LinkBookmarksView', () => {
 			sinon.assert.calledOnce( listItemSpy );
 		} );
 	} );
+
+	function createButton( label ) {
+		const button = new ButtonView( mockLocale );
+
+		button.set( {
+			label,
+			withText: true
+		} );
+
+		return button;
+	}
 } );
