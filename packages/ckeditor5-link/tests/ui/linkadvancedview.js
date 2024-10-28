@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event, document */
+/* globals document */
 
 import {
-	mix,
-	ObservableMixin,
 	Collection,
 	KeystrokeHandler,
 	FocusTracker,
@@ -16,53 +14,41 @@ import {
 import {
 	View,
 	FocusCycler,
-	ViewCollection
+	ViewCollection,
+	SwitchButtonView
 } from '@ckeditor/ckeditor5-ui';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-
-import Link from '../../src/link.js';
 import LinkAdvancedView from '../../src/ui/linkadvancedview.js';
 import ManualDecorator from '../../src/utils/manualdecorator.js';
 
 const mockLocale = { t: val => val };
 
-const mockLinkCommand = ( collection = new Collection() ) => {
-	class LinkCommandMock {
-		constructor( manualDecorators ) {
-			this.manualDecorators = manualDecorators;
-			this.set( 'value' );
-		}
-	}
-	mix( LinkCommandMock, ObservableMixin );
-
-	return new LinkCommandMock( collection );
-};
-
 describe( 'LinkAdvancedView', () => {
-	let view, collection, linkCommand;
+	let view, collection, linkCommand, decorator1, decorator2, decorator3;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		collection = new Collection();
-		collection.add( new ManualDecorator( {
+
+		decorator1 = new ManualDecorator( {
 			id: 'decorator1',
 			label: 'Foo',
 			attributes: {
 				foo: 'bar'
 			}
-		} ) );
-		collection.add( new ManualDecorator( {
+		} );
+
+		decorator2 = new ManualDecorator( {
 			id: 'decorator2',
 			label: 'Download',
 			attributes: {
 				download: 'download'
 			},
 			defaultValue: true
-		} ) );
-		collection.add( new ManualDecorator( {
+		} );
+
+		decorator3 = new ManualDecorator( {
 			id: 'decorator3',
 			label: 'Multi',
 			attributes: {
@@ -70,10 +56,35 @@ describe( 'LinkAdvancedView', () => {
 				target: '_blank',
 				rel: 'noopener noreferrer'
 			}
-		} ) );
+		} );
 
-		linkCommand = mockLinkCommand( collection );
-		view = new LinkAdvancedView( mockLocale, linkCommand );
+		collection.addMany( [
+			decorator1,
+			decorator2,
+			decorator3
+		] );
+
+		view = new LinkAdvancedView( mockLocale );
+
+		view.listChildren.bindTo( collection ).using( decorator => {
+			const button = new SwitchButtonView();
+
+			button.set( {
+				label: decorator.label,
+				withText: true
+			} );
+
+			button.bind( 'isOn' ).toMany( [ decorator ], 'value', decoratorValue => {
+				return Boolean( decoratorValue === undefined ? decorator.defaultValue : decoratorValue );
+			} );
+
+			button.on( 'execute', () => {
+				decorator.set( 'value', !button.isOn );
+			} );
+
+			return button;
+		} );
+
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -86,7 +97,7 @@ describe( 'LinkAdvancedView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName.toLowerCase() ).to.equal( 'form' );
+			expect( view.element.tagName.toLowerCase() ).to.equal( 'div' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
 		} );
@@ -130,196 +141,6 @@ describe( 'LinkAdvancedView', () => {
 		} );
 	} );
 
-	describe( 'manual decorators', () => {
-		it( 'switch buttons reflects state of manual decorators', () => {
-			expect( view.listChildren.length ).to.equal( 3 );
-
-			expect( view.listChildren.get( 0 ) ).to.deep.include( {
-				name: 'decorator1',
-				label: 'Foo',
-				isOn: false
-			} );
-			expect( view.listChildren.get( 1 ) ).to.deep.include( {
-				name: 'decorator2',
-				label: 'Download',
-				isOn: true
-			} );
-			expect( view.listChildren.get( 2 ) ).to.deep.include( {
-				name: 'decorator3',
-				label: 'Multi',
-				isOn: false
-			} );
-		} );
-
-		it( 'reacts on switch button changes', () => {
-			const modelItem = collection.first;
-			const viewItem = view.listChildren.first;
-
-			expect( modelItem.value ).to.be.undefined;
-			expect( viewItem.isOn ).to.be.false;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.true;
-			expect( viewItem.isOn ).to.be.true;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.false;
-			expect( viewItem.isOn ).to.be.false;
-		} );
-
-		it( 'reacts on switch button changes for the decorator with defaultValue', () => {
-			const modelItem = collection.get( 1 );
-			const viewItem = view.listChildren.get( 1 );
-
-			expect( modelItem.value ).to.be.undefined;
-			expect( viewItem.isOn ).to.be.true;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.false;
-			expect( viewItem.isOn ).to.be.false;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.true;
-			expect( viewItem.isOn ).to.be.true;
-		} );
-
-		describe( 'getDecoratorSwitchesState()', () => {
-			it( 'should provide object with decorators states', () => {
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: true,
-					decorator3: false
-				} );
-
-				view.listChildren.map( item => {
-					item.element.dispatchEvent( new Event( 'click' ) );
-				} );
-
-				view.listChildren.get( 2 ).element.dispatchEvent( new Event( 'click' ) );
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: true,
-					decorator2: false,
-					decorator3: false
-				} );
-			} );
-
-			it( 'should use decorator default value if command and decorator values are not set', () => {
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: true,
-					decorator3: false
-				} );
-			} );
-
-			it( 'should use a decorator value if decorator value is set', () => {
-				for ( const decorator of collection ) {
-					decorator.value = true;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: true,
-					decorator2: true,
-					decorator3: true
-				} );
-
-				for ( const decorator of collection ) {
-					decorator.value = false;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
-				} );
-			} );
-
-			it( 'should use a decorator value if link command value is set', () => {
-				linkCommand.value = '';
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
-				} );
-
-				for ( const decorator of collection ) {
-					decorator.value = false;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
-				} );
-
-				for ( const decorator of collection ) {
-					decorator.value = true;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: true,
-					decorator2: true,
-					decorator3: true
-				} );
-			} );
-		} );
-	} );
-
-	describe( 'localization of manual decorators', () => {
-		before( () => {
-			addTranslations( 'pl', {
-				'Open in a new tab': 'Otwórz w nowym oknie'
-			} );
-		} );
-		after( () => {
-			clearTranslations();
-		} );
-
-		let editor, editorElement, view;
-
-		beforeEach( () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Link ],
-					toolbar: [ 'link' ],
-					language: 'pl',
-					link: {
-						decorators: {
-							IsExternal: {
-								mode: 'manual',
-								label: 'Open in a new tab',
-								attributes: {
-									target: '_blank'
-								}
-							}
-						}
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					view = new LinkAdvancedView( mockLocale, editor.commands.get( 'link' ) );
-				} );
-		} );
-
-		afterEach( () => {
-			editorElement.remove();
-
-			return editor.destroy();
-		} );
-
-		it( 'translates labels of manual decorators UI', () => {
-			expect( view.listChildren.first.label ).to.equal( 'Otwórz w nowym oknie' );
-		} );
-	} );
-
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
@@ -329,15 +150,10 @@ describe( 'LinkAdvancedView', () => {
 		} );
 
 		it( 'should register child views #element in #focusTracker', () => {
-			const view = new LinkAdvancedView( mockLocale, linkCommand );
-			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
-
-			view.render();
-
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.listChildren.get( 0 ).element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.listChildren.get( 1 ).element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.listChildren.get( 2 ).element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButtonView.element );
+			expect( view.focusTracker.elements[ 0 ] ).to.equal( view.listChildren.get( 0 ).element );
+			expect( view.focusTracker.elements[ 1 ] ).to.equal( view.listChildren.get( 1 ).element );
+			expect( view.focusTracker.elements[ 2 ] ).to.equal( view.listChildren.get( 2 ).element );
+			expect( view.focusTracker.elements[ 3 ] ).to.equal( view.backButtonView.element );
 
 			view.destroy();
 		} );
