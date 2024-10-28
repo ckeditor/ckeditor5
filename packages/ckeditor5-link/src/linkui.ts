@@ -654,15 +654,16 @@ export default class LinkUI extends Plugin {
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
 		editor.editing.view.focus();
 
-		// Remove form first because it's on top of the stack.
-		this._removeFormView();
-
-		// Then remove the actions view because it's beneath the form.
-		this._balloon.remove( this.actionsView! );
-
+		// If the bookmarks view is visible, remove it first  because it's on top of the stack.
 		if ( this._balloon.visibleView === this.bookmarksView ) {
 			this._balloon.remove( this.bookmarksView! );
 		}
+
+		// Then remove the form view because it's beneath the advanced form.
+		this._removeFormView();
+
+		// Finally, remove the actions view because it's last in the stack.
+		this._balloon.remove( this.actionsView! );
 
 		this._hideFakeVisualSelection();
 	}
@@ -746,6 +747,14 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Returns `true` when {@link #bookmarksView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 */
+	private get _areBookmarksVisible(): boolean {
+		return !!this.bookmarksView && this._balloon.visibleView === this.bookmarksView;
+	}
+
+	/**
 	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
@@ -759,7 +768,7 @@ export default class LinkUI extends Plugin {
 	private get _isUIVisible(): boolean {
 		const visibleView = this._balloon.visibleView;
 
-		return !!this.formView && visibleView == this.formView || this._areActionsVisible;
+		return !!this.formView && visibleView == this.formView || this._areActionsVisible || this._areBookmarksVisible;
 	}
 
 	/**
