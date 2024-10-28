@@ -1106,7 +1106,7 @@ describe( 'LinkUI', () => {
 			expect( balloon.hasView( actionsView ) ).to.be.false;
 			expect( balloon.hasView( advancedView ) ).to.be.false;
 
-			sinon.assert.calledThrice( spy );
+			sinon.assert.calledTwice( spy );
 		} );
 	} );
 
