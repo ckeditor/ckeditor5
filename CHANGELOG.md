@@ -9,9 +9,9 @@ We are happy to announce the release of CKEditor 5 v43.3.0.
 
 #### Performance improvements
 
-We've improved how the editor handles document structure by making it more reliable and efficient to access specific elements and verify their positions.
+We have improved how the editor handles the document structure by making it more reliable and efficient to access specific elements and verify their positions.
 
-* **Node index and offset caching**: `Node` and `NodeList` elements now cache index and offset values, reducing the need for recalculations and significantly boosting overall performance during model operations.
+* **Node index and offset caching**: The `Node` and `NodeList` elements now cache index and offset values, reducing the need for recalculations and significantly boosting overall performance during model operations.
 * **Selection range validation**: The newly implemented `Position#isValid()` method is also utilized to better validate selection ranges, ensuring more consistent behavior in various editing scenarios.
 * **Performance improvements in numbers**: The editor now loads data up to **3x faster** in specific cases. In one of our tests, the **import time dropped from 75 to 11 seconds**.
 
@@ -32,7 +32,7 @@ A new configuration option has been added to include a watermark when exporting 
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `getChildAtOffset()` method for `model.Element` and `model.DocumentFragment`. ([commit](https://github.com/ckeditor/ckeditor5/commit/d874050e08510019487e2f8cd7ebf7e1ad7a137e))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `Position#isValid()` method to check whether the position exists in the current model tree. ([commit](https://github.com/ckeditor/ckeditor5/commit/d874050e08510019487e2f8cd7ebf7e1ad7a137e))
-* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Added a configuration for adding a watermark to generated documents.
+* **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Added a configuration setting for adding a watermark to generated documents.
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Introduced the `RevisionTracker#getRevisionDocumentData()` and `RevisionTracker#getRevisionRootsAttributes()` methods to the public scope of the editor API. You can use them to retrieve document data saved with the revision.
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Made `FocusTracker` extendable with other `FocusTracker` instances to allow logical focus tracking across separate DOM sub-trees (see [#17277](https://github.com/ckeditor/ckeditor5/issues/17277)). ([commit](https://github.com/ckeditor/ckeditor5/commit/8ca7301b8029967603ed744433740d9a0cde36fe))
 
@@ -42,18 +42,18 @@ A new configuration option has been added to include a watermark when exporting 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant command list should be flat when only one command group is available.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed an issue where the action dropdown remained hidden when permissions allowing actions on a comment changed.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The content of an inline object should be handled as a flow root so whitespaces should be trimmed as the content of an inline object element is inside a block element. Closes [#17199](https://github.com/ckeditor/ckeditor5/issues/17199). ([commit](https://github.com/ckeditor/ckeditor5/commit/9c8f6871c106c5e71ebaf7516d5ee05d7ceebeee))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Handle existing picture element correctly on 'sources' downcast. ([commit](https://github.com/ckeditor/ckeditor5/commit/6257c7888b0c1ade3b8357081cf7d6895b73ae92))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Handle existing picture element correctly on `sources` downcast. ([commit](https://github.com/ckeditor/ckeditor5/commit/6257c7888b0c1ade3b8357081cf7d6895b73ae92))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: No longer crash editor after removing link from image when `LinkConfig#addTargetToExternalLinks: true` is set. Closes https://github.com/ckeditor/ckeditor5/issues/17252. ([commit](https://github.com/ckeditor/ckeditor5/commit/45523b7e348c5831a87823ba53d34903d01ce87c))
 * **[list-multi-level](https://www.npmjs.com/package/@ckeditor/ckeditor5-list-multi-level)**: Multi-level lists should display correctly in RTL mode for Decoupled Editor.
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Improved pagination of the large tables that are followed by block elements.
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Improved pagination of large tables that are followed by block elements.
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Suggestions are no longer lost in some scenarios when restoring revisions in real-time collaboration.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The dropdown menu component should not cause an editor blur if used in a `BalloonToolbar` while the user hovers a nested menu. Closes [#17277](https://github.com/ckeditor/ckeditor5/issues/17277). ([commit](https://github.com/ckeditor/ckeditor5/commit/8ca7301b8029967603ed744433740d9a0cde36fe))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The dropdown menu component should not cause editor blur if used in a `BalloonToolbar` while the user hovers a nested menu. Closes [#17277](https://github.com/ckeditor/ckeditor5/issues/17277). ([commit](https://github.com/ckeditor/ckeditor5/commit/8ca7301b8029967603ed744433740d9a0cde36fe))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Made the page unscrollable while the modal is visible. Closes [#17093](https://github.com/ckeditor/ckeditor5/issues/17093). ([commit](https://github.com/ckeditor/ckeditor5/commit/926400fc56753731257cd7e79cf140260241387d))
 
 ### Other changes
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Node index and offset related values are now cached in model `Node` and `NodeList` to improve performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/d874050e08510019487e2f8cd7ebf7e1ad7a137e))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Exported link and unlink icons from ckeditor5-link package. Closes [#17304](https://github.com/ckeditor/ckeditor5/issues/17304). ([commit](https://github.com/ckeditor/ckeditor5/commit/9decc1e96e35a4ecb5587b669b68a24de99764bb))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Exported link and unlink icons from the `ckeditor5-link` package. Closes [#17304](https://github.com/ckeditor/ckeditor5/issues/17304). ([commit](https://github.com/ckeditor/ckeditor5/commit/9decc1e96e35a4ecb5587b669b68a24de99764bb))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Disabled dragging support for modal windows in the `Dialog` plugin. Closes [#17290](https://github.com/ckeditor/ckeditor5/issues/17290). ([commit](https://github.com/ckeditor/ckeditor5/commit/6c160735b43ffb401577a50e63410da7cbc920c4))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Disabled positioning restrictions for modal windows caused by `config.ui.viewportOffset`. Closes [#17290](https://github.com/ckeditor/ckeditor5/issues/17290). ([commit](https://github.com/ckeditor/ckeditor5/commit/6c160735b43ffb401577a50e63410da7cbc920c4))
 
