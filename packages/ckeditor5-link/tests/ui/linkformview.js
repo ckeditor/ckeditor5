@@ -12,13 +12,6 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ManualDecorator from '../../src/utils/manualdecorator.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Link from '../../src/link.js';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
-import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
 
 describe( 'LinkFormView', () => {
 	let view;
@@ -26,7 +19,7 @@ describe( 'LinkFormView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: val => val }, { manualDecorators: [] } );
+		view = new LinkFormView( { t: val => val } );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -43,8 +36,8 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.backButton ).to.be.instanceOf( View );
-			expect( view.settingsButton ).to.be.instanceOf( View );
+			expect( view.backButtonView ).to.be.instanceOf( View );
+			expect( view.settingsButtonView ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.displayedTextInputView ).to.be.instanceOf( View );
 			expect( view.urlInputView ).to.be.instanceOf( View );
@@ -66,12 +59,12 @@ describe( 'LinkFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should fire `cancel` event on backButton#execute', () => {
+		it( 'should fire `cancel` event on backButtonView#execute', () => {
 			const spy = sinon.spy();
 
 			view.on( 'cancel', spy );
 
-			view.backButton.fire( 'execute' );
+			view.backButtonView.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.true;
 		} );
@@ -82,16 +75,16 @@ describe( 'LinkFormView', () => {
 
 		describe( 'template', () => {
 			/**
-				 * div
+				 * form
 				 * 	header
-				 * 		backButton
-				 * 		...
-				 * 		settingsButton
-				 * 	form
+				 * 		backButtonView
+				 * 		label
+				 * 		settingsButtonView
+				 * 	div
 				 * 		displayedTextInputView
 				 * 		div
 				 * 			urlInputView
-				 * 			saveButton
+				 * 			saveButtonView
 				 * 	bookmarksButton
 				 */
 
@@ -106,8 +99,8 @@ describe( 'LinkFormView', () => {
 				const headerChildren = view.template.children[ 0 ].get( 0 ).template.children[ 0 ];
 				const formChildren = view.template.children[ 0 ].get( 1 ).template.children[ 0 ];
 
-				expect( headerChildren.get( 0 ) ).to.equal( view.backButton );
-				expect( headerChildren.get( 2 ) ).to.equal( view.settingsButton );
+				expect( headerChildren.get( 0 ) ).to.equal( view.backButtonView );
+				expect( headerChildren.get( 2 ) ).to.equal( view.settingsButtonView );
 				expect( formChildren.last.template.children[ 1 ] ).to.equal( view.saveButtonView );
 			} );
 		} );
@@ -118,34 +111,33 @@ describe( 'LinkFormView', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
 				view.urlInputView,
 				view.saveButtonView,
-				view.backButton,
-				view.settingsButton,
+				view.backButtonView,
+				view.settingsButtonView,
 				view.displayedTextInputView
 			] );
 		} );
 
 		it( 'should register child views #element in #focusTracker', () => {
-			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] } );
-
+			const view = new LinkFormView( { t: () => {} } );
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.backButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.settingsButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.backButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.settingsButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.displayedTextInputView.element );
 
 			view.destroy();
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] } );
-
+			const view = new LinkFormView( { t: () => {} } );
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
+
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
 
@@ -154,6 +146,8 @@ describe( 'LinkFormView', () => {
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
 			it( 'so "tab" focuses the next focusable item', () => {
+				const spy = sinon.spy( view.saveButtonView, 'focus' );
+
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					preventDefault: sinon.spy(),
@@ -163,10 +157,8 @@ describe( 'LinkFormView', () => {
 				// Mock the url input is focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.urlInputView.element;
-
-				const spy = sinon.spy( view.saveButtonView, 'focus' );
-
 				view.keystrokes.press( keyEvtData );
+
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				sinon.assert.calledOnce( spy );
@@ -184,7 +176,7 @@ describe( 'LinkFormView', () => {
 
 				// Mock the cancel button is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.backButton.element;
+				view.focusTracker.focusedElement = view.backButtonView.element;
 				view.keystrokes.press( keyEvtData );
 
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -196,7 +188,7 @@ describe( 'LinkFormView', () => {
 
 	describe( 'isValid()', () => {
 		it( 'should reset error after successful validation', () => {
-			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [
+			const view = new LinkFormView( { t: () => {} }, [
 				() => undefined
 			] );
 
@@ -205,7 +197,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'should display first error returned from validators list', () => {
-			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [
+			const view = new LinkFormView( { t: () => {} }, [
 				() => undefined,
 				() => 'Foo bar',
 				() => 'Another error'
@@ -217,7 +209,7 @@ describe( 'LinkFormView', () => {
 
 		it( 'should pass view reference as argument to validator', () => {
 			const validatorSpy = sinon.spy();
-			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [ validatorSpy ] );
+			const view = new LinkFormView( { t: () => {} }, [ validatorSpy ] );
 
 			view.isValid();
 
@@ -288,244 +280,6 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
-	describe( 'manual decorators', () => {
-		let view, collection, linkCommand;
-
-		beforeEach( () => {
-			collection = new Collection();
-			collection.add( new ManualDecorator( {
-				id: 'decorator1',
-				label: 'Foo',
-				attributes: {
-					foo: 'bar'
-				}
-			} ) );
-			collection.add( new ManualDecorator( {
-				id: 'decorator2',
-				label: 'Download',
-				attributes: {
-					download: 'download'
-				},
-				defaultValue: true
-			} ) );
-			collection.add( new ManualDecorator( {
-				id: 'decorator3',
-				label: 'Multi',
-				attributes: {
-					class: 'fancy-class',
-					target: '_blank',
-					rel: 'noopener noreferrer'
-				}
-			} ) );
-
-			class LinkCommandMock {
-				constructor( manualDecorators ) {
-					this.manualDecorators = manualDecorators;
-					this.set( 'value' );
-				}
-			}
-			mix( LinkCommandMock, ObservableMixin );
-
-			linkCommand = new LinkCommandMock( collection );
-
-			view = new LinkFormView( { t: val => val }, linkCommand );
-			view.render();
-		} );
-
-		afterEach( () => {
-			view.destroy();
-			collection.clear();
-		} );
-
-		it( 'switch buttons reflects state of manual decorators', () => {
-			expect( view._manualDecoratorSwitches.length ).to.equal( 3 );
-
-			expect( view._manualDecoratorSwitches.get( 0 ) ).to.deep.include( {
-				name: 'decorator1',
-				label: 'Foo',
-				isOn: false
-			} );
-			expect( view._manualDecoratorSwitches.get( 1 ) ).to.deep.include( {
-				name: 'decorator2',
-				label: 'Download',
-				isOn: true
-			} );
-			expect( view._manualDecoratorSwitches.get( 2 ) ).to.deep.include( {
-				name: 'decorator3',
-				label: 'Multi',
-				isOn: false
-			} );
-		} );
-
-		it( 'reacts on switch button changes', () => {
-			const modelItem = collection.first;
-			const viewItem = view._manualDecoratorSwitches.first;
-
-			expect( modelItem.value ).to.be.undefined;
-			expect( viewItem.isOn ).to.be.false;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.true;
-			expect( viewItem.isOn ).to.be.true;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.false;
-			expect( viewItem.isOn ).to.be.false;
-		} );
-
-		it( 'reacts on switch button changes for the decorator with defaultValue', () => {
-			const modelItem = collection.get( 1 );
-			const viewItem = view._manualDecoratorSwitches.get( 1 );
-
-			expect( modelItem.value ).to.be.undefined;
-			expect( viewItem.isOn ).to.be.true;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.false;
-			expect( viewItem.isOn ).to.be.false;
-
-			viewItem.element.dispatchEvent( new Event( 'click' ) );
-
-			expect( modelItem.value ).to.be.true;
-			expect( viewItem.isOn ).to.be.true;
-		} );
-
-		describe( 'getDecoratorSwitchesState()', () => {
-			it( 'should provide object with decorators states', () => {
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: true,
-					decorator3: false
-				} );
-
-				view._manualDecoratorSwitches.map( item => {
-					item.element.dispatchEvent( new Event( 'click' ) );
-				} );
-
-				view._manualDecoratorSwitches.get( 2 ).element.dispatchEvent( new Event( 'click' ) );
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: true,
-					decorator2: false,
-					decorator3: false
-				} );
-			} );
-
-			it( 'should use decorator default value if command and decorator values are not set', () => {
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: true,
-					decorator3: false
-				} );
-			} );
-
-			it( 'should use a decorator value if decorator value is set', () => {
-				for ( const decorator of collection ) {
-					decorator.value = true;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: true,
-					decorator2: true,
-					decorator3: true
-				} );
-
-				for ( const decorator of collection ) {
-					decorator.value = false;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
-				} );
-			} );
-
-			it( 'should use a decorator value if link command value is set', () => {
-				linkCommand.value = '';
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
-				} );
-
-				for ( const decorator of collection ) {
-					decorator.value = false;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
-				} );
-
-				for ( const decorator of collection ) {
-					decorator.value = true;
-				}
-
-				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: true,
-					decorator2: true,
-					decorator3: true
-				} );
-			} );
-		} );
-	} );
-
-	describe( 'localization of manual decorators', () => {
-		before( () => {
-			addTranslations( 'pl', {
-				'Open in a new tab': 'Otwórz w nowym oknie'
-			} );
-		} );
-		after( () => {
-			clearTranslations();
-		} );
-
-		let editor, editorElement, linkFormView;
-
-		beforeEach( () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Link ],
-					toolbar: [ 'link' ],
-					language: 'pl',
-					link: {
-						decorators: {
-							IsExternal: {
-								mode: 'manual',
-								label: 'Open in a new tab',
-								attributes: {
-									target: '_blank'
-								}
-							}
-						}
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ) );
-				} );
-		} );
-
-		afterEach( () => {
-			editorElement.remove();
-
-			return editor.destroy();
-		} );
-
-		it( 'translates labels of manual decorators UI', () => {
-			expect( linkFormView._manualDecoratorSwitches.first.label ).to.equal( 'Otwórz w nowym oknie' );
-		} );
-	} );
-
 	describe( 'allows adding more form views', () => {
 		let button;
 
@@ -552,7 +306,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'should register list view items in #focusTracker', () => {
-			const view = new LinkFormView( { t: () => { } }, { manualDecorators: [] } );
+			const view = new LinkFormView( { t: () => { } } );
 			const button = new LinkButtonView();
 
 			button.set( {
@@ -570,8 +324,8 @@ describe( 'LinkFormView', () => {
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButton.element );
-			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.settingsButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.settingsButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.displayedTextInputView.element );
 
 			view.destroy();
