@@ -722,12 +722,12 @@ export function createRegExp( marker: string, minimumCharacters: number ): RegEx
 	// The pattern consists of 3 groups:
 	//
 	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
-	// - 1: The marker character,
+	// - 1: The marker character(s),
 	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
 	//
 	// The pattern matches up to the caret (end of string switch - $).
 	//               (0:      opening sequence       )(1:   marker  )(2:                typed mention              )$
-	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])(${ mentionCharacters }${ numberOfCharacters })$`;
+	const pattern = `(?:^|[ ${ openAfterCharacters }])(${ marker })(${ mentionCharacters }${ numberOfCharacters })$`;
 
 	return new RegExp( pattern, 'u' );
 }
@@ -822,8 +822,8 @@ function isMarkerInExistingMention( markerPosition: Position ): boolean | null {
 /**
  * Checks if string is a valid mention marker.
  */
-function isValidMentionMarker( marker: string ): boolean | string {
-	return marker && marker.length == 1;
+function isValidMentionMarker( marker: string ): boolean {
+	return !!marker;
 }
 
 /**
