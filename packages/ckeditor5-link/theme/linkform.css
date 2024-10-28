@@ -7,6 +7,7 @@
 
 :root {
 	--ck-link-panel-width: 340px;
+	--ck-link-list-view-max-height: 240px;
 }
 
 .ck.ck-link__panel {
@@ -107,5 +108,24 @@
 
 	& .ck-link__items:empty {
 		display: none;
+	}
+
+	& > .ck-list__bookmark-items {
+		max-height: min( var(--ck-link-list-view-max-height), 40vh );
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+
+		& .ck-button {
+			& > .ck-icon {
+				flex-shrink: 0;
+			}
+
+			& > .ck-button__label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		}
 	}
 }

@@ -204,7 +204,7 @@ export default class LinkBookmarksView extends View {
 		listView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-link__items'
+					'ck-list__bookmark-items'
 				]
 			}
 		} );
