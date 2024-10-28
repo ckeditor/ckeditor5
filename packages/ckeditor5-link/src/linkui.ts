@@ -642,18 +642,18 @@ export default class LinkUI extends Plugin {
 	private _hideUI( updateFocus: boolean = true ): void {
 		const editor = this.editor;
 
-		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
-		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-		if ( updateFocus ) {
-			editor.editing.view.focus();
-		}
-
 		if ( !this._isUIInPanel ) {
 			return;
 		}
 
 		this.stopListening( editor.ui, 'update' );
 		this.stopListening( this._balloon, 'change:visibleView' );
+
+		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
+		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
+		if ( updateFocus ) {
+			editor.editing.view.focus();
+		}
 
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();

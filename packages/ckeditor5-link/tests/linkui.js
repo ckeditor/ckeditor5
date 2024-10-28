@@ -28,13 +28,12 @@ import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkButtonView from '../src/ui/linkbuttonview.js';
-import LinkActionsView from '../src/ui/linkactionsview.js';
-import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
 
 describe( 'LinkUI', () => {
-	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
+	let editor, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -101,8 +100,8 @@ describe( 'LinkUI', () => {
 			expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );
 		} );
 
-		it( 'should not create #actionsView', () => {
-			expect( linkUIFeature.actionsView ).to.be.null;
+		it( 'should not create #toolbarView', () => {
+			expect( linkUIFeature.toolbarView ).to.be.null;
 		} );
 
 		it( 'should not create #formView', () => {
@@ -175,12 +174,12 @@ describe( 'LinkUI', () => {
 			editor.editing.view.document.isFocused = true;
 		} );
 
-		it( 'should create #actionsView', () => {
+		it( 'should create #toolbarView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 
-			expect( linkUIFeature.actionsView ).to.be.instanceOf( LinkActionsView );
+			expect( linkUIFeature.toolbarView ).to.be.instanceOf( ToolbarView );
 		} );
 
 		it( 'should create #formView', () => {
@@ -225,7 +224,7 @@ describe( 'LinkUI', () => {
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
 			const expectedRange = getMarkersRange( editor );
 
@@ -239,7 +238,7 @@ describe( 'LinkUI', () => {
 			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
 		} );
 
-		it( 'should add #actionsView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
+		it( 'should add #toolbarView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
@@ -247,31 +246,31 @@ describe( 'LinkUI', () => {
 
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 
 			const addSpyCallArgs = balloonAddSpy.firstCall.args[ 0 ];
 
-			expect( addSpyCallArgs.view ).to.equal( actionsView );
+			expect( addSpyCallArgs.view ).to.equal( toolbarView );
 			expect( addSpyCallArgs.position.target ).to.be.a( 'function' );
 			expect( addSpyCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		// #https://github.com/ckeditor/ckeditor5-link/issues/181
-		it( 'should add #formView to the balloon when collapsed selection is inside the link and #actionsView is already visible', () => {
+		it( 'should add #formView to the balloon when collapsed selection is inside the link and #toolbarView is already visible', () => {
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 
 			const addSpyFirstCallArgs = balloonAddSpy.firstCall.args[ 0 ];
 
-			expect( addSpyFirstCallArgs.view ).to.equal( actionsView );
+			expect( addSpyFirstCallArgs.view ).to.equal( toolbarView );
 			expect( addSpyFirstCallArgs.position.target ).to.be.a( 'function' );
 			expect( addSpyFirstCallArgs.position.target() ).to.equal( linkElement );
 
@@ -284,12 +283,15 @@ describe( 'LinkUI', () => {
 			expect( addSpyCallSecondCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
-		it( 'should disable #formView and #actionsView elements when link and unlink commands are disabled', () => {
+		it( 'should disable #formView and #toolbarView elements when link and unlink commands are disabled', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
+
+			const editButtonView = toolbarView.items.get( 2 );
+			const unlinkButtonView = toolbarView.items.get( 3 );
 
 			formView.urlInputView.fieldView.value = 'ckeditor.com';
 
@@ -300,8 +302,8 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.false;
 			expect( formView.saveButtonView.isEnabled ).to.be.true;
 
-			expect( actionsView.unlinkButtonView.isEnabled ).to.be.true;
-			expect( actionsView.editButtonView.isEnabled ).to.be.true;
+			expect( unlinkButtonView.isEnabled ).to.be.true;
+			expect( editButtonView.isEnabled ).to.be.true;
 
 			editor.commands.get( 'link' ).isEnabled = false;
 			editor.commands.get( 'unlink' ).isEnabled = false;
@@ -310,15 +312,15 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.true;
 			expect( formView.saveButtonView.isEnabled ).to.be.false;
 
-			expect( actionsView.unlinkButtonView.isEnabled ).to.be.false;
-			expect( actionsView.editButtonView.isEnabled ).to.be.false;
+			expect( unlinkButtonView.isEnabled ).to.be.false;
+			expect( editButtonView.isEnabled ).to.be.false;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (selected link)', () => {
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
@@ -327,7 +329,7 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			// Simulate clicking the "edit" button.
-			actionsView.fire( 'edit' );
+			toolbarView.items.get( 2 ).fire( 'execute' );
 
 			// Change text in the URL field.
 			formView.urlInputView.fieldView.element.value = 'to-be-discarded';
@@ -336,7 +338,7 @@ describe( 'LinkUI', () => {
 			formView.fire( 'cancel' );
 
 			// Open the editing panel again.
-			actionsView.fire( 'edit' );
+			toolbarView.items.get( 2 ).fire( 'execute' );
 
 			// Expect original value in the URL field.
 			expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
@@ -353,7 +355,7 @@ describe( 'LinkUI', () => {
 		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (no link selected)', () => {
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
@@ -365,7 +367,7 @@ describe( 'LinkUI', () => {
 		it( 'should optionally force `main` stack to be visible', () => {
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
@@ -384,7 +386,7 @@ describe( 'LinkUI', () => {
 		it( 'should update balloon position when is switched in rotator to a visible panel', () => {
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
 			setModelData( editor.model, '<paragraph>fo<$text linkHref="foo">o[] b</$text>ar</paragraph>' );
@@ -394,7 +396,7 @@ describe( 'LinkUI', () => {
 			const linkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
 			const linkDomElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( linkDomElement );
 
 			balloon.add( {
@@ -406,12 +408,12 @@ describe( 'LinkUI', () => {
 			balloon.showStack( 'custom' );
 
 			expect( balloon.visibleView ).to.equal( customView );
-			expect( balloon.hasView( actionsView ) ).to.equal( true );
+			expect( balloon.hasView( toolbarView ) ).to.equal( true );
 
 			editor.execute( 'blockQuote' );
 			balloon.showStack( 'main' );
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 			expect( balloon.hasView( customView ) ).to.equal( true );
 			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.not.equal( linkDomElement );
 
@@ -427,7 +429,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature._createViews();
 				formView = linkUIFeature.formView;
-				actionsView = linkUIFeature.actionsView;
+				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
@@ -442,7 +444,7 @@ describe( 'LinkUI', () => {
 			it( 'should show error form status if passed empty link', () => {
 				linkUIFeature._createViews();
 				formView = linkUIFeature.formView;
-				actionsView = linkUIFeature.actionsView;
+				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
@@ -456,7 +458,7 @@ describe( 'LinkUI', () => {
 			it( 'should reset error form status after filling empty link', () => {
 				linkUIFeature._createViews();
 				formView = linkUIFeature.formView;
-				actionsView = linkUIFeature.actionsView;
+				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
@@ -475,7 +477,7 @@ describe( 'LinkUI', () => {
 			it( 'should reset form status on show', () => {
 				linkUIFeature._createViews();
 				formView = linkUIFeature.formView;
-				actionsView = linkUIFeature.actionsView;
+				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
 				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
@@ -564,7 +566,7 @@ describe( 'LinkUI', () => {
 			it( 'not update the position when is in not visible stack', () => {
 				linkUIFeature._createViews();
 				formView = linkUIFeature.formView;
-				actionsView = linkUIFeature.actionsView;
+				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
@@ -582,7 +584,7 @@ describe( 'LinkUI', () => {
 				balloon.showStack( 'custom' );
 
 				expect( balloon.visibleView ).to.equal( customView );
-				expect( balloon.hasView( actionsView ) ).to.equal( true );
+				expect( balloon.hasView( toolbarView ) ).to.equal( true );
 
 				const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
 
@@ -912,23 +914,23 @@ describe( 'LinkUI', () => {
 			editor.editing.view.document.isFocused = true;
 		} );
 
-		it( 'should create #actionsView', () => {
+		it( 'should create #toolbarView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addActionsView();
 
-			expect( linkUIFeature.actionsView ).to.be.instanceOf( LinkActionsView );
+			expect( linkUIFeature.toolbarView ).to.be.instanceOf( ToolbarView );
 		} );
 
-		it( 'should add #actionsView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
+		it( 'should add #toolbarView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			linkUIFeature._addActionsView();
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 		} );
 	} );
 
@@ -968,17 +970,17 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 		} );
 
 		it( 'should remove the UI from the balloon', () => {
 			expect( balloon.hasView( formView ) ).to.be.true;
-			expect( balloon.hasView( actionsView ) ).to.be.true;
+			expect( balloon.hasView( toolbarView ) ).to.be.true;
 
 			linkUIFeature._hideUI();
 
 			expect( balloon.hasView( formView ) ).to.be.false;
-			expect( balloon.hasView( actionsView ) ).to.be.false;
+			expect( balloon.hasView( toolbarView ) ).to.be.false;
 		} );
 
 		it( 'should focus the `editable` by default', () => {
@@ -1043,11 +1045,11 @@ describe( 'LinkUI', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
 			expect( linkUIFeature.formView ).to.be.null;
-			expect( linkUIFeature.actionsView ).to.be.null;
+			expect( linkUIFeature.toolbarView ).to.be.null;
 
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
 			formView.render();
 		} );
@@ -1138,7 +1140,7 @@ describe( 'LinkUI', () => {
 				stopPropagation: sinon.spy()
 			} );
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
@@ -1151,7 +1153,7 @@ describe( 'LinkUI', () => {
 			expect( balloon.visibleView ).to.equal( formView );
 		} );
 
-		it( 'should focus the the #actionsView on `Tab` key press when #actionsView is visible', () => {
+		it( 'should focus the the #toolbarView on `Tab` key press when #toolbarView is visible', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.tab,
 				preventDefault: sinon.spy(),
@@ -1164,9 +1166,9 @@ describe( 'LinkUI', () => {
 			editor.keystrokes.set( 'Tab', highestPriorityTabCallbackSpy, { priority: 'highest' } );
 
 			// Balloon is invisible, form not focused.
-			actionsView.focusTracker.isFocused = false;
+			toolbarView.focusTracker.isFocused = false;
 
-			const spy = sinon.spy( actionsView, 'focus' );
+			const spy = sinon.spy( toolbarView, 'focus' );
 
 			editor.keystrokes.press( keyEvtData );
 			sinon.assert.notCalled( keyEvtData.preventDefault );
@@ -1177,9 +1179,9 @@ describe( 'LinkUI', () => {
 
 			// Balloon is visible, form focused.
 			linkUIFeature._showUI();
-			testUtils.sinon.stub( linkUIFeature, '_areActionsVisible' ).value( true );
+			testUtils.sinon.stub( linkUIFeature, '_isToolbarVisible' ).value( true );
 
-			actionsView.focusTracker.isFocused = true;
+			toolbarView.focusTracker.isFocused = true;
 
 			editor.keystrokes.press( keyEvtData );
 			sinon.assert.notCalled( keyEvtData.preventDefault );
@@ -1189,7 +1191,7 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledTwice( highestPriorityTabCallbackSpy );
 
 			// Balloon is still visible, form not focused.
-			actionsView.focusTracker.isFocused = false;
+			toolbarView.focusTracker.isFocused = false;
 
 			editor.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -1242,11 +1244,11 @@ describe( 'LinkUI', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
 			expect( linkUIFeature.formView ).to.be.null;
-			expect( linkUIFeature.actionsView ).to.be.null;
+			expect( linkUIFeature.toolbarView ).to.be.null;
 
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
 			formView.render();
 		} );
@@ -1271,7 +1273,7 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			// Be sure any of link view is not currently visible/
-			expect( balloon.visibleView ).to.not.equal( actionsView );
+			expect( balloon.visibleView ).to.not.equal( toolbarView );
 			expect( balloon.visibleView ).to.not.equal( formView );
 
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
@@ -1415,31 +1417,31 @@ describe( 'LinkUI', () => {
 		} );
 	} );
 
-	describe( 'actions view', () => {
+	describe( 'actions/toolbar view', () => {
 		let focusEditableSpy;
 
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
 			expect( linkUIFeature.formView ).to.be.null;
-			expect( linkUIFeature.actionsView ).to.be.null;
+			expect( linkUIFeature.toolbarView ).to.be.null;
 
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
 			formView.render();
 
 			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		} );
 
-		it( 'should mark the editor UI as focused when the #actionsView is focused', () => {
+		it( 'should mark the editor UI as focused when the #toolbarView is focused', () => {
 			linkUIFeature._showUI();
 			linkUIFeature._removeFormView();
 
-			expect( balloon.visibleView ).to.equal( actionsView );
+			expect( balloon.visibleView ).to.equal( toolbarView );
 
 			editor.ui.focusTracker.isFocused = false;
-			actionsView.element.dispatchEvent( new Event( 'focus' ) );
+			toolbarView.element.dispatchEvent( new Event( 'focus' ) );
 
 			expect( editor.ui.focusTracker.isFocused ).to.be.true;
 		} );
@@ -1450,7 +1452,7 @@ describe( 'LinkUI', () => {
 				linkUIFeature._removeFormView();
 
 				const selectSpy = testUtils.sinon.spy( formView.urlInputView.fieldView, 'select' );
-				actionsView.fire( 'edit' );
+				toolbarView.items.get( 2 ).fire( 'execute' );
 
 				expect( balloon.visibleView ).to.equal( formView );
 				sinon.assert.calledOnce( selectSpy );
@@ -1463,27 +1465,27 @@ describe( 'LinkUI', () => {
 				const enableCssTransitionsSpy = sinon.spy( formView, 'enableCssTransitions' );
 				const selectSpy = sinon.spy( formView.urlInputView.fieldView, 'select' );
 
-				actionsView.fire( 'edit' );
+				toolbarView.items.get( 2 ).fire( 'execute' );
 
 				sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
 			} );
 
-			it( 'should execute unlink command on actionsView#unlink event', () => {
+			it( 'should execute unlink command on link edit button click', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-				actionsView.fire( 'unlink' );
+				toolbarView.items.get( 3 ).fire( 'execute' );
 
 				expect( executeSpy.calledOnce ).to.be.true;
 				expect( executeSpy.calledWithExactly( 'unlink' ) ).to.be.true;
 			} );
 
-			it( 'should hide and focus editable on actionsView#unlink event', () => {
+			it( 'should hide and focus editable on unlink button click', () => {
 				linkUIFeature._showUI();
 				linkUIFeature._removeFormView();
 
 				// Removing the form would call the focus spy.
 				focusEditableSpy.resetHistory();
-				actionsView.fire( 'unlink' );
+				toolbarView.items.get( 3 ).fire( 'execute' );
 
 				expect( balloon.visibleView ).to.be.null;
 				expect( focusEditableSpy.calledOnce ).to.be.true;
@@ -1502,7 +1504,7 @@ describe( 'LinkUI', () => {
 				// Removing the form would call the focus spy.
 				focusEditableSpy.resetHistory();
 
-				actionsView.keystrokes.press( keyEvtData );
+				toolbarView.keystrokes.press( keyEvtData );
 				expect( balloon.visibleView ).to.equal( null );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
@@ -1519,9 +1521,9 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature._showUI();
 				linkUIFeature._removeFormView();
-				expect( balloon.visibleView ).to.equal( actionsView );
+				expect( balloon.visibleView ).to.equal( toolbarView );
 
-				actionsView.keystrokes.press( keyEvtData );
+				toolbarView.keystrokes.press( keyEvtData );
 				expect( balloon.visibleView ).to.equal( formView );
 			} );
 		} );
@@ -1581,11 +1583,11 @@ describe( 'LinkUI', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
 			expect( linkUIFeature.formView ).to.be.null;
-			expect( linkUIFeature.actionsView ).to.be.null;
+			expect( linkUIFeature.toolbarView ).to.be.null;
 
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
-			actionsView = linkUIFeature.actionsView;
+			toolbarView = linkUIFeature.toolbarView;
 
 			formView.render();
 
@@ -1824,17 +1826,17 @@ describe( 'LinkUI', () => {
 				expect( editor.model.markers.has( 'link-ui' ) ).to.be.false;
 			} );
 
-			it( 'should hide and reveal the #actionsView on formView#submit event', () => {
+			it( 'should hide and reveal the #toolbarView on formView#submit event', () => {
 				linkUIFeature._showUI();
 
 				formView.urlInputView.fieldView.value = '/test.html';
 				formView.fire( 'submit' );
 
-				expect( balloon.visibleView ).to.equal( actionsView );
+				expect( balloon.visibleView ).to.equal( toolbarView );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
 
-			it( 'should hide and reveal the #actionsView on formView#cancel event if link command has a value', () => {
+			it( 'should hide and reveal the #toolbarView on formView#cancel event if link command has a value', () => {
 				linkUIFeature._showUI();
 
 				const command = editor.commands.get( 'link' );
@@ -1842,7 +1844,7 @@ describe( 'LinkUI', () => {
 
 				formView.fire( 'cancel' );
 
-				expect( balloon.visibleView ).to.equal( actionsView );
+				expect( balloon.visibleView ).to.equal( toolbarView );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
 
@@ -1853,7 +1855,7 @@ describe( 'LinkUI', () => {
 				expect( balloon.visibleView ).to.be.null;
 			} );
 
-			it( 'should hide and reveal the #actionsView after Esc key press if link command has a value', () => {
+			it( 'should hide and reveal the #toolbarView after Esc key press if link command has a value', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.esc,
 					preventDefault: sinon.spy(),
@@ -1867,7 +1869,7 @@ describe( 'LinkUI', () => {
 
 				formView.keystrokes.press( keyEvtData );
 
-				expect( balloon.visibleView ).to.equal( actionsView );
+				expect( balloon.visibleView ).to.equal( toolbarView );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
 
