@@ -183,7 +183,7 @@ npm run dll:serve
 Synchronizes translation messages (arguments of the `t()` function) by performing the following steps:
 
  * Collect all translation messages from the package by finding `t()` calls in source files.
- * Detect if translation context is valid, i.e. whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
+ * Perform the validations to detect if translation context is valid. It checks whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package, and there is no missing, unused or duplicated context entries.
  * If there are no validation errors, update all translation files (`*.po` files) to be in sync with the context file:
    * unused translation entries are removed,
    * missing translation entries are added with empty string as the message translation,
@@ -203,7 +203,7 @@ npm run translations:synchronize
 
 ### `translations:validate`
 
-Peforms only validation steps as described in [`translations:synchronize`](#translationssynchronize) script, but without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
+Peforms only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
 
 Examples:
 
