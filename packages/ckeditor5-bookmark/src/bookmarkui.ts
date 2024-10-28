@@ -34,8 +34,6 @@ import type InsertBookmarkCommand from './insertbookmarkcommand.js';
 
 import BookmarkEditing from './bookmarkediting.js';
 
-const bookmarkIcon = icons.bookmark;
-
 const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
 
 /**
@@ -275,7 +273,7 @@ export default class BookmarkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Bookmark' ),
-			icon: bookmarkIcon
+			icon: icons.bookmark
 		} );
 
 		// Execute the command.

@@ -28,8 +28,6 @@ import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
 import '../theme/bookmark.css';
 
-const bookmarkIcon = icons.bookmarkInline;
-
 /**
  * The bookmark editing plugin.
  */
@@ -162,7 +160,7 @@ export default class BookmarkEditing extends Plugin {
 			const icon = new IconView();
 
 			icon.set( {
-				content: bookmarkIcon,
+				content: icons.bookmarkInline,
 				isColorInherited: false
 			} );
 
