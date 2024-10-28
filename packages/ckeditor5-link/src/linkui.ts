@@ -762,7 +762,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #actionsView}, {@link #bookmarksView} or {@link #formView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
 	private get _isUIVisible(): boolean {

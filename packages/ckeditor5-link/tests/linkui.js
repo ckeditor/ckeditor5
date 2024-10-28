@@ -23,12 +23,14 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkButtonView from '../src/ui/linkbuttonview.js';
 import LinkActionsView from '../src/ui/linkactionsview.js';
+import LinkBookmarksView from '../src/ui/linkbookmarksview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -960,6 +962,22 @@ describe( 'LinkUI', () => {
 			linkUIFeature._addFormView();
 
 			expect( linkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
+		} );
+	} );
+
+	describe( '_createBookmarksView()', () => {
+		beforeEach( () => {
+			editor.editing.view.document.isFocused = true;
+		} );
+
+		describe( 'when Bookmark plugin is not loaded', () => {
+			it( 'should not create #advancedView', () => {
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+				linkUIFeature._showUI();
+
+				expect( linkUIFeature.bookmarksView ).to.be.equal( null );
+			} );
 		} );
 	} );
 
@@ -1984,7 +2002,9 @@ describe( 'LinkUI', () => {
 } );
 
 describe( 'LinkUI with Bookmark', () => {
-	let editor, linkUIFeature, balloon, editorElement;
+	const bookmarkIcon = icons.bookmark;
+
+	let editor, linkUIFeature, balloon, editorElement, bookmarksView;
 
 	testUtils.createSinonSandbox();
 
@@ -2030,5 +2050,164 @@ describe( 'LinkUI with Bookmark', () => {
 
 		expect( linkUIFeature.formView ).to.be.instanceOf( LinkFormView );
 		expect( button ).to.be.instanceOf( LinkButtonView );
+	} );
+
+	describe( '_createBookmarksView()', () => {
+		it( 'should create #bookmarksView', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( linkUIFeature.bookmarksView ).to.be.instanceOf( LinkBookmarksView );
+		} );
+	} );
+
+	describe( '_createBookmarksListView()', () => {
+		describe( 'with bookmarks data', () => {
+			let bookmarksView;
+
+			beforeEach( () => {
+				setModelData( editor.model,
+					'<paragraph>f[o]o' +
+						'<bookmark bookmarkId="zzz"></bookmark>' +
+						'<bookmark bookmarkId="aaa"></bookmark>' +
+						'<bookmark bookmarkId="ccc"></bookmark>' +
+					'</paragraph>'
+				);
+
+				linkUIFeature._showUI();
+
+				const formView = linkUIFeature.formView;
+				const button = formView
+					.template.children[ 0 ]
+					.last // ul
+					.template.children[ 0 ]
+					.get( 0 ) // li
+					.template.children[ 0 ]
+					.get( 0 ); // button
+
+				button.fire( 'execute' );
+				bookmarksView = linkUIFeature.bookmarksView;
+			} );
+
+			it( 'should create a sorted list of bookmarks buttons', () => {
+				expect( bookmarksView.listChildren.length ).to.equal( 3 );
+
+				expect( bookmarksView.listChildren.get( 0 ) ).is.instanceOf( ButtonView );
+				expect( bookmarksView.listChildren.get( 1 ) ).is.instanceOf( ButtonView );
+				expect( bookmarksView.listChildren.get( 2 ) ).is.instanceOf( ButtonView );
+
+				expect( bookmarksView.listChildren.get( 0 ).icon ).to.equal( bookmarkIcon );
+				expect( bookmarksView.listChildren.get( 1 ).icon ).to.equal( bookmarkIcon );
+				expect( bookmarksView.listChildren.get( 2 ).icon ).to.equal( bookmarkIcon );
+
+				expect( bookmarksView.listChildren.get( 0 ).label ).to.equal( 'aaa' );
+				expect( bookmarksView.listChildren.get( 1 ).label ).to.equal( 'ccc' );
+				expect( bookmarksView.listChildren.get( 2 ).label ).to.equal( 'zzz' );
+			} );
+
+			it( 'should execute action after click the bookmark button', () => {
+				// First button from the list with bookmark name 'aaa'.
+				const bookmarkButton = bookmarksView.listChildren.get( 0 );
+				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
+
+				bookmarkButton.fire( 'execute' );
+
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
+				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
+				expect( focusSpy.calledOnce ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'bookmarks view', () => {
+		it( 'can be opened by clicking the bookmarks button', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			const formView = linkUIFeature.formView;
+			const button = formView
+				.template.children[ 0 ]
+				.last // ul
+				.template.children[ 0 ]
+				.get( 0 ) // li
+				.template.children[ 0 ]
+				.get( 0 ); // button
+
+			button.fire( 'execute' );
+			bookmarksView = linkUIFeature.bookmarksView;
+
+			expect( balloon.visibleView ).to.equal( bookmarksView );
+		} );
+
+		it( 'can be closed by clicking the back button', () => {
+			const spy = sinon.spy();
+
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+			linkUIFeature.listenTo( linkUIFeature.bookmarksView, 'cancel', spy );
+
+			const bookmarksButton = linkUIFeature.formView
+				.template.children[ 0 ]
+				.last // ul
+				.template.children[ 0 ]
+				.get( 0 ) // li
+				.template.children[ 0 ]
+				.get( 0 ); // button
+
+			bookmarksButton.fire( 'execute' );
+			linkUIFeature.bookmarksView.backButton.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+		} );
+
+		it( 'can be closed by clicking the "esc" button', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			const bookmarksButton = linkUIFeature.formView
+				.template.children[ 0 ]
+				.last // ul
+				.template.children[ 0 ]
+				.get( 0 ) // li
+				.template.children[ 0 ]
+				.get( 0 ); // button
+
+			bookmarksButton.fire( 'execute' );
+
+			linkUIFeature.bookmarksView.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+		} );
+
+		it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
+			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
+
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			const bookmarksButton = linkUIFeature.formView
+				.template.children[ 0 ]
+				.last // ul
+				.template.children[ 0 ]
+				.get( 0 ) // li
+				.template.children[ 0 ]
+				.get( 0 ); // button
+
+			bookmarksButton.fire( 'execute' );
+			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+			sinon.assert.calledWithExactly( spy );
+			expect( linkUIFeature._balloon.visibleView ).to.be.null;
+		} );
 	} );
 } );
