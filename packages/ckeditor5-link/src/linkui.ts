@@ -7,7 +7,7 @@
  * @module link/linkui
  */
 
-import { Plugin, icons, type Editor, icons } from 'ckeditor5/src/core.js';
+import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -233,6 +233,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Register the toolbar, so it becomes available for Alt+F10 and Esc navigation.
+		// TODO this should be registered earlier to be able to open this toolbar without previously opening it by click or Ctrl+K
 		editor.ui.addToolbar( toolbarView, {
 			isContextual: true,
 			beforeFocus: () => {
@@ -655,6 +656,7 @@ export default class LinkUI extends Plugin {
 	 *
 	 * @internal
 	 */
+	// TODO change name
 	public _addActionsView(): void {
 		if ( !this.toolbarView ) {
 			this._createViews();
@@ -1001,7 +1003,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView}, {@link #bookmarksView}, {@link #actionsView}
+	 * Returns `true` when {@link #advancedView}, {@link #bookmarksView}, {@link #toolbarView}
 	 * or {@link #formView} is in the {@link #_balloon} and it is currently visible.
 	 */
 	private get _isUIVisible(): boolean {

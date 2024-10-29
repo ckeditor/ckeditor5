@@ -6,6 +6,7 @@
 /* globals document, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
@@ -455,7 +456,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		describe( 'form status', () => {
-			it( 'should update ui on error due to change ballon position', () => {
+			it( 'should update ui on error due to change balloon position', () => {
 				const updateSpy = sinon.spy( editor.ui, 'update' );
 
 				linkUIFeature._createViews();
@@ -1290,6 +1291,57 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledThrice( highestPriorityTabCallbackSpy );
 		} );
 
+		describe( 'toolbar cycling on Alt+F10', () => {
+			let editor, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				editor = await ClassicEditor.create( editorElement, {
+					plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					toolbar: [ 'link' ]
+				} );
+
+				linkUIFeature = editor.plugins.get( LinkUI );
+				linkButton = editor.ui.componentFactory.create( 'link' );
+				balloon = editor.plugins.get( ContextualBalloon );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+				editorElement.remove();
+			} );
+
+			it( 'should focus the link toolbar on Alt+F10', () => {
+				linkUIFeature._createViews();
+
+				setModelData( editor.model, '<paragraph><$text linkHref="foo">b[]ar</$text></paragraph>' );
+				editor.ui.focusTracker.isFocused = true;
+
+				const focusSpy = sinon.spy( linkUIFeature.toolbarView, 'focus' );
+
+				expect( linkUIFeature._isToolbarVisible ).to.be.false;
+				pressAltF10();
+
+				expect( linkUIFeature._isToolbarVisible ).to.be.true;
+				sinon.assert.calledOnce( focusSpy );
+
+				pressAltF10();
+				expect( linkUIFeature._isToolbarVisible ).to.be.false;
+				sinon.assert.calledOnce( focusSpy );
+			} );
+
+			function pressAltF10() {
+				editor.keystrokes.press( {
+					keyCode: keyCodes.f10,
+					altKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+			}
+		} );
+
 		it( 'should hide the UI after Esc key press (from editor) and not focus the editable', () => {
 			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 			const keyEvtData = {
@@ -1536,7 +1588,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		describe( 'binding', () => {
-			it( 'should show the #formView on #edit event and select the URL input field', () => {
+			it( 'should show the #formView on edit button click and select the URL input field', () => {
 				linkUIFeature._showUI();
 				linkUIFeature._removeFormView();
 
