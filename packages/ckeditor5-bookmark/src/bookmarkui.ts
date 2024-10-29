@@ -7,7 +7,7 @@
  * @module bookmark/bookmarkui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -33,8 +33,6 @@ import type UpdateBookmarkCommand from './updatebookmarkcommand.js';
 import type InsertBookmarkCommand from './insertbookmarkcommand.js';
 
 import BookmarkEditing from './bookmarkediting.js';
-
-import bookmarkIcon from '../theme/icons/bookmark.svg';
 
 const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
 
@@ -275,7 +273,7 @@ export default class BookmarkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Bookmark' ),
-			icon: bookmarkIcon
+			icon: icons.bookmark
 		} );
 
 		// Execute the command.

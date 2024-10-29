@@ -19,7 +19,7 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^44.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
     "@ckeditor/ckeditor5-editor-classic": "43.2.0",
     "@ckeditor/ckeditor5-paragraph": "43.2.0",
     "@ckeditor/ckeditor5-source-editing": "43.2.0",

@@ -209,6 +209,7 @@ export default class DropdownMenuNestedMenuView extends View implements Focusabl
 
 		this.focusTracker.add( this.buttonView.element! );
 		this.focusTracker.add( this.panelView.element! );
+		this.focusTracker.add( this.listView );
 
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element! );

@@ -11,6 +11,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { icons } from '@ckeditor/ckeditor5-core';
 import { ClickObserver } from '@ckeditor/ckeditor5-engine';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -22,7 +23,7 @@ import BookmarkActionsView from '../src/ui/bookmarkactionsview.js';
 import BookmarkEditing from '../src/bookmarkediting.js';
 import BookmarkUI from '../src/bookmarkui.js';
 
-import bookmarkIcon from '../theme/icons/bookmark.svg';
+const bookmarkIcon = icons.bookmark;
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, actionsView;
