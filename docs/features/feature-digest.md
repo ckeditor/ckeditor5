@@ -1632,8 +1632,7 @@ Make your content accessible to any person or restrict it to specific users.
 	<tbody>
 		<tr id="accessibility-support">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html">Accessibility
-					support</a>
+				{@ink features/accessibility Accessibility support}
 			</td>
 			<td>
 				CKEditor 5 includes accessibility functionality designed to ensure
@@ -1649,7 +1648,7 @@ Make your content accessible to any person or restrict it to specific users.
 		</tr>
 		<tr id="read-only-support">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/read-only.html">Read-only support</a>
+				{@link features/read-only Read-only support}
 			</td>
 			<td>
 				The Read-Only Mode feature enables content to be locked from editing
@@ -1664,8 +1663,7 @@ Make your content accessible to any person or restrict it to specific users.
 		</tr>
 		<tr id="restricted-editing">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">Restricted
-					editing</a>
+				{@link features/restricted-editing Restricted editing}
 			</td>
 			<td>
 				The Restricted Editing feature allows some sections of a document to be
@@ -1681,7 +1679,7 @@ Make your content accessible to any person or restrict it to specific users.
 		</tr>
 		<tr id="text-part-language">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">Text part language</a>
+				{@link features/language Text Part Language}
 			</td>
 			<td>
 				The Text Part Language feature allows users to specify the language of
@@ -1697,8 +1695,7 @@ Make your content accessible to any person or restrict it to specific users.
 		</tr>
 		<tr id="word-and-character-counter">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html">Word and character
-					counter</a>
+				{@link features/word-count Word and character counter}
 			</td>
 			<td>
 				The Word and Character Count feature provides a real-time tracking tool
@@ -1709,9 +1706,10 @@ Make your content accessible to any person or restrict it to specific users.
 		</tr>
 		<tr id="wproofreader">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html">WPRoofreader<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/spelling-and-grammar-checking WProofreader
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Spelling and Grammar Checker is a proofreading tool that supports
