@@ -1383,7 +1383,6 @@ describe( 'FindAndReplaceFormView', () => {
 				findNextButton.fire( 'execute' );
 
 				// Replace second and third one.
-				// findInput.fieldView.value = '###';
 				view._replaceInputView.fieldView.value = '###';
 
 				replaceButton.fire( 'execute' );
