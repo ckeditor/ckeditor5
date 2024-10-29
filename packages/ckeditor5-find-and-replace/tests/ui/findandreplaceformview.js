@@ -1286,7 +1286,7 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
 
 				replaceButton.fire( 'execute' );
-				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 2' );
 
 				replaceButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
