@@ -1009,10 +1009,10 @@ Format, organize, and navigate your documents easily with page management featur
 	<tbody>
 		<tr id="document-outline">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html">Document
-					outline<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/document-outline Document outline
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Document Outline feature automatically detects and lists document
@@ -1034,7 +1034,7 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 		<tr id="content-minimap" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html">Content minimap</a>
+				{@link features/minimap Content minimap}
 			</td>
 			<td>
 				Offers a concise, birds-eye view of the document's content,
@@ -1043,7 +1043,7 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 		<tr id="document-title" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/title.html">Document title</a>
+				{@link features/title Document title}
 			</td>
 			<td>
 				Allows users to set and modify the document's title within the
@@ -1052,7 +1052,7 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 		<tr id="page-break" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">Page break</a>
+				{@link features/page-break Page break}
 			</td>
 			<td>
 				Facilitates the insertion of manual breaks within the document, enabling
@@ -1062,9 +1062,10 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 		<tr id="pagination">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">Pagination<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/pagination Pagination
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Pagination feature visually indicates where pages begin and end within a document. This feature is
@@ -1078,10 +1079,10 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 		<tr id="table-of-contents">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html">Table of
-					contents<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/table-of-contents Table of contents
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Table of Contents feature is a dynamic tool for organizing
