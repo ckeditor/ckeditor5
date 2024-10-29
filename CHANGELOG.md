@@ -13,7 +13,9 @@ We have improved how the editor handles the document structure by making it more
 
 * **Node index and offset caching**: The `Node` and `NodeList` elements now cache index and offset values, reducing the need for recalculations and significantly boosting overall performance during model operations.
 * **Selection range validation**: The newly implemented `Position#isValid()` method is also utilized to better validate selection ranges, ensuring more consistent behavior in various editing scenarios.
-* **Performance improvements in numbers**: The editor now loads data up to **3x faster** in specific cases. In one of our tests, the **import time dropped from 75 to 11 seconds**.
+* **Performance improvements in numbers**: The editor now loads content between **3x and, in some cases, up to 6x faster, depending on the type and size of the content**. For instance, where a specific 200-page document previously took almost 25 seconds to load, the time has now been reduced to just 3.5 seconds.
+
+**We’re committed to ongoing performance enhancements**, so you can expect even faster, smoother experience in future updates.
 
 #### **Export to Word watermark support**
 
