@@ -129,7 +129,7 @@
     "chalk": "^5.0.0",
     "ckeditor5-premium-features": "43.3.0",
     "coveralls": "^3.1.0",
-    "date-fns": "^4.0.0",
+    "date-fns": "2.30.0",
     "eslint": "^8.21.0",
     "eslint-config-ckeditor5": "^8.0.0",
     "eslint-formatter-stylish": "^8.40.0",
