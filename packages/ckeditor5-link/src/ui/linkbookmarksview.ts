@@ -27,13 +27,12 @@ import {
 import { icons } from 'ckeditor5/src/core.js';
 
 /**
- * The link form view controller class.
- *
- * See {@link module:link/ui/linkbookmarksview~LinkBookmarksView}.
+ * The link bookmarks list view.
  */
 export default class LinkBookmarksView extends View {
 	/**
 	 * Tracks information about the list of bookmarks.
+	 *
 	 * @observable
 	 */
 	declare public hasItems: boolean;
@@ -51,7 +50,7 @@ export default class LinkBookmarksView extends View {
 	/**
 	 * The Back button view displayed in the header.
 	 */
-	public backButton: ButtonView;
+	public backButtonView: ButtonView;
 
 	/**
 	 * The List view of bookmarks buttons.
@@ -89,15 +88,13 @@ export default class LinkBookmarksView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param locale The localization services instance.
-	 * @param linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
-	 * @param validators  Form validators used by {@link #isValid}.
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
 
 		this.listChildren = this.createCollection();
 
-		this.backButton = this._createBackButton();
+		this.backButtonView = this._createBackButton();
 		this.listView = this._createListView();
 		this.emptyListInformation = this._createEmptyBookmarksListItemView();
 
@@ -145,7 +142,7 @@ export default class LinkBookmarksView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel' ],
+				class: [ 'ck', 'ck-link__panel', 'ck-link__bookmarks' ],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
@@ -163,7 +160,7 @@ export default class LinkBookmarksView extends View {
 
 		const childViews = [
 			this.listView,
-			this.backButton
+			this.backButtonView
 		];
 
 		childViews.forEach( v => {
@@ -248,11 +245,14 @@ export default class LinkBookmarksView extends View {
 			label: t( 'Bookmarks' )
 		} );
 
-		header.children.add( this.backButton, 0 );
+		header.children.add( this.backButtonView, 0 );
 
 		return header;
 	}
 
+	/**
+	 * Creates an info view for an empty list.
+	 */
 	private _createEmptyBookmarksListItemView(): View {
 		const t = this.locale!.t;
 		const view = new View( this.locale );
@@ -260,7 +260,7 @@ export default class LinkBookmarksView extends View {
 		view.setTemplate( {
 			tag: 'p',
 			attributes: {
-				class: [ 'ck ck-link__empty-prompt' ]
+				class: [ 'ck ck-link__empty-list-info' ]
 			},
 			children: [
 				t( 'No bookmarks available.' )
@@ -272,7 +272,7 @@ export default class LinkBookmarksView extends View {
 }
 
 /**
- * Fired when the form view is canceled, for example with a click on {@link ~LinkBookmarksView#cancelButtonView}.
+ * Fired when the bookmarks view is canceled, for example with a click on {@link ~LinkBookmarksView#backButtonView}.
  *
  * @eventName ~LinkBookmarksView#cancel
  */

@@ -56,7 +56,7 @@ describe( 'LinkBookmarksView', () => {
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.backButton ).to.be.instanceOf( ButtonView );
+			expect( view.backButtonView ).to.be.instanceOf( ButtonView );
 			expect( view.listView ).to.be.instanceOf( ListView );
 			expect( view.emptyListInformation ).to.be.instanceOf( View );
 			expect( view.children ).to.be.instanceOf( ViewCollection );
@@ -92,12 +92,12 @@ describe( 'LinkBookmarksView', () => {
 			expect( view.hasItems ).to.be.equal( false );
 		} );
 
-		it( 'should fire `cancel` event on backButton#execute', () => {
+		it( 'should fire `cancel` event on backButtonView#execute', () => {
 			const spy = sinon.spy();
 
 			view.on( 'cancel', spy );
 
-			view.backButton.fire( 'execute' );
+			view.backButtonView.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.true;
 		} );
@@ -106,7 +106,7 @@ describe( 'LinkBookmarksView', () => {
 			it( 'has back button', () => {
 				const button = view.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
 
-				expect( button ).to.equal( view.backButton );
+				expect( button ).to.equal( view.backButtonView );
 			} );
 		} );
 
@@ -115,7 +115,7 @@ describe( 'LinkBookmarksView', () => {
 
 			expect( emptyListInformation.element.tagName.toLowerCase() ).to.equal( 'p' );
 			expect( emptyListInformation.element.classList.contains( 'ck' ) ).to.true;
-			expect( emptyListInformation.element.classList.contains( 'ck-link__empty-prompt' ) ).to.true;
+			expect( emptyListInformation.element.classList.contains( 'ck-link__empty-list-info' ) ).to.true;
 
 			expect( emptyListInformation.template.children[ 0 ].text[ 0 ] ).to.equal( 'No bookmarks available.' );
 		} );
@@ -139,7 +139,7 @@ describe( 'LinkBookmarksView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.backButton,
+				view.backButtonView,
 				view.listView
 			] );
 		} );
@@ -151,7 +151,7 @@ describe( 'LinkBookmarksView', () => {
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.listView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.backButton.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.backButtonView.element );
 
 			view.destroy();
 		} );
@@ -189,7 +189,7 @@ describe( 'LinkBookmarksView', () => {
 			it( 'so "tab" focuses the next focusable item', () => {
 				expect( view.hasItems ).to.be.equal( true );
 
-				const spy = sinon.spy( view.backButton, 'focus' );
+				const spy = sinon.spy( view.backButtonView, 'focus' );
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					preventDefault: sinon.spy(),
@@ -219,7 +219,7 @@ describe( 'LinkBookmarksView', () => {
 
 				// Mock the back button is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.backButton.element;
+				view.focusTracker.focusedElement = view.backButtonView.element;
 				view.keystrokes.press( keyEvtData );
 
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -249,7 +249,7 @@ describe( 'LinkBookmarksView', () => {
 
 	describe( 'focus()', () => {
 		it( 'focuses the back button when bookmarks list is empty', () => {
-			const backButtonSpy = sinon.spy( view.backButton, 'focus' );
+			const backButtonSpy = sinon.spy( view.backButtonView, 'focus' );
 
 			view.focus();
 
@@ -257,7 +257,7 @@ describe( 'LinkBookmarksView', () => {
 		} );
 
 		it( 'focuses the back button when bookmarks list is not empty', () => {
-			const backButtonSpy = sinon.spy( view.backButton, 'focus' );
+			const backButtonSpy = sinon.spy( view.backButtonView, 'focus' );
 
 			view.listChildren.addMany( bookmarksButtonsArrayMock );
 

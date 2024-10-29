@@ -2456,7 +2456,7 @@ describe( 'LinkUI with Bookmark', () => {
 				.get( 0 ); // button
 
 			bookmarksButton.fire( 'execute' );
-			linkUIFeature.bookmarksView.backButton.fire( 'execute' );
+			linkUIFeature.bookmarksView.backButtonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
 			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
