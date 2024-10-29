@@ -1771,8 +1771,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 		<tr id="themes">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/ui/theme-customization.html">Themes</a>
+				{@link framework/theme-customization Themes}
 			</td>
 			<td>
 				The default theme of CKEditor 5 can be customized to match most visual
@@ -1781,8 +1780,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 		<tr id="ui-library">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/ui-library.html">UI
-					Library</a>
+				{@link framework/architecture/ui-library UI Library}
 			</td>
 			<td>
 				The standard UI library of CKEditor 5 is
