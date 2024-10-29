@@ -333,6 +333,7 @@ export default class LinkUI extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
+
 				// Set focus to the editing view to prevent from losing it while current view is removed.
 				editor.editing.view.focus();
 
@@ -470,11 +471,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		this.listenTo( bookmarksButton, 'execute', () => {
-			this._balloon.add( {
-				view: this.bookmarksView!,
-				position: this._getBalloonPositionData()
-			} );
-			this.bookmarksView!.focus();
+			this._addBookmarksView();
 		} );
 
 		return bookmarksButton;
@@ -604,16 +601,6 @@ export default class LinkUI extends Plugin {
 		}
 
 		const editor = this.editor;
-
-		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
-			// To make bindings works.
-			// Clear the collection of bookmarks.
-			this.bookmarksView!.listChildren.clear();
-
-			// Add bookmarks to the collection.
-			this.bookmarksView!.listChildren.addMany( this._createBookmarksListView() );
-		}
-
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		this.formView!.disableCssTransitions();
@@ -638,6 +625,25 @@ export default class LinkUI extends Plugin {
 		}
 
 		this.formView!.enableCssTransitions();
+	}
+
+	/**
+	 * Adds the {@link #bookmarksView} to the {@link #_balloon}.
+	 */
+	private _addBookmarksView(): void {
+		// To make bindings works.
+		// Clear the collection of bookmarks.
+		this.bookmarksView!.listChildren.clear();
+
+		// Add bookmarks to the collection.
+		this.bookmarksView!.listChildren.addMany( this._createBookmarksListView() );
+
+		this._balloon.add( {
+			view: this.bookmarksView!,
+			position: this._getBalloonPositionData()
+		} );
+
+		this.bookmarksView!.focus();
 	}
 
 	/**
