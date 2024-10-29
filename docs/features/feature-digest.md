@@ -36,15 +36,13 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="full-page-html" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/full-page-html.html">Full page
-					HTML</a>
+				{@link features/full-page-html Full page HTML}
 			</td>
 			<td>
 				Thanks to the full page HTML feature, you can use CKEditor 5 to edit
 				entire HTML pages (from <code>&lt;html&gt;</code> to
 				<code>&lt;/html&gt;</code>), including the page metadata. While the
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html">General
-					HTML Support</a>
+				{@link features/general-html-support General HTML Support}
 				feature focuses on elements inside the content (the document's
 				<code>&lt;body&gt;</code>), this feature enables markup invisible
 				to the end user.
@@ -52,8 +50,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="general-html-support" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html">General
-					HTML Support (GHS)</a>
+				{@link features/general-html-support General HTML Support (GHS)}
 			</td>
 			<td>
 				With the General HTML Support (GHS) feature, developers can enable HTML
@@ -64,21 +61,18 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="html-comment" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-comments.html">HTML comment</a>
+				{@link features/html-comments Html comment}
 			</td>
 			<td class="subfeature">
 				By default, the editor filters out all HTML comments on initialization.
-				The <code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_html-support_htmlcomment-HtmlComment.html"
-				  >HtmlComment</a
-				></code>
+				The <code>{@link features/html-comments Html comment}</code>
 				feature lets developers keep HTML comments in the document without
 				displaying them to the user.
 			</td>
 		</tr>
 		<tr id="html-embed" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html">HTML embed</a>
+				{@link features/html-embed Html embed}
 			</td>
 			<td>
 				The HTML embed feature lets you embed any HTML snippet in your content.
@@ -88,7 +82,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="show-blocks" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">Show blocks</a>
+				{@link features/show-blocks Show blocks}
 			</td>
 			<td>
 				The show blocks feature allows the content creators to visualize all
@@ -99,7 +93,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="source-editing" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html">Source editing</a>
+				{@link features/source-editing Source editing}
 			</td>
 			<td>
 				The source editing feature lets you view and edit the source of your
@@ -121,7 +115,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="block-quotes" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">Block quotes</a>
+				{@link features/block-quote Block quote}
 			</td>
 			<td>
 				The block quote feature lets you easily include block quotations or pull
@@ -131,7 +125,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="headings-paragraph" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Headings/paragraph</a>
+				{@link features/headings Headings/paragraph}
 			</td>
 			<td>
 				The heading feature helps you structure your document by adding headings
@@ -141,7 +135,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="horizontal-line" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">Horizontal line</a>
+				{@link features/horizontal-line Horizontal line}
 			</td>
 			<td>
 				The horizontal line feature lets you visually divide your content into
@@ -151,7 +145,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="block-indentation">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">Block indentation</a>
+				{@link features/indent Block indentation}
 			</td>
 			<td>
 				The block indentation feature lets you set indentation for text blocks
@@ -161,7 +155,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="clipboard">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/clipboard.html">Clipboard</a>
+				{@link framework/deep-dive/clipboard Clipboard}
 			</td>
 			<td>
 				Copy, cut, and paste content within the editor or from external sources.
@@ -169,7 +163,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="code-blocks">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">Code blocks</a>
+				{@link features/code-blocks Code blocks}
 			</td>
 			<td>
 				Supports the insertion and management of preformatted code snippets with
@@ -178,7 +172,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="drag-and-drop">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/drag-drop.html">Drag and drop</a>
+				{@link features/drag-drop Drag and drop}
 			</td>
 			<td>
 				Rearrange elements within a document, including moving text blocks,
@@ -187,7 +181,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-formatting" class="background-blue">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font formatting</a>
+				{@link features/font Font formatting}
 			</td>
 			<td>
 				The font feature lets you change font family, size, and color (including
@@ -196,7 +190,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-background-color" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font background color</a>
+				{@link features/font Font background color}
 			</td>
 			<td>
 				Effortlessly make the words stand out even more with a colored background.
@@ -204,13 +198,13 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-color" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font color</a>
+				{@link features/font Font color}
 			</td>
 			<td>Effortlessly make the letters stand out with their own color.</td>
 		</tr>
 		<tr id="font-family" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font family</a>
+				{@link features/font Font family}
 			</td>
 			<td>
 				Choose from a predefined set of fonts, depending on the type of content
@@ -219,13 +213,13 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-size" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">Font size</a>
+				{@link features/font Font size}
 			</td>
 			<td>Easily control the size of the letters.</td>
 		</tr>
 		<tr id="image" class="background-yellow">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">Image</a>
+				{@link features/images-overview Image}
 			</td>
 			<td>
 				The image feature allows adding images of various kinds to the rich
@@ -237,8 +231,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-all-text" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html">Image
-					alt text</a>
+				{@link features/images-text-alternative Image alt text}
 			</td>
 			<td>
 				Add description text, AKA alternative text, for images. Alt text
@@ -248,8 +241,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-captions" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">Image
-					captions</a>
+				{@link features/images-captions Image captions}
 			</td>
 			<td>
 				Add optional captions for images, which are shown below the picture.
@@ -257,8 +249,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-insert-via-url" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-inserting.html">Image insert
-					via URL</a>
+				{@link features/images-inserting Image insert via URL}
 			</td>
 			<td>
 				You can insert images by uploading them directly from your disk, but you
@@ -268,8 +259,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-linking" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-linking.html">Image
-					linking</a>
+				{@link features/images-linking Image linking}
 			</td>
 			<td>
 				The
@@ -282,8 +272,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-resize" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">Image
-					resize</a>
+				{@link features/images-resizing Image resize}
 			</td>
 			<td>
 				The image resize feature lets you change the width of images in your
@@ -297,7 +286,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-styles" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">Image styles</a>
+				{@link features/images-styles Image styles}
 			</td>
 			<td>
 				The image styles feature lets you adjust the appearance of images. It
@@ -307,12 +296,11 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="image-upload" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">Image
-					upload</a>
+				{@link features/image-upload Image upload}
 			</td>
 			<td>
 				Inserting
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">images</a>
+				{@link features/images-overview images}
 				into content created with CKEditor 5 is quite a common task. In a
 				properly configured rich-text editor, there are several ways for the end
 				user to insert images.
@@ -320,14 +308,12 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="responsive-images" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-responsive.html">Responsive
-					images</a>
+				{@link features/images-responsive Responsive images}
 			</td>
 			<td>
 				The ability to have responsive images in the rich-text editor content is
-				a great modern feature provided by the
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox asset
-					manager</a>. With a single image upload, several optimized versions of that image
+				a great modern feature provided by the {@link features/ckbox CKBox asset manager}.
+				With a single image upload, several optimized versions of that image
 				are created, each for a different size of the display. The CKBox feature
 				produces a <code>&lt;picture&gt;</code> element with a set of optimized
 				images. The browser will automatically load the image with the
@@ -337,7 +323,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="links">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">Links</a>
+				{@link features/link Links}
 			</td>
 			<td>
 				Facilitates the addition of hyperlinks to text, automatically converting
@@ -359,20 +345,18 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="list-indentation" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists">List
-					indentation</a>
+				{@link features/lists-editing#indenting-lists List indentation}
 			</td>
 			<td>
 				Besides controlling
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">text block indentation</a>,
+				{@link features/indent text block indentation},
 				the indent and outdent buttons allow for indenting list items
 				(nesting them).
 			</td>
 		</tr>
 		<tr id="list-start-index" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-start-index">List
-					start index</a>
+				{@link features/lists#list-start-index List start index}
 			</td>
 			<td>
 				The list start index feature allows the user to choose the starting
@@ -383,8 +367,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="list-styles" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles">List
-					styles</a>
+				{@link features/lists#list-styles List styles}
 			</td>
 			<td>
 				The list style feature introduces some more styles for the list item
@@ -399,10 +382,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="multi-level-lists" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html">Multi-level
-					lists<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/multi-level-lists Multi-level lists <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium feature</span></span>}
 			</td>
 			<td>
 				Multi-level lists with the legal style numbering feature allows for easy
@@ -414,19 +394,17 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="nested-lists" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-editing.html#indenting-lists">Nested
-					lists</a>
+				{@link features/lists-editing#indenting-lists Nested lists}
 			</td>
 			<td>
-				Besides controlling
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">text block indentation</a>,
+				Besides controlling {@link features/indent text block indentation},
 				the indent and outdent buttons allow for indenting list items
 				(nesting them).
 			</td>
 		</tr>
 		<tr id="ordered-lists" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">Ordered lists</a>
+				{@link features/lists Ordered lists}
 			</td>
 			<td>
 				The list feature lets you create ordered (numbered) lists. The unique
@@ -438,8 +416,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="reversed-list" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#reversed-list">Reversed
-					list</a>
+				{@link features/lists#reversed-list Reversed list}
 			</td>
 			<td>
 				The reversed list feature lets the user reverse the numbering order of a
@@ -450,19 +427,18 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="to-do-lists" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">To-do lists</a>
+				{@link features/to-do-lists To-do lists}
 			</td>
 			<td>
 				The to-do list feature lets you create a list of interactive checkboxes
-				with labels. It supports all features of
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">bulleted and numbered
-					lists</a>, so you can nest a to-do list together with any combination of other
+				with labels. It supports all features of {@link features/lists bulleted and numbered lists},
+				so you can nest a to-do list together with any combination of other
 				lists.
 			</td>
 		</tr>
 		<tr id="unordered-lists" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">Unordered lists</a>
+				{@link features/lists Unordered lists}
 			</td>
 			<td>
 				The list feature lets you create unordered (bulleted) lists. The unique
@@ -474,9 +450,8 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="mermaid">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mermaid.html">Mermaid<span
-						class="tree__item__badge tree__item__badge_new"
-						data-badge-tooltip="Experimental feature">Exp</span></a>
+				{@link features/mermaid Mermaid <span class="tree__item__badge tree__item__badge_new"
+				data-badge-tooltip="Experimental feature">Exp</span>}
 			</td>
 			<td>
 				You can create flowcharts and diagrams in CKEditor 5 thanks to the
@@ -487,7 +462,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="remove-formatting">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html">Remove formatting</a>
+				{@link features/remove-format Remove formatting}
 			</td>
 			<td>
 				The remove format feature lets you quickly remove any text formatting
@@ -499,7 +474,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="select-all">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html">Select all</a>
+				{@link features/select-all Select all}
 			</td>
 			<td>
 				Enables the selection of all content within the editor with a single
@@ -508,7 +483,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="tables" class="background-blue">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html">Tables</a>
+				{@link features/tables Tables}
 			</td>
 			<td>
 				CKEditor 5 provides robust support for tables, with the ability to merge
@@ -519,8 +494,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="columns-resizing" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-resize.html">Columns
-					resizing</a>
+				{@link features/tables-resize Columns resizing}
 			</td>
 			<td>
 				The
@@ -534,9 +508,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="insert-delete-columns-and-rows" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Insert/delete
-					Columns &amp; Rows</a>
+				{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}
 			</td>
 			<td>
 				The basic table features allow users to insert tables into content, add
@@ -545,9 +517,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="merge-and-split-cells" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Merge
-					&amp; split cells</a>
+				{@link features/tables#table-contextual-toolbar Merge & split cells}
 			</td>
 			<td>
 				The basic table features allow users to insert tables into content, add
@@ -556,8 +526,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="nesting" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#nesting-tables">Nesting</a>
+				{@link features/tables#nesting-tables Nesting}
 			</td>
 			<td>
 				CKEditor 5 allows nesting tables inside other table's cells. This may be
@@ -567,8 +536,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="styling-tables-and-cells" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html">Styling tables
-					&amp; cells</a>
+				{@link features/tables-styling Styling tables & cells}
 			</td>
 			<td>
 				CKEditor 5 comes with some additional tools that help you change the
@@ -578,8 +546,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="table-headers" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#default-table-headers">Table
-					headers</a>
+				{@link features/tables#default-table-headers Table headers}
 			</td>
 			<td>
 				To make every inserted table have <code>n</code> number of rows and
@@ -589,8 +556,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="table-selection" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-selection">Table
-					selection</a>
+				{@link features/tables#table-selection Table selection}
 			</td>
 			<td>
 				The
@@ -608,8 +574,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="tables-caption" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-caption.html">Tables
-					caption</a>
+				{@link features/tables-caption Tables caption}
 			</td>
 			<td>
 				The
@@ -623,7 +588,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="text-alignment">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">Text alignment</a>
+				{@link features/text-alignment Text alignment}
 			</td>
 			<td>
 				Allows the adjustment of text alignment to the left, right, center, or
@@ -632,7 +597,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="text-formatting" class="background-yellow">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Text formatting</a>
+				{@link features/basic-styles Text formatting}
 			</td>
 			<td>
 				CKEditor 5 provides developers with text editing and formatting features
@@ -645,19 +610,19 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="bold" class="background-yellow subfeature">
 			<td>
-				<a href="#">Bold</a>
+				{@link features/basic-styles Bold}
 			</td>
 			<td>Making the letters look like the good time were never gone.</td>
 		</tr>
 		<tr id="code" class="background-yellow subfeature">
 			<td>
-				<a href="#">Code</a>
+				{@link features/basic-styles Code}
 			</td>
 			<td>Snippet look like a terminal from the 1990s movie.</td>
 		</tr>
 		<tr id="highlight" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">Highlight</a>
+				{@link features/highlight Highlight}
 			</td>
 			<td>
 				Highlight makes important content stand out, either with font color or
@@ -666,46 +631,46 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="italic" class="background-yellow subfeature">
 			<td>
-				<a href="#">Italic</a>
+				{@link features/basic-styles Italic}
 			</td>
 			<td>Making the letters look like seashore pines.</td>
 		</tr>
 		<tr id="strikethrough" class="background-yellow subfeature">
 			<td>
-				<a href="#">Strikethrough</a>
+				{@link features/basic-styles Strikethrough}
 			</td>
-			<td>Never mind, won't need it anymore.</td>
+			<td>Never mind, will not need it anymore.</td>
 		</tr>
 		<tr id="styles" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html">Styles</a>
+				{@link features/style Styles}
 			</td>
 			<td>
-				The styles feature lets you easily apply predefines styles available for
+				The styles feature lets you easily apply predefined styles available for
 				block and inline content.
 			</td>
 		</tr>
 		<tr id="subscript" class="background-yellow subfeature">
 			<td>
-				<a href="#">Subscript</a>
+				{@link features/basic-styles Subscript}
 			</td>
 			<td>Fine print at the bottom, like atom numbers.</td>
 		</tr>
 		<tr id="superscript" class="background-yellow subfeature">
 			<td>
-				<a href="#">Superscript</a>
+				{@link features/basic-styles Superscript}
 			</td>
 			<td>Fine print on top, like references in a book.</td>
 		</tr>
 		<tr id="underline" class="background-yellow subfeature">
 			<td>
-				<a href="#">Underline</a>
+				{@link features/basic-styles Underline}
 			</td>
 			<td>Stuff looks important, yo. Or like a link, too.</td>
 		</tr>
 		<tr id="undo-redo">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/undo-redo.html">Undo/redo</a>
+				{@link features/undo-redo Undo/redo}
 			</td>
 			<td>Backtrack or repeat actions for editing purposes.</td>
 		</tr>
