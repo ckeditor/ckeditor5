@@ -34,9 +34,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/linkform.css';
 
 /**
- * The link form view controller class.
- *
- * See {@link module:link/ui/linkformview~LinkFormView}.
+ * The link form view.
  */
 export default class LinkFormView extends View {
 	/**

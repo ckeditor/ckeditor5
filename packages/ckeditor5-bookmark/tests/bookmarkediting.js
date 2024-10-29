@@ -1156,6 +1156,45 @@ describe( 'BookmarkEditing', () => {
 		} );
 	} );
 
+	describe( 'getAllBookmarkNames', () => {
+		it( 'should return all bookmark names', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getAllBookmarkNames() ).is.instanceof( Set );
+			expect( bookmarkEditing.getAllBookmarkNames() ).is.deep.equal( new Set( [ 'foo', 'bar', 'baz' ] ) );
+		} );
+
+		it( 'should return all unique bookmark names', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getAllBookmarkNames() ).is.deep.equal( new Set( [ 'foo', 'bar' ] ) );
+		} );
+	} );
+
 	describe( 'clipboard', () => {
 		let clipboardPlugin, viewDocument;
 
