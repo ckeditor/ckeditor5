@@ -9,6 +9,7 @@ import ComponentFactory from '../../src/componentfactory.js';
 import ToolbarView from '../../src/toolbar/toolbarview.js';
 import TooltipManager from '../../src/tooltipmanager.js';
 import PoweredBy from '../../src/editorui/poweredby.js';
+import EvaluationBadge from '../../src/editorui/evaluationbadge.js';
 import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
 import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src/index.js';
 
@@ -74,6 +75,10 @@ describe( 'EditorUI', () => {
 			expect( ui.poweredBy ).to.be.instanceOf( PoweredBy );
 		} );
 
+		it( 'should create #evaluationBadge', () => {
+			expect( ui.evaluationBadge ).to.be.instanceOf( EvaluationBadge );
+		} );
+
 		it( 'should create the aria live announcer instance', () => {
 			expect( ui.ariaLiveAnnouncer ).to.be.instanceOf( AriaLiveAnnouncer );
 		} );
@@ -132,8 +137,8 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should reset editables array', () => {
-			ui.setEditableElement( 'foo', {} );
-			ui.setEditableElement( 'bar', {} );
+			ui.setEditableElement( 'foo', document.createElement( 'div' ) );
+			ui.setEditableElement( 'bar', document.createElement( 'div' ) );
 
 			expect( [ ...ui.getEditableElementsNames() ] ).to.deep.equal( [ 'foo', 'bar' ] );
 
@@ -193,6 +198,14 @@ describe( 'EditorUI', () => {
 
 		it( 'should destroy #poweredBy', () => {
 			const destroySpy = sinon.spy( ui.poweredBy, 'destroy' );
+
+			ui.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy #evaluationBadge', () => {
+			const destroySpy = sinon.spy( ui.evaluationBadge, 'destroy' );
 
 			ui.destroy();
 
@@ -530,13 +543,13 @@ describe( 'EditorUI', () => {
 				} );
 
 				describe( 'for a ToolbarView that has already been rendered', () => {
-					it( 'adds ToolbarView#element to the EditorUI#focusTracker', () => {
+					it( 'adds ToolbarView to the EditorUI#focusTracker', () => {
 						const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
 						toolbar.render();
 
 						ui.addToolbar( toolbar );
 
-						sinon.assert.calledOnce( spy );
+						sinon.assert.calledOnceWithExactly( spy, toolbar );
 					} );
 
 					it( 'adds ToolbarView#element to Editor#keystokeHandler', () => {
@@ -559,7 +572,7 @@ describe( 'EditorUI', () => {
 						await new Promise( resolve => {
 							toolbar.once( 'render', () => {
 								sinon.assert.calledOnce( spy );
-								sinon.assert.calledOnce( spy2 );
+								sinon.assert.calledOnceWithExactly( spy2, toolbar );
 
 								resolve();
 							} );

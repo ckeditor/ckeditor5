@@ -7,7 +7,7 @@
  * @module link/linkui
  */
 
-import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
+import { Plugin, icons, type Editor, icons } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -26,11 +26,13 @@ import {
 	type ViewWithCssTransitionDisabler,
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
+
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
+import LinkBookmarksView from './ui/linkbookmarksview.js';
 import LinkAdvancedView from './ui/linkadvancedview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
 import type LinkCommand from './linkcommand.js';
@@ -68,6 +70,11 @@ export default class LinkUI extends Plugin {
 	 * The form view displayed inside the balloon.
 	 */
 	public formView: LinkFormView & ViewWithCssTransitionDisabler | null = null;
+
+	/**
+	 * The view displaying bookmarks list.
+	 */
+	public bookmarksView: LinkBookmarksView | null = null;
 
 	/**
 	 * The form view displaying advanced link settings.
@@ -179,6 +186,10 @@ export default class LinkUI extends Plugin {
 		if ( this.toolbarView ) {
 			this.toolbarView.destroy();
 		}
+
+		if ( this.bookmarksView ) {
+			this.bookmarksView.destroy();
+		}
 	}
 
 	/**
@@ -188,6 +199,11 @@ export default class LinkUI extends Plugin {
 		this.toolbarView = this._createToolbarView();
 		this.formView = this._createFormView();
 		this.advancedView = this._createAdvancedView();
+
+		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
+			this.bookmarksView = this._createBookmarksView();
+			this.formView.listChildren.add( this._createBookmarksButton() );
+		}
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
@@ -243,10 +259,6 @@ export default class LinkUI extends Plugin {
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
 
-		if ( editor.plugins.has( 'BookmarkEditing' ) ) {
-			formView.listChildren.add( this._createBookmarksButton() );
-		}
-
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// TODO: Bind to the "Displayed text" input
@@ -257,8 +269,8 @@ export default class LinkUI extends Plugin {
 		// Disable the "save" button if the command is disabled.
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
-		// Enable the "Advanced" button only when there are manual decorators.
-		formView.settingsButtonView.bind( 'isEnabled' ).to( linkCommand, 'manualDecorators', decorators => decorators.length > 0 );
+		// Show the "Advanced" button only when there are manual decorators.
+		formView.settingsButtonView.bind( 'isVisible' ).to( linkCommand, 'manualDecorators', decorators => decorators.length > 0 );
 
 		// Change the "Save" button label depending on the command state.
 		formView.saveButtonView.bind( 'label' ).to( linkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
@@ -302,6 +314,63 @@ export default class LinkUI extends Plugin {
 		} );
 
 		return formView;
+	}
+
+	/**
+	 * Creates a sorted array of buttons with bookmark names.
+	 */
+	private _createBookmarksListView(): Array<ButtonView> {
+		const editor = this.editor;
+		const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+		const bookmarksNames = Array.from( bookmarkEditing.getAllBookmarkNames() );
+
+		bookmarksNames.sort( ( a, b ) => a.localeCompare( b ) );
+
+		return bookmarksNames.map( bookmarkName => {
+			const buttonView = new ButtonView();
+
+			buttonView.set( {
+				label: bookmarkName,
+				tooltip: false,
+				icon: icons.bookmark,
+				withText: true
+			} );
+
+			buttonView.on( 'execute', () => {
+				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
+
+				// Set focus to the editing view to prevent from losing it while current view is removed.
+				editor.editing.view.focus();
+
+				this._removeBookmarksView();
+
+				// Set the focus to the URL input field.
+				this.formView!.focus();
+			} );
+
+			return buttonView;
+		} );
+	}
+
+	/**
+	 * Creates a view for bookmarks.
+	 */
+	private _createBookmarksView(): LinkBookmarksView {
+		const editor = this.editor;
+		const view = new LinkBookmarksView( editor.locale );
+
+		// Hide the panel after clicking the "Cancel" button.
+		this.listenTo( view, 'cancel', () => {
+			// Set focus to the editing view to prevent from losing it while current view is removed.
+			editor.editing.view.focus();
+
+			this._removeBookmarksView();
+
+			// Set the focus to the URL input field.
+			this.formView!.focus();
+		} );
+
+		return view;
 	}
 
 	/**
@@ -483,6 +552,10 @@ export default class LinkUI extends Plugin {
 			label: t( 'Bookmarks' )
 		} );
 
+		this.listenTo( bookmarksButton, 'execute', () => {
+			this._addBookmarksView();
+		} );
+
 		return bookmarksButton;
 	}
 
@@ -638,6 +711,24 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Adds the {@link #bookmarksView} to the {@link #_balloon}.
+	 */
+	private _addBookmarksView(): void {
+		// Clear the collection of bookmarks.
+		this.bookmarksView!.listChildren.clear();
+
+		// Add bookmarks to the collection.
+		this.bookmarksView!.listChildren.addMany( this._createBookmarksListView() );
+
+		this._balloon.add( {
+			view: this.bookmarksView!,
+			position: this._getBalloonPositionData()
+		} );
+
+		this.bookmarksView!.focus();
+	}
+
+	/**
 	 * Closes the form view. Decides whether the balloon should be hidden completely or if the action view should be shown. This is
 	 * decided upon the link command value (which has a value if the document selection is in the link).
 	 *
@@ -665,6 +756,15 @@ export default class LinkUI extends Plugin {
 	private _removeAdvancedView(): void {
 		if ( this._isAdvancedInPanel ) {
 			this._balloon.remove( this.advancedView! );
+		}
+	}
+
+	/**
+	 * Removes the {@link #bookmarksView} from the {@link #_balloon}.
+	 */
+	private _removeBookmarksView(): void {
+		if ( this._areBookmarksInPanel ) {
+			this._balloon.remove( this.bookmarksView! );
 		}
 	}
 
@@ -759,7 +859,10 @@ export default class LinkUI extends Plugin {
 
 		// TODO: Remove dynamically registered views
 
-		// Remove the advanced form view first because it's on top of the stack.
+		// If the bookmarks view is visible, remove it because it can be on top of the stack.
+		this._removeBookmarksView();
+
+		// If the advanced form view is visible, remove it because it can be on top of the stack.
 		this._removeAdvancedView();
 
 		// Then remove the form view because it's beneath the advanced form.
@@ -837,6 +940,13 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Returns `true` when {@link #bookmarksView} is in the {@link #_balloon}.
+	 */
+	private get _areBookmarksInPanel(): boolean {
+		return !!this.bookmarksView && this._balloon.hasView( this.bookmarksView );
+	}
+
+	/**
 	 * Returns `true` when {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isFormInPanel(): boolean {
@@ -875,18 +985,27 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView}, {@link #toolbarView} or {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #bookmarksView} is in the {@link #_balloon} and it is
+	 * currently visible.
 	 */
-	private get _isUIInPanel(): boolean {
-		return this._isAdvancedInPanel || this._isFormInPanel || this._isToolbarInPanel;
+	private get _areBookmarksVisible(): boolean {
+		return !!this.bookmarksView && this._balloon.visibleView === this.bookmarksView;
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView}, {@link #toolbarView} or {@link #formView} is in the {@link #_balloon}
-	 * and it is currently visible.
+	 * Returns `true` when {@link #advancedView}, {@link #toolbarView}, {@link #bookmarksView}
+	 * or {@link #formView} is in the {@link #_balloon}.
+	 */
+	private get _isUIInPanel(): boolean {
+		return this._isAdvancedInPanel || this._areBookmarksInPanel || this._isFormInPanel || this._isToolbarInPanel;
+	}
+
+	/**
+	 * Returns `true` when {@link #advancedView}, {@link #bookmarksView}, {@link #actionsView}
+	 * or {@link #formView} is in the {@link #_balloon} and it is currently visible.
 	 */
 	private get _isUIVisible(): boolean {
-		return this._isAdvancedVisible || this._isFormVisible || this._isToolbarVisible;
+		return this._isAdvancedVisible || this._areBookmarksVisible || this._isFormVisible || this._isToolbarVisible;
 	}
 
 	/**

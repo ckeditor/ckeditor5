@@ -47,18 +47,21 @@ This means that if you did not enable, for instance, {@link features/font font f
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, PasteFromOffice } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ PasteFromOffice, /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Support for other applications
 

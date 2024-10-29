@@ -31,19 +31,25 @@ You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</k
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
-import { TodoList } from 'ckeditor5';
+import { ClassicEditor, TodoList } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TodoList, /* ... */ ],
 		toolbar: [ 'todoList', /* ... */ ],
+		list: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Related features
 

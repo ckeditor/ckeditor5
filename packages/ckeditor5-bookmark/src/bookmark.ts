@@ -15,7 +15,7 @@ import BookmarkEditing from './bookmarkediting.js';
 /**
  * The bookmark feature.
  *
- * For a detailed overview, check the {@glink features/bookmark Bookmark} feature guide.
+ * For a detailed overview, check the {@glink features/bookmarks Bookmarks} feature guide.
  */
 export default class Bookmark extends Plugin {
 	/**

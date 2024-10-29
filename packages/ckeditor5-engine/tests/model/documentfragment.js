@@ -262,6 +262,29 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
+	describe( 'getChildAtOffset', () => {
+		it( 'should return child at given offset', () => {
+			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+
+			const p = frag.getChild( 0 );
+			const textBAR = frag.getChild( 1 );
+			const h = frag.getChild( 2 );
+
+			expect( frag.getChildAtOffset( 0 ) ).to.equal( p );
+			expect( frag.getChildAtOffset( 1 ) ).to.equal( textBAR );
+			expect( frag.getChildAtOffset( 2 ) ).to.equal( textBAR );
+			expect( frag.getChildAtOffset( 3 ) ).to.equal( textBAR );
+			expect( frag.getChildAtOffset( 4 ) ).to.equal( h );
+		} );
+
+		it( 'should return null for incorrect offset', () => {
+			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+
+			expect( frag.getChildAtOffset( -1 ) ).to.be.null;
+			expect( frag.getChildAtOffset( 5 ) ).to.be.null;
+		} );
+	} );
+
 	describe( 'getChildCount', () => {
 		it( 'should return number of children nodes', () => {
 			const frag = new DocumentFragment( new Text( 'bar' ) );

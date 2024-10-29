@@ -10,11 +10,11 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
-import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView, LabelView, BalloonPanelView } from '@ckeditor/ckeditor5-ui';
+import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView, BalloonPanelView } from '@ckeditor/ckeditor5-ui';
+import { icons } from '@ckeditor/ckeditor5-core';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { icons } from '@ckeditor/ckeditor5-core';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import BookmarkFormView from '../src/ui/bookmarkformview.js';
@@ -22,8 +22,9 @@ import BookmarkEditing from '../src/bookmarkediting.js';
 import BookmarkUI from '../src/bookmarkui.js';
 
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
+import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview.js';
 
-import bookmarkIcon from '../theme/icons/bookmark.svg';
+const bookmarkIcon = icons.bookmark;
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, widgetToolbarRepository, toolbarView;

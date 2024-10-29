@@ -141,6 +141,15 @@ describe( 'DropdownMenuNestedMenuView', () => {
 			sinon.assert.calledWithExactly( focusTrackerAddSpy.secondCall, menuView.panelView.element );
 		} );
 
+		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		it( 'should add the #listView to the focus tracker to allow for linking focus trackers and sharing state of nested menus', () => {
+			const focusTrackerAddSpy = sinon.spy( menuView.focusTracker, 'add' );
+
+			menuView.render();
+
+			sinon.assert.calledWithExactly( focusTrackerAddSpy.thirdCall, menuView.listView );
+		} );
+
 		it( 'should start listening to keystrokes', () => {
 			const keystrokeHandlerAddSpy = sinon.spy( menuView.keystrokes, 'listenTo' );
 

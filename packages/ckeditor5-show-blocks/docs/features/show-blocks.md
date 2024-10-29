@@ -26,22 +26,22 @@ Toggle the block elements visibility with the show block {@icon @ckeditor/ckedit
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, ShowBlocks } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ ShowBlocks, /* ... */ ],
-
-		// Display the "Show blocks" button in the toolbar.
 		toolbar: [ 'showBlocks', /* ... */ ],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box info>
 	Read more about {@link getting-started/setup/configuration installing plugins} and {@link getting-started/setup/toolbar toolbar configuration}.

@@ -42,7 +42,8 @@ ClassicEditor
 					feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ]
 				}
 			]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

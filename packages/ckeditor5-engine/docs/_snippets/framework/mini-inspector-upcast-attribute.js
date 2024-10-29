@@ -27,7 +27,8 @@ function Image( editor ) {
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-upcast-attribute' ), {
 	plugins: [ Essentials, Image ],
-	toolbar: []
+	toolbar: [],
+	licenseKey: 'GPL'
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(

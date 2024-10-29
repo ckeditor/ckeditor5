@@ -50,7 +50,8 @@ ClassicEditor
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;
