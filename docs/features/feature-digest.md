@@ -1110,10 +1110,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 	<tbody>
 		<tr id="ai-assistant">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-overview.html">AI
-					Assistant<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/ai-assistant-overview AI Assistant
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The AI Assistant feature enhances editing efficiency and creativity with
@@ -1133,17 +1133,17 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="autoformatting" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">Autoformatting</a>
+				{@link features/autoformat Autoformatting}
 			</td>
 			<td>
 				Use <strong>Autoformatting </strong>to get Markdown-like shortcodes for
 				quick formatting without needing to navigate through toolbar buttons or
-				drop-down menus. This feature caters to the most common formatting needs.
+				dropdown menus. This feature caters to the most common formatting needs.
 			</td>
 		</tr>
 		<tr id="autolink" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html#autolink-feature">Autolink</a>
+				{@link features/link#autolink-feature Autolink}
 			</td>
 			<td>
 				With <strong>Autolink</strong>, typing or pasting URLs and email
@@ -1154,8 +1154,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="automatic-text-transformation" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">Automatic text
-					transformations</a>
+				{@link features/text-transformation Automatic text transformations}
 			</td>
 			<td>
 				The <strong>Automatic Text Transformation </strong>autocorrects or
@@ -1168,7 +1167,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="autosave" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/autosave.html">Autosave</a>
+				{@link features/autosave Autosave}
 			</td>
 			<td>
 				The <strong>Autosave </strong>feature guarantees that your work is never
@@ -1179,9 +1178,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="case-change">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html">Case change<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/case-change Case change
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Case Change feature simplifies adjusting text cases within a
@@ -1196,7 +1196,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="find-and-replace">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">Find and replace</a>
+				{@link features/find-and-replace Find and replace}
 			</td>
 			<td>
 				The Find and Replace feature in CKEditor 5's Productivity tools
@@ -1207,9 +1207,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="format-painter">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html">Format painter<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/format-painter Format painter
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Format Painter feature lets users clone formatting from one section
@@ -1223,8 +1224,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="keyboard-shortcuts">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html#keyboard-shortcuts">Keyboard
-					shortcuts</a>
+				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}
 			</td>
 			<td>
 				CKEditor 5 supports various keyboard shortcuts that boost productivity
@@ -1233,9 +1233,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="mathtype">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">MathType<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/math-equations MathType
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Math Equations allows you to add properly formatted mathematical
@@ -1249,9 +1250,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="merge-fields">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">Merge fields<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/merge-fields Merge fields
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Merge Fields allows the inclusion of placeholders in your content,
@@ -1264,8 +1266,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="paste-from-google-docs">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste
-					from Google Docs</a>
+				{@link features/paste-from-google-docs Paste from Google Docs}
 			</td>
 			<td>
 				Paste from Office features let you paste content from Microsoft Word and
@@ -1275,8 +1276,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="paste-from-office">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html">Paste from
-					Office</a>
+				{@link features/paste-from-office Paste from Office}
 			</td>
 			<td>
 				Paste from Office features let you paste content from Microsoft Word and
@@ -1286,10 +1286,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="paste-from-office-enhanced">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html">Paste
-					from Office Enhanced<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/paste-from-office-enhanced Paste from Office Enhanced
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Enhanced Paste from Word/Excel feature accurately retains formatting
@@ -1301,8 +1301,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="paste-plain-text">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-plain-text.html">Paste plain
-					text</a>
+				{@link features/paste-plain-text Paste plain text}
 			</td>
 			<td>
 				The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text
@@ -1313,9 +1312,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="slash-commands">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html">Slash commands<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/slash-commands Slash commands
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Slash Commands feature lets users insert block elements and apply
@@ -1329,8 +1329,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="special-characters">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">Special
-					characters</a>
+				{@link features/special-characters Special characters}
 			</td>
 			<td>
 				Insert a variety of unique symbols and characters into your document
@@ -1345,9 +1344,10 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="templates">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/template.html">Templates<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/template Templates
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The Templates feature enables the insertion of predefined content structures
