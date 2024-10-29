@@ -24,7 +24,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 	<tbody>
 		<tr id="advanced-html-editing" class="background-blue">
 			<td>
-				<a href="#">Advanced HTML Editing</a>
+				{@link features/full-page-html Advanced HTML Editing}
 			</td>
 			<td>
 				Advanced HTML Editing provides general HTML support, offering detailed
@@ -102,7 +102,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="block-formatting" class="background-yellow">
 			<td>
-				<a href="#">Block formatting</a>
+				{@link features/block-quote Block formatting}
 			</td>
 			<td>
 				Block Formatting allows for the organization and emphasis of content
@@ -327,7 +327,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="lists" class="background-blue">
 			<td>
-				<a href="#">Lists</a>
+				{@link features/lists Lists}
 			</td>
 			<td>
 				Lists allow the creation and management of various list types, including
@@ -692,9 +692,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="local-data-storage" class="background-blue subfeature">
 			<td>
-				<a href="#">Local data storage<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/collaboration Local data storage
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				In asynchronous collaboration, data is maintained on the client's
@@ -784,9 +785,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="co-authoring" class="background-blue subfeature">
 			<td>
-				<a href="#">Co-authoring<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/collaboration Co-authoring
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>Multiple user real-time editing and content creation feature.</td>
 		</tr>
@@ -882,7 +884,10 @@ Collaborate also regarding different formats. With content conversions, you can 
 	<tbody>
 		<tr id="content-generation" class="background-blue">
 			<td>
-				<a href="#">Content generation</a>
+				{@link features/export-pdf Content generation
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</td>
 		</tr>
@@ -1003,7 +1008,7 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 		<tr id="page-utilities" class="background-yellow">
 			<td>
-				<a href="#">Page utilities</a>
+				{@link features/minimap Page utilities}
 			</td>
 			<td>
 				CKEditor 5 Page Utilities enables users to dictate the structuring and
@@ -1104,7 +1109,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="automation" class="background-blue">
 			<td>
-				<a href="#">Automation</a>
+				{@link features/autoformat Automation}
 			</td>
 			<td>Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!
 			</td>
@@ -1456,7 +1461,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="toolbar-and-menus" class="background-blue">
 			<td>
-				<a href="#">Toolbar and menus</a>
+				{@link getting-started/setup/toolbar Toolbar and menus}
 			</td>
 			<td>
 				The Toolbar Configuration feature provides different toolbar interfaces
@@ -1471,7 +1476,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="balloon-toolbar" class="background-blue subfeature">
 			<td>
-				<a href="#">Balloon toolbar</a>
+				{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
 			</td>
 			<td>
 				The block toolbar provides an additional configurable toolbar on the
