@@ -290,8 +290,12 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 		super.render();
 
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<DialogViewCloseEvent>( 'close', { source: 'escKeyPress' } );
-			cancel();
+			// Do not react to the Esc key if the event has already been handled and defaultPrevented
+			// by some logic of the dialog guest (child) view (https://github.com/ckeditor/ckeditor5/issues/17343).
+			if ( !data.defaultPrevented ) {
+				this.fire<DialogViewCloseEvent>( 'close', { source: 'escKeyPress' } );
+				cancel();
+			}
 		} );
 
 		// Support for dragging the modal.

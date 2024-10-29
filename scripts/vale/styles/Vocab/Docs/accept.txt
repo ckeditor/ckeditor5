@@ -47,6 +47,7 @@ embeddable
 Embedly
 ESLint
 exportPdf
+exportWord
 [Ff]ocusable
 formatter
 Gantt
