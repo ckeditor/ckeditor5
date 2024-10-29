@@ -100,7 +100,7 @@ describe( 'LinkBookmarksView', () => {
 
 			view.backButtonView.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy.calledOnce );
+			sinon.assert.calledOnce( spy );
 		} );
 
 		describe( 'template', () => {
@@ -135,7 +135,7 @@ describe( 'LinkBookmarksView', () => {
 
 			view.keystrokes.press( keyEvtData );
 
-			sinon.assert.calledOnce( spy.calledOnce );
+			sinon.assert.calledOnce( spy );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
