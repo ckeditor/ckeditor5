@@ -191,6 +191,11 @@ export default class LinkUI extends Plugin {
 		this.formView = this._createFormView();
 		this.advancedView = this._createAdvancedView();
 
+		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
+			this.bookmarksView = this._createBookmarksView();
+			this.formView.listChildren.add( this._createBookmarksButton() );
+		}
+
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
 	}
@@ -248,12 +253,6 @@ export default class LinkUI extends Plugin {
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
-
-		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
-			this.bookmarksView = this._createBookmarksView();
-
-			formView.listChildren.add( this._createBookmarksButton() );
-		}
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
