@@ -16,6 +16,7 @@ In this guide, a [classic–like](https://www.npmjs.com/package/@ckeditor/ckedit
 
 The editor types, such as the {@link getting-started/setup/editor-types#classic-editor classic} or {@link getting-started/setup/editor-types#inline-editor inline editor}, have a dedicated default user interface and a theme. However, only a limited subset of features is required to create an editor instance bound to a Bootstrap UI. You need to import them first:
 
+<code-switcher>
 ```js
 // Basic classes to create an editor.
 import {
@@ -47,6 +48,7 @@ import {
 	HeadingEditing
 } from 'ckeditor5';
 ```
+</code-switcher>
 
 <info-box info>
 	Note that instead of {@link module:basic-styles/bold~Bold}, which loads the default bold UI and bold editing feature, just the {@link module:basic-styles/bold/boldediting~BoldEditing} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.

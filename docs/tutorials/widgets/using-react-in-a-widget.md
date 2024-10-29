@@ -11,8 +11,10 @@ In this tutorial, you will learn how to implement an editor plugin that uses the
 
 Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products. The application will allow the user to insert the product into the editor content by clicking it on the list.
 
+If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+
 <info-box>
-	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+	If you want to use this tutorial with CDN, follow the steps in the [Adapt this tutorial to CDN](#adapt-this-tutorial-to-cdn) section.
 </info-box>
 
 <!-- TODO: dynamic controls in React to change the appearance of the widget https://github.com/ckeditor/ckeditor5-widget/issues/81 -->
@@ -21,7 +23,7 @@ Later on, you will use the "Product preview" feature to build a simple React app
 
 There are a couple of things you should know before you start:
 
-* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link getting-started/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to use it in your project is a good place to start.
+* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link getting-started/integrations/react-default-npm **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to use it in your project is a good place to start.
 * In this tutorial, you are going to implement a block editor widget and that itself could give you a headache. It is recommended to at least skim through the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API, and possible use cases.
 * Various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
@@ -347,7 +349,7 @@ export default function ProductPreview( props ) {
 
 At the moment, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` component.
 
-You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link getting-started/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
+You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link getting-started/integrations/react-default-npm official `<CKEditor>` React component} on the left side, and the list of available products on the right.
 
 Have a look at the full source code of the `App` function:
 
@@ -438,6 +440,7 @@ export default function App( props ) {
 						editor={ ClassicEditor }
 						// The configuration of the <CKEditor> instance.
 						config={ {
+							licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 							plugins: [
 								// A set of editor features to be enabled and made available to the user.
 								Essentials, Heading, Bold, Italic, Underline,
@@ -462,7 +465,7 @@ export default function App( props ) {
 								]
 							},
 							// The configuration of the Products plugin. It specifies a function that will allow
-            				// the editor to render a React <ProductPreview> component inside a product widget.
+							// the editor to render a React <ProductPreview> component inside a product widget.
 							products: {
 								productRenderer: ( id, domElement ) => {
 									const product = props.products.find( product => product.id === id );
@@ -477,10 +480,10 @@ export default function App( props ) {
 						data={ editorData }
 						onReady={ ( editor ) => {
 							// A function executed when the editor has been initialized and is ready.
-    						// It synchronizes the initial data state and saves the reference to the editor instance.
+							// It synchronizes the initial data state and saves the reference to the editor instance.
 							setEditorRef( editor );
 							// CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
-        					// data layers. Use it to debug the application and learn more about the editor.
+							// data layers. Use it to debug the application and learn more about the editor.
 							CKEditorInspector.attach( editor );
 						} }
 						onChange={ ( evt, editor ) => {
@@ -737,3 +740,51 @@ cd final-project
 npm install
 npm run dev
 ```
+
+## Adapt this tutorial to CDN
+
+If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
+
+First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 Framework – tutorial CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello world!</p>
+		</div>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+
+		<script type="module" src="/main.js"></script>
+	</body>
+</html>
+```
+
+The CSS file contains the editor and content styles. Consequentially, you do not need to import styles into your JavaScript file.
+
+```js
+// Before:
+import 'ckeditor5/ckeditor5.css';
+
+// After:
+// No need to import the styles.
+```
+
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR`. You can use it in your project to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
+
+```js
+// Before:
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+
+// After:
+const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
+```
+
+After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.

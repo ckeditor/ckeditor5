@@ -71,18 +71,24 @@ You may find interesting details and usage examples in the [Automatic text trans
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, TextTransformation } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextTransformation, /* ... */ ],
+		typing: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring transformations
 
@@ -101,6 +107,7 @@ For instance, to use the transformations from the "quotes" and "typography" grou
 ```js
 ClassicEditor
 	.create( editorElement, {
+		// ... Other configuration options ...
 		typing: {
 			transformations: {
 				include: [
@@ -125,6 +132,7 @@ Another example, removing some transformations and adding some extra ones:
 ```js
 ClassicEditor
 	.create( editorElement, {
+		// ... Other configuration options ...
 		typing: {
 			transformations: {
 				remove: [

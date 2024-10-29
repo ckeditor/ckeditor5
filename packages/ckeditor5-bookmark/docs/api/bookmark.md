@@ -10,11 +10,11 @@ This package implements bookmark support for CKEditor&nbsp;5.
 
 ## Demo
 
-Check out the {@link features/bookmark#demo demo in the block quote feature guide}.
+Check out the {@link features/bookmarks#demo demo in the bookmarks feature guide}.
 
 ## Documentation
 
-See the {@link features/bookmark bookmark feature guide} and the {@link module:block-quote/blockquote~BlockQuote} plugin documentation.
+See the {@link features/bookmarks bookmarks feature guide} and the {@link module:bookmark/bookmark~Bookmark} plugin documentation.
 
 ## Installation
 

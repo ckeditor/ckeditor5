@@ -80,7 +80,7 @@ export {
 	type CollectionRemoveEvent
 } from './collection.js';
 export { default as first } from './first.js';
-export { default as FocusTracker } from './focustracker.js';
+export { default as FocusTracker, type ViewWithFocusTracker, isViewWithFocusTracker } from './focustracker.js';
 export { default as KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
 export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
 export { default as toMap } from './tomap.js';
@@ -91,8 +91,9 @@ export { default as spliceArray } from './splicearray.js';
 
 export { default as uid } from './uid.js';
 export { default as delay, type DelayedFunc } from './delay.js';
-export { default as verifyLicense } from './verifylicense.js';
 export { default as wait } from './wait.js';
+export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
+export { default as crc32, type CRCData } from './crc32.js';
 
 export * from './unicode.js';
 

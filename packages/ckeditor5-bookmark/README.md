@@ -9,11 +9,11 @@ This package contains the bookmark feature for CKEditor&nbsp;5. It allows to add
 
 ## Demo
 
-Check out the [demo in the bookmark feature](https://ckeditor.com/docs/ckeditor5/latest/features/bookmark.html#demo) guide.
+Check out the [demo in the bookmark feature](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html#demo) guide.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-bookmark` package](https://ckeditor.com/docs/ckeditor5/latest/api/bookmark.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [bookmark](https://ckeditor.com/docs/ckeditor5/latest/features/bookmark.html) feature guide.
+See the [`@ckeditor/ckeditor5-bookmark` package](https://ckeditor.com/docs/ckeditor5/latest/api/bookmark.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [bookmark](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html) feature guide.
 
 ## Installation
 

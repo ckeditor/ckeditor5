@@ -32,13 +32,15 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
@@ -49,18 +51,17 @@ ClassicEditor
 
 			tableProperties: {
 				// The configuration of the TableProperties plugin.
-				// ...
 			},
 
 			tableCellProperties: {
 				// The configuration of the TableCellProperties plugin.
-				// ...
 			}
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring styling tools
 
@@ -118,8 +119,7 @@ const customColorPalette = [
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		// ... Other configuration options ...
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells',

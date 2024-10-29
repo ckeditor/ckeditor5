@@ -935,7 +935,7 @@ export interface PoweredByConfig {
 	 *
 	 * @default 'border'
 	 */
-	position: 'inside' | 'border';
+	position?: 'inside' | 'border';
 
 	/**
 	 * Allows choosing the side of the editing area where the logo will be displayed.
@@ -945,7 +945,7 @@ export interface PoweredByConfig {
 	 *
 	 * @default 'right'
 	 */
-	side: 'left' | 'right';
+	side?: 'left' | 'right';
 
 	/**
 	 * Allows changing the label displayed next to the CKEditor logo.
@@ -954,7 +954,7 @@ export interface PoweredByConfig {
 	 *
 	 * @default 'Powered by'
 	 */
-	label: string | null;
+	label?: string | null;
 
 	/**
 	 * The vertical distance the logo can be moved away from its default position.
@@ -963,14 +963,14 @@ export interface PoweredByConfig {
 	 *
 	 * @default 5
 	 */
-	verticalOffset: number;
+	verticalOffset?: number;
 
 	/**
 	 * The horizontal distance between the side of the editing root and the nearest side of the logo.
 	 *
 	 * @default 5
 	 */
-	horizontalOffset: number;
+	horizontalOffset?: number;
 
 	/**
 	 * Allows to show the logo even if the valid commercial license is configured using

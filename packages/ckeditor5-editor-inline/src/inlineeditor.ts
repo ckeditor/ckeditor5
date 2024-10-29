@@ -31,6 +31,13 @@ import { isElement as _isElement } from 'lodash-es';
  */
 export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
+	 * @inheritdoc
+	 */
+	public static override get editorName(): 'InlineEditor' {
+		return 'InlineEditor';
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public readonly ui: InlineEditorUI;
