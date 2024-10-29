@@ -9,10 +9,15 @@
 
 module.exports = {
 	extends: 'ckeditor5',
+	parserOptions: {
+		ecmaVersion: 'latest',
+		sourceType: 'module'
+	},
 	ignorePatterns: [
 		// The CKEditor 5 core DLL build is created from JavaScript files.
 		// ESLint should not process compiled TypeScript.
-		'src/*.js'
+		'src/*.js',
+		'**/*.d.ts'
 	],
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error',
@@ -32,6 +37,23 @@ module.exports = {
 		]
 	},
 	overrides: [
+		{
+			files: [ './packages/*/src/**/*.ts' ],
+			rules: {
+				'ckeditor5-rules/ckeditor-plugin-flags': [
+					'error',
+					{
+						requiredFlags: [
+							{
+								name: 'isOfficialPlugin',
+								returnValue: true
+							}
+						],
+						disallowedFlags: [ 'isPremiumPlugin' ]
+					}
+				]
+			}
+		},
 		{
 			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {

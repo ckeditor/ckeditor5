@@ -23,7 +23,16 @@ export default class NodeList implements Iterable<Node> {
 	private _nodes: Array<Node> = [];
 
 	/**
-	 * Creates an empty node list.
+	 * This array maps numbers (offsets) to node that is placed at that offset.
+	 *
+	 * This array is similar to `_nodes` with the difference that one node may occupy multiple consecutive items in the array.
+	 *
+	 * This array is needed to quickly retrieve a node that is placed at given offset.
+	 */
+	private _offsetToNode: Array<Node> = [];
+
+	/**
+	 * Creates a node list.
 	 *
 	 * @internal
 	 * @param nodes Nodes contained in this node list.
@@ -54,7 +63,7 @@ export default class NodeList implements Iterable<Node> {
 	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes contained inside this node list.
 	 */
 	public get maxOffset(): number {
-		return this._nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
+		return this._offsetToNode.length;
 	}
 
 	/**
@@ -65,39 +74,35 @@ export default class NodeList implements Iterable<Node> {
 	}
 
 	/**
-	 * Returns an index of the given node. Returns `null` if given node is not inside this node list.
+	 * Gets the node at the given offset. Returns `null` if incorrect offset was passed.
 	 */
-	public getNodeIndex( node: Node ): number | null {
-		const index = this._nodes.indexOf( node );
-
-		return index == -1 ? null : index;
+	public getNodeAtOffset( offset: number ): Node | null {
+		return this._offsetToNode[ offset ] || null;
 	}
 
 	/**
-	 * Returns the starting offset of given node. Starting offset is equal to the sum of
-	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
+	 * Returns an index of the given node or `null` if given node does not have a parent.
+	 *
+	 * This is an alias to {@link module:engine/model/node~Node#index}.
+	 */
+	public getNodeIndex( node: Node ): number | null {
+		return node.index;
+	}
+
+	/**
+	 * Returns the offset at which given node is placed in its parent or `null` if given node does not have a parent.
+	 *
+	 * This is an alias to {@link module:engine/model/node~Node#startOffset}.
 	 */
 	public getNodeStartOffset( node: Node ): number | null {
-		const index = this.getNodeIndex( node );
-
-		if ( index === null ) {
-			return null;
-		}
-
-		let sum = 0;
-
-		for ( let i = 0; i < index; i++ ) {
-			sum += this._nodes[ i ].offsetSize;
-		}
-
-		return sum;
+		return node.startOffset;
 	}
 
 	/**
 	 * Converts index to offset in node list.
 	 *
-	 * Returns starting offset of a node that is at given index. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link #length}.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `model-nodelist-index-out-of-bounds` if given index is less
+	 * than `0` or more than {@link #length}.
 	 */
 	public indexToOffset( index: number ): number {
 		if ( index == this._nodes.length ) {
@@ -121,21 +126,17 @@ export default class NodeList implements Iterable<Node> {
 	/**
 	 * Converts offset in node list to index.
 	 *
-	 * Returns index of a node that occupies given offset. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link #maxOffset}.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `model-nodelist-offset-out-of-bounds` if given offset is less
+	 * than `0` or more than {@link #maxOffset}.
 	 */
 	public offsetToIndex( offset: number ): number {
-		let totalOffset = 0;
-
-		for ( const node of this._nodes ) {
-			if ( offset >= totalOffset && offset < totalOffset + node.offsetSize ) {
-				return this.getNodeIndex( node )!;
-			}
-
-			totalOffset += node.offsetSize;
+		if ( offset == this._offsetToNode.length ) {
+			return this._nodes.length;
 		}
 
-		if ( totalOffset != offset ) {
+		const node = this._offsetToNode[ offset ];
+
+		if ( !node ) {
 			/**
 			 * Given offset cannot be found in the node list.
 			 *
@@ -152,7 +153,7 @@ export default class NodeList implements Iterable<Node> {
 			);
 		}
 
-		return this.length;
+		return this.getNodeIndex( node )!;
 	}
 
 	/**
@@ -175,7 +176,22 @@ export default class NodeList implements Iterable<Node> {
 			}
 		}
 
-		this._nodes = spliceArray<Node>( this._nodes, Array.from( nodes ), index, 0 );
+		const nodesArray = Array.from( nodes );
+		const offsetsArray = makeOffsetsArray( nodesArray );
+
+		let offset = this.indexToOffset( index );
+
+		// Splice nodes array and offsets array into the nodelist.
+		this._nodes = spliceArray<Node>( this._nodes, nodesArray, index, 0 );
+		this._offsetToNode = spliceArray<Node>( this._offsetToNode, offsetsArray, offset, 0 );
+
+		// Refresh indexes and offsets for nodes inside this node list. We need to do this for all inserted nodes and all nodes after them.
+		for ( let i = index; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
 	}
 
 	/**
@@ -187,7 +203,32 @@ export default class NodeList implements Iterable<Node> {
 	 * @returns Array containing removed nodes.
 	 */
 	public _removeNodes( indexStart: number, howMany: number = 1 ): Array<Node> {
-		return this._nodes.splice( indexStart, howMany );
+		if ( howMany == 0 ) {
+			return [];
+		}
+
+		// Remove nodes from this nodelist.
+		let offset = this.indexToOffset( indexStart );
+		const nodes = this._nodes.splice( indexStart, howMany );
+
+		const lastNode = nodes[ nodes.length - 1 ];
+		const removedOffsetSum = lastNode.startOffset! + lastNode.offsetSize - offset;
+		this._offsetToNode.splice( offset, removedOffsetSum );
+
+		// Reset index and start offset properties for the removed nodes -- they do not have a parent anymore.
+		for ( const node of nodes ) {
+			node._index = null;
+			node._startOffset = null;
+		}
+
+		for ( let i = indexStart; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
+
+		return nodes;
 	}
 
 	/**
@@ -199,4 +240,21 @@ export default class NodeList implements Iterable<Node> {
 	public toJSON(): unknown {
 		return this._nodes.map( node => node.toJSON() );
 	}
+}
+
+/**
+ * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~NodeList#_offsetToNode}, i.e. one node will
+ * occupy multiple items if its offset size is greater than one.
+ */
+function makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
+	const offsets: Array<Node> = [];
+
+	for ( const node of nodes ) {
+		const start = offsets.length;
+
+		offsets.length += node.offsetSize;
+		offsets.fill( node, start );
+	}
+
+	return offsets;
 }

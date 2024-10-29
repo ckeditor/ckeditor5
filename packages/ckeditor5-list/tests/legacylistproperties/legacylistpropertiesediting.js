@@ -27,6 +27,14 @@ describe( 'LegacyListPropertiesEditing', () => {
 		expect( LegacyListPropertiesEditing.pluginName ).to.equal( 'LegacyListPropertiesEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyListPropertiesEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyListPropertiesEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'config', () => {
 		beforeEach( () => {
 			return VirtualTestEditor

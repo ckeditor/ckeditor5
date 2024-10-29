@@ -56,7 +56,6 @@
 	"Align table to the right": "The label used by assistive technologies describing a button that aligns the table to the right.",
 	"The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\".": "The localized error string that can be displayed next to color (background, border) fields that have an invalid value",
 	"The value is invalid. Try \"10px\" or \"2em\" or simply \"2\".": "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.",
-	"Color picker": "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.).",
 	"Enter table caption": "The placeholder text for the table caption displayed when the caption is empty.",
 	"Keystrokes that can be used in a table cell": "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.",
 	"Move the selection to the next cell": "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell.",

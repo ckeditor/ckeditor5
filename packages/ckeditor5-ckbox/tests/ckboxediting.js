@@ -61,6 +61,14 @@ describe( 'CKBoxEditing', () => {
 		expect( CKBoxEditing.pluginName ).to.equal( 'CKBoxEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CKBoxEditing ) ).to.be.instanceOf( CKBoxEditing );
 	} );

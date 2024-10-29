@@ -48,6 +48,14 @@ describe( 'CKFinderUploadAdapter', () => {
 		}
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKFinderUploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKFinderUploadAdapter.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CKFinderUploadAdapter ) ).to.be.instanceOf( CKFinderUploadAdapter );
 	} );

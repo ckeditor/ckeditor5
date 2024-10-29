@@ -73,6 +73,14 @@ describe( 'CKBoxUI', () => {
 		expect( CKBoxUI.pluginName ).to.equal( 'CKBoxUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should not add the "ckbox" component to the factory if the "ckbox" command does not exist', async () => {
 		delete window.CKBox;
 

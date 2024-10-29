@@ -34,4 +34,11 @@ export default class Bold extends Plugin {
 	public static get pluginName() {
 		return 'Bold' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }
