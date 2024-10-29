@@ -46,6 +46,8 @@ draggable
 embeddable
 Embedly
 ESLint
+exportPdf
+exportWord
 [Ff]ocusable
 formatter
 Gantt
@@ -68,6 +70,7 @@ Kulykov
 Laravel
 Lesha
 Libre
+licenseKey
 localizable
 Lodash
 lorem

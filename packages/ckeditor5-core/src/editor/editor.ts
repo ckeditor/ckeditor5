@@ -497,6 +497,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						editor: collectUsageData( editor )
 					};
 
+					/**
+					 * This part of the code is not executed in open-source implementations using a GPL key.
+					 * It only runs when a specific license key is provided. If you are uncertain whether
+					 * this applies to your installation, please contact our support team.
+					 */
 					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
 						const { status, message } = response;
 
@@ -561,8 +566,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				const segments = hostname.split( '.' );
 
 				return licensedHosts
+					// Filter out hosts without wildcards.
 					.filter( host => host.includes( '*' ) )
+					// Split the hosts into segments.
 					.map( host => host.split( '.' ) )
+					// Filter out hosts that have more segments than the current hostname.
+					.filter( host => host.length <= segments.length )
+					// Pad the beginning of the licensed host if it's shorter than the current hostname.
+					.map( host => Array( segments.length - host.length ).fill( host[ 0 ] === '*' ? '*' : '' ).concat( host ) )
+					// Check if some license host matches the hostname.
 					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 		}
@@ -1013,6 +1025,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this._showLicenseError = () => {};
 	}
 
+	/**
+	 * This part of the code is not executed in open-source implementations using a GPL key.
+	 * It only runs when a specific license key is provided. If you are uncertain whether
+	 * this applies to your installation, please contact our support team.
+	 */
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
 		const headers = new Headers( { 'Content-Type': 'application/json' } );
 		const response = await fetch( new URL( endpoint ), {

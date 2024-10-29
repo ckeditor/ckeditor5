@@ -301,6 +301,28 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'getChildAtOffset', () => {
+		it( 'should return child at given offset', () => {
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const p = element.getChild( 0 );
+			const bar = element.getChild( 1 );
+			const h = element.getChild( 2 );
+
+			expect( element.getChildAtOffset( 0 ) ).to.equal( p );
+			expect( element.getChildAtOffset( 1 ) ).to.equal( bar );
+			expect( element.getChildAtOffset( 2 ) ).to.equal( bar );
+			expect( element.getChildAtOffset( 3 ) ).to.equal( bar );
+			expect( element.getChildAtOffset( 4 ) ).to.equal( h );
+		} );
+
+		it( 'should return null for incorrect offset', () => {
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+
+			expect( element.getChildAtOffset( -1 ) ).to.be.null;
+			expect( element.getChildAtOffset( 5 ) ).to.be.null;
+		} );
+	} );
+
 	describe( 'getChildCount', () => {
 		it( 'should return number of children', () => {
 			const element = new Element( 'elem', [], new Text( 'bar' ) );

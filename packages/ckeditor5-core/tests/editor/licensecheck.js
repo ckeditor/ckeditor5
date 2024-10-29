@@ -104,6 +104,11 @@ describe( 'Editor - license check', () => {
 						name: 'wildcard subdomain match',
 						hostname: 'subdomain.example.com',
 						licensedHost: '*.example.com'
+					},
+					{
+						name: 'wildcard nested subdomain match',
+						hostname: 'nested.subdomain.example.com',
+						licensedHost: '*.example.com'
 					}
 				],
 				fail: [
@@ -141,6 +146,21 @@ describe( 'Editor - license check', () => {
 						name: 'missing subdomain',
 						hostname: 'subdomain.example.com',
 						licensedHost: 'example.com'
+					},
+					{
+						name: 'missing nested subdomain without wildcard',
+						hostname: 'nested.subdomain.example.com',
+						licensedHost: 'subdomain.example.com'
+					},
+					{
+						name: 'licensed host allowing only more nested subdomains',
+						hostname: 'subdomain.example.com',
+						licensedHost: '*.*.example.com'
+					},
+					{
+						name: 'subdomain wildcards matching entire hostname in length',
+						hostname: 'example.com',
+						licensedHost: '*.*.example.com'
 					}
 				]
 			};
