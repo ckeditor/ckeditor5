@@ -242,11 +242,11 @@ export default class LinkUI extends Plugin {
 			formView.listChildren.add( this._createBookmarksButton() );
 		}
 
+		formView.displayedTextInputView.fieldView.bind( 'value' ).to( linkCommand, 'text' );
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
-		// TODO: Bind to the "Displayed text" input
-
 		// Form elements should be read-only when corresponding commands are disabled.
+		formView.displayedTextInputView.bind( 'isEnabled' ).to( linkCommand, 'canHaveDisplayedText' );
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 		// Disable the "save" button if the command is disabled.
@@ -260,12 +260,16 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			// TODO: Does this need updating after adding the "Displayed text" input?
 			if ( formView.isValid() ) {
 				const { value } = formView.urlInputView.fieldView.element!;
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
 
-				editor.execute( 'link', parsedUrl, this._getDecoratorSwitchesState() );
+				editor.execute(
+					'link',
+					parsedUrl,
+					formView.displayedTextInputView.fieldView.element!.value,
+					this._getDecoratorSwitchesState()
+				);
 
 				this._closeFormView();
 			}
@@ -538,12 +542,13 @@ export default class LinkUI extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
+		// Make sure that each time the panel shows up, the fields remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays
 		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
+		this.formView!.displayedTextInputView.fieldView.value = linkCommand.text || '';
 		this.formView!.urlInputView.fieldView.value = linkCommand.value || '';
 
 		// Select input when form view is currently visible.
@@ -594,7 +599,8 @@ export default class LinkUI extends Plugin {
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
 			this.formView!.saveButtonView.focus();
 
-			// Reset the URL field to update the state of the submit button.
+			// Reset fields to update the state of the submit button.
+			this.formView!.displayedTextInputView.fieldView.reset();
 			this.formView!.urlInputView.fieldView.reset();
 
 			this._balloon.remove( this.formView! );

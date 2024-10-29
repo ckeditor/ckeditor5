@@ -7,7 +7,7 @@
  * @module link/linkcommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
 import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine.js';
@@ -29,6 +29,22 @@ export default class LinkCommand extends Command {
 	declare public value: string | undefined;
 
 	/**
+	 * The text of the link.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public text: string | undefined;
+
+	/**
+	 * Indicates whether the current selection allows for "the displayed text".
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public canHaveDisplayedText: boolean;
+
+	/**
 	 * A collection of {@link module:link/utils/manualdecorator~ManualDecorator manual decorators}
 	 * corresponding to the {@link module:link/linkconfig~LinkConfig#decorators decorator configuration}.
 	 *
@@ -41,6 +57,16 @@ export default class LinkCommand extends Command {
 	 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
 	 */
 	public readonly automaticDecorators = new AutomaticDecorators();
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.set( 'text', '' );
+		this.set( 'canHaveDisplayedText', false );
+	}
 
 	/**
 	 * Synchronizes the state of {@link #manualDecorators} with the currently present elements in the model.
@@ -68,6 +94,12 @@ export default class LinkCommand extends Command {
 			this.value = selection.getAttribute( 'linkHref' ) as string | undefined;
 			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
 		}
+
+		const attributeRange = findAttributeRange( selection.getFirstPosition()!, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+		const items = Array.from( attributeRange.getItems() );
+
+		this.canHaveDisplayedText = items.length > 0 && items.every( item => item.is( '$text' ) || item.is( '$textProxy' ) );
+		this.text = this.canHaveDisplayedText && extractTextFromSelection( selection ) || '';
 
 		for ( const manualDecorator of this.manualDecorators ) {
 			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
@@ -139,9 +171,14 @@ export default class LinkCommand extends Command {
 	 * @param href Link destination.
 	 * @param manualDecoratorIds The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
+	public override execute(
+		href: string,
+		displayedText: string,
+		manualDecoratorIds: Record<string, boolean> = {}
+	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const linkText = ( this.canHaveDisplayedText ? displayedText : extractTextFromSelection( selection ) ) || href;
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
@@ -161,13 +198,9 @@ export default class LinkCommand extends Command {
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
-					const linkText = extractTextFromSelection( selection );
 					// Then update `linkHref` value.
-					let linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-
-					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
-						linkRange = this._updateLinkContent( model, writer, linkRange, href );
-					}
+					const attributeRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+					const linkRange = this._updateLinkContent( model, writer, attributeRange, linkText );
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
@@ -194,7 +227,7 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
+					const { end: positionAfter } = model.insertContent( writer.createText( linkText, attributes ), position );
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
@@ -235,13 +268,8 @@ export default class LinkCommand extends Command {
 					let linkRange = range;
 
 					if ( rangesToUpdate.length === 1 ) {
-						// Current text of the link in the document.
-						const linkText = extractTextFromSelection( selection );
-
-						if ( selection.getAttribute( 'linkHref' ) === linkText ) {
-							linkRange = this._updateLinkContent( model, writer, range, href );
-							writer.setSelection( writer.createSelection( linkRange ) );
-						}
+						linkRange = this._updateLinkContent( model, writer, range, linkText );
+						writer.setSelection( writer.createSelection( linkRange ) );
 					}
 
 					writer.setAttribute( 'linkHref', href, linkRange );
