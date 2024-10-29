@@ -136,12 +136,15 @@ export function parseKeystroke( keystroke: string | ReadonlyArray<number | strin
  * environment–specific keystroke, i.e. `"⌘A"` on macOS.
  *
  * @param keystroke The keystroke text.
+ * @param [forcedEnv] The environment to force the key translation to. If not provided, the current environment is used.
  * @returns The keystroke text specific for the environment.
  */
-export function getEnvKeystrokeText( keystroke: string ): string {
+export function getEnvKeystrokeText( keystroke: string, forcedEnv?: 'PC' | 'Mac' ): string {
 	let keystrokeCode = parseKeystroke( keystroke );
 
-	const modifiersToGlyphs = Object.entries( ( env.isMac || env.isiOS ) ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
+	const isMac = forcedEnv ? forcedEnv === 'Mac' : env.isMac || env.isiOS;
+
+	const modifiersToGlyphs = Object.entries( isMac ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
 
 	const modifiers = modifiersToGlyphs.reduce( ( modifiers, [ name, glyph ] ) => {
 		// Modifier keys are stored as a bit mask so extract those from the keystroke code.
