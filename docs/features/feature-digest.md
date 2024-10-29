@@ -910,10 +910,10 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="export-to-pdf" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html">Export to
-					PDF<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/export-pdf Export to PDF
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Create a PDF from in-editor content seamlessly. Customize headers and
@@ -923,10 +923,10 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="export-to-word" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html">Export to
-					Word<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/export-word Export to Word
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Instantly convert content from the editor to a Word document with a
@@ -937,10 +937,10 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="import-from-word" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/import-word/import-word.html">Import
-					from Word<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+					{@link features/import-word Import from Word
+						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+						<span class="tree__item__badge__text">Premium feature</span></span>
+					}
 			</td>
 			<td>
 				Effortlessly transform Word documents into clean HTML within CKEditor 5
@@ -950,7 +950,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="markdown-output">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html">Markdown output</a>
+				{@link features/markdown Markdown output}
 			</td>
 			<td>
 				Enable Markdown as the default output format instead of HTML with the
@@ -961,7 +961,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="media-embed">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">Media embed</a>
+				{@link features/media-embed Media embed}
 			</td>
 			<td>
 				Use the insert media button in the toolbar to embed media.
@@ -971,9 +971,9 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="paste-markdown">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html">Paste
-					Markdown<span class="tree__item__badge tree__item__badge_new"
-						data-badge-tooltip="Experimental feature">Exp</span></a>
+				{@link features/paste-markdown Paste Markdown 
+					<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>
+				}
 			</td>
 			<td>
 				The paste Markdown feature lets users paste Markdown-formatted content
