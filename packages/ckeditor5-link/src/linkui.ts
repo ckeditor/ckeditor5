@@ -631,7 +631,6 @@ export default class LinkUI extends Plugin {
 	 * Adds the {@link #bookmarksView} to the {@link #_balloon}.
 	 */
 	private _addBookmarksView(): void {
-		// To make bindings works.
 		// Clear the collection of bookmarks.
 		this.bookmarksView!.listChildren.clear();
 
