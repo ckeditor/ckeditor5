@@ -1026,8 +1026,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * This part of the code is not executed in open-source implementations using a GPL key.
-	 * It only runs when a specific license key is provided. If you are uncertain whether
+	 * This part of the code is _not_ executed in installations under the GPL license (with `config.licenseKey = 'GPL'`).
+     * 
+	 * It is only executed when a specific license key is provided. If you are uncertain whether
 	 * this applies to your installation, please contact our support team.
 	 */
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
