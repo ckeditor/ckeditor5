@@ -382,7 +382,10 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="multi-level-lists" class="background-blue subfeature">
 			<td>
-				{@link features/multi-level-lists Multi-level lists <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium feature</span></span>}
+				{@link features/multi-level-lists Multi-level lists
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Multi-level lists with the legal style numbering feature allows for easy
@@ -427,7 +430,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="to-do-lists" class="background-blue subfeature">
 			<td>
-				{@link features/to-do-lists To-do lists}
+				{@link features/todo-lists To-do lists}
 			</td>
 			<td>
 				The to-do list feature lets you create a list of interactive checkboxes
@@ -691,10 +694,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 	<tbody>
 		<tr id="asynchronous-collaboration" class="background-blue">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html">Asynchronous
-					collaboration<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/collaboration Asynchronous collaboration
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Asynchronous Collaboration in CKEditor 5 is designed for teams using a
@@ -716,9 +719,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="comments" class="background-yellow">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/comments Comments
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Users can add side notes to marked fragments of the document, including
@@ -728,10 +732,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="comments-archive" class="background-yellow subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments
-					archive<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/comments Comments archive
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Comments threads can be either deleted or resolved. The latter provides
@@ -744,11 +748,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="comments-outside-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-outside-editor.html">Comments
-					outside editor<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/comments-outside-editor Comments outside editor
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premiumfeature</span></span>
+				}
 			</td>
 			<td>
 				The comments feature API, together with
@@ -761,11 +764,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="sidebar-modes" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
-					modes<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/annotations-display-mode Sidebar modes
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				There are three built-in UIs to display comment threads and suggestion
@@ -777,7 +779,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="mentions">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mentions</a>
+				{@link features/mentions Mentions}
 			</td>
 			<td>
 				The mention feature supports smart autocompletion triggered by user
@@ -787,11 +789,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="real-time-collaboration" class="background-blue">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">Real-time
-					collaboration<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/collaboration Real-time collaboration Real-time Collaboration
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Real-Time Collaboration in CKEditor 5 is designed for users who are
@@ -829,11 +830,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="revision-history">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html">Revision
-					history<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/revision-history Revision history
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The revision history feature is a document versioning tool. It allows
@@ -846,11 +846,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="track-changes" class="background-yellow">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">Track
-					changes<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/track-changes Track changes
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The track changes feature brings automatic suggestion marking for the
@@ -861,11 +860,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="sidebar-modes" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html">Sidebar
-					modes<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/annotations-display-mode Sidebar modes}
 			</td>
 			<td>
 				There are three built-in UIs to display comment threads and suggestion
@@ -877,10 +872,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="users-list-and-permissions">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/users.html">Users list and
-					permissions<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+				{@link features/users Users list and permissions
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The
