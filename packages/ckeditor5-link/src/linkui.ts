@@ -252,7 +252,7 @@ export default class LinkUI extends Plugin {
 		// Disable the "save" button if the command is disabled.
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
-		// Enable the "Advanced" button only when there are manual decorators.
+		// Show the "Advanced" button only when there are manual decorators.
 		formView.settingsButtonView.bind( 'isVisible' ).to( linkCommand, 'manualDecorators', decorators => decorators.length > 0 );
 
 		// Change the "Save" button label depending on the command state.
