@@ -2348,6 +2348,12 @@ describe( 'LinkUI with Bookmark', () => {
 
 		expect( linkUIFeature.formView ).to.be.instanceOf( LinkFormView );
 		expect( button ).to.be.instanceOf( LinkButtonView );
+
+		expect( linkUIFeature._areBookmarksVisible ).to.be.false;
+
+		button.fire( 'execute' );
+
+		expect( linkUIFeature._areBookmarksVisible ).to.be.true;
 	} );
 
 	describe( '_createBookmarksView()', () => {
@@ -2374,17 +2380,8 @@ describe( 'LinkUI with Bookmark', () => {
 				);
 
 				linkUIFeature._showUI();
+				linkUIFeature._addBookmarksView();
 
-				const formView = linkUIFeature.formView;
-				const button = formView
-					.template.children[ 0 ]
-					.last // ul
-					.template.children[ 0 ]
-					.get( 0 ) // li
-					.template.children[ 0 ]
-					.get( 0 ); // button
-
-				button.fire( 'execute' );
 				bookmarksView = linkUIFeature.bookmarksView;
 			} );
 
@@ -2446,16 +2443,8 @@ describe( 'LinkUI with Bookmark', () => {
 
 			linkUIFeature._showUI();
 			linkUIFeature.listenTo( linkUIFeature.bookmarksView, 'cancel', spy );
+			linkUIFeature._addBookmarksView();
 
-			const bookmarksButton = linkUIFeature.formView
-				.template.children[ 0 ]
-				.last // ul
-				.template.children[ 0 ]
-				.get( 0 ) // li
-				.template.children[ 0 ]
-				.get( 0 ); // button
-
-			bookmarksButton.fire( 'execute' );
 			linkUIFeature.bookmarksView.backButtonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
@@ -2466,16 +2455,7 @@ describe( 'LinkUI with Bookmark', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
-
-			const bookmarksButton = linkUIFeature.formView
-				.template.children[ 0 ]
-				.last // ul
-				.template.children[ 0 ]
-				.get( 0 ) // li
-				.template.children[ 0 ]
-				.get( 0 ); // button
-
-			bookmarksButton.fire( 'execute' );
+			linkUIFeature._addBookmarksView();
 
 			linkUIFeature.bookmarksView.keystrokes.press( {
 				keyCode: keyCodes.esc,
@@ -2492,16 +2472,8 @@ describe( 'LinkUI with Bookmark', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
+			linkUIFeature._addBookmarksView();
 
-			const bookmarksButton = linkUIFeature.formView
-				.template.children[ 0 ]
-				.last // ul
-				.template.children[ 0 ]
-				.get( 0 ) // li
-				.template.children[ 0 ]
-				.get( 0 ); // button
-
-			bookmarksButton.fire( 'execute' );
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			sinon.assert.calledWithExactly( spy );
