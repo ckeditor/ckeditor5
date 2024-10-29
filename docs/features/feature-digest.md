@@ -1374,8 +1374,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 	<tbody>
 		<tr id="editor-placeholder">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html">Editor
-					placeholder</a>
+				{@link features/editor-placeholder Editor placeholder}
 			</td>
 			<td>
 				You can prompt the user to input content by displaying a configurable
@@ -1386,8 +1385,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="editor-ui-types" class="background-yellow">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html">Editor UI
-					types</a>
+				{@link getting-started/setup/editor-types Editor UI types}
 			</td>
 			<td>
 				The editor's user interface is dependent on the editor types. The editor
@@ -1398,9 +1396,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="balloon-block-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor">Balloon
-					block editor</a>
+				{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
 			</td>
 			<td>
 				Balloon block is essentially the balloon editor with an extra block
@@ -1411,9 +1407,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="balloon-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#balloon-editor-and-balloon-block-editor">Balloon
-					editor</a>
+				{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
 			</td>
 			<td>
 				Balloon editor is similar to inline editor. The difference between them
@@ -1423,9 +1417,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="classic-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#classic-editor">Classic
-					editor</a>
+				{@link getting-started/setup/editor-types#classic-editor Classic editor}
 			</td>
 			<td>
 				Classic editor is what most users traditionally learned to associate
@@ -1436,9 +1428,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="decoupled-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#decoupled-editor-document">Decoupled
-					editor</a>
+				{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}
 			</td>
 			<td>
 				The document editor focuses on a rich-text editing experience similar to
@@ -1449,9 +1439,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="inline-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#inline-editor">Inline
-					editor</a>
+				{@link getting-started/setup/editor-types#inline-editor Inline editor}
 			</td>
 			<td>
 				The inline editor comes with a floating toolbar that becomes visible
@@ -1464,9 +1452,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="multi-root-editor" class="background-yellow subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#multi-root-editor">Multi-root
-					editor</a>
+				{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
 			</td>
 			<td>
 				The multi-root editor is an editor type that features multiple, separate
@@ -1479,8 +1465,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="professionally-translated-language-packs">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/ui-language.html">Professionally
-					translated language packs</a>
+				{@link getting-started/setup/ui-language Professionally translated language packs}
 			</td>
 			<td>
 				CKEditor 5 provides 38 professionally translated language options, along
@@ -1518,8 +1503,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="block-toolbar" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#block-toolbar">Block
-					toolbar</a>
+				{@link getting-started/setup/toolbar#block-toolbar Block toolbar}
 			</td>
 			<td>
 				The block toolbar provides an additional configurable toolbar on the
@@ -1529,9 +1513,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="classic-toolbar" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#main-editor-toolbar">Classic
-					toolbar</a>
+				{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}
 			</td>
 			<td>
 				The toolbar is the most basic user interface element of CKEditor 5 that
@@ -1542,17 +1524,13 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="collapsible-toolbar" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#extended-toolbar-configuration-format">Collapsible
-					toolbar</a>
+				{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}
 			</td>
 			<td>Collapsible toolbar for UI space efficiency.</td>
 		</tr>
 		<tr id="image-contextual-toolbar" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">Image
-					contextual toolbar</a>
+				{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}
 			</td>
 			<td>
 				The
@@ -1563,23 +1541,19 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				plugin introduces a contextual toolbar for images. The toolbar appears
 				when an image is selected and can be configured to contain any buttons
 				you want. Usually, these will be image-related options, such as the
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-text-alternative.html">text
-					alternative</a>
+				{@link features/images-text-alternative text alternative}
 				button, the
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">image
-					caption</a>
+				{@link features/images-captions image caption}
 				button, and
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">image styles</a>
+				{@link features/images-styles image styles}
 				buttons. The toolbar can also host the image editing button introduced
-				by the
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox asset
-					manager</a>. Shown below is an example contextual toolbar with an extended set of
-				buttons.
+				by the {@link features/ckbox CKBox asset manager}.
+				Shown below is an example contextual toolbar with an extended set of buttons.
 			</td>
 		</tr>
 		<tr id="menu-bar" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/menubar.html">Menu bar</a>
+				{@link getting-started/setup/menubar Menu bar}
 			</td>
 			<td>
 				The menu bar is a user interface component that gives you access to all features provided by the editor,
@@ -1593,25 +1567,19 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="multiline-toolbar" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#multiline-wrapping-toolbar">Multiline
-					toolbar</a>
+				{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}
 			</td>
 			<td>Multiline toolbar for easy access to all functions.</td>
 		</tr>
 		<tr id="nesting-toolbars-in-dropdowns" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#grouping-toolbar-items-in-dropdowns-nested-toolbars">Nesting
-					toolbars in dropdowns</a>
+				{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}
 			</td>
 			<td>Nested toolbars for space efficiency and task-oriented access.</td>
 		</tr>
 		<tr id="sidebar-annotations-bar" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/annotations/annotations-display-mode.html#wide-sidebar">Sidebar
-					/ annotations bar</a>
+				{@link features/annotations-display-mode#wide-sidebar Wide sidebar}
 			</td>
 			<td>
 				There are three built-in UIs to display comment threads and suggestion
@@ -1623,9 +1591,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="table-contextual-toolbar" class="background-blue subfeature">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-contextual-toolbar">Table
-					contextual toolbar</a>
+				{@link features/tables#table-contextual-toolbar Table contextual toolbar}
 			</td>
 			<td>
 				The
@@ -1641,7 +1607,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="watchdog">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html">Watchdog</a>
+				{@link features/watchdog Watchdog}
 			</td>
 			<td>
 				The watchdog utility protects you from data loss in case the editor
