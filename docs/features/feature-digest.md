@@ -263,10 +263,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_link_linkimage-LinkImage.html"
-				  >LinkImage</a
-				></code>
+				<code>{@link module:link/linkimage~LinkImage}</code>
 				plugin lets you use images as links.
 			</td>
 		</tr>
@@ -277,10 +274,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				The image resize feature lets you change the width of images in your
 				content. It is implemented by the
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageresize-ImageResize.html"
-				  >ImageResize</a
-				></code>
+				<code>{@link module:image/imageresize~ImageResize}</code>
 				plugin.
 			</td>
 		</tr>
@@ -372,8 +366,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			<td>
 				The list style feature introduces some more styles for the list item
 				markers. When
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/api/module_list_listconfig-ListPropertiesConfig.html#member-styles">enabled</a>,
+				{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled},
 				it adds 3 styles for unordered lists and 6 styles for ordered lists
 				to choose from. The user will be able to set or change the list style
 				via the dropdown. It opens when you click the arrow next to the
@@ -501,10 +494,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecolumnresize-TableColumnResize.html"
-				  >TableColumnResize</a
-				></code>
+				<code>{@link module:table/tablecolumnresize~TableColumnResize}</code>
 				plugin lets you resize tables and individual table columns. It gives you
 				complete control over column width.
 			</td>
@@ -563,10 +553,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tableselection-TableSelection.html"
-				  >TableSelection</a
-				></code>
+				<code>{@link module:table/tableselection~TableSelection}</code>
 				plugin introduces support for the custom selection system for tables
 				that lets you:• Select an arbitrary rectangular table fragment – a
 				few cells from different rows, a column (or a few of them) or a row (or
@@ -581,10 +568,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tablecaption-TableCaption.html"
-				  >TableCaption</a
-				></code>
+				<code>{@link module:table/tablecaption~TableCaption}</code>
 				plugin lets you add captions to your tables. Table captions also improve
 				accessibility as they are recognized by screen readers.
 			</td>
@@ -755,10 +739,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 			</td>
 			<td>
 				The comments feature API, together with
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html"
-				  >Context</a
-				></code>, lets you create deeper integrations with your application. One such
+				<code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such
 				integration is enabling comments on non-editor form fields.
 			</td>
 		</tr>
@@ -879,10 +860,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_collaboration-core_users-Users.html"
-				  >Users</a
-				></code>
+				<code>{@link module:collaboration-core/users~Users}</code>
 				plugin and related plugins let you manage user data and permissions.
 				This is essential when many users are working on the same document.
 			</td>
@@ -1534,10 +1512,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagetoolbar-ImageToolbar.html"
-				  >ImageToolbar</a
-				></code>
+				<code>{@link module:image/imagetoolbar~ImageToolbar}</code>
 				plugin introduces a contextual toolbar for images. The toolbar appears
 				when an image is selected and can be configured to contain any buttons
 				you want. Usually, these will be image-related options, such as the
@@ -1595,10 +1570,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			</td>
 			<td>
 				The
-				<code><a
-				  href="https://ckeditor.com/docs/ckeditor5/latest/api/module_table_tabletoolbar-TableToolbar.html"
-				  >TableToolbar</a
-				></code>
+				<code>{@link module:table/tabletoolbar~TableToolbar}</code>
 				plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is
 				selected and contains various table-related buttons. These would typically include adding or removing
 				columns and rows and merging or splitting cells. If these features are configured, the toolbar will also
@@ -1808,9 +1780,7 @@ Upload and manage your files using file management features. Take advantage of C
 	<tbody>
 		<tr id="base64-upload-adapter">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">Base
-					64 Upload Adapter</a>
+				{@link features/base64-upload-adapter Base64 Upload Adapter}
 			</td>
 			<td>
 				Convert inserted images into Base64-encoded strings in the editor
@@ -1820,9 +1790,10 @@ Upload and manage your files using file management features. Take advantage of C
 		</tr>
 		<tr id="ckbox">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/ckbox CKBox
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery
@@ -1835,9 +1806,10 @@ Upload and manage your files using file management features. Take advantage of C
 		</tr>
 		<tr id="ckfinder">
 			<td>
-				<a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckfinder.html">CKFinder<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link features/ckfinder CKFinder
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				The CKFinder feature lets you insert images and links to files into your
@@ -1847,9 +1819,7 @@ Upload and manage your files using file management features. Take advantage of C
 		</tr>
 		<tr id="custom-upload-adapter">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html#implementing-your-own-upload-adapter">Custom
-					Upload Adapter</a>
+				{@link features/image-upload#implementing-your-own-upload-adapter Custom Upload Adapter}
 			</td>
 			<td>
 				Have your own file management solution? Use this adapter to integrate
@@ -1858,9 +1828,7 @@ Upload and manage your files using file management features. Take advantage of C
 		</tr>
 		<tr id="simple-upload-adapter">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/simple-upload-adapter.html">Simple
-					Upload Adapter</a>
+				{@link features/simple-upload-adapter Simple Upload Adapter}
 			</td>
 			<td>
 				Upload images to your server using the <code>XMLHttpRequest</code> API with a
