@@ -137,8 +137,8 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should reset editables array', () => {
-			ui.setEditableElement( 'foo', {} );
-			ui.setEditableElement( 'bar', {} );
+			ui.setEditableElement( 'foo', document.createElement( 'div' ) );
+			ui.setEditableElement( 'bar', document.createElement( 'div' ) );
 
 			expect( [ ...ui.getEditableElementsNames() ] ).to.deep.equal( [ 'foo', 'bar' ] );
 
@@ -543,13 +543,13 @@ describe( 'EditorUI', () => {
 				} );
 
 				describe( 'for a ToolbarView that has already been rendered', () => {
-					it( 'adds ToolbarView#element to the EditorUI#focusTracker', () => {
+					it( 'adds ToolbarView to the EditorUI#focusTracker', () => {
 						const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
 						toolbar.render();
 
 						ui.addToolbar( toolbar );
 
-						sinon.assert.calledOnce( spy );
+						sinon.assert.calledOnceWithExactly( spy, toolbar );
 					} );
 
 					it( 'adds ToolbarView#element to Editor#keystokeHandler', () => {
@@ -572,7 +572,7 @@ describe( 'EditorUI', () => {
 						await new Promise( resolve => {
 							toolbar.once( 'render', () => {
 								sinon.assert.calledOnce( spy );
-								sinon.assert.calledOnce( spy2 );
+								sinon.assert.calledOnceWithExactly( spy2, toolbar );
 
 								resolve();
 							} );

@@ -266,6 +266,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 						class: [
 							'ck',
 							'ck-dialog',
+							bind.if( 'isModal', 'ck-dialog_modal' ),
 							bind.to( 'className' )
 						],
 						role: 'dialog',
@@ -340,7 +341,8 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	 * Returns the element that should be used as a drag handle.
 	 */
 	public override get dragHandleElement(): HTMLElement | null {
-		if ( this.headerView ) {
+		// Modals should not be draggable.
+		if ( this.headerView && !this.isModal ) {
 			return this.headerView.element;
 		} else {
 			return null;
@@ -616,10 +618,35 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	}
 
 	/**
-	 * Calculates the viewport rect.
+	 * Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
+	 *
+	 * TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
 	 */
-	private _getViewportRect() {
-		return getConstrainedViewportRect( this._getViewportOffset() );
+	private _getViewportRect(): Rect {
+		const viewportRect = new Rect( global.window );
+
+		// Modals should not be restricted by the viewport offsets as they are always displayed on top of the page.
+		if ( this.isModal ) {
+			return viewportRect;
+		}
+
+		const viewportOffset = {
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0,
+			...this._getViewportOffset()
+		};
+
+		viewportRect.top += viewportOffset.top!;
+		viewportRect.height -= viewportOffset.top!;
+		viewportRect.bottom -= viewportOffset.bottom!;
+		viewportRect.height -= viewportOffset.bottom!;
+		viewportRect.left += viewportOffset.left!;
+		viewportRect.right -= viewportOffset.right!;
+		viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
+
+		return viewportRect;
 	}
 
 	/**
@@ -690,21 +717,3 @@ export type DialogViewCloseEvent = {
  * @eventName ~DialogView#moveTo
  */
 export type DialogViewMoveToEvent = DecoratedMethodEvent<DialogView, 'moveTo'>;
-
-// Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
-// TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
-function getConstrainedViewportRect( viewportOffset: EditorUI[ 'viewportOffset' ] ): Rect {
-	viewportOffset = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffset );
-
-	const viewportRect = new Rect( global.window );
-
-	viewportRect.top += viewportOffset.top!;
-	viewportRect.height -= viewportOffset.top!;
-	viewportRect.bottom -= viewportOffset.bottom!;
-	viewportRect.height -= viewportOffset.bottom!;
-	viewportRect.left += viewportOffset.left!;
-	viewportRect.right -= viewportOffset.right!;
-	viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
-
-	return viewportRect;
-}
