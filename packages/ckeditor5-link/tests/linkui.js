@@ -32,6 +32,7 @@ import LinkFormView from '../src/ui/linkformview.js';
 import LinkButtonView from '../src/ui/linkbuttonview.js';
 import LinkBookmarksView from '../src/ui/linkbookmarksview.js';
 import LinkAdvancedView from '../src/ui/linkadvancedview.js';
+import LinkPreviewButtonView from '../src/ui/linkpreviewbuttonview.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -196,6 +197,131 @@ describe( 'LinkUI', () => {
 				expect( linkButton.isEnabled ).to.equal( !initState );
 			} );
 		}
+
+		describe( 'the "linkPreview" toolbar button', () => {
+			let button;
+
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'linkPreview' );
+			} );
+
+			it( 'should be a LinkPreviewButtonView instance', () => {
+				expect( button ).to.be.instanceOf( LinkPreviewButtonView );
+			} );
+
+			it( 'should bind "href" to link command value', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.href ).to.equal( 'foo' );
+
+				linkCommand.value = 'bar';
+				expect( button.href ).to.equal( 'bar' );
+			} );
+
+			it( 'should not use unsafe href', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'javascript:alert(1)';
+
+				expect( button.href ).to.equal( '#' );
+			} );
+
+			it( 'should be enabled when command has a value', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = null;
+				expect( button.isEnabled ).to.be.false;
+
+				linkCommand.value = 'foo';
+				expect( button.isEnabled ).to.be.true;
+			} );
+
+			it( 'should use tooltip text depending on the command value', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.tooltip ).to.equal( 'Open link in new tab' );
+
+				linkCommand.value = '#foo';
+				expect( button.tooltip ).to.equal( 'Open link in new tab' );
+			} );
+		} );
+
+		describe( 'the "unlink" toolbar button', () => {
+			let button;
+
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'unlink' );
+			} );
+
+			it( 'should be a ButtonView instance', () => {
+				expect( button ).to.be.instanceOf( ButtonView );
+			} );
+
+			it( 'should set button properties', () => {
+				expect( button.label ).to.equal( 'Unlink' );
+				expect( button.tooltip ).to.be.true;
+				expect( button.icon ).to.not.be.undefined;
+			} );
+
+			it( 'should bind enabled state to unlink command', () => {
+				const unlinkCommand = editor.commands.get( 'unlink' );
+
+				unlinkCommand.isEnabled = true;
+				expect( button.isEnabled ).to.be.true;
+
+				unlinkCommand.isEnabled = false;
+				expect( button.isEnabled ).to.be.false;
+			} );
+
+			it( 'should trigger unlink command and hide UI on execute', () => {
+				const unlinkCommand = editor.commands.get( 'unlink' );
+				const stubCommand = sinon.stub( unlinkCommand, 'execute' );
+				const stubHideUI = sinon.stub( linkUIFeature, '_hideUI' );
+
+				button.fire( 'execute' );
+
+				sinon.assert.calledOnce( stubCommand );
+				sinon.assert.calledOnce( stubHideUI );
+			} );
+		} );
+
+		describe( 'the "editLink" toolbar button', () => {
+			let button;
+
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'editLink' );
+			} );
+
+			it( 'should be a ButtonView instance', () => {
+				expect( button ).to.be.instanceOf( ButtonView );
+			} );
+
+			it( 'should set button properties', () => {
+				expect( button.label ).to.equal( 'Edit link' );
+				expect( button.tooltip ).to.be.true;
+				expect( button.icon ).to.not.be.undefined;
+			} );
+
+			it( 'should bind enabled state to link command', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.isEnabled = true;
+				expect( button.isEnabled ).to.be.true;
+
+				linkCommand.isEnabled = false;
+				expect( button.isEnabled ).to.be.false;
+			} );
+
+			it( 'should add form view to the balloon on execute', () => {
+				const stubAddForm = sinon.stub( linkUIFeature, '_addFormView' );
+
+				button.fire( 'execute' );
+
+				sinon.assert.calledOnce( stubAddForm );
+			} );
+		} );
 	} );
 
 	describe( '_showUI()', () => {
@@ -2532,6 +2658,90 @@ describe( 'LinkUI with Bookmark', () => {
 
 			sinon.assert.calledWithExactly( spy );
 			expect( linkUIFeature._balloon.visibleView ).to.be.null;
+		} );
+	} );
+
+	describe( 'the "linkPreview" toolbar button', () => {
+		let button;
+
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'linkPreview' );
+		} );
+
+		it( 'should be a LinkPreviewButtonView instance', () => {
+			expect( button ).to.be.instanceOf( LinkPreviewButtonView );
+		} );
+
+		it( 'should bind "href" to link command value', () => {
+			const linkCommand = editor.commands.get( 'link' );
+
+			linkCommand.value = 'foo';
+			expect( button.href ).to.equal( 'foo' );
+
+			linkCommand.value = 'bar';
+			expect( button.href ).to.equal( 'bar' );
+		} );
+
+		it( 'should not use unsafe href', () => {
+			const linkCommand = editor.commands.get( 'link' );
+
+			linkCommand.value = 'javascript:alert(1)';
+
+			expect( button.href ).to.equal( '#' );
+		} );
+
+		it( 'should be enabled when command has a value', () => {
+			const linkCommand = editor.commands.get( 'link' );
+
+			linkCommand.value = null;
+			expect( button.isEnabled ).to.be.false;
+
+			linkCommand.value = 'foo';
+			expect( button.isEnabled ).to.be.true;
+		} );
+
+		it( 'should use tooltip text depending on the command value', () => {
+			const linkCommand = editor.commands.get( 'link' );
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
+
+			linkCommand.value = 'foo';
+			expect( button.tooltip ).to.equal( 'Open link in new tab' );
+
+			linkCommand.value = '#foo';
+			expect( button.tooltip ).to.equal( 'Open link in new tab' );
+
+			linkCommand.value = '#abc';
+			expect( button.tooltip ).to.equal( 'Scroll to target' );
+		} );
+
+		it( 'should trigger scroll if target is in the same document', () => {
+			const cancelSpy = sinon.spy();
+			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			setModelData( editor.model, '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
+
+			button.fire( 'navigate', '#abc', cancelSpy );
+
+			sinon.assert.calledOnce( cancelSpy );
+			sinon.assert.calledOnce( scrollStub );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[<bookmark bookmarkId="abc"></bookmark>]</paragraph>' );
+		} );
+
+		it( 'should not trigger scroll if target is not a known bookmark', () => {
+			const cancelSpy = sinon.spy();
+			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			setModelData( editor.model, '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
+
+			button.fire( 'navigate', '#foo', cancelSpy );
+
+			sinon.assert.notCalled( cancelSpy );
+			sinon.assert.notCalled( scrollStub );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
 		} );
 	} );
 } );
