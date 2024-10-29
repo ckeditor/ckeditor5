@@ -52,6 +52,7 @@ describe( 'LinkBookmarksView', () => {
 			expect( view.element.tagName.toLowerCase() ).to.equal( 'div' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-link__bookmarks' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -99,7 +100,7 @@ describe( 'LinkBookmarksView', () => {
 
 			view.backButtonView.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.true;
+			sinon.assert.calledOnce( spy.calledOnce );
 		} );
 
 		describe( 'template', () => {
@@ -122,15 +123,19 @@ describe( 'LinkBookmarksView', () => {
 	} );
 
 	describe( 'bindings', () => {
-		it( 'should hide and reveal the #actionsView after Esc key press if link command has a value', () => {
+		it( 'should hide after Esc key press', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
+			const spy = sinon.spy();
+
+			view.on( 'cancel', spy );
 
 			view.keystrokes.press( keyEvtData );
 
+			sinon.assert.calledOnce( spy.calledOnce );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
@@ -168,7 +173,7 @@ describe( 'LinkBookmarksView', () => {
 			view.destroy();
 		} );
 
-		describe( 'activates keyboard navigation for the toolbar', () => {
+		describe( 'activates keyboard navigation', () => {
 			let view;
 
 			testUtils.createSinonSandbox();
