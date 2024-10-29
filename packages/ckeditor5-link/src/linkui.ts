@@ -335,7 +335,9 @@ export default class LinkUI extends Plugin {
 				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
 				// Set focus to the editing view to prevent from losing it while current view is removed.
 				editor.editing.view.focus();
-				this._balloon.remove( this.bookmarksView! );
+
+				this._removeBookmarksView();
+
 				// Set the focus to the URL input field.
 				this.formView!.focus();
 			} );
@@ -355,7 +357,9 @@ export default class LinkUI extends Plugin {
 		this.listenTo( view, 'cancel', () => {
 			// Set focus to the editing view to prevent from losing it while current view is removed.
 			editor.editing.view.focus();
-			this._balloon.remove( this.bookmarksView! );
+
+			this._removeBookmarksView();
+
 			// Set the focus to the URL input field.
 			this.formView!.focus();
 		} );
