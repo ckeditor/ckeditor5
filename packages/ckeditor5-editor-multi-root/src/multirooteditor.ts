@@ -50,7 +50,7 @@ import {
  */
 export default class MultiRootEditor extends Editor {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public static override get editorName(): 'MultiRootEditor' {
 		return 'MultiRootEditor';
