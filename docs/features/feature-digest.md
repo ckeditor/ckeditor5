@@ -166,7 +166,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				{@link features/code-blocks Code blocks}
 			</td>
 			<td>
-				Supports the insertion and management of preformatted code snippets with
+				Supports the insertion and management of pre-formatted code snippets with
 				distinct styling.
 			</td>
 		</tr>
@@ -558,7 +558,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				that lets you:• Select an arbitrary rectangular table fragment – a
 				few cells from different rows, a column (or a few of them) or a row (or
 				multiple rows).• Apply formatting or add a link to all selected
-				cells at once.The table selection plugin is loaded automatically
+				cells at once. The table selection plugin is loaded automatically
 				by the <code>Table</code> plugin.
 			</td>
 		</tr>
@@ -765,7 +765,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 			</td>
 			<td>
 				The mention feature supports smart autocompletion triggered by user
-				input. Typing a predetermined marker, like @ or #, prompts a panel to
+				input. Typing a predetermined marker, like `@` or `#`, prompts a panel to
 				appear, offering autocomplete suggestions.
 			</td>
 		</tr>
@@ -966,9 +966,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="xml-output">
 			<td>
-				<a
-					href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_xmldataprocessor-XmlDataProcessor.html">XML
-					output</a>
+				{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor XML output}
 			</td>
 			<td>
 				Turn your content into parsable XML files for automation and
@@ -1479,9 +1477,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
 			</td>
 			<td>
-				The block toolbar provides an additional configurable toolbar on the
-				left-hand side of the content area, useful when the main toolbar is not
-				accessible (for example, in certain layouts, like balloon block editor).
+				A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
 			</td>
 		</tr>
 		<tr id="block-toolbar" class="background-blue subfeature">
@@ -1716,7 +1712,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 	<tbody>
 		<tr id="editor-sdk" class="background-yellow">
 			<td>
-				<a href="#">Editor SDK</a>
+				{@link framework/index Editor SDK}<!-- missing in docs -->
 			</td>
 			<td>
 				Select from numerous toolbar styles and over 100 plugins to tailor an
@@ -1731,7 +1727,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 		<tr id="ckeditor5-inspector" class="background-yellow subfeature">
 			<td>
-				<a href="#">CKEditor 5 Inspector</a>
+				{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}
 			</td>
 			<td>The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like
 				{@link framework/architecture/editing-engine#model model}, {@link
@@ -1740,7 +1736,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 		<tr id="cloud-services-rest-api" class="background-yellow subfeature">
 			<td>
-				<a href="#">Cloud Services REST API </a>
+				{@link @cs developer-resources/apis/overview Cloud Services REST API}
 			</td>
 			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration
 				services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although
@@ -1805,7 +1801,7 @@ Upload and manage your files using file management features. Take advantage of C
 				in your uploads with the media browser alongside an intuitive Image Editor for image adjustments.
 				Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses
 				Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading
-				and optimal display of your images across devices through an efficient CDN. Deployable on-premise or as
+				and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as
 				cloud SaaS.
 			</td>
 		</tr>
@@ -1842,9 +1838,9 @@ Upload and manage your files using file management features. Take advantage of C
 		</tr>
 		<tr id="uploadcare">
 			<td>
-				<a href="#">Uploadcare<span class="tree__item__badge tree__item__badge_premium"
+				<a href="https://uploadcare.com/">Uploadcare<span class="tree__item__badge tree__item__badge_premium"
 						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a>
+							feature</span></span></a><!-- missing in docs -->
 			</td>
 			<td>
 				Upload, store, transform, optimize, and deliver images, videos, and
