@@ -25,7 +25,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 	<tbody>
 		<tr id="advanced-html-editing" class="background-blue">
 			<td>
-				{@link features/full-page-html Advanced HTML Editing}
+				{@link features/general-html-support Advanced HTML Editing}
 			</td>
 			<td>
 				Advanced HTML Editing provides general HTML support, offering detailed
@@ -144,7 +144,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				It is an easy way to organize the content or indicate a change of topic.
 			</td>
 		</tr>
-		<tr id="block-indentation">
+		<tr id="block-indentation" class="background-yellow subfeature">
 			<td>
 				{@link features/indent Block indentation}
 			</td>
@@ -201,7 +201,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-background-color" class="background-blue subfeature">
 			<td>
-				{@link features/font Font background color}
+				{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}
 			</td>
 			<td>
 				Effortlessly make the words stand out even more with a colored background.
@@ -209,13 +209,13 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-color" class="background-blue subfeature">
 			<td>
-				{@link features/font Font color}
+				{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}
 			</td>
 			<td>Effortlessly make the letters stand out with their own color.</td>
 		</tr>
 		<tr id="font-family" class="background-blue subfeature">
 			<td>
-				{@link features/font Font family}
+				{@link features/font#configuring-the-font-family-feature Font family}
 			</td>
 			<td>
 				Choose from a predefined set of fonts, depending on the type of content
@@ -224,7 +224,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="font-size" class="background-blue subfeature">
 			<td>
-				{@link features/font Font size}
+				{@link features/font#configuring-the-font-size-feature Font size}
 			</td>
 			<td>Easily control the size of the letters.</td>
 		</tr>
@@ -782,7 +782,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="real-time-collaboration" class="background-blue">
 			<td>
-				{@link features/collaboration Real-time collaboration 
+				{@link features/real-time-collaboration Real-time collaboration 
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 					<span class="tree__item__badge__text">Premium feature</span></span>
 				}
@@ -796,7 +796,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="co-authoring" class="background-blue subfeature">
 			<td>
-				{@link features/collaboration Co-authoring
+				{@link features/users-in-real-time-collaboration Co-authoring
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 					<span class="tree__item__badge__text">Premium feature</span></span>
 				}
@@ -805,9 +805,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="on-premises" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html">On-premises<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link @cs onpremises/index On-premises
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>
 				On-premises real-time collaboration version to deploy to client's own
@@ -816,9 +817,10 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="saas" class="background-blue subfeature">
 			<td>
-				<a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">SaaS<span
-						class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span
-							class="tree__item__badge__text">Premium feature</span></span></a>
+				{@link @cs guides/collaboration/quick-start SaaS
+					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+					<span class="tree__item__badge__text">Premium feature</span></span>
+				}
 			</td>
 			<td>Real-time collaboration provided as a service by CKSource.</td>
 		</tr>
@@ -1589,6 +1591,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				contain buttons for captions and table and cell properties.
 			</td>
 		</tr>
+		<!-- Link & bookmark contextual toolbar coming soon, it's closer than it appears in the mirror -->
 		<tr id="watchdog">
 			<td>
 				{@link features/watchdog Watchdog}
