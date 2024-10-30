@@ -318,6 +318,46 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'pageup' ) ).to.equal( 'Page Up' );
 				expect( getEnvKeystrokeText( 'pagedown' ) ).to.equal( 'Page Down' );
 			} );
+
+			describe( 'with forcedEnv === Mac', () => {
+				it( 'replaces CTRL! with ⌃', () => {
+					expect( getEnvKeystrokeText( 'CTRL!', 'Mac' ) ).to.equal( '⌃' );
+					expect( getEnvKeystrokeText( 'CTRL!+A', 'Mac' ) ).to.equal( '⌃A' );
+					expect( getEnvKeystrokeText( 'ctrl!+A', 'Mac' ) ).to.equal( '⌃A' );
+				} );
+
+				it( 'replaces SHIFT with ⇧', () => {
+					expect( getEnvKeystrokeText( 'SHIFT', 'Mac' ) ).to.equal( '⇧' );
+					expect( getEnvKeystrokeText( 'SHIFT+A', 'Mac' ) ).to.equal( '⇧A' );
+					expect( getEnvKeystrokeText( 'shift+A', 'Mac' ) ).to.equal( '⇧A' );
+				} );
+
+				it( 'replaces ALT with ⌥', () => {
+					expect( getEnvKeystrokeText( 'ALT', 'Mac' ) ).to.equal( '⌥' );
+					expect( getEnvKeystrokeText( 'ALT+A', 'Mac' ) ).to.equal( '⌥A' );
+					expect( getEnvKeystrokeText( 'alt+A', 'Mac' ) ).to.equal( '⌥A' );
+				} );
+			} );
+
+			describe( 'with forcedEnv === PC', () => {
+				it( 'does not replace CTRL! with ⌃', () => {
+					expect( getEnvKeystrokeText( 'CTRL!', 'PC' ) ).to.equal( 'Ctrl+' );
+					expect( getEnvKeystrokeText( 'CTRL!+A', 'PC' ) ).to.equal( 'Ctrl+A' );
+					expect( getEnvKeystrokeText( 'ctrl!+A', 'PC' ) ).to.equal( 'Ctrl+A' );
+				} );
+
+				it( 'does not replace SHIFT with ⇧', () => {
+					expect( getEnvKeystrokeText( 'SHIFT', 'PC' ) ).to.equal( 'Shift+' );
+					expect( getEnvKeystrokeText( 'SHIFT+A', 'PC' ) ).to.equal( 'Shift+A' );
+					expect( getEnvKeystrokeText( 'shift+A', 'PC' ) ).to.equal( 'Shift+A' );
+				} );
+
+				it( 'does not replace ALT with ⌥', () => {
+					expect( getEnvKeystrokeText( 'ALT', 'PC' ) ).to.equal( 'Alt+' );
+					expect( getEnvKeystrokeText( 'ALT+A', 'PC' ) ).to.equal( 'Alt+A' );
+					expect( getEnvKeystrokeText( 'alt+A', 'PC' ) ).to.equal( 'Alt+A' );
+				} );
+			} );
 		} );
 
 		describe( 'on iOS', () => {
@@ -372,6 +412,46 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'Arrowright' ) ).to.equal( '→' );
 				expect( getEnvKeystrokeText( 'Arrowdown' ) ).to.equal( '↓' );
 			} );
+
+			describe( 'with forcedEnv === Mac', () => {
+				it( 'replaces CTRL! with ⌃', () => {
+					expect( getEnvKeystrokeText( 'CTRL!', 'Mac' ) ).to.equal( '⌃' );
+					expect( getEnvKeystrokeText( 'CTRL!+A', 'Mac' ) ).to.equal( '⌃A' );
+					expect( getEnvKeystrokeText( 'ctrl!+A', 'Mac' ) ).to.equal( '⌃A' );
+				} );
+
+				it( 'replaces SHIFT with ⇧', () => {
+					expect( getEnvKeystrokeText( 'SHIFT', 'Mac' ) ).to.equal( '⇧' );
+					expect( getEnvKeystrokeText( 'SHIFT+A', 'Mac' ) ).to.equal( '⇧A' );
+					expect( getEnvKeystrokeText( 'shift+A', 'Mac' ) ).to.equal( '⇧A' );
+				} );
+
+				it( 'replaces ALT with ⌥', () => {
+					expect( getEnvKeystrokeText( 'ALT', 'Mac' ) ).to.equal( '⌥' );
+					expect( getEnvKeystrokeText( 'ALT+A', 'Mac' ) ).to.equal( '⌥A' );
+					expect( getEnvKeystrokeText( 'alt+A', 'Mac' ) ).to.equal( '⌥A' );
+				} );
+			} );
+
+			describe( 'with forcedEnv === PC', () => {
+				it( 'does not replace CTRL! with ⌃', () => {
+					expect( getEnvKeystrokeText( 'CTRL!', 'PC' ) ).to.equal( 'Ctrl+' );
+					expect( getEnvKeystrokeText( 'CTRL!+A', 'PC' ) ).to.equal( 'Ctrl+A' );
+					expect( getEnvKeystrokeText( 'ctrl!+A', 'PC' ) ).to.equal( 'Ctrl+A' );
+				} );
+
+				it( 'does not replace SHIFT with ⇧', () => {
+					expect( getEnvKeystrokeText( 'SHIFT', 'PC' ) ).to.equal( 'Shift+' );
+					expect( getEnvKeystrokeText( 'SHIFT+A', 'PC' ) ).to.equal( 'Shift+A' );
+					expect( getEnvKeystrokeText( 'shift+A', 'PC' ) ).to.equal( 'Shift+A' );
+				} );
+
+				it( 'does not replace ALT with ⌥', () => {
+					expect( getEnvKeystrokeText( 'ALT', 'PC' ) ).to.equal( 'Alt+' );
+					expect( getEnvKeystrokeText( 'ALT+A', 'PC' ) ).to.equal( 'Alt+A' );
+					expect( getEnvKeystrokeText( 'alt+A', 'PC' ) ).to.equal( 'Alt+A' );
+				} );
+			} );
 		} );
 
 		describe( 'on non–Macintosh', () => {
@@ -400,6 +480,46 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'Arrowup' ) ).to.equal( '↑' );
 				expect( getEnvKeystrokeText( 'Arrowright' ) ).to.equal( '→' );
 				expect( getEnvKeystrokeText( 'Arrowdown' ) ).to.equal( '↓' );
+			} );
+
+			describe( 'with forcedEnv === Mac', () => {
+				it( 'replaces CTRL! with ⌃', () => {
+					expect( getEnvKeystrokeText( 'CTRL!', 'Mac' ) ).to.equal( '⌃' );
+					expect( getEnvKeystrokeText( 'CTRL!+A', 'Mac' ) ).to.equal( '⌃A' );
+					expect( getEnvKeystrokeText( 'ctrl!+A', 'Mac' ) ).to.equal( '⌃A' );
+				} );
+
+				it( 'replaces SHIFT with ⇧', () => {
+					expect( getEnvKeystrokeText( 'SHIFT', 'Mac' ) ).to.equal( '⇧' );
+					expect( getEnvKeystrokeText( 'SHIFT+A', 'Mac' ) ).to.equal( '⇧A' );
+					expect( getEnvKeystrokeText( 'shift+A', 'Mac' ) ).to.equal( '⇧A' );
+				} );
+
+				it( 'replaces ALT with ⌥', () => {
+					expect( getEnvKeystrokeText( 'ALT', 'Mac' ) ).to.equal( '⌥' );
+					expect( getEnvKeystrokeText( 'ALT+A', 'Mac' ) ).to.equal( '⌥A' );
+					expect( getEnvKeystrokeText( 'alt+A', 'Mac' ) ).to.equal( '⌥A' );
+				} );
+			} );
+
+			describe( 'with forcedEnv === PC', () => {
+				it( 'does not replace CTRL! with ⌃', () => {
+					expect( getEnvKeystrokeText( 'CTRL!', 'PC' ) ).to.equal( 'Ctrl+' );
+					expect( getEnvKeystrokeText( 'CTRL!+A', 'PC' ) ).to.equal( 'Ctrl+A' );
+					expect( getEnvKeystrokeText( 'ctrl!+A', 'PC' ) ).to.equal( 'Ctrl+A' );
+				} );
+
+				it( 'does not replace SHIFT with ⇧', () => {
+					expect( getEnvKeystrokeText( 'SHIFT', 'PC' ) ).to.equal( 'Shift+' );
+					expect( getEnvKeystrokeText( 'SHIFT+A', 'PC' ) ).to.equal( 'Shift+A' );
+					expect( getEnvKeystrokeText( 'shift+A', 'PC' ) ).to.equal( 'Shift+A' );
+				} );
+
+				it( 'does not replace ALT with ⌥', () => {
+					expect( getEnvKeystrokeText( 'ALT', 'PC' ) ).to.equal( 'Alt+' );
+					expect( getEnvKeystrokeText( 'ALT+A', 'PC' ) ).to.equal( 'Alt+A' );
+					expect( getEnvKeystrokeText( 'alt+A', 'PC' ) ).to.equal( 'Alt+A' );
+				} );
 			} );
 		} );
 	} );
