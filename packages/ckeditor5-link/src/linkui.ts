@@ -481,7 +481,15 @@ export default class LinkUI extends Plugin {
 			} );
 
 			button.bind( 'label' ).to( linkCommand, 'value', href => {
-				return href || t( 'This link has no URL' );
+				if ( !href ) {
+					return t( 'This link has no URL' );
+				}
+
+				return isScrollableToTarget( editor, href ) ? href.slice( 1 ) : href;
+			} );
+
+			button.bind( 'icon' ).to( linkCommand, 'value', href => {
+				return href && isScrollableToTarget( editor, href ) ? icons.bookmark : undefined;
 			} );
 
 			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );

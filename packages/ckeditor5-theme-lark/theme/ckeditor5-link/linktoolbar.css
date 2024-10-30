@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-button.ck-link-toolbar__preview {
+a.ck.ck-button.ck-link-toolbar__preview {
+	padding: 0 var(--ck-spacing-medium);
+	color: var(--ck-color-link-default);
+
 	& .ck.ck-button__label {
-		padding: 0 var(--ck-spacing-medium);
-		color: var(--ck-color-link-default);
 		text-overflow: ellipsis;
 		cursor: pointer;
 
@@ -36,5 +37,13 @@
 		& .ck-button__label {
 			text-decoration: underline;
 		}
+	}
+
+	& .ck.ck-icon.ck-button__icon {
+		margin: 0;
+	}
+
+	&:has( .ck-icon ) {
+		padding-left: var(--ck-spacing-extra-tiny );
 	}
 }

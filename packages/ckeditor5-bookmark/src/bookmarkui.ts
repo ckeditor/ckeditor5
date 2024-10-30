@@ -35,6 +35,8 @@ import type InsertBookmarkCommand from './insertbookmarkcommand.js';
 
 import BookmarkEditing from './bookmarkediting.js';
 
+import '../theme/bookmarktoolbar.css';
+
 const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
 
 /**
