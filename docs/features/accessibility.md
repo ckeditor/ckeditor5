@@ -393,11 +393,6 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 	</thead>
 	<tbody>
 		<tr>
-			<td>Start completion</td>
-			<td><kbd>Ctrl</kbd>+<kbd>Space</kbd></td>
-			<td><kbd>⌥`</kbd>, <kbd>⌃Space</kbd></td>
-		</tr>
-		<tr>
 			<td>Accept completion</td>
 			<td colspan="2"><kbd>Enter</kbd></td>
 		</tr>
@@ -437,7 +432,8 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 	<tbody>
 		<tr>
 			<td>Fold all</td>
-			<td colspan="2"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>[</kbd></td>
+			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>[</kbd></td>
+			<td><kbd>⌃⌥[</kbd></td>
 		</tr>
 		<tr>
 			<td>Fold code</td>
@@ -446,7 +442,8 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Unfold all</td>
-			<td colspan="2"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>]</kbd></td>
+			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>]</kbd></td>
+			<td><kbd>⌃⌥]</kbd></td>
 		</tr>
 		<tr>
 			<td>Unfold code</td>
@@ -509,11 +506,13 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Select line boundary backward</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>Home</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>Home</kbd></td>
+			<td><kbd>⇧Home</kbd></td>
 		</tr>
 		<tr>
 			<td>Select line boundary forward</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>End</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>End</kbd></td>
+			<td><kbd>⇧End</kbd></td>
 		</tr>
 		<tr>
 			<td>Select line down</td>
@@ -659,11 +658,13 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Move line down</td>
-			<td colspan="2"><kbd>Alt</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>Alt</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>⌥↓</kbd></td>
 		</tr>
 		<tr>
 			<td>Move line up</td>
-			<td colspan="2"><kbd>Alt</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>Alt</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>⌥↑</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to line boundary left</td>
@@ -701,11 +702,13 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 	<tbody>
 		<tr>
 			<td>Copy line down</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>⇧⌥↓</kbd></td>
 		</tr>
 		<tr>
 			<td>Copy line up</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>⇧⌥↑</kbd></td>
 		</tr>
 		<tr>
 			<td>Delete bracket pair</td>
@@ -758,7 +761,8 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Insert new line and indent</td>
-			<td colspan="2"><kbd>Enter</kbd>, <kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+			<td><kbd>Enter</kbd>, <kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+			<td><kbd>Enter</kbd>, <kbd>⇧Enter</kbd></td>
 		</tr>
 		<tr>
 			<td>Redo</td>
@@ -776,7 +780,8 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Toggle block comment</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>A</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>A</kbd></td>
+			<td><kbd>⇧⌥A</kbd></td>
 		</tr>
 		<tr>
 			<td>Toggle comment</td>
@@ -833,7 +838,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 	</thead>
 	<tbody>
 		<tr>
-			<td>Toggle tab focus mode</td>
+			<td>Switch between "focus with tab" and "indent with tab" mode</td>
 			<td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
 			<td><kbd>⌥⇧M</kbd></td>
 		</tr>
