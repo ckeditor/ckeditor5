@@ -2,6 +2,7 @@
 category: features
 menu-title: Feature digest
 meta-title: Feature digest | CKEditor 5 Documentation
+meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page collects them all.
 classes: main__content--no-toc
 toc: false
 modified_at: 2024-10-17
@@ -61,18 +62,18 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="html-comment" class="background-blue subfeature">
 			<td>
-				{@link features/html-comments Html comment}
+				{@link features/html-comments HTML comment}
 			</td>
 			<td class="subfeature">
 				By default, the editor filters out all HTML comments on initialization.
-				The <code>{@link features/html-comments Html comment}</code>
+				The <code>{@link features/html-comments HTML comment}</code>
 				feature lets developers keep HTML comments in the document without
 				displaying them to the user.
 			</td>
 		</tr>
 		<tr id="html-embed" class="background-blue subfeature">
 			<td>
-				{@link features/html-embed Html embed}
+				{@link features/html-embed HTML embed}
 			</td>
 			<td>
 				The HTML embed feature lets you embed any HTML snippet in your content.
@@ -151,6 +152,16 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				The block indentation feature lets you set indentation for text blocks
 				such as paragraphs, headings, or lists. This way you can visually
 				distinguish parts of your content.
+			</td>
+		</tr>
+				<tr id="bookmark">
+			<td>
+				{@link features/bookmarks Bookmarks}
+			</td>
+			<td>
+				The bookmarks feature allows for adding and managing the bookmarks anchors
+				attached to the content of the editor. These provide fast access to important
+				content sections, and speed up the navigation boosting efficiency.
 			</td>
 		</tr>
 		<tr id="clipboard">
@@ -765,13 +776,13 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 			</td>
 			<td>
 				The mention feature supports smart autocompletion triggered by user
-				input. Typing a predetermined marker, like `@` or `#`, prompts a panel to
+				input. Typing a predetermined marker, like @ or #, prompts a panel to
 				appear, offering autocomplete suggestions.
 			</td>
 		</tr>
 		<tr id="real-time-collaboration" class="background-blue">
 			<td>
-				{@link features/collaboration Real-time collaboration Real-time Collaboration
+				{@link features/collaboration Real-time collaboration 
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 					<span class="tree__item__badge__text">Premium feature</span></span>
 				}
@@ -1605,7 +1616,7 @@ Make your content accessible to any person or restrict it to specific users.
 	<tbody>
 		<tr id="accessibility-support">
 			<td>
-				{@ink features/accessibility Accessibility support}
+				{@link features/accessibility Accessibility support}
 			</td>
 			<td>
 				CKEditor 5 includes accessibility functionality designed to ensure
