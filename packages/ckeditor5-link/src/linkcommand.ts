@@ -178,7 +178,8 @@ export default class LinkCommand extends Command {
 	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const linkText = ( this.canHaveDisplayedText ? displayedText : extractTextFromSelection( selection ) ) || href;
+		const linkText = this.canHaveDisplayedText ? displayedText || href : null;
+
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
@@ -192,33 +193,33 @@ export default class LinkCommand extends Command {
 		}
 
 		model.change( writer => {
+			const updateAttributes = ( range: Range ): void => {
+				writer.setAttribute( 'linkHref', href, range );
+
+				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, range ) );
+				falsyManualDecorators.forEach( item => writer.removeAttribute( item, range ) );
+			};
+
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition()!;
 
-				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
-					// Then update `linkHref` value.
-					const attributeRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-					const linkRange = this._updateLinkContent( model, writer, attributeRange, linkText );
+					// When selection is inside text with `linkHref` attribute.
+					let range = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					writer.setAttribute( 'linkHref', href, linkRange );
+					if ( linkText !== null ) {
+						range = this._updateLinkContent( model, writer, range, linkText );
+					}
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
-
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
+					updateAttributes( range );
 
 					// Put the selection at the end of the updated link.
-					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
-				}
-				// If not then insert text node with `linkHref` attribute in place of caret.
-				// However, since selection is collapsed, attribute value will be used as data for text node.
-				// So, if `href` is empty, do not create text node.
-				else if ( href !== '' ) {
+					writer.setSelection( writer.createPositionAfter( range.end.nodeBefore! ) );
+				} else if ( linkText ) {
+					// If not then insert text node with `linkHref` attribute in place of caret.
+					// However, since selection is collapsed, attribute value will be used as data for text node.
+
 					const attributes = toMap( selection.getAttributes() );
 
 					attributes.set( 'linkHref', href );
@@ -267,20 +268,12 @@ export default class LinkCommand extends Command {
 				for ( const range of rangesToUpdate ) {
 					let linkRange = range;
 
-					if ( rangesToUpdate.length === 1 ) {
-						linkRange = this._updateLinkContent( model, writer, range, linkText );
+					if ( rangesToUpdate.length === 1 && linkText !== null ) {
+						linkRange = this._updateLinkContent( model, writer, linkRange, linkText );
 						writer.setSelection( writer.createSelection( linkRange ) );
 					}
 
-					writer.setAttribute( 'linkHref', href, linkRange );
-
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
-
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
+					updateAttributes( linkRange );
 				}
 			}
 		} );
