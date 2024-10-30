@@ -655,8 +655,7 @@ export default class LinkUI extends Plugin {
 	 *
 	 * @internal
 	 */
-	// TODO change name
-	public _addActionsView(): void {
+	public _addToolbarView(): void {
 		if ( !this.toolbarView ) {
 			this._createViews();
 		}
@@ -807,7 +806,7 @@ export default class LinkUI extends Plugin {
 			// See https://github.com/ckeditor/ckeditor5/issues/4721.
 			this._showFakeVisualSelection();
 
-			this._addActionsView();
+			this._addToolbarView();
 
 			// Be sure panel with link is visible.
 			if ( forceVisible ) {
@@ -824,7 +823,7 @@ export default class LinkUI extends Plugin {
 			}
 			// Otherwise display just the toolbar.
 			else {
-				this._addActionsView();
+				this._addToolbarView();
 			}
 
 			// Be sure panel with link is visible.
@@ -840,7 +839,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
-	 * See {@link #_addFormView}, {@link #_addActionsView}.
+	 * See {@link #_addFormView}, {@link #_addToolbarView}.
 	 */
 	private _hideUI( updateFocus: boolean = true ): void {
 		const editor = this.editor;

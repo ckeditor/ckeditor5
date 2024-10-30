@@ -1067,7 +1067,7 @@ describe( 'LinkUI', () => {
 		}
 	} );
 
-	describe( '_addActionsView()', () => {
+	describe( '_addToolbarView()', () => {
 		beforeEach( () => {
 			editor.editing.view.document.isFocused = true;
 		} );
@@ -1075,7 +1075,7 @@ describe( 'LinkUI', () => {
 		it( 'should create #toolbarView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			linkUIFeature._addActionsView();
+			linkUIFeature._addToolbarView();
 
 			expect( linkUIFeature.toolbarView ).to.be.instanceOf( ToolbarView );
 		} );
@@ -1085,7 +1085,7 @@ describe( 'LinkUI', () => {
 		() => {
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
-			linkUIFeature._addActionsView();
+			linkUIFeature._addToolbarView();
 			toolbarView = linkUIFeature.toolbarView;
 
 			expect( balloon.visibleView ).to.equal( toolbarView );
