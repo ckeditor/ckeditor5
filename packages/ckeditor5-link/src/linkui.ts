@@ -119,9 +119,8 @@ export default class LinkUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		// Create toolbar buttons.
-		this._registerToolbarLinkButton();
+		this._registerComponents();
 		this._enableBalloonActivators();
-		this._registerLinkToolbarButtons();
 
 		// Renders a fake visual selection marker on an expanded selection.
 		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
@@ -437,10 +436,9 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Creates a toolbar Link button. Clicking this button will show
-	 * a {@link #_balloon} attached to the selection.
+	 * Registers components in the ComponentFactory.
 	 */
-	private _registerToolbarLinkButton(): void {
+	private _registerComponents(): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'link', () => {
@@ -462,13 +460,6 @@ export default class LinkUI extends Plugin {
 
 			return button;
 		} );
-	}
-
-	/**
-	 * Registers link toolbar buttons in the component factory.
-	 */
-	private _registerLinkToolbarButtons(): void {
-		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'linkPreview', locale => {
 			const button = new LinkPreviewButtonView( locale );

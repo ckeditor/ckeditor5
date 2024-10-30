@@ -50,7 +50,27 @@ export interface BookmarkConfig {
 	enableNonEmptyAnchorConversion?: boolean;
 
 	/**
-	 * TODO
+	 * Items to be placed in the bookmark contextual toolbar.
+	 *
+	 * Assuming that you use the {@link module:bookmark/bookmarkui~BookmarkUI} feature, the following toolbar items will be available
+	 * in {@link module:ui/componentfactory~ComponentFactory}:
+	 *
+	 * * `'bookmarkPreview'`,
+	 * * `'editBookmark'`,
+	 * * `'removeBookmark'`.
+	 *
+	 * The default configuration for bookmark toolbar is:
+	 *
+	 * ```ts
+	 * const bookmarkConfig = {
+	 * 	toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
+	 * };
+	 * ```
+	 *
+	 * Of course, the same buttons can also be used in the
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+	 *
+	 * Read more about configuring the toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 	 */
 	toolbar?: Array<string>;
 }

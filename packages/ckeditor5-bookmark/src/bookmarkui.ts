@@ -259,10 +259,7 @@ export default class BookmarkUI extends Plugin {
 
 			label.extendTemplate( {
 				attributes: {
-					class: [
-						'ck',
-						'ck-bookmark-toolbar__preview'
-					]
+					class: [ 'ck-bookmark-toolbar__preview' ]
 				}
 			} );
 
@@ -672,7 +669,7 @@ function getFormValidators( editor: Editor ): Array<BookmarkFormValidatorCallbac
 }
 
 /**
- * TODO
+ * Returns the currently selected bookmark view element.
  */
 function getSelectedBookmarkWidget( selection: ViewDocumentSelection ): ViewElement | null {
 	const element = selection.getSelectedElement();
