@@ -383,7 +383,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 
 #### Keystrokes related to the built-in code completion mechanism
 
-<table id="shortcuts">
+<table>
 	<thead>
 		<tr>
 			<th>Action</th>
@@ -395,7 +395,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Start completion</td>
 			<td><kbd>Ctrl</kbd>+<kbd>Space</kbd></td>
-			<td><kbd>⌥`</kbd>, <kbd>⌘Space</kbd></td>
+			<td><kbd>⌥`</kbd>, <kbd>⌃Space</kbd></td>
 		</tr>
 		<tr>
 			<td>Accept completion</td>
@@ -426,7 +426,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 
 #### Keystrokes related to the built-in code folding mechanism
 
-<table id="shortcuts">
+<table>
 	<thead>
 		<tr>
 			<th>Action</th>
@@ -437,8 +437,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 	<tbody>
 		<tr>
 			<td>Fold all</td>
-			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>[</kbd></td>
-			<td><kbd>⌘⌥[</kbd></td>
+			<td colspan="2"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>[</kbd></td>
 		</tr>
 		<tr>
 			<td>Fold code</td>
@@ -447,8 +446,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Unfold all</td>
-			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>]</kbd></td>
-			<td><kbd>⌘⌥]</kbd></td>
+			<td colspan="2"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>]</kbd></td>
 		</tr>
 		<tr>
 			<td>Unfold code</td>
@@ -460,7 +458,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 
 #### Keystrokes that change the selection in the code editor
 
-<table id="shortcuts">
+<table>
 	<thead>
 		<tr>
 			<th>Action</th>
@@ -477,12 +475,12 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Select character left</td>
 			<td><kbd>Shift</kbd>+<kbd>←</kbd></td>
-			<td><kbd>⇧←</kbd>, <kbd>⌘⇧B</kbd></td>
+			<td><kbd>⇧←</kbd>, <kbd>⌃⇧B</kbd></td>
 		</tr>
 		<tr>
 			<td>Select character right</td>
 			<td><kbd>Shift</kbd>+<kbd>→</kbd></td>
-			<td><kbd>⇧→</kbd>, <kbd>⌘⇧F</kbd></td>
+			<td><kbd>⇧→</kbd>, <kbd>⌃⇧F</kbd></td>
 		</tr>
 		<tr>
 			<td>Select document end</td>
@@ -507,7 +505,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Select line</td>
 			<td><kbd>Alt</kbd>+<kbd>L</kbd></td>
-			<td><kbd>⌘L</kbd></td>
+			<td><kbd>⌃L</kbd></td>
 		</tr>
 		<tr>
 			<td>Select line boundary backward</td>
@@ -520,22 +518,22 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Select line down</td>
 			<td><kbd>Shift</kbd>+<kbd>↓</kbd></td>
-			<td><kbd>⇧↓</kbd>, <kbd>⌘⇧N</kbd></td>
+			<td><kbd>⇧↓</kbd>, <kbd>⌃⇧N</kbd></td>
 		</tr>
 		<tr>
 			<td>Select line up</td>
 			<td><kbd>Shift</kbd>+<kbd>↑</kbd></td>
-			<td><kbd>⇧↑</kbd>, <kbd>⌘⇧P</kbd></td>
+			<td><kbd>⇧↑</kbd>, <kbd>⌃⇧P</kbd></td>
 		</tr>
 		<tr>
 			<td>Select page down</td>
 			<td><kbd>Shift</kbd>+<kbd>Page Down</kbd></td>
-			<td><kbd>⌘⇧↓</kbd>, <kbd>⇧Page Down</kbd></td>
+			<td><kbd>⌃⇧↓</kbd>, <kbd>⇧Page Down</kbd></td>
 		</tr>
 		<tr>
 			<td>Select page up</td>
 			<td><kbd>Shift</kbd>+<kbd>Page Up</kbd></td>
-			<td><kbd>⌘⇧↑</kbd>, <kbd>⇧Page Up</kbd></td>
+			<td><kbd>⌃⇧↑</kbd>, <kbd>⇧Page Up</kbd></td>
 		</tr>
 		<tr>
 			<td>Select parent syntax</td>
@@ -545,12 +543,12 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Select syntax left</td>
 			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>←</kbd></td>
-			<td><kbd>⌘⇧←</kbd></td>
+			<td><kbd>⌃⇧←</kbd></td>
 		</tr>
 		<tr>
 			<td>Select syntax right</td>
 			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>→</kbd></td>
-			<td><kbd>⌘⇧→</kbd></td>
+			<td><kbd>⌃⇧→</kbd></td>
 		</tr>
 		<tr>
 			<td>Select line boundary left</td>
@@ -565,19 +563,19 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Select line end</td>
 			<td></td>
-			<td><kbd>⌘⇧E</kbd></td>
+			<td><kbd>⌃⇧E</kbd></td>
 		</tr>
 		<tr>
 			<td>Select line start</td>
 			<td></td>
-			<td><kbd>⌘⇧A</kbd></td>
+			<td><kbd>⌃⇧A</kbd></td>
 		</tr>
 	</tbody>
 </table>
 
 #### Keystrokes that move the cursor (caret) in the code editor
 
-<table id="shortcuts">
+<table>
 	<thead>
 		<tr>
 			<th>Action</th>
@@ -589,12 +587,12 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Move cursor to character left</td>
 			<td><kbd>←</kbd></td>
-			<td><kbd>←</kbd>, <kbd>⌘B</kbd></td>
+			<td><kbd>←</kbd>, <kbd>⌃B</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to character right</td>
 			<td><kbd>→</kbd></td>
-			<td><kbd>→</kbd>, <kbd>⌘F</kbd></td>
+			<td><kbd>→</kbd>, <kbd>⌃F</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to document end</td>
@@ -627,12 +625,12 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Move cursor to line down</td>
 			<td><kbd>↓</kbd></td>
-			<td><kbd>↓</kbd>, <kbd>⌘N</kbd></td>
+			<td><kbd>↓</kbd>, <kbd>⌃N</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to line up</td>
 			<td><kbd>↑</kbd></td>
-			<td><kbd>↑</kbd>, <kbd>⌘P</kbd></td>
+			<td><kbd>↑</kbd>, <kbd>⌃P</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to matching bracket</td>
@@ -642,22 +640,22 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Move cursor to page down</td>
 			<td><kbd>Page Down</kbd></td>
-			<td><kbd>⌘↓</kbd>, <kbd>⌘V</kbd>, <kbd>Page Down</kbd></td>
+			<td><kbd>⌃↓</kbd>, <kbd>⌃V</kbd>, <kbd>Page Down</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to page up</td>
 			<td><kbd>Page Up</kbd></td>
-			<td><kbd>⌘↑</kbd>, <kbd>Page Up</kbd></td>
+			<td><kbd>⌃↑</kbd>, <kbd>Page Up</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to syntax left</td>
 			<td><kbd>Alt</kbd>+<kbd>←</kbd></td>
-			<td><kbd>⌘←</kbd></td>
+			<td><kbd>⌃←</kbd></td>
 		</tr>
 		<tr>
 			<td>Move cursor to syntax right</td>
 			<td><kbd>Alt</kbd>+<kbd>→</kbd></td>
-			<td><kbd>⌘→</kbd></td>
+			<td><kbd>⌃→</kbd></td>
 		</tr>
 		<tr>
 			<td>Move line down</td>
@@ -692,7 +690,7 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 
 #### Keystrokes that modify the code in the editor
 
-<table id="shortcuts">
+<table>
 	<thead>
 		<tr>
 			<th>Action</th>
@@ -716,17 +714,17 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Delete character backward</td>
 			<td><kbd>Backspace</kbd>, <kbd>Shift</kbd>+<kbd>Backspace</kbd></td>
-			<td><kbd>Backspace</kbd>, <kbd>⌘H</kbd>, <kbd>⇧Backspace</kbd></td>
+			<td><kbd>Backspace</kbd>, <kbd>⌃H</kbd>, <kbd>⇧Backspace</kbd></td>
 		</tr>
 		<tr>
 			<td>Delete character forward</td>
 			<td><kbd>Delete</kbd></td>
-			<td><kbd>⌘D</kbd>, <kbd>Delete</kbd></td>
+			<td><kbd>⌃D</kbd>, <kbd>Delete</kbd></td>
 		</tr>
 		<tr>
 			<td>Delete group backward</td>
 			<td><kbd>Ctrl</kbd>+<kbd>Backspace</kbd></td>
-			<td><kbd>⌥Backspace</kbd>, <kbd>⌘⌥H</kbd></td>
+			<td><kbd>⌥Backspace</kbd>, <kbd>⌃⌥H</kbd></td>
 		</tr>
 		<tr>
 			<td>Delete group forward</td>
@@ -787,8 +785,8 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Undo</td>
-			<td><kbd>Ctrl</kbd>+<kbd>Y</kbd>, <kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
-			<td><kbd>⌘⇧Z</kbd>, <kbd>⌘Z</kbd></td>
+			<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+			<td><kbd>⌘Z</kbd></td>
 		</tr>
 		<tr>
 			<td>Undo selection</td>
@@ -808,24 +806,24 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		<tr>
 			<td>Delete to line end</td>
 			<td></td>
-			<td><kbd>⌘K</kbd></td>
+			<td><kbd>⌃K</kbd></td>
 		</tr>
 		<tr>
 			<td>Split line</td>
 			<td></td>
-			<td><kbd>⌘O</kbd></td>
+			<td><kbd>⌃O</kbd></td>
 		</tr>
 		<tr>
 			<td>Transpose characters</td>
 			<td></td>
-			<td><kbd>⌘T</kbd></td>
+			<td><kbd>⌃T</kbd></td>
 		</tr>
 	</tbody>
 </table>
 
 #### Miscellaneous code editor shortcuts
 
-<table id="shortcuts">
+<table>
 	<thead>
 		<tr>
 			<th>Action</th>
