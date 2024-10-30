@@ -12,7 +12,8 @@ import type { Locale } from 'ckeditor5/src/utils.js';
 
 /**
  * The link button class. Rendered as an `<a>` tag with link opening in a new tab.
- * Provides a custom `execute` cancelable event.
+ *
+ * Provides a custom `navigate` cancelable event.
  */
 export default class LinkPreviewButtonView extends ButtonView {
 	/**
