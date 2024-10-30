@@ -173,12 +173,13 @@ export default class LinkCommand extends Command {
 	 */
 	public override execute(
 		href: string,
-		displayedText: string,
-		manualDecoratorIds: Record<string, boolean> = {}
+		manualDecoratorIds: Record<string, boolean> = {},
+		displayedText?: string | null
 	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const linkText = this.canHaveDisplayedText ? displayedText || href : null;
+		const selectionText = extractTextFromSelection( selection );
+		const linkText = displayedText || selectionText || href;
 
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
@@ -208,7 +209,7 @@ export default class LinkCommand extends Command {
 					// When selection is inside text with `linkHref` attribute.
 					let range = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					if ( linkText !== null ) {
+					if ( linkText !== selectionText ) {
 						range = this._updateLinkContent( model, writer, range, linkText );
 					}
 
@@ -268,7 +269,7 @@ export default class LinkCommand extends Command {
 				for ( const range of rangesToUpdate ) {
 					let linkRange = range;
 
-					if ( rangesToUpdate.length === 1 && linkText !== null ) {
+					if ( rangesToUpdate.length === 1 && linkText !== selectionText ) {
 						linkRange = this._updateLinkContent( model, writer, linkRange, linkText );
 						writer.setSelection( writer.createSelection( linkRange ) );
 					}
@@ -331,25 +332,25 @@ export default class LinkCommand extends Command {
 	}
 }
 
-// Returns a text of a link under the collapsed selection or a selection that contains the entire link.
+/**
+ * Returns a text of a link under the collapsed selection or a selection that contains a link.
+ *
+ * If the returned value is `null`, it means that the selection contains elements other than text nodes.
+ */
 function extractTextFromSelection( selection: DocumentSelection ): string | null {
 	if ( selection.isCollapsed ) {
-		const firstPosition = selection.getFirstPosition();
+		return '';
+	}
 
-		return firstPosition!.textNode && firstPosition!.textNode.data;
-	} else {
-		const rangeItems = Array.from( selection.getFirstRange()!.getItems() );
+	let text = '';
 
-		if ( rangeItems.length > 1 ) {
+	for ( const item of selection.getFirstRange()!.getItems() ) {
+		if ( !item.is( '$text' ) && !item.is( '$textProxy' ) ) {
 			return null;
 		}
 
-		const firstNode = rangeItems[ 0 ];
-
-		if ( firstNode.is( '$text' ) || firstNode.is( '$textProxy' ) ) {
-			return firstNode.data;
-		}
-
-		return null;
+		text += item.data;
 	}
+
+	return text;
 }

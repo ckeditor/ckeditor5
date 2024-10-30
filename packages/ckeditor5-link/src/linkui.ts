@@ -267,8 +267,8 @@ export default class LinkUI extends Plugin {
 				editor.execute(
 					'link',
 					parsedUrl,
-					formView.displayedTextInputView.fieldView.element!.value,
-					this._getDecoratorSwitchesState()
+					this._getDecoratorSwitchesState(),
+					formView.displayedTextInputView.fieldView.element!.value
 				);
 
 				this._closeFormView();
