@@ -78,7 +78,7 @@ export default class LinkImageUI extends Plugin {
 	 * Creates a `LinkImageUI` button view.
 	 *
 	 * Clicking this button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
-	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
+	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#toolbarView} or
 	 * {@link module:link/linkui~LinkUI#formView} if it is not.
 	 */
 	private _createToolbarLinkImageButton(): void {

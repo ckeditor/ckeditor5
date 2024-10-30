@@ -194,7 +194,7 @@ export interface LinkConfig {
 	 * The default configuration for link toolbar is:
 	 *
 	 * ```ts
-	 * const bookmarkConfig = {
+	 * const linkConfig = {
 	 * 	toolbar: [ 'linkPreview', '|', 'editLink', 'unlink' ]
 	 * };
 	 * ```
