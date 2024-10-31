@@ -209,7 +209,7 @@ export default class LinkCommand extends Command {
 					// When selection is inside text with `linkHref` attribute.
 					let range = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					if ( linkText !== selectionText ) {
+					if ( linkText !== selectionText && this.canHaveDisplayedText ) {
 						range = this._updateLinkContent( model, writer, range, linkText );
 					}
 
@@ -269,7 +269,7 @@ export default class LinkCommand extends Command {
 				for ( const range of rangesToUpdate ) {
 					let linkRange = range;
 
-					if ( rangesToUpdate.length === 1 && linkText !== selectionText ) {
+					if ( rangesToUpdate.length === 1 && ( linkText !== selectionText && this.canHaveDisplayedText ) ) {
 						linkRange = this._updateLinkContent( model, writer, linkRange, linkText );
 						writer.setSelection( writer.createSelection( linkRange ) );
 					}

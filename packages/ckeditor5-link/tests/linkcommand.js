@@ -575,7 +575,7 @@ describe( 'LinkCommand', () => {
 			it( 'should update `linkHref` attribute (text with `linkHref` attribute) and put the selection after the node', () => {
 				setData( model, '<$text linkHref="other url">foo[]bar</$text>' );
 
-				command.execute( 'url' );
+				command.execute( 'url', {}, 'foobar' );
 
 				expect( getData( model ) ).to.equal( '<$text linkHref="url">foobar</$text>[]' );
 			} );
@@ -687,7 +687,7 @@ describe( 'LinkCommand', () => {
 			it( 'should add additional attributes to link when link is modified', () => {
 				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
 
-				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true }, 'ooba' );
 
 				expect( getData( model ) ).to
 					.equal( 'f<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>[]r' );
@@ -771,7 +771,7 @@ describe( 'LinkCommand', () => {
 			it( 'should update content if href is equal to content', () => {
 				setData( model, '[<$text linkHref="url">url</$text>]' );
 
-				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true }, 'url2' );
 
 				expect( getData( model ) ).to
 					.equal( '[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>]' );
@@ -802,7 +802,7 @@ describe( 'LinkCommand', () => {
 			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
 				setData( model, '[<$text linkHref="url">url</$text>]' );
 
-				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false }, 'url2' );
 
 				expect( getData( model ) ).to
 					.equal( '[<$text linkHref="url2">url2</$text>]' );

@@ -1882,11 +1882,16 @@ describe( 'LinkUI', () => {
 				formView.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.be.true;
-				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {
-					linkDecorator1: false,
-					linkDecorator2: true,
-					linkDecorator3: false
-				} ) ).to.be.true;
+				expect( executeSpy.calledWithExactly(
+					'link',
+					'http://cksource.com',
+					{
+						linkDecorator1: false,
+						linkDecorator2: true,
+						linkDecorator3: false
+					},
+					'o'
+				) ).to.be.true;
 			} );
 
 			it( 'should should clear the fake visual selection on formView#submit event', () => {
@@ -2057,11 +2062,17 @@ describe( 'LinkUI', () => {
 					formView.fire( 'submit' );
 
 					sinon.assert.calledOnce( executeSpy );
-					sinon.assert.calledWithExactly( executeSpy, 'link', 'url', {
-						linkDecorator1: true,
-						linkDecorator2: true,
-						linkDecorator3: false
-					} );
+					sinon.assert.calledWithExactly(
+						executeSpy,
+						'link',
+						'url',
+						{
+							linkDecorator1: true,
+							linkDecorator2: true,
+							linkDecorator3: false
+						},
+						'ooba'
+					);
 				} );
 
 				it( 'should reset switch state when form view is closed', () => {
