@@ -119,7 +119,7 @@ export default class LinkAdvancedView extends View {
 
 		// Close the panel on esc key press when the **form has focus**.
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<CancelEvent>( 'cancel' );
+			this.fire<BackEvent>( 'back' );
 			cancel();
 		} );
 	}
@@ -165,7 +165,7 @@ export default class LinkAdvancedView extends View {
 	}
 
 	/**
-	 * Creates a back button view that cancels the form.
+	 * Creates a back button view.
 	 */
 	private _createBackButton(): ButtonView {
 		const t = this.locale!.t;
@@ -173,12 +173,12 @@ export default class LinkAdvancedView extends View {
 
 		// TODO: maybe we should have a dedicated BackButtonView in the UI library.
 		backButton.set( {
-			label: t( 'Cancel' ),
+			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
 		} );
 
-		backButton.delegate( 'execute' ).to( this, 'cancel' );
+		backButton.delegate( 'execute' ).to( this, 'back' );
 
 		return backButton;
 	}
@@ -225,11 +225,11 @@ export default class LinkAdvancedView extends View {
 }
 
 /**
- * Fired when the form view is canceled, for example with a click on {@link ~LinkAdvancedView#backButtonView}.
+ * Fired when the {@link ~LinkAdvancedView#backButtonView} is pressed.
  *
- * @eventName ~LinkAdvancedView#cancel
+ * @eventName ~LinkAdvancedView#back
  */
-export type CancelEvent = {
-	name: 'cancel';
+export type BackEvent = {
+	name: 'back';
 	args: [];
 };

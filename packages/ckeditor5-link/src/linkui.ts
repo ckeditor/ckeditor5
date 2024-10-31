@@ -376,8 +376,8 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 		const view = new LinkAdvancedView( this.editor.locale );
 
-		// Hide the panel after clicking the "Cancel" button.
-		this.listenTo( view, 'cancel', () => {
+		// Hide the panel after clicking the back button.
+		this.listenTo( view, 'back', () => {
 			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
 			editor.editing.view.focus();

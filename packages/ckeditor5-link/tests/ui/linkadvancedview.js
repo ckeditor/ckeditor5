@@ -122,10 +122,10 @@ describe( 'LinkAdvancedView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should fire `cancel` event on backButtonView#execute', () => {
+		it( 'should fire `back` event on backButtonView#execute', () => {
 			const spy = sinon.spy();
 
-			view.on( 'cancel', spy );
+			view.on( 'back', spy );
 
 			view.backButtonView.fire( 'execute' );
 

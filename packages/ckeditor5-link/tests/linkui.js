@@ -2274,7 +2274,7 @@ describe( 'LinkUI', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
-			linkUIFeature.listenTo( linkUIFeature.advancedView, 'cancel', spy );
+			linkUIFeature.listenTo( linkUIFeature.advancedView, 'back', spy );
 			linkUIFeature.formView.settingsButtonView.fire( 'execute' );
 			linkUIFeature.advancedView.backButtonView.fire( 'execute' );
 
