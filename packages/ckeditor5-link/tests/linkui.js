@@ -246,6 +246,16 @@ describe( 'LinkUI', () => {
 				linkCommand.value = '#foo';
 				expect( button.tooltip ).to.equal( 'Open link in new tab' );
 			} );
+
+			it( 'should not use icon', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.icon ).to.equal( undefined );
+
+				linkCommand.value = '#foo';
+				expect( button.icon ).to.equal( undefined );
+			} );
 		} );
 
 		describe( 'the "unlink" toolbar button', () => {
@@ -2480,8 +2490,6 @@ describe( 'LinkUI', () => {
 } );
 
 describe( 'LinkUI with Bookmark', () => {
-	const bookmarkIcon = icons.bookmark;
-
 	let editor, linkUIFeature, balloon, editorElement, bookmarksView;
 
 	testUtils.createSinonSandbox();
@@ -2572,9 +2580,9 @@ describe( 'LinkUI with Bookmark', () => {
 				expect( bookmarksView.listChildren.get( 1 ) ).is.instanceOf( ButtonView );
 				expect( bookmarksView.listChildren.get( 2 ) ).is.instanceOf( ButtonView );
 
-				expect( bookmarksView.listChildren.get( 0 ).icon ).to.equal( bookmarkIcon );
-				expect( bookmarksView.listChildren.get( 1 ).icon ).to.equal( bookmarkIcon );
-				expect( bookmarksView.listChildren.get( 2 ).icon ).to.equal( bookmarkIcon );
+				expect( bookmarksView.listChildren.get( 0 ).icon ).to.equal( icons.bookmarkMedium );
+				expect( bookmarksView.listChildren.get( 1 ).icon ).to.equal( icons.bookmarkMedium );
+				expect( bookmarksView.listChildren.get( 2 ).icon ).to.equal( icons.bookmarkMedium );
 
 				expect( bookmarksView.listChildren.get( 0 ).label ).to.equal( 'aaa' );
 				expect( bookmarksView.listChildren.get( 1 ).label ).to.equal( 'ccc' );
@@ -2714,6 +2722,38 @@ describe( 'LinkUI with Bookmark', () => {
 
 			linkCommand.value = '#abc';
 			expect( button.tooltip ).to.equal( 'Scroll to target' );
+		} );
+
+		it( 'should use icon for bookmarks', () => {
+			const linkCommand = editor.commands.get( 'link' );
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
+
+			linkCommand.value = 'foo';
+			expect( button.icon ).to.equal( undefined );
+
+			linkCommand.value = '#foo';
+			expect( button.icon ).to.equal( undefined );
+
+			linkCommand.value = '#abc';
+			expect( button.icon ).to.equal( icons.bookmarkSmall );
+		} );
+
+		it( 'should bind label', () => {
+			const linkCommand = editor.commands.get( 'link' );
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
+
+			linkCommand.value = 'foo';
+			expect( button.label ).to.equal( 'foo' );
+
+			linkCommand.value = '#foo';
+			expect( button.label ).to.equal( '#foo' );
+
+			linkCommand.value = '#abc';
+			expect( button.label ).to.equal( 'abc' );
 		} );
 
 		it( 'should trigger scroll if target is in the same document', () => {

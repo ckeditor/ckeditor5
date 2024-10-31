@@ -332,7 +332,7 @@ export default class LinkUI extends Plugin {
 			buttonView.set( {
 				label: bookmarkName,
 				tooltip: false,
-				icon: icons.bookmark,
+				icon: icons.bookmarkMedium,
 				withText: true
 			} );
 
@@ -480,7 +480,7 @@ export default class LinkUI extends Plugin {
 			} );
 
 			button.bind( 'icon' ).to( linkCommand, 'value', href => {
-				return href && isScrollableToTarget( editor, href ) ? icons.bookmark : undefined;
+				return href && isScrollableToTarget( editor, href ) ? icons.bookmarkSmall : undefined;
 			} );
 
 			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );

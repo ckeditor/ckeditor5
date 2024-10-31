@@ -36,6 +36,9 @@ a.ck.ck-button.ck-link-toolbar__preview {
 	}
 
 	&.ck-button_with-text .ck.ck-icon.ck-button__icon {
+		width: 14px;
+		height: 14px;
+
 		@mixin ck-dir ltr {
 			margin-right: var(--ck-spacing-tiny);
 			margin-left: var(--ck-spacing-small);
