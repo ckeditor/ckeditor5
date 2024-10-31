@@ -239,6 +239,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 				class: 'ck-button__icon'
 			}
 		} );
+		this.iconView.bind( 'content' ).to( this, 'icon' );
 
 		this.keystrokeView = this._createKeystrokeView();
 
@@ -340,9 +341,16 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		super.render();
 
 		if ( this.icon ) {
-			this.iconView.bind( 'content' ).to( this, 'icon' );
 			this.children.add( this.iconView );
 		}
+
+		this.on( 'change:icon', ( evt, prop, newIcon, oldIcon ) => {
+			if ( newIcon && !oldIcon ) {
+				this.children.add( this.iconView, 0 );
+			} else if ( !newIcon && oldIcon ) {
+				this.children.remove( this.iconView );
+			}
+		} );
 
 		this.children.add( this.labelView );
 

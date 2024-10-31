@@ -8,6 +8,7 @@
 :root {
 	--ck-link-panel-width: 340px;
 	--ck-link-list-view-max-height: 240px;
+	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
 }
 
 .ck.ck-link__panel {
@@ -118,6 +119,8 @@
 
 		& .ck-button {
 			& > .ck-icon {
+				width: var(--ck-link-list-view-icon-size);
+				height: var(--ck-link-list-view-icon-size);
 				flex-shrink: 0;
 			}
 

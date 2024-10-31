@@ -15,7 +15,6 @@
   "dependencies": {
     "ckeditor5": "43.2.0",
     "@ckeditor/ckeditor5-core": "43.2.0",
-    "@ckeditor/ckeditor5-engine": "43.2.0",
     "@ckeditor/ckeditor5-widget": "43.2.0",
     "@ckeditor/ckeditor5-utils": "43.2.0",
     "@ckeditor/ckeditor5-ui": "43.2.0"
@@ -28,13 +27,14 @@
     "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
     "@ckeditor/ckeditor5-easy-image": "43.2.0",
     "@ckeditor/ckeditor5-editor-classic": "43.2.0",
+    "@ckeditor/ckeditor5-editor-multi-root": "43.2.0",
+    "@ckeditor/ckeditor5-engine": "43.2.0",
     "@ckeditor/ckeditor5-essentials": "43.2.0",
     "@ckeditor/ckeditor5-heading": "43.2.0",
     "@ckeditor/ckeditor5-html-support": "43.2.0",
     "@ckeditor/ckeditor5-image": "43.2.0",
     "@ckeditor/ckeditor5-link": "43.2.0",
     "@ckeditor/ckeditor5-list": "43.2.0",
-    "@ckeditor/ckeditor5-editor-multi-root": "43.2.0",
     "@ckeditor/ckeditor5-paragraph": "43.2.0",
     "@ckeditor/ckeditor5-paste-from-office": "43.2.0",
     "@ckeditor/ckeditor5-table": "43.2.0",

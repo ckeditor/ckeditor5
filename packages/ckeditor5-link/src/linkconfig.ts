@@ -180,6 +180,31 @@ export interface LinkConfig {
 	 * See also the {@glink features/link#custom-link-attributes-decorators link feature guide} for more information.
 	 */
 	decorators?: Record<string, LinkDecoratorDefinition>;
+
+	/**
+	 * Items to be placed in the link contextual toolbar.
+	 *
+	 * Assuming that you use the {@link module:link/linkui~LinkUI} feature, the following toolbar items will be available
+	 * in {@link module:ui/componentfactory~ComponentFactory}:
+	 *
+	 * * `'linkPreview'`,
+	 * * `'editLink'`,
+	 * * `'unlink'`.
+	 *
+	 * The default configuration for link toolbar is:
+	 *
+	 * ```ts
+	 * const linkConfig = {
+	 * 	toolbar: [ 'linkPreview', '|', 'editLink', 'unlink' ]
+	 * };
+	 * ```
+	 *
+	 * Of course, the same buttons can also be used in the
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+	 *
+	 * Read more about configuring the toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+	 */
+	toolbar?: Array<string>;
 }
 
 /**
