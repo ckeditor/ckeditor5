@@ -242,6 +242,26 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
 			} );
+
+			it( 'should remove previous `restrictedEditingException` markers before setting new ones', () => {
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.false;
+
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'downcast', () => {
