@@ -38,10 +38,7 @@ export default class LinkPreviewButtonView extends ButtonView {
 
 		this.extendTemplate( {
 			attributes: {
-				class: [
-					'ck',
-					'ck-link-toolbar__preview'
-				],
+				class: [ 'ck-link-toolbar__preview' ],
 				href: bind.to( 'href' ),
 				target: '_blank',
 				rel: 'noopener noreferrer'
