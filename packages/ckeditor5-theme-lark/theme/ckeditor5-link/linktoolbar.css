@@ -5,6 +5,10 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
+:root {
+	--ck-link-bookmark-icon-size: calc( var(--ck-icon-size) * 0.7); /* 0.7 = 14/20 cause default the icon size is 20px */
+}
+
 a.ck.ck-button.ck-link-toolbar__preview {
 	padding: 0 var(--ck-spacing-medium);
 	color: var(--ck-color-link-default);
@@ -36,8 +40,8 @@ a.ck.ck-button.ck-link-toolbar__preview {
 	}
 
 	&.ck-button_with-text .ck.ck-icon.ck-button__icon {
-		width: 14px;
-		height: 14px;
+		width: var(--ck-link-bookmark-icon-size);
+		height: var(--ck-link-bookmark-icon-size);
 
 		@mixin ck-dir ltr {
 			margin-right: var(--ck-spacing-tiny);
