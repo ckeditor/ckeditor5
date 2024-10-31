@@ -12,8 +12,8 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-editor-multi-root": "43.2.0",
-    "ckeditor5": "43.2.0",
+    "@ckeditor/ckeditor5-editor-multi-root": "43.3.0",
+    "ckeditor5": "43.3.0",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
