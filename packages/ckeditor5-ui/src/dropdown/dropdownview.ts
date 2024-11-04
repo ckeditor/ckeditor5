@@ -286,7 +286,7 @@ export default class DropdownView extends View<HTMLDivElement> {
 				} );
 
 				this.panelView.position = (
-					optimalPanelPosition ? optimalPanelPosition.name : this._panelPositions[ 0 ].name
+					optimalPanelPosition ? optimalPanelPosition.name : this._defaultPanelPositionName
 				) as PanelPosition;
 			} else {
 				this.panelView.position = this.panelPosition;
@@ -356,6 +356,15 @@ export default class DropdownView extends View<HTMLDivElement> {
 				northWest, northEast, northMiddleWest, northMiddleEast, north
 			];
 		}
+	}
+
+	/**
+	 * Returns the default position of the dropdown panel based on the direction of the UI language.
+	 * It is used when the {@link #panelPosition} is set to `'auto'` and the panel has not found a
+	 * suitable position to fit into the viewport.
+	 */
+	private get _defaultPanelPositionName(): PanelPosition {
+		return this.locale!.uiLanguageDirection === 'rtl' ? 'sw' : 'se';
 	}
 
 	/**
