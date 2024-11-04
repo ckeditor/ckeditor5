@@ -113,27 +113,9 @@ export default class MentionCommand extends Command {
 
 		const mention = _addMentionAttributes( { _text: mentionText, id: mentionID }, mentionData );
 
-		if ( options.marker.length != 1 ) {
+		if ( !mentionID.startsWith( options.marker ) ) {
 			/**
-			 * The marker must be a single character.
-			 *
-			 * Correct markers: `'@'`, `'#'`.
-			 *
-			 * Incorrect markers: `'@@'`, `'[@'`.
-			 *
-			 * See {@link module:mention/mentionconfig~MentionConfig}.
-			 *
-			 * @error mentioncommand-incorrect-marker
-			 */
-			throw new CKEditorError(
-				'mentioncommand-incorrect-marker',
-				this
-			);
-		}
-
-		if ( mentionID.charAt( 0 ) != options.marker ) {
-			/**
-			 * The feed item ID must start with the marker character.
+			 * The feed item ID must start with the marker character(s).
 			 *
 			 * Correct mention feed setting:
 			 *
