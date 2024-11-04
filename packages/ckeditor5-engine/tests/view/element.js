@@ -12,6 +12,8 @@ import Document from '../../src/view/document.js';
 import { addBorderRules } from '../../src/view/styles/border.js';
 import { addMarginRules } from '../../src/view/styles/margin.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import TokenList from '../../src/view/tokenlist.js';
+import { StylesMap } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Element', () => {
 	let document;
@@ -69,25 +71,25 @@ describe( 'Element', () => {
 		it( 'should move class attribute to class set ', () => {
 			const el = new Element( document, 'p', { id: 'test', class: 'one two three' } );
 
-			expect( el._attrs.has( 'class' ) ).to.be.false;
+			expect( el._attrs.get( 'class' ) ).to.be.instanceof( TokenList );
 			expect( el._attrs.has( 'id' ) ).to.be.true;
-			expect( el._classes.has( 'one' ) ).to.be.true;
-			expect( el._classes.has( 'two' ) ).to.be.true;
-			expect( el._classes.has( 'three' ) ).to.be.true;
+			expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
+			expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
+			expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.true;
 		} );
 
 		it( 'should move style attribute to style proxy', () => {
 			const el = new Element( document, 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
 
-			expect( el._attrs.has( 'style' ) ).to.be.false;
+			expect( el._attrs.get( 'style' ) ).to.be.instanceof( StylesMap );
 			expect( el._attrs.has( 'id' ) ).to.be.true;
 
-			expect( el._styles.has( 'one' ) ).to.be.true;
-			expect( el._styles.getAsString( 'one' ) ).to.equal( 'style1' );
-			expect( el._styles.has( 'two' ) ).to.be.true;
-			expect( el._styles.getAsString( 'two' ) ).to.equal( 'style2' );
-			expect( el._styles.has( 'three' ) ).to.be.true;
-			expect( el._styles.getAsString( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+			expect( el._attrs.get( 'style' ).has( 'one' ) ).to.be.true;
+			expect( el._attrs.get( 'style' ).getAsString( 'one' ) ).to.equal( 'style1' );
+			expect( el._attrs.get( 'style' ).has( 'two' ) ).to.be.true;
+			expect( el._attrs.get( 'style' ).getAsString( 'two' ) ).to.equal( 'style2' );
+			expect( el._attrs.get( 'style' ).has( 'three' ) ).to.be.true;
+			expect( el._attrs.get( 'style' ).getAsString( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
 		} );
 	} );
 
@@ -208,10 +210,10 @@ describe( 'Element', () => {
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
-			expect( clone._styles.has( 'color' ) ).to.be.true;
-			expect( clone._styles.getAsString( 'color' ) ).to.equal( 'red' );
-			expect( clone._styles.has( 'font-size' ) ).to.be.true;
-			expect( clone._styles.getAsString( 'font-size' ) ).to.equal( '12px' );
+			expect( clone._attrs.get( 'style' ).has( 'color' ) ).to.be.true;
+			expect( clone._attrs.get( 'style' ).getAsString( 'color' ) ).to.equal( 'red' );
+			expect( clone._attrs.get( 'style' ).has( 'font-size' ) ).to.be.true;
+			expect( clone._attrs.get( 'style' ).getAsString( 'font-size' ) ).to.equal( '12px' );
 		} );
 
 		it( 'should clone custom properties', () => {
@@ -522,19 +524,19 @@ describe( 'Element', () => {
 			it( 'should set class', () => {
 				el._setAttribute( 'class', 'foo bar' );
 
-				expect( el._attrs.has( 'class' ) ).to.be.false;
-				expect( el._classes.has( 'foo' ) ).to.be.true;
-				expect( el._classes.has( 'bar' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ) ).to.be.instanceof( TokenList );
+				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.true;
 			} );
 
 			it( 'should replace all existing classes', () => {
 				el._setAttribute( 'class', 'foo bar baz' );
 				el._setAttribute( 'class', 'qux' );
 
-				expect( el._classes.has( 'foo' ) ).to.be.false;
-				expect( el._classes.has( 'bar' ) ).to.be.false;
-				expect( el._classes.has( 'baz' ) ).to.be.false;
-				expect( el._classes.has( 'qux' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'baz' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'qux' ) ).to.be.true;
 			} );
 
 			it( 'should replace all styles', () => {
@@ -724,7 +726,7 @@ describe( 'Element', () => {
 			it( 'should add single class', () => {
 				el._addClass( 'one' );
 
-				expect( el._classes.has( 'one' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
 			} );
 
 			it( 'should fire change event with attributes type', done => {
@@ -739,9 +741,9 @@ describe( 'Element', () => {
 			it( 'should add multiple classes', () => {
 				el._addClass( [ 'one', 'two', 'three' ] );
 
-				expect( el._classes.has( 'one' ) ).to.be.true;
-				expect( el._classes.has( 'two' ) ).to.be.true;
-				expect( el._classes.has( 'three' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.true;
 			} );
 		} );
 
@@ -751,9 +753,9 @@ describe( 'Element', () => {
 
 				el._removeClass( 'one' );
 
-				expect( el._classes.has( 'one' ) ).to.be.false;
-				expect( el._classes.has( 'two' ) ).to.be.true;
-				expect( el._classes.has( 'three' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.true;
 			} );
 
 			it( 'should fire change event with attributes type', done => {
@@ -770,10 +772,10 @@ describe( 'Element', () => {
 				el._addClass( [ 'one', 'two', 'three', 'four' ] );
 				el._removeClass( [ 'one', 'two', 'three' ] );
 
-				expect( el._classes.has( 'one' ) ).to.be.false;
-				expect( el._classes.has( 'two' ) ).to.be.false;
-				expect( el._classes.has( 'three' ) ).to.be.false;
-				expect( el._classes.has( 'four' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.false;
+				expect( el._attrs.get( 'class' ).has( 'four' ) ).to.be.true;
 			} );
 		} );
 
@@ -822,7 +824,7 @@ describe( 'Element', () => {
 			it( 'should set element style', () => {
 				el._setStyle( 'color', 'red' );
 
-				expect( el._styles._styles.color ).to.equal( 'red' );
+				expect( el._attrs.get( 'style' )._styles.color ).to.equal( 'red' );
 			} );
 
 			it( 'should fire change event with attributes type', done => {
@@ -840,8 +842,8 @@ describe( 'Element', () => {
 					position: 'fixed'
 				} );
 
-				expect( el._styles._styles.color ).to.equal( 'red' );
-				expect( el._styles._styles.position ).to.equal( 'fixed' );
+				expect( el._attrs.get( 'style' )._styles.color ).to.equal( 'red' );
+				expect( el._attrs.get( 'style' )._styles.position ).to.equal( 'fixed' );
 			} );
 		} );
 

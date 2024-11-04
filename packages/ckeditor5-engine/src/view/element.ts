@@ -16,6 +16,7 @@ import { default as StylesMap, type StyleValue } from './stylesmap.js';
 
 import type Document from './document.js';
 import type Item from './item.js';
+import TokenList from './tokenlist.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -64,22 +65,12 @@ export default class Element extends Node {
 	/**
 	 * Map of attributes, where attributes names are keys and attributes values are values.
 	 */
-	private readonly _attrs: Map<string, string>;
+	private readonly _attrs: Map<string, string | StylesMap | TokenList>;
 
 	/**
 	 * Array of child nodes.
 	 */
 	private readonly _children: Array<Node>;
-
-	/**
-	 * Set of classes associated with element instance.
-	 */
-	private readonly _classes: Set<string>;
-
-	/**
-	 * Normalized styles.
-	 */
-	private readonly _styles: StylesMap;
 
 	/**
 	 * Map of custom properties.
@@ -121,22 +112,26 @@ export default class Element extends Node {
 			this._insertChild( 0, children );
 		}
 
-		this._classes = new Set();
-
+		// TODO not hardcoded "class"
 		if ( this._attrs.has( 'class' ) ) {
-			// Remove class attribute and handle it by class set.
-			const classString = this._attrs.get( 'class' );
-			parseClasses( this._classes, classString! );
-			this._attrs.delete( 'class' );
+			const value = this._attrs.get( 'class' )!;
+
+			if ( typeof value == 'string' ) {
+				this._attrs.set( 'class', new TokenList().setTo( value ) );
+			} else {
+				this._attrs.set( 'class', value._clone() );
+			}
 		}
 
-		this._styles = new StylesMap( this.document.stylesProcessor );
-
+		// TODO not hardcoded "style"
 		if ( this._attrs.has( 'style' ) ) {
-			// Remove style attribute and handle it by styles map.
-			this._styles.setTo( this._attrs.get( 'style' )! );
+			const value = this._attrs.get( 'style' )!;
 
-			this._attrs.delete( 'style' );
+			if ( typeof value == 'string' ) {
+				this._attrs.set( 'style', new StylesMap( this.document.stylesProcessor ).setTo( value ) );
+			} else {
+				this._attrs.set( 'style', value._clone() );
+			}
 		}
 	}
 
@@ -189,14 +184,6 @@ export default class Element extends Node {
 	 * @returns Keys for attributes.
 	 */
 	public* getAttributeKeys(): IterableIterator<string> {
-		if ( this._classes.size > 0 ) {
-			yield 'class';
-		}
-
-		if ( !this._styles.isEmpty ) {
-			yield 'style';
-		}
-
 		yield* this._attrs.keys();
 	}
 
@@ -207,14 +194,8 @@ export default class Element extends Node {
 	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
 	 */
 	public* getAttributes(): IterableIterator<[ string, string ]> {
-		yield* this._attrs.entries();
-
-		if ( this._classes.size > 0 ) {
-			yield [ 'class', this.getAttribute( 'class' )! ];
-		}
-
-		if ( !this._styles.isEmpty ) {
-			yield [ 'style', this.getAttribute( 'style' )! ];
+		for ( const [ name, value ] of this._attrs.entries() ) {
+			yield [ name, String( value ) ];
 		}
 	}
 
@@ -225,21 +206,14 @@ export default class Element extends Node {
 	 * @returns Attribute value.
 	 */
 	public getAttribute( key: string ): string | undefined {
-		if ( key == 'class' ) {
-			if ( this._classes.size > 0 ) {
-				return [ ...this._classes ].join( ' ' );
-			}
-
+		if ( !this._attrs.has( key ) ) {
 			return undefined;
 		}
 
-		if ( key == 'style' ) {
-			const inlineStyle = this._styles.toString();
+		const value = this._attrs.get( key );
+		const stringValue = String( value );
 
-			return inlineStyle == '' ? undefined : inlineStyle;
-		}
-
-		return this._attrs.get( key );
+		return typeof value != 'string' && stringValue == '' ? undefined : stringValue;
 	}
 
 	/**
@@ -249,14 +223,6 @@ export default class Element extends Node {
 	 * @returns `true` if attribute with the specified key exists in the element, `false` otherwise.
 	 */
 	public hasAttribute( key: string ): boolean {
-		if ( key == 'class' ) {
-			return this._classes.size > 0;
-		}
-
-		if ( key == 'style' ) {
-			return !this._styles.isEmpty;
-		}
-
 		return this._attrs.has( key );
 	}
 
@@ -281,31 +247,24 @@ export default class Element extends Node {
 		}
 
 		// Check number of attributes, classes and styles.
-		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ||
-			this._styles.size !== otherElement._styles.size ) {
+		if ( this._attrs.size !== otherElement._attrs.size ) {
 			return false;
 		}
 
 		// Check if attributes are the same.
 		for ( const [ key, value ] of this._attrs ) {
-			if ( !otherElement._attrs.has( key ) || otherElement._attrs.get( key ) !== value ) {
+			const otherValue = otherElement._attrs.get( key );
+
+			if ( otherValue === undefined ) {
 				return false;
 			}
-		}
 
-		// Check if classes are the same.
-		for ( const className of this._classes ) {
-			if ( !otherElement._classes.has( className ) ) {
-				return false;
+			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
+				if ( otherValue !== value ) {
+					return false;
+				}
 			}
-		}
-
-		// Check if styles are the same.
-		for ( const property of this._styles.getStyleNames() ) {
-			if (
-				!otherElement._styles.has( property ) ||
-				otherElement._styles.getAsString( property ) !== this._styles.getAsString( property )
-			) {
+			else if ( !value.isSimilar( otherValue as any ) ) { // TODO common interface
 				return false;
 			}
 		}
@@ -323,8 +282,14 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public hasClass( ...className: Array<string> ): boolean {
+		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
+
+		if ( !classList ) {
+			return false;
+		}
+
 		for ( const name of className ) {
-			if ( !this._classes.has( name ) ) {
+			if ( !classList.has( name ) ) {
 				return false;
 			}
 		}
@@ -336,7 +301,9 @@ export default class Element extends Node {
 	 * Returns iterator that contains all class names.
 	 */
 	public getClassNames(): Iterable<string> {
-		return this._classes.keys();
+		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
+
+		return classList ? classList.keys() : [];
 	}
 
 	/**
@@ -365,7 +332,9 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public getStyle( property: string ): string | undefined {
-		return this._styles.getAsString( property );
+		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
+
+		return stylesMap && stylesMap.getAsString( property );
 	}
 
 	/**
@@ -402,8 +371,10 @@ export default class Element extends Node {
 	 *
 	 * @param property Name of CSS property
 	 */
-	public getNormalizedStyle( property: string ): StyleValue {
-		return this._styles.getNormalized( property );
+	public getNormalizedStyle( property: string ): StyleValue | undefined {
+		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
+
+		return stylesMap && stylesMap.getNormalized( property );
 	}
 
 	/**
@@ -412,7 +383,9 @@ export default class Element extends Node {
 	 * @param expand Expand shorthand style properties and return all equivalent style representations.
 	 */
 	public getStyleNames( expand?: boolean ): Iterable<string> {
-		return this._styles.getStyleNames( expand );
+		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
+
+		return stylesMap ? stylesMap.getStyleNames( expand ) : [];
 	}
 
 	/**
@@ -425,8 +398,14 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public hasStyle( ...property: Array<string> ): boolean {
+		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
+
+		if ( !stylesMap ) {
+			return false;
+		}
+
 		for ( const name of property ) {
-			if ( !this._styles.has( name ) ) {
+			if ( !stylesMap.has( name ) ) {
 				return false;
 			}
 		}
@@ -498,9 +477,15 @@ export default class Element extends Node {
 	 * **Note**: Classes, styles and other attributes are sorted alphabetically.
 	 */
 	public getIdentity(): string {
-		const classes = Array.from( this._classes ).sort().join( ',' );
-		const styles = this._styles.toString();
-		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
+		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
+		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
+
+		const classes = classList ? Array.from( classList.keys() ).sort().join( ',' ) : ''; // TODO This is sorted, the keys method is not.
+		const styles = stylesMap && String( stylesMap );
+		const attributes = Array.from( this._attrs )
+			.filter( ( [ key ] ) => key != 'style' && key != 'class' ) // TODO not hardcoded
+			.map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` )
+			.sort().join( ' ' );
 
 		return this.name +
 			( classes == '' ? '' : ` class="${ classes }"` ) +
@@ -542,8 +527,8 @@ export default class Element extends Node {
 
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
-		cloned._classes = new Set( this._classes );
-		cloned._styles.set( this._styles.getNormalized() );
+		// cloned._classes = new Set( this._classes );
+		// cloned._styles.set( this._styles.getNormalized() );
 
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
@@ -637,14 +622,24 @@ export default class Element extends Node {
 	 * @fires change
 	 */
 	public _setAttribute( key: string, value: unknown ): void {
-		const stringValue = String( value );
-
 		this._fireChange( 'attributes', this );
 
-		if ( key == 'class' ) {
-			parseClasses( this._classes, stringValue );
-		} else if ( key == 'style' ) {
-			this._styles.setTo( stringValue );
+		const stringValue = String( value );
+		let currentValue = this._attrs.get( key ) as any; // TODO common interface
+
+		// TODO not hardcoded key names
+		if ( key == 'class' || key == 'style' ) {
+			if ( !currentValue ) {
+				if ( key == 'class' ) {
+					currentValue = new TokenList();
+				} else {
+					currentValue = new StylesMap( this.document.stylesProcessor );
+				}
+
+				this._attrs.set( key, currentValue );
+			}
+
+			currentValue.setTo( stringValue );
 		} else {
 			this._attrs.set( key, stringValue );
 		}
@@ -662,29 +657,6 @@ export default class Element extends Node {
 	public _removeAttribute( key: string ): boolean {
 		this._fireChange( 'attributes', this );
 
-		// Remove class attribute.
-		if ( key == 'class' ) {
-			if ( this._classes.size > 0 ) {
-				this._classes.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove style attribute.
-		if ( key == 'style' ) {
-			if ( !this._styles.isEmpty ) {
-				this._styles.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove other attributes.
 		return this._attrs.delete( key );
 	}
 
@@ -703,8 +675,15 @@ export default class Element extends Node {
 	public _addClass( className: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
+		let classList = this._attrs.get( 'class' ) as TokenList | undefined;
+
+		if ( !classList ) {
+			classList = new TokenList();
+			this._attrs.set( 'class', classList );
+		}
+
 		for ( const name of toArray( className ) ) {
-			this._classes.add( name );
+			classList.set( name ); // TODO "add" would be clearer
 		}
 	}
 
@@ -723,8 +702,18 @@ export default class Element extends Node {
 	public _removeClass( className: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
+		const classList = this._attrs.get( 'class' ) as TokenList | undefined;
+
+		if ( !classList ) {
+			return;
+		}
+
 		for ( const name of toArray( className ) ) {
-			this._classes.delete( name );
+			classList.remove( name );
+		}
+
+		if ( classList.isEmpty ) {
+			this._attrs.delete( 'class' );
 		}
 	}
 
@@ -773,10 +762,17 @@ export default class Element extends Node {
 	public _setStyle( property: string | Record<string, string>, value?: string ): void {
 		this._fireChange( 'attributes', this );
 
+		let stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO common interface
+
+		if ( !stylesMap ) {
+			stylesMap = new StylesMap( this.document.stylesProcessor );
+			this._attrs.set( 'style', stylesMap );
+		}
+
 		if ( typeof property != 'string' ) {
-			this._styles.set( property );
+			stylesMap.set( property );
 		} else {
-			this._styles.set( property, value! );
+			stylesMap.set( property, value! );
 		}
 	}
 
@@ -799,8 +795,18 @@ export default class Element extends Node {
 	public _removeStyle( property: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
+		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO common interface
+
+		if ( !stylesMap ) {
+			return;
+		}
+
 		for ( const name of toArray( property ) ) {
-			this._styles.remove( name );
+			stylesMap.remove( name );
+		}
+
+		if ( stylesMap.isEmpty ) {
+			this._attrs.delete( 'style' );
 		}
 	}
 
@@ -895,19 +901,6 @@ function parseAttributes( attrs?: ElementAttributes ) {
 	}
 
 	return attrsMap as Map<string, string>;
-}
-
-/**
- * Parses class attribute and puts all classes into classes set.
- * Classes set s cleared before insertion.
- *
- * @param classesSet Set to insert parsed classes.
- * @param classesString String with classes to parse.
- */
-function parseClasses( classesSet: Set<string>, classesString: string ) {
-	const classArray = classesString.split( /\s+/ );
-	classesSet.clear();
-	classArray.forEach( name => classesSet.add( name ) );
 }
 
 /**

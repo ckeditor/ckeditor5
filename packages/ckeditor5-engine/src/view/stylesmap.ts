@@ -61,7 +61,7 @@ export default class StylesMap {
 	 * styles.setTo( 'border:1px solid blue;margin-top:1px;' );
 	 * ```
 	 */
-	public setTo( inlineStyle: string ): void {
+	public setTo( inlineStyle: string ): this {
 		this.clear();
 
 		const parsedStyles = parseInlineStyles( inlineStyle );
@@ -69,6 +69,8 @@ export default class StylesMap {
 		for ( const [ key, value ] of parsedStyles ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
 		}
+
+		return this;
 	}
 
 	/**
@@ -422,6 +424,26 @@ export default class StylesMap {
 	}
 
 	/**
+	 * TODO
+	 */
+	public isSimilar( other: StylesMap ): boolean {
+		if ( this.size !== other.size ) {
+			return false;
+		}
+
+		for ( const property of this.getStyleNames() ) {
+			if (
+				!other.has( property ) ||
+				other.getAsString( property ) !== this.getAsString( property )
+			) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns normalized styles entries for further processing.
 	 */
 	public getStylesEntries(): Array<PropertyDescriptor> {
@@ -434,6 +456,18 @@ export default class StylesMap {
 		}
 
 		return parsed;
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _clone(): StylesMap {
+		const clone = new StylesMap( this._styleProcessor ) as any; // TODO
+
+		clone.set( this.getNormalized() );
+
+		return clone;
 	}
 
 	/**
