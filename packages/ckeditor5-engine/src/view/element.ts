@@ -65,12 +65,26 @@ export default class Element extends Node {
 	/**
 	 * Map of attributes, where attributes names are keys and attributes values are values.
 	 */
-	private readonly _attrs: Map<string, string | StylesMap | TokenList>;
+	private readonly _attrs: Map<string, string | AttributeValue>;
 
 	/**
 	 * Array of child nodes.
 	 */
 	private readonly _children: Array<Node>;
+
+	/**
+	 * Set of classes associated with element instance.
+	 *
+	 * Note that this is just an alias for this._attrs.get( 'class' );
+	 */
+	private _classes?: TokenList;
+
+	/**
+	 * Normalized styles.
+	 *
+	 * Note that this is just an alias for this._attrs.get( 'style' );
+	 */
+	private _styles?: StylesMap;
 
 	/**
 	 * Map of custom properties.
@@ -107,6 +121,9 @@ export default class Element extends Node {
 
 		this._attrs = parseAttributes( this.document.stylesProcessor, attrs );
 		this._children = [];
+
+		this._classes = this._attrs.get( 'class' ) as TokenList | undefined;
+		this._styles = this._attrs.get( 'style' ) as StylesMap | undefined;
 
 		if ( children ) {
 			this._insertChild( 0, children );
@@ -164,11 +181,11 @@ export default class Element extends Node {
 	public* getAttributeKeys(): IterableIterator<string> {
 		// This is yielded in this specific order to maintain backward compatibility of data.
 
-		if ( this._attrs.has( 'class' ) ) {
+		if ( this._classes ) {
 			yield 'class';
 		}
 
-		if ( this._attrs.has( 'style' ) ) {
+		if ( this._styles ) {
 			yield 'style';
 		}
 
@@ -198,15 +215,7 @@ export default class Element extends Node {
 	 * @returns Attribute value.
 	 */
 	public getAttribute( key: string ): string | undefined {
-		if ( !this._attrs.has( key ) ) {
-			return undefined;
-		}
-
-		const value = this._attrs.get( key );
-		const stringValue = String( value );
-
-		// TODO this is unclear
-		return typeof value != 'string' && stringValue == '' ? undefined : stringValue;
+		return this._attrs.has( key ) ? String( this._attrs.get( key ) ) : undefined;
 	}
 
 	/**
@@ -257,7 +266,7 @@ export default class Element extends Node {
 					return false;
 				}
 			}
-			else if ( !value.isSimilar( otherValue as any ) ) { // TODO common interface
+			else if ( !value.isSimilar( otherValue ) ) {
 				return false;
 			}
 		}
@@ -275,18 +284,8 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public hasClass( ...className: Array<string> ): boolean {
-		if ( !className.length ) {
-			return true;
-		}
-
-		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
-
-		if ( !classList ) {
-			return false;
-		}
-
 		for ( const name of className ) {
-			if ( !classList.has( name ) ) {
+			if ( !this._classes || !this._classes.has( name ) ) {
 				return false;
 			}
 		}
@@ -298,9 +297,7 @@ export default class Element extends Node {
 	 * Returns iterator that contains all class names.
 	 */
 	public getClassNames(): Iterable<string> {
-		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
-
-		return classList ? classList.keys() : [];
+		return this._classes ? this._classes.keys() : [];
 	}
 
 	/**
@@ -329,9 +326,7 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public getStyle( property: string ): string | undefined {
-		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
-
-		return stylesMap && stylesMap.getAsString( property );
+		return this._styles && this._styles.getAsString( property );
 	}
 
 	/**
@@ -369,9 +364,8 @@ export default class Element extends Node {
 	 * @param property Name of CSS property
 	 */
 	public getNormalizedStyle( property: string ): StyleValue | undefined {
-		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
-
-		return stylesMap && stylesMap.getNormalized( property );
+		// TODO what to do with `undefined`
+		return this._styles && this._styles.getNormalized( property );
 	}
 
 	/**
@@ -380,9 +374,7 @@ export default class Element extends Node {
 	 * @param expand Expand shorthand style properties and return all equivalent style representations.
 	 */
 	public getStyleNames( expand?: boolean ): Iterable<string> {
-		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
-
-		return stylesMap ? stylesMap.getStyleNames( expand ) : [];
+		return this._styles ? this._styles.getStyleNames( expand ) : [];
 	}
 
 	/**
@@ -395,14 +387,8 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public hasStyle( ...property: Array<string> ): boolean {
-		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
-
-		if ( !stylesMap ) {
-			return false;
-		}
-
 		for ( const name of property ) {
-			if ( !stylesMap.has( name ) ) {
+			if ( !this._styles || !this._styles.has( name ) ) {
 				return false;
 			}
 		}
@@ -474,13 +460,10 @@ export default class Element extends Node {
 	 * **Note**: Classes, styles and other attributes are sorted alphabetically.
 	 */
 	public getIdentity(): string {
-		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
-		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO
-
-		const classes = classList ? Array.from( classList.keys() ).sort().join( ',' ) : ''; // TODO This is sorted, the keys method is not.
-		const styles = stylesMap && String( stylesMap );
+		const classes = this._classes ? Array.from( this._classes.keys() ).sort().join( ',' ) : '';
+		const styles = this._styles && String( this._styles );
 		const attributes = Array.from( this._attrs )
-			.filter( ( [ key ] ) => key != 'style' && key != 'class' ) // TODO not hardcoded
+			.filter( ( [ key ] ) => key != 'style' && key != 'class' )
 			.map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` )
 			.sort().join( ' ' );
 
@@ -521,11 +504,6 @@ export default class Element extends Node {
 
 		// ContainerElement and AttributeElement should be also cloned properly.
 		const cloned = new ( this.constructor as any )( this.document, this.name, this._attrs, childrenClone );
-
-		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
-		// parse once again in constructor.
-		// cloned._classes = new Set( this._classes );
-		// cloned._styles.set( this._styles.getNormalized() );
 
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
@@ -622,22 +600,28 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		const stringValue = String( value );
-		let currentValue = this._attrs.get( key ) as any; // TODO common interface
+		let currentValue = this._attrs.get( key );
 
 		// TODO not hardcoded key names
-		if ( key == 'class' || key == 'style' ) {
+		if ( key == 'class' ) {
 			if ( !currentValue ) {
-				if ( key == 'class' ) {
-					currentValue = new TokenList();
-				} else {
-					currentValue = new StylesMap( this.document.stylesProcessor );
-				}
-
+				currentValue = new TokenList().setTo( stringValue );
 				this._attrs.set( key, currentValue );
+				this._classes = currentValue as TokenList;
+			} else {
+				( currentValue as AttributeValue ).setTo( stringValue );
 			}
-
-			currentValue.setTo( stringValue );
-		} else {
+		}
+		else if ( key == 'style' ) {
+			if ( !currentValue ) {
+				currentValue = new StylesMap( this.document.stylesProcessor ).setTo( stringValue );
+				this._attrs.set( key, currentValue );
+				this._styles = currentValue as StylesMap;
+			} else {
+				( currentValue as AttributeValue ).setTo( stringValue );
+			}
+		}
+		else {
 			this._attrs.set( key, stringValue );
 		}
 	}
@@ -654,7 +638,18 @@ export default class Element extends Node {
 	public _removeAttribute( key: string ): boolean {
 		this._fireChange( 'attributes', this );
 
-		return this._attrs.delete( key );
+		if ( this._attrs.delete( key ) ) {
+			if ( key == 'style' ) {
+				this._styles = undefined;
+			}
+			else if ( key == 'class' ) {
+				this._classes = undefined;
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -672,15 +667,13 @@ export default class Element extends Node {
 	public _addClass( className: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
-		let classList = this._attrs.get( 'class' ) as TokenList | undefined;
-
-		if ( !classList ) {
-			classList = new TokenList();
-			this._attrs.set( 'class', classList );
+		if ( !this._classes ) {
+			this._classes = new TokenList();
+			this._attrs.set( 'class', this._classes );
 		}
 
 		for ( const name of toArray( className ) ) {
-			classList.set( name ); // TODO "add" would be clearer
+			this._classes.add( name );
 		}
 	}
 
@@ -699,18 +692,15 @@ export default class Element extends Node {
 	public _removeClass( className: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
-		const classList = this._attrs.get( 'class' ) as TokenList | undefined;
-
-		if ( !classList ) {
+		if ( !this._classes ) {
 			return;
 		}
 
-		for ( const name of toArray( className ) ) {
-			classList.remove( name );
-		}
+		this._classes.remove( className );
 
-		if ( classList.isEmpty ) {
+		if ( this._classes.isEmpty ) {
 			this._attrs.delete( 'class' );
+			this._classes = undefined;
 		}
 	}
 
@@ -759,17 +749,15 @@ export default class Element extends Node {
 	public _setStyle( property: string | Record<string, string>, value?: string ): void {
 		this._fireChange( 'attributes', this );
 
-		let stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO common interface
-
-		if ( !stylesMap ) {
-			stylesMap = new StylesMap( this.document.stylesProcessor );
-			this._attrs.set( 'style', stylesMap );
+		if ( !this._styles ) {
+			this._styles = new StylesMap( this.document.stylesProcessor );
+			this._attrs.set( 'style', this._styles );
 		}
 
 		if ( typeof property != 'string' ) {
-			stylesMap.set( property );
+			this._styles.set( property );
 		} else {
-			stylesMap.set( property, value! );
+			this._styles.set( property, value! );
 		}
 	}
 
@@ -792,18 +780,17 @@ export default class Element extends Node {
 	public _removeStyle( property: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
-		const stylesMap = this._attrs.get( 'style' ) as StylesMap | undefined; // TODO common interface
-
-		if ( !stylesMap ) {
+		if ( !this._styles ) {
 			return;
 		}
 
 		for ( const name of toArray( property ) ) {
-			stylesMap.remove( name );
+			this._styles.remove( name );
 		}
 
-		if ( stylesMap.isEmpty ) {
+		if ( this._styles.isEmpty ) {
 			this._attrs.delete( 'style' );
+			this._styles = undefined;
 		}
 	}
 
@@ -872,6 +859,21 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 		return name === this.name && ( type === 'element' || type === 'view:element' );
 	}
 };
+
+/**
+ * TODO
+ */
+export interface AttributeValue {
+	get isEmpty(): boolean;
+	get size(): number;
+	setTo( value: string ): this;
+	has( name: string ): boolean;
+	remove( tokens: ArrayOrItem<string> ): void;
+	toString(): string;
+	clear(): void;
+	isSimilar( other: this ): boolean;
+	_clone(): this;
+}
 
 /**
  * Collection of attributes.

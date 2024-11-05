@@ -8,11 +8,12 @@
  */
 
 import { get, isObject, merge, set, unset } from 'lodash-es';
+import type { AttributeValue } from './element.js';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export default class StylesMap {
+export default class StylesMap implements AttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 	 * value access model using lodash's get, set, unset, etc methods.
@@ -462,8 +463,8 @@ export default class StylesMap {
 	 * TODO
 	 * @internal
 	 */
-	public _clone(): StylesMap {
-		const clone = new StylesMap( this._styleProcessor ) as any; // TODO
+	public _clone(): this {
+		const clone = new ( this.constructor as any )( this._styleProcessor );
 
 		clone.set( this.getNormalized() );
 
@@ -598,7 +599,9 @@ export class StylesProcessor {
 			}
 		}
 
-		return get( styles, toPath( name ) );
+		const value = get( styles, toPath( name ) );
+
+		return value;
 	}
 
 	/**
