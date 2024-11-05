@@ -282,6 +282,10 @@ export default class Element extends Node {
 	 * ```
 	 */
 	public hasClass( ...className: Array<string> ): boolean {
+		if ( !className.length ) {
+			return true;
+		}
+
 		const classList = this._attrs.get( 'class' ) as TokenList | undefined; // TODO
 
 		if ( !classList ) {
