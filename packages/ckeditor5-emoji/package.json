@@ -20,11 +20,8 @@
     "@ckeditor/ckeditor5-utils": "43.3.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-cloud-services": "43.3.0",
     "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
-    "@ckeditor/ckeditor5-easy-image": "43.3.0",
     "@ckeditor/ckeditor5-editor-classic": "43.3.0",
-    "@ckeditor/ckeditor5-image": "43.3.0",
     "@ckeditor/ckeditor5-theme-lark": "43.3.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",

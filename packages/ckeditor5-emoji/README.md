@@ -1,5 +1,5 @@
 CKEditor&nbsp;5 emoji feature
-===========================
+=============================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-emoji.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-emoji)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)

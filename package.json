@@ -40,7 +40,7 @@
     "@ckeditor/ckeditor5-editor-decoupled": "43.3.0",
     "@ckeditor/ckeditor5-editor-inline": "43.3.0",
     "@ckeditor/ckeditor5-editor-multi-root": "43.3.0",
-    "@ckeditor/ckeditor5-emoji": "43.3.0",
+    "@ckeditor/ckeditor5-emoji": "0.0.1",
     "@ckeditor/ckeditor5-engine": "43.3.0",
     "@ckeditor/ckeditor5-enter": "43.3.0",
     "@ckeditor/ckeditor5-essentials": "43.3.0",

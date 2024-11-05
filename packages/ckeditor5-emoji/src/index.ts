@@ -4,7 +4,7 @@
  */
 
 /**
- * @module special-characters
+ * @module emoji
  */
 
 export { default as Emoji } from './emoji.js';
