@@ -387,7 +387,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * The `licenseKey` is missing in the editor configuration. If you use premium features,
 				 * please provide your license key. If you do not have a key yet, please contact us at
 				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/) or order a trial at
-				 * [https://orders.ckeditor.com/trial/premium-features](https://orders.ckeditor.com/trial/premium-features).
+				 * [https://portal.ckeditor.com/checkout](https://portal.ckeditor.com/checkout?plan=free).
 				 *
 				 * If you do not use premium features, add the `'GPL'` license key instead.
 				 *
