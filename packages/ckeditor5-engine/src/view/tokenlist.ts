@@ -36,7 +36,7 @@ export default class TokenList {
 	 * TODO
 	 */
 	public setTo( value: string ): this {
-		this._set.clear();
+		this.clear();
 
 		for ( const token of value.split( /\s+/ ) ) {
 			this._set.add( token );
@@ -74,10 +74,6 @@ export default class TokenList {
 	 * TODO
 	 */
 	public toString(): string {
-		if ( this.isEmpty ) {
-			return '';
-		}
-
 		return Array.from( this._set ).join( ' ' );
 	}
 

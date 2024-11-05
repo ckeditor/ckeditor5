@@ -12,7 +12,7 @@ import Text from './text.js';
 import TextProxy from './textproxy.js';
 import { isIterable, toArray, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import { default as Matcher, type MatcherPattern } from './matcher.js';
-import { default as StylesMap, type StyleValue } from './stylesmap.js';
+import { default as StylesMap, type StylesProcessor, type StyleValue } from './stylesmap.js';
 
 import type Document from './document.js';
 import type Item from './item.js';
@@ -105,33 +105,11 @@ export default class Element extends Node {
 
 		this.name = name;
 
-		this._attrs = parseAttributes( attrs );
+		this._attrs = parseAttributes( this.document.stylesProcessor, attrs );
 		this._children = [];
 
 		if ( children ) {
 			this._insertChild( 0, children );
-		}
-
-		// TODO not hardcoded "class"
-		if ( this._attrs.has( 'class' ) ) {
-			const value = this._attrs.get( 'class' )!;
-
-			if ( typeof value == 'string' ) {
-				this._attrs.set( 'class', new TokenList().setTo( value ) );
-			} else {
-				this._attrs.set( 'class', value._clone() );
-			}
-		}
-
-		// TODO not hardcoded "style"
-		if ( this._attrs.has( 'style' ) ) {
-			const value = this._attrs.get( 'style' )!;
-
-			if ( typeof value == 'string' ) {
-				this._attrs.set( 'style', new StylesMap( this.document.stylesProcessor ).setTo( value ) );
-			} else {
-				this._attrs.set( 'style', value._clone() );
-			}
 		}
 	}
 
@@ -184,7 +162,21 @@ export default class Element extends Node {
 	 * @returns Keys for attributes.
 	 */
 	public* getAttributeKeys(): IterableIterator<string> {
-		yield* this._attrs.keys();
+		// This is yielded in this specific order to maintain backward compatibility of data.
+
+		if ( this._attrs.has( 'class' ) ) {
+			yield 'class';
+		}
+
+		if ( this._attrs.has( 'style' ) ) {
+			yield 'style';
+		}
+
+		for ( const key of this._attrs.keys() ) {
+			if ( key != 'class' && key != 'style' ) {
+				yield key;
+			}
+		}
 	}
 
 	/**
@@ -213,6 +205,7 @@ export default class Element extends Node {
 		const value = this._attrs.get( key );
 		const stringValue = String( value );
 
+		// TODO this is unclear
 		return typeof value != 'string' && stringValue == '' ? undefined : stringValue;
 	}
 
@@ -890,16 +883,31 @@ export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unk
  * as an object (instead of `Iterable`), the object is transformed to the map. Attributes with `null` value are removed.
  * Attributes with non-`String` value are converted to `String`.
  *
+ * @param stylesProcessor The StylesProcessor instance.
  * @param attrs Attributes to parse.
  * @returns Parsed attributes.
  */
-function parseAttributes( attrs?: ElementAttributes ) {
+function parseAttributes( stylesProcessor: StylesProcessor, attrs?: ElementAttributes ) {
 	const attrsMap = toMap( attrs );
 
 	for ( const [ key, value ] of attrsMap ) {
+		// TODO not hardcoded "class" and "style"
 		if ( value === null ) {
 			attrsMap.delete( key );
-		} else if ( typeof value != 'string' ) {
+		}
+		else if ( key == 'class' && typeof value == 'string' ) {
+			attrsMap.set( key, new TokenList().setTo( value ) );
+		}
+		else if ( key == 'class' && value instanceof TokenList ) {
+			attrsMap.set( 'class', value._clone() );
+		}
+		else if ( key == 'style' && typeof value == 'string' ) {
+			attrsMap.set( 'style', new StylesMap( stylesProcessor ).setTo( value ) );
+		}
+		else if ( key == 'style' && value instanceof StylesMap ) {
+			attrsMap.set( 'style', value._clone() );
+		}
+		else if ( typeof value != 'string' ) {
 			attrsMap.set( key, String( value ) );
 		}
 	}
