@@ -23,7 +23,4 @@ export { addLinkProtocolIfApplicable, isLinkableElement } from './utils.js';
 
 export type { LinkConfig, LinkDecoratorDefinition } from './linkconfig.js';
 
-export { default as linkIcon } from '../theme/icons/link.svg';
-export { default as unlinkIcon } from '../theme/icons/unlink.svg';
-
 import './augmentation.js';
