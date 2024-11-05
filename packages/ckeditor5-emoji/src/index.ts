@@ -4,11 +4,12 @@
  */
 
 /**
- * @module special-characters
+ * @module emoji
  */
 
 export { default as Emoji } from './emoji.js';
+export { default as EmojiMentionIntegration } from './emojimentionintegration.js';
 
-export type { EmojiConfig } from './emojiconfig.js';
+export type { EmojiConfig } from './emojieditorconfig.js';
 
 import './augmentation.js';

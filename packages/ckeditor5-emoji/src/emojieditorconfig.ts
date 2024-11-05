@@ -4,7 +4,7 @@
  */
 
 /**
- * @module emoji/emojiconfig
+ * @module emoji/emojieditorconfig
  */
 
 /**
@@ -23,4 +23,24 @@
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  */
-export interface EmojiConfig {}
+export interface EmojiConfig {
+
+	/**
+	 * The maximum number of emojis displayed in the dropdown list.
+	 *
+	 * ```ts
+	 *		ClassicEditor
+	 *			.create( editorElement, {
+	 *				plugins: [ Emoji, ... ],
+	 *				emoji: {
+	 *					dropdownLimit: 4
+	 *					// More of editor configuration.
+	 * 					// ...
+	 * 				}
+	 *			} )
+	 *			.then( ... )
+	 *			.catch( ... );
+	 * ```
+	 */
+	dropdownLimit: number;
+}

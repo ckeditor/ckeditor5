@@ -5,12 +5,14 @@
 
 import type {
 	Emoji,
-	EmojiConfig
+	EmojiConfig,
+	EmojiMentionIntegration
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[Emoji.pluginName]: Emoji;
+		[EmojiMentionIntegration.pluginName]: EmojiMentionIntegration;
 	}
 
 	interface EditorConfig {

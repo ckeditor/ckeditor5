@@ -10,12 +10,13 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import Emoji from '../../src/emoji.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Typing, Paragraph, Undo, Enter, Emoji ],
-		toolbar: [ 'link', 'undo', 'redo' ]
+		plugins: [ Typing, Paragraph, Undo, Enter, Emoji, Clipboard ],
+		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

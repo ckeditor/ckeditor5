@@ -17,7 +17,9 @@
     "@ckeditor/ckeditor5-core": "43.3.0",
     "@ckeditor/ckeditor5-typing": "43.3.0",
     "@ckeditor/ckeditor5-ui": "43.3.0",
-    "@ckeditor/ckeditor5-utils": "43.3.0"
+    "@ckeditor/ckeditor5-utils": "43.3.0",
+    "@emoji-mart/data": "^1.2.1",
+    "emoji-mart": "^5.6.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-cloud-services": "43.3.0",
