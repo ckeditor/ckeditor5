@@ -5,7 +5,8 @@
 
 /* global document, window */
 
-import isNode from '../../src/dom/isnode.js';
+import { describe, it, expect } from 'vitest';
+import isNode from '../../src/dom/isnode.ts';
 
 describe( 'isNode()', () => {
 	it( 'detects native DOM nodes', () => {
@@ -21,7 +22,7 @@ describe( 'isNode()', () => {
 		expect( isNode( window ) ).to.be.false;
 	} );
 
-	it( 'works for nodes in an iframe', done => {
+	it( 'works for nodes in an iframe', () => new Promise( done => {
 		const iframe = document.createElement( 'iframe' );
 
 		iframe.addEventListener( 'load', () => {
@@ -38,5 +39,5 @@ describe( 'isNode()', () => {
 		} );
 
 		document.body.appendChild( iframe );
-	} );
+	} ) );
 } );

@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import createElement from '../../src/dom/createelement.js';
+import { describe, it, expect } from 'vitest';
+import createElement from '../../src/dom/createelement.ts';
 
 describe( 'createElement', () => {
 	it( 'should create element', () => {

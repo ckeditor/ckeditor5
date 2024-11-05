@@ -5,7 +5,9 @@
 
 /* global window, document, console */
 
-import Rect from '../../src/dom/rect.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import Rect from '../../src/dom/rect.ts';
 
 describe( 'Rect', () => {
 	let geometry;
@@ -154,7 +156,7 @@ describe( 'Rect', () => {
 			assertRect( new Rect( geometry ), geometry );
 		} );
 
-		it( 'should accept objects from another window\'s scope', done => {
+		it( 'should accept objects from another window\'s scope', () => new Promise( done => {
 			const iframe = document.createElement( 'iframe' );
 
 			iframe.addEventListener( 'load', () => {
@@ -174,7 +176,7 @@ describe( 'Rect', () => {
 			} );
 
 			document.body.appendChild( iframe );
-		} );
+		} ) );
 
 		it( 'should copy the properties (Rect)', () => {
 			const sourceGeometry = Object.assign( {}, geometry );
@@ -499,7 +501,7 @@ describe( 'Rect', () => {
 			} );
 		} );
 
-		it( 'should not fail when the rect is for an object in another window\'s scope', done => {
+		it( 'should not fail when the rect is for an object in another window\'s scope', () => new Promise( done => {
 			const iframe = document.createElement( 'iframe' );
 
 			iframe.addEventListener( 'load', () => {
@@ -542,7 +544,7 @@ describe( 'Rect', () => {
 			} );
 
 			document.body.appendChild( iframe );
-		} );
+		} ) );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
 			ancestorA.style.overflow = 'scroll';
@@ -1173,7 +1175,7 @@ describe( 'Rect', () => {
 			} );
 		} );
 
-		it( 'should work for a window in an iframe', done => {
+		it( 'should work for a window in an iframe', () => new Promise( done => {
 			const iframe = document.createElement( 'iframe' );
 
 			// Mock the properties of the top window. Then make sure the ones
@@ -1229,7 +1231,7 @@ describe( 'Rect', () => {
 			} );
 
 			document.body.appendChild( iframe );
-		} );
+		} ) );
 	} );
 
 	describe( 'getDomRangeRects() ', () => {

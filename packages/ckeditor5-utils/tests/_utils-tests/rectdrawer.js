@@ -5,8 +5,9 @@
 
 /* global document */
 
-import Rect from '../../src/dom/rect.js';
-import createElement from '../../src/dom/createelement.js';
+import { describe, it, expect, afterEach } from 'vitest';
+import Rect from '../../src/dom/rect.ts';
+import createElement from '../../src/dom/createelement.ts';
 import RectDrawer from '../../tests/_utils/rectdrawer.js';
 
 const DEFAULT_STYLES = 'position: fixed; ' +

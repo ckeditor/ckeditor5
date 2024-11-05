@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import getBorderWidths from '../../src/dom/getborderwidths.js';
+import { describe, it, expect } from 'vitest';
+import getBorderWidths from '../../src/dom/getborderwidths.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'getBorderWidths()', () => {

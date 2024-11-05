@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach } from 'vitest';
 import env, {
 	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent,
 	isMediaForcedColors, isMotionReduced
-} from '../src/env.js';
+} from '../src/env.ts';
 
-import global from '../src/dom/global.js';
+import global from '../src/dom/global.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 function toLowerCase( str ) {

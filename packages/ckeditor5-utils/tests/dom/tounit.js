@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import toUnit from '../../src/dom/tounit.js';
+import { describe, it, expect } from 'vitest';
+import toUnit from '../../src/dom/tounit.ts';
 
 describe( 'toUnit', () => {
 	it( 'should be a function', () => {

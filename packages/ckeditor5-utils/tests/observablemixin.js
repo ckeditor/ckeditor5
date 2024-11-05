@@ -5,11 +5,13 @@
 
 /* eslint-disable new-cap */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils.js';
-import ObservableMixin from '../src/observablemixin.js';
-import EmitterMixin from '../src/emittermixin.js';
-import EventInfo from '../src/eventinfo.js';
+import ObservableMixin from '../src/observablemixin.ts';
+import EmitterMixin from '../src/emittermixin.ts';
+import EventInfo from '../src/eventinfo.ts';
 
 describe( 'ObservableMixin', () => {
 	const Observable = ObservableMixin();

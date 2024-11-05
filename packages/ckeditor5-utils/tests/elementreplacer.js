@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import ElementReplacer from '../src/elementreplacer.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import ElementReplacer from '../src/elementreplacer.ts';
 
 describe( 'ElementReplacer', () => {
 	let replacer;

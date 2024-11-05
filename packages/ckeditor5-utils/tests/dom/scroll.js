@@ -5,9 +5,11 @@
 
 /* global window, document, Text */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { stubGeometry, assertScrollPosition } from '../_utils/scroll.js';
-import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.js';
+import { stubGeometry, assertScrollPosition } from '../_utils/scroll.ts';
+import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.ts';
 
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;
@@ -350,7 +352,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	describe( 'in an iframe', () => {
 		let iframe, iframeWindow, iframeAncestor, target, targetAncestor;
 
-		beforeEach( done => {
+		beforeEach( () => new Promise( done => {
 			iframe = document.createElement( 'iframe' );
 			iframeAncestor = document.createElement( 'div' );
 
@@ -386,7 +388,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			iframeAncestor.appendChild( iframe );
 			document.body.appendChild( iframeAncestor );
-		} );
+		} ) );
 
 		afterEach( () => {
 			// Safari fails because of "afterEach()" hook tries to restore values from removed element.

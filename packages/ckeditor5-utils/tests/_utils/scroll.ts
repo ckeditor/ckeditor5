@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { expect } from 'vitest';
 import isRange from '../../src/dom/isrange.js';
-import global from '../../src/dom/global.js';
 
 declare global {
 	interface Window {
@@ -75,6 +75,6 @@ export function stubGeometry(
  * A helper that asserts HTML element's scroll* properties.
  */
 export function assertScrollPosition( element: HTMLElement, expected: { scrollTop: number; scrollLeft: number } ): void {
-	global.window.expect( element.scrollTop ).to.equal( expected.scrollTop, 'scrollTop' );
-	global.window.expect( element.scrollLeft ).to.equal( expected.scrollLeft, 'scrollLeft' );
+	expect( element.scrollTop ).to.equal( expected.scrollTop, 'scrollTop' );
+	expect( element.scrollLeft ).to.equal( expected.scrollLeft, 'scrollLeft' );
 }

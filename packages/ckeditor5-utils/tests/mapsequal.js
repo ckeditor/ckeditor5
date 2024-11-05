@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import mapsEqual from '../src/mapsequal.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import mapsEqual from '../src/mapsequal.ts';
 
 describe( 'utils', () => {
 	describe( 'mapsEqual', () => {

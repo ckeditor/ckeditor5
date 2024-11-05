@@ -5,10 +5,12 @@
 
 /* globals document */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import global from '../../src/dom/global.js';
-import ResizeObserver from '../../src/dom/resizeobserver.js';
+import global from '../../src/dom/global.ts';
+import ResizeObserver from '../../src/dom/resizeobserver.ts';
 
 describe( 'ResizeObserver()', () => {
 	let elementA, elementB;

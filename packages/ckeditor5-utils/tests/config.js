@@ -5,8 +5,9 @@
 
 /* global document */
 
-import Config from '../src/config.js';
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import Config from '../src/config.ts';
+import areConnectedThroughProperties from '../src/areconnectedthroughproperties.ts';
 
 describe( 'Config', () => {
 	let config;

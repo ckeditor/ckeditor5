@@ -5,7 +5,9 @@
 
 /* globals AbortController, AbortSignal */
 
-import wait from '../src/wait.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import wait from '../src/wait.ts';
 
 describe( 'utils', () => {
 	let clock;
@@ -90,17 +92,19 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should clean the timer', async () => {
+			const reason = new Error( 'aborted' );
 			const controller = new AbortController();
 
-			wait( 20, { signal: controller.signal } );
+			const promise = wait( 20, { signal: controller.signal } );
 
 			await clock.tickAsync( 10 );
 
 			expect( clock.countTimers(), 'before abort' ).to.equal( 1 );
 
-			controller.abort();
+			controller.abort( reason );
 
 			expect( clock.countTimers(), 'after abort' ).to.equal( 0 );
+			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'rejected', reason } );
 		} );
 	} );
 } );

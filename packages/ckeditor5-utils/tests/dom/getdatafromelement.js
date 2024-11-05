@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import getDataFromElement from '../../src/dom/getdatafromelement.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import getDataFromElement from '../../src/dom/getdatafromelement.ts';
 
 describe( 'getDataFromElement', () => {
 	let divEl;

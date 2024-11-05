@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Collection from '../src/collection.js';
+import Collection from '../src/collection.ts';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 function getItem( id, idProperty ) {

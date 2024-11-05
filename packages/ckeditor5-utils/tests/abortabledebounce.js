@@ -5,7 +5,9 @@
 
 /* globals AbortSignal, DOMException */
 
-import abortableDebounce from '../src/abortabledebounce.js';
+import sinon from 'sinon';
+import { describe, it, expect } from 'vitest';
+import abortableDebounce from '../src/abortabledebounce.ts';
 
 describe( 'abortableDebounce()', () => {
 	it( 'should forward arguments and return type', () => {

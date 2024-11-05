@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import sinon from 'sinon';
+import { afterEach } from 'vitest';
+
 /**
  * General test utils for CKEditor.
  */

@@ -5,7 +5,8 @@
 
 /* global Range */
 
-import isRange from '../../src/dom/isrange.js';
+import { describe, it, expect } from 'vitest';
+import isRange from '../../src/dom/isrange.ts';
 
 describe( 'isRange()', () => {
 	it( 'detects native DOM Range', () => {

@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import diff from '../src/diff.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import diff from '../src/diff.ts';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import getLongText from './_utils/longtext.js';

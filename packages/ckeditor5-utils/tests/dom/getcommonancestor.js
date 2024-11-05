@@ -5,8 +5,9 @@
 
 /* globals document */
 
-import getCommonAncestor from '../../src/dom/getcommonancestor.js';
-import createElement from '../../src/dom/createelement.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import getCommonAncestor from '../../src/dom/getcommonancestor.ts';
+import createElement from '../../src/dom/createelement.ts';
 
 describe( 'getParents', () => {
 	let b, span1, span2, p1, p2, i, div;

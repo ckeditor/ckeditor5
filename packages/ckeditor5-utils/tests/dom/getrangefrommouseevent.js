@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import getRangeFromMouseEvent from '../../src/dom/getrangefrommouseevent.js';
+import sinon from 'sinon';
+import { describe, it, expect } from 'vitest';
+import getRangeFromMouseEvent from '../../src/dom/getrangefrommouseevent.ts';
 
 describe( 'getRangeFromMouseEvent()', () => {
 	it( 'should use Document#caretRangeFromPoint method to obtain range on Webkit & Blink', () => {
@@ -24,7 +26,8 @@ describe( 'getRangeFromMouseEvent()', () => {
 		};
 
 		expect( getRangeFromMouseEvent( evt ) ).to.be.equal( fakeRange );
-		expect( caretRangeFromPointSpy ).to.be.calledWith( 10, 11 );
+		// expect( caretRangeFromPointSpy ).to.be.calledWith( 10, 11 );
+		expect( caretRangeFromPointSpy.calledWith( 10, 11 ) ).to.be.true;
 	} );
 
 	it( 'should use Document#createRange method to obtain range on Firefox', () => {
@@ -49,8 +52,10 @@ describe( 'getRangeFromMouseEvent()', () => {
 
 		expect( getRangeFromMouseEvent( evt ) ).to.be.equal( fakeRange );
 
-		expect( fakeRange.collapse ).to.be.calledWith( true );
-		expect( fakeRange.setStart ).to.be.calledWith( evt.rangeParent, evt.rangeOffset );
+		// expect( fakeRange.collapse ).to.be.calledWith( true );
+		expect( fakeRange.collapse.calledWith( true ) ).to.be.true;
+		// expect( fakeRange.setStart ).to.be.calledWith( evt.rangeParent, evt.rangeOffset );
+		expect( fakeRange.setStart.calledWith( evt.rangeParent, evt.rangeOffset ) ).to.be.true;
 	} );
 
 	it( 'should return null if event target is null', () => {

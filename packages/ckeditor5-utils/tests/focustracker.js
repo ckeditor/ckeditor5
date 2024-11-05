@@ -5,8 +5,10 @@
 
 /* global document, Event */
 
-import FocusTracker from '../src/focustracker.js';
-import global from '../src/dom/global.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import FocusTracker from '../src/focustracker.ts';
+import global from '../src/dom/global.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import { View } from '@ckeditor/ckeditor5-ui';

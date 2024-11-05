@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import indexOf from '../../src/dom/indexof.js';
+import { describe, it, expect } from 'vitest';
+import indexOf from '../../src/dom/indexof.ts';
 
 describe( 'indexOf', () => {
 	it( 'should return 0 if element has no parent', () => {

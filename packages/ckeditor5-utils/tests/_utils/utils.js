@@ -5,9 +5,10 @@
 
 /* global console:false */
 
-import EmitterMixin from '../../src/emittermixin.js';
-import CKEditorError from '../../src/ckeditorerror.js';
-import areConnectedThroughProperties from '../../src/areconnectedthroughproperties.js';
+import { expect } from 'vitest';
+import EmitterMixin from '../../src/emittermixin.ts';
+import CKEditorError from '../../src/ckeditorerror.ts';
+import areConnectedThroughProperties from '../../src/areconnectedthroughproperties.ts';
 
 /**
  * Creates an instance inheriting from {@link module:utils/emittermixin~Emitter} with one additional method `observe()`.

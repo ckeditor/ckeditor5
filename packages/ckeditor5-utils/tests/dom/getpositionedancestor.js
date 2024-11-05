@@ -5,7 +5,8 @@
 
 /* global document */
 
-import getPositionedAncestor from '../../src/dom/getpositionedancestor.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import getPositionedAncestor from '../../src/dom/getpositionedancestor.ts';
 
 describe( 'getPositionedAncestor', () => {
 	let element;

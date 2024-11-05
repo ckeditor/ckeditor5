@@ -5,7 +5,9 @@
 
 /* globals AbortController, AbortSignal, setTimeout */
 
-import retry, { exponentialDelay } from '../src/retry.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import retry, { exponentialDelay } from '../src/retry.ts';
 
 describe( 'utils', () => {
 	let clock;
@@ -20,7 +22,7 @@ describe( 'utils', () => {
 
 	describe( 'retry', () => {
 		it( 'returns success the first time', async () => {
-			const callback = sinon.stub().returns( Promise.resolve( 'success' ) );
+			const callback = sinon.stub().callsFake( () => Promise.resolve( 'success' ) );
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
@@ -36,9 +38,9 @@ describe( 'utils', () => {
 		it( 'returns success the third time', async () => {
 			const callback = sinon.stub();
 
-			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );
-			callback.onCall( 1 ).returns( Promise.reject( new Error( '2nd failure' ) ) );
-			callback.onCall( 2 ).returns( Promise.resolve( 'success' ) );
+			callback.onCall( 0 ).callsFake( () => Promise.reject( new Error( '1st failure' ) ) );
+			callback.onCall( 1 ).callsFake( () => Promise.reject( new Error( '2nd failure' ) ) );
+			callback.onCall( 2 ).callsFake( () => Promise.resolve( 'success' ) );
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
@@ -56,10 +58,10 @@ describe( 'utils', () => {
 		it( 'should return failure after `maxAttempts`', async () => {
 			const callback = sinon.stub();
 
-			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );
-			callback.onCall( 1 ).returns( Promise.reject( new Error( '2nd failure' ) ) );
-			callback.onCall( 2 ).returns( Promise.reject( new Error( '3rd failure' ) ) );
-			callback.onCall( 3 ).returns( Promise.resolve( 'success' ) );
+			callback.onCall( 0 ).callsFake( () => Promise.reject( new Error( '1st failure' ) ) );
+			callback.onCall( 1 ).callsFake( () => Promise.reject( new Error( '2nd failure' ) ) );
+			callback.onCall( 2 ).callsFake( () => Promise.reject( new Error( '3rd failure' ) ) );
+			callback.onCall( 3 ).callsFake( () => Promise.resolve( 'success' ) );
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
@@ -81,11 +83,11 @@ describe( 'utils', () => {
 		it( 'should return failure after 4 retries by default', async () => {
 			const callback = sinon.stub();
 
-			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );
-			callback.onCall( 1 ).returns( Promise.reject( new Error( '2nd failure' ) ) );
-			callback.onCall( 2 ).returns( Promise.reject( new Error( '3rd failure' ) ) );
-			callback.onCall( 3 ).returns( Promise.reject( new Error( '4rd failure' ) ) );
-			callback.onCall( 4 ).returns( Promise.resolve( 'success' ) );
+			callback.onCall( 0 ).callsFake( () => Promise.reject( new Error( '1st failure' ) ) );
+			callback.onCall( 1 ).callsFake( () => Promise.reject( new Error( '2nd failure' ) ) );
+			callback.onCall( 2 ).callsFake( () => Promise.reject( new Error( '3rd failure' ) ) );
+			callback.onCall( 3 ).callsFake( () => Promise.reject( new Error( '4rd failure' ) ) );
+			callback.onCall( 4 ).callsFake( () => Promise.resolve( 'success' ) );
 
 			const promise = retry( callback, {
 				retryDelay: () => 10
@@ -104,7 +106,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should wait specified time between invocations', async () => {
-			const callback = sinon.stub().returns( Promise.reject() );
+			const callback = sinon.stub().callsFake( () => Promise.reject() );
 
 			retry( callback, {
 				retryDelay: attempt => ( attempt + 1 ) * 5,
@@ -143,7 +145,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should exponentially back off by default', async () => {
-			const callback = sinon.stub().returns( Promise.reject() );
+			const callback = sinon.stub().callsFake( () => Promise.reject() );
 
 			retry( callback );
 
@@ -179,7 +181,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should exponentially back off by default (custom `maxAttempts`)', async () => {
-			const callback = sinon.stub().returns( Promise.reject() );
+			const callback = sinon.stub().callsFake( () => Promise.reject() );
 
 			retry( callback, {
 				maxAttempts: 6
@@ -271,8 +273,8 @@ describe( 'utils', () => {
 			const promiseFailed = sinon.stub();
 			const callback = sinon.stub();
 
-			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );
-			callback.onCall( 1 ).returns( Promise.reject( new Error( '2nd failure' ) ) );
+			callback.onCall( 0 ).callsFake( () => Promise.reject( new Error( '1st failure' ) ) );
+			callback.onCall( 1 ).callsFake( () => Promise.reject( new Error( '2nd failure' ) ) );
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
@@ -295,7 +297,7 @@ describe( 'utils', () => {
 			let reason = null;
 			const expectedReason = new Error( 'aborted' );
 			const controller = new AbortController();
-			const callback = sinon.stub().returns( Promise.reject() );
+			const callback = sinon.stub().callsFake( () => Promise.reject() );
 
 			const promise = retry( callback, { signal: controller.signal } );
 

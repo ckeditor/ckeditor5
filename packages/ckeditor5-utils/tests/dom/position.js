@@ -5,8 +5,10 @@
 
 /* global document, window */
 
-import { getOptimalPosition } from '../../src/dom/position.js';
-import Rect from '../../src/dom/rect.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { getOptimalPosition } from '../../src/dom/position.ts';
+import Rect from '../../src/dom/rect.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 let element, target, limiter;

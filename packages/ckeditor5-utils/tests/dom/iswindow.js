@@ -5,7 +5,8 @@
 
 /* global window */
 
-import isWindow from '../../src/dom/iswindow.js';
+import { describe, it, expect } from 'vitest';
+import isWindow from '../../src/dom/iswindow.ts';
 
 describe( 'isWindow()', () => {
 	it( 'detects DOM Window in browsers', () => {

@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { describe, it, expect, afterEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _translate, add, _clear, _unifyTranslations } from '../src/translation-service.js';
+import { _translate, add, _clear, _unifyTranslations } from '../src/translation-service.ts';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 describe( 'translation-service', () => {

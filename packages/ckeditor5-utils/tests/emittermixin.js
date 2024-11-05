@@ -5,10 +5,12 @@
 
 /* eslint-disable new-cap */
 
-import EmitterMixin, { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin.js';
-import EventInfo from '../src/eventinfo.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach } from 'vitest';
+import EmitterMixin, { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin.ts';
+import EventInfo from '../src/eventinfo.ts';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
-import CKEditorError from '../src/ckeditorerror.js';
+import CKEditorError from '../src/ckeditorerror.ts';
 
 describe( 'EmitterMixin', () => {
 	let emitter, listener;
@@ -824,7 +826,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		describe( 'to', () => {
-			it( 'forwards an event to another emitter', done => {
+			it( 'forwards an event to another emitter', () => new Promise( done => {
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
 				const dataA = {};
@@ -844,7 +846,7 @@ describe( 'EmitterMixin', () => {
 				} );
 
 				emitterB.fire( 'foo', dataA, dataB );
-			} );
+			} ) );
 
 			it( 'forwards multiple events to another emitter', () => {
 				const emitterA = getEmitterInstance();
@@ -931,7 +933,7 @@ describe( 'EmitterMixin', () => {
 				sinon.assert.callCount( spyBaz, 1 );
 			} );
 
-			it( 'supports deep chain event delegation', done => {
+			it( 'supports deep chain event delegation', () => new Promise( done => {
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
 				const emitterC = getEmitterInstance();
@@ -952,9 +954,9 @@ describe( 'EmitterMixin', () => {
 				} );
 
 				emitterC.fire( 'foo', data );
-			} );
+			} ) );
 
-			it( 'preserves path in event delegation', done => {
+			it( 'preserves path in event delegation', () => new Promise( done => {
 				const data = {};
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
@@ -978,7 +980,7 @@ describe( 'EmitterMixin', () => {
 
 				emitterB.fire( 'foo', data );
 				emitterC.fire( 'foo', data );
-			} );
+			} ) );
 
 			it( 'executes callbacks first, then delegates further', () => {
 				const emitterA = getEmitterInstance();
@@ -1084,7 +1086,7 @@ describe( 'EmitterMixin', () => {
 				sinon.assert.callOrder( spyAFooQux, spyABazQux, spyABarQux );
 			} );
 
-			it( 'preserves path in delegation under a different name', done => {
+			it( 'preserves path in delegation under a different name', () => new Promise( done => {
 				const data = {};
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
@@ -1107,7 +1109,7 @@ describe( 'EmitterMixin', () => {
 				} );
 
 				emitterB.fire( 'foo', data );
-			} );
+			} ) );
 
 			it( 'supports delegation of all events', () => {
 				const emitterA = getEmitterInstance();

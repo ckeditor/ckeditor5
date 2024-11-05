@@ -5,7 +5,8 @@
 
 /* global window, document */
 
-import global from '../../src/dom/global.js';
+import { describe, it, expect } from 'vitest';
+import global from '../../src/dom/global.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'global', () => {

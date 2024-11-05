@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import toMap from '../src/tomap.js';
-import count from '../src/count.js';
+import { describe, it, expect } from 'vitest';
+import toMap from '../src/tomap.ts';
+import count from '../src/count.ts';
 
 describe( 'utils', () => {
 	describe( 'toMap', () => {

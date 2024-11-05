@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import crc32 from '../src/crc32.js';
+import { describe, it, expect } from 'vitest';
+import crc32 from '../src/crc32.ts';
 
 describe( 'crc32', () => {
 	describe( 'input is a single value (not an array)', () => {

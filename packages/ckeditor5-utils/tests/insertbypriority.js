@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import insertToPriorityArray from '../src/inserttopriorityarray.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import insertToPriorityArray from '../src/inserttopriorityarray.ts';
 
 describe( 'insertToPriorityArray()', () => {
 	let objectsWithPriority;

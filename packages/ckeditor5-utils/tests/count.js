@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import count from '../src/count.js';
+import { describe, it, expect } from 'vitest';
+import count from '../src/count.ts';
 
 describe( 'utils', () => {
 	describe( 'count', () => {

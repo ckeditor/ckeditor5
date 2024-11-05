@@ -5,7 +5,8 @@
 
 /* globals window, document, Event */
 
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
+import { describe, it, expect } from 'vitest';
+import areConnectedThroughProperties from '../src/areconnectedthroughproperties.ts';
 
 describe( 'areConnectedThroughProperties()', () => {
 	it( 'should return `false` if one of the value is primitive #1', () => {

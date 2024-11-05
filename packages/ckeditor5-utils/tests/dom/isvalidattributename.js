@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import isValidAttributeName from '../../src/dom/isvalidattributename.js';
+import { describe, it, expect } from 'vitest';
+import isValidAttributeName from '../../src/dom/isvalidattributename.ts';
 
 describe( 'isValidAttributeName', () => {
 	const validTestCases = [

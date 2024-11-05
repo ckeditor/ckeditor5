@@ -5,7 +5,8 @@
 
 /* global document, Text */
 
-import isText from '../../src/dom/istext.js';
+import { describe, it, expect } from 'vitest';
+import isText from '../../src/dom/istext.ts';
 
 describe( 'isText()', () => {
 	it( 'detects native DOM Text', () => {
@@ -22,7 +23,7 @@ describe( 'isText()', () => {
 		expect( isText( document.createComment( 'a' ) ) ).to.be.false;
 	} );
 
-	it( 'works for texts in an iframe', done => {
+	it( 'works for texts in an iframe', () => new Promise( done => {
 		const iframe = document.createElement( 'iframe' );
 
 		iframe.addEventListener( 'load', () => {
@@ -37,5 +38,5 @@ describe( 'isText()', () => {
 		} );
 
 		document.body.appendChild( iframe );
-	} );
+	} ) );
 } );

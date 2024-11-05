@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import compareArrays from '../src/comparearrays.js';
+import { describe, it, expect } from 'vitest';
+import compareArrays from '../src/comparearrays.ts';
 
 describe( 'utils', () => {
 	describe( 'compareArrays', () => {

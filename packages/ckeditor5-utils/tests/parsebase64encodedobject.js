@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import parseBase64EncodedObject from '../src/parsebase64encodedobject.js';
+import { describe, it, expect } from 'vitest';
+import parseBase64EncodedObject from '../src/parsebase64encodedobject.ts';
 
 /* globals btoa */
 

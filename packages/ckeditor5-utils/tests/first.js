@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import first from '../src/first.js';
+import { describe, it, expect } from 'vitest';
+import first from '../src/first.ts';
 
 describe( 'utils', () => {
 	describe( 'first', () => {

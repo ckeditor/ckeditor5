@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EmitterMixin from '../src/emittermixin.js';
-import KeystrokeHandler from '../src/keystrokehandler.js';
-import { keyCodes } from '../src/keyboard.js';
-import env from '../src/env.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import EmitterMixin from '../src/emittermixin.ts';
+import KeystrokeHandler from '../src/keystrokehandler.ts';
+import { keyCodes } from '../src/keyboard.ts';
+import env from '../src/env.ts';
 
 describe( 'KeystrokeHandler', () => {
 	const Emitter = EmitterMixin();
@@ -101,7 +103,7 @@ describe( 'KeystrokeHandler', () => {
 			sinon.assert.callOrder( spy2, spy1, spy4, spy3 );
 		} );
 
-		it( 'provides a callback which causes preventDefault and stopPropagation in the DOM', done => {
+		it( 'provides a callback which causes preventDefault and stopPropagation in the DOM', () => new Promise( done => {
 			const keyEvtData = getCtrlA();
 
 			keystrokes.set( 'Ctrl+A', ( data, cancel ) => {
@@ -119,7 +121,7 @@ describe( 'KeystrokeHandler', () => {
 			} );
 
 			emitter.fire( 'keydown', keyEvtData );
-		} );
+		} ) );
 
 		it( 'provides a callback which stops the event and remaining callbacks in the keystroke handler', () => {
 			const spy1 = sinon.spy();

@@ -5,11 +5,13 @@
 
 /* globals console */
 
-import Locale from '../src/locale.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import Locale from '../src/locale.ts';
 import {
 	add as addTranslations,
 	_clear as clearTranslations
-} from '../src/translation-service.js';
+} from '../src/translation-service.ts';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 
 describe( 'Locale', () => {

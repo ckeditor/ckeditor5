@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ObservableMixin from '../../src/observablemixin.js';
-import EmitterMixin from '../../src/emittermixin.js';
+import ObservableMixin from '../../src/observablemixin.ts';
+import EmitterMixin from '../../src/emittermixin.ts';
 import { createObserver } from '../_utils/utils.js';
 
 describe( 'utils - testUtils', () => {

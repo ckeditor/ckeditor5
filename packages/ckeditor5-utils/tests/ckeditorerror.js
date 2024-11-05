@@ -7,7 +7,9 @@
 
 /* global console */
 
-import { default as CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { default as CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror.ts';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env from '../src/env.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import env from '../src/env.ts';
 import {
 	keyCodes,
 	getCode,
@@ -12,7 +13,7 @@ import {
 	isArrowKeyCode,
 	isForwardArrowKeyCode,
 	getLocalizedArrowKeyCodeDirection
-} from '../src/keyboard.js';
+} from '../src/keyboard.ts';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 
 describe( 'Keyboard', () => {

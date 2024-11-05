@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import insertAt from '../../src/dom/insertat.js';
+import { describe, it, expect } from 'vitest';
+import insertAt from '../../src/dom/insertat.ts';
 
 describe( 'insertAt', () => {
 	it( 'should insert at given position', () => {

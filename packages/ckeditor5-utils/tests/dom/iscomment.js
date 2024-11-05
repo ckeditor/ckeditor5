@@ -5,12 +5,13 @@
 
 /* global document */
 
-import isComment from '../../src/dom/iscomment.js';
+import { describe, it, expect, beforeAll } from 'vitest';
+import isComment from '../../src/dom/iscomment.ts';
 
 describe( 'isComment()', () => {
 	let text, element, documentFragment, comment;
 
-	before( () => {
+	beforeAll( () => {
 		text = document.createTextNode( 'test' );
 		element = document.createElement( 'div' );
 		documentFragment = document.createDocumentFragment();

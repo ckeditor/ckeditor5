@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import delay from '../src/delay.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import delay from '../src/delay.ts';
 
 describe( 'utils', () => {
 	describe( 'delay', () => {

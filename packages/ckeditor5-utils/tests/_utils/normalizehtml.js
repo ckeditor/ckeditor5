@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.ts';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.ts';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.ts';
+import Document from '@ckeditor/ckeditor5-engine/src/view/document.ts';
 
 /**
  * Parses given string of HTML and returns normalized HTML.

@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getLanguageDirection } from '../src/language.js';
+import { describe, it, expect } from 'vitest';
+import { getLanguageDirection } from '../src/language.ts';
 
 describe( 'language', () => {
 	describe( 'getLanguageDirection()', () => {

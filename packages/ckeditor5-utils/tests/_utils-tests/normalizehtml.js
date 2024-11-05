@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { describe, it, expect } from 'vitest';
 import normalizeHtml from '../../tests/_utils/normalizehtml.js';
 
 describe( 'utils', () => {

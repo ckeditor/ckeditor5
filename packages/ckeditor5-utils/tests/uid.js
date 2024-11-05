@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import uid from '../src/uid.js';
+import sinon from 'sinon';
+import { describe, it, expect, afterEach } from 'vitest';
+import uid from '../src/uid.ts';
 
 describe( 'utils', () => {
 	describe( 'uid', () => {

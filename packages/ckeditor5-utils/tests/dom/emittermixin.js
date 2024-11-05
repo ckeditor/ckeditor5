@@ -7,9 +7,11 @@
 
 /* globals document, window, Event, MouseEvent */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import DomEmitterMixin from '../../src/dom/emittermixin.js';
-import EmitterMixin from '../../src/emittermixin.js';
+import DomEmitterMixin from '../../src/dom/emittermixin.ts';
+import EmitterMixin from '../../src/emittermixin.ts';
 
 describe( 'DomEmitterMixin', () => {
 	const Emitter = EmitterMixin();
@@ -107,7 +109,7 @@ describe( 'DomEmitterMixin', () => {
 		} );
 
 		// #187
-		it( 'should work for DOM Nodes belonging to another window', done => {
+		it( 'should work for DOM Nodes belonging to another window', () => new Promise( done => {
 			const spy = testUtils.sinon.spy();
 			const iframe = document.createElement( 'iframe' );
 
@@ -124,7 +126,7 @@ describe( 'DomEmitterMixin', () => {
 			} );
 
 			document.body.appendChild( iframe );
-		} );
+		} ) );
 
 		describe( 'event capturing', () => {
 			beforeEach( () => {
@@ -737,7 +739,7 @@ describe( 'DomEmitterMixin', () => {
 		} );
 
 		// #187
-		it( 'should work for DOM Nodes belonging to another window', done => {
+		it( 'should work for DOM Nodes belonging to another window', () => new Promise( done => {
 			const spy = testUtils.sinon.spy();
 			const iframe = document.createElement( 'iframe' );
 
@@ -757,7 +759,7 @@ describe( 'DomEmitterMixin', () => {
 			} );
 
 			document.body.appendChild( iframe );
-		} );
+		} ) );
 
 		describe( 'event capturing', () => {
 			beforeEach( () => {

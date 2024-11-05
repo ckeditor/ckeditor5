@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import isIterable from '../src/isiterable.js';
+import { describe, it, expect } from 'vitest';
+import isIterable from '../src/isiterable.ts';
 
 describe( 'utils', () => {
 	describe( 'isIterable', () => {

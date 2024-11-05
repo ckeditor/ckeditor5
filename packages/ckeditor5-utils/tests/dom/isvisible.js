@@ -5,7 +5,8 @@
 
 /* global document */
 
-import isVisible from '../../src/dom/isvisible.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import isVisible from '../../src/dom/isvisible.ts';
 
 describe( 'isVisible()', () => {
 	let ancestor, element;

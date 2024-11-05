@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { describe, it, expect } from 'vitest';
 import {
 	isLowSurrogateHalf,
 	isHighSurrogateHalf,
@@ -10,7 +11,7 @@ import {
 	isInsideSurrogatePair,
 	isInsideCombinedSymbol,
 	isInsideEmojiSequence
-} from '../src/unicode.js';
+} from '../src/unicode.ts';
 
 describe( 'utils', () => {
 	describe( 'unicode', () => {
