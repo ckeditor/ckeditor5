@@ -812,9 +812,10 @@ export interface EditorConfig {
 	/**
 	 * The CKEditor 5 license key. If you want to obtain a license key, please do one of the following:
 	 *
+	 * * Create a free account, and test the premium features with a [14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
 	 * * [Contact us](https://ckeditor.com/contact/) for a commercial license.
-	 * * [Get a 14-day free trial](https://portal.ckeditor.com/checkout?plan=free) to test premium features.
-	 * * Use 'GPL' if you only need open source features.
+	 * * If you are using the editor under a GPL license or another license from our Open Source Initiative,
+	 *   use the 'GPL' license key instead.
 	 */
 	licenseKey?: string;
 
