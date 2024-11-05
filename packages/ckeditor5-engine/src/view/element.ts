@@ -10,7 +10,7 @@
 import Node from './node.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
-import { isIterable, toArray, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { isIterable, toArray, toMap, type ArrayOrItem, emptyIterableIterator } from '@ckeditor/ckeditor5-utils';
 import { default as Matcher, type MatcherPattern } from './matcher.js';
 import { default as StylesMap, type StylesProcessor, type StyleValue } from './stylesmap.js';
 
@@ -296,8 +296,8 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all class names.
 	 */
-	public getClassNames(): Iterable<string> {
-		return this._classes ? this._classes.keys() : [];
+	public getClassNames(): IterableIterator<string> {
+		return this._classes ? this._classes.keys() : emptyIterableIterator;
 	}
 
 	/**
@@ -374,7 +374,7 @@ export default class Element extends Node {
 	 * @param expand Expand shorthand style properties and return all equivalent style representations.
 	 */
 	public getStyleNames( expand?: boolean ): Iterable<string> {
-		return this._styles ? this._styles.getStyleNames( expand ) : [];
+		return this._styles ? this._styles.getStyleNames( expand ) : emptyIterableIterator;
 	}
 
 	/**

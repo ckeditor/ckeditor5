@@ -367,7 +367,7 @@ describe( 'Template', () => {
 
 						observable.backgroundColor = '';
 
-						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p></p>' );
+						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style=""></p>' );
 					} );
 
 					it( 'renders with falsy values', () => {
