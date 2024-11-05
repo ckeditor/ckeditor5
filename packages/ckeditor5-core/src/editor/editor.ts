@@ -407,6 +407,59 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			const licenseKey = editor.config.get( 'licenseKey' )!;
 			const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ] || 'sh';
 
+			function blockEditor( reason: LicenseErrorReason ) {
+				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
+				editor._showLicenseError( reason );
+			}
+
+			function getPayload( licenseKey: string ): string | null {
+				const parts = licenseKey.split( '.' );
+
+				if ( parts.length != 3 ) {
+					return null;
+				}
+
+				return parts[ 1 ];
+			}
+
+			function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
+				const requiredFields = [ 'exp', 'jti', 'vc' ];
+
+				return requiredFields.every( field => field in licensePayload );
+			}
+
+			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
+				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
+
+				const filteredValues = keysToCheck
+					.filter( key => key != 'vc' && licensePayload[ key ] != null )
+					.map( key => licensePayload[ key ] );
+
+				return filteredValues as CRCData;
+			}
+
+			function checkLicensedHosts( licensedHosts: Array<string> ): boolean {
+				const { hostname } = new URL( window.location.href );
+
+				if ( licensedHosts.includes( hostname ) ) {
+					return true;
+				}
+
+				const segments = hostname.split( '.' );
+
+				return licensedHosts
+					// Filter out hosts without wildcards.
+					.filter( host => host.includes( '*' ) )
+					// Split the hosts into segments.
+					.map( host => host.split( '.' ) )
+					// Filter out hosts that have more segments than the current hostname.
+					.filter( host => host.length <= segments.length )
+					// Pad the beginning of the licensed host if it's shorter than the current hostname.
+					.map( host => Array( segments.length - host.length ).fill( host[ 0 ] === '*' ? '*' : '' ).concat( host ) )
+					// Check if some license host matches the hostname.
+					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
+			}
+
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {
 					blockEditor( 'distributionChannel' );
@@ -523,59 +576,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 					} );
 				}, { priority: 'high' } );
-			}
-
-			function getPayload( licenseKey: string ): string | null {
-				const parts = licenseKey.split( '.' );
-
-				if ( parts.length != 3 ) {
-					return null;
-				}
-
-				return parts[ 1 ];
-			}
-
-			function blockEditor( reason: LicenseErrorReason ) {
-				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
-				editor._showLicenseError( reason );
-			}
-
-			function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
-				const requiredFields = [ 'exp', 'jti', 'vc' ];
-
-				return requiredFields.every( field => field in licensePayload );
-			}
-
-			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
-				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
-
-				const filteredValues = keysToCheck
-					.filter( key => key != 'vc' && licensePayload[ key ] != null )
-					.map( key => licensePayload[ key ] );
-
-				return filteredValues as CRCData;
-			}
-
-			function checkLicensedHosts( licensedHosts: Array<string> ): boolean {
-				const { hostname } = new URL( window.location.href );
-
-				if ( licensedHosts.includes( hostname ) ) {
-					return true;
-				}
-
-				const segments = hostname.split( '.' );
-
-				return licensedHosts
-					// Filter out hosts without wildcards.
-					.filter( host => host.includes( '*' ) )
-					// Split the hosts into segments.
-					.map( host => host.split( '.' ) )
-					// Filter out hosts that have more segments than the current hostname.
-					.filter( host => host.length <= segments.length )
-					// Pad the beginning of the licensed host if it's shorter than the current hostname.
-					.map( host => Array( segments.length - host.length ).fill( host[ 0 ] === '*' ? '*' : '' ).concat( host ) )
-					// Check if some license host matches the hostname.
-					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 		}
 	}
