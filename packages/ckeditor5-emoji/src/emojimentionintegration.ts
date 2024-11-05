@@ -8,14 +8,12 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import EmojiLibraryIntegration from './emojilibraryintegration.js';
 
 import type {
 	MentionFeed,
 	MentionFeedObjectItem
 } from '@ckeditor/ckeditor5-mention';
-
-import emojiMartData from '@emoji-mart/data';
-import { init, SearchIndex } from 'emoji-mart';
 
 /**
  * Part of the emoji logic.
@@ -23,6 +21,13 @@ import { init, SearchIndex } from 'emoji-mart';
  * @internal
  */
 export default class EmojiMentionIntegration extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ EmojiLibraryIntegration ] as const;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -43,8 +48,6 @@ export default class EmojiMentionIntegration extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		init( { data: emojiMartData } );
-
 		this._setupMentionConfiguration();
 		this._defineConverters();
 	}
@@ -57,13 +60,14 @@ export default class EmojiMentionIntegration extends Plugin {
 	private _setupMentionConfiguration(): void {
 		const editor = this.editor;
 		const config = editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
+		const emojiLibraryIntegration = editor.plugins.get( EmojiLibraryIntegration );
 
 		config.push( {
 			marker: ':',
 			minimumCharacters: 1,
 			dropdownLimit: editor.config.get( 'emoji.dropdownLimit' ) || Infinity,
 			itemRenderer: this._customItemRenderer,
-			feed: this._mentionFeed
+			feed: emojiLibraryIntegration.queryEmoji
 		} );
 
 		editor.config.set( 'mention.feeds', config );
@@ -82,22 +86,6 @@ export default class EmojiMentionIntegration extends Plugin {
 		itemElement.textContent = `${ item.text } ${ item.id } `;
 
 		return itemElement;
-	}
-
-	/**
-	 * Feed function for mention config.
-	 *
-	 * @internal
-	 */
-	private _mentionFeed( searchQuery: string ) {
-		return SearchIndex.search( searchQuery ).then( searchResults => {
-			return searchResults.map( ( emoji: any ) => {
-				return {
-					id: `:${ emoji.id }:`,
-					text: emoji.skins[ 0 ].native
-				};
-			} );
-		} );
 	}
 
 	/**

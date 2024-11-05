@@ -38,11 +38,4 @@ export default class Emoji extends Plugin {
 	public static override get isOfficialPlugin(): true {
 		return true;
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public init(): void {
-		console.log( 'Emoji plugin was initialized!' );
-	}
 }
