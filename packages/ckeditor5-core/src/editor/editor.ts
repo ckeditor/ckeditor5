@@ -937,7 +937,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * The provided license does not allow the editor to run on this domain.
 				 * Some license keys are restricted to local test environments only.
 				 * For more details, please refer to the
-				 * {@glink getting-started/licensing/license-key-and-activation.html#license-key-types license key type documentation}.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types license key type documentation}.
 				 *
 				 * @error license-key-domain-limit
 				 */
@@ -971,7 +971,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have exceeded the editor operation limit for your trial license key.
 				 * Please restart the editor to continue using it.
-				 * [@glink getting-started/licensing/license-key-and-activation.html#license-key-types Read more about license key types}.
+				 * [@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-trial-limit
 				 */
@@ -982,7 +982,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have exceeded the operation limit for your development license key within the editor.
 				 * Please restart the editor to continue using it.
-				 * {@glink getting-started/licensing/license-key-and-activation.html#license-key-types Read more about license key types}.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-development-limit
 				 */
@@ -1014,7 +1014,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * 	* With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
 				 * 	  or a ZIP package (self-hosted) or Cloud (CDN)
 				 *
-				 * {@glink getting-started/licensing/usage-based-billing.html#key-terms Read more about distributions in the documentation}.
+				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
 				 *
 				 * @error license-key-invalid-distribution-channel
