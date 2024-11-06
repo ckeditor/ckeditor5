@@ -248,7 +248,51 @@ describe( 'MenuBarMenuView', () => {
 
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.equal( menuView._panelPositions[ 0 ].name );
+				expect( menuView.panelView.position ).to.equal( 'se' );
+			} );
+
+			it( 'should use the default position if none were considered optimal (has parent menu)', () => {
+				createTopLevelMenuWithLocale( locale );
+
+				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+
+				menuView.parentMenuView = new MenuBarMenuView( locale );
+
+				menuView.panelView.position = null;
+
+				menuView.isOpen = true;
+
+				expect( menuView.panelView.position ).to.equal( 'es' );
+			} );
+
+			it( 'should use the default position if none were considered optimal (RTL)', () => {
+				createTopLevelMenuWithLocale( locale );
+
+				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+
+				menuView.locale.uiLanguageDirection = 'rtl';
+
+				menuView.panelView.position = null;
+
+				menuView.isOpen = true;
+
+				expect( menuView.panelView.position ).to.equal( 'sw' );
+			} );
+
+			it( 'should use the default position if none were considered optimal (RTL, has parent menu)', () => {
+				createTopLevelMenuWithLocale( locale );
+
+				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+
+				menuView.locale.uiLanguageDirection = 'rtl';
+
+				menuView.parentMenuView = new MenuBarMenuView( locale );
+
+				menuView.panelView.position = null;
+
+				menuView.isOpen = true;
+
+				expect( menuView.panelView.position ).to.equal( 'ws' );
 			} );
 
 			afterEach( () => {
