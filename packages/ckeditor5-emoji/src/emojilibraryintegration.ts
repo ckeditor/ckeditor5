@@ -8,10 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 
-import emojiDatabase from 'emojibase-data/en/data.json';
+import { Database } from 'emoji-picker-element';
+// @ts-expect-error This import works.
+import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 
 /**
  * Integration with external emoji library.
@@ -38,33 +39,28 @@ export default class EmojiLibraryIntegration extends Plugin {
 	 *
 	 * @public
 	 */
-	public queryEmoji( searchQuery: string ): Array<MentionFeedObjectItem> {
-		const queryMatcher = new RegExp( '(?<=\\b|_)' + normalizeString( searchQuery ) );
+	public queryEmoji( searchQuery: string ): Promise<Array<MentionFeedObjectItem>> {
+		// TODO: Loading this url manually returns the proper object. Figure out why the Database throws NetworkError.
+		const localDataUrl = URL.createObjectURL(
+			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
+		);
 
-		return emojiDatabase
-			.filter( emojiData => {
-				const searchItems = [ emojiData.label, ...( emojiData.tags || [] ) ].map( normalizeString );
+		// TODO: load this only once in constructor or init, not every time while querying.
+		const emojiDatabase = new Database( {
+			dataSource: localDataUrl
+		} );
 
-				return searchItems.some( ( item: string ) => queryMatcher.exec( item ) );
+		return emojiDatabase.ready()
+			.then( () => {
+				return emojiDatabase.getEmojiBySearchQuery( searchQuery );
 			} )
-			.map( emojiData => {
-				return {
-					id: `emoji:${ normalizeString( emojiData.label ) }:`,
-					text: emojiData.emoji
-				};
+			.then( queryResult => {
+				return queryResult.map( ( emoji: any ) => { // TODO: fix type
+					return {
+						id: emoji.shortcodes[ 0 ],
+						text: emoji.emoji
+					};
+				} );
 			} );
 	}
-}
-
-/**
- * This function modifies strings by:
- * - replacing spaces with underscores
- * - removing colons
- * - casting all characters to lowercase
- */
-function normalizeString( string: string ): string {
-	return string
-		.replace( / /g, '_' )
-		.replace( /:/g, '' )
-		.toLocaleLowerCase();
 }
