@@ -73,24 +73,28 @@ export default class Element extends Node {
 	private readonly _children: Array<Node>;
 
 	/**
+	 * Map of custom properties.
+	 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
+	 */
+	private readonly _customProperties = new Map<string | symbol, unknown>();
+
+	/**
 	 * Set of classes associated with element instance.
 	 *
 	 * Note that this is just an alias for this._attrs.get( 'class' );
 	 */
-	private _classes?: TokenList;
+	private get _classes(): TokenList | undefined {
+		return this._attrs.get( 'class' ) as TokenList | undefined;
+	}
 
 	/**
 	 * Normalized styles.
 	 *
 	 * Note that this is just an alias for this._attrs.get( 'style' );
 	 */
-	private _styles?: StylesMap;
-
-	/**
-	 * Map of custom properties.
-	 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
-	 */
-	private readonly _customProperties = new Map<string | symbol, unknown>();
+	private get _styles(): StylesMap | undefined {
+		return this._attrs.get( 'style' ) as StylesMap | undefined;
+	}
 
 	/**
 	 * Creates a view element.
@@ -121,9 +125,6 @@ export default class Element extends Node {
 
 		this._attrs = parseAttributes( this.document.stylesProcessor, attrs );
 		this._children = [];
-
-		this._classes = this._attrs.get( 'class' ) as TokenList | undefined;
-		this._styles = this._attrs.get( 'style' ) as StylesMap | undefined;
 
 		if ( children ) {
 			this._insertChild( 0, children );
@@ -297,6 +298,7 @@ export default class Element extends Node {
 	 * Returns iterator that contains all class names.
 	 */
 	public getClassNames(): IterableIterator<string> {
+		// TODO make it legit, not iterator
 		return this._classes ? this._classes.keys() : emptyIterableIterator;
 	}
 
@@ -374,7 +376,7 @@ export default class Element extends Node {
 	 * @param expand Expand shorthand style properties and return all equivalent style representations.
 	 */
 	public getStyleNames( expand?: boolean ): Iterable<string> {
-		return this._styles ? this._styles.getStyleNames( expand ) : emptyIterableIterator;
+		return this._styles ? this._styles.getStyleNames( expand ) : [];
 	}
 
 	/**
@@ -600,23 +602,19 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		const stringValue = String( value );
-		let currentValue = this._attrs.get( key );
+		const currentValue = this._attrs.get( key );
 
 		// TODO not hardcoded key names
 		if ( key == 'class' ) {
 			if ( !currentValue ) {
-				currentValue = new TokenList().setTo( stringValue );
-				this._attrs.set( key, currentValue );
-				this._classes = currentValue as TokenList;
+				this._attrs.set( key, new TokenList().setTo( stringValue ) );
 			} else {
 				( currentValue as AttributeValue ).setTo( stringValue );
 			}
 		}
 		else if ( key == 'style' ) {
 			if ( !currentValue ) {
-				currentValue = new StylesMap( this.document.stylesProcessor ).setTo( stringValue );
-				this._attrs.set( key, currentValue );
-				this._styles = currentValue as StylesMap;
+				this._attrs.set( key, new StylesMap( this.document.stylesProcessor ).setTo( stringValue ) );
 			} else {
 				( currentValue as AttributeValue ).setTo( stringValue );
 			}
@@ -638,18 +636,7 @@ export default class Element extends Node {
 	public _removeAttribute( key: string ): boolean {
 		this._fireChange( 'attributes', this );
 
-		if ( this._attrs.delete( key ) ) {
-			if ( key == 'style' ) {
-				this._styles = undefined;
-			}
-			else if ( key == 'class' ) {
-				this._classes = undefined;
-			}
-
-			return true;
-		}
-
-		return false;
+		return this._attrs.delete( key );
 	}
 
 	/**
@@ -668,12 +655,11 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		if ( !this._classes ) {
-			this._classes = new TokenList();
-			this._attrs.set( 'class', this._classes );
+			this._attrs.set( 'class', new TokenList() );
 		}
 
 		for ( const name of toArray( className ) ) {
-			this._classes.add( name );
+			this._classes!.add( name );
 		}
 	}
 
@@ -700,7 +686,6 @@ export default class Element extends Node {
 
 		if ( this._classes.isEmpty ) {
 			this._attrs.delete( 'class' );
-			this._classes = undefined;
 		}
 	}
 
@@ -750,14 +735,13 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		if ( !this._styles ) {
-			this._styles = new StylesMap( this.document.stylesProcessor );
-			this._attrs.set( 'style', this._styles );
+			this._attrs.set( 'style', new StylesMap( this.document.stylesProcessor ) );
 		}
 
 		if ( typeof property != 'string' ) {
-			this._styles.set( property );
+			this._styles!.set( property );
 		} else {
-			this._styles.set( property, value! );
+			this._styles!.set( property, value! );
 		}
 	}
 
@@ -790,7 +774,6 @@ export default class Element extends Node {
 
 		if ( this._styles.isEmpty ) {
 			this._attrs.delete( 'style' );
-			this._styles = undefined;
 		}
 	}
 
