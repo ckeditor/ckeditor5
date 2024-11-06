@@ -125,13 +125,13 @@ describe( 'getEditorUsageData()', () => {
 			expect( global.window.CKEDITOR_PAGE_SESSION_ID ).to.be.equal( usageData.pageSessionId );
 		} );
 
-		it( 'should use crypto API to generate session id', async () => {
-			const cryptoStub = sinon.stub( global.window.crypto, 'randomUUID' ).returns( 'FooBar' );
+		it( 'should not use crypto API to generate session id', async () => {
+			const spy = sinon.spy( global.window.crypto, 'randomUUID' );
 
 			editor = await ClassicTestEditor.create( domElement, {} );
+			getEditorUsageData( editor );
 
-			expect( getEditorUsageData( editor ).pageSessionId ).to.be.equal( 'FooBar' );
-			expect( cryptoStub ).to.have.been.calledOnce;
+			expect( spy ).to.not.have.been.called;
 		} );
 	} );
 
