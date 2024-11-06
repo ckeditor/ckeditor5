@@ -10,11 +10,17 @@ import type {
 	EmojiLibraryIntegration
 } from './index.js';
 
+import type InsertEmojiCommand from './insertemojicommand.js';
+
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[Emoji.pluginName]: Emoji;
 		[EmojiMentionIntegration.pluginName]: EmojiMentionIntegration;
 		[EmojiLibraryIntegration.pluginName]: EmojiLibraryIntegration;
+	}
+
+	interface CommandsMap {
+		insertEmoji: InsertEmojiCommand;
 	}
 
 	interface EditorConfig {

@@ -7,12 +7,11 @@
  * @module emoji/emojilibraryintegration
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 
-import emojiMartData from '@emoji-mart/data';
-import { init, SearchIndex } from 'emoji-mart';
+import emojiDatabase from 'emojibase-data/en/data.json';
 
 /**
  * Integration with external emoji library.
@@ -35,27 +34,37 @@ export default class EmojiLibraryIntegration extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		init( { data: emojiMartData } );
-	}
-
-	/**
 	 * Feed function for mention config.
 	 *
 	 * @public
 	 */
-	public queryEmoji( searchQuery: string ): Promise<Array<MentionFeedObjectItem>> {
-		return SearchIndex.search( searchQuery ).then( searchResults => {
-			return searchResults.map( ( emoji: any ) => {
+	public queryEmoji( searchQuery: string ): Array<MentionFeedObjectItem> {
+		const queryMatcher = new RegExp( '(?<=\\b|_)' + normalizeString( searchQuery ) );
+
+		return emojiDatabase
+			.filter( emojiData => {
+				const searchItems = [ emojiData.label, ...( emojiData.tags || [] ) ].map( normalizeString );
+
+				return searchItems.some( ( item: string ) => queryMatcher.exec( item ) );
+			} )
+			.map( emojiData => {
 				return {
-					id: `:${ emoji.id }:`,
-					text: emoji.skins[ 0 ].native
+					id: `emoji:${ normalizeString( emojiData.label ) }:`,
+					text: emojiData.emoji
 				};
 			} );
-		} );
 	}
+}
+
+/**
+ * This function modifies strings by:
+ * - replacing spaces with underscores
+ * - removing colons
+ * - casting all characters to lowercase
+ */
+function normalizeString( string: string ): string {
+	return string
+		.replace( / /g, '_' )
+		.replace( /:/g, '' )
+		.toLocaleLowerCase();
 }

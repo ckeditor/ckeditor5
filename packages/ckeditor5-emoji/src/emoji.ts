@@ -13,6 +13,7 @@ import { Mention } from '@ckeditor/ckeditor5-mention';
 import EmojiMentionIntegration from './emojimentionintegration.js';
 
 import '../theme/emoji.css';
+import InsertEmojiCommand from './insertemojicommand.js';
 
 /**
  * The emoji feature.
@@ -37,5 +38,12 @@ export default class Emoji extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this.editor.commands.add( 'insertEmoji', new InsertEmojiCommand( this.editor ) );
 	}
 }

@@ -16,8 +16,7 @@
     "ckeditor5": "43.3.0",
     "@ckeditor/ckeditor5-core": "43.3.0",
     "@ckeditor/ckeditor5-typing": "43.3.0",
-    "@emoji-mart/data": "^1.2.1",
-    "emoji-mart": "^5.6.0"
+    "emojibase-data": "^15.3.2"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^45.0.0",

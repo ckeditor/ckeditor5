@@ -10,9 +10,9 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiLibraryIntegration from './emojilibraryintegration.js';
 
-import type {
-	MentionFeed,
-	MentionFeedObjectItem
+import {
+	type MentionFeed,
+	type MentionFeedObjectItem
 } from '@ckeditor/ckeditor5-mention';
 
 /**
@@ -49,7 +49,13 @@ export default class EmojiMentionIntegration extends Plugin {
 		super( editor );
 
 		this._setupMentionConfiguration();
-		this._defineConverters();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 	}
 
 	/**
@@ -84,26 +90,28 @@ export default class EmojiMentionIntegration extends Plugin {
 		itemElement.classList.add( 'custom-item' );
 		itemElement.id = `mention-list-item-id-${ item.id }`;
 		itemElement.textContent = `${ item.text } ${ item.id } `;
+		itemElement.style.width = '100%';
+		itemElement.style.display = 'block';
 
 		return itemElement;
 	}
 
 	/**
-	 * Registers the converters for the emoji feature.
+	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
 	 *
 	 * @internal
 	 */
-	private _defineConverters(): void {
-		const conversion = this.editor.conversion;
+	private _overrideMentionExecuteListener() {
+		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
+			const eventData = data[ 0 ];
 
-		conversion.for( 'upcast' ).elementToAttribute( {
-			view: 'span',
-			model: 'mention'
-		} );
+			if ( eventData.mention.id.startsWith( 'emoji:' ) ) {
+				this.editor.model.change( () => {
+					this.editor.execute( 'insertEmoji', eventData.text, eventData.range );
 
-		conversion.for( 'downcast' ).attributeToElement( {
-			model: 'mention',
-			view: 'span'
-		} );
+					event.stop();
+				} );
+			}
+		}, { priority: 'high' } );
 	}
 }
