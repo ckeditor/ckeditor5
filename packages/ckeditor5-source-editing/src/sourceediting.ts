@@ -500,11 +500,15 @@ function formatSource( input: string ): string {
 				`</?( ${ elementNamesToFormat })( .*?)?>|</( ${ elementNamesToFormat })>`,
 				'g'
 			),
-			( match, p1, p3 ) => {
+			( match, p1, p2 ) => {
 				const elementToFormat = elementsToFormat.find(
-					element => element.name === p1 || element.name === p3
+					element => element.name === p1 || element.name === p2
 				);
 				if ( elementToFormat ) {
+					const pTagContentMatch = input.match( /<p[^>]*>(.*?)<\/p>/ );
+					if ( pTagContentMatch && pTagContentMatch[ 1 ].includes( match ) ) {
+						return match;
+					}
 					if ( elementToFormat.isIndented ) {
 						return `${ match }\n`;
 					} else if ( match.startsWith( '</' ) && !elementToFormat.isInline ) {
@@ -530,7 +534,9 @@ function formatSource( input: string ): string {
 				const tagNameMatch = openingTag.match( /<(\w+)/ );
 				const tagName = tagNameMatch ? tagNameMatch[ 1 ] : null;
 				const elementToFormat = elementsToFormat.find( element => element.name === tagName );
-				if ( elementToFormat && elementToFormat.isIndented ) {
+				// Add exemption to prevent indenting of <br> tags, as they have
+				// no closing tags.
+				if ( elementToFormat && elementToFormat.isIndented && elementToFormat.name !== 'br' ) {
 					lines[ index ] = indentLine( line, indentCount );
 					indentCount++;
 				} else {
