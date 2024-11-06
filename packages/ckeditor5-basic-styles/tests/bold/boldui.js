@@ -5,13 +5,16 @@
 
 /* globals document */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import BoldEditing from '../../src/bold/boldediting.js';
-import BoldUI from '../../src/bold/boldui.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import BoldEditing from '../../src/bold/boldediting.ts';
+import BoldUI from '../../src/bold/boldui.ts';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.ts';
 
 describe( 'BoldUI', () => {
 	let editor, boldView, editorElement;

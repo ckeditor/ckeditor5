@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Code from '../src/code.js';
-import CodeEditing from '../src/code/codeediting.js';
-import CodeUI from '../src/code/codeui.js';
+import { describe, it, expect } from 'vitest';
+
+import Code from '../src/code.ts';
+import CodeEditing from '../src/code/codeediting.ts';
+import CodeUI from '../src/code/codeui.ts';
 
 describe( 'Code', () => {
 	it( 'should require CodeEditing and CodeUI', () => {

@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Superscript from '../src/superscript.js';
-import SuperEditing from '../src/superscript/superscriptediting.js';
-import SuperUI from '../src/superscript/superscriptui.js';
+import { describe, it, expect } from 'vitest';
+
+import Superscript from '../src/superscript.ts';
+import SuperEditing from '../src/superscript/superscriptediting.ts';
+import SuperUI from '../src/superscript/superscriptui.ts';
 
 describe( 'Superscript', () => {
 	it( 'should require SuperEditing and SuperUI', () => {

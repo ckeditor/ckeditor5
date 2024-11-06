@@ -3,11 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import AttributeCommand from '../src/attributecommand.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+import AttributeCommand from '../src/attributecommand.ts';
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.ts';
 
 describe( 'AttributeCommand', () => {
 	const attrKey = 'bold';

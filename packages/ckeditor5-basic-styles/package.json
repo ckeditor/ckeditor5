@@ -26,7 +26,13 @@
     "@ckeditor/ckeditor5-paragraph": "43.3.0",
     "@ckeditor/ckeditor5-theme-lark": "43.3.0",
     "@ckeditor/ckeditor5-utils": "43.3.0",
+    "@vitest/browser": "^2.1.4",
+    "@vitest/coverage-istanbul": "^2.1.4",
+    "@vitest/runner": "^2.1.4",
     "typescript": "5.0.4",
+    "vite-plugin-svgo": "^1.6.2",
+    "vitest": "^2.1.4",
+    "webdriverio": "^9.2.6",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
   },
@@ -52,6 +58,8 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run --config vitest.config.js",
+    "coverage": "vitest run --config vitest.config.js --coverage"
   }
 }

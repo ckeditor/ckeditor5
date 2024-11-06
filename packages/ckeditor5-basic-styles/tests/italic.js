@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Italic from '../src/italic.js';
-import ItalicEditing from '../src/italic/italicediting.js';
-import ItalicUI from '../src/italic/italicui.js';
+import { describe, it, expect } from 'vitest';
+
+import Italic from '../src/italic.ts';
+import ItalicEditing from '../src/italic/italicediting.ts';
+import ItalicUI from '../src/italic/italicui.ts';
 
 describe( 'Italic', () => {
 	it( 'should require ItalicEditing and ItalicUI', () => {

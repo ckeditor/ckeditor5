@@ -5,15 +5,18 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import UnderlineEditing from '../../src/underline/underlineediting.js';
-import UnderlineUI from '../../src/underline/underlineui.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import UnderlineEditing from '../../src/underline/underlineediting.ts';
+import UnderlineUI from '../../src/underline/underlineui.ts';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.ts';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.ts';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.ts';
+
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.ts';
 
 describe( 'Underline', () => {
 	let editor, underlineView, editorElement;

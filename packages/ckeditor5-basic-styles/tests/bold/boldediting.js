@@ -3,16 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BoldEditing from '../../src/bold/boldediting.js';
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+import BoldEditing from '../../src/bold/boldediting.ts';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import AttributeCommand from '../../src/attributecommand.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.ts';
+import AttributeCommand from '../../src/attributecommand.ts';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.ts';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.ts';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.ts';
+import env from '@ckeditor/ckeditor5-utils/src/env.ts';
 
 describe( 'BoldEditing', () => {
 	let editor, model;

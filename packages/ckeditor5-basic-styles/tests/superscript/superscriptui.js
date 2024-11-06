@@ -5,13 +5,16 @@
 
 /* globals document */
 
+import sinon from 'sinon';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import SuperscriptEditing from '../../src/superscript/superscriptediting.js';
-import SuperscriptUI from '../../src/superscript/superscriptui.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import SuperscriptEditing from '../../src/superscript/superscriptediting.ts';
+import SuperscriptUI from '../../src/superscript/superscriptui.ts';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.ts';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.ts';
 
 describe( 'SuperscriptUI', () => {
 	let editor, superView, editorElement;

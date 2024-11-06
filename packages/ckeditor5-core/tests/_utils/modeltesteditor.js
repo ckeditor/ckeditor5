@@ -5,7 +5,7 @@
 
 /* eslint-disable new-cap */
 
-import Editor from '../../src/editor/editor.js';
+import Editor from '../../src/editor/editor.ts';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).
