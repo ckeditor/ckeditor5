@@ -271,7 +271,7 @@ export default class StylesMap implements AttributeValue {
 	 *
 	 * @param name Style name.
 	 */
-	public getNormalized( name?: string ): StyleValue {
+	public getNormalized( name?: string ): StyleValue | undefined {
 		return this._styleProcessor.getNormalized( name, this._styles );
 	}
 
@@ -575,7 +575,7 @@ export class StylesProcessor {
 	 * @param name Name of style property.
 	 * @param styles Object holding normalized styles.
 	 */
-	public getNormalized( name: string | undefined, styles: Styles ): StyleValue {
+	public getNormalized( name: string | undefined, styles: Styles ): StyleValue | undefined {
 		if ( !name ) {
 			return merge( {}, styles );
 		}
@@ -599,9 +599,7 @@ export class StylesProcessor {
 			}
 		}
 
-		const value = get( styles, toPath( name ) );
-
-		return value;
+		return get( styles, toPath( name ) );
 	}
 
 	/**

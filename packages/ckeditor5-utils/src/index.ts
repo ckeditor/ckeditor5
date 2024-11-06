@@ -47,7 +47,6 @@ export { default as compareArrays } from './comparearrays.js';
 export { default as createElement } from './dom/createelement.js';
 export { default as Config } from './config.js';
 export { default as isIterable } from './isiterable.js';
-export { emptyIterableIterator } from './emptyiterableiterator.js';
 export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin.js';
 export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
 export { default as global } from './dom/global.js';
