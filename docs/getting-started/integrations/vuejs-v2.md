@@ -26,8 +26,6 @@ You can use CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your ap
 
 ## Quick start
 
-### Installing from npm
-
 This guide assumes you already have a Vue project. First, install the CKEditor 5 packages:
 
 * `ckeditor5` &ndash; package with open-source plugins and features.
