@@ -654,11 +654,14 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ( {
-		item: () => null,
-		length: 0,
-		[ Symbol.iterator ]: function* () {}
-	} );
+	const getClientRects = () => ({
+	    item: () => null,
+	    length: 0,
+	    [Symbol.iterator]: function* () {} as any,
+	});
+	
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
 } );
 ```
 
