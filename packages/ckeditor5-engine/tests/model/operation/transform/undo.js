@@ -930,5 +930,51 @@ describe( 'transform', () => {
 
 			expectClients( '<paragraph>ABCD</paragraph>' );
 		} );
+
+		it( 'paste on text, then paste on that paste, then undo, undo, redo, redo', () => {
+			john.setData( '<paragraph>[]Some text to work with. A sentence to replace. More text to work with</paragraph>' );
+
+			// Paste over 'A sentence to replace. '.
+			john.editor.model.change( writer => {
+				const root = john.editor.model.document.getRoot();
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 24 ] ),
+					writer.createPositionFromPath( root, [ 0, 47 ] )
+				);
+
+				john.editor.model.insertContent(
+					new DocumentFragment( [ new Element( 'paragraph', null, new Text( 'First text change. ' ) ) ] ),
+					range
+				);
+			} );
+
+			// Paste over 'First text change. '.
+			john.editor.model.change( writer => {
+				const root = john.editor.model.document.getRoot();
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 24 ] ),
+					writer.createPositionFromPath( root, [ 0, 43 ] )
+				);
+
+				john.editor.model.insertContent(
+					new DocumentFragment( [ new Element( 'paragraph', null, new Text( 'Second text change. ' ) ) ] ),
+					range
+				);
+			} );
+
+			expectClients( '<paragraph>Some text to work with. Second text change. More text to work with</paragraph>' );
+
+			john.undo();
+			expectClients( '<paragraph>Some text to work with. First text change. More text to work with</paragraph>' );
+
+			john.undo();
+			expectClients( '<paragraph>Some text to work with. A sentence to replace. More text to work with</paragraph>' );
+
+			john.redo();
+			expectClients( '<paragraph>Some text to work with. First text change. More text to work with</paragraph>' );
+
+			john.redo();
+			expectClients( '<paragraph>Some text to work with. Second text change. More text to work with</paragraph>' );
+		} );
 	} );
 } );
