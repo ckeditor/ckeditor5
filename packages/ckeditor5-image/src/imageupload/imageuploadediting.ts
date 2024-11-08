@@ -16,7 +16,8 @@ import {
 	type Writer,
 	type DataTransfer,
 	type ViewElement,
-	type NodeAttributes
+	type NodeAttributes,
+	type DowncastAttributeEvent
 } from 'ckeditor5/src/engine.js';
 
 import { Notification } from 'ckeditor5/src/ui.js';
@@ -67,6 +68,14 @@ export default class ImageUploadEditing extends Plugin {
 	private readonly _uploadImageElements: Map<string, Element>;
 
 	/**
+	 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
+	 * upload responses for handling images dragged during their upload process. When such images are later
+	 * dropped, their original upload IDs no longer exist in the registry (as the original upload completed).
+	 * This map preserves the upload responses to properly handle such cases.
+	 */
+	private readonly _uploadedImages = new Map<string, UploadResponse>();
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -104,6 +113,13 @@ export default class ImageUploadEditing extends Plugin {
 				view: {
 					name: 'img',
 					key: 'uploadId'
+				},
+				model: 'uploadId'
+			} )
+			.attributeToAttribute( {
+				view: {
+					name: 'img',
+					key: 'data-ck-upload-id'
 				},
 				model: 'uploadId'
 			} );
@@ -217,6 +233,19 @@ export default class ImageUploadEditing extends Plugin {
 						const loader = fileRepository.loaders.get( uploadId );
 
 						if ( !loader ) {
+							// If the loader does not exist, it means that the image was already uploaded
+							// and the loader promise was removed from the registry. In that scenario we need
+							// to restore response object from the internal map.
+							if ( !isInsertedInGraveyard && this._uploadedImages.has( uploadId ) ) {
+								// Fire `uploadComplete` to set proper attributes on the image element.
+								this.fire<ImageUploadCompleteEvent>( 'uploadComplete', {
+									data: this._uploadedImages.get( uploadId )!,
+									imageElement: imageElement as Element
+								} );
+
+								this._uploadedImages.delete( uploadId );
+							}
+
 							continue;
 						}
 
@@ -274,12 +303,16 @@ export default class ImageUploadEditing extends Plugin {
 			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'uploadId', 'uploadStatus' ]
 			} );
+
+			this._registerConverters( 'imageBlock' );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', {
 				allowAttributes: [ 'uploadId', 'uploadStatus' ]
 			} );
+
+			this._registerConverters( 'imageInline' );
 		}
 	}
 
@@ -360,6 +393,8 @@ export default class ImageUploadEditing extends Plugin {
 					}
 
 					this.fire<ImageUploadCompleteEvent>( 'uploadComplete', { data, imageElement } );
+
+					this._uploadedImages.set( loader.id, data );
 				} );
 
 				clean();
@@ -450,6 +485,43 @@ export default class ImageUploadEditing extends Plugin {
 
 			writer.setAttributes( attributes, image );
 		}
+	}
+
+	/**
+	 * Registers image upload converters.
+	 *
+	 * @param imageType The type of the image.
+	 */
+	private _registerConverters( imageType: 'imageBlock' | 'imageInline' ) {
+		const { conversion, plugins } = this.editor;
+
+		const fileRepository = plugins.get( FileRepository );
+		const imageUtils = plugins.get( ImageUtils );
+
+		// It sets `data-ck-upload-id` attribute on the view image elements that are not fully uploaded.
+		// It avoids the situation when image disappears when it's being moved and upload is not finished yet.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/16967
+		conversion.for( 'dataDowncast' ).add( dispatcher => {
+			dispatcher.on<DowncastAttributeEvent>( `attribute:uploadId:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+					return;
+				}
+
+				const loader = fileRepository.loaders.get( data.attributeNewValue as string );
+
+				if ( !loader || !loader.data ) {
+					return null;
+				}
+
+				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const img = imageUtils.findViewImgElement( viewElement );
+
+				if ( img ) {
+					conversionApi.consumable.consume( data.item, evt.name );
+					conversionApi.writer.setAttribute( 'data-ck-upload-id', loader.id, img );
+				}
+			} );
+		} );
 	}
 }
 
