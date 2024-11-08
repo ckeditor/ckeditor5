@@ -172,7 +172,7 @@ it( 'ClassicEditor test', () => {
 } );
 ```
 
-#### Step 4 (Optional): Clean up the document head entries before each test
+### Step 4 (Optional): Clean up the document head entries before each test
 
 The `useCKEditorCloud` composable under the hood injects the CKEditor&nbsp;5 scripts and styles into your document head. If you use a testing suite that does not Clean up the document head entries before each test, you may need to do it manually. This is important because the `useCKEditorCloud` composable might reuse the same head entries for each test, which can lead to skipping the `loading` state and directly going to the `success` state. It may cause some tests that rely on the `loading` state to fail.
 
