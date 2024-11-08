@@ -30,7 +30,7 @@ import { isElement as _isElement } from 'lodash-es';
  */
 export default class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public static override get editorName(): 'ClassicEditor' {
 		return 'ClassicEditor';

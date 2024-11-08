@@ -22,7 +22,7 @@ However, even as a paid customer, you can [keep the logo](#how-to-keep-the-power
 
 ## How to remove the "Powered by CKEditor" logo?
 
-To remove the logo, you need to obtain a commercial license and then configure the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} setting.
+To remove the logo, you can obtain a commercial license and then configure the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} setting.
 
 Refer to the {@link getting-started/licensing/license-key-and-activation License key and activation} guide for details on where to find the license key and how to use it in your configuration.
 

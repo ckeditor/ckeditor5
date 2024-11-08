@@ -42,7 +42,7 @@ import { isElement as _isElement } from 'lodash-es';
  */
 export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public static override get editorName(): 'DecoupledEditor' {
 		return 'DecoupledEditor';

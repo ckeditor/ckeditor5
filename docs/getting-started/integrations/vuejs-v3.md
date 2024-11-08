@@ -18,11 +18,11 @@ order: 50
 
 CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
+
+This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
 Start by installing the following packages:
 
@@ -372,11 +372,22 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ({
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[Symbol.iterator]: function* () {},
+		[Symbol.iterator]: function* () {}
 	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 ```
 

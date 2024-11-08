@@ -18,11 +18,11 @@ order: 10
 
 CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
+
+This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 First, install the CKEditor&nbsp;5 packages:
 
@@ -305,11 +305,22 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ( {
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[ Symbol.iterator ]: function* () {}
-	} );
+		[Symbol.iterator]: function* () {}
+	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 
 const SomeComponent = ( { value, onChange } ) => {
