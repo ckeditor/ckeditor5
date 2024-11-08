@@ -810,10 +810,12 @@ export interface EditorConfig {
 	updateSourceElementOnDestroy?: boolean;
 
 	/**
-	 * The license key for the CKEditor 5 commercial license and the premium features.
+	 * The CKEditor 5 license key. If you want to obtain a license key, please do one of the following:
 	 *
-	 * If you do not have a key yet, please [contact us](https://ckeditor.com/contact/) or
-	 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
+	 * * Create a free account, and test the premium features with a [14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
+	 * * [Contact us](https://ckeditor.com/contact/) for a commercial license.
+	 * * If you are using the editor under a GPL license or another license from our Open Source Initiative,
+	 *   use the 'GPL' license key instead.
 	 */
 	licenseKey?: string;
 

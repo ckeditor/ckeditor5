@@ -18,11 +18,11 @@ order: 10
 
 CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the CDN distribution of the CKEditor&nbsp;5.
 
-This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
+
+This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 <info-box>
 	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
