@@ -22,6 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
 import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import UpcastDispatcher from '@ckeditor/ckeditor5-engine/src/conversion/upcastdispatcher.js';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -1708,6 +1709,29 @@ describe( 'ImageUploadEditing', () => {
 
 			expect( editor.getData() ).to.be.equal(
 				'<p>hello<img src="/assets/sample.png" srcset="image-800.png 800w" sizes="100vw" width="800"></p>'
+			);
+		} );
+	} );
+
+	describe( 'data upcast of `data-ck-upload-id` attribute', () => {
+		it( 'should upcast `data-ck-upload-id` attribute', () => {
+			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline uploadId="123"></imageInline></paragraph>'
+			);
+		} );
+
+		it( 'should upcast `uploadStatus` if image is present in registry', () => {
+			sinon.stub( fileRepository.loaders, 'get' ).withArgs( '123' ).returns( {
+				status: 'uploading',
+				data: {}
+			} );
+
+			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline uploadId="123" uploadStatus="uploading"></imageInline></paragraph>'
 			);
 		} );
 	} );

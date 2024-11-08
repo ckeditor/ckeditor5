@@ -17,7 +17,8 @@ import {
 	type DataTransfer,
 	type ViewElement,
 	type NodeAttributes,
-	type DowncastAttributeEvent
+	type DowncastAttributeEvent,
+	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 
 import { Notification } from 'ckeditor5/src/ui.js';
@@ -116,13 +117,34 @@ export default class ImageUploadEditing extends Plugin {
 				},
 				model: 'uploadId'
 			} )
-			.attributeToAttribute( {
-				view: {
-					name: 'img',
-					key: 'data-ck-upload-id'
-				},
-				model: 'uploadId'
-			} );
+
+			// Handle the case when the image is not fully uploaded yet but it's being moved.
+			// See more: https://github.com/ckeditor/ckeditor5/pull/17327
+			.add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:img', ( evt, data, conversionApi ) => {
+				const uploadId = data.viewItem.getAttribute( 'data-ck-upload-id' );
+
+				if ( !uploadId ) {
+					return;
+				}
+
+				if ( !data.modelRange ) {
+					Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+				}
+
+				const [ modelElement ] = Array.from( data.modelRange!.getItems() );
+				const loader = fileRepository.loaders.get( uploadId as string );
+
+				if ( modelElement ) {
+					// Handle case when `uploadId` is set on the image element but the loader is not present in the registry.
+					// It may happen when the image was successfully uploaded and the loader was removed from the registry.
+					// It's still present in the `_uploadedImages` map though. It's why we do not place this line in the condition below.
+					conversionApi.writer.setAttribute( 'uploadId', uploadId, modelElement );
+
+					if ( loader && loader.data ) {
+						conversionApi.writer.setAttribute( 'uploadStatus', loader.status, modelElement );
+					}
+				}
+			} ) );
 
 		// Handle pasted images.
 		// For every image file, a new file loader is created and a placeholder image is
