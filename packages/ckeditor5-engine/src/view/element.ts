@@ -10,9 +10,9 @@
 import Node from './node.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
-import { isIterable, toArray, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { isIterable, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import { default as Matcher, type MatcherPattern } from './matcher.js';
-import { default as StylesMap, type StylesProcessor, type StyleValue } from './stylesmap.js';
+import { default as StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
 import type Document from './document.js';
 import type Item from './item.js';
@@ -65,7 +65,7 @@ export default class Element extends Node {
 	/**
 	 * Map of attributes, where attributes names are keys and attributes values are values.
 	 */
-	private readonly _attrs: Map<string, string | AttributeValue>;
+	private readonly _attrs: Map<string, string | ElementAttributeValue>;
 
 	/**
 	 * Array of child nodes.
@@ -123,7 +123,7 @@ export default class Element extends Node {
 
 		this.name = name;
 
-		this._attrs = parseAttributes( this.document.stylesProcessor, attrs );
+		this._attrs = this._parseAttributes( attrs );
 		this._children = [];
 
 		if ( children ) {
@@ -594,31 +594,34 @@ export default class Element extends Node {
 	 * @internal
 	 * @param key Attribute key.
 	 * @param value Attribute value.
+	 * @param reset TODO
 	 * @fires change
 	 */
-	public _setAttribute( key: string, value: unknown ): void {
+	public _setAttribute( key: string, value: unknown | Styles | [ string, StyleValue ], reset = true ): void {
 		this._fireChange( 'attributes', this );
 
-		const stringValue = String( value );
-		const currentValue = this._attrs.get( key );
+		if ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) {
+			let currentValue = this._attrs.get( key ) as ElementAttributeValue | undefined;
 
-		// TODO not hardcoded key names
-		if ( key == 'class' ) {
 			if ( !currentValue ) {
-				this._attrs.set( key, new TokenList().setTo( stringValue ) );
-			} else {
-				( currentValue as AttributeValue ).setTo( stringValue );
+				currentValue = usesStylesMap( this.name, key ) ?
+					new StylesMap( this.document.stylesProcessor ) :
+					new TokenList();
+
+				this._attrs.set( key, currentValue );
 			}
-		}
-		else if ( key == 'style' ) {
-			if ( !currentValue ) {
-				this._attrs.set( key, new StylesMap( this.document.stylesProcessor ).setTo( stringValue ) );
+
+			if ( reset ) {
+				// TODO make sure that this is not an array
+				currentValue.setTo( String( value ) );
+			} else if ( usesStylesMap( this.name, key ) && Array.isArray( value ) ) {
+				currentValue.set( value[ 0 ], value[ 1 ] );
 			} else {
-				( currentValue as AttributeValue ).setTo( stringValue );
+				currentValue.set( value as any ); // TODO any
 			}
 		}
 		else {
-			this._attrs.set( key, stringValue );
+			this._attrs.set( key, String( value ) );
 		}
 	}
 
@@ -631,10 +634,26 @@ export default class Element extends Node {
 	 * @returns Returns true if an attribute existed and has been removed.
 	 * @fires change
 	 */
-	public _removeAttribute( key: string ): boolean {
+	public _removeAttribute( key: string, tokens?: ArrayOrItem<string> ): boolean {
 		this._fireChange( 'attributes', this );
 
-		return this._attrs.delete( key );
+		if ( tokens !== undefined && ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) ) {
+			const currentValue = this._attrs.get( key ) as ElementAttributeValue | undefined;
+
+			if ( !currentValue ) {
+				return false;
+			}
+
+			currentValue.remove( tokens );
+
+			if ( currentValue.isEmpty ) {
+				return this._attrs.delete( key );
+			}
+
+			return false;
+		} else {
+			return this._attrs.delete( key );
+		}
 	}
 
 	/**
@@ -650,15 +669,7 @@ export default class Element extends Node {
 	 * @fires change
 	 */
 	public _addClass( className: ArrayOrItem<string> ): void {
-		this._fireChange( 'attributes', this );
-
-		if ( !this._classes ) {
-			this._attrs.set( 'class', new TokenList() );
-		}
-
-		for ( const name of toArray( className ) ) {
-			this._classes!.add( name );
-		}
+		this._setAttribute( 'class', className, false );
 	}
 
 	/**
@@ -674,17 +685,7 @@ export default class Element extends Node {
 	 * @fires change
 	 */
 	public _removeClass( className: ArrayOrItem<string> ): void {
-		this._fireChange( 'attributes', this );
-
-		if ( !this._classes ) {
-			return;
-		}
-
-		this._classes.remove( className );
-
-		if ( this._classes.isEmpty ) {
-			this._attrs.delete( 'class' );
-		}
+		this._removeAttribute( 'class', className );
 	}
 
 	/**
@@ -730,16 +731,10 @@ export default class Element extends Node {
 	public _setStyle( properties: Record<string, string> ): void;
 
 	public _setStyle( property: string | Record<string, string>, value?: string ): void {
-		this._fireChange( 'attributes', this );
-
-		if ( !this._styles ) {
-			this._attrs.set( 'style', new StylesMap( this.document.stylesProcessor ) );
-		}
-
 		if ( typeof property != 'string' ) {
-			this._styles!.set( property );
+			this._setAttribute( 'style', property, false );
 		} else {
-			this._styles!.set( property, value! );
+			this._setAttribute( 'style', [ property, value! ], false );
 		}
 	}
 
@@ -760,19 +755,7 @@ export default class Element extends Node {
 	 * @fires change
 	 */
 	public _removeStyle( property: ArrayOrItem<string> ): void {
-		this._fireChange( 'attributes', this );
-
-		if ( !this._styles ) {
-			return;
-		}
-
-		for ( const name of toArray( property ) ) {
-			this._styles.remove( name );
-		}
-
-		if ( this._styles.isEmpty ) {
-			this._attrs.delete( 'style' );
-		}
+		this._removeAttribute( 'style', property );
 	}
 
 	/**
@@ -795,6 +778,44 @@ export default class Element extends Node {
 	 */
 	public _removeCustomProperty( key: string | symbol ): boolean {
 		return this._customProperties.delete( key );
+	}
+
+	/**
+	 * Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
+	 * as an object (instead of `Iterable`), the object is transformed to the map. Attributes with `null` value are removed.
+	 * Attributes with non-`String` value are converted to `String`.
+	 *
+	 * @param attrs Attributes to parse.
+	 * @returns Parsed attributes.
+	 */
+	private _parseAttributes( attrs?: ElementAttributes ) {
+		const attrsMap = toMap( attrs );
+
+		for ( const [ key, value ] of attrsMap ) {
+			if ( value === null ) {
+				attrsMap.delete( key );
+			}
+			else if ( usesStylesMap( this.name, key ) ) {
+				attrsMap.set(
+					key,
+					value instanceof StylesMap ? value._clone() :
+						new StylesMap( this.document.stylesProcessor ).setTo( String( value ) )
+				);
+			}
+			else if ( usesTokenList( this.name, key ) ) {
+				attrsMap.set(
+					key,
+					value instanceof TokenList ?
+						value._clone() :
+						new TokenList().setTo( String( value ) )
+				);
+			}
+			else if ( typeof value != 'string' ) {
+				attrsMap.set( key, String( value ) );
+			}
+		}
+
+		return attrsMap as Map<string, string | ElementAttributeValue>;
 	}
 
 	/**
@@ -844,15 +865,26 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 /**
  * TODO
  */
-export interface AttributeValue {
+export interface ElementAttributeValue {
 	get isEmpty(): boolean;
+
 	get size(): number;
+
 	setTo( value: string ): this;
+
 	has( name: string ): boolean;
+
+	set( name: string, value: StyleValue ): void;
+	set( stylesOrTokens: Styles | ArrayOrItem<string> ): void;
+
 	remove( tokens: ArrayOrItem<string> ): void;
+
 	toString(): string;
+
 	clear(): void;
+
 	isSimilar( other: this ): boolean;
+
 	_clone(): this;
 }
 
@@ -860,43 +892,6 @@ export interface AttributeValue {
  * Collection of attributes.
  */
 export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unknown ]> | null;
-
-/**
- * Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
- * as an object (instead of `Iterable`), the object is transformed to the map. Attributes with `null` value are removed.
- * Attributes with non-`String` value are converted to `String`.
- *
- * @param stylesProcessor The StylesProcessor instance.
- * @param attrs Attributes to parse.
- * @returns Parsed attributes.
- */
-function parseAttributes( stylesProcessor: StylesProcessor, attrs?: ElementAttributes ) {
-	const attrsMap = toMap( attrs );
-
-	for ( const [ key, value ] of attrsMap ) {
-		// TODO not hardcoded "class" and "style"
-		if ( value === null ) {
-			attrsMap.delete( key );
-		}
-		else if ( key == 'class' && typeof value == 'string' ) {
-			attrsMap.set( key, new TokenList().setTo( value ) );
-		}
-		else if ( key == 'class' && value instanceof TokenList ) {
-			attrsMap.set( 'class', value._clone() );
-		}
-		else if ( key == 'style' && typeof value == 'string' ) {
-			attrsMap.set( 'style', new StylesMap( stylesProcessor ).setTo( value ) );
-		}
-		else if ( key == 'style' && value instanceof StylesMap ) {
-			attrsMap.set( 'style', value._clone() );
-		}
-		else if ( typeof value != 'string' ) {
-			attrsMap.set( key, String( value ) );
-		}
-	}
-
-	return attrsMap as Map<string, string>;
-}
 
 /**
  * Converts strings to Text and non-iterables to arrays.
@@ -924,4 +919,15 @@ function normalize( document: Document, nodes: string | Item | Iterable<string |
 
 			return node;
 		} );
+}
+
+/**
+ * TODO
+ */
+function usesTokenList( elementName: string, key: string ): boolean {
+	return key == 'class' || elementName == 'a' && key == 'rel';
+}
+
+function usesStylesMap( elementName: string, key: string ): boolean {
+	return key == 'style';
 }

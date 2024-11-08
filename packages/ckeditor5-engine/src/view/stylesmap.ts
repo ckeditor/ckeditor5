@@ -8,12 +8,13 @@
  */
 
 import { get, isObject, merge, set, unset } from 'lodash-es';
-import type { AttributeValue } from './element.js';
+import type { ElementAttributeValue } from './element.js';
+import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export default class StylesMap implements AttributeValue {
+export default class StylesMap implements ElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 	 * value access model using lodash's get, set, unset, etc methods.
@@ -234,15 +235,17 @@ export default class StylesMap implements AttributeValue {
 	 * styles.toString(); // -> 'margin-bottom:1px;margin-left:1px;'
 	 * ```
 	 *
-	 * @param name Style name.
+	 * @param names Style name or an array of names.
 	 */
-	public remove( name: string ): void {
-		const path = toPath( name );
+	public remove( names: ArrayOrItem<string> ): void {
+		for ( const name of toArray( names ) ) {
+			const path = toPath( name );
 
-		unset( this._styles, path );
-		delete this._styles[ name ];
+			unset( this._styles, path );
+			delete this._styles[ name ];
 
-		this._cleanEmptyObjectsOnPath( path );
+			this._cleanEmptyObjectsOnPath( path );
+		}
 	}
 
 	/**

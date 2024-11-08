@@ -8,12 +8,12 @@
  */
 
 import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import type { AttributeValue } from './element.js';
+import type { ElementAttributeValue } from './element.js';
 
 /**
  * TODO
  */
-export default class TokenList implements AttributeValue {
+export default class TokenList implements ElementAttributeValue {
 	/**
 	 * TODO
 	 */
@@ -55,9 +55,8 @@ export default class TokenList implements AttributeValue {
 
 	/**
 	 * TODO
-	 * Not a common interface!
 	 */
-	public add( tokens: ArrayOrItem<string> ): void {
+	public set( tokens: ArrayOrItem<string> ): void {
 		for ( const token of toArray( tokens ) ) {
 			this._set.add( token );
 		}
