@@ -19,7 +19,7 @@ import AttributeElement from './attributeelement.js';
 import EmptyElement from './emptyelement.js';
 import UIElement from './uielement.js';
 import RawElement from './rawelement.js';
-import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import DocumentFragment from './documentfragment.js';
 import Text from './text.js';
 import EditableElement from './editableelement.js';
@@ -31,6 +31,7 @@ import type { default as Element, ElementAttributes } from './element.js';
 import type DomConverter from './domconverter.js';
 import type Item from './item.js';
 import type { SlotFilter } from '../conversion/downcasthelpers.js';
+import type { Styles, StyleValue } from './stylesmap.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -523,12 +524,35 @@ export default class DowncastWriter {
 	 * @param key The attribute key.
 	 * @param value The attribute value.
 	 */
-	public setAttribute( key: string, value: unknown, element: Element ): void {
-		element._setAttribute( key, value );
+	public setAttribute( key: string, value: unknown, element: Element ): void;
+
+	/**
+	 * Adds or overwrites the element's attribute with a specified key and value. TODO
+	 *
+	 * ```ts
+	 * writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 * ```
+	 *
+	 * @param key The attribute key.
+	 * @param value The attribute value.
+	 */
+	public setAttribute( key: string, value: unknown | Styles | [ string, StyleValue ], reset: boolean, element: Element ): void;
+
+	public setAttribute(
+		key: string,
+		value: unknown | Styles | [ string, StyleValue ],
+		elementOrReset: Element | boolean,
+		element?: Element
+	): void {
+		if ( element !== undefined ) {
+			element._setAttribute( key, value, elementOrReset as boolean );
+		} else {
+			( elementOrReset as Element )._setAttribute( key, value );
+		}
 	}
 
 	/**
-	 * Removes attribute from the element.
+	 * Removes attribute from the element. TODO
 	 *
 	 * ```ts
 	 * writer.removeAttribute( 'href', linkElement );
@@ -536,8 +560,25 @@ export default class DowncastWriter {
 	 *
 	 * @param key Attribute key.
 	 */
-	public removeAttribute( key: string, element: Element ): void {
-		element._removeAttribute( key );
+	public removeAttribute( key: string, element: Element ): void;
+
+	/**
+	 * Removes attribute from the element. TODO
+	 *
+	 * ```ts
+	 * writer.removeAttribute( 'class', 'foo', linkElement );
+	 * ```
+	 *
+	 * @param key Attribute key.
+	 */
+	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: Element ): void;
+
+	public removeAttribute( key: string, elementOrTokens: Element | ArrayOrItem<string>, element?: Element ): void {
+		if ( element !== undefined ) {
+			element._removeAttribute( key, elementOrTokens as ArrayOrItem<string> );
+		} else {
+			( elementOrTokens as Element )._removeAttribute( key );
+		}
 	}
 
 	/**

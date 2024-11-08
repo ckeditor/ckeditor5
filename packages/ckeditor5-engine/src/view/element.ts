@@ -614,10 +614,14 @@ export default class Element extends Node {
 			if ( reset ) {
 				// TODO make sure that this is not an array
 				currentValue.setTo( String( value ) );
-			} else if ( usesStylesMap( this.name, key ) && Array.isArray( value ) ) {
-				currentValue.set( value[ 0 ], value[ 1 ] );
+			} else if ( usesStylesMap( this.name, key ) ) {
+				if ( Array.isArray( value ) ) {
+					currentValue.set( value[ 0 ], value[ 1 ] );
+				} else {
+					currentValue.set( value as Styles ); // TODO this could be a string?
+				}
 			} else {
-				currentValue.set( value as any ); // TODO any
+				currentValue.set( typeof value == 'string' ? value.split( /\s+/ ) : value as ArrayOrItem<string> );
 			}
 		}
 		else {
@@ -642,6 +646,10 @@ export default class Element extends Node {
 
 			if ( !currentValue ) {
 				return false;
+			}
+
+			if ( usesTokenList( this.name, key ) && typeof tokens == 'string' ) {
+				tokens = tokens.split( /\s+/ );
 			}
 
 			currentValue.remove( tokens );
