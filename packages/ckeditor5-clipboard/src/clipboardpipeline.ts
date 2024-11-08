@@ -318,7 +318,7 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'low' } );
 
 		this.listenTo<ClipboardOutputTransformationEvent>( this, 'outputTransformation', ( evt, data ) => {
-			const content = editor.data.toView( data.content );
+			const content = editor.data.toView( data.content, { usingClipboardPipeline: true } );
 
 			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer: data.dataTransfer,
