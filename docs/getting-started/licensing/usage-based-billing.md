@@ -12,7 +12,7 @@ modified_at: 2024-10-28
 Under the Usage-based billing (UBB) model, your costs are based on how frequently you use CKEditor.
 
 <info-box>
-	The following information applies exclusively to Cloud-hosted plans. If you are not subject to usage-based billing terms if:
+	The following information applies exclusively to Cloud-hosted plans. You are not subject to usage-based billing terms if:
 
 	* You use a self-hosted open-source version of CKEditor. However, you must comply with the terms of the open-source license.
 	* You have a Custom plan that allows self-hosting.
