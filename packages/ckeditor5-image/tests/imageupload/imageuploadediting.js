@@ -1722,6 +1722,28 @@ describe( 'ImageUploadEditing', () => {
 			);
 		} );
 
+		it( 'should not upcast empty `data-ck-upload-id` attribute', () => {
+			editor.setData( '<p><img data-ck-upload-id=""></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline></imageInline></paragraph>'
+			);
+		} );
+
+		it( 'should not upcast already consumed element', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher =>
+				dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { attributes: [ 'data-ck-upload-id' ] } );
+				}, { priority: 'high' } )
+			);
+
+			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline></imageInline></paragraph>'
+			);
+		} );
+
 		it( 'should upcast `uploadStatus` if image is present in registry', () => {
 			sinon.stub( fileRepository.loaders, 'get' ).withArgs( '123' ).returns( {
 				status: 'uploading',
