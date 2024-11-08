@@ -22,7 +22,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
 import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import UpcastDispatcher from '@ckeditor/ckeditor5-engine/src/conversion/upcastdispatcher.js';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
