@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-block-quote": "43.3.1",
     "@ckeditor/ckeditor5-cloud-services": "43.3.1",
     "@ckeditor/ckeditor5-code-block": "43.3.1",
-    "@ckeditor/ckeditor5-dev-utils": "^42.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
     "@ckeditor/ckeditor5-easy-image": "43.3.1",
     "@ckeditor/ckeditor5-editor-classic": "43.3.1",
     "@ckeditor/ckeditor5-essentials": "43.3.1",
