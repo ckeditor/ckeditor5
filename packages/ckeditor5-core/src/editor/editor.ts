@@ -386,11 +386,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * The `licenseKey` property is missing in the editor configuration.
 				 *
-				 * 	* If you are using the editor in a commercial setup, please provide your license key.
-				 * 	* If you still need to acquire a key, please [contact us](https://ckeditor.com/contact/) or
-				 *	  [create a free account with a 14 day premium features trial](https://portal.ckeditor.com/checkout?plan=free).
-				 * 	* If you are using the editor under a GPL license or another license from our Open Source Initiative,
-				 * 	  use the 'GPL' license key instead.
+				 * * If you are using the editor in a commercial setup, please provide your license key.
+				 * * If you still need to acquire a key, please [contact us](https://ckeditor.com/contact/) or
+				 *   [create a free account with a 14 day premium features trial](https://portal.ckeditor.com/checkout?plan=free).
+				 * * If you are using the editor under a GPL license or another license from our Open Source Initiative,
+				 *   use the 'GPL' license key instead.
 				 *
 				 * ```js
 				 * ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -971,7 +971,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have exceeded the editor operation limit for your trial license key.
 				 * Please restart the editor to continue using it.
-				 * [@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-trial-limit
 				 */
@@ -993,8 +993,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have reached the usage limit of your license key. This can occur in the following situations:
 				 *
-				 * 	* You are on a free subscription without a connected payment method and have exceeded the allowed usage threshold.
-				 * 	* Your account has overdue invoices and the grace period has ended.
+				 * * You are on a free subscription without a connected payment method and have exceeded the allowed usage threshold.
+				 * * Your account has overdue invoices and the grace period has ended.
 				 *
 				 * To extend the limit and restore access, please update the required details in the
 				 * [Customer Portal](https://portal.ckeditor.com) or
@@ -1009,10 +1009,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * Your license does not allow the current distribution channel.
 				 *
-				 * 	* With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
-				 * 	* With the CKEditor Cloud plans, you may use the editor via our CDN.
-				 * 	* With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
-				 * 	  or a ZIP package (self-hosted) or Cloud (CDN)
+				 * * With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
+				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
+				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
+				 *   or a ZIP package (self-hosted) or Cloud (CDN)
 				 *
 				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
