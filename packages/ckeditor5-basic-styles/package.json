@@ -26,6 +26,8 @@
     "@ckeditor/ckeditor5-paragraph": "43.3.1",
     "@ckeditor/ckeditor5-theme-lark": "43.3.1",
     "@ckeditor/ckeditor5-utils": "43.3.1",
+    "@vitest/browser": "^2.1.4",
+    "playwright": "^1.48.2",
     "typescript": "5.0.4",
     "vite-plugin-svgo": "^1.6.2",
     "vitest": "^2.1.4",
