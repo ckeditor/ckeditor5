@@ -478,6 +478,10 @@ function formatSource( input: string ): string {
 				);
 				if ( elementToFormat ) {
 					let modifiedMatch = match;
+					const pTagContentMatch = input.match( /<p[^>]*>(.*?)<\/p>/ );
+					if ( pTagContentMatch && pTagContentMatch[ 1 ].includes( match ) ) {
+						return match;
+					}
 					// Check if the current element is 'isIndented' and the last seen element was 'isInline'
 					if ( elementToFormat.isIndented && lastElementType === 'isInline' ) {
 						modifiedMatch = `\n${ match }`;
@@ -515,7 +519,8 @@ function formatSource( input: string ): string {
 				const tagNameMatch = openingTag.match( /<(\w+)/ );
 				const tagName = tagNameMatch ? tagNameMatch[ 1 ] : null;
 				const elementToFormat = elementsToFormat.find( element => element.name === tagName );
-				if ( elementToFormat && elementToFormat.isIndented ) {
+				// br tags not adding intend as it has no closing tag.
+				if ( elementToFormat && elementToFormat.isIndented && elementToFormat.name !== 'br' ) {
 					lines[ index ] = indentLine( line, indentCount );
 					indentCount++;
 				} else {
