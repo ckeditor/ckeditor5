@@ -313,6 +313,14 @@ beforeAll( () => {
 
 	Range.prototype.getClientRects = getClientRects;
 	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 
 const SomeComponent = ( { value, onChange } ) => {
