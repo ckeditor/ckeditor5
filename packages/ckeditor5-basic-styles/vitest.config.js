@@ -15,23 +15,21 @@ export default defineConfig( {
 			'tests/**/*.{js,ts}'
 		],
 		exclude: [
-			'./tests/_utils/**/*.{js,ts}',
-			'./tests/fixtures/**/*.{js,ts}',
-			'./tests/manual/**'
+			'tests/_utils/**/*.{js,ts}',
+			'tests/fixtures/**/*.{js,ts}',
+			'tests/manual/**'
 		],
 		setupFiles: [
 			'../../tests/_utils/licensekeybefore.js'
 		],
 		browser: {
 			enabled: true,
-			name: 'chrome',
-			provider: 'webdriverio',
-			// providerOptions: {},
+			name: 'chromium',
+			provider: 'playwright',
 			headless: true,
-			// ui: false,
+			ui: false,
 			screenshotFailures: false
 		},
-		// globals: true,
 		coverage: {
 			thresholds: {
 				lines: 100,
@@ -39,7 +37,7 @@ export default defineConfig( {
 				branches: 100,
 				statements: 100
 			},
-			provider: 'istanbul',
+			provider: 'v8',
 			include: [
 				'src/**'
 			]

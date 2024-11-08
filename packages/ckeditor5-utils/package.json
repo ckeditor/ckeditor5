@@ -21,12 +21,8 @@
     "@ckeditor/ckeditor5-core": "43.3.0",
     "@ckeditor/ckeditor5-engine": "43.3.0",
     "@types/lodash-es": "^4.17.12",
-    "@vitest/browser": "^2.1.4",
-    "@vitest/coverage-istanbul": "^2.1.4",
-    "@vitest/runner": "^2.1.4",
     "typescript": "5.0.4",
-    "vitest": "^2.1.4",
-    "webdriverio": "^9.2.6"
+    "vitest": "^2.1.4"
   },
   "depcheckIgnore": [
     "typescript"
