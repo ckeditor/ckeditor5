@@ -305,11 +305,14 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ( {
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[ Symbol.iterator ]: function* () {}
-	} );
+		[Symbol.iterator]: function* () {}
+	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
 } );
 
 const SomeComponent = ( { value, onChange } ) => {
