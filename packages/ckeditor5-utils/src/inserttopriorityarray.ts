@@ -35,6 +35,7 @@ export interface ObjectWithPriority {
 export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: Array<T>, objectToInsert: T ): void {
 	const priority = priorities.get( objectToInsert.priority );
 
+	// Binary search for better performance in large tables.
 	let left = 0;
 	let right = objects.length;
 
