@@ -47,6 +47,12 @@
 		& .ck-button__label {
 			width: unset;
 			line-height: unset;
+
+			/*
+			 * Top-level buttons don't use ellipsis and overflow: hidden clips descenders.
+			 *  See https://github.com/ckeditor/ckeditor5/issues/17422.
+			 */
+			overflow: visible;
 		}
 
 		&.ck-on {

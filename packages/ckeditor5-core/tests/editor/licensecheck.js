@@ -320,7 +320,7 @@ describe( 'Editor - license check', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( {} );
-				} ).to.throw( CKEditorError, 'editor-license-key-missing' );
+				} ).to.throw( CKEditorError, 'license-key-missing' );
 
 				window.CKEDITOR_GLOBAL_LICENSE_KEY = 'GPL';
 			} );
@@ -685,12 +685,12 @@ describe( 'Editor - license check', () => {
 			{ reason: 'invalid', error: 'invalid-license-key' },
 			{ reason: 'expired', error: 'license-key-expired' },
 			{ reason: 'domainLimit', error: 'license-key-domain-limit' },
-			{ reason: 'featureNotAllowed', error: 'license-key-feature-not-allowed', pluginName: 'PluginABC' },
+			{ reason: 'featureNotAllowed', error: 'license-key-plugin-not-allowed', pluginName: 'PluginABC' },
 			{ reason: 'evaluationLimit', error: 'license-key-evaluation-limit' },
 			{ reason: 'trialLimit', error: 'license-key-trial-limit' },
 			{ reason: 'developmentLimit', error: 'license-key-development-limit' },
 			{ reason: 'usageLimit', error: 'license-key-usage-limit' },
-			{ reason: 'distributionChannel', error: 'license-key-distribution-channel' }
+			{ reason: 'distributionChannel', error: 'license-key-invalid-distribution-channel' }
 		];
 
 		for ( const testCase of testCases ) {

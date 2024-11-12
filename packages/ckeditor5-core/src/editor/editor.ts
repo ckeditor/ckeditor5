@@ -384,28 +384,82 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( !licenseKey ) {
 				/**
-				 * The `licenseKey` is missing in the editor configuration. If you use premium features,
-				 * please provide your license key. If you do not have a key yet, please contact us at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/) or order a trial at
-				 * [https://orders.ckeditor.com/trial/premium-features](https://orders.ckeditor.com/trial/premium-features).
+				 * The `licenseKey` property is missing in the editor configuration.
 				 *
-				 * If you do not use premium features, add the `'GPL'` license key instead.
+				 * * If you are using the editor in a commercial setup, please provide your license key.
+				 * * If you still need to acquire a key, please [contact us](https://ckeditor.com/contact/) or
+				 *   [create a free account with a 14 day premium features trial](https://portal.ckeditor.com/checkout?plan=free).
+				 * * If you are using the editor under a GPL license or another license from our Open Source Initiative,
+				 *   use the 'GPL' license key instead.
 				 *
 				 * ```js
-				 * Editor.create( document.querySelector( '#editor' ), {
-				 *   licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-				 * } );
-				 * ```
+				 * ClassicEditor.create( document.querySelector( '#editor' ), {
+				 * 	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				 * 	// ... Other configuration options ...
+				 * } ) ;
 				 *
-				 * @error editor-license-key-missing
+				 * @error license-key-missing
 				 */
-				throw new CKEditorError( 'editor-license-key-missing' );
+				throw new CKEditorError( 'license-key-missing' );
 			}
 		}
 
 		function verifyLicenseKey( editor: Editor ) {
 			const licenseKey = editor.config.get( 'licenseKey' )!;
 			const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ] || 'sh';
+
+			function blockEditor( reason: LicenseErrorReason ) {
+				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
+				editor._showLicenseError( reason );
+			}
+
+			function getPayload( licenseKey: string ): string | null {
+				const parts = licenseKey.split( '.' );
+
+				if ( parts.length != 3 ) {
+					return null;
+				}
+
+				return parts[ 1 ];
+			}
+
+			function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
+				const requiredFields = [ 'exp', 'jti', 'vc' ];
+
+				return requiredFields.every( field => field in licensePayload );
+			}
+
+			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
+				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
+
+				const filteredValues = keysToCheck
+					.filter( key => key != 'vc' && licensePayload[ key ] != null )
+					.map( key => licensePayload[ key ] );
+
+				return filteredValues as CRCData;
+			}
+
+			function checkLicensedHosts( licensedHosts: Array<string> ): boolean {
+				const { hostname } = new URL( window.location.href );
+
+				if ( licensedHosts.includes( hostname ) ) {
+					return true;
+				}
+
+				const segments = hostname.split( '.' );
+
+				return licensedHosts
+					// Filter out hosts without wildcards.
+					.filter( host => host.includes( '*' ) )
+					// Split the hosts into segments.
+					.map( host => host.split( '.' ) )
+					// Filter out hosts that have more segments than the current hostname.
+					.filter( host => host.length <= segments.length )
+					// Pad the beginning of the licensed host if it's shorter than the current hostname.
+					.map( host => Array( segments.length - host.length ).fill( host[ 0 ] === '*' ? '*' : '' ).concat( host ) )
+					// Check if some license host matches the hostname.
+					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
+			}
 
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {
@@ -514,68 +568,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						}
 					}, () => {
 						/**
-						 * Your license key cannot be validated because of a network issue.
-						 * Please make sure that your setup does not block the request.
+						 * Your license key cannot be validated due to a network issue.
+						 * Please ensure that your setup does not block requests to the validation endpoint.
 						 *
 						 * @error license-key-validation-endpoint-not-reachable
-						 * @param {String} url The URL that was attempted to reach.
+						 * @param {String} url The URL that was attempted to be reached for validation.
 						 */
 						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 					} );
 				}, { priority: 'high' } );
-			}
-
-			function getPayload( licenseKey: string ): string | null {
-				const parts = licenseKey.split( '.' );
-
-				if ( parts.length != 3 ) {
-					return null;
-				}
-
-				return parts[ 1 ];
-			}
-
-			function blockEditor( reason: LicenseErrorReason ) {
-				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
-				editor._showLicenseError( reason );
-			}
-
-			function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
-				const requiredFields = [ 'exp', 'jti', 'vc' ];
-
-				return requiredFields.every( field => field in licensePayload );
-			}
-
-			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
-				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
-
-				const filteredValues = keysToCheck
-					.filter( key => key != 'vc' && licensePayload[ key ] != null )
-					.map( key => licensePayload[ key ] );
-
-				return filteredValues as CRCData;
-			}
-
-			function checkLicensedHosts( licensedHosts: Array<string> ): boolean {
-				const { hostname } = new URL( window.location.href );
-
-				if ( licensedHosts.includes( hostname ) ) {
-					return true;
-				}
-
-				const segments = hostname.split( '.' );
-
-				return licensedHosts
-					// Filter out hosts without wildcards.
-					.filter( host => host.includes( '*' ) )
-					// Split the hosts into segments.
-					.map( host => host.split( '.' ) )
-					// Filter out hosts that have more segments than the current hostname.
-					.filter( host => host.length <= segments.length )
-					// Pad the beginning of the licensed host if it's shorter than the current hostname.
-					.map( host => Array( segments.length - host.length ).fill( host[ 0 ] === '*' ? '*' : '' ).concat( host ) )
-					// Check if some license host matches the hostname.
-					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 		}
 	}
@@ -912,8 +913,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		setTimeout( () => {
 			if ( reason == 'invalid' ) {
 				/**
-				 * Invalid license key. Please contact our customer support at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * The license key provided is invalid. Please ensure that it is copied correctly
+				 * from the [Customer Portal](http://portal.ckeditor.com). If the issue persists,
+				 * please [contact our customer support](https://ckeditor.com/contact/).
 				 *
 				 * @error invalid-license-key
 				 */
@@ -922,8 +924,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'expired' ) {
 				/**
-				 * Your license key has expired. Please renew your license at
-				 * [https://portal.ckeditor.com/](https://portal.ckeditor.com/).
+				 * Your license key has expired. Please renew your license on the
+				 * [Customer Portal](https://portal.ckeditor.com).
 				 *
 				 * @error license-key-expired
 				 */
@@ -932,8 +934,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'domainLimit' ) {
 				/**
-				 * The hostname is not allowed by your license. Please update your license configuration at
-				 * [https://portal.ckeditor.com/](https://portal.ckeditor.com/).
+				 * The provided license does not allow the editor to run on this domain.
+				 * Some license keys are restricted to local test environments only.
+				 * For more details, please refer to the
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types license key type documentation}.
 				 *
 				 * @error license-key-domain-limit
 				 */
@@ -942,24 +946,21 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'featureNotAllowed' ) {
 				/**
-				 * The plugin is not allowed by your license.
+				 * The plugin you are trying to use is not permitted under your current license.
+				 * Please check the available features on the
+				 * [Customer Portal](https://portal.ckeditor.com) or
+				 * [contact support](https://ckeditor.com/contact/) for more information.
 				 *
-				 * Please check your license or contact support at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
-				 * for more information.
-				 *
-				 * @error license-key-feature-not-allowed
-				 * @param {String} pluginName
+				 * @error license-key-plugin-not-allowed
+				 * @param {String} pluginName The plugin you tried to load.
 				 */
-				throw new CKEditorError( 'license-key-feature-not-allowed', this, { pluginName } );
+				throw new CKEditorError( 'license-key-plugin-not-allowed', this, { pluginName } );
 			}
 
 			if ( reason == 'evaluationLimit' ) {
 				/**
-				 * You have reached the usage limit of your evaluation license key. Restart the editor.
-				 *
-				 * Please contact our customer support to get full access at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * You have exceeded the editor operation limit available for your evaluation license key.
+				 * Please restart the editor to continue using it.
 				 *
 				 * @error license-key-evaluation-limit
 				 */
@@ -968,10 +969,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'trialLimit' ) {
 				/**
-				 * You have reached the usage limit of your trial license key. Restart the editor.
-				 *
-				 * Please contact our customer support to get full access at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * You have exceeded the editor operation limit for your trial license key.
+				 * Please restart the editor to continue using it.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-trial-limit
 				 */
@@ -980,10 +980,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'developmentLimit' ) {
 				/**
-				 * You have reached the usage limit of your development license key. Restart the editor.
-				 *
-				 * Please contact our customer support to get full access at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * You have exceeded the operation limit for your development license key within the editor.
+				 * Please restart the editor to continue using it.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-development-limit
 				 */
@@ -992,10 +991,14 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'usageLimit' ) {
 				/**
-				 * You have reached the usage limit of your license key.
+				 * You have reached the usage limit of your license key. This can occur in the following situations:
 				 *
-				 * Please contact our customer support to extend the limit at
-				 * [https://ckeditor.com/contact/](https://ckeditor.com/contact/).
+				 * * You are on a free subscription without a connected payment method and have exceeded the allowed usage threshold.
+				 * * Your account has overdue invoices and the grace period has ended.
+				 *
+				 * To extend the limit and restore access, please update the required details in the
+				 * [Customer Portal](https://portal.ckeditor.com) or
+				 * [contact our customer support](https://ckeditor.com/contact).
 				 *
 				 * @error license-key-usage-limit
 				 */
@@ -1004,17 +1007,19 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'distributionChannel' ) {
 				/**
-				 * Your license doesn't allow using the editor in this distribution channel.
+				 * Your license does not allow the current distribution channel.
 				 *
-				 * Having the `'GPL'` license key, you can use the editor installed from npm (self-hosted). If you have
-				 * a commercial license, you can use the editor from CDN or — if your plan allows — from npm.
+				 * * With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
+				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
+				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
+				 *   or a ZIP package (self-hosted) or Cloud (CDN)
 				 *
-				 * Please check your installation or contact support at [https://ckeditor.com/contact/](https://ckeditor.com/contact/)
-				 * for more information.
+				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
+				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
 				 *
-				 * @error license-key-distribution-channel
+				 * @error license-key-invalid-distribution-channel
 				 */
-				throw new CKEditorError( 'license-key-distribution-channel', this );
+				throw new CKEditorError( 'license-key-invalid-distribution-channel', this );
 			}
 
 			/* istanbul ignore next -- @preserve */

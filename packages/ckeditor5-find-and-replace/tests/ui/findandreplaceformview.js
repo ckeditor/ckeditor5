@@ -1286,7 +1286,7 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
 
 				replaceButton.fire( 'execute' );
-				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 2' );
 
 				replaceButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
@@ -1356,6 +1356,47 @@ describe( 'FindAndReplaceFormView', () => {
 
 				editor.execute( 'undo' );
 				expect( matchCounterElement.textContent ).to.equal( '4 of 4' );
+			} );
+
+			it( 'should keep highlighted offset after replacement', () => {
+				editor.setData(
+					`<p>
+						Chocolate <span style="color:#fff700;">cake</span> bar ice cream topping marzipan.
+						Powder gingerbread bear claw tootsie roll lollipop marzipan icing bonbon.
+					</p>
+					<p>
+						Chupa chups jelly beans halvah ice cream gingerbread bears candy halvah gummi bears.
+						cAke dragée dessert chocolate.
+					</p>
+					<p>
+						Sime text with text highlight: <mark class="marker-green">Chocolate</mark> bonbon
+						<mark class="marker-yellow">Chocolate</mark> ice cream <mark class="marker-blue">Chocolate</mark>
+						gummies <mark class="pen-green">Chocolate</mark> tootsie roll
+					</p>`
+				);
+
+				toggleDialog();
+
+				// Let's skip the first found item.
+				findInput.fieldView.value = 'Choco';
+				findButton.fire( 'execute' );
+				findNextButton.fire( 'execute' );
+
+				// Replace second and third one.
+				view._replaceInputView.fieldView.value = '###';
+
+				replaceButton.fire( 'execute' );
+				replaceButton.fire( 'execute' );
+
+				// And there check if the highlight is still in the right place.
+				replaceButton.fire( 'execute' );
+
+				expect( editor.getData() ).to.be.equal(
+					'<p>Chocolate cake bar ice cream topping marzipan. Powder gingerbread bear claw tootsie roll' +
+					' lollipop marzipan icing bonbon.</p><p>Chupa chups jelly beans halvah ice cream gingerbread ' +
+					'bears candy halvah gummi bears. cAke dragée dessert ###late.</p><p>Sime text with text highlight: ' +
+					'###late bonbon ###late ice cream Chocolate gummies Chocolate tootsie roll</p>'
+				);
 			} );
 		} );
 

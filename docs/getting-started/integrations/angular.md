@@ -22,11 +22,7 @@ Angular is a TypeScript-based, open-source, single-page web application framewor
 
 ## Quick start
 
-### Setting up the project
-
 This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
-
-### Installing from npm
 
 First, install the CKEditor 5 packages:
 
@@ -47,7 +43,7 @@ npm install @ckeditor/ckeditor5-angular
 
 The following setup differs depending on the type of components you use.
 
-#### Standalone components
+### Standalone components
 
 Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
 
@@ -101,7 +97,7 @@ Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 <ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-#### NGModule components
+### NGModule components
 
 If you want to use NGModule components, add the `CKEditorModule` to the `imports` array. It will make the CKEditor&nbsp;5 component available in your Angular application.
 
@@ -654,11 +650,22 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ( {
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[ Symbol.iterator ]: function* () {}
-	} );
+		[Symbol.iterator]: function* () {}
+	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 ```
 

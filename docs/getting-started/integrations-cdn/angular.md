@@ -18,11 +18,11 @@ order: 30
 
 Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
 
-This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
+
+This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
 <info-box>
 	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
