@@ -55,9 +55,9 @@ With CKBox, users can upload files and categorize them into different groups. Th
 
 Uploadcare is the ultimate solution for image upload and editing in CKEditor&nbsp;5.
 
-It is a modern file uploader with a clean interface, automatic support for responsive images, on-fly image optimization, fast delivery through global CDN network, multiple 3-rd party integrations and vast image editing capabilities like cropping, filtering and adjusting image parameters.
+It is a modern file uploader with a clean interface, automatic support for responsive images, on-the-fly image optimization, fast delivery through global CDN network, multiple 3-rd party integrations and vast image editing capabilities like cropping, filtering and adjusting image parameters.
 
-Thanks to the native CKEditor&nbsp;5 integration, Uploadcare supports drag and drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
+Thanks to the native CKEditor&nbsp;5 integration, Uploadcare supports drag-and-drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
 
 With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, Instagram, OneDrive or from local computer. Images can be easily adjusted with built-in image editor.
 
