@@ -62,7 +62,7 @@ Please note that unused editor loads **do not carry over** to the next month, re
 
 ### Exceeding your monthly limit
 
-If you surpass your monthly limit, you will be automatically charged standard charging rate for every additional block of 1,000 editor loads.
+If you surpass your monthly limit, you will be automatically charged a standard charging rate for every additional block of 1,000 editor loads.
 
 ### CKEditor Free plan
 
