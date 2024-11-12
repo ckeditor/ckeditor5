@@ -82,6 +82,6 @@ We advise linking the email address associated with your plan to a group alias, 
 
 ### Plan upgrades
 
-If you are on the Essential plan and reach 5,000 editor loads, you will not be automatically upgraded to the Professional plan. Instead, you will be charged standard charging rate for each additional block of 1,000 editor loads. To avoid these charges, regularly review your editor load count and consider upgrading your plan if needed. Plan upgrades are available anytime in the `Customer portal` → `Subscription management`.
+If you are on the Essential plan and reach 5,000 editor loads, you will not be automatically upgraded to the Professional plan. Instead, you will be charged a standard charging rate for each additional block of 1,000 editor loads. To avoid these charges, regularly review your editor load count and consider upgrading your plan if needed. Plan upgrades are available anytime in the `Customer portal` → `Subscription management`.
 
 For plan upgrades, we charge prorated value immediately to enable all needed features after the upgrade.
