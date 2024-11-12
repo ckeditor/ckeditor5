@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 
 import { Database } from 'emoji-picker-element';
+import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
 // @ts-expect-error This import works.
 import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 
@@ -20,6 +21,8 @@ import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
  * @internal
  */
 export default class EmojiLibraryIntegration extends Plugin {
+	private localDataUrl!: string;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -35,30 +38,30 @@ export default class EmojiLibraryIntegration extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this.localDataUrl = URL.createObjectURL(
+			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
+		);
+	}
+
+	/**
 	 * Feed function for mention config.
 	 *
 	 * @public
 	 */
 	public queryEmoji( searchQuery: string ): Promise<Array<MentionFeedObjectItem>> {
-		// TODO: Loading this url manually returns the proper object. Figure out why the Database throws NetworkError.
-		const localDataUrl = URL.createObjectURL(
-			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
-		);
-
-		// TODO: load this only once in constructor or init, not every time while querying.
 		const emojiDatabase = new Database( {
-			dataSource: localDataUrl
+			dataSource: this.localDataUrl
 		} );
 
-		return emojiDatabase.ready()
-			.then( () => {
-				return emojiDatabase.getEmojiBySearchQuery( searchQuery );
-			} )
+		return emojiDatabase.getEmojiBySearchQuery( searchQuery )
 			.then( queryResult => {
-				return queryResult.map( ( emoji: any ) => { // TODO: fix type
+				return ( queryResult as Array<NativeEmoji> ).map( emoji => {
 					return {
-						id: emoji.shortcodes[ 0 ],
-						text: emoji.emoji
+						id: `emoji:${ emoji.annotation.replace( / /g, '_' ) }:`,
+						text: emoji.unicode
 					};
 				} );
 			} );
