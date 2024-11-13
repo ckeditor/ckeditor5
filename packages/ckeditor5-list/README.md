@@ -7,6 +7,18 @@ CKEditor&nbsp;5 list feature
 
 This package implements bulleted, numbered and to-do list feature for CKEditor&nbsp;5.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the demos for [ordered and unordered lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#demo) as well as [to-do list](https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html#demo) in the CKEditor&nbsp;5 documentation.
@@ -14,12 +26,6 @@ Check out the demos for [ordered and unordered lists](https://ckeditor.com/docs/
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-list` package](https://ckeditor.com/docs/ckeditor5/latest/api/list.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 

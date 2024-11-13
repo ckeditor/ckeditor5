@@ -7,15 +7,21 @@ CKEditor&nbsp;5 file upload feature
 
 This package implements various file upload utilities for CKEditor&nbsp;5.
 
-## Documentation
-
-See the [`@ckeditor/ckeditor5-upload` package](https://ckeditor.com/docs/ckeditor5/latest/api/upload.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
 ## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
 
 ```bash
 npm install ckeditor5
 ```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-upload` package](https://ckeditor.com/docs/ckeditor5/latest/api/upload.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

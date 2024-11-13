@@ -7,6 +7,18 @@ CKEditor&nbsp;5 text part language feature
 
 This package implements text part language support for CKEditor&nbsp;5 that allows you to define the language for each passage of content written in multiple languages. It helps satisfy the [WCAG Success Criterion 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html).
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the [demo in the text part language feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/language.html#demo).
@@ -14,12 +26,6 @@ Check out the [demo in the text part language feature guide](https://ckeditor.co
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-language` package](https://ckeditor.com/docs/ckeditor5/latest/api/language.html) page as well as the [text part language feature](https://ckeditor.com/docs/ckeditor5/latest/features/language.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 
