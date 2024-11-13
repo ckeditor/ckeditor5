@@ -84,32 +84,39 @@ The `List` plugin provides the {@link features/lists ordered (numbered) and unor
 
 ### List feature
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
-import { List } from 'ckeditor5';
+import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+		list: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ### List properties
 
-After {@link getting-started/quick-start installing the editor}, add `ListProperties` to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add `ListProperties` to your plugin list and toolbar configuration:
 
 To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
 
+<code-switcher>
 ```js
-import { ListProperties } from 'ckeditor5';
+import { ClassicEditor, List, ListProperties } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ListProperties, /* ... */ ],
+		plugins: [ List, ListProperties, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 			properties: {
@@ -122,6 +129,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.

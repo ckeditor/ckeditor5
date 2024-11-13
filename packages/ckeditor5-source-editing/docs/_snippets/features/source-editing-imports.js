@@ -69,7 +69,8 @@ ClassicEditor.defaultConfig = {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
 		}
-	}
+	},
+	licenseKey: 'GPL'
 };
 
 window.ClassicEditor = ClassicEditor;

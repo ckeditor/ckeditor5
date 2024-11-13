@@ -227,15 +227,15 @@ export default class NodeList implements Iterable<Node> {
 		// Remove nodes from this nodelist.
 		let offset = this.indexToOffset( indexStart );
 		const nodes = this._nodes.splice( indexStart, howMany );
-
-		const removedOffsetSum = nodes[ nodes.length - 1 ].startOffset! + nodes[ nodes.length - 1 ].offsetSize - offset;
+		const lastNode = nodes[ nodes.length - 1 ];
+		const removedOffsetSum = lastNode.startOffset! + lastNode.offsetSize - offset;
 		this._offsetToNode.splice( offset, removedOffsetSum );
 
 		// Reset index and start offset properties for the removed nodes -- they do not have a parent anymore.
-		nodes.forEach( node => {
+		for ( const node of nodes ) {
 			node._index = null;
 			node._startOffset = null;
-		} );
+		}
 
 		for ( let i = indexStart; i < this._nodes.length; i++ ) {
 			this._nodes[ i ]._index = i;

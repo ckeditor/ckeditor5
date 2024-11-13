@@ -26,7 +26,8 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
-		placeholder: 'Type some content here!'
+		placeholder: 'Type some content here!',
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		const button = document.getElementById( 'update-placeholder-button' );

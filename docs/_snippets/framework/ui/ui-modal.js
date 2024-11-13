@@ -75,7 +75,8 @@ class MinimalisticModal extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#ui-modal-editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, Underline, MinimalisticModal, Dialog ],
-		toolbar: [ 'bold', 'italic', 'underline', '|', 'showModal' ]
+		toolbar: [ 'bold', 'italic', 'underline', '|', 'showModal' ],
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.attachTourBalloon( {

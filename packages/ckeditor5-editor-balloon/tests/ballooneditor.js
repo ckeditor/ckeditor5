@@ -59,6 +59,10 @@ describe( 'BalloonEditor', () => {
 			await editor.destroy();
 		} );
 
+		it( 'it\'s possible to extract editor name from editor instance', () => {
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'BalloonEditor' );
+		} );
+
 		it( 'pushes BalloonToolbar to the list of plugins', () => {
 			expect( editor.config.get( 'plugins' ) ).to.include( BalloonToolbar );
 		} );

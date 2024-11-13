@@ -21,6 +21,7 @@ module.exports = {
 	],
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error',
+		'ckeditor5-rules/prevent-license-key-leak': 'error',
 		'ckeditor5-rules/license-header': [ 'error', {
 			headerLines: [
 				'/**',

@@ -48,51 +48,54 @@ By using this feature, the users of your application will be able to create temp
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
 
 ### Running the standard editing mode
 
 To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
 
+<code-switcher>
 ```js
 import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditingException', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ### Running the restricted editing mode
 
 To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
 
+<code-switcher>
 ```js
 import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RestrictedEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditing', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
 You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
-import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
+		// ... Other confituration options ... 
 		restrictedEditing: {
 			allowedCommands: [ 'bold' ]
 		}
@@ -107,6 +110,7 @@ ClassicEditor
 
 The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Plugin } from 'ckeditor5';
 
@@ -116,6 +120,7 @@ class MyPlugin extends Plugin {
 	}
 }
 ```
+</code-switcher>
 
 ## Related features
 

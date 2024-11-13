@@ -83,7 +83,8 @@ async function startStandardEditingMode() {
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		updateSourceElementOnDestroy: true
+		updateSourceElementOnDestroy: true,
+		licenseKey: 'GPL'
 	} );
 }
 
@@ -107,7 +108,8 @@ async function startRestrictedEditingMode() {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
-		updateSourceElementOnDestroy: true
+		updateSourceElementOnDestroy: true,
+		licenseKey: 'GPL'
 	} );
 }
 

@@ -43,7 +43,8 @@ ClassicEditor
 			supportAllValues: true
 		},
 		placeholder: 'Paste the content here to test the feature.',
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

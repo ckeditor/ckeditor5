@@ -28,11 +28,13 @@ Press <kbd>Enter</kbd> to create a new list item. Press <kbd>Tab</kbd> to nest t
 
 When working with simple content or in small editing areas, you might not need the support for multi-block lists. You can use the {@link module:list/listconfig~ListConfig#multiBlock `config.list.multiBlock`} configuration setting to turn off the block list functionality. When you set this option to `false`, users can only insert text into list items. They will not be able to nest content blocks &ndash; like paragraphs or tables &ndash; inside a list item. We sometimes refer to this setup as "simple lists."
 
+<code-switcher>
 ```js
 import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
@@ -42,6 +44,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Merging adjacent lists
 
@@ -51,16 +54,19 @@ Sometimes this can be an undesirable behavior. For example, two adjacent numbere
 
 To prevent this behavior, enable the {@link module:list/list/adjacentlistssupport~AdjacentListsSupport `AdjacentListsSupport`} plugin.
 
+<code-switcher>
 ```js
 import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, AdjacentListsSupport, /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
 

@@ -69,7 +69,8 @@ ClassicEditor
 				},
 				{ name: 'script' }
 			]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

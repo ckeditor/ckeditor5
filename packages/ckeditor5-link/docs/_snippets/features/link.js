@@ -15,7 +15,7 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'bookmark', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -34,7 +34,8 @@ ClassicEditor
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

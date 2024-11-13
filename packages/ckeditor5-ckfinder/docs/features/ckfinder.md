@@ -13,10 +13,8 @@ badges: [ premium ]
 
 The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.
 
-<info-box info>
-	This is a premium feature and you need a license for it on top of your CKEditor&nbsp;5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
-
-	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+<info-box>
+	Unlock this feature with a CKEditor Paid Plan. [Sign up for a free trial](https://portal.ckeditor.com/checkout?plan=free), or [select the Plan](https://ckeditor.com/pricing/) that provides access to all the premium features you need.
 </info-box>
 
 ## Demos
@@ -70,23 +68,25 @@ You can use this feature in the rich-text editor in two different ways:
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
 		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
 		ckfinder: {
-			// Feature configuration.
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -99,15 +99,9 @@ This feature can upload images automatically to the server (for example, when th
 Assuming that you [installed the CKFinder PHP server-side connector](https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html#quickstart_installation_folders) (and it is available under `https://example.com/ckfinder/`), use the following [quick upload](https://ckeditor.com/docs/ckfinder/ckfinder3-php/commands.html#command_quick_upload) command URL to enable the image upload:
 
 ```js
-import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
-
-		// Enable the insert image button in the toolbar.
-		toolbar: [ 'uploadImage', /* ... */ ],
-
+		// ... Other configuration options ...
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
 			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
@@ -139,15 +133,9 @@ Then:
 	* You can define [`options.language`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language) to set the UI language of CKFinder. By default, it will be set to the UI language of the editor.
 
 ```js
-import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
-
-		// Enable the CKFinder button in the toolbar.
-		toolbar: [ 'ckfinder', /* ... */ ]
-
+		// ... Other configuration options ...
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
 			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
@@ -171,12 +159,9 @@ You can change the way CKFinder opens using the {@link module:ckfinder/ckfinderc
 By default, the file manager opens as a modal. To open it in a new pop-up window, set the configuration value to `popup`:
 
 ```js
-import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
-		toolbar: [ 'ckfinder', /* ... */ ]
+		// ... Other configuration options ...
 		ckfinder: {
 			// Open the file manager in the pop-up window.
 			openerMethod: 'popup'

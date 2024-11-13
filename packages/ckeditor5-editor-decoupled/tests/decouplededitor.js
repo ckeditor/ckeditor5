@@ -51,6 +51,10 @@ describe( 'DecoupledEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
+		it( 'it\'s possible to extract editor name from editor instance', () => {
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'DecoupledEditor' );
+		} );
+
 		it( 'has a Data Interface', () => {
 			expect( DecoupledEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
 			expect( DecoupledEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
