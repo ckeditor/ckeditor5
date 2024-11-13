@@ -27,7 +27,7 @@ Check out the [demo in the CKFinder feature guide](https://ckeditor.com/docs/cke
 
 See the ["CKFinder integration" guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/adapter-ckfinder.html) to learn how to configure the adapter.
 
-Check out the {@link features/image-upload/image-upload comprehensive "Image upload overview"} to learn about other ways to upload images into CKEditor&nbsp;5.
+Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
 
 ## License
 
