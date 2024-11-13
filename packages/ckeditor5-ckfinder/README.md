@@ -23,7 +23,6 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 Check out the [demo in the CKFinder feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html#demos).
 
-
 ## Documentation
 
 See the [CKFinder integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/ckfinder.html) to learn more about the integration.
