@@ -13,23 +13,21 @@ CKEditor&nbsp;5 is a modern JavaScript rich-text editor with MVC architecture, c
 
 ![A composition of screenshots presenting various features of CKEditor&nbsp;5 rich text editor](https://raw.githubusercontent.com/ckeditor/ckeditor5/master/docs/assets/img/CKEditor-5.png)
 
-## Table of contents
+## Table of contents<!-- omit in toc -->
 
-- [CKEditor 5 ](#ckeditor5-)
-	- [Table of contents](#table-of-contents)
-	- [Quick start](#quick-start)
-		- [CKEditor 5 Builder](#ckeditor5-builder)
-		- [TypeScript support](#typescript-support)
-		- [CKEditor 5 advanced installation](#ckeditor5-advanced-installation)
-			- [CKEditor 5 Framework](#ckeditor5-framework)
-	- [Documentation and FAQ](#documentation-and-faq)
-	- [Releases](#releases)
-	- [Editing and collaboration features](#editing-and-collaboration-features)
-	- [Contributing and project organization](#contributing-and-project-organization)
-		- [Ideas and discussions](#ideas-and-discussions)
-		- [Development](#development)
-		- [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
-	- [License](#license)
+- [Quick start](#quick-start)
+	- [CKEditor 5 Builder](#ckeditor5-builder)
+	- [TypeScript support](#typescript-support)
+	- [CKEditor 5 advanced installation](#ckeditor5-advanced-installation)
+		- [CKEditor 5 Framework](#ckeditor5-framework)
+- [Documentation and FAQ](#documentation-and-faq)
+- [Releases](#releases)
+- [Editing and collaboration features](#editing-and-collaboration-features)
+- [Contributing and project organization](#contributing-and-project-organization)
+	- [Ideas and discussions](#ideas-and-discussions)
+	- [Development](#development)
+	- [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
+- [License](#license)
 
 ## Quick start
 
