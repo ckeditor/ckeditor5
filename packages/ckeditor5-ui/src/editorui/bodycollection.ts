@@ -107,7 +107,7 @@ export default class BodyCollection extends ViewCollection {
 			this._bodyCollectionContainer.remove();
 		}
 
-		if ( BodyCollection._bodyWrapper && BodyCollection._bodyWrapper.childElementCount == 0 ) {
+		if ( BodyCollection._bodyWrapper && !BodyCollection._bodyWrapper.childElementCount ) {
 			BodyCollection._bodyWrapper.remove();
 			delete BodyCollection._bodyWrapper;
 		}
