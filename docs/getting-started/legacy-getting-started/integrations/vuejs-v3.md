@@ -113,7 +113,7 @@ To create an editor instance, you must first import the editor build and the com
 import { createApp } from 'vue';
 import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 
-createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
+createApp( { /* options */ } ).use( CkeditorPlugin ).mount( /* DOM element */ );
 ```
 
 <info-box>
