@@ -87,6 +87,7 @@ monorepo
 (?i)multiline
 [Nn]amespace
 namespacing
+NGModule
 npm
 numberedList
 Nuxt

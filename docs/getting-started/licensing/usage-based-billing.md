@@ -12,7 +12,7 @@ modified_at: 2024-10-28
 Under the Usage-based billing (UBB) model, your costs are based on how frequently you use CKEditor.
 
 <info-box>
-	The following information applies exclusively to Cloud-hosted plans. If you are not subject to usage-based billing terms if:
+	The following information applies exclusively to Cloud-hosted plans. You are not subject to usage-based billing terms if:
 
 	* You use a self-hosted open-source version of CKEditor. However, you must comply with the terms of the open-source license.
 	* You have a Custom plan that allows self-hosting.
@@ -56,17 +56,17 @@ Each pricing plan includes a specific number of editor loads. If you exceed this
 Your billing cycle depends on the type of subscription plan you have chosen  &ndash; **monthly** or **annual**.
 
 * **Monthly Plans**: If you are on a monthly plan, your billing cycle begins the day after your trial period ends and repeats on the same date each month. For example, if your trial ends on May 15th, your billing cycle starts on May 16th. Your editor load count resets on the 16th of each following month. Any charges for additional editor loads take effect at the start of your next billing cycle.
-* **Annual Plans**: If you have chosen an annual plan, your billing cycle starts the day after your trial period ends and continues for 12 months. Editor loads are still calculated and reset on a monthly basis within your annual billing period. For instance, if your trial ends on May 15th, your billing cycle begins on May 16th, and your editor load count resets on the 16th of each month thereafter. If you exceed your monthly editor load limit, additional charges of 70 USD per block of 1,000 editor loads will apply. These charges will be conducted on a monthly basis if applicable.
+* **Annual Plans**: If you have chosen an annual plan, your billing cycle starts the day after your trial period ends and continues for 12 months. Editor loads are still calculated and reset on a monthly basis within your annual billing period. For instance, if your trial ends on May 15th, your billing cycle begins on May 16th, and your editor load count resets on the 16th of each month thereafter. If you exceed your monthly editor load limit, additional charges of the standard charging rate per block of 1,000 editor loads will apply. These charges will be conducted monthly if applicable.
 
 Please note that unused editor loads **do not carry over** to the next month, regardless of whether you are on a monthly or annual plan. To manage your costs effectively, we recommend monitoring your editor load usage and adjusting your plan as needed. See the [Managing your usage](#managing-your-usage) section below.
 
 ### Exceeding your monthly limit
 
-If you surpass your monthly limit, you will be automatically charged 70 USD for every additional block of 1,000 editor loads.
+If you surpass your monthly limit, you will be automatically charged a standard charging rate for every additional block of 1,000 editor loads.
 
 ### CKEditor Free plan
 
-If you use our CKEditor Free plan and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of 70 USD per additional block of 1,000 editor loads applies.
+If you use our CKEditor Free plan and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
 
 ### Trial period usage
 
@@ -82,6 +82,6 @@ We advise linking the email address associated with your plan to a group alias, 
 
 ### Plan upgrades
 
-If you are on the Essential plan and reach 5,000 editor loads, you will not be automatically upgraded to the Professional plan. Instead, you will be charged 70 USD for each additional block of 1,000 editor loads. To avoid these charges, regularly review your editor load count and consider upgrading your plan if needed. Plan upgrades are available anytime in the `Customer portal` → `Subscription management`.
+If you are on the Essential plan and reach 5,000 editor loads, you will not be automatically upgraded to the Professional plan. Instead, you will be charged a standard charging rate for each additional block of 1,000 editor loads. To avoid these charges, regularly review your editor load count and consider upgrading your plan if needed. Plan upgrades are available anytime in the `Customer portal` → `Subscription management`.
 
 For plan upgrades, we charge prorated value immediately to enable all needed features after the upgrade.

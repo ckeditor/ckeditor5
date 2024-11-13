@@ -1,12 +1,12 @@
 ---
-menu-title: Vue 3+
-meta-title: Vue CKEditor 5 - migrate integration from npm to CDN | CKEditor 5 documentation
+menu-title: Vue.js 3+
+meta-title: Vue.js CKEditor 5 - migrate integration from npm to CDN | CKEditor 5 documentation
 meta-description: Migrate Vue 3+ CKEditor 5 integration from npm to CDN in a few simple steps. Learn how to install Vue 3+ CKEditor 5 integration in your project using the CDN.
 category: migrations
 order: 40
 ---
 
-# Migrating Vue 3+ CKEditor&nbsp;5 integration from npm to CDN
+# Migrating Vue.js 3+ CKEditor&nbsp;5 integration from npm to CDN
 
 This guide will help you migrate Vue 3 CKEditor&nbsp;5 integration from an NPM-based installation to a CDN-based one.
 
@@ -172,7 +172,7 @@ it( 'ClassicEditor test', () => {
 } );
 ```
 
-#### Step 4 (Optional): Clean up the document head entries before each test
+### Step 4 (Optional): Clean up the document head entries before each test
 
 The `useCKEditorCloud` composable under the hood injects the CKEditor&nbsp;5 scripts and styles into your document head. If you use a testing suite that does not Clean up the document head entries before each test, you may need to do it manually. This is important because the `useCKEditorCloud` composable might reuse the same head entries for each test, which can lead to skipping the `loading` state and directly going to the `success` state. It may cause some tests that rely on the `loading` state to fail.
 
