@@ -539,15 +539,8 @@ class ContextFactory {
 			}
 		} else if ( opA instanceof MergeOperation ) {
 			if ( opB instanceof MergeOperation ) {
-				// There can be only relation set for a pair of operations, but it is fine for these cases here.
-				// There is only one scenario when a pair can fulfill two cases -- `mergeSameTarget` and `mergeSameElement` which happens
-				// if operations are equal. But in this case it is okay that `mergeSameElement` overwrites `mergeSameTarget`.
 				if ( !opA.targetPosition.isEqual( opB.sourcePosition ) ) {
 					this._setRelation( opA, opB, 'mergeTargetNotMoved' );
-				}
-
-				if ( opA.targetPosition.isEqual( opB.targetPosition ) ) {
-					this._setRelation( opA, opB, 'mergeSameTarget' );
 				}
 
 				if ( opA.sourcePosition.isEqual( opB.targetPosition ) ) {
@@ -566,10 +559,6 @@ class ContextFactory {
 					this._setRelation( opA, opB, 'mergeSourceAffected' );
 				}
 
-				// After changes introduced for issue #17267 this branch was not covered anymore by our tests, as the introduced fixes
-				// covered the test that was earlier covered by this `if`. However, it is not 100% clear, that this cannot happen anymore,
-				// hence it was decided to keep handling this scenario anyway.
-				/* istanbul ignore next -- @preserve */
 				if ( opA.targetPosition.isEqual( opB.sourcePosition ) ) {
 					this._setRelation( opA, opB, 'mergeTargetWasBefore' );
 				}
@@ -1392,32 +1381,14 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 	}
 
 	// The default case.
+	// TODO: Possibly, there's a missing case for same `targetPosition` but different `sourcePosition`.
 	//
 	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
 		a.howMany += b.howMany;
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedByMergeOperation( b );
-
-	if ( a.targetPosition.isEqual( b.targetPosition ) ) {
-		// Case 3:
-		//
-		// Operations target to the same position (merge something into the same element). But unlike case 1, the operations are not equal,
-		// because they have different source position.
-		//
-		// In most cases, when operations point to the same merge target, the operations are equal (i.e. they also have the same source).
-		// However, in some more complex undo cases (including multiple steps) it happens that two different elements are merged into
-		// the same element. It only happens "temporarily" as the operation is being transformed during undo process.
-		// It doesn't seem that this can happen in real-time collaboration.
-		//
-		// In this case, simply move the `a` merge target position, so it still points to the end of the target element.
-		//
-		a.targetPosition = a.targetPosition.getShiftedBy( b.howMany );
-	} else {
-		// The default case.
-		//
-		a.targetPosition = a.targetPosition._getTransformedByMergeOperation( b );
-	}
+	a.targetPosition = a.targetPosition._getTransformedByMergeOperation( b );
 
 	// Handle positions in graveyard.
 	// If graveyard positions are same and `a` operation is strong - do not transform.
@@ -1467,10 +1438,6 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	// [] is move operation, } is merge source position (sticks to previous by default):
 	// <p>A[b]}c</p>  ->  <p>A}c</p>
 	//
-	// After changes introduced for issue #17267 two of the else-if branches were not covered anymore by our tests, as the introduced fixes
-	// covered the test that was earlier covered by these branches. However, it is not 100% clear, that this cannot happen anymore,
-	// hence it was decided to keep handling these scenarios anyway.
-	/* istanbul ignore next -- @preserve */
 	if ( b.sourcePosition.getShiftedBy( b.howMany ).isEqual( a.sourcePosition ) ) {
 		a.sourcePosition.stickiness = 'toNone';
 	}
@@ -1642,10 +1609,11 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 		}
 
 		// This merge operation might have been earlier transformed by a merge operation which both merged the same element.
-		// See that case in `MergeOperation` x `MergeOperation` transformation.
+		// See that case in `MergeOperation` x `MergeOperation` transformation. In that scenario, if the merge operation has been undone,
+		// the special case is not applied.
 		//
-		// Now, the merge operation is transformed by the split which has undone that previous merge operation. Make sure to set
-		// correct properties on merge operation `a`, just like the earlier merge and this split did not happen.
+		// Now, the merge operation is transformed by the split which has undone that previous merge operation.
+		// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
 		//
 		if ( context.abRelation == 'mergeSameElement' || a.sourcePosition.offset > 0 ) {
 			a.sourcePosition = b.moveTargetPosition.clone();
@@ -1658,31 +1626,11 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 	// The default case.
 	//
 	if ( a.sourcePosition.hasSameParentAs( b.splitPosition ) ) {
-		if ( b.splitPosition.offset >= a.sourcePosition.offset ) {
-			a.howMany = b.splitPosition.offset - a.sourcePosition.offset;
-		}
+		a.howMany = b.splitPosition.offset;
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
-
-	if ( a.targetPosition.hasSameParentAs( b.splitPosition ) && context.abRelation == 'mergeSameTarget' ) {
-		// Case 3:
-		//
-		// Merge operation targets into an element which is being split, but unlike case 1, the split happens at different (earlier)
-		// position. This is a regular case. By default, the merge target position is moved to the right-hand split part of the split
-		// element: <p>Foobar^</p><p>XYZ</p>  -->  <p>Foo</p><p>bar^</p><p>XYZ</p>. This happens in the default handling below.
-		//
-		// However, in some cases, we need to do something different. If this split operation is undoing a merge operation, and both
-		// `a` merge operation and the undone merge operation were targeting to the same element, we will acknowledge, that this
-		// `a` merge operation at the very beginning was supposed to merge into the original element. We will keep the target position in
-		// the original element, to ensure proper processing during undo: <p>Foobar^</p><p>XYZ</p>  -->  <p>Foo^</p><p>bar</p><p>XYZ</p>.
-		//
-		a.targetPosition = a.targetPosition.getShiftedBy( -b.howMany );
-	} else {
-		// The default case.
-		//
-		a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
-	}
+	a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 
 	return [ a ];
 } );
