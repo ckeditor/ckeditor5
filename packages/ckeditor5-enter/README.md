@@ -7,15 +7,21 @@ CKEditor&nbsp;5 enter feature
 
 This package implements the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd> (soft break) support for CKEditor&nbsp;5.
 
-## Documentation
-
-See the [`@ckeditor/ckeditor5-enter` package](https://ckeditor.com/docs/ckeditor5/latest/api/enter.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
 ## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
 
 ```bash
 npm install ckeditor5
 ```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-enter` package](https://ckeditor.com/docs/ckeditor5/latest/api/enter.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

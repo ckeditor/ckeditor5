@@ -83,7 +83,7 @@
 		"builds/guides/development/plugins.html": "framework/architecture/plugins.html",
 		"builds/guides/faq.html": "framework/how-tos.html",
 		"builds/guides/integration/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
-		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
+		"builds/guides/integration/advanced-setup.html#creating-super-builds": "getting-started/legacy/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "getting-started/setup/editor-lifecycle.html",
 		"builds/guides/integration/configuration.html": "installationlegacy-/getting-started/configuration.html",
 		"builds/guides/integration/content-styles.html": "getting-started/setup/css.html",

@@ -7,6 +7,18 @@ CKEditor&nbsp;5 link feature
 
 This package implements the link feature for CKEditor&nbsp;5. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the demo in the [link feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#demo).
@@ -14,12 +26,6 @@ Check out the demo in the [link feature guide](https://ckeditor.com/docs/ckedito
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-link` package](https://ckeditor.com/docs/ckeditor5/latest/api/link.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 

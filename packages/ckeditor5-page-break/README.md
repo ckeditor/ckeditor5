@@ -7,6 +7,18 @@ CKEditor&nbsp;5 page break feature
 
 This package implements the page break feature for CKEditor&nbsp;5.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the demo in the [page break feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html#demo).
@@ -14,12 +26,6 @@ Check out the demo in the [page break feature guide](https://ckeditor.com/docs/c
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-page-break` package](https://ckeditor.com/docs/ckeditor5/latest/api/page-break.html) page as well as the [page break feature](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 
