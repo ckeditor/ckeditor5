@@ -702,7 +702,7 @@ describe( 'Editor - license check', () => {
 
 				editor._showLicenseError( reason, pluginName );
 
-				expectToThrowCKEditorError( () => clock.tick( 1 ), error, editor, expectedData );
+				expectToThrowCKEditorError( () => clock.tick( 1 ), error, undefined, expectedData );
 			} );
 		}
 
