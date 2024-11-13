@@ -8,9 +8,6 @@
  */
 
 import type Element from './element.js';
-
-import { isPlainObject } from 'lodash-es';
-
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -321,6 +318,12 @@ function matchPatterns(
 	return match;
 }
 
+const toString = Object.prototype.toString;
+
+function isObject( value: any ): value is Record<string, unknown> {
+	return toString.call( value ) === '[object Object]';
+}
+
 /**
  * Bring all the possible pattern forms to an array of arrays where first item is a key and second is a value.
  *
@@ -389,27 +392,25 @@ function matchPatterns(
  */
 function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
 	if ( Array.isArray( patterns ) ) {
-		return patterns.map( ( pattern: any ) => {
-			if ( isPlainObject( pattern ) ) {
-				if ( pattern.key === undefined || pattern.value === undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-missing-key-or-value', pattern );
-				}
-
-				return [ pattern.key, pattern.value ];
+		return patterns.map( pattern => {
+			if ( !isObject( pattern ) ) {
+				return [ pattern, true ];
 			}
 
-			// Assume the pattern is either String or RegExp.
-			return [ pattern, true ];
+			if ( pattern.key === undefined || pattern.value === undefined ) {
+				// Documented at the end of matcher.js.
+				logWarning( 'matcher-pattern-missing-key-or-value', pattern );
+			}
+
+			return [ pattern.key, pattern.value ];
 		} );
 	}
 
-	if ( isPlainObject( patterns ) ) {
-		return Object.entries( patterns );
+	if ( !isObject( patterns ) ) {
+		return [ [ patterns as any, true ] ];
 	}
 
-	// Other cases (true, string or regexp).
-	return [ [ patterns as any, true ] ];
+	return Object.entries( patterns );
 }
 
 /**
@@ -461,15 +462,13 @@ function matchAttributes(
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
 	// for backward compatibility.
-	if ( isPlainObject( patterns ) ) {
-		if ( ( patterns as any ).style !== undefined ) {
-			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
-		}
-		if ( ( patterns as any ).class !== undefined ) {
-			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
-		}
+	if ( ( patterns as any ).style !== undefined ) {
+		// Documented at the end of matcher.js.
+		logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+	}
+	if ( ( patterns as any ).class !== undefined ) {
+		// Documented at the end of matcher.js.
+		logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
 	} else {
 		attributeKeys.delete( 'style' );
 		attributeKeys.delete( 'class' );
