@@ -5,7 +5,7 @@ CKEditor&nbsp;5 media embed feature
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-This package implements the media embed feature for CKEditor&nbsp;5. You can use it to insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.1
+This package implements the media embed feature for CKEditor&nbsp;5. You can use it to insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
 ## Installation
 
