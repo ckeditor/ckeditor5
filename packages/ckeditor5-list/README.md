@@ -5,7 +5,7 @@ CKEditor&nbsp;5 list feature
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-This package implements bulleted, numbered and to-do list feature for CKEditor&nbsp;5.
+This package implements bulleted, numbered, and to-do list features for CKEditor&nbsp;5.
 
 ## Installation
 
