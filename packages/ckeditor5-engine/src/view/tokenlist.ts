@@ -79,10 +79,10 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO This is not defined in StylesMap, should we unify this?
+	 * TODO
 	 */
-	public keys(): IterableIterator<string> {
-		return this._set.keys();
+	public keys(): Array<string> {
+		return Array.from( this._set.keys() );
 	}
 
 	/**
@@ -102,6 +102,37 @@ export default class TokenList implements ElementAttributeValue {
 
 		for ( const token of this.keys() ) {
 			if ( !other.has( token ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	public canMergeFrom(): boolean {
+		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	public mergeFrom( other: TokenList ): void {
+		for ( const token of other._set.keys() ) {
+			if ( !this._set.has( token ) ) {
+				this._set.add( token );
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	public isMatching( other: TokenList ): boolean {
+		for ( const name of other.keys() ) {
+			if ( !this.has( name ) ) {
 				return false;
 			}
 		}

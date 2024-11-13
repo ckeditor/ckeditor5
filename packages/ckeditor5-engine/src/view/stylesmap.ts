@@ -421,6 +421,13 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
+	 * TODO
+	 */
+	public keys(): Array<string> {
+		return this.getStyleNames();
+	}
+
+	/**
 	 * Removes all styles.
 	 */
 	public clear(): void {
@@ -436,15 +443,49 @@ export default class StylesMap implements ElementAttributeValue {
 		}
 
 		for ( const property of this.getStyleNames() ) {
-			if (
-				!other.has( property ) ||
-				other.getAsString( property ) !== this.getAsString( property )
-			) {
+			if ( !other.has( property ) || other.getAsString( property ) !== this.getAsString( property ) ) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	public canMergeFrom( other: StylesMap ): boolean {
+		for ( const key of other.getStyleNames() ) {
+			if ( this.has( key ) && this.getAsString( key ) !== other.getAsString( key ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	public isMatching( other: StylesMap ): boolean {
+		for ( const key of other.getStyleNames() ) {
+			if ( !this.has( key ) || this.getAsString( key ) !== other.getAsString( key ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	public mergeFrom( other: StylesMap ): void {
+		for ( const prop of other.keys() ) {
+			if ( !this.has( prop ) ) {
+				this.set( prop, other.getAsString( prop )! );
+			}
+		}
 	}
 
 	/**

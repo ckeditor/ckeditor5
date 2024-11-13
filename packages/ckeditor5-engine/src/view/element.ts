@@ -276,6 +276,62 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * TODO
+	 */
+	protected _canMergeAttributesFrom( otherElement: Element ): boolean {
+		if ( this.name != otherElement.name ) {
+			return false;
+		}
+
+		for ( const [ key, otherValue ] of otherElement._attrs ) {
+			const value = this._attrs.get( key );
+
+			if ( value === undefined ) {
+				continue;
+			}
+
+			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
+				if ( value !== otherValue ) {
+					return false;
+				}
+			}
+			else if ( !value.canMergeFrom( otherValue ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	protected _hasAttributesMatching( otherElement: Element ): boolean {
+		if ( this.name != otherElement.name ) {
+			return false;
+		}
+
+		for ( const [ key, otherValue ] of otherElement._attrs ) {
+			const value = this._attrs.get( key );
+
+			if ( value === undefined ) {
+				return false;
+			}
+
+			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
+				if ( value !== otherValue ) {
+					return false;
+				}
+			}
+			else if ( !value.isMatching( otherValue ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns true if class is present.
 	 * If more then one class is provided - returns true only when all classes are present.
 	 *
@@ -297,7 +353,7 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all class names.
 	 */
-	public getClassNames(): Iterable<string> {
+	public getClassNames(): Array<string> {
 		return this._classes ? this._classes.keys() : [];
 	}
 
@@ -369,11 +425,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns iterator that contains all style names.
+	 * Returns an array that contains all style names.
 	 *
 	 * @param expand Expand shorthand style properties and return all equivalent style representations.
 	 */
-	public getStyleNames( expand?: boolean ): Iterable<string> {
+	public getStyleNames( expand?: boolean ): Array<string> {
 		return this._styles ? this._styles.getStyleNames( expand ) : [];
 	}
 
@@ -659,9 +715,9 @@ export default class Element extends Node {
 			}
 
 			return false;
-		} else {
-			return this._attrs.delete( key );
 		}
+
+		return this._attrs.delete( key );
 	}
 
 	/**
@@ -764,6 +820,71 @@ export default class Element extends Node {
 	 */
 	public _removeStyle( property: ArrayOrItem<string> ): void {
 		this._removeAttribute( 'style', property );
+	}
+
+	/**
+	 * TODO
+	 * Wraps one AttributeElement into another by
+	 * merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
+	 * element to element being wrapped.
+	 *
+	 * @internal
+	 * @returns Returns `true` if elements are merged.
+	 */
+	public _mergeAttributesFrom( otherElement: Element ): boolean {
+		if ( !this._canMergeAttributesFrom( otherElement ) ) {
+			return false;
+		}
+
+		this._fireChange( 'attributes', this );
+
+		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
+		for ( const [ key, otherValue ] of otherElement._attrs ) {
+			const value = this._attrs.get( key );
+
+			if ( value === undefined || typeof value == 'string' || typeof otherValue == 'string' ) {
+				this._setAttribute( key, otherValue );
+			}
+			else {
+				value.mergeFrom( otherValue );
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 * Unwraps AttributeElement from another by removing
+	 * corresponding attributes, classes and styles. All attributes, classes and styles from wrapper should be present
+	 * inside element being unwrapped.
+	 *
+	 * @internal
+	 * @returns Returns `true` if elements are unwrapped.
+	 */
+	public _subtractAttributesOf( otherElement: Element ): boolean {
+		if ( !this._hasAttributesMatching( otherElement ) ) {
+			return false;
+		}
+
+		this._fireChange( 'attributes', this );
+
+		for ( const [ key, otherValue ] of otherElement._attrs ) {
+			const value = this._attrs.get( key )!;
+
+			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
+				this._attrs.delete( key );
+			}
+			else {
+				value.remove( otherValue.keys() );
+
+				if ( value.isEmpty ) {
+					this._attrs.delete( key );
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -882,6 +1003,8 @@ export interface ElementAttributeValue {
 
 	has( name: string ): boolean;
 
+	keys(): Array<string>;
+
 	set( name: string, value: StyleValue ): void;
 	set( stylesOrTokens: Styles | ArrayOrItem<string> ): void;
 
@@ -892,6 +1015,12 @@ export interface ElementAttributeValue {
 	clear(): void;
 
 	isSimilar( other: this ): boolean;
+
+	canMergeFrom( other: this ): boolean;
+
+	isMatching( other: this ): boolean;
+
+	mergeFrom( other: this ): void;
 
 	_clone(): this;
 }
