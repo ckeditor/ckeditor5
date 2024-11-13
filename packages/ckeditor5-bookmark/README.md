@@ -7,19 +7,25 @@ CKEditor&nbsp;5 bookmark feature
 
 This package contains the bookmark feature for CKEditor&nbsp;5. It allows to add and manage the bookmarks attached to the content of editor for fast access and more efficient content creation.
 
-## Demo
-
-Check out the [demo in the bookmark feature](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html#demo) guide.
-
-## Documentation
-
-See the [`@ckeditor/ckeditor5-bookmark` package](https://ckeditor.com/docs/ckeditor5/latest/api/bookmark.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [bookmark](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html) feature guide.
-
 ## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
 
 ```bash
 npm install ckeditor5
 ```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
+## Demo
+
+Check out the [demo in the bookmark feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html#demo).
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-bookmark` package](https://ckeditor.com/docs/ckeditor5/latest/api/bookmark.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [bookmark](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html) feature guide.
 
 ## License
 
