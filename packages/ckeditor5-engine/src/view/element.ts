@@ -225,8 +225,20 @@ export default class Element extends Node {
 	 * @param key Attribute key.
 	 * @returns `true` if attribute with the specified key exists in the element, `false` otherwise.
 	 */
-	public hasAttribute( key: string ): boolean {
-		return this._attrs.has( key );
+	public hasAttribute( key: string, token?: string ): boolean {
+		if ( !this._attrs.has( key ) ) {
+			return false;
+		}
+
+		if ( token !== undefined ) {
+			if ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) {
+				return ( this._attrs.get( key ) as ElementAttributeValue ).has( token );
+			} else {
+				return this._attrs.get( key ) === token;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -516,7 +528,7 @@ export default class Element extends Node {
 	 * **Note**: Classes, styles and other attributes are sorted alphabetically.
 	 */
 	public getIdentity(): string {
-		const classes = this._classes ? Array.from( this._classes.keys() ).sort().join( ',' ) : '';
+		const classes = this._classes ? this._classes.keys().sort().join( ',' ) : '';
 		const styles = this._styles && String( this._styles );
 		const attributes = Array.from( this._attrs )
 			.filter( ( [ key ] ) => key != 'style' && key != 'class' )

@@ -620,6 +620,44 @@ describe( 'Element', () => {
 				el._setStyle( 'border', '1px solid red' );
 				expect( el.hasAttribute( 'style' ) ).to.be.true;
 			} );
+
+			describe( 'tokenized attributes', () => {
+				it( 'should check if element has a class', () => {
+					el._addClass( [ 'one', 'two', 'three' ] );
+
+					expect( el.hasAttribute( 'class', 'one' ) ).to.be.true;
+					expect( el.hasAttribute( 'class', 'two' ) ).to.be.true;
+					expect( el.hasAttribute( 'class', 'three' ) ).to.be.true;
+					expect( el.hasAttribute( 'class', 'four' ) ).to.be.false;
+				} );
+
+				it( 'should check if element has a style', () => {
+					el._setStyle( 'padding-top', '10px' );
+
+					expect( el.hasAttribute( 'style', 'padding-top' ) ).to.be.true;
+					expect( el.hasAttribute( 'style', 'padding-left' ) ).to.be.false;
+				} );
+
+				it( 'should check if element has a rel token (on link)', () => {
+					const el = new Element( document, 'a' );
+
+					el._setAttribute( 'rel', 'nofollow noreferrer' );
+
+					expect( el.hasAttribute( 'rel', 'nofollow' ) ).to.be.true;
+					expect( el.hasAttribute( 'rel', 'noreferrer' ) ).to.be.true;
+					expect( el.hasAttribute( 'rel', 'noopener' ) ).to.be.false;
+				} );
+
+				it( 'should not tokenize a rel attribute on non link elements', () => {
+					el._setAttribute( 'rel', 'nofollow noreferrer' );
+
+					expect( el.hasAttribute( 'rel' ) ).to.be.true;
+					expect( el.hasAttribute( 'rel', 'nofollow noreferrer' ) ).to.be.true;
+					expect( el.hasAttribute( 'rel', 'nofollow' ) ).to.be.false;
+					expect( el.hasAttribute( 'rel', 'noreferrer' ) ).to.be.false;
+					expect( el.hasAttribute( 'rel', 'noopener' ) ).to.be.false;
+				} );
+			} );
 		} );
 
 		describe( 'getAttributeKeys', () => {
