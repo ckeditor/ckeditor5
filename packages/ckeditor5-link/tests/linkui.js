@@ -1867,6 +1867,7 @@ describe( 'LinkUI', () => {
 				const command = editor.commands.get( 'link' );
 
 				expect( formView.urlInputView.fieldView.value ).to.be.undefined;
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'o' );
 
 				command.value = 'http://cksource.com';
 				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
@@ -1877,6 +1878,7 @@ describe( 'LinkUI', () => {
 
 				formView.urlInputView.fieldView.value = 'http://ckeditor.com';
 				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'o' );
 
 				formView.urlInputView.fieldView.value = 'http://cksource.com';
 				formView.fire( 'submit' );
@@ -2051,6 +2053,7 @@ describe( 'LinkUI', () => {
 
 					setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
 					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
+					expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'ooba' );
 					expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
 						linkDecorator1: true,
 						linkDecorator2: false,
