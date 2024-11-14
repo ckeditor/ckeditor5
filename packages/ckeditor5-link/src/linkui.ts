@@ -823,7 +823,6 @@ export default class LinkUI extends Plugin {
 
 		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
 			// There are cases when we highlight selection using a marker (#7705, #4721).
-			// const markerViewElements = Array.from( markerElement );
 			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME )! );
 			const newRange = view.createRange(
 				view.createPositionBefore( markerViewElements[ 0 ] ),

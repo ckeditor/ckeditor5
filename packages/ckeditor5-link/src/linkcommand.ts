@@ -346,9 +346,6 @@ function extractTextFromSelection( selection: DocumentSelection ): string | null
 		} else {
 			return '';
 		}
-		// const firstPosition = selection.getFirstPosition();
-
-		// return firstPosition!.textNode && firstPosition!.textNode.data;
 	}
 
 	let text = '';
