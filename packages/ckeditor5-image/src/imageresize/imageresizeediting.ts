@@ -189,7 +189,6 @@ export default class ImageResizeEditing extends Plugin {
 						// If this is an image inside a figure with width style, skip setting the width.
 						// See: https://github.com/ckeditor/ckeditor5/issues/17441
 						if ( viewElement.name !== 'figure' ) {
-							const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 							let parent = viewElement.parent;
 
 							// Traverse up through parents until we find a figure or run out of ancestors
