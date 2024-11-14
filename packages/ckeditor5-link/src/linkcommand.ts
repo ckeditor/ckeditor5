@@ -170,16 +170,17 @@ export default class LinkCommand extends Command {
 	 * @fires execute
 	 * @param href Link destination.
 	 * @param manualDecoratorIds The information about manual decorator attributes to be applied or removed upon execution.
+	 * @param displayedText Text of the link.
 	 */
 	public override execute(
 		href: string,
 		manualDecoratorIds: Record<string, boolean> = {},
-		displayedText?: string | null
+		displayedText?: string
 	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectionText = extractTextFromSelection( selection );
-		const linkText = displayedText || selectionText || href;
+		const textFromSelection = extractTextFromSelection( selection );
+		const linkText = displayedText || textFromSelection || href;
 
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
@@ -209,7 +210,7 @@ export default class LinkCommand extends Command {
 					// When selection is inside text with `linkHref` attribute.
 					let range = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					if ( linkText !== selectionText && this.canHaveDisplayedText ) {
+					if ( linkText !== textFromSelection && this.canHaveDisplayedText ) {
 						range = this._updateLinkContent( model, writer, range, linkText );
 					}
 
@@ -269,7 +270,7 @@ export default class LinkCommand extends Command {
 				for ( const range of rangesToUpdate ) {
 					let linkRange = range;
 
-					if ( rangesToUpdate.length === 1 && ( linkText !== selectionText && this.canHaveDisplayedText ) ) {
+					if ( rangesToUpdate.length === 1 && ( linkText !== textFromSelection && this.canHaveDisplayedText ) ) {
 						linkRange = this._updateLinkContent( model, writer, linkRange, linkText );
 						writer.setSelection( writer.createSelection( linkRange ) );
 					}
