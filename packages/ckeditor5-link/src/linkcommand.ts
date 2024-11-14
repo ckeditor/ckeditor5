@@ -206,8 +206,8 @@ export default class LinkCommand extends Command {
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition()!;
 
+				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
-					// When selection is inside text with `linkHref` attribute.
 					let range = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
 					if ( linkText !== textFromSelection && this.canHaveDisplayedText ) {
@@ -218,10 +218,11 @@ export default class LinkCommand extends Command {
 
 					// Put the selection at the end of the updated link.
 					writer.setSelection( writer.createPositionAfter( range.end.nodeBefore! ) );
-				} else if ( linkText ) {
-					// If not then insert text node with `linkHref` attribute in place of caret.
-					// However, since selection is collapsed, attribute value will be used as data for text node.
 
+				// If not then insert text node with `linkHref` attribute in place of caret.
+				// However, since selection is collapsed, attribute value will be used as data for text node.
+				// So, if `linkText` is empty, do not create text node.
+				} else if ( linkText ) {
 					const attributes = toMap( selection.getAttributes() );
 
 					attributes.set( 'linkHref', href );
