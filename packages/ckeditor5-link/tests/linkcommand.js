@@ -674,6 +674,35 @@ describe( 'LinkCommand', () => {
 						'</paragraph>'
 					);
 				} );
+
+				it( 'should set `linkHref` attribute to allowed elements and not allow to change the displayed text', () => {
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+
+					setData( model, '<paragraph>f[oo<linkableInline></linkableInline>ba]r</paragraph>' );
+
+					expect( command.value ).to.be.undefined;
+					expect( command.canHaveDisplayedText ).to.be.false;
+					expect( command.text ).to.equal( '' );
+
+					command.execute( 'url', {}, 'xyz' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'f[<$text linkHref="url">oo</$text>' +
+							'<linkableInline linkHref="url"></linkableInline>' +
+							'<$text linkHref="url">ba</$text>]r' +
+						'</paragraph>'
+					);
+
+					expect( command.value ).to.equal( 'url' );
+					expect( command.canHaveDisplayedText ).to.be.false;
+					expect( command.text ).to.equal( '' );
+				} );
 			} );
 		} );
 
