@@ -9,7 +9,6 @@ import Text from '../../src/model/text.js';
 import TextProxy from '../../src/model/textproxy.js';
 import count from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import DocumentFragment from '../../src/model/documentfragment.js';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

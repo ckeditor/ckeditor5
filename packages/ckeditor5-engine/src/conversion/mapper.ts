@@ -14,7 +14,7 @@ import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
 import ViewText from '../view/text.js';
 
-import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type ViewDocumentFragment from '../view/documentfragment.js';
 import type ViewElement from '../view/element.js';
