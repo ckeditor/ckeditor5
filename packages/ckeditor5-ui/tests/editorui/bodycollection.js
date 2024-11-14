@@ -116,6 +116,51 @@ describe( 'BodyCollection', () => {
 			expect( BodyCollection._bodyWrapper ).to.equal( bodyElements[ 0 ].parentNode );
 		} );
 
+		it( 'should create another wrapper if the previous one got disconnected from DOM', () => {
+			const body1 = new BodyCollection( locale );
+			body1.attachToDom();
+
+			let wrappers, bodyContainers;
+
+			wrappers = document.querySelectorAll( '.ck-body-wrapper' );
+			bodyContainers = document.querySelectorAll( '.ck-body' );
+
+			expect( wrappers.length ).to.equal( 1 );
+			expect( bodyContainers.length ).to.equal( 1 );
+
+			// Some external code breaks the wrapper.
+			wrappers[ 0 ].remove();
+
+			const body2 = new BodyCollection( locale );
+			body2.attachToDom();
+
+			wrappers = document.querySelectorAll( '.ck-body-wrapper' );
+			bodyContainers = document.querySelectorAll( '.ck-body' );
+
+			expect( wrappers.length ).to.equal( 1 );
+			expect( bodyContainers.length ).to.equal( 1 );
+			expect( bodyContainers[ 0 ] ).to.equal( body2.bodyCollectionContainer );
+			expect( body2.bodyCollectionContainer.parentElement ).to.equal( wrappers[ 0 ] );
+
+			body1.detachFromDom();
+
+			wrappers = document.querySelectorAll( '.ck-body-wrapper' );
+			bodyContainers = document.querySelectorAll( '.ck-body' );
+
+			expect( wrappers.length ).to.equal( 1 );
+			expect( bodyContainers.length ).to.equal( 1 );
+			expect( bodyContainers[ 0 ] ).to.equal( body2.bodyCollectionContainer );
+			expect( body2.bodyCollectionContainer.parentElement ).to.equal( wrappers[ 0 ] );
+
+			body2.detachFromDom();
+
+			wrappers = document.querySelectorAll( '.ck-body-wrapper' );
+			bodyContainers = document.querySelectorAll( '.ck-body' );
+
+			expect( wrappers.length ).to.equal( 0 );
+			expect( bodyContainers.length ).to.equal( 0 );
+		} );
+
 		it( 'should render views in proper body collections', () => {
 			const body1 = new BodyCollection( locale );
 
