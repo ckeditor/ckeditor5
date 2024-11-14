@@ -8,6 +8,9 @@
  */
 
 import type Element from './element.js';
+
+import { isPlainObject } from 'lodash-es';
+
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -387,9 +390,7 @@ function matchPatterns(
 function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( ( pattern: any ) => {
-			if ( typeof pattern == 'string' || pattern instanceof RegExp ) {
-				return [ pattern, true ];
-			} else {
+			if ( isPlainObject( pattern ) ) {
 				if ( pattern.key === undefined || pattern.value === undefined ) {
 					// Documented at the end of matcher.js.
 					logWarning( 'matcher-pattern-missing-key-or-value', pattern );
@@ -397,12 +398,18 @@ function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string 
 
 				return [ pattern.key, pattern.value ];
 			}
+
+			// Assume the pattern is either String or RegExp.
+			return [ pattern, true ];
 		} );
-	} else if ( typeof patterns == 'boolean' || typeof patterns == 'string' || patterns instanceof RegExp ) {
-		return [ [ patterns as any, true ] ];
-	} else {
+	}
+
+	if ( isPlainObject( patterns ) ) {
 		return Object.entries( patterns );
 	}
+
+	// Other cases (true, string or regexp).
+	return [ [ patterns as any, true ] ];
 }
 
 /**
@@ -443,7 +450,7 @@ function isValueMatched(
  *
  * @param patterns Object with information about attributes to match. Each key of the object will be
  * used as attribute name. Value of each key can be a string or regular expression to match against attribute value.
- * @param element Element which attributes will be tested.
+ * @param  element Element which attributes will be tested.
  * @returns Returns array with matched attribute names or `null` if no attributes were matched.
  */
 function matchAttributes(
@@ -454,12 +461,15 @@ function matchAttributes(
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
 	// for backward compatibility.
-	if ( ( patterns as any ).style !== undefined ) {
-		// Documented at the end of matcher.js.
-		logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
-	} else if ( ( patterns as any ).class !== undefined ) {
-		// Documented at the end of matcher.js.
-		logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+	if ( isPlainObject( patterns ) ) {
+		if ( ( patterns as any ).style !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+		}
+		if ( ( patterns as any ).class !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+		}
 	} else {
 		attributeKeys.delete( 'style' );
 		attributeKeys.delete( 'class' );
