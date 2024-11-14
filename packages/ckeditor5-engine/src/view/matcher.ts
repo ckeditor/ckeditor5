@@ -465,13 +465,15 @@ function matchAttributes(
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
 	// for backward compatibility.
-	if ( ( patterns as any ).style !== undefined ) {
-		// Documented at the end of matcher.js.
-		logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
-	}
-	if ( ( patterns as any ).class !== undefined ) {
-		// Documented at the end of matcher.js.
-		logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+	if ( typeof patterns === 'object' && !( patterns instanceof RegExp ) && !Array.isArray( patterns ) ) {
+		if ( patterns.style !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+		}
+		if ( patterns.class !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+		}
 	} else {
 		attributeKeys.delete( 'style' );
 		attributeKeys.delete( 'class' );
