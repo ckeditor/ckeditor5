@@ -5,8 +5,14 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
+:root {
+	--ck-link-panel-width: 340px;
+	--ck-link-list-view-max-height: 240px;
+	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
+}
+
 .ck.ck-link__panel {
-	width: 340px;
+	width: var(--ck-link-panel-width);
 
 	&:focus {
 		outline: none;
@@ -50,6 +56,10 @@
 		& .ck-link-and-submit {
 			display: flex;
 
+			& > .ck-labeled-field-view {
+				flex: 1;
+			}
+
 			& .ck-button-insert {
 				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
 				margin-left: var(--ck-spacing-medium);
@@ -84,9 +94,40 @@
 		& .ck-link__button {
 			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
 			border-radius: 0;
-	
+
 			& > .ck-button__label {
 				flex-grow: 1;
+			}
+		}
+	}
+
+	& .ck-link__empty-list-info {
+		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
+		text-align: center;
+		font-style: italic;
+	}
+
+	& .ck-link__items:empty {
+		display: none;
+	}
+
+	& > .ck-list__bookmark-items {
+		max-height: min( var(--ck-link-list-view-max-height), 40vh );
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+
+		& .ck-button {
+			& > .ck-icon {
+				width: var(--ck-link-list-view-icon-size);
+				height: var(--ck-link-list-view-icon-size);
+				flex-shrink: 0;
+			}
+
+			& > .ck-button__label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 		}
 	}

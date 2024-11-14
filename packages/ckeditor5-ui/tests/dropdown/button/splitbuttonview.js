@@ -203,9 +203,9 @@ describe( 'SplitButtonView', () => {
 		it( 'binds actionView#icon to view', () => {
 			expect( view.actionView.icon ).to.be.undefined;
 
-			view.icon = 'foo';
+			view.icon = '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>';
 
-			expect( view.actionView.icon ).to.equal( 'foo' );
+			expect( view.actionView.icon ).to.equal( '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
 
 		it( 'binds actionView#isEnabled to view', () => {

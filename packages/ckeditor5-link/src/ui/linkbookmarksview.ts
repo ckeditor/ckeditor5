@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/ui/linkadvancedview
+ * @module link/ui/linkbookmarksview
  */
 
 import {
@@ -12,30 +12,31 @@ import {
 	FocusCycler,
 	FormHeaderView,
 	View,
-	ViewCollection,
 	ListView,
 	ListItemView,
-	type SwitchButtonView,
+	ViewCollection,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
+
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Locale
 } from 'ckeditor5/src/utils.js';
+
 import { icons } from 'ckeditor5/src/core.js';
 
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../../theme/linkform.css';
-
 /**
- * The link form view controller class.
- *
- * See {@link module:link/ui/linkadvancedview~LinkAdvancedView}.
+ * The link bookmarks list view.
  */
-export default class LinkAdvancedView extends View {
+export default class LinkBookmarksView extends View {
+	/**
+	 * Tracks information about the list of bookmarks.
+	 *
+	 * @observable
+	 */
+	declare public hasItems: boolean;
+
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -52,16 +53,24 @@ export default class LinkAdvancedView extends View {
 	public backButtonView: ButtonView;
 
 	/**
-	 * A collection of child views.
+	 * The List view of bookmarks buttons.
 	 */
-	public readonly children: ViewCollection;
+	public listView: ListView;
 
 	/**
-	 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
-	 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
-	 * configured in the editor.
+	 * The collection of child views, which is bind with the `listView`.
 	 */
-	public readonly listChildren: ViewCollection<SwitchButtonView>;
+	public readonly listChildren: ViewCollection<ButtonView>;
+
+	/**
+	 * The view displayed when the list is empty.
+	 */
+	public emptyListInformation: View;
+
+	/**
+	 * A collection of child views.
+	 */
+	public children: ViewCollection;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -74,7 +83,7 @@ export default class LinkAdvancedView extends View {
 	private readonly _focusCycler: FocusCycler;
 
 	/**
-	 * Creates an instance of the {@link module:link/ui/linkadvancedview~LinkAdvancedView} class.
+	 * Creates an instance of the {@link module:link/ui/linkbookmarksview~LinkBookmarksView} class.
 	 *
 	 * Also see {@link #render}.
 	 *
@@ -83,13 +92,38 @@ export default class LinkAdvancedView extends View {
 	constructor( locale: Locale ) {
 		super( locale );
 
-		this.backButtonView = this._createBackButton();
 		this.listChildren = this.createCollection();
+
+		this.backButtonView = this._createBackButton();
+		this.listView = this._createListView();
+		this.emptyListInformation = this._createEmptyBookmarksListItemView();
 
 		this.children = this.createCollection( [
 			this._createHeaderView(),
-			this._createListView()
+			this.emptyListInformation
 		] );
+
+		this.set( 'hasItems', false );
+
+		this.listenTo( this.listChildren, 'change', () => {
+			this.hasItems = this.listChildren.length > 0;
+		} );
+
+		this.on( 'change:hasItems', ( evt, propName, hasItems ) => {
+			if ( hasItems ) {
+				this.children.remove( this.emptyListInformation );
+				this.children.add( this.listView );
+			} else {
+				this.children.remove( this.listView );
+				this.children.add( this.emptyListInformation );
+			}
+		} );
+
+		// Close the panel on esc key press when the **form has focus**.
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<CancelEvent>( 'cancel' );
+			cancel();
+		} );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -108,19 +142,13 @@ export default class LinkAdvancedView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel', 'ck-link__advanced' ],
+				class: [ 'ck', 'ck-link__panel', 'ck-link__bookmarks' ],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
 			},
 
 			children: this.children
-		} );
-
-		// Close the panel on esc key press when the **form has focus**.
-		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<BackEvent>( 'back' );
-			cancel();
 		} );
 	}
 
@@ -131,7 +159,7 @@ export default class LinkAdvancedView extends View {
 		super.render();
 
 		const childViews = [
-			...this.listChildren,
+			this.listView,
 			this.backButtonView
 		];
 
@@ -165,20 +193,44 @@ export default class LinkAdvancedView extends View {
 	}
 
 	/**
-	 * Creates a back button view.
+	 * Creates a view for the list at the bottom.
+	 */
+	private _createListView(): ListView {
+		const listView = new ListView( this.locale );
+
+		listView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-list__bookmark-items'
+				]
+			}
+		} );
+
+		listView.items.bindTo( this.listChildren ).using( button => {
+			const listItemView = new ListItemView( this.locale );
+
+			listItemView.children.add( button );
+
+			return listItemView;
+		} );
+
+		return listView;
+	}
+
+	/**
+	 * Creates a back button view that cancels the form.
 	 */
 	private _createBackButton(): ButtonView {
 		const t = this.locale!.t;
 		const backButton = new ButtonView( this.locale );
 
-		// TODO: maybe we should have a dedicated BackButtonView in the UI library.
 		backButton.set( {
-			label: t( 'Back' ),
+			label: t( 'Cancel' ),
 			icon: icons.previousArrow,
 			tooltip: true
 		} );
 
-		backButton.delegate( 'execute' ).to( this, 'back' );
+		backButton.delegate( 'execute' ).to( this, 'cancel' );
 
 		return backButton;
 	}
@@ -190,7 +242,7 @@ export default class LinkAdvancedView extends View {
 		const t = this.locale!.t;
 
 		const header = new FormHeaderView( this.locale, {
-			label: t( 'Advanced' )
+			label: t( 'Bookmarks' )
 		} );
 
 		header.children.add( this.backButtonView, 0 );
@@ -199,37 +251,32 @@ export default class LinkAdvancedView extends View {
 	}
 
 	/**
-	 * Creates a form view that displays the {@link #listChildren} collection.
+	 * Creates an info view for an empty list.
 	 */
-	private _createListView(): ListView {
-		const listView = new ListView( this.locale );
+	private _createEmptyBookmarksListItemView(): View {
+		const t = this.locale!.t;
+		const view = new View( this.locale );
 
-		listView.extendTemplate( {
+		view.setTemplate( {
+			tag: 'p',
 			attributes: {
-				class: [
-					'ck-link__list'
-				]
-			}
+				class: [ 'ck ck-link__empty-list-info' ]
+			},
+			children: [
+				t( 'No bookmarks available.' )
+			]
 		} );
 
-		listView.items.bindTo( this.listChildren ).using( item => {
-			const listItemView = new ListItemView( this.locale );
-
-			listItemView.children.add( item );
-
-			return listItemView;
-		} );
-
-		return listView;
+		return view;
 	}
 }
 
 /**
- * Fired when the {@link ~LinkAdvancedView#backButtonView} is pressed.
+ * Fired when the bookmarks view is canceled, for example with a click on {@link ~LinkBookmarksView#backButtonView}.
  *
- * @eventName ~LinkAdvancedView#back
+ * @eventName ~LinkBookmarksView#cancel
  */
-export type BackEvent = {
-	name: 'back';
+export type CancelEvent = {
+	name: 'cancel';
 	args: [];
 };

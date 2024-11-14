@@ -488,6 +488,36 @@ describe( 'ButtonView', () => {
 			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
 		} );
 
+		it( 'is added to the #children when view#icon is defined after render', () => {
+			view = new ButtonView( locale );
+			view.render();
+
+			view.icon = '<svg></svg>';
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+
+			expect( view.iconView ).to.instanceOf( IconView );
+			expect( view.iconView.content ).to.equal( '<svg></svg>' );
+			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).to.be.true;
+
+			view.icon = '<svg>bar</svg>';
+			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
+		} );
+
+		it( 'is removed from the #children when view#icon is removed', () => {
+			view = new ButtonView( locale );
+			view.icon = '<svg></svg>';
+			view.render();
+
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+			expect( view.element.childNodes[ 1 ] ).to.equal( view.labelView.element );
+
+			view.icon = undefined;
+			expect( view.element.childNodes ).to.have.length( 1 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.labelView.element );
+		} );
+
 		it( 'is destroyed with the view', () => {
 			view = new ButtonView( locale );
 			view.icon = '<svg></svg>';
