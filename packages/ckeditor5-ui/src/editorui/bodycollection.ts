@@ -118,7 +118,8 @@ export default class BodyCollection extends ViewCollection {
 			children: this
 		} ).render() as HTMLElement;
 
-		if ( !BodyCollection._bodyWrapper ) {
+		// Create a shared wrapper if there were none or the previous one got disconnected from DOM.
+		if ( !BodyCollection._bodyWrapper || !BodyCollection._bodyWrapper.isConnected ) {
 			BodyCollection._bodyWrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
 			document.body.appendChild( BodyCollection._bodyWrapper );
 		}
