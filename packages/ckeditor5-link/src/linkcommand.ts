@@ -339,7 +339,16 @@ export default class LinkCommand extends Command {
  */
 function extractTextFromSelection( selection: DocumentSelection ): string | null {
 	if ( selection.isCollapsed ) {
-		return '';
+		if ( selection.hasAttribute( 'linkHref' ) ) {
+			const firstPosition = selection.getFirstPosition();
+
+			return firstPosition!.textNode && firstPosition!.textNode.data;
+		} else {
+			return '';
+		}
+		// const firstPosition = selection.getFirstPosition();
+
+		// return firstPosition!.textNode && firstPosition!.textNode.data;
 	}
 
 	let text = '';

@@ -818,12 +818,13 @@ export default class LinkUI extends Plugin {
 	private _getBalloonPositionData(): Partial<PositionOptions> {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
-		const markerElement = this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME );
+		const model = this.editor.model;
 		let target: PositionOptions[ 'target' ];
 
-		if ( markerElement ) {
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
 			// There are cases when we highlight selection using a marker (#7705, #4721).
-			const markerViewElements = Array.from( markerElement );
+			// const markerViewElements = Array.from( markerElement );
+			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME )! );
 			const newRange = view.createRange(
 				view.createPositionBefore( markerViewElements[ 0 ] ),
 				view.createPositionAfter( markerViewElements[ markerViewElements.length - 1 ] )

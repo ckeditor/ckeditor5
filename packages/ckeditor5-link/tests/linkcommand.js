@@ -25,11 +25,26 @@ describe( 'LinkCommand', () => {
 				} );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'imageInline', {
+					inheritAllFrom: '$inlineObject',
+					allowAttributes: [ 'alt', 'src', 'srcset', 'linkHref' ],
+					disallowIn: [ 'caption' ]
+				} );
 			} );
 	} );
 
 	afterEach( () => {
 		return editor.destroy();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should set `text` property to empty string', () => {
+			expect( command.text ).to.be.equal( '' );
+		} );
+
+		it( 'should set `canHaveDisplayedText` property to empty `false`', () => {
+			expect( command.canHaveDisplayedText ).to.be.false;
+		} );
 	} );
 
 	describe( 'isEnabled', () => {
@@ -176,6 +191,80 @@ describe( 'LinkCommand', () => {
 		} );
 	} );
 
+	describe( 'text', () => {
+		describe( 'collapsed selection', () => {
+			it( 'should be equal to whole text placed inside element with `linkHref` attribute', () => {
+				setData( model, '<$text linkHref="url">foo[]bar</$text>' );
+
+				expect( command.canHaveDisplayedText ).to.be.true;
+				expect( command.text ).to.equal( 'foobar' );
+			} );
+
+			it( 'should be an empty string when selection is placed inside element without `linkHref` attribute', () => {
+				setData( model, '<$text bold="true">foo[]bar</$text>' );
+
+				expect( command.canHaveDisplayedText ).to.be.true;
+				expect( command.text ).to.equal( '' );
+			} );
+
+			it( 'should be an empty string when selection contains also non-text element', () => {
+				setData( model,
+					'<$text linkHref="url">f[]oo</$text>' +
+					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
+					'<$text linkHref="url">bar</$text>'
+				);
+
+				expect( command.canHaveDisplayedText ).to.be.false;
+				expect( command.value ).to.equal( 'url' );
+				expect( command.text ).to.equal( '' );
+			} );
+		} );
+
+		describe( 'non-collapsed selection', () => {
+			it( 'should be equal to the text when selection contains only elements with `linkHref` attribute', () => {
+				setData( model, 'fo[<$text linkHref="url">ob</$text>]ar' );
+
+				expect( command.canHaveDisplayedText ).to.be.true;
+				expect( command.text ).to.equal( 'ob' );
+			} );
+
+			it( 'should be equal to the selected text when selection is placed inside element without `linkHref` attribute', () => {
+				setData( model, '<$text bold="true">f[ooba]r</$text>' );
+
+				expect( command.canHaveDisplayedText ).to.be.true;
+				expect( command.text ).to.equal( 'ooba' );
+			} );
+
+			it( 'should be undefined when selection contains not only elements with `linkHref` attribute', () => {
+				setData( model, 'f[o<$text linkHref="url">ob</$text>]ar' );
+
+				expect( command.canHaveDisplayedText ).to.be.true;
+				expect( command.value ).to.be.undefined;
+				expect( command.text ).to.equal( 'oob' );
+			} );
+
+			it( 'should be an empty string when selection contains also non-text element', () => {
+				setData( model,
+					'<$text linkHref="url">f[oo</$text>' +
+					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
+					'<$text linkHref="url">b]ar</$text>'
+				);
+
+				expect( command.canHaveDisplayedText ).to.be.false;
+				expect( command.value ).to.equal( 'url' );
+				expect( command.text ).to.equal( '' );
+			} );
+
+			it( 'should be an empty string when selection contains only non-text element', () => {
+				setData( model, '[<imageInline src="/assets/sample.png" linkHref="url"></imageInline>]' );
+
+				expect( command.canHaveDisplayedText ).to.be.false;
+				expect( command.value ).to.equal( 'url' );
+				expect( command.text ).to.equal( '' );
+			} );
+		} );
+	} );
+
 	describe( 'value', () => {
 		describe( 'collapsed selection', () => {
 			it( 'should be equal attribute value when selection is placed inside element with `linkHref` attribute', () => {
@@ -293,6 +382,19 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
+			it( 'should set `linkHref` attribute to selected text and change the selected text', () => {
+				setData( model, 'f[ooba]r' );
+
+				expect( command.value ).to.be.undefined;
+				expect( command.text ).to.equal( 'ooba' );
+
+				command.execute( 'url', {}, 'xyz' );
+
+				expect( getData( model ) ).to.equal( 'f[<$text linkHref="url">xyz</$text>]r' );
+				expect( command.value ).to.equal( 'url' );
+				expect( command.text ).to.equal( 'xyz' );
+			} );
+
 			it( 'should set `linkHref` attribute to selected text when text already has attributes', () => {
 				setData( model, 'f[o<$text bold="true">oba]r</$text>' );
 
@@ -361,6 +463,20 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
+			it( 'should overwrite existing `linkHref` attribute and displayed text' +
+					'when whole text with `linkHref` attribute is selected', () => {
+				setData( model, 'fo[<$text linkHref="other url">o</$text>]bar' );
+
+				expect( command.value ).to.equal( 'other url' );
+				expect( command.text ).to.equal( 'o' );
+
+				command.execute( 'url', {}, 'xyz' );
+
+				expect( getData( model ) ).to.equal( 'fo[<$text linkHref="url">xyz</$text>]bar' );
+				expect( command.value ).to.equal( 'url' );
+				expect( command.text ).to.equal( 'xyz' );
+			} );
+
 			it( 'should set `linkHref` attribute to selected text when text is split by $block element', () => {
 				setData( model, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
 
@@ -385,6 +501,8 @@ describe( 'LinkCommand', () => {
 					setData( model, '<paragraph>f[oo<linkableBlock></linkableBlock>ba]r</paragraph>' );
 
 					expect( command.value ).to.be.undefined;
+					expect( command.canHaveDisplayedText ).to.be.false;
+					expect( command.text ).to.equal( '' );
 
 					command.execute( 'url' );
 
@@ -409,6 +527,9 @@ describe( 'LinkCommand', () => {
 					setData( model,
 						'<paragraph>foo</paragraph>[<blockQuote><linkableBlock></linkableBlock></blockQuote>]<paragraph>bar</paragraph>'
 					);
+
+					expect( command.canHaveDisplayedText ).to.be.false;
+					expect( command.text ).to.equal( '' );
 
 					command.execute( 'url' );
 
@@ -492,6 +613,8 @@ describe( 'LinkCommand', () => {
 					setData( model, '<paragraph>f[oo<linkableInline></linkableInline>ba]r</paragraph>' );
 
 					expect( command.value ).to.be.undefined;
+					expect( command.canHaveDisplayedText ).to.be.false;
+					expect( command.text ).to.equal( '' );
 
 					command.execute( 'url' );
 
@@ -520,6 +643,9 @@ describe( 'LinkCommand', () => {
 							'[<blockQuote><linkableInline></linkableInline></blockQuote>]' +
 						'<paragraph>bar</paragraph>'
 					);
+
+					expect( command.canHaveDisplayedText ).to.be.false;
+					expect( command.text ).to.equal( '' );
 
 					command.execute( 'url' );
 
@@ -575,7 +701,7 @@ describe( 'LinkCommand', () => {
 			it( 'should update `linkHref` attribute (text with `linkHref` attribute) and put the selection after the node', () => {
 				setData( model, '<$text linkHref="other url">foo[]bar</$text>' );
 
-				command.execute( 'url', {}, 'foobar' );
+				command.execute( 'url' );
 
 				expect( getData( model ) ).to.equal( '<$text linkHref="url">foobar</$text>[]' );
 			} );
@@ -597,7 +723,7 @@ describe( 'LinkCommand', () => {
 			it( 'should not insert text node if link is empty', () => {
 				setData( model, '<paragraph>foo[]bar</paragraph>' );
 
-				command.execute( '' );
+				command.execute( '', {}, '' );
 
 				expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
@@ -611,6 +737,17 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url' );
 
 				expect( getData( model ) ).to.equal( '<$text linkHref="url">foourl</$text>[]bar' );
+			} );
+
+			it( 'should overwrite existing `linkHref` attribute and displayed text', () => {
+				setData( model, 'fo<$text linkHref="other url">o[]b</$text>ar' );
+
+				expect( command.value ).to.equal( 'other url' );
+				expect( command.text ).to.equal( 'ob' );
+
+				command.execute( 'url', {}, 'xyz' );
+
+				expect( getData( model ) ).to.equal( 'fo<$text linkHref="url">xyz</$text>[]ar' );
 			} );
 		} );
 	} );
@@ -687,7 +824,7 @@ describe( 'LinkCommand', () => {
 			it( 'should add additional attributes to link when link is modified', () => {
 				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
 
-				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true }, 'ooba' );
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
 					.equal( 'f<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>[]r' );
@@ -707,7 +844,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( '<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>[]' );
+					.equal( '<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>[]' );
 			} );
 
 			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
@@ -716,7 +853,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
 
 				expect( getData( model ) ).to
-					.equal( '<$text linkHref="url2">url2</$text>[]' );
+					.equal( '<$text linkHref="url2">url</$text>[]' );
 			} );
 		} );
 
@@ -768,13 +905,13 @@ describe( 'LinkCommand', () => {
 				);
 			} );
 
-			it( 'should update content if href is equal to content', () => {
+			it( 'should not update content even if href is equal to content', () => {
 				setData( model, '[<$text linkHref="url">url</$text>]' );
 
-				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true }, 'url2' );
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( '[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>]' );
+					.equal( '[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>]' );
 			} );
 
 			it( 'should not update content if href is equal to content but there is a non-link following in the selection', () => {
@@ -802,10 +939,10 @@ describe( 'LinkCommand', () => {
 			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
 				setData( model, '[<$text linkHref="url">url</$text>]' );
 
-				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false }, 'url2' );
+				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
 
 				expect( getData( model ) ).to
-					.equal( '[<$text linkHref="url2">url2</$text>]' );
+					.equal( '[<$text linkHref="url2">url</$text>]' );
 			} );
 
 			it( 'should not update link which is equal its href if selection is on more than one element', () => {
