@@ -770,8 +770,6 @@ export interface MatcherObjectPattern {
 	 */
 	name?: string | RegExp;
 
-	key?: string;
-
 	/**
 	 * View element's classes to match.
 	 */
