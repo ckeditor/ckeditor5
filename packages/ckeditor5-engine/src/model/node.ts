@@ -15,7 +15,7 @@ import type Document from './document.js';
 import type DocumentFragment from './documentfragment.js';
 import type Element from './element.js';
 
-import { CKEditorError, compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
+import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Model node. Most basic structure of model tree.
