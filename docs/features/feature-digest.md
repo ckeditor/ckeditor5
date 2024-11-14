@@ -68,7 +68,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-comments HTML comment}
 				</span>
 			</td>
-			<td class="subfeature">
+			<td class="subfeature background-gray">
 				By default, the editor filters out all HTML comments on initialization.
 				The <code>{@link features/html-comments HTML comment}</code>
 				feature lets developers keep HTML comments in the document without
@@ -124,7 +124,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				use block quotes to highlight excerpts or important passages.
 			</td>
 		</tr>
-		<tr id="block-quotes" class="subfeature">
+		<tr id="block-quotes" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/block-quote Block quote}
@@ -136,7 +136,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				readers' attention to selected parts of the text.
 			</td>
 		</tr>
-		<tr id="headings-paragraph" class="subfeature">
+		<tr id="headings-paragraph" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/headings Headings/paragraph}
@@ -148,7 +148,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				readers and search engines.
 			</td>
 		</tr>
-		<tr id="horizontal-line" class="subfeature">
+		<tr id="horizontal-line" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/horizontal-line Horizontal line}
@@ -160,7 +160,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				It is an easy way to organize the content or indicate a change of topic.
 			</td>
 		</tr>
-		<tr id="block-indentation" class="subfeature">
+		<tr id="block-indentation" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/indent Block indentation}
@@ -217,7 +217,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				background color). All of these options are configurable.
 			</td>
 		</tr>
-		<tr id="font-background-color" class="subfeature">
+		<tr id="font-background-color" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}
@@ -227,7 +227,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				Effortlessly make the words stand out even more with a colored background.
 			</td>
 		</tr>
-		<tr id="font-color" class="subfeature">
+		<tr id="font-color" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}
@@ -235,7 +235,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Effortlessly make the letters stand out with their own color.</td>
 		</tr>
-		<tr id="font-family" class="subfeature">
+		<tr id="font-family" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-family-feature Font family}
@@ -246,7 +246,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				and its destination - print, screen, etc.
 			</td>
 		</tr>
-		<tr id="font-size" class="subfeature">
+		<tr id="font-size" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-size-feature Font size}
@@ -260,13 +260,13 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The image feature allows adding images of various kinds to the rich
-				content inside the editor. A large set of subfeatures lets the users
+				content inside the editor. A large set of subfeature background-grays lets the users
 				fully control this process. Upload or paste images, insert
 				via URL, use responsive images, resize images, add captions, set
 				different image styles, and link images.
 			</td>
 		</tr>
-		<tr id="image-all-text" class="subfeature">
+		<tr id="image-all-text" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-text-alternative Image alt text}
@@ -278,7 +278,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				the image depicts.
 			</td>
 		</tr>
-		<tr id="image-captions" class="subfeature">
+		<tr id="image-captions" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-captions Image captions}
@@ -288,7 +288,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				Add optional captions for images, which are shown below the picture.
 			</td>
 		</tr>
-		<tr id="image-insert-via-url" class="subfeature">
+		<tr id="image-insert-via-url" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-inserting Image insert via URL}
@@ -300,7 +300,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				way, you can save time by adding images that are already online.
 			</td>
 		</tr>
-		<tr id="image-linking" class="subfeature">
+		<tr id="image-linking" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-linking Image linking}
@@ -312,7 +312,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				plugin lets you use images as links.
 			</td>
 		</tr>
-		<tr id="image-resize" class="subfeature">
+		<tr id="image-resize" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-resizing Image resize}
@@ -325,7 +325,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				plugin.
 			</td>
 		</tr>
-		<tr id="image-styles" class="subfeature">
+		<tr id="image-styles" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-styles Image styles}
@@ -337,7 +337,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				inline to block or vice versa.
 			</td>
 		</tr>
-		<tr id="image-upload" class="subfeature">
+		<tr id="image-upload" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/image-upload Image upload}
@@ -351,7 +351,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				user to insert images.
 			</td>
 		</tr>
-		<tr id="responsive-images" class="subfeature">
+		<tr id="responsive-images" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-responsive Responsive images}
@@ -390,7 +390,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				lists.
 			</td>
 		</tr>
-		<tr id="list-indentation" class="subfeature">
+		<tr id="list-indentation" class="subfeature background-gray">
 			<td>
 				{@link features/lists-editing#indenting-lists List indentation}
 			</td>
@@ -401,7 +401,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				(nesting them).
 			</td>
 		</tr>
-		<tr id="list-start-index" class="subfeature">
+		<tr id="list-start-index" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-start-index List start index}
@@ -414,7 +414,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				some other digit or letter, though.
 			</td>
 		</tr>
-		<tr id="list-styles" class="subfeature">
+		<tr id="list-styles" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-styles List styles}
@@ -430,7 +430,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				appropriate list button in the toolbar.
 			</td>
 		</tr>
-		<tr id="multi-level-lists" class="subfeature">
+		<tr id="multi-level-lists" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/multi-level-lists Multi-level lists
@@ -447,7 +447,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				with Microsoft Word.
 			</td>
 		</tr>
-		<tr id="nested-lists" class="subfeature">
+		<tr id="nested-lists" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists-editing#indenting-lists Nested lists}
@@ -459,7 +459,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				(nesting them).
 			</td>
 		</tr>
-		<tr id="ordered-lists" class="subfeature">
+		<tr id="ordered-lists" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Ordered lists}
@@ -473,7 +473,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				list markers type.
 			</td>
 		</tr>
-		<tr id="reversed-list" class="subfeature">
+		<tr id="reversed-list" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#reversed-list Reversed list}
@@ -486,7 +486,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				reversed order (for example, in disassembly instructions).
 			</td>
 		</tr>
-		<tr id="to-do-lists" class="subfeature">
+		<tr id="to-do-lists" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/todo-lists To-do lists}
@@ -499,7 +499,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				lists.
 			</td>
 		</tr>
-		<tr id="unordered-lists" class="subfeature">
+		<tr id="unordered-lists" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Unordered lists}
@@ -557,7 +557,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				complex data presentation.
 			</td>
 		</tr>
-		<tr id="columns-resizing" class="subfeature">
+		<tr id="columns-resizing" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-resize Columns resizing}
@@ -570,7 +570,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				complete control over column width.
 			</td>
 		</tr>
-		<tr id="insert-delete-columns-and-rows" class="subfeature">
+		<tr id="insert-delete-columns-and-rows" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}
@@ -581,7 +581,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				or remove columns and rows and merge or split cells.
 			</td>
 		</tr>
-		<tr id="merge-and-split-cells" class="subfeature">
+		<tr id="merge-and-split-cells" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Merge & split cells}
@@ -592,7 +592,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				or remove columns and rows, and merge or split cells.
 			</td>
 		</tr>
-		<tr id="nesting" class="subfeature">
+		<tr id="nesting" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#nesting-tables Nesting}
@@ -604,7 +604,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				table can be formatted just like a regular one.
 			</td>
 		</tr>
-		<tr id="styling-tables-and-cells" class="subfeature">
+		<tr id="styling-tables-and-cells" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-styling Styling tables & cells}
@@ -616,7 +616,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				background color, padding, or text alignment.
 			</td>
 		</tr>
-		<tr id="table-headers" class="subfeature">
+		<tr id="table-headers" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#default-table-headers Table headers}
@@ -628,7 +628,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				property <code>defaultHeadings</code> .
 			</td>
 		</tr>
-		<tr id="table-selection" class="subfeature">
+		<tr id="table-selection" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-selection Table selection}
@@ -645,7 +645,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				by the <code>Table</code> plugin.
 			</td>
 		</tr>
-		<tr id="tables-caption" class="subfeature">
+		<tr id="tables-caption" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-caption Tables caption}
@@ -680,7 +680,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				highlight important content sections.
 			</td>
 		</tr>
-		<tr id="bold" class="subfeature">
+		<tr id="bold" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Bold}
@@ -688,7 +688,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Making the letters look like the good time were never gone.</td>
 		</tr>
-		<tr id="code" class="subfeature">
+		<tr id="code" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Code}
@@ -696,7 +696,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Snippet look like a terminal from the 1990s movie.</td>
 		</tr>
-		<tr id="highlight" class="subfeature">
+		<tr id="highlight" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/highlight Highlight}
@@ -707,7 +707,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				background fill.
 			</td>
 		</tr>
-		<tr id="italic" class="subfeature">
+		<tr id="italic" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Italic}
@@ -715,7 +715,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Making the letters look like seashore pines.</td>
 		</tr>
-		<tr id="strikethrough" class="subfeature">
+		<tr id="strikethrough" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Strikethrough}
@@ -723,7 +723,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Never mind, will not need it anymore.</td>
 		</tr>
-		<tr id="styles" class="subfeature">
+		<tr id="styles" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/style Styles}
@@ -734,7 +734,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				block and inline content.
 			</td>
 		</tr>
-		<tr id="subscript" class="subfeature">
+		<tr id="subscript" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Subscript}
@@ -742,7 +742,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Fine print at the bottom, like atom numbers.</td>
 		</tr>
-		<tr id="superscript" class="subfeature">
+		<tr id="superscript" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Superscript}
@@ -750,7 +750,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>Fine print on top, like references in a book.</td>
 		</tr>
-		<tr id="underline" class="subfeature">
+		<tr id="underline" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Underline}
@@ -793,7 +793,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				and Revision History features to facilitate collaboration.
 			</td>
 		</tr>
-		<tr id="local-data-storage" class="subfeature">
+		<tr id="local-data-storage" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/collaboration Local data storage
@@ -820,7 +820,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				discuss in threads and remove comments when they finish the discussion.
 			</td>
 		</tr>
-		<tr id="comments-archive" class="subfeature">
+		<tr id="comments-archive" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments Comments archive
@@ -838,7 +838,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				feedback management process.
 			</td>
 		</tr>
-		<tr id="comments-outside-editor" class="subfeature">
+		<tr id="comments-outside-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments-outside-editor Comments outside editor
@@ -853,7 +853,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				integration is enabling comments on non-editor form fields.
 			</td>
 		</tr>
-		<tr id="sidebar-modes" class="subfeature">
+		<tr id="sidebar-modes" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes
@@ -894,7 +894,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				time.
 			</td>
 		</tr>
-		<tr id="co-authoring" class="subfeature">
+		<tr id="co-authoring" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/users-in-real-time-collaboration Co-authoring
@@ -905,7 +905,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 			</td>
 			<td>Multiple user real-time editing and content creation feature.</td>
 		</tr>
-		<tr id="on-premises" class="subfeature">
+		<tr id="on-premises" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs onpremises/index On-premises
@@ -919,7 +919,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				infrastructure, includes a private cloud.
 			</td>
 		</tr>
-		<tr id="saas" class="subfeature">
+		<tr id="saas" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs guides/collaboration/quick-start SaaS
@@ -960,7 +960,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				suggestions that they can accept or discard.
 			</td>
 		</tr>
-		<tr id="sidebar-modes" class="subfeature">
+		<tr id="sidebar-modes" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes}
@@ -1012,7 +1012,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 			</td>
 			<td>CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</td>
 		</tr>
-		<tr id="export-to-pdf" class="subfeature">
+		<tr id="export-to-pdf" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-pdf Export to PDF
@@ -1027,7 +1027,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				fonts.
 			</td>
 		</tr>
-		<tr id="export-to-word" class="subfeature">
+		<tr id="export-to-word" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-word Export to Word
@@ -1043,7 +1043,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				images.
 			</td>
 		</tr>
-		<tr id="import-from-word" class="subfeature">
+		<tr id="import-from-word" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/import-word Import from Word
@@ -1140,7 +1140,7 @@ Format, organize, and navigate your documents easily with page management featur
 				print formatting of their documents effectively.
 			</td>
 		</tr>
-		<tr id="content-minimap" class="subfeature">
+		<tr id="content-minimap" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/minimap Content minimap}
@@ -1151,7 +1151,7 @@ Format, organize, and navigate your documents easily with page management featur
 				allowing for quick navigation and content management.
 			</td>
 		</tr>
-		<tr id="document-title" class="subfeature">
+		<tr id="document-title" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/title Document title}
@@ -1162,7 +1162,7 @@ Format, organize, and navigate your documents easily with page management featur
 				editing interface, ensuring accurate reflection of the contents.
 			</td>
 		</tr>
-		<tr id="page-break" class="subfeature">
+		<tr id="page-break" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/page-break Page break}
@@ -1245,7 +1245,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 			<td>Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!
 			</td>
 		</tr>
-		<tr id="autoformatting" class="subfeature">
+		<tr id="autoformatting" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autoformat Autoformatting}
@@ -1257,7 +1257,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				dropdown menus. This feature caters to the most common formatting needs.
 			</td>
 		</tr>
-		<tr id="autolink" class="subfeature">
+		<tr id="autolink" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/link#autolink-feature Autolink}
@@ -1270,7 +1270,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				ready to use.
 			</td>
 		</tr>
-		<tr id="automatic-text-transformation" class="subfeature">
+		<tr id="automatic-text-transformation" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/text-transformation Automatic text transformations}
@@ -1285,7 +1285,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				phrases into their full forms.
 			</td>
 		</tr>
-		<tr id="autosave" class="subfeature">
+		<tr id="autosave" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autosave Autosave}
@@ -1516,7 +1516,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				only available with certain editor types.
 			</td>
 		</tr>
-		<tr id="balloon-block-editor" class="subfeature">
+		<tr id="balloon-block-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
@@ -1529,7 +1529,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				gives access to additional block–level editing features.
 			</td>
 		</tr>
-		<tr id="balloon-editor" class="subfeature">
+		<tr id="balloon-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
@@ -1541,7 +1541,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				selection is not empty).
 			</td>
 		</tr>
-		<tr id="classic-editor" class="subfeature">
+		<tr id="classic-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#classic-editor Classic editor}
@@ -1554,7 +1554,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				to submit some content to the server.
 			</td>
 		</tr>
-		<tr id="decoupled-editor" class="subfeature">
+		<tr id="decoupled-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}
@@ -1567,7 +1567,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				to PDF files.
 			</td>
 		</tr>
-		<tr id="inline-editor" class="subfeature">
+		<tr id="inline-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#inline-editor Inline editor}
@@ -1582,7 +1582,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				section.
 			</td>
 		</tr>
-		<tr id="multi-root-editor" class="subfeature">
+		<tr id="multi-root-editor" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
@@ -1625,7 +1625,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				multiple lines to display more tools simultaneously.
 			</td>
 		</tr>
-		<tr id="balloon-toolbar" class="subfeature">
+		<tr id="balloon-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
@@ -1635,7 +1635,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
 			</td>
 		</tr>
-		<tr id="block-toolbar" class="subfeature">
+		<tr id="block-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#block-toolbar Block toolbar}
@@ -1647,7 +1647,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				accessible (for example in certain layouts, like balloon block editor).
 			</td>
 		</tr>
-		<tr id="classic-toolbar" class="subfeature">
+		<tr id="classic-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}
@@ -1660,7 +1660,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				elements of your content.
 			</td>
 		</tr>
-		<tr id="collapsible-toolbar" class="subfeature">
+		<tr id="collapsible-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}
@@ -1668,7 +1668,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			</td>
 			<td>Collapsible toolbar for UI space efficiency.</td>
 		</tr>
-		<tr id="image-contextual-toolbar" class="subfeature">
+		<tr id="image-contextual-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}
@@ -1690,7 +1690,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				Shown below is an example contextual toolbar with an extended set of buttons.
 			</td>
 		</tr>
-		<tr id="menu-bar" class="subfeature">
+		<tr id="menu-bar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/menubar Menu bar}
@@ -1706,7 +1706,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				suit your needs, remove unnecessary items, or add menu items related to your custom features.
 			</td>
 		</tr>
-		<tr id="multiline-toolbar" class="subfeature">
+		<tr id="multiline-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}
@@ -1714,7 +1714,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			</td>
 			<td>Multiline toolbar for easy access to all functions.</td>
 		</tr>
-		<tr id="nesting-toolbars-in-dropdowns" class="subfeature">
+		<tr id="nesting-toolbars-in-dropdowns" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}
@@ -1722,7 +1722,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			</td>
 			<td>Nested toolbars for space efficiency and task-oriented access.</td>
 		</tr>
-		<tr id="sidebar-annotations-bar" class="subfeature">
+		<tr id="sidebar-annotations-bar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode#wide-sidebar Wide sidebar}
@@ -1736,7 +1736,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				different UIs, or even create your own UI for annotations.
 			</td>
 		</tr>
-		<tr id="table-contextual-toolbar" class="subfeature">
+		<tr id="table-contextual-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Table contextual toolbar}
@@ -1899,7 +1899,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 				helping accelerate development work.
 			</td>
 		</tr>
-		<tr id="ckeditor5-inspector" class="subfeature">
+		<tr id="ckeditor5-inspector" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}
@@ -1910,7 +1910,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 				framework/architecture/editing-engine#view view}, and {@link
 				framework/architecture/core-editor-architecture#commands commands}.</td>
 		</tr>
-		<tr id="cloud-services-rest-api" class="subfeature">
+		<tr id="cloud-services-rest-api" class="subfeature background-gray">
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
