@@ -218,11 +218,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, browser ] of browsers ) {
 				it( `should detect ${ browser } browser`, async () => {
-					sinon.stub( env, flag ).value( true );
-
-					if ( flag !== 'isBlink' ) {
-						sinon.stub( env, 'isBlink' ).value( false );
-					}
+					mockFlag( flag, true );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -230,6 +226,12 @@ describe( 'getEditorUsageData()', () => {
 						browser
 					} );
 				} );
+			}
+
+			function mockFlag( mockFlag ) {
+				for ( const [ flag ] of browsers ) {
+					sinon.stub( env, flag ).value( flag === mockFlag );
+				}
 			}
 		} );
 	} );
