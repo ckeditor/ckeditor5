@@ -192,7 +192,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, osName ] of os ) {
 				it( `should detect ${ osName } OS`, async () => {
-					sinon.stub( env, flag ).value( true );
+					mockFlag( flag, true );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -200,6 +200,12 @@ describe( 'getEditorUsageData()', () => {
 						os: osName
 					} );
 				} );
+			}
+
+			function mockFlag( mockFlag ) {
+				for ( const [ flag ] of os ) {
+					sinon.stub( env, flag ).value( flag === mockFlag );
+				}
 			}
 		} );
 
