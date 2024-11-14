@@ -7,8 +7,6 @@
  * @module utils/splicearray
  */
 
-const BIG_CHUNK_SIZE = 10000;
-
 /**
  * Splices one array into another. To be used instead of `Array.prototype.splice` as the latter may
  * throw "Maximum call stack size exceeded" when passed huge number of items to insert.
@@ -30,14 +28,29 @@ const BIG_CHUNK_SIZE = 10000;
  *
  * @returns New spliced array.
  */
-export default function spliceArray<T>( target: ReadonlyArray<T>, source: ReadonlyArray<T>, start: number, count: number ): Array<T> {
-	// In case of performance problems, see: https://github.com/ckeditor/ckeditor5/pull/12429/files#r965850568
-	if ( Math.max( source.length, target.length ) > BIG_CHUNK_SIZE ) {
-		return target.slice( 0, start ).concat( source ).concat( target.slice( start + count, target.length ) );
-	} else {
-		const newTarget = Array.from( target );
-		newTarget.splice( start, count, ...source );
+export default function spliceArray<T>(
+	target: ReadonlyArray<T>,
+	source: ReadonlyArray<T>,
+	start: number,
+	count: number
+): Array<T> {
+	const targetLength = target.length;
+	const sourceLength = source.length;
+	const result = new Array<T>( targetLength - count + sourceLength );
 
-		return newTarget;
+	let i = 0;
+
+	for ( ; i < start && i < targetLength; i++ ) {
+		result[ i ] = target[ i ];
 	}
+
+	for ( let j = 0; j < sourceLength; j++, i++ ) {
+		result[ i ] = source[ j ];
+	}
+
+	for ( let k = start + count; k < targetLength; k++, i++ ) {
+		result[ i ] = target[ k ];
+	}
+
+	return result;
 }

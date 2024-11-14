@@ -318,12 +318,6 @@ function matchPatterns(
 	return match;
 }
 
-const toString = Object.prototype.toString;
-
-function isObject( value: any ): value is Record<string, unknown> {
-	return toString.call( value ) === '[object Object]';
-}
-
 /**
  * Bring all the possible pattern forms to an array of arrays where first item is a key and second is a value.
  *
@@ -393,7 +387,7 @@ function isObject( value: any ): value is Record<string, unknown> {
 function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( pattern => {
-			if ( !isObject( pattern ) ) {
+			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
 				return [ pattern, true ];
 			}
 
@@ -406,11 +400,20 @@ function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string 
 		} );
 	}
 
-	if ( !isObject( patterns ) ) {
+	if ( typeof patterns !== 'object' || patterns instanceof RegExp ) {
 		return [ [ patterns as any, true ] ];
 	}
 
-	return Object.entries( patterns );
+	// Below we do what Object.entries() does, but faster
+	const normalizedPatterns: Array<[ string, true | string | RegExp ]> = [];
+
+	for ( const key in patterns ) {
+		if ( Object.prototype.hasOwnProperty.call( patterns, key ) ) {
+			normalizedPatterns.push( [ key, patterns[ key ] ] );
+		}
+	}
+
+	return normalizedPatterns;
 }
 
 /**
