@@ -192,7 +192,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, osName ] of os ) {
 				it( `should detect ${ osName } OS`, async () => {
-					mockFlag( flag, true );
+					mockFlag( flag );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -218,7 +218,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, browser ] of browsers ) {
 				it( `should detect ${ browser } browser`, async () => {
-					mockFlag( flag, true );
+					mockFlag( flag );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
