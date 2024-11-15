@@ -402,7 +402,7 @@ const cloud = useCKEditorCloud( {
 
 ### TypeScript support
 
-The CKEditor&nbsp;5 Vue component is written in TypeScript and provides type definitions. If you use TypeScript in your project, you can take advantage of them. In order to do so, you need to import the component and its types using `import type` statement. Take a look at the following example:
+The CKEditor&nbsp;5 Vue component is written in TypeScript and provides type definitions. If you use TypeScript in your project, you can take advantage of them. In order to do so, you need to import the component and its types using `import type` statement from a special package containing typings. Take a look at the following example:
 
 ```html
 <script setup>
