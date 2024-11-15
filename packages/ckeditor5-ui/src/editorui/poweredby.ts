@@ -109,11 +109,17 @@ class PoweredByView extends View<HTMLDivElement> {
 			isColorInherited: false
 		} );
 
+		// Get the base font size to calculate the icon size in `em` units.
+		const baseFontSize = parseInt( getComputedStyle( document.documentElement ).getPropertyValue( '--ck-font-size-base' ), 10 );
+		// Calculate the icon size in `em` units.
+		const iconWidthInEm = `${ ICON_WIDTH / baseFontSize }em`;
+		const iconHeightInEm = `${ ICON_HEIGHT / baseFontSize }em`;
+
 		iconView.extendTemplate( {
 			attributes: {
 				style: {
-					width: ICON_WIDTH + 'px',
-					height: ICON_HEIGHT + 'px'
+					width: iconWidthInEm,
+					height: iconHeightInEm
 				}
 			}
 		} );

@@ -4,7 +4,9 @@
  */
 
 :root {
-	--ck-powered-by-line-height: 10px;
+	--ck-powered-by-font-size: 0.576923em;
+	--ck-powered-by-line-height: 0.76923em;
+	--ck-powered-by-letter-spacing: -0.015em;
 	--ck-powered-by-padding-vertical: 2px;
 	--ck-powered-by-padding-horizontal: 4px;
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
@@ -35,8 +37,8 @@
 		}
 
 		& .ck-powered-by__label {
-			font-size: 7.5px;
-			letter-spacing: -.2px;
+			font-size: var(--ck-powered-by-font-size);
+			letter-spacing: var(--ck-powered-by-letter-spacing);
 			padding-left: 2px;
 			text-transform: uppercase;
 			font-weight: bold;

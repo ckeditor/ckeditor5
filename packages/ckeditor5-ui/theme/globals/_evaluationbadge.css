@@ -4,8 +4,9 @@
  */
 
 :root {
-	--ck-evaluation-badge-font-size: 7.5px;
-	--ck-evaluation-badge-line-height: 7.5px;
+	--ck-evaluation-badge-font-size: 0.576923em;
+	--ck-evaluation-badge-line-height: 0.576923em;
+	--ck-evaluation-badge-letter-spacing: -0.015em;
 	--ck-evaluation-badge-padding-vertical: 2px;
 	--ck-evaluation-badge-padding-horizontal: 4px;
 	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
@@ -27,13 +28,13 @@
 		padding: var(--ck-evaluation-badge-padding-vertical) var(--ck-evaluation-badge-padding-horizontal);
 
 		& .ck-evaluation-badge__label {
+			display: block;
+			padding: 0 2px;
 			font-size: var(--ck-evaluation-badge-font-size);
-			letter-spacing: -.2px;
-			padding-left: 2px;
-			text-transform: uppercase;
+			letter-spacing: var(--ck-evaluation-badge-letter-spacing);
 			font-weight: bold;
-			margin-right: 4px;
 			line-height: normal;
+			text-transform: uppercase;
 			color: var(--ck-evaluation-badge-text-color);
 		}
 	}
