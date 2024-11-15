@@ -437,11 +437,7 @@ const TestEditor = computed<typeof ClassicEditor | null>( () => {
 </script>
 ```
 
-While typings for the base editor should be available out of the box, some bundlers tend to not install `ckeditor5` package which provides typings for the editor. If you encounter any issues with the typings, you can install the `ckeditor5` package manually:
-
-```bash
-npm install --save-dev ckeditor5
-```
+#### Typings for premium features
 
 If you want to use types for premium features, you can import them in a similar way as the base editor types. Keep in mind that you need to install the `ckeditor5-premium-features` package in order to use them. You can do it by running the following command:
 
@@ -457,6 +453,16 @@ After installing the package, you can import the types in the following way:
 import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium-features.d.ts';
 // ...
 </script>
+```
+
+#### Known issues
+
+In the above example, the `ClassicEditor` type is imported from the `ckeditor5` package, but the editor itself is loaded from the CDN. Keep in mind that `import type` is used to import only the types, not the actual code, and it's not fetched from the CDN as it's synthetic module definition stored in the integration package.
+
+While typings for the base editor should be available out of the box, some bundlers tend to not install `ckeditor5` package which provides typings for the editor. If you encounter any issues with the typings, you can install the `ckeditor5` package manually:
+
+```bash
+npm install --save-dev ckeditor5
 ```
 
 ## Contributing and reporting issues
