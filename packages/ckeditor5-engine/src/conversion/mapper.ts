@@ -7,7 +7,7 @@
  * @module engine/conversion/mapper
  */
 
-import ModelPosition, { getNodeBeforePosition, getTextNodeAtPosition } from '../model/position.js';
+import ModelPosition from '../model/position.js';
 import ModelRange from '../model/range.js';
 
 import ViewPosition from '../view/position.js';
@@ -96,9 +96,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 				return;
 			}
 
-			const modelPosition = data.modelPosition;
-			const modelParent = data.modelPosition.parent as ModelElement;
-			const viewContainer = this._modelToViewMapping.get( modelParent ) as ViewElement | undefined;
+			const viewContainer = this._modelToViewMapping.get( data.modelPosition.parent as ModelElement );
 
 			if ( !viewContainer ) {
 				/**
@@ -109,30 +107,10 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 				 *
 				 * @error mapping-model-position-view-parent-not-found
 				 */
-				throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition } );
+				throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition: data.modelPosition } );
 			}
 
-			if ( modelPosition.offset == 0 ) {
-				data.viewPosition = this._moveViewPositionToTextNode( ViewPosition._createAt( viewContainer, 0 ) );
-
-				return;
-			}
-
-			if ( !data.isPhantom ) {
-				const modelNodeBefore = getNodeBeforePosition(
-					modelPosition,
-					modelParent,
-					getTextNodeAtPosition( modelPosition, modelParent )
-				);
-
-				if ( modelNodeBefore && modelNodeBefore.is( 'element' ) ) {
-					data.viewPosition = ViewPosition._createAfter( this._modelToViewMapping.get( modelNodeBefore ) as ViewElement );
-
-					return;
-				}
-			}
-
-			data.viewPosition = this.findPositionIn( viewContainer, modelPosition.offset );
+			data.viewPosition = this.findPositionIn( viewContainer, data.modelPosition.offset );
 		}, { priority: 'low' } );
 
 		// Default mapper algorithm for mapping view position to model position.
@@ -578,9 +556,9 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns Length of the node in the tree model.
 	 */
 	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
-		const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
+		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
+			const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
 
-		if ( callback ) {
 			return callback( viewNode as ViewElement );
 		} else if ( this._viewToModelMapping.has( viewNode as ViewElement ) ) {
 			return 1;
