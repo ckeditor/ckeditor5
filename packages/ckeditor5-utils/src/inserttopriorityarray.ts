@@ -40,7 +40,7 @@ export default function insertToPriorityArray<T extends ObjectWithPriority>( obj
 	let right = objects.length;
 
 	while ( left < right ) {
-		const mid = ( left + right ) >> 1; // Use bitwise operator for faster floor division by 2
+		const mid = ( left + right ) >> 1; // Use bitwise operator for faster floor division by 2.
 		const midPriority = priorities.get( objects[ mid ].priority );
 
 		if ( midPriority < priority ) {
