@@ -1,4 +1,4 @@
-CKEditor&nbsp;5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)
+CKEditor&nbsp;5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)<!-- omit in toc -->
 ===================================
 
 [![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
@@ -15,20 +15,20 @@ CKEditor&nbsp;5 is a modern JavaScript rich-text editor with MVC architecture, c
 
 ## Table of contents<!-- omit in toc -->
 
-- [CKEditor 5 ](#ckeditor5-)
-	- [Quick start](#quick-start)
-		- [CKEditor 5 Builder](#ckeditor-5-builder)
-		- [TypeScript support](#typescript-support)
-		- [CKEditor 5 advanced installation](#ckeditor-5-advanced-installation)
-			- [CKEditor 5 Framework](#ckeditor-5-framework)
-	- [Documentation and FAQ](#documentation-and-faq)
-	- [Releases](#releases)
-	- [Editing and collaboration features](#editing-and-collaboration-features)
-	- [Contributing and project organization](#contributing-and-project-organization)
-		- [Ideas and discussions](#ideas-and-discussions)
-		- [Development](#development)
-		- [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
-	- [License](#license)
+- [Quick start](#quick-start)
+	- [CKEditor 5 Builder](#ckeditor-5-builder)
+	- [TypeScript support](#typescript-support)
+	- [CKEditor 5 advanced installation](#ckeditor-5-advanced-installation)
+		- [CKEditor 5 Framework](#ckeditor-5-framework)
+- [Documentation and FAQ](#documentation-and-faq)
+- [Releases](#releases)
+- [Editing and collaboration features](#editing-and-collaboration-features)
+- [Create a free account and test full potential](#create-a-free-account-and-test-full-potential)
+- [Contributing and project organization](#contributing-and-project-organization)
+	- [Ideas and discussions](#ideas-and-discussions)
+	- [Development](#development)
+	- [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
+- [License](#license)
 
 ## Quick start
 
@@ -83,6 +83,10 @@ From collaborative editing support providing comments and tracking changes, thro
 The number of options and the ease of customization and adding new ones make the editing experience even better for any environment and professional background.
 
 Refer to the [CKEditor&nbsp;5 Features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html) documentation for details.
+
+## Create a free account and test full potential
+
+If you want to check full CKEditor&nbsp;5 capabilities, including premium features, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
 
 ## Contributing and project organization
 
