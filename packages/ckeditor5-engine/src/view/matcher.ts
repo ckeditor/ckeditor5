@@ -227,101 +227,6 @@ export default class Matcher {
 
 		return match;
 	}
-
-	/**
-	 * Checks if an array of key/value pairs can be matched against provided patterns.
-	 *
-	 * Patterns can be provided in a following ways:
-	 * - a boolean value matches any attribute with any value (or no value):
-	 *
-	 * ```ts
-	 * pattern: true
-	 * ```
-	 *
-	 * - a RegExp expression or object matches any attribute name:
-	 *
-	 * ```ts
-	 * pattern: /h[1-6]/
-	 * ```
-	 *
-	 * - an object matches any attribute that has the same name as the object item's key, where object item's value is:
-	 * 	- equal to `true`, which matches any attribute value:
-	 *
-	 * ```ts
-	 * pattern: {
-	 * 	required: true
-	 * }
-	 * ```
-	 *
-	 * 	- a string that is equal to attribute value:
-	 *
-	 * ```ts
-	 * pattern: {
-	 * 	rel: 'nofollow'
-	 * }
-	 * ```
-	 *
-	 * 	- a regular expression that matches attribute value,
-	 *
-	 * ```ts
-	 * pattern: {
-	 * 	src: /^https/
-	 * }
-	 * ```
-	 *
-	 * - an array with items, where the item is:
-	 * 	- a string that is equal to attribute value:
-	 *
-	 * ```ts
-	 * pattern: [ 'data-property-1', 'data-property-2' ],
-	 * ```
-	 *
-	 * 	- an object with `key` and `value` property, where `key` is a regular expression matching attribute name and
-	 * 		`value` is either regular expression matching attribute value or a string equal to attribute value:
-	 *
-	 * ```ts
-	 * pattern: [
-	 * 	{ key: /^data-property-/, value: true },
-	 * 	// or:
-	 * 	{ key: /^data-property-/, value: 'foobar' },
-	 * 	// or:
-	 * 	{ key: /^data-property-/, value: /^foo/ }
-	 * ]
-	 * ```
-	 *
-	 * @internal
-	 * @param patterns Object with information about attributes to match.
-	 * @param keys Attribute, style or class keys.
-	 * @param valueGetter A function providing value for a given item key.
-	 * @returns Returns array with matched attribute names or `null` if no attributes were matched.
-	 */
-	public static _matchPatterns(
-		patterns: Array<NormalizedPropertyPattern>,
-		keys: Iterable<string>,
-		valueGetter?: ( value: string ) => unknown
-	): Array<string> | undefined {
-		const normalizedItems = Array.from( keys );
-		const match: Array<string> = [];
-
-		patterns.forEach( ( [ patternKey, patternValue ] ) => {
-			normalizedItems.forEach( itemKey => {
-				if (
-					isKeyMatched( patternKey, itemKey ) &&
-					isValueMatched( patternValue, itemKey, valueGetter )
-				) {
-					match.push( itemKey );
-				}
-			} );
-		} );
-
-		// Return matches only if there are at least as many of them as there are patterns.
-		// The RegExp pattern can match more than one item.
-		if ( !patterns.length || match.length < patterns.length ) {
-			return undefined;
-		}
-
-		return match;
-	}
 }
 
 /**
@@ -427,39 +332,6 @@ function normalizePatterns( patterns: PropertyPatterns ): Array<NormalizedProper
 
 	// Other cases (true, string or regexp).
 	return [ [ patterns as any, true ] ];
-}
-
-/**
- * @param patternKey A pattern representing a key we want to match.
- * @param itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
- */
-function isKeyMatched( patternKey: true | string | RegExp, itemKey: string ): unknown {
-	return patternKey === true ||
-		patternKey === itemKey ||
-		patternKey instanceof RegExp && itemKey.match( patternKey );
-}
-
-/**
- * @param patternValue A pattern representing a value we want to match.
- * @param itemKey An item key, e.g. `background`, `href`, 'rel', etc.
- * @param valueGetter A function used to provide a value for a given `itemKey`.
- */
-function isValueMatched(
-	patternValue: true | string | RegExp,
-	itemKey: string,
-	valueGetter?: ( itemKey: string ) => unknown
-): boolean {
-	if ( patternValue === true ) {
-		return true;
-	}
-
-	const itemValue = valueGetter && valueGetter( itemKey );
-
-	// For now, the reducers are not returning the full tree of properties.
-	// Casting to string preserves the old behavior until the root cause is fixed.
-	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
-	return patternValue === itemValue ||
-		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
 }
 
 /**
@@ -804,7 +676,8 @@ export type AttributePatterns = PropertyPatterns;
 export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
 
-export type NormalizedPropertyPattern = [ true | string | RegExp, true | string | RegExp ];
+export type NormalizedPropertyPatternPart = true | string | RegExp;
+export type NormalizedPropertyPattern = [ NormalizedPropertyPatternPart, NormalizedPropertyPatternPart ];
 
 /**
  * The key-value matcher pattern is missing key or value. Both must be present.
