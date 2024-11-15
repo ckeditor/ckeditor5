@@ -696,7 +696,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
 	<tr>
 	 <td><code>^9</code></td>
 	 <td><code>16+</code></td>
-	 <td>Migration to TypeScript&nbsp;5. Declaration files are not backwards compatible. Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0">43</a> or higher.</td>
+	 <td>Migration to TypeScript&nbsp;5. Declaration files are not backward compatible. Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0">43</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td colspan="3">Past releases (no longer maintained)</td>
