@@ -347,7 +347,7 @@ For more information, please refer to the {@link getting-started/setup/ui-langua
 
 ### TypeScript support
 
-The official React integration for CKEditor&nbsp;5 is written in TypeScript and fully supports it. If you use TypeScript in your project, you can use the `CKEditor` component without additional configuration. However, if you want to use some specific types from CKEditor&nbsp;5 packages, you can import them directly from a special package containing type definitions. Take a look at the following example:
+The official React integration for CKEditor&nbsp;5 is written in TypeScript and fully supports it. If you use TypeScript in your project, you can use the `CKEditor` component without additional configuration. However, if you want to use some specific types from the CKEditor&nbsp;5 packages, you can import them directly from a special package containing type definitions. Take a look at the following example:
 
 ```tsx
 import React from 'react';
