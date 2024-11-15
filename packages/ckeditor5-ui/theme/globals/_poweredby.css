@@ -16,6 +16,11 @@
 	--ck-powered-by-border-radius: var(--ck-border-radius);
 	--ck-powered-by-background: hsl(0, 0%, 100%);
 	--ck-powered-by-border-color: var(--ck-color-focus-border);
+
+	--ck-powered-by-svg-width: 53;
+	--ck-powered-by-svg-height: 10;
+	--ck-powered-by-icon-width: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-width) / 13);
+	--ck-powered-by-icon-height: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-height) / 13);
 }
 
 .ck.ck-balloon-panel.ck-powered-by-balloon {
@@ -55,6 +60,8 @@
 		& .ck-icon {
 			display: block;
 			cursor: pointer;
+			width: var(--ck-powered-by-icon-width);
+			height: var(--ck-powered-by-icon-height);
 		}
 
 		&:hover {

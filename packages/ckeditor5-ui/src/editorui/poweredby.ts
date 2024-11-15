@@ -16,9 +16,6 @@ import IconView from '../icon/iconview.js';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
 
-const ICON_WIDTH = 53;
-const ICON_HEIGHT = 10;
-
 const DEFAULT_LABEL = 'Powered by';
 
 type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
@@ -107,21 +104,6 @@ class PoweredByView extends View<HTMLDivElement> {
 		iconView.set( {
 			content: poweredByIcon,
 			isColorInherited: false
-		} );
-
-		// Get the base font size to calculate the icon size in `em` units.
-		const baseFontSize = parseInt( getComputedStyle( document.documentElement ).getPropertyValue( '--ck-font-size-base' ), 10 );
-		// Calculate the icon size in `em` units.
-		const iconWidthInEm = `${ ICON_WIDTH / baseFontSize }em`;
-		const iconHeightInEm = `${ ICON_HEIGHT / baseFontSize }em`;
-
-		iconView.extendTemplate( {
-			attributes: {
-				style: {
-					width: iconWidthInEm,
-					height: iconHeightInEm
-				}
-			}
 		} );
 
 		this.setTemplate( {
