@@ -183,7 +183,24 @@ export default class Matcher {
 
 		// Check element's attributes.
 		if ( pattern.attributes ) {
-			match.attributes = element._getAttributesMatch( pattern.attributes );
+			let excludeAttributes;
+
+			// The `style` and `class` attribute keys are deprecated. Only allow them in object pattern
+			// for backward compatibility.
+			if ( isPlainObject( pattern.attributes ) ) {
+				if ( ( pattern.attributes as any ).style !== undefined ) {
+					// Documented at the end of matcher.js.
+					logWarning( 'matcher-pattern-deprecated-attributes-style-key', pattern.attributes as any );
+				}
+				if ( ( pattern.attributes as any ).class !== undefined ) {
+					// Documented at the end of matcher.js.
+					logWarning( 'matcher-pattern-deprecated-attributes-class-key', pattern.attributes as any );
+				}
+			} else {
+				excludeAttributes = [ 'class', 'style' ];
+			}
+
+			match.attributes = element._getAttributesMatch( normalizePatterns( pattern.attributes ), undefined, excludeAttributes );
 
 			if ( !match.attributes ) {
 				return null;
@@ -192,7 +209,7 @@ export default class Matcher {
 
 		// Check element's classes.
 		if ( pattern.classes ) {
-			match.classes = element._getAttributesMatch( pattern.classes, 'class' );
+			match.classes = element._getAttributesMatch( normalizePatterns( pattern.classes ), 'class' );
 
 			if ( !match.classes ) {
 				return null;
@@ -201,7 +218,7 @@ export default class Matcher {
 
 		// Check element's styles.
 		if ( pattern.styles ) {
-			match.styles = element._getAttributesMatch( pattern.styles, 'style' );
+			match.styles = element._getAttributesMatch( normalizePatterns( pattern.styles ), 'style' );
 
 			if ( !match.styles ) {
 				return null;
@@ -279,15 +296,14 @@ export default class Matcher {
 	 * @returns Returns array with matched attribute names or `null` if no attributes were matched.
 	 */
 	public static _matchPatterns(
-		patterns: PropertyPatterns,
+		patterns: Array<NormalizedPropertyPattern>,
 		keys: Iterable<string>,
 		valueGetter?: ( value: string ) => unknown
 	): Array<string> | undefined {
-		const normalizedPatterns = normalizePatterns( patterns );
 		const normalizedItems = Array.from( keys );
 		const match: Array<string> = [];
 
-		normalizedPatterns.forEach( ( [ patternKey, patternValue ] ) => {
+		patterns.forEach( ( [ patternKey, patternValue ] ) => {
 			normalizedItems.forEach( itemKey => {
 				if (
 					isKeyMatched( patternKey, itemKey ) &&
@@ -300,7 +316,7 @@ export default class Matcher {
 
 		// Return matches only if there are at least as many of them as there are patterns.
 		// The RegExp pattern can match more than one item.
-		if ( !normalizedPatterns.length || match.length < normalizedPatterns.length ) {
+		if ( !patterns.length || match.length < patterns.length ) {
 			return undefined;
 		}
 
@@ -388,7 +404,7 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
  *
  * @returns Returns an array of objects or null if provided patterns were not in an expected form.
  */
-function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
+function normalizePatterns( patterns: PropertyPatterns ): Array<NormalizedPropertyPattern> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( ( pattern: any ) => {
 			if ( isPlainObject( pattern ) ) {
@@ -787,6 +803,8 @@ export type PropertyPatterns<ValuePattern = string | RegExp> =
 export type AttributePatterns = PropertyPatterns;
 export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
+
+export type NormalizedPropertyPattern = [ true | string | RegExp, true | string | RegExp ];
 
 /**
  * The key-value matcher pattern is missing key or value. Both must be present.

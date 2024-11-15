@@ -10,15 +10,13 @@
 import Node from './node.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
-import { isIterable, toMap, type ArrayOrItem, logWarning } from '@ckeditor/ckeditor5-utils';
-import { default as Matcher, type AttributePatterns, type MatcherPattern } from './matcher.js';
+import { isIterable, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { default as Matcher, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
 import { default as StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
 import type Document from './document.js';
 import type Item from './item.js';
 import TokenList from './tokenlist.js';
-
-import { isPlainObject } from 'lodash-es';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -349,7 +347,11 @@ export default class Element extends Node {
 	 * TODO
 	 * @internal
 	 */
-	public _getAttributesMatch( patterns: AttributePatterns, key?: string ): Array<string> | undefined {
+	public _getAttributesMatch(
+		patterns: Array<NormalizedPropertyPattern>,
+		key?: string,
+		exclude?: Array<string>
+	): Array<string> | undefined {
 		if ( key == 'style' ) {
 			return Matcher._matchPatterns( patterns, this.getStyleNames( true ), key => this.getStyle( key ) );
 		}
@@ -362,20 +364,11 @@ export default class Element extends Node {
 
 		const attributeKeys = new Set( this.getAttributeKeys() );
 
-		// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
-		// for backward compatibility.
-		if ( isPlainObject( patterns ) ) {
-			if ( ( patterns as any ).style !== undefined ) {
-				// Documented at the end of matcher.js.
-				logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+		// The `style` and `class` attributes should not be matched with wildcard for the whole attribute value.
+		if ( exclude ) {
+			for ( const name of exclude ) {
+				attributeKeys.delete( name );
 			}
-			if ( ( patterns as any ).class !== undefined ) {
-				// Documented at the end of matcher.js.
-				logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
-			}
-		} else {
-			attributeKeys.delete( 'style' );
-			attributeKeys.delete( 'class' );
 		}
 
 		return Matcher._matchPatterns( patterns, attributeKeys, key => this.getAttribute( key ) );
