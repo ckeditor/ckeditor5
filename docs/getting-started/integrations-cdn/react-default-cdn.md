@@ -400,7 +400,7 @@ Although this setup might seem complex, it prevents users from directly importin
 
 #### Type definitions for premium features
 
-If you want to use types for premium features, you can import them similarly to the base editor types. Remember that you need to install the `ckeditor5-premium-features` package to use them. You can do it by running the following command.
+If you want to use types for premium features, you can import them similarly to the base editor types. Remember that you need to install the `ckeditor5-premium-features` package to use them. You can do it by running the following command:
 
 ```bash
 npm install --save-dev ckeditor5-premium-features
