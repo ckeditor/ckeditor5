@@ -437,6 +437,10 @@ const TestEditor = computed<typeof ClassicEditor | null>( () => {
 </script>
 ```
 
+In the example above, the `ClassicEditor` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself is loaded from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 typings file, but a synthetic TypeScript module providing typings for the editor. The actual typings are supplied by the `ckeditor5` package, which is a dependency of the `@ckeditor/ckeditor5-vue` package.
+
+Although this setup might seem a bit complex, it is designed to prevent users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
+
 #### Typings for premium features
 
 If you want to use types for premium features, you can import them in a similar way as the base editor types. Keep in mind that you need to install the `ckeditor5-premium-features` package in order to use them. You can do it by running the following command:
@@ -456,8 +460,6 @@ import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium
 ```
 
 #### Known issues
-
-In the above example, the `ClassicEditor` type is imported from the `ckeditor5` package, but the editor itself is loaded from the CDN. Keep in mind that `import type` is used to import only the types, not the actual code, and it's not fetched from the CDN as it's synthetic module definition stored in the integration package.
 
 While typings for the base editor should be available out of the box, some bundlers tend to not install `ckeditor5` package which provides typings for the editor. If you encounter any issues with the typings, you can install the `ckeditor5` package manually:
 
