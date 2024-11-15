@@ -55,7 +55,7 @@ By understanding these scenarios, you can better anticipate and manage your edit
 
 ### License check and usage data
 
-When the editor is ready, a license check request is sent to our server, along with non-personalized data that helps us understand editor usage. This information also assists in resolving any potential dispute claims.
+When the editor is ready, a license check request is sent to our server, along with non-personalized data that helps us understand editor usage. This information also assists us when we work on support requests.
 
 The server’s response confirms whether the license is valid. If invalid, the editor will switch to read-only mode.
 
