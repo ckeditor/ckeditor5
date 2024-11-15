@@ -4,9 +4,12 @@
  */
 
 :root {
-	--ck-powered-by-font-size: 0.576923em;
-	--ck-powered-by-line-height: 0.76923em;
-	--ck-powered-by-letter-spacing: -0.015em;
+	/* where 7.5(px) is the font size of the powered by label and 13(px) is the base font size. */
+	--ck-powered-by-font-size: calc(var(--ck-font-size-base) * 7.5 / 13);
+	/* where 10(px) is the line height of the powered by label and 13(px) is the base font size. */
+	--ck-powered-by-line-height: calc(var(--ck-font-size-base) * 10 / 13);
+	/* where -0.2(px) is the letter spacing of the powered by label and 13(px) is the base font size. */
+	--ck-powered-by-letter-spacing: calc(var(--ck-font-size-base) * -0.2 / 13);
 	--ck-powered-by-padding-vertical: 2px;
 	--ck-powered-by-padding-horizontal: 4px;
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
