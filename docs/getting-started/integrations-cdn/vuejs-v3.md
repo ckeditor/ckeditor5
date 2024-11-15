@@ -400,6 +400,65 @@ const cloud = useCKEditorCloud( {
 </script>
 ```
 
+### TypeScript support
+
+The CKEditor&nbsp;5 Vue component is written in TypeScript and provides type definitions. If you use TypeScript in your project, you can take advantage of them. In order to do so, you need to import the component and its types using `import type` statement. Take a look at the following example:
+
+```html
+<script setup>
+import { useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
+import type { ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+const cloud = useCKEditorCloud( {
+	version: '{@var ckeditor5-version}',
+	translations: [ 'es' ]
+} );
+
+const TestEditor = computed<typeof ClassicEditor | null>( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const {
+		ClassicEditor: BaseEditor, Paragraph,
+		Essentials, Heading, Bold, Italic
+	} = cloud.data.value.CKEditor;
+
+	return class TestEditor extends BaseEditor {
+		static builtinPlugins = [
+			Essentials,
+			Paragraph,
+			Heading,
+			Bold,
+			Italic
+		];
+	};
+} );
+</script>
+```
+
+While typings for the base editor should be available out of the box, some bundlers tend to not install `ckeditor5` package which provides typings for the editor. If you encounter any issues with the typings, you can install the `ckeditor5` package manually:
+
+```bash
+npm install --save-dev ckeditor5
+```
+
+If you want to use types for premium features, you can import them in a similar way as the base editor types. Keep in mind that you need to install the `ckeditor5-premium-features` package in order to use them. You can do it by running the following command:
+
+```bash
+npm install --save-dev ckeditor5-premium-features
+```
+
+After installing the package, you can import the types in the following way:
+
+```html
+<script setup>
+// ...
+import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium-features.d.ts';
+// ...
+</script>
+```
+
 ## Contributing and reporting issues
 
 The source code of this component is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue](https://github.com/ckeditor/ckeditor5-vue).
