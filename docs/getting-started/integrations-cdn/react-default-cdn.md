@@ -347,7 +347,7 @@ For more information, please refer to the {@link getting-started/setup/ui-langua
 
 ### TypeScript support
 
-The official React integration for CKEditor&nbsp;5 is written in TypeScript and provides full support for it. If you are using TypeScript in your project, you can use the `CKEditor` component without any additional configuration, however, if you want to use some specific types from CKEditor&nbsp;5 packages, you can import them directly from a special package containing typings. Take a look at the following example:
+The official React integration for CKEditor&nbsp;5 is written in TypeScript and fully supports it. If you use TypeScript in your project, you can use the `CKEditor` component without additional configuration. However, if you want to use some specific types from CKEditor&nbsp;5 packages, you can import them directly from a special package containing type definitions. Take a look at the following example:
 
 ```tsx
 import React from 'react';
@@ -394,13 +394,13 @@ const CKEditorDemo = () => {
 };
 ```
 
-In the example above, the `EventInfo` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself is loaded from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 typings file, but a synthetic TypeScript module providing typings for the editor. The actual typings are supplied by the `ckeditor5` package, which is a dependency of the `@ckeditor/ckeditor5-react` package.
+In the example above, the `EventInfo` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts package`, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 typings file but a synthetic TypeScript module providing typings for the editor. The `ckeditor5` package supplies the actual typings, which depend on the `@ckeditor/ckeditor5-react` package.
 
-Although this setup might seem a bit complex, it is designed to prevent users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
+Although this setup might seem complex, it prevents users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
 
-#### Typings for premium features
+#### Type definitions for premium features
 
-If you want to use types for premium features, you can import them in a similar way as the base editor types. Keep in mind that you need to install the `ckeditor5-premium-features` package in order to use them. You can do it by running the following command:
+If you want to use types for premium features, you can import them similarly to the base editor types. Remember that you need to install the `ckeditor5-premium-features` package to use them. You can do it by running the following command.
 
 ```bash
 npm install --save-dev ckeditor5-premium-features
@@ -416,9 +416,9 @@ import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium
 </script>
 ```
 
-#### Known issues
+## Known issues
 
-While typings for the base editor should be available out of the box, some bundlers tend to not install `ckeditor5` package which provides typings for the editor. If you encounter any issues with the typings, you can install the `ckeditor5` package manually:
+While type definitions for the base editor should be available out of the box, some bundlers do not install the `ckeditor5` package, which provides typing for the editor. If you encounter any issues with the type definitions, you can install the `ckeditor5` package manually:
 
 ```bash
 npm install --save-dev ckeditor5
