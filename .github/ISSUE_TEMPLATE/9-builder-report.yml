@@ -1,6 +1,6 @@
 name: 🐛 CKEditor 5 Builder error
 description: Report something that does not work as expected in CKEditor 5 Builder
-labels: [ "squad:devops", "type:bug" ]
+labels: [ "squad:platform", "type:bug" ]
 body:
   - type: textarea
     attributes:
