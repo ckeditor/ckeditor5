@@ -394,7 +394,7 @@ const CKEditorDemo = () => {
 };
 ```
 
-In the example above, the `EventInfo` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts package`, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 typings file but a synthetic TypeScript module providing typings for the editor. The `ckeditor5` package supplies the actual typings, which depend on the `@ckeditor/ckeditor5-react` package.
+In the example above, the `EventInfo` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 typings file but a synthetic TypeScript module providing typings for the editor. The `ckeditor5` package supplies the actual types, which depend on the `@ckeditor/ckeditor5-react` package.
 
 Although this setup might seem complex, it prevents users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
 
