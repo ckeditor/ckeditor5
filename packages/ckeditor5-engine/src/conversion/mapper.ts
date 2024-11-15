@@ -14,7 +14,7 @@ import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
 import ViewText from '../view/text.js';
 
-import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type ViewDocumentFragment from '../view/documentfragment.js';
 import type ViewElement from '../view/element.js';
@@ -52,8 +52,6 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _viewToModelMapping = new WeakMap<ViewElement | ViewDocumentFragment, ModelElement | ModelDocumentFragment>();
 
-	private _cachedModelPositionToView = new WeakMap<ModelElement, Map<number, ViewPosition>>();
-
 	/**
 	 * A map containing callbacks between view element names and functions evaluating length of view elements
 	 * in model.
@@ -86,24 +84,6 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _unboundMarkerNames = new Set<string>();
 
-	private _cache( modelParent: ModelElement, modelOffset: number, viewPosition: ViewPosition ) {
-		const cacheArray = this._cachedModelPositionToView.get( modelParent ) || new Map();
-
-		cacheArray.set( modelOffset, viewPosition );
-
-		this._cachedModelPositionToView.set( modelParent, cacheArray );
-	}
-
-	private _getCached( modelParent: ModelElement, modelOffset: number ): ViewPosition | undefined {
-		if ( !this._cachedModelPositionToView.has( modelParent ) ) {
-			return;
-		}
-
-		const cacheArray = this._cachedModelPositionToView.get( modelParent )!;
-
-		return cacheArray.get( modelOffset );
-	}
-
 	/**
 	 * Creates an instance of the mapper.
 	 */
@@ -118,51 +98,41 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 
 			const modelPosition = data.modelPosition;
 			const modelParent = data.modelPosition.parent as ModelElement;
+			const viewContainer = this._modelToViewMapping.get( modelParent ) as ViewElement | undefined;
 
-			const viewContainer = this._modelToViewMapping.get( modelParent ) as ViewElement;
+			if ( !viewContainer ) {
+				/**
+				 * A model position could not be mapped to the view because the parent of the model position
+				 * does not have a mapped view element (might have not been converted yet or it has no converter).
+				 *
+				 * Make sure that the model element is correctly converted to the view.
+				 *
+				 * @error mapping-model-position-view-parent-not-found
+				 */
+				throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition } );
+			}
 
 			if ( modelPosition.offset == 0 ) {
-				data.viewPosition = ViewPosition._createAt( viewContainer, 0 );
+				data.viewPosition = this._moveViewPositionToTextNode( ViewPosition._createAt( viewContainer, 0 ) );
 
 				return;
 			}
 
 			if ( !data.isPhantom ) {
-				const modelTextNode = getTextNodeAtPosition( modelPosition, modelParent );
+				const modelNodeBefore = getNodeBeforePosition(
+					modelPosition,
+					modelParent,
+					getTextNodeAtPosition( modelPosition, modelParent )
+				);
 
-				if ( modelTextNode === null ) {
-					const modelNodeBefore = getNodeBeforePosition( modelPosition, modelParent, null );
+				if ( modelNodeBefore && modelNodeBefore.is( 'element' ) ) {
+					data.viewPosition = ViewPosition._createAfter( this._modelToViewMapping.get( modelNodeBefore ) as ViewElement );
 
-					if ( modelNodeBefore && modelNodeBefore.is( 'element' ) ) {
-						data.viewPosition = ViewPosition._createAfter( this._modelToViewMapping.get( modelNodeBefore ) as ViewElement );
-
-						return;
-					}
+					return;
 				}
 			}
 
-			// if ( !viewContainer ) {
-			// 	/**
-			// 	 * A model position could not be mapped to the view because the parent of the model position
-			// 	 * does not have a mapped view element (might have not been converted yet or it has no converter).
-			// 	 *
-			// 	 * Make sure that the model element is correctly converted to the view.
-			// 	 *
-			// 	 * @error mapping-model-position-view-parent-not-found
-			// 	 */
-			// 	throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition: data.modelPosition } );
-			// }
-
-			// const cached = this._getCached( modelParent, modelPosition.offset );
-
-			// if ( cached ) {
-			// 	data.viewPosition = cached;
-			//
-			// 	return;
-			// }
-
-			data.viewPosition = this.findPositionIn( viewContainer, data.modelPosition.offset );
-			// this._cache( modelParent, modelPosition.offset, data.viewPosition );
+			data.viewPosition = this.findPositionIn( viewContainer, modelPosition.offset );
 		}, { priority: 'low' } );
 
 		// Default mapper algorithm for mapping view position to model position.
@@ -608,9 +578,9 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns Length of the node in the tree model.
 	 */
 	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
-		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
-			const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
+		const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
 
+		if ( callback ) {
 			return callback( viewNode as ViewElement );
 		} else if ( this._viewToModelMapping.has( viewNode as ViewElement ) ) {
 			return 1;
