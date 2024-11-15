@@ -37,10 +37,11 @@
 				Font
 			} from 'ckeditor5';
 
-			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
-					plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
-					toolbar: [
+            ClassicEditor
+                .create( document.querySelector( '#editor' ), {
+                    licenseKey: 'GPL', // Or <YOUR_LICENSE_KEY>
+                    plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
+                    toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
 						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
 					],

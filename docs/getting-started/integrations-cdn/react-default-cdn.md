@@ -345,6 +345,85 @@ const CKEditorDemo = () => {
 
 For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
+### TypeScript support
+
+The official React integration for CKEditor&nbsp;5 is written in TypeScript and fully supports it. If you use TypeScript in your project, you can use the `CKEditor` component without additional configuration. However, if you want to use some specific types from the CKEditor&nbsp;5 packages, you can import them directly from a special package containing type definitions. Take a look at the following example:
+
+```tsx
+import React from 'react';
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+
+import type { EventInfo } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+const CKEditorDemo = () => {
+	const cloud = useCKEditorCloud( {
+		version: '{@var ckeditor5-version}',
+		translations: [ 'es' ]
+	} );
+
+	if ( cloud.status === 'error' ) {
+		return <div>Error!</div>;
+	}
+
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
+
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Paragraph
+	} = cloud.CKEditor;
+
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			data={ '<p>Hello world!</p>' }
+			config={ {
+				licenseKey: '<YOUR_LICENSE_KEY>',
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				plugins: [ Bold, Essentials, Italic, Paragraph ],
+			} }
+			onBlur={ ( event: EventInfo ) => {
+				// your event handler
+			} }
+		/>
+	);
+};
+```
+
+In the example above, the `EventInfo` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts package`, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 typings file but a synthetic TypeScript module providing typings for the editor. The `ckeditor5` package supplies the actual typings, which depend on the `@ckeditor/ckeditor5-react` package.
+
+Although this setup might seem complex, it prevents users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
+
+#### Type definitions for premium features
+
+If you want to use types for premium features, you can import them similarly to the base editor types. Remember that you need to install the `ckeditor5-premium-features` package to use them. You can do it by running the following command:
+
+```bash
+npm install --save-dev ckeditor5-premium-features
+```
+
+After installing the package, you can import the types in the following way:
+
+```html
+<script setup>
+// ...
+import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium-features.d.ts';
+// ...
+</script>
+```
+
+## Known issues
+
+While type definitions for the base editor should be available out of the box, some bundlers do not install the `ckeditor5` package, which provides typing for the editor. If you encounter any issues with the type definitions, you can install the `ckeditor5` package manually:
+
+```bash
+npm install --save-dev ckeditor5
+```
+
 ## Contributing and reporting issues
 
 The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).
