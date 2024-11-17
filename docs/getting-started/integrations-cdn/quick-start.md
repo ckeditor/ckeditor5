@@ -17,7 +17,7 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web applic
 ## Installing CKEditor&nbsp;5 from CDN
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 CDN is an alternative method of running CKEditor&nbsp;5. You can start using it in just a few steps and with a few tags.
@@ -25,7 +25,7 @@ CDN is an alternative method of running CKEditor&nbsp;5. You can start using it 
 Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
 ```
 
 <info-box>
@@ -80,7 +80,7 @@ A simple HTML page with the CKEditor may look like the one below.
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>CKEditor 5 - Quick start CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
     </head>
     <body>
         <div id="editor">
@@ -120,9 +120,9 @@ A simple HTML page with the CKEditor may look like the one below.
 Just like with open-source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
 
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css">
 ```
 
 <info-box>
@@ -222,7 +222,7 @@ A simple HTML page with the CKEditor may look like the one below.
 </html>
 ```
 
-### Obtaining a license key
+### Obtaining a premium features license key
 
 To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
 
@@ -245,7 +245,7 @@ To simplify imports, you can use the feature available in browsers &ndash; the [
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the defined specifiers. Now, you can use standard imports from the `ckeditor5` and `ckeditor5-premium-features` packages. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [Obtaining a license key](#obtaining-a-license-key) section.
+Once you have added the import map, you can access the editor and its plugins using the defined specifiers. Now, you can use standard imports from the `ckeditor5` and `ckeditor5-premium-features` packages. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [Obtaining a license key](#obtaining-a-premium-features-license-key) section.
 
 <info-box warning>
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
