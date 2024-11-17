@@ -60,7 +60,7 @@ function CustomEditor() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				mention: {
