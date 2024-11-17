@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 documentation
+meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with CDN.
 category: cloud
 order: 40
@@ -45,7 +45,7 @@ Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and 
 		<meta charset="UTF-8" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		
+
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 		<!-- Add if you use premium features -->
@@ -101,7 +101,7 @@ export default {
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: { 
+				mention: {
 					// Mention configuration
 				}
 			}

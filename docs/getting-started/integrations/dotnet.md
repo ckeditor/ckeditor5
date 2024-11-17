@@ -1,6 +1,6 @@
 ---
 category: self-hosted
-meta-title: Compatibility with .NET using a ZIP archive | CKEditor 5 documentation
+meta-title: Compatibility with .NET using a ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with .NET using a ZIP archive.
 order: 80
 menu-title: .NET

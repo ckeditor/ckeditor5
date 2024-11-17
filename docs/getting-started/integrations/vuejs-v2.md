@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component (npm) | CKEditor 5 documentation
+meta-title: Vue.js 2.x rich text editor component (npm) | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with npm.
 category: self-hosted
 order: 40
@@ -79,7 +79,7 @@ export default {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: { 
+				mention: {
 					// Mention configuration
 				}
 			}

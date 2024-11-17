@@ -1,7 +1,7 @@
 ---
 category: setup
 menu-title: TypeScript support
-meta-title: TypeScript support | CKEditor 5 documentation
+meta-title: TypeScript support | CKEditor 5 Documentation
 meta-description: Handle setup, integrations, and development of CKEditor 5 features with TypeScript.
 modified_at: 2024-06-25
 order: 100

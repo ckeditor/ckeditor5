@@ -1,6 +1,6 @@
 ---
 menu-title: Next.js
-meta-title: Integration with Next.js using CDN | CKEditor 5 documentation
+meta-title: Integration with Next.js using CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and CDN.
 category: cloud
 order: 40
@@ -116,4 +116,4 @@ You can run your project now. If you chose `create-next-app`, type `npm run dev`
 If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
 </info-box>
 
-Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path 
+Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path

@@ -1,6 +1,6 @@
 ---
 menu-title: Next.js
-meta-title: Integration with Next.js using npm | CKEditor 5 documentation
+meta-title: Integration with Next.js using npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and npm.
 category: self-hosted
 order: 40
@@ -63,7 +63,7 @@ function CustomEditor() {
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: { 
+				mention: {
 					// Mention configuration
 				},
 				initialData: '<p>Hello from CKEditor 5 in React!</p>'

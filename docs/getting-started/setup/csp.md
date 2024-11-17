@@ -1,6 +1,6 @@
 ---
 category: setup
-meta-title: Content Security Policy | CKEditor 5 documentation
+meta-title: Content Security Policy | CKEditor 5 Documentation
 meta-description: Learn about the CKEditor 5 Content Security Policy.
 order: 110
 ---

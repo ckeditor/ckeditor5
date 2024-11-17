@@ -1,6 +1,6 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 installation - quick start with npm or ZIP | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 installation - quick start with npm or ZIP | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using npm or ZIP.
 category: self-hosted
 order: 20
