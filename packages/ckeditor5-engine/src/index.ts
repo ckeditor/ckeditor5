@@ -165,6 +165,7 @@ export { default as ClickObserver } from './view/observer/clickobserver.js';
 export { default as DomEventObserver } from './view/observer/domeventobserver.js';
 export { default as MouseObserver } from './view/observer/mouseobserver.js';
 export { default as TabObserver } from './view/observer/tabobserver.js';
+export { default as TouchObserver } from './view/observer/touchobserver.js';
 
 export {
 	default as FocusObserver,
@@ -197,6 +198,11 @@ export type {
 	ViewDocumentMouseOverEvent,
 	ViewDocumentMouseOutEvent
 } from './view/observer/mouseobserver.js';
+export type {
+	ViewDocumentTouchEndEvent,
+	ViewDocumentTouchMoveEvent,
+	ViewDocumentTouchStartEvent
+} from './view/observer/touchobserver.js';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver.js';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver.js';
 export type { ViewDocumentSelectionChangeEvent } from './view/observer/selectionobserver.js';

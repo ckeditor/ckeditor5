@@ -13,6 +13,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import {
 	MouseObserver,
+	TouchObserver,
 	type DocumentSelection,
 	type DocumentSelectionChangeRangeEvent,
 	type DomEventData,
@@ -21,6 +22,7 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentSelectionChangeEvent,
+	type ViewDocumentTouchStartEvent,
 	type ModelInsertContentEvent,
 	type ModelDeleteContentEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -481,24 +483,38 @@ export default class TwoStepCaretMovement extends Plugin {
 		const document = editor.editing.view.document;
 
 		editor.editing.view.addObserver( MouseObserver );
+		editor.editing.view.addObserver( TouchObserver );
 
+		let touched = false;
 		let clicked = false;
 
-		// Detect the click.
+		// This event should be fired before selection on mobile devices.
+		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', () => {
+			touched = true;
+		} );
+
+		// Track mouse click event.
+		// Keep in mind that it's often called after the selection change on iOS devices.
+		// To avoid setting `clicked = true` after the selection change event, we ignore this event
+		// if the touch event was detected before selection. It does not happen on Android.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/17171
 		this.listenTo<ViewDocumentMouseDownEvent>( document, 'mousedown', () => {
-			clicked = true;
+			if ( touched ) {
+				clicked = true;
+			}
 		} );
 
 		// When the selection has changed...
 		this.listenTo<ViewDocumentSelectionChangeEvent>( document, 'selectionChange', () => {
 			const attributes = this.attributes;
 
-			if ( !clicked ) {
+			if ( !clicked && !touched ) {
 				return;
 			}
 
-			// ...and it was caused by the click...
+			// ...and it was caused by the click or touch...
 			clicked = false;
+			touched = false;
 
 			// ...and no text is selected...
 			if ( !selection.isCollapsed ) {
