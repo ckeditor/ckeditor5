@@ -50,7 +50,7 @@ Standalone components provide a simplified way to build Angular applications. Th
 Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The example below shows how to use the component with open-source and premium plugins.
 
 <info-box>
-	Starting from version 44, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
 
 	* You must either comply with the GPL or
 	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
@@ -128,7 +128,7 @@ export class AppModule { }
 Then, import the editor in your Angular component and assign it to a `public` property to make it accessible from the template. The below example shows how to use the component with open-source and premium plugins.
 
 <info-box>
-	Starting from version 44, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
 
 	* You must either comply with the GPL or
 	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.

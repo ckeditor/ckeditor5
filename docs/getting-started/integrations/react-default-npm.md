@@ -44,7 +44,7 @@ npm install @ckeditor/ckeditor5-react
 Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source and premium plugins.
 
 <info-box>
-	Starting from version 44, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
 
 	* You must either comply with the GPL or
 	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
