@@ -820,7 +820,7 @@ describe( 'ImageUploadEditing', () => {
 		);
 
 		sinon.assert.notCalled( abortSpy );
-		sinon.assert.calledOnce( uploadCompleteSpy );
+		sinon.assert.calledTwice( uploadCompleteSpy );
 	} );
 
 	it( 'should abort if an image changed type and then was removed', async () => {

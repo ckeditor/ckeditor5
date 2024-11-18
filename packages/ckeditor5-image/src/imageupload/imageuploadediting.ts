@@ -66,7 +66,7 @@ export default class ImageUploadEditing extends Plugin {
 	 * element (reference) and resolve the upload for the correct model element (instead of the one that landed in the `$graveyard`
 	 * after image type changed).
 	 */
-	private readonly _uploadImageElements: Map<string, Element>;
+	private readonly _uploadImageElements: Map<string, Set<Element>>;
 
 	/**
 	 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
@@ -288,7 +288,11 @@ export default class ImageUploadEditing extends Plugin {
 							// can later resolve in the context of the correct model element. The model element could
 							// change for the same upload if one image was replaced by another (e.g. image type was changed),
 							// so this may also replace an existing mapping.
-							this._uploadImageElements.set( uploadId, imageElement as Element );
+							if ( !this._uploadImageElements.has( uploadId ) ) {
+								this._uploadImageElements.set( uploadId, new Set( [ imageElement as Element ] ) );
+							} else {
+								this._uploadImageElements.get( uploadId )!.add( imageElement as Element );
+							}
 
 							if ( loader.status == 'idle' ) {
 								// If the image was inserted into content and has not been loaded yet, start loading it.
@@ -356,66 +360,70 @@ export default class ImageUploadEditing extends Plugin {
 		const imageUploadElements = this._uploadImageElements;
 
 		model.enqueueChange( { isUndoable: false }, writer => {
-			writer.setAttribute( 'uploadStatus', 'reading', imageUploadElements.get( loader.id )! );
+			const elements = imageUploadElements.get( loader.id )!;
+
+			for ( const element of elements ) {
+				writer.setAttribute( 'uploadStatus', 'reading', element );
+			}
 		} );
 
 		return loader.read()
 			.then( () => {
 				const promise = loader.upload();
-				const imageElement = imageUploadElements.get( loader.id )!;
 
-				// Force re–paint in Safari. Without it, the image will display with a wrong size.
-				// https://github.com/ckeditor/ckeditor5/issues/1975
-				/* istanbul ignore next -- @preserve */
-				if ( env.isSafari ) {
-					const viewFigure = editor.editing.mapper.toViewElement( imageElement )!;
-					const viewImg = imageUtils.findViewImgElement( viewFigure )!;
+				for ( const imageElement of imageUploadElements.get( loader.id )! ) {
+					// Force re–paint in Safari. Without it, the image will display with a wrong size.
+					// https://github.com/ckeditor/ckeditor5/issues/1975
+					/* istanbul ignore next -- @preserve */
+					if ( env.isSafari ) {
+						const viewFigure = editor.editing.mapper.toViewElement( imageElement )!;
+						const viewImg = imageUtils.findViewImgElement( viewFigure )!;
 
-					editor.editing.view.once( 'render', () => {
-						// Early returns just to be safe. There might be some code ran
-						// in between the outer scope and this callback.
-						if ( !viewImg.parent ) {
-							return;
-						}
+						editor.editing.view.once( 'render', () => {
+							// Early returns just to be safe. There might be some code ran
+							// in between the outer scope and this callback.
+							if ( !viewImg.parent ) {
+								return;
+							}
 
-						const domFigure = editor.editing.view.domConverter.mapViewToDom( viewImg.parent ) as HTMLElement | undefined;
+							const domFigure = editor.editing.view.domConverter.mapViewToDom( viewImg.parent ) as HTMLElement | undefined;
 
-						if ( !domFigure ) {
-							return;
-						}
+							if ( !domFigure ) {
+								return;
+							}
 
-						const originalDisplay = domFigure.style.display;
+							const originalDisplay = domFigure.style.display;
 
-						domFigure.style.display = 'none';
+							domFigure.style.display = 'none';
 
-						// Make sure this line will never be removed during minification for having "no effect".
-						( domFigure as any )._ckHack = domFigure.offsetHeight;
+							// Make sure this line will never be removed during minification for having "no effect".
+							( domFigure as any )._ckHack = domFigure.offsetHeight;
 
-						domFigure.style.display = originalDisplay;
+							domFigure.style.display = originalDisplay;
+						} );
+					}
+
+					if ( editor.ui ) {
+						editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
+					}
+
+					model.enqueueChange( { isUndoable: false }, writer => {
+						writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
 					} );
 				}
-
-				if ( editor.ui ) {
-					editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
-				}
-
-				model.enqueueChange( { isUndoable: false }, writer => {
-					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
-				} );
 
 				return promise;
 			} )
 			.then( data => {
 				model.enqueueChange( { isUndoable: false }, writer => {
-					const imageElement = imageUploadElements.get( loader.id )!;
-
-					writer.setAttribute( 'uploadStatus', 'complete', imageElement );
+					for ( const imageElement of imageUploadElements.get( loader.id )! ) {
+						writer.setAttribute( 'uploadStatus', 'complete', imageElement );
+						this.fire<ImageUploadCompleteEvent>( 'uploadComplete', { data, imageElement } );
+					}
 
 					if ( editor.ui ) {
 						editor.ui.ariaLiveAnnouncer.announce( t( 'Image upload complete' ) );
 					}
-
-					this.fire<ImageUploadCompleteEvent>( 'uploadComplete', { data, imageElement } );
 
 					this._uploadedImages.set( loader.id, data );
 				} );
@@ -443,12 +451,12 @@ export default class ImageUploadEditing extends Plugin {
 
 				// Permanently remove image from insertion batch.
 				model.enqueueChange( { isUndoable: false }, writer => {
-					const node = imageUploadElements.get( loader.id );
-
-					// Handle situation when the image has been removed and then `abort` exception was thrown.
-					// See: https://github.com/cksource/ckeditor5-commercial/issues/6817
-					if ( node && node.root.rootName !== '$graveyard' ) {
-						writer.remove( node );
+					for ( const imageElement of imageUploadElements.get( loader.id )! ) {
+						// Handle situation when the image has been removed and then `abort` exception was thrown.
+						// See: https://github.com/cksource/ckeditor5-commercial/issues/6817
+						if ( imageElement.root.rootName !== '$graveyard' ) {
+							writer.remove( imageElement );
+						}
 					}
 				} );
 
@@ -457,10 +465,10 @@ export default class ImageUploadEditing extends Plugin {
 
 		function clean() {
 			model.enqueueChange( { isUndoable: false }, writer => {
-				const imageElement = imageUploadElements.get( loader.id )!;
-
-				writer.removeAttribute( 'uploadId', imageElement );
-				writer.removeAttribute( 'uploadStatus', imageElement );
+				for ( const imageElement of imageUploadElements.get( loader.id )! ) {
+					writer.removeAttribute( 'uploadId', imageElement );
+					writer.removeAttribute( 'uploadStatus', imageElement );
+				}
 
 				imageUploadElements.delete( loader.id );
 			} );
