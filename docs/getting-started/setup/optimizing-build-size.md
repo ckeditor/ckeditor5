@@ -1,6 +1,6 @@
 ---
 category: setup
-meta-title: Optimizing build size | CKEditor 5 documentation
+meta-title: Optimizing build size | CKEditor 5 Documentation
 meta-description: Learn how to optimize your CKEdiotr 5 build.
 order: 120
 modified_at: 2024-06-25

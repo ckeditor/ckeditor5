@@ -1,6 +1,6 @@
 ---
 category: setup
-meta-title: Loading CDN resources | CKEditor 5 documentation
+meta-title: Loading CDN resources | CKEditor 5 Documentation
 meta-description: Learn how to load CKEditor 5 resources from CDN.
 order: 130
 modified_at: 2024-09-10

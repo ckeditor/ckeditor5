@@ -1,6 +1,6 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component with CDN | CKEditor 5 documentation
+meta-title: React rich text editor component with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the React component with CDN.
 category: react-cdn
 order: 10
@@ -25,7 +25,7 @@ CKEditor&nbsp;5 has an official React integration that you can use to add a rich
 This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 Start by installing the React integration for CKEditor&nbsp;5 from npm:
@@ -59,11 +59,10 @@ const CKEditorDemo = () => {
 		Essentials,
 		Paragraph,
 		Bold,
-		Italic,
-		Mention
+		Italic
 	} = cloud.CKEditor;
 
-	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+	const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 	return (
 		<CKEditor
@@ -71,10 +70,8 @@ const CKEditorDemo = () => {
 			data={ '<p>Hello world!</p>' }
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			} }
 		/>
 	);

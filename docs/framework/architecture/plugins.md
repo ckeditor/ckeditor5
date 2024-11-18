@@ -6,7 +6,7 @@
 
 category: framework-architecture
 menu-title: Plugins in CKEditor 5
-meta-title: Plugins in CKEditor 5 | CKEditor 5 documentation
+meta-title: Plugins in CKEditor 5 | CKEditor 5 Documentation
 toc-limit: 1
 order: 10
 ---

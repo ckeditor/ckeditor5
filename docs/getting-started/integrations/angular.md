@@ -1,6 +1,6 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component (npm) | CKEditor 5 documentation
+meta-title: Angular rich text editor component (npm) | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
 category: self-hosted
 order: 30
@@ -17,10 +17,6 @@ order: 30
 </p>
 
 Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
-
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
 
 {@snippet getting-started/use-builder}
 
@@ -53,13 +49,22 @@ Standalone components provide a simplified way to build Angular applications. Th
 
 Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The example below shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -75,11 +80,8 @@ export class AppComponent {
 	public Editor = ClassicEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -125,12 +127,21 @@ export class AppModule { }
 
 Then, import the editor in your Angular component and assign it to a `public` property to make it accessible from the template. The below example shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -144,11 +155,8 @@ export class AppComponent {
 	public Editor = ClassicEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -509,7 +517,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+import { DecoupledEditor, Essentials, Italic, Paragraph, Bold } from 'ckeditor5';
 
 @Component( {
 	selector: 'app-root',
@@ -525,7 +533,7 @@ export class AppComponent {
 	public Editor = DecoupledEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+		plugins: [ Bold, Essentials, Italic, Paragraph ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	}
 	public onReady( editor: DecoupledEditor ): void {

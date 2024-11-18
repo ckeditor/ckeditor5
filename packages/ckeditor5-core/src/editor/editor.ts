@@ -961,6 +961,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * You have exceeded the editor operation limit available for your evaluation license key.
 				 * Please restart the editor to continue using it.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-evaluation-limit
 				 */

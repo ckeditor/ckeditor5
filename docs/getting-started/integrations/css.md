@@ -1,6 +1,6 @@
 ---
 menu-title: CSS frameworks
-meta-title: Compatibility with CSS frameworks with npm | CKEditor 5 documentation
+meta-title: Compatibility with CSS frameworks with npm | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using CSS frameworks
 category: installation
 order: 90

@@ -1,9 +1,9 @@
 ---
 category: licensing
 menu-title: Usage-based billing
-meta-title: Usage-based billing | CKEditor 5 documentation
+meta-title: Usage-based billing | CKEditor 5 Documentation
 meta-description: Learn how usage-based billing works in CKEditor 5.
-order: 40
+order: 20
 modified_at: 2024-10-28
 ---
 
@@ -38,6 +38,12 @@ Alternatively, if you prefer to use only the free, open-source version of CKEdit
 
 An editor load occurs each time CKEditor is initialized in your application. For example, if 100 users load CKEditor 10 times each, it results in 1,000 editor loads.
 
+The editor initializes as follows:
+
+1. The integrator creates one or more editors on a page, typically using a method like `ClassicEditor.create(sourceElementOrData, configuration)`.
+2. Depending on the setup, the editor will either initialize with the selected DOM element or, if provided with data, initialize in a detached mode to be added to the DOM on demand.
+3. Upon the `ready` event, the editor sends usage information to the server to confirm the license. [Read more about the license check](#license-check-and-usage-data).
+
 Each individual editor instance on a page is counted as one editor load. For example, if a page contains ten editors, a single refresh of that page will result in ten editor loads.
 
 Several factors can contribute to a high number of editor loads, with one of the most significant being the use of multiple editors on a single page. For example:
@@ -46,6 +52,12 @@ Several factors can contribute to a high number of editor loads, with one of the
 * **Dynamic form builders**: Applications that allow users to dynamically add and edit form fields with CKEditor embedded in each field will increase the total number of editor loads each time the form is accessed or modified.
 
 By understanding these scenarios, you can better anticipate and manage your editor loads to align with your usage plan.
+
+### License check and usage data
+
+When the editor is ready, a license check request is sent to our server, along with non-personalized data that helps us understand editor usage. This information also assists us when we work on support requests.
+
+The server’s response confirms whether the license is valid. If invalid, the editor will switch to read-only mode.
 
 ## How usage-based billing works
 

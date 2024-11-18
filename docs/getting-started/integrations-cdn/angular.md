@@ -1,6 +1,6 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component with CDN | CKEditor 5 documentation
+meta-title: Angular rich text editor component with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with CDN.
 category: cloud
 order: 30
@@ -25,7 +25,7 @@ Angular is a TypeScript-based, open-source, single-page web application framewor
 This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
@@ -76,19 +76,16 @@ export class AppComponent {
 			Essentials,
 			Paragraph,
 			Bold,
-			Italic,
-			Mention
+			Italic
 		} = cloud.CKEditor;
 
-		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+		const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>',
-			plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-			}
+			plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 		};
 	}
 }
