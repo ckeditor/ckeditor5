@@ -65,7 +65,7 @@ const CustomEditor = () => {
 		Essentials,
 		Paragraph,
 		Bold,
-		Italic,
+		Italic
 	} = cloud.CKEditor;
 
 	const { FormatPainter } = cloud.CKEditorPremiumFeatures;
