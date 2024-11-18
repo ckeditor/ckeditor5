@@ -806,7 +806,7 @@ describe( 'Editor - license check', () => {
 
 		it( 'should be possible to set integrations usage data using helper passed in the event without raising error', () => {
 			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
-				setUsageData( 'integrations.foo', 123 );
+				setUsageData( 'integration.foo', 123 );
 			} );
 
 			editor.fire( 'ready' );
@@ -815,7 +815,7 @@ describe( 'Editor - license check', () => {
 				sinon.match.string,
 				sinon.match( {
 					editor: {
-						integrations: {
+						integration: {
 							foo: 123
 						}
 					}

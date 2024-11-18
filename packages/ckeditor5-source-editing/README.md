@@ -7,6 +7,18 @@ CKEditor&nbsp;5 source editing feature
 
 This package implements the source editing support for CKEditor&nbsp;5 that allows you to view and edit the source of the document.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the [demo in the source editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#demo).
@@ -14,12 +26,6 @@ Check out the [demo in the source editing feature guide](https://ckeditor.com/do
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-source-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/source-editing.html) page as well as the [source editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 

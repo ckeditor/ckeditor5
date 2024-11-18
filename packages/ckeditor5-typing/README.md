@@ -7,15 +7,21 @@ CKEditor&nbsp;5 typing feature
 
 This package implements support for typing (inputting and deleting text) in CKEditor&nbsp;5. It also includes the automatic text transformations (autocorrect) feature that lets you automatically turn predefined snippets into their improved forms.
 
-## Documentation
-
-See the [`@ckeditor/ckeditor5-typing` package](https://ckeditor.com/docs/ckeditor5/latest/api/typing.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
 ## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
 
 ```bash
 npm install ckeditor5
 ```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-typing` package](https://ckeditor.com/docs/ckeditor5/latest/api/typing.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

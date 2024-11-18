@@ -7,6 +7,18 @@ CKEditor&nbsp;5 image feature
 
 This package implements the image feature for CKEditor&nbsp;5. The feature is introduced in a granular form implemented by a couple of plugins.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the demos in the [image feature guides](https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#demo).
@@ -14,12 +26,6 @@ Check out the demos in the [image feature guides](https://ckeditor.com/docs/cked
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-image` package](https://ckeditor.com/docs/ckeditor5/latest/api/image.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 

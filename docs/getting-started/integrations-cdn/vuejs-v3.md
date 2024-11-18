@@ -400,6 +400,77 @@ const cloud = useCKEditorCloud( {
 </script>
 ```
 
+### TypeScript support
+
+The CKEditor&nbsp;5 Vue component is written in TypeScript and provides type definitions. If you use TypeScript in your project, you can take advantage of them. To do so, import the component and its types using an `import type` statement from a special package containing type definitions. Take a look at the following example:
+
+```html
+<script setup>
+import { useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
+import type { ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+const cloud = useCKEditorCloud( {
+	version: '{@var ckeditor5-version}',
+	translations: [ 'es' ]
+} );
+
+const TestEditor = computed<typeof ClassicEditor | null>( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const {
+		ClassicEditor: BaseEditor,
+		Paragraph,
+		Essentials,
+		Heading,
+		Bold,
+		Italic
+	} = cloud.data.value.CKEditor;
+
+	return class TestEditor extends BaseEditor {
+		static builtinPlugins = [
+			Essentials,
+			Paragraph,
+			Heading,
+			Bold,
+			Italic
+		];
+	};
+} );
+</script>
+```
+
+In the example above, the ClassicEditor type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 types file but a synthetic TypeScript module providing type definitions for the editor. The `ckeditor5` package supplies the actual typings, which depend on the `@ckeditor/ckeditor5-react` package.
+
+Although this setup might seem complex, it prevents users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
+
+#### Type definitions for premium features
+
+If you want to use types for premium features, you can import them similarly to the base editor types. Remember that you need to install the `ckeditor5-premium-features` package to use them. You can do it by running the following command:
+
+```bash
+npm install --save-dev ckeditor5-premium-features
+```
+
+After installing the package, you can import the types in the following way:
+
+```html
+<script setup>
+// ...
+import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium-features.d.ts';
+// ...
+</script>
+```
+
+## Known issues
+
+While type definitions for the base editor should be available out of the box, some bundlers do not install the `ckeditor5` package, which provides typing for the editor. If you encounter any issues with the type definitions, you can install the `ckeditor5` package manually:
+
+```bash
+npm install --save-dev ckeditor5
+```
+
 ## Contributing and reporting issues
 
 The source code of this component is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue](https://github.com/ckeditor/ckeditor5-vue).

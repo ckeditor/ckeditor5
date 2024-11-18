@@ -32,4 +32,4 @@ Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSour
 
 ## Trademarks
 
-CKEditor is a trademark of [CKSource Holding sp. z o.o.](http://cksource.com/) All other brand and product names are trademarks, registered trademarks, or service marks of their respective holders.
+CKEditor is a trademark of [CKSource Holding sp. z o.o.](https://cksource.com/) All other brand and product names are trademarks, registered trademarks, or service marks of their respective holders.

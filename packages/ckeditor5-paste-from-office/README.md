@@ -9,6 +9,18 @@ This package implements the [paste from Office](https://docs.ckeditor.com/ckedit
 
 Paste from Office allows copying content from Microsoft Word without losing any formatting.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
@@ -16,12 +28,6 @@ Check out the demos for the [paste from office](https://ckeditor.com/docs/ckedit
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-paste-from-office` package](https://docs.ckeditor.com/ckeditor5/latest/api/paste-from-office.html) page in [CKEditor&nbsp;5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 
