@@ -27,7 +27,7 @@ You can use CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your ap
 ## Quick start
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 First, install the CKEditor&nbsp;5 WYSIWYG editor component for Vue 2:

@@ -25,7 +25,7 @@ CKEditor&nbsp;5 has an official React integration that you can use to add a rich
 This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 Start by installing the React integration for CKEditor&nbsp;5 from npm:

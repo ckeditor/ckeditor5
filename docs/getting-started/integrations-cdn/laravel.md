@@ -19,7 +19,7 @@ This guide assume you have a Laravel project. You can create a basic Laravel pro
 ## Using from CDN
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 The folder structure of the created project should resemble the one below:

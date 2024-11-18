@@ -25,7 +25,7 @@ Angular is a TypeScript-based, open-source, single-page web application framewor
 This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
