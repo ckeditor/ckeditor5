@@ -27,6 +27,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import Writer from '@ckeditor/ckeditor5-engine/src/model/writer.js';
 import { downcastImageAttribute } from '../../src/image/converters.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -1549,6 +1550,40 @@ describe( 'ImageUploadEditing', () => {
 					done();
 				} );
 			} );
+		} );
+
+		it( 'should not remove image when it is already in graveyard', done => {
+			const notification = editor.plugins.get( Notification );
+			const file = createNativeFileMock();
+
+			notification.on( 'show:warning', evt => {
+				evt.stop();
+			}, { priority: 'high' } );
+
+			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
+			editor.execute( 'uploadImage', { file } );
+
+			const image = doc.getRoot().getChild( 0 ).getChild( 0 );
+
+			editor.execute( 'undo' );
+
+			const removeMock = sinon.stub( Writer.prototype, 'remove' ).callThrough();
+
+			// Simulate change to trigger image upload error handling
+			const imagePlugin = editor.plugins.get( 'ImageUploadEditing' );
+			imagePlugin._uploadImageElements.set( loader.id, image );
+
+			// Throw aborted exception to simulate loader error
+			loader.status = 'aborted';
+
+			model.document.once( 'change', () => {
+				tryExpect( done, () => {
+					expect( image.root.rootName ).to.equal( '$graveyard' );
+					sinon.assert.notCalled( removeMock );
+				} );
+			} );
+
+			loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
 		} );
 	} );
 
