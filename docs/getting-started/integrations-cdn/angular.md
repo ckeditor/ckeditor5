@@ -77,18 +77,15 @@ export class AppComponent {
 			Paragraph,
 			Bold,
 			Italic,
-			Mention
 		} = cloud.CKEditor;
 
-		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+		const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 		this.Editor = ClassicEditor;
 		this.config = {
 			licenseKey: '<YOUR_LICENSE_KEY>',
-			plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-			}
+			plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 		};
 	}
 }

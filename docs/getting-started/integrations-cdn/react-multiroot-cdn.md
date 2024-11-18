@@ -66,11 +66,10 @@ const MultiRootEditorDemo = withCKCloud(
 			Essentials,
 			Paragraph
 			Bold,
-			Italic,
-			Mention
+			Italic
 		} = cloud.CKEditor;
 
-		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+		const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 		class MultiRootEditor extends MultiRootEditorBase {
 			static builtinPlugins = [
@@ -78,14 +77,11 @@ const MultiRootEditorDemo = withCKCloud(
 				Paragraph,
 				Bold,
 				Italic,
-				Mention,
-				SlashCommand
+				FormatPainter
 			];
 
 			static defaultConfig = {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			};
 		}
 

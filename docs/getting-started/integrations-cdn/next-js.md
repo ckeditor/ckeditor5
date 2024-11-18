@@ -66,10 +66,9 @@ const CustomEditor = () => {
 		Paragraph,
 		Bold,
 		Italic,
-		Mention
 	} = cloud.CKEditor;
 
-	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+	const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 	return (
 		<CKEditor
@@ -77,10 +76,8 @@ const CustomEditor = () => {
 			data={ '<p>Hello world!</p>' }
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			} }
 		/>
 	);

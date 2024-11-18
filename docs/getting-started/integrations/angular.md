@@ -63,8 +63,8 @@ Instead, add the `CKEditorModule` to the imports in your app component. The comp
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -80,11 +80,8 @@ export class AppComponent {
 	public Editor = ClassicEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -143,8 +140,8 @@ Then, import the editor in your Angular component and assign it to a `public` pr
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -158,11 +155,8 @@ export class AppComponent {
 	public Editor = ClassicEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -523,7 +517,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+import { DecoupledEditor, Essentials, Italic, Paragraph, Bold } from 'ckeditor5';
 
 @Component( {
 	selector: 'app-root',
@@ -539,7 +533,7 @@ export class AppComponent {
 	public Editor = DecoupledEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+		plugins: [ Bold, Essentials, Italic, Paragraph ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	}
 	public onReady( editor: DecoupledEditor ): void {

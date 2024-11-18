@@ -66,8 +66,8 @@ With these packages installed, create a new Vue component called `Editor.vue`. I
 
 <script setup>
 import { ref, computed } from 'vue';
-import { ClassicEditor, Paragraph, Essentials, Bold, Italic, Mention } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 import 'ckeditor5/ckeditor5.css';
@@ -78,8 +78,8 @@ const data = ref( '<p>Hello world!</p>' );
 const config = computed( () => {
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
 } );
 </script>

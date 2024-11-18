@@ -70,20 +70,13 @@ const config = computed( () => {
 		return null;
 	}
 
-	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
-	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+	const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+	const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
 
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Essentials,
-			Paragraph,
-			Bold,
-			Italic,
-			Mention,
-			SlashCommand
-		]
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
 } );
 </script>
@@ -201,20 +194,13 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 // Editor loading and configuration is skipped for brevity.
 
 const config = computed( () => {
-	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
-	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+	const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+	const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
 
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Essentials,
-			Paragraph,
-			Bold,
-			Italic,
-			Mention,
-			SlashCommand
-		]
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
 } );
 </script>

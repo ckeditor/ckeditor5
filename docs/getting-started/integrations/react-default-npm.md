@@ -54,8 +54,8 @@ Use the `<CKEditor>` component inside your project. The below example shows how 
 
 ```jsx
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
@@ -66,11 +66,8 @@ function App() {
 			editor={ ClassicEditor }
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: {
-					// Mention configuration
-				},
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ],
 				initialData: '<p>Hello from CKEditor 5 in React!</p>',
 			} }
 		/>
