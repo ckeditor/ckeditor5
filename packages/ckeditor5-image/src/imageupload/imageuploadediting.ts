@@ -385,7 +385,13 @@ export default class ImageUploadEditing extends Plugin {
 
 				// Permanently remove image from insertion batch.
 				model.enqueueChange( { isUndoable: false }, writer => {
-					writer.remove( imageUploadElements.get( loader.id )! );
+					const node = imageUploadElements.get( loader.id );
+
+					// Handle situation when the image has been removed and then `abort` exception was thrown.
+					// See: https://github.com/cksource/ckeditor5-commercial/issues/6817
+					if ( node && node.root.rootName !== '$graveyard' ) {
+						writer.remove( node );
+					}
 				} );
 
 				clean();
