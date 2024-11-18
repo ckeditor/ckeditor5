@@ -22,6 +22,7 @@ export default class StylesMap {
 	private _styles: Styles;
 
 	private _cachedStyleNames: Array<string> | null = null;
+	private _cachedExpandedStyleNames: Array<string> | null = null;
 
 	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
@@ -199,6 +200,7 @@ export default class StylesMap {
 
 	public set( nameOrObject: string | Styles, valueOrObject?: StyleValue ): void {
 		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
 
 		if ( isObject( nameOrObject ) ) {
 			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
@@ -239,6 +241,7 @@ export default class StylesMap {
 	 */
 	public remove( name: string ): void {
 		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
 
 		const path = toPath( name );
 
@@ -407,17 +410,17 @@ export default class StylesMap {
 	 * @param expand Expand shorthand style properties and all return equivalent style representations.
 	 */
 	public getStyleNames( expand = false ): Array<string> {
-		if ( !this._cachedStyleNames ) {
-			if ( this.isEmpty ) {
-				this._cachedStyleNames = [];
-			} else if ( expand ) {
-				this._cachedStyleNames = this._styleProcessor.getStyleNames( this._styles );
-			} else {
-				const entries = this.getStylesEntries();
-
-				this._cachedStyleNames = entries.map( ( [ key ] ) => key );
-			}
+		if ( this.isEmpty ) {
+			return [];
 		}
+
+		if ( expand ) {
+			this._cachedExpandedStyleNames = this._cachedExpandedStyleNames || this._styleProcessor.getStyleNames( this._styles );
+
+			return this._cachedExpandedStyleNames;
+		}
+
+		this._cachedStyleNames = this._cachedStyleNames || this.getStylesEntries().map( ( [ key ] ) => key );
 
 		return this._cachedStyleNames;
 	}
@@ -428,6 +431,7 @@ export default class StylesMap {
 	public clear(): void {
 		this._styles = {};
 		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
 	}
 
 	/**
