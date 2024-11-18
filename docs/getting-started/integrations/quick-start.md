@@ -31,10 +31,9 @@ Now, you can import all the modules from the `ckeditor5` package. Additionally, 
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 <info-box>
-	Starting from v44, a `licenseKey` property is required to use the editor.
-	If you use a self-hosted editor from npm:
+	Starting from version 44, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
 
-	* You must either comply with the GPL license or
+	* You must either comply with the GPL or
 	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
 
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
@@ -76,10 +75,9 @@ That is all the code you need to see a bare-bone editor running in your web brow
 If you do not want to build your project using npm and cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
 
 <info-box>
-	Starting from v44, a `licenseKey` property is required to use the editor.
-	If you use a self-hosted editor from ZIP:
+	Starting from version 44, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from ZIP:
 
-	* You must either comply with the GPL license or
+	* You must either comply with the GPL or
 	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
 
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
@@ -116,6 +114,12 @@ npm install ckeditor5-premium-features
 ```
 
 Now, you can import all the modules from both the `ckeditor5` and `ckeditor5-premium-features` packages. Additionally, you have to import CSS styles separately.
+
+<info-box>
+	If you use a self-hosted editor from npm, obtain a license for {@link getting-started/licensing/license-key-and-activation premium features}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and all of its features.
+</info-box>
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Font } from 'ckeditor5';
@@ -154,7 +158,12 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the ZIP archive</a> with the latest CKEditor&nbsp;5 distribution and premium features.
 2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
-3. [Obtain a license key](#obtaining-a-premium-features-license-key) and replace it in the editor configuration.
+
+<info-box>
+	If you use a self-hosted editor from ZIP, obtain a license for {@link getting-started/licensing/license-key-and-activation premium features}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and all of its features.
+</info-box>
 
 Files in the ZIP archive:
 

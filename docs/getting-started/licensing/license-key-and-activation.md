@@ -12,9 +12,9 @@ modified_at: 2024-10-28
 This article explains how to obtain a commercial license for CKEditor&nbsp;5 and the CKEditor premium features.
 
 <info-box>
-	CKEditor&nbsp;5 without premium features can be used as {@link getting-started/licensing/license-and-legal open source software under the GPL license}. It will then {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
+	CKEditor&nbsp;5 without premium features can be used as {@link getting-started/licensing/license-and-legal open source software under the GPL}. It will then {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 
-	If you are not meeting the criteria of the GPL license, you need to obtain a commercial one.
+	If you are not meeting the criteria of the GPL, you need to obtain a commercial one.
 </info-box>
 
 ## Obtaining a license
@@ -41,12 +41,12 @@ The trial is commitment-free, and you do not need to provide credit card details
 
 Trial allows testing both self-hosted and cloud distributions. When the trial finishes, you have to use the distribution according to your plan details.
 
-### Using the GPL license key
+### Using the GPL key
 
 CKEditor&nbsp;5 (without the premium features listed above) can be used in an open-source, GPL-compliant setup with:
 
 * a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a license key and free editor loads.
-* without account setup as open-source software under the GPL license. Use the `'GPL'` value in the `licenseKey` field in your configuration.
+* without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 
 In both cases, the editor will {@link getting-started/licensing/managing-ckeditor-logo display a small “Powered by CKEditor” logo} in the editor area.
 

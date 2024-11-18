@@ -1,6 +1,6 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 Installation - Quick Start with CDN | CKEditor 5 Documentation
+meta-title: Vanilla JS CKEditor 5 installation - quick start with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using Vanilla JS with CDN.
 category: cloud
 order: 20
