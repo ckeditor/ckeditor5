@@ -9,6 +9,7 @@
 
 import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import type { ElementAttributeValue } from './element.js';
+import type { NormalizedPropertyPatternPart } from './matcher.js';
 
 /**
  * TODO
@@ -138,6 +139,44 @@ export default class TokenList implements ElementAttributeValue {
 		}
 
 		return true;
+	}
+
+	/**
+	 * @internal
+	 */
+	public _getTokensMatch(
+		attributeKey: string,
+		patternToken: NormalizedPropertyPatternPart
+	): Array<[ string, string ]> | undefined {
+		const match: Array<[ string, string ]> = [];
+
+		if ( patternToken === true ) {
+			for ( const token of this._set.keys() ) {
+				match.push( [ attributeKey, token ] );
+			}
+
+			return match;
+		}
+
+		if ( typeof patternToken == 'string' ) {
+			for ( const token of patternToken.split( /\s+/ ) ) {
+				if ( this._set.has( token ) ) {
+					match.push( [ attributeKey, token ] );
+				} else {
+					return undefined;
+				}
+			}
+
+			return match;
+		}
+
+		for ( const token of this._set.keys() ) {
+			if ( token.match( patternToken ) ) {
+				match.push( [ attributeKey, token ] );
+			}
+		}
+
+		return match.length ? match : undefined;
 	}
 
 	/**

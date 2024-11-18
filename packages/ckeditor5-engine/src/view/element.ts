@@ -347,56 +347,43 @@ export default class Element extends Node {
 	 * TODO
 	 * @internal
 	 */
-	public _getAttributesMatch(
-		patterns: Array<NormalizedPropertyPattern>,
-		key?: string,
-		exclude?: Array<string>
-	): Array<string> | undefined {
-		let match = [];
+	public _getAttributesMatch( patterns: Array<NormalizedPropertyPattern> ): Array<[ string, string ]> | undefined {
+		const match: Array<[ string, string ]> = [];
 
-		// TODO try to unify all of this
-		if ( key == 'style' ) {
-			match = matchPatterns( patterns, this.getStyleNames( true ), key => this.getStyle( key ) );
-		}
-		else if ( key == 'class' ) {
-			match = matchPatterns( patterns, this.getClassNames() );
-		}
-		else {
+		for ( const [ patternKey, patternToken, patternValue ] of patterns ) {
+			let hasKey = false;
+
 			for ( const [ key, value ] of this._attrs ) {
-				if ( exclude && exclude.includes( key ) ) {
+				if ( !isKeyMatched( patternKey, key ) ) {
 					continue;
 				}
 
-				for ( const [ patternKey, patternValue ] of patterns ) {
-					if ( !isKeyMatched( patternKey, key ) ) {
-						continue;
+				hasKey = true;
+
+				if ( typeof value == 'string' ) {
+					if (
+						patternToken === true ||
+						patternToken === value ||
+						patternToken instanceof RegExp && !!String( value ).match( patternToken )
+					) {
+						match.push( [ key, 'TODO' ] );
+					} else {
+						return undefined;
 					}
+				} else {
+					const tokenMatch = value._getTokensMatch( key, patternToken, patternValue || true );
 
-					// TODO this should be handled inside TokenList and possibly in StylesMap
-					if ( value instanceof TokenList && typeof patternValue == 'string' ) {
-						const tokenPatterns = patternValue.split( /\s+/ );
-						let tokenMatch = 0;
-
-						for ( const tokenPattern of tokenPatterns ) {
-							if ( isValueMatched( tokenPattern, tokenPattern, token => value.has( token ) && token ) ) {
-								tokenMatch++;
-							}
-						}
-
-						if ( tokenMatch == tokenPatterns.length ) {
-							match.push( key );
-						}
-					} else if ( isValueMatched( patternValue, key, () => String( value ) ) ) {
-						match.push( key );
+					if ( tokenMatch ) {
+						match.push( ...tokenMatch );
+					} else {
+						return undefined;
 					}
 				}
 			}
-		}
 
-		// Return matches only if there are at least as many of them as there are patterns.
-		// The RegExp pattern can match more than one item.
-		if ( match && match.length < patterns.length ) {
-			return undefined;
+			if ( !hasKey ) {
+				return undefined;
+			}
 		}
 
 		return match;
@@ -1093,6 +1080,12 @@ export interface ElementAttributeValue {
 
 	mergeFrom( other: this ): void;
 
+	_getTokensMatch(
+		attributeKey: string,
+		patternToken: NormalizedPropertyPatternPart,
+		patternValue?: NormalizedPropertyPatternPart
+	): Array<[ string, string ]> | undefined;
+
 	_clone(): this;
 }
 
@@ -1129,98 +1122,6 @@ function normalize( document: Document, nodes: string | Item | Iterable<string |
 		} );
 }
 
-// TODO consider if some of those helpers should go back to the Matcher module
-/**
- * Checks if an array of key/value pairs can be matched against provided patterns.
- *
- * Patterns can be provided in a following ways:
- * - a boolean value matches any attribute with any value (or no value):
- *
- * ```ts
- * pattern: true
- * ```
- *
- * - a RegExp expression or object matches any attribute name:
- *
- * ```ts
- * pattern: /h[1-6]/
- * ```
- *
- * - an object matches any attribute that has the same name as the object item's key, where object item's value is:
- * 	- equal to `true`, which matches any attribute value:
- *
- * ```ts
- * pattern: {
- * 	required: true
- * }
- * ```
- *
- * 	- a string that is equal to attribute value:
- *
- * ```ts
- * pattern: {
- * 	rel: 'nofollow'
- * }
- * ```
- *
- * 	- a regular expression that matches attribute value,
- *
- * ```ts
- * pattern: {
- * 	src: /^https/
- * }
- * ```
- *
- * - an array with items, where the item is:
- * 	- a string that is equal to attribute value:
- *
- * ```ts
- * pattern: [ 'data-property-1', 'data-property-2' ],
- * ```
- *
- * 	- an object with `key` and `value` property, where `key` is a regular expression matching attribute name and
- * 		`value` is either regular expression matching attribute value or a string equal to attribute value:
- *
- * ```ts
- * pattern: [
- * 	{ key: /^data-property-/, value: true },
- * 	// or:
- * 	{ key: /^data-property-/, value: 'foobar' },
- * 	// or:
- * 	{ key: /^data-property-/, value: /^foo/ }
- * ]
- * ```
- *
- * @param patterns Object with information about attributes to match.
- * @param keys Attribute, style or class keys.
- * @param valueGetter A function providing value for a given item key.
- * @returns Returns array with matched attribute names or `null` if no attributes were matched.
- */
-function matchPatterns(
-	patterns: Array<NormalizedPropertyPattern>,
-	keys: Iterable<string>,
-	valueGetter?: ( value: string ) => unknown
-): Array<string> {
-	const match: Array<string> = [];
-
-	if ( !patterns.length ) {
-		return match;
-	}
-
-	for ( const [ patternKey, patternValue ] of patterns ) {
-		for ( const itemKey of keys ) {
-			if (
-				isKeyMatched( patternKey, itemKey ) &&
-				isValueMatched( patternValue, itemKey, valueGetter )
-			) {
-				match.push( itemKey );
-			}
-		}
-	}
-
-	return match;
-}
-
 /**
  * @param patternKey A pattern representing a key we want to match.
  * @param itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
@@ -1232,29 +1133,6 @@ function isKeyMatched(
 	return patternKey === true ||
 		patternKey === itemKey ||
 		patternKey instanceof RegExp && itemKey.match( patternKey );
-}
-
-/**
- * @param patternValue A pattern representing a value we want to match.
- * @param itemKey An item key, e.g. `background`, `href`, 'rel', etc.
- * @param valueGetter A function used to provide a value for a given `itemKey`.
- */
-function isValueMatched(
-	patternValue: NormalizedPropertyPatternPart,
-	itemKey: string,
-	valueGetter?: ( itemKey: string ) => unknown
-): boolean {
-	if ( patternValue === true ) {
-		return true;
-	}
-
-	const itemValue = valueGetter && valueGetter( itemKey );
-
-	// For now, the reducers are not returning the full tree of properties.
-	// Casting to string preserves the old behavior until the root cause is fixed.
-	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
-	return patternValue === itemValue ||
-		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
 }
 
 /**

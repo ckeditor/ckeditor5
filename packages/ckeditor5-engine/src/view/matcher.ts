@@ -9,8 +9,6 @@
 
 import type Element from './element.js';
 
-import { isPlainObject } from 'lodash-es';
-
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -183,44 +181,49 @@ export default class Matcher {
 
 		// Check element's attributes.
 		if ( pattern.attributes ) {
-			let excludeAttributes;
+			// // The `style` and `class` attribute keys are deprecated. Only allow them in object pattern
+			// // for backward compatibility.
+			// if ( isPlainObject( pattern.attributes ) ) {
+			// 	if ( ( pattern.attributes as any ).style !== undefined ) {
+			// 		// Documented at the end of matcher.js.
+			// 		logWarning( 'matcher-pattern-deprecated-attributes-style-key', pattern.attributes as any );
+			// 	}
+			// 	if ( ( pattern.attributes as any ).class !== undefined ) {
+			// 		// Documented at the end of matcher.js.
+			// 		logWarning( 'matcher-pattern-deprecated-attributes-class-key', pattern.attributes as any );
+			// 	}
+			// }
 
-			// The `style` and `class` attribute keys are deprecated. Only allow them in object pattern
-			// for backward compatibility.
-			if ( isPlainObject( pattern.attributes ) ) {
-				if ( ( pattern.attributes as any ).style !== undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-deprecated-attributes-style-key', pattern.attributes as any );
-				}
-				if ( ( pattern.attributes as any ).class !== undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-deprecated-attributes-class-key', pattern.attributes as any );
-				}
+			const attributesMatch = element._getAttributesMatch( normalizePatterns( pattern.attributes ) );
+
+			if ( attributesMatch ) {
+				// TODO temporary
+				match.attributes = attributesMatch.map( item => item[ 0 ] );
 			} else {
-				excludeAttributes = [ 'class', 'style' ];
-			}
-
-			match.attributes = element._getAttributesMatch( normalizePatterns( pattern.attributes ), undefined, excludeAttributes );
-
-			if ( !match.attributes ) {
 				return null;
 			}
 		}
 
 		// Check element's classes.
 		if ( pattern.classes ) {
-			match.classes = element._getAttributesMatch( normalizePatterns( pattern.classes ), 'class' );
+			const classesMatch = element._getAttributesMatch( normalizePatterns( pattern.classes, 'class' ) );
 
-			if ( !match.classes ) {
+			if ( classesMatch ) {
+				// TODO temporary
+				match.classes = classesMatch.map( item => item[ 1 ] );
+			} else {
 				return null;
 			}
 		}
 
 		// Check element's styles.
 		if ( pattern.styles ) {
-			match.styles = element._getAttributesMatch( normalizePatterns( pattern.styles ), 'style' );
+			const stylesMatch = element._getAttributesMatch( normalizePatterns( pattern.styles, 'style' ) );
 
-			if ( !match.styles ) {
+			if ( stylesMatch ) {
+				// TODO temporary
+				match.styles = stylesMatch.map( item => item[ 1 ] );
+			} else {
 				return null;
 			}
 		}
@@ -309,29 +312,48 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
  *
  * @returns Returns an array of objects or null if provided patterns were not in an expected form.
  */
-function normalizePatterns( patterns: PropertyPatterns ): Array<NormalizedPropertyPattern> {
+function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array<NormalizedPropertyPattern> {
 	if ( Array.isArray( patterns ) ) {
-		return patterns.map( ( pattern: any ) => {
-			if ( isPlainObject( pattern ) ) {
-				if ( pattern.key === undefined || pattern.value === undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-missing-key-or-value', pattern );
-				}
-
-				return [ pattern.key, pattern.value ];
+		return patterns.map( pattern => {
+			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
+				return prefix ?
+					[ prefix, pattern, true ] :
+					[ pattern, true ];
 			}
 
-			// Assume the pattern is either String or RegExp.
-			return [ pattern, true ];
+			if ( pattern.key === undefined || pattern.value === undefined ) {
+				// Documented at the end of matcher.js.
+				logWarning( 'matcher-pattern-missing-key-or-value', pattern );
+			}
+
+			return prefix ?
+				[ prefix, pattern.key, pattern.value ] :
+				[ pattern.key, pattern.value ];
 		} );
 	}
 
-	if ( isPlainObject( patterns ) ) {
-		return Object.entries( patterns );
+	if ( typeof patterns !== 'object' || patterns instanceof RegExp ) {
+		return [
+			prefix ?
+				[ prefix, patterns, true ] :
+				[ patterns, true ]
+		];
 	}
 
-	// Other cases (true, string or regexp).
-	return [ [ patterns as any, true ] ];
+	// Below we do what Object.entries() does, but faster
+	const normalizedPatterns: Array<NormalizedPropertyPattern> = [];
+
+	for ( const key in patterns ) {
+		if ( Object.prototype.hasOwnProperty.call( patterns, key ) ) {
+			normalizedPatterns.push(
+				prefix ?
+					[ prefix, key, patterns[ key ] ] :
+					[ key, patterns[ key ] ]
+			);
+		}
+	}
+
+	return normalizedPatterns;
 }
 
 /**
@@ -677,7 +699,7 @@ export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
 
 export type NormalizedPropertyPatternPart = true | string | RegExp;
-export type NormalizedPropertyPattern = [ NormalizedPropertyPatternPart, NormalizedPropertyPatternPart ];
+export type NormalizedPropertyPattern = [ NormalizedPropertyPatternPart, NormalizedPropertyPatternPart, NormalizedPropertyPatternPart? ];
 
 /**
  * The key-value matcher pattern is missing key or value. Both must be present.
