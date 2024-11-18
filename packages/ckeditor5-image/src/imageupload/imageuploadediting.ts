@@ -403,13 +403,13 @@ export default class ImageUploadEditing extends Plugin {
 						} );
 					}
 
-					if ( editor.ui ) {
-						editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
-					}
-
 					model.enqueueChange( { isUndoable: false }, writer => {
 						writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
 					} );
+				}
+
+				if ( editor.ui ) {
+					editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
 				}
 
 				return promise;
