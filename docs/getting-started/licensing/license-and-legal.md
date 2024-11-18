@@ -1,12 +1,9 @@
 ---
-# Scope:
-# * Clarify copyright and license conditions.
-
 category: licensing
 meta-title: Editor license | CKEditor 5 Documentation
 meta-description: Choosing the right licence type for you needs.
 menu-title: Editor license
-order: 10
+order: 30
 modified_at: 2024-10-28
 ---
 
