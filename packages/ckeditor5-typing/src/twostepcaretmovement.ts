@@ -499,7 +499,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		// if the touch event was detected before selection. It does not happen on Android.
 		// See more: https://github.com/ckeditor/ckeditor5/issues/17171
 		this.listenTo<ViewDocumentMouseDownEvent>( document, 'mousedown', () => {
-			if ( touched ) {
+			if ( !touched ) {
 				clicked = true;
 			}
 		} );
