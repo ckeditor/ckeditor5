@@ -1567,14 +1567,7 @@ describe( 'ImageUploadEditing', () => {
 
 			editor.execute( 'undo' );
 
-			const removeMock = sinon.stub( Writer.prototype, 'remove' ).callThrough();
-
-			// Simulate change to trigger image upload error handling
-			const imagePlugin = editor.plugins.get( 'ImageUploadEditing' );
-			imagePlugin._uploadImageElements.set( loader.id, image );
-
-			// Throw aborted exception to simulate loader error
-			loader.status = 'aborted';
+			const removeMock = sinon.spy( Writer.prototype, 'remove' );
 
 			model.document.once( 'change', () => {
 				tryExpect( done, () => {
