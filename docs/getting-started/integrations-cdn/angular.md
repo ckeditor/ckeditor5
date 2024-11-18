@@ -34,6 +34,13 @@ First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https:
 npm install @ckeditor/ckeditor5-angular
 ```
 
+Angular is a TypeScript-first environment, so you may need to import TypeScript types for CKEditor. Depending on the plugins and features you use, you may also need to install the required open-source and premium packages:
+
+```bash
+npm install --save-dev ckeditor5 # Open-source plugin types.
+npm install --save-dev ckeditor5-premium-features # Premium features plugin types.
+```
+
 In the below example, the `loadCKEditorCloud` helper is used to load the editor code and plugins from CDN. To use CKEditor&nbsp;5 with CDN, you need to import the function and call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
 ```ts
@@ -42,7 +49,7 @@ In the below example, the `loadCKEditorCloud` helper is used to load the editor 
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+import type { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
 @Component( {
 	selector: 'app-root',
@@ -86,6 +93,8 @@ export class AppComponent {
 	}
 }
 ```
+
+In the example above, the `EditorConfig` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor 5 typings file but a synthetic TypeScript module providing type definitions for the editor. The `ckeditor5` or `ckeditor5-premium-features` packages supply the actual types, which depend on the `@ckeditor/ckeditor5-angular` package.
 
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor. The usage is the same regardless of the plugin configuration.
 
