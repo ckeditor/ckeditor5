@@ -95,10 +95,26 @@ export default class LinkCommand extends Command {
 			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
 		}
 
-		const attributeRange = findAttributeRange( selection.getFirstPosition()!, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-		const items = Array.from( attributeRange.getItems() );
+		let items;
 
-		this.canHaveDisplayedText = items.length > 0 && items.every( item => item.is( '$text' ) || item.is( '$textProxy' ) );
+		// When selection has `linkHref` attribute, we want to get all items with this attribute.
+		if ( selection.hasAttribute( 'linkHref' ) ) {
+			const attributeRange = findAttributeRange(
+				selection.getFirstPosition()!,
+				'linkHref',
+				selection.getAttribute( 'linkHref' ),
+				model
+			);
+			items = Array.from( attributeRange.getItems() );
+		// If not, get all items from the selection.
+		} else {
+			items = Array.from( selection.getFirstRange()!.getItems() );
+		}
+
+		const areAllItemsText = items.every( item => item.is( '$text' ) || item.is( '$textProxy' ) );
+		const isCollapsedSelectionOnNonLinkElement = selection.isCollapsed && !selection.hasAttribute( 'linkHref' );
+
+		this.canHaveDisplayedText = isCollapsedSelectionOnNonLinkElement || areAllItemsText;
 		this.text = this.canHaveDisplayedText && extractTextFromSelection( selection ) || '';
 
 		for ( const manualDecorator of this.manualDecorators ) {

@@ -2104,6 +2104,29 @@ describe( 'LinkUI', () => {
 				) ).to.be.true;
 			} );
 
+			it( 'should execute link command on formView#submit event', () => {
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				formView.urlInputView.fieldView.value = 'http://ckeditor.com';
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'o' );
+
+				formView.urlInputView.fieldView.value = 'http://cksource.com';
+				formView.fire( 'submit' );
+
+				expect( executeSpy.calledOnce ).to.be.true;
+				expect( executeSpy.calledWithExactly(
+					'link',
+					'http://cksource.com',
+					{
+						linkDecorator1: false,
+						linkDecorator2: true,
+						linkDecorator3: false
+					},
+					'o'
+				) ).to.be.true;
+			} );
+
 			it( 'should should clear the fake visual selection on formView#submit event', () => {
 				linkUIFeature._showUI();
 				expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
@@ -2613,6 +2636,31 @@ describe( 'LinkUI with Bookmark', () => {
 				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
 				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
 				expect( focusSpy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should clear the error message that appears on first attempt of submit the form ' +
+					'when next action is executed after clicking the bookmark button', () => {
+				linkUIFeature._createViews();
+				const formView = linkUIFeature.formView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+				linkUIFeature._showUI();
+
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
+				// First button from the list with bookmark name 'aaa'.
+				const bookmarkButton = bookmarksView.listChildren.get( 0 );
+				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
+
+				bookmarkButton.fire( 'execute' );
+
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
+				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
+				expect( focusSpy.calledOnce ).to.be.true;
+
+				expect( formView.urlInputView.errorText ).to.be.null;
 			} );
 		} );
 	} );

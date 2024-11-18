@@ -207,10 +207,22 @@ describe( 'LinkCommand', () => {
 				expect( command.text ).to.equal( '' );
 			} );
 
-			it( 'should be an empty string when selection contains also non-text element', () => {
+			it( 'should be an empty string when selection contains also non-text element in the middle', () => {
 				setData( model,
 					'<$text linkHref="url">f[]oo</$text>' +
 					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
+					'<$text linkHref="url">bar</$text>'
+				);
+
+				expect( command.canHaveDisplayedText ).to.be.false;
+				expect( command.value ).to.equal( 'url' );
+				expect( command.text ).to.equal( '' );
+			} );
+
+			it( 'should be an empty string when selection contains also non-text element at the beginning', () => {
+				setData( model,
+					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
+					'<$text linkHref="url">f[]oo</$text>' +
 					'<$text linkHref="url">bar</$text>'
 				);
 

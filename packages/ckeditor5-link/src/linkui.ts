@@ -341,6 +341,7 @@ export default class LinkUI extends Plugin {
 			} );
 
 			buttonView.on( 'execute', () => {
+				this.formView!.resetFormStatus();
 				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
 
 				// Set focus to the editing view to prevent from losing it while current view is removed.
