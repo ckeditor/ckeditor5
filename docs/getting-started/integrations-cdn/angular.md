@@ -34,10 +34,11 @@ First, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https:
 npm install @ckeditor/ckeditor5-angular
 ```
 
-Angular is TypeScript first, so most likely, you will need to import some additional types for CKEditor. Depending on your plugins and types, additionally install the open-source and premium packages:
+Angular is a TypeScript-first environment, so you may need to import TypeScript types for CKEditor. Depending on the plugins and features you use, you may also need to install the required open-source and premium packages:
 
 ```bash
-npm install ckeditor5 ckeditor5-premium-features
+npm install --save-dev ckeditor5 # Open-source plugin types.
+npm install --save-dev ckeditor5-premium-features # Premium features plugin types.
 ```
 
 In the below example, the `loadCKEditorCloud` helper is used to load the editor code and plugins from CDN. To use CKEditor&nbsp;5 with CDN, you need to import the function and call it inside the `ngOnInit` lifecycle hook with the `version` provided in the configuration. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `loadCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
