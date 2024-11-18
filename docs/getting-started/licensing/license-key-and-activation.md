@@ -67,11 +67,11 @@ Create an account either by:
 
 Both options are granted a 14-day trial to test all premium features.
 
-After signing up, you will receive access to the customer portal.
+After signing up, you will receive access to the Customer Portal.
 
 ### Log in to the Customer Portal
 
-Log in to the [customer portal](https://portal.ckeditor.com/). During the first login, you will receive a confirmation email with a link to create a password for your account.
+Log in to the [Customer Portal](https://portal.ckeditor.com/). During the first login, you will receive a confirmation email with a link to create a password for your account.
 
 Keep the password safe, as this trial account will be converted into a commercial account if you decide to buy the license after the trial period is over.
 
