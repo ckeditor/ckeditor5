@@ -10,6 +10,7 @@
 import type Element from './element.js';
 
 import { logWarning } from '@ckeditor/ckeditor5-utils';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * View matcher class.
@@ -181,24 +182,28 @@ export default class Matcher {
 
 		// Check element's attributes.
 		if ( pattern.attributes ) {
-			// // The `style` and `class` attribute keys are deprecated. Only allow them in object pattern
-			// // for backward compatibility.
-			// if ( isPlainObject( pattern.attributes ) ) {
-			// 	if ( ( pattern.attributes as any ).style !== undefined ) {
-			// 		// Documented at the end of matcher.js.
-			// 		logWarning( 'matcher-pattern-deprecated-attributes-style-key', pattern.attributes as any );
-			// 	}
-			// 	if ( ( pattern.attributes as any ).class !== undefined ) {
-			// 		// Documented at the end of matcher.js.
-			// 		logWarning( 'matcher-pattern-deprecated-attributes-class-key', pattern.attributes as any );
-			// 	}
-			// }
+			let excludeAttributes;
 
-			const attributesMatch = element._getAttributesMatch( normalizePatterns( pattern.attributes ) );
+			// The `style` and `class` attribute keys are deprecated. Only allow them in object pattern
+			// for backward compatibility.
+			if ( isPlainObject( pattern.attributes ) ) {
+				if ( ( pattern.attributes as any ).style !== undefined ) {
+					// Documented at the end of matcher.js.
+					logWarning( 'matcher-pattern-deprecated-attributes-style-key', pattern.attributes as any );
+				}
+				if ( ( pattern.attributes as any ).class !== undefined ) {
+					// Documented at the end of matcher.js.
+					logWarning( 'matcher-pattern-deprecated-attributes-class-key', pattern.attributes as any );
+				}
+			} else {
+				excludeAttributes = [ 'class', 'style' ];
+			}
+
+			const attributesMatch = element._getAttributesMatch( normalizePatterns( pattern.attributes ), excludeAttributes );
 
 			if ( attributesMatch ) {
 				// TODO temporary
-				match.attributes = attributesMatch.map( item => item[ 0 ] );
+				match.attributes = Array.from( new Set( attributesMatch.map( item => item[ 0 ] ) ) );
 			} else {
 				return null;
 			}
@@ -210,7 +215,7 @@ export default class Matcher {
 
 			if ( classesMatch ) {
 				// TODO temporary
-				match.classes = classesMatch.map( item => item[ 1 ] );
+				match.classes = Array.from( new Set( classesMatch.map( item => item[ 1 ] ) ) );
 			} else {
 				return null;
 			}
@@ -222,7 +227,7 @@ export default class Matcher {
 
 			if ( stylesMatch ) {
 				// TODO temporary
-				match.styles = stylesMatch.map( item => item[ 1 ] );
+				match.styles = Array.from( new Set( stylesMatch.map( item => item[ 1 ] ) ) );
 			} else {
 				return null;
 			}

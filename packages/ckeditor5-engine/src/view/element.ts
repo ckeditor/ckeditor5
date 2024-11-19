@@ -347,14 +347,17 @@ export default class Element extends Node {
 	 * TODO
 	 * @internal
 	 */
-	public _getAttributesMatch( patterns: Array<NormalizedPropertyPattern> ): Array<[ string, string ]> | undefined {
+	public _getAttributesMatch(
+		patterns: Array<NormalizedPropertyPattern>,
+		exclude?: Array<string>
+	): Array<[ string, string ]> | undefined {
 		const match: Array<[ string, string ]> = [];
 
 		for ( const [ patternKey, patternToken, patternValue ] of patterns ) {
 			let hasKey = false;
 
 			for ( const [ key, value ] of this._attrs ) {
-				if ( !isKeyMatched( patternKey, key ) ) {
+				if ( exclude && exclude.includes( key ) || !isKeyMatched( patternKey, key ) ) {
 					continue;
 				}
 
@@ -367,7 +370,8 @@ export default class Element extends Node {
 						patternToken instanceof RegExp && !!String( value ).match( patternToken )
 					) {
 						match.push( [ key, 'TODO' ] );
-					} else {
+					}
+					else if ( !( patternKey instanceof RegExp ) ) {
 						return undefined;
 					}
 				} else {
@@ -375,7 +379,8 @@ export default class Element extends Node {
 
 					if ( tokenMatch ) {
 						match.push( ...tokenMatch );
-					} else {
+					}
+					else if ( !( patternKey instanceof RegExp ) ) {
 						return undefined;
 					}
 				}
