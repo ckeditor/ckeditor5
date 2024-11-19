@@ -10,8 +10,8 @@
 import Node from './node.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
-import { isIterable, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import { default as Matcher, type MatcherPattern, type NormalizedPropertyPattern, type NormalizedPropertyPatternPart } from './matcher.js';
+import { type ArrayOrItem, isIterable, toMap } from '@ckeditor/ckeditor5-utils';
+import { default as Matcher, isPatternMatched, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
 import { default as StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
 import type Document from './document.js';
@@ -357,18 +357,14 @@ export default class Element extends Node {
 			let hasKey = false;
 
 			for ( const [ key, value ] of this._attrs ) {
-				if ( exclude && exclude.includes( key ) || !isKeyMatched( patternKey, key ) ) {
+				if ( exclude && exclude.includes( key ) || !isPatternMatched( patternKey, key ) ) {
 					continue;
 				}
 
 				hasKey = true;
 
 				if ( typeof value == 'string' ) {
-					if (
-						patternToken === true ||
-						patternToken === value ||
-						patternToken instanceof RegExp && !!String( value ).match( patternToken )
-					) {
+					if ( isPatternMatched( patternToken, value ) ) {
 						match.push( [ key, 'TODO' ] );
 					}
 					else if ( !( patternKey instanceof RegExp ) ) {
@@ -1087,8 +1083,8 @@ export interface ElementAttributeValue {
 
 	_getTokensMatch(
 		attributeKey: string,
-		patternToken: NormalizedPropertyPatternPart,
-		patternValue?: NormalizedPropertyPatternPart
+		patternToken: true | string | RegExp,
+		patternValue?: true | string | RegExp
 	): Array<[ string, string ]> | undefined;
 
 	_clone(): this;
@@ -1125,19 +1121,6 @@ function normalize( document: Document, nodes: string | Item | Iterable<string |
 
 			return node;
 		} );
-}
-
-/**
- * @param patternKey A pattern representing a key we want to match.
- * @param itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
- */
-function isKeyMatched(
-	patternKey: NormalizedPropertyPatternPart,
-	itemKey: string
-): unknown {
-	return patternKey === true ||
-		patternKey === itemKey ||
-		patternKey instanceof RegExp && itemKey.match( patternKey );
 }
 
 /**

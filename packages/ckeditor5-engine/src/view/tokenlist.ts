@@ -7,9 +7,8 @@
  * @module engine/view/tokenlist
  */
 
-import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import type { ElementAttributeValue } from './element.js';
-import type { NormalizedPropertyPatternPart } from './matcher.js';
 
 /**
  * TODO
@@ -146,7 +145,7 @@ export default class TokenList implements ElementAttributeValue {
 	 */
 	public _getTokensMatch(
 		attributeKey: string,
-		patternToken: NormalizedPropertyPatternPart
+		patternToken: true | string | RegExp
 	): Array<[ string, string ]> | undefined {
 		const match: Array<[ string, string ]> = [];
 

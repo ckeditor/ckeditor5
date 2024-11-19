@@ -9,8 +9,8 @@
 
 import { get, isObject, merge, set, unset } from 'lodash-es';
 import type { ElementAttributeValue } from './element.js';
-import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import type { NormalizedPropertyPatternPart } from './matcher.js';
+import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
+import { isPatternMatched } from './matcher.js';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
@@ -483,13 +483,13 @@ export default class StylesMap implements ElementAttributeValue {
 	 */
 	public _getTokensMatch(
 		attributeKey: string,
-		patternToken: NormalizedPropertyPatternPart,
-		patternValue: NormalizedPropertyPatternPart
+		patternToken: true | string | RegExp,
+		patternValue: true | string | RegExp
 	): Array<[ string, string ]> | undefined {
 		const match: Array<[ string, string ]> = [];
 
 		for ( const styleName of this.getStyleNames( true ) ) {
-			if ( isKeyMatched( patternToken, styleName ) ) {
+			if ( isPatternMatched( patternToken, styleName ) ) {
 				if ( patternValue === true ) {
 					match.push( [ attributeKey, styleName ] );
 					continue;
@@ -501,10 +501,7 @@ export default class StylesMap implements ElementAttributeValue {
 				// For now, the reducers are not returning the full tree of properties.
 				// Casting to string preserves the old behavior until the root cause is fixed.
 				// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
-				if (
-					patternValue === value ||
-					patternValue instanceof RegExp && !!String( value ).match( patternValue )
-				) {
+				if ( isPatternMatched( patternValue, value! ) ) {
 					match.push( [ attributeKey, styleName ] );
 				}
 			}
@@ -1061,20 +1058,6 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
 	}
 
 	set( stylesObject, nameOrPath, valueToSet );
-}
-
-// TODO copy from Matcher and view Element.
-/**
- * @param patternKey A pattern representing a key we want to match.
- * @param itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
- */
-function isKeyMatched(
-	patternKey: NormalizedPropertyPatternPart,
-	itemKey: string
-): unknown {
-	return patternKey === true ||
-		patternKey === itemKey ||
-		patternKey instanceof RegExp && itemKey.match( patternKey );
 }
 
 /**

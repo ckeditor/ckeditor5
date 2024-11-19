@@ -238,6 +238,21 @@ export default class Matcher {
 }
 
 /**
+ * TODO
+ * @internal
+ * @param pattern A pattern representing a key we want to match.
+ * @param item An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
+ */
+export function isPatternMatched(
+	pattern: true | string | RegExp,
+	item: string
+): unknown {
+	return pattern === true ||
+		pattern === item ||
+		pattern instanceof RegExp && !!String( item ).match( pattern );
+}
+
+/**
  * Checks if name can be matched by provided pattern.
  *
  * @returns Returns `true` if name can be matched, `false` otherwise.
@@ -703,8 +718,11 @@ export type AttributePatterns = PropertyPatterns;
 export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
 
-export type NormalizedPropertyPatternPart = true | string | RegExp;
-export type NormalizedPropertyPattern = [ NormalizedPropertyPatternPart, NormalizedPropertyPatternPart, NormalizedPropertyPatternPart? ];
+export type NormalizedPropertyPattern = [
+	true | string | RegExp,
+	true | string | RegExp,
+	( true | string | RegExp )?
+];
 
 /**
  * The key-value matcher pattern is missing key or value. Both must be present.
