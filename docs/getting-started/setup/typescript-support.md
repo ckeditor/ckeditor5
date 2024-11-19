@@ -69,7 +69,7 @@ const { CKEditor, CKEditorPremiumFeatures } = await loadCKEditorCloud({
 	translations: ['en', 'de'],
 });
 
-// Now you can use CKEditor, CKEditorPremiumFeatures, and CKBox.
+// Now you can use CKEditor and CKEditorPremiumFeatures.
 const { CaseChange } = CKEditorPremiumFeatures;
 const { Alignment } = CKEditor;
 ```
