@@ -253,6 +253,38 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
+	describe( '_removeNodesArray', () => {
+		it( 'should remove nodes from given index and refresh index and startOffset values', () => {
+			nodes._removeNodesArray( [ foo ] );
+
+			expect( foo.index ).to.equal( null );
+			expect( foo.startOffset ).to.equal( null );
+
+			expect( nodes.length ).to.equal( 2 );
+			expect( nodes.maxOffset ).to.equal( 2 );
+
+			expect( nodes.getNode( 0 ) ).to.equal( p );
+			expect( nodes.getNode( 1 ) ).to.equal( img );
+
+			expect( nodes.getNodeIndex( p ) ).to.equal( 0 );
+			expect( nodes.getNodeIndex( img ) ).to.equal( 1 );
+			expect( p.index ).to.equal( 0 );
+			expect( img.index ).to.equal( 1 );
+
+			expect( nodes.getNodeStartOffset( p ) ).to.equal( 0 );
+			expect( nodes.getNodeStartOffset( img ) ).to.equal( 1 );
+			expect( p.startOffset ).to.equal( 0 );
+			expect( img.startOffset ).to.equal( 1 );
+		} );
+
+		it( 'should early exit when array is empty', () => {
+			nodes._removeNodesArray( [] );
+
+			expect( nodes.length ).to.equal( 3 );
+			expect( nodes.maxOffset ).to.equal( 5 );
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should serialize empty node list', () => {
 			expect( ( new NodeList() ).toJSON() ).to.deep.equal( [] );

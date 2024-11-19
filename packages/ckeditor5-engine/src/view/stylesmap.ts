@@ -21,7 +21,14 @@ export default class StylesMap {
 	 */
 	private _styles: Styles;
 
+	/**
+	 * Cached list of style names for faster access.
+	 */
 	private _cachedStyleNames: Array<string> | null = null;
+
+	/**
+	 * Cached list of expanded style names for faster access.
+	 */
 	private _cachedExpandedStyleNames: Array<string> | null = null;
 
 	/**

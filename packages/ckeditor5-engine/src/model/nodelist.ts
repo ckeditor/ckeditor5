@@ -230,6 +230,12 @@ export default class NodeList implements Iterable<Node> {
 		return nodes;
 	}
 
+	/**
+	 * Removes children nodes provided as an array.
+	 *
+	 * @internal
+	 * @param nodes Array of nodes.
+	 */
 	public _removeNodesArray( nodes: Array<Node> ): void {
 		if ( nodes.length == 0 ) {
 			return;
