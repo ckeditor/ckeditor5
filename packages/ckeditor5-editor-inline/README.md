@@ -3,7 +3,7 @@ CKEditor&nbsp;5 inline editor implementation
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-inline.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
-[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
+[![CircleCI](https://circleci.com/gh/ckeditor/ckeditor5.svg?style=shield)](https://app.circleci.com/pipelines/github/ckeditor/ckeditor5?branch=master)
 
 The inline editor implementation for CKEditor&nbsp;5.
 
