@@ -211,7 +211,8 @@ export default class Matcher {
 
 		// Check element's classes.
 		if ( pattern.classes ) {
-			const classesMatch = element._getAttributesMatch( normalizePatterns( pattern.classes, 'class' ) );
+			const normalizedPatterns = normalizePatterns( pattern.classes, 'class' );
+			const classesMatch = element._getAttributesMatch( normalizedPatterns ) as Array<[ string, string ]> | undefined;
 
 			if ( classesMatch ) {
 				// TODO temporary
@@ -223,7 +224,8 @@ export default class Matcher {
 
 		// Check element's styles.
 		if ( pattern.styles ) {
-			const stylesMatch = element._getAttributesMatch( normalizePatterns( pattern.styles, 'style' ) );
+			const normalizedPatterns = normalizePatterns( pattern.styles, 'style' );
+			const stylesMatch = element._getAttributesMatch( normalizedPatterns ) as Array<[ string, string ]> | undefined;
 
 			if ( stylesMatch ) {
 				// TODO temporary

@@ -350,11 +350,12 @@ export default class Element extends Node {
 	public _getAttributesMatch(
 		patterns: Array<NormalizedPropertyPattern>,
 		exclude?: Array<string>
-	): Array<[ string, string ]> | undefined {
-		const match: Array<[ string, string ]> = [];
+	): Array<[ string, string? ]> | undefined {
+		const match: Array<[ string, string? ]> = [];
 
 		for ( const [ patternKey, patternToken, patternValue ] of patterns ) {
 			let hasKey = false;
+			let hasValue = false;
 
 			for ( const [ key, value ] of this._attrs ) {
 				if ( exclude && exclude.includes( key ) || !isPatternMatched( patternKey, key ) ) {
@@ -365,7 +366,8 @@ export default class Element extends Node {
 
 				if ( typeof value == 'string' ) {
 					if ( isPatternMatched( patternToken, value ) ) {
-						match.push( [ key, 'TODO' ] );
+						match.push( [ key ] );
+						hasValue = true;
 					}
 					else if ( !( patternKey instanceof RegExp ) ) {
 						return undefined;
@@ -375,6 +377,7 @@ export default class Element extends Node {
 
 					if ( tokenMatch ) {
 						match.push( ...tokenMatch );
+						hasValue = true;
 					}
 					else if ( !( patternKey instanceof RegExp ) ) {
 						return undefined;
@@ -382,7 +385,7 @@ export default class Element extends Node {
 				}
 			}
 
-			if ( !hasKey ) {
+			if ( !hasKey || !hasValue ) {
 				return undefined;
 			}
 		}

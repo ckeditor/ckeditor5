@@ -307,7 +307,7 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
-			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el2 = new Element( document, 'p', { 'data-foo': 'foo', title: 'foobar' } );
 			const el3 = new Element( document, 'p' );
 
 			const result = matcher.match( el1 );
