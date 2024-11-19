@@ -54,7 +54,7 @@ The latest versions of our official components for Angular, React, and Vue 3 wer
 
 ### Types for Vanilla CDN import
 
-To use CKEditor&nbsp;5 with TypeScript from the CDN, it's recommended to use the official CKEditor&nbsp;5 CDN injection script. This script provides type definitions for the CDN build exports.
+To use CKEditor&nbsp;5 with TypeScript from the CDN, it is recommended to use the official CKEditor&nbsp;5 CDN injection script. This script provides type definitions for the CDN build exports.
 
 First, import the injection script as an NPM package and use it in your TypeScript project. Here is an example:
 
