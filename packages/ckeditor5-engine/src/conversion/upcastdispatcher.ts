@@ -224,7 +224,7 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		// When there is a conversion result.
 		if ( modelRange ) {
 			// Remove all empty elements that were created while splitting.
-			this._removeEmptyElementsNew();
+			this._removeEmptyElements();
 
 			const parent = this._modelCursor.parent;
 			const children = parent._removeChildren( 0, parent.childCount );
@@ -498,23 +498,6 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * as some elements might have become empty after other empty elements were removed from them.
 	 */
 	private _removeEmptyElements(): void {
-		let anyRemoved = false;
-
-		for ( const element of this._splitParts.keys() ) {
-			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
-				this.conversionApi.writer.remove( element );
-				this._splitParts.delete( element );
-
-				anyRemoved = true;
-			}
-		}
-
-		if ( anyRemoved ) {
-			this._removeEmptyElements();
-		}
-	}
-
-	private _removeEmptyElementsNew(): void {
 		const toRemove = new Map<ModelElement | ModelDocumentFragment, Array<ModelElement>>();
 
 		for ( const element of this._splitParts.keys() ) {
@@ -533,7 +516,7 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		}
 
 		if ( toRemove.size ) {
-			this._removeEmptyElementsNew();
+			this._removeEmptyElements();
 		}
 	}
 }

@@ -231,15 +231,11 @@ export default class Writer {
 
 		const version = position.root.document ? position.root.document.version : null;
 
-		let insert;
+		const children = item instanceof DocumentFragment ?
+			item._removeChildren( 0, item.childCount ) :
+			item;
 
-		if ( item instanceof DocumentFragment ) {
-			const children = item._removeChildren( 0, item.childCount );
-
-			insert = new InsertOperation( position, children, version );
-		} else {
-			insert = new InsertOperation( position, item, version );
-		}
+		const insert = new InsertOperation( position, children, version );
 
 		if ( item instanceof Text ) {
 			insert.shouldReceiveAttributes = true;
