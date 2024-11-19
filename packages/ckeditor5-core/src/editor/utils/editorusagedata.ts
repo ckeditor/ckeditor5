@@ -30,7 +30,7 @@ export function getEditorUsageData( editor: Editor ): EditorUsageData {
 		plugins: getPluginsUsageData( editor.plugins ),
 		distribution: getDistributionUsageData(),
 		env: getEnvUsageData(),
-		integrations: Object.create( null ),
+		integration: Object.create( null ),
 		menuBar: {
 			isVisible: !!editor.config.get( 'menuBar.isVisible' )
 		},
@@ -185,7 +185,7 @@ export type EditorUsageData = {
 		channel: string;
 	};
 	env: EnvUsageData;
-	integrations: {
+	integration: {
 		[integrationName: string]: IntegrationUsageData;
 	};
 };

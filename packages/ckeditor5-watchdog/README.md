@@ -7,15 +7,21 @@ CKEditor&nbsp;5 watchdog feature
 
 This package implements the watchdog feature for CKEditor&nbsp;5. It keeps a CKEditor&nbsp;5 rich-text editor instance running.
 
-## Documentation
-
-See the [`@ckeditor/ckeditor5-watchdog` package](https://ckeditor.com/docs/ckeditor5/latest/api/watchdog.html) page as well as the [Watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) guide in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
 ## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
 
 ```bash
 npm install ckeditor5
 ```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-watchdog` package](https://ckeditor.com/docs/ckeditor5/latest/api/watchdog.html) page as well as the [Watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) guide in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

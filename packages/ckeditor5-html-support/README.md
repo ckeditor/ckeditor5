@@ -7,6 +7,18 @@ CKEditor&nbsp;5 HTML Support feature
 
 This package implements the General HTML Support feature for CKEditor&nbsp;5. It allows enabling unsupported HTML features in the rich-text editor at low cost.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the demo in the [General HTML Support feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html#demo).
@@ -14,13 +26,6 @@ Check out the demo in the [General HTML Support feature guide](https://ckeditor.
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-html-support` package](https://ckeditor.com/docs/ckeditor5/latest/api/html-support.html) page as well as the [General HTML Support feature](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html) guide in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
-
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

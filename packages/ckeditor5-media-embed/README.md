@@ -7,6 +7,18 @@ CKEditor&nbsp;5 media embed feature
 
 This package implements the media embed feature for CKEditor&nbsp;5. You can use it to insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+
 ## Demo
 
 Check out the [demo in the media embed feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo).
@@ -14,12 +26,6 @@ Check out the [demo in the media embed feature guide](https://ckeditor.com/docs/
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-media-embed` package](https://ckeditor.com/docs/ckeditor5/latest/api/media-embed.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 
