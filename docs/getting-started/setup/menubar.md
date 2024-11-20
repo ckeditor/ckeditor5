@@ -2,6 +2,7 @@
 title: Menu bar
 category: setup
 meta-title: Menu bar | CKEditor 5 Documentation
+meta-description: Handling the CKEditor 5 menu bar.
 modified_at: 2024-05-13
 order: 50
 classes: main__content--no-toc
@@ -35,6 +36,7 @@ The menu bar is disabled by default. To make it available in your editor, set th
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 		menuBar: {
 			isVisible: true
@@ -54,6 +56,7 @@ When using the Decoupled, Balloon or Multi-root editor, you will need to insert 
 ```js
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
 	.then( editor => {
@@ -78,9 +81,9 @@ To add custom buttons or other components to the menu bar, follow these steps:
 
 Here's an example of a custom plugin that adds a button to the menu bar inside the "Format" menu, after the "Bold" button:
 
+<code-switcher>
 ```js
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin, ButtonView } from 'ckeditor5';
 
 class MyCustomPlugin extends Plugin {
 	init() {
@@ -112,6 +115,7 @@ class MyCustomPlugin extends Plugin {
     }
 }
 ```
+</code-switcher>
 
 ## Contribute
 

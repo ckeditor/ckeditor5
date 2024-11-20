@@ -3,9 +3,21 @@ CKEditor&nbsp;5 editing engine
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-engine.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
-[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
+[![CircleCI](https://circleci.com/gh/ckeditor/ckeditor5.svg?style=shield)](https://app.circleci.com/pipelines/github/ckeditor/ckeditor5?branch=master)
 
 The CKEditor&nbsp;5 editing engine implements a flexible MVC-based architecture for creating rich text editing features.
+
+## Installation
+
+This plugin is part of the `ckeditor5` package. Install the whole package to use it.
+
+```bash
+npm install ckeditor5
+```
+
+## Create free account
+
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
 
 ## Architecture overview
 
@@ -24,12 +36,6 @@ The CKEditor&nbsp;5 editing engine implements a flexible MVC-based architecture 
 For a general introduction see the [Overview of CKEditor&nbsp;5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html) guide and then the [Editing engine architecture guide](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/editing-engine.html).
 
 Additionally, refer to the [`@ckeditor/ckeditor5-engine` package](https://ckeditor.com/docs/ckeditor5/latest/api/engine.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) for even more information.
-
-## Installation
-
-```bash
-npm install ckeditor5
-```
 
 ## License
 

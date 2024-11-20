@@ -19,6 +19,7 @@ Document editor can be created using the existing data container in the DOM. It 
 	See the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method to learn about different approaches to the initialization of the editor.
 </info-box>
 
+<code-switcher>
 ```js
 import { DecoupledEditor } from 'ckeditor5';
 
@@ -39,12 +40,9 @@ DecoupledEditor.create( document.querySelector( '.document-editor__editable' ), 
 	console.error( err );
 } );
 ```
+</code-switcher>
 
 You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:ui/editorui/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
-
-<info-box>
-	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/easy-image Easy Image documentation} to learn more.
-</info-box>
 
 ## The user interface
 

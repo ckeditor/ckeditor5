@@ -33,6 +33,13 @@ export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Edito
 	/**
 	 * @inheritDoc
 	 */
+	public static override get editorName(): 'InlineEditor' {
+		return 'InlineEditor';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public readonly ui: InlineEditorUI;
 
 	/**

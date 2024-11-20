@@ -1,8 +1,8 @@
 ---
 category: setup
 menu-title: Editor types
-meta-title: Editor types | CKEditor 5 documentation
-meta-description: Learn about available editor types.
+meta-title: Editor types | CKEditor 5 Documentation
+meta-description: Learn more about available CKEditor 5 editor types.
 order: 25
 modified_at: 2024-06-25
 ---
@@ -14,23 +14,26 @@ The editor's user interface is dependent on the editor types. The editor provide
 	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs). It lets you quickly view and experiment with different presets.
 </info-box>
 
-There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approaches to editing as well as various UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/quick-start Quick start} guide.
+There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approaches to editing as well as various UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide.
 
 Other custom-tailored editor types can be made using the {@link framework/external-ui CKEditor&nbsp;5 Framework}.
 
 For example, this code will import the classic editor type and some essential text formatting plugins. It also provides the configuration of the {@link getting-started/setup/toolbar main editor toolbar}.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Bold, Italic, Link } from 'ckeditor5'; // Imports.
 
 ClassicEditor // Editor type declaration.
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, Italic, Link ], // Plugins import.
 		toolbar: [ 'bold', 'italic', 'link' ] // Toolbar configuration.
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Classic editor
 
@@ -66,7 +69,7 @@ See an {@link examples/builds/balloon-block-editor example of the balloon block 
 
 The Decoupled editor is named for its unique structure, where the toolbar and editing area are separate elements. This design allows for greater flexibility and customization, making it suitable for a wide range of applications beyond just classic WYSIWYG editing.
 
-The most popular use case for the Decoupled editor is the “document editor”, similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
+The most popular use case for the Decoupled editor is the “document editor,” similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
 
 By separating the toolbar from the editing area, you can integrate the editor into different parts of your application or customize its appearance and functionality to suit various needs. For example, you may want to create an email creator that reflects the setup in which the toolbar is at the bottom of the editing area. We have {@link examples/custom/bottom-toolbar-editor a working example} for this.
 

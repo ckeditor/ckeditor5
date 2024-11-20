@@ -188,6 +188,7 @@ Any UI {@link framework/architecture/ui-library#views view} can be focusable. To
 	The [`tabindex="-1"`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) is a native DOM attribute that controls whether a DOM element can be focused (and in which order). Setting its value to `"-1"` tells the web browser that it should exclude it from the native keyboard navigation and allow it only to be focused using JavaScript. Because your component will belong to the editor focus management system, you should do that if you want to avoid collisions with the web browser.
 </info-box>
 
+<code-switcher>
 ```js
 import { View } from 'ckeditor5';
 
@@ -215,9 +216,11 @@ class MyListItemView extends View {
 	}
 }
 ```
+</code-switcher>
 
 If a view has many focusable children (like a list), the `focus()` method should focus the first child:
 
+<code-switcher>
 ```js
 import { View } from 'ckeditor5';
 
@@ -247,6 +250,7 @@ class MyListView extends View {
 	}
 }
 ```
+</code-switcher>
 
 Focusable views are what make it possible to navigate the interface of CKEditor using the keyboard. In the [next section](#using-the-focustracker-class), you will learn how parent views keep track of focus among their children using the `FocusTracker` class.
 
@@ -290,6 +294,7 @@ The continuity of editor focus is maintained **only** when the global focus trac
 
 Take a look at the following example of a list that has multiple items, a classic use case for a focus tracker:
 
+<code-switcher>
 ```js
 import { View, FocusTracker } from 'ckeditor5';
 
@@ -314,6 +319,7 @@ class MyListView extends View {
 	// ...
 }
 ```
+</code-switcher>
 
 To make sure your focus tracker instance and the `items` view collection stay synchronized, create  listeners that will update the tracker when a new child view is added or some are removed ({@link module:ui/viewcollection~ViewCollection view collections fire events}). The best way to do that is inside the {@link module:ui/view~View#render `render()`} method:
 
@@ -362,6 +368,7 @@ The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows r
 
 However, in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 
+<code-switcher>
 ```js
 import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
@@ -396,6 +403,7 @@ export default class MyListView extends View {
 	// ...
 }
 ```
+</code-switcher>
 
 ### Using the `FocusCycler` class
 
@@ -405,6 +413,7 @@ Each focus cycler instance works together with a [focus tracker](#using-the-focu
 
 Take a look at the example list class using focus cycler, keystroke handler and focus tracker instances together to enable the keyboard navigation. First, all the helpers must be created:
 
+<code-switcher>
 ```js
 import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
@@ -443,6 +452,7 @@ class MyListView extends View {
 	// ...
 }
 ```
+</code-switcher>
 
 Similarly to the previous sections of this guide, feed the focus tracker and synchronize it with the list items collection in the `render()` method. Since the {@link module:ui/view~View#element `MyListView#element`} has already been rendered at that stage, this is also the right moment to start listening to the keyboard events:
 
@@ -500,6 +510,7 @@ class MyListView extends View {
 
 The complete code of a list class that hosts multiple item views and supports the keyboard navigation across them (when it gets focused) looks as follows:
 
+<code-switcher>
 ```js
 import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
@@ -599,6 +610,7 @@ class MyListItemView extends View {
 	}
 }
 ```
+</code-switcher>
 
 You can quickly run it in the context of an existing editor in the following way:
 

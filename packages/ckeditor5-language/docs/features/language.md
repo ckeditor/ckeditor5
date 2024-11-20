@@ -32,19 +32,25 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextPartLanguage, /* ... */ ],
 		toolbar: [ 'textPartLanguage', /* ... */ ]
+		language: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring available languages
 
@@ -55,8 +61,7 @@ The example below shows the configuration used for the [demo](#demo) above:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// More of editor's configuration.
-		// ...
+		// ... Other configuration options ...
 		language: {
 			textPartLanguage: [
 				{ title: 'Arabic', languageCode: 'ar' },

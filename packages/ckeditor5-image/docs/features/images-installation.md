@@ -15,8 +15,9 @@ modified_at: 2021-06-17
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor},  add the {@link features/images-overview#image-features subfeatures that you need} to your plugin list and to the editor toolbar:
+After {@link getting-started/integrations-cdn/quick-start installing the editor},  add the {@link features/images-overview#image-features subfeatures that you need} to your plugin list and to the editor toolbar:
 
+<code-switcher>
 ```js
 import {
 	ClassicEditor,
@@ -30,23 +31,26 @@ import {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 		toolbar: [ 'insertImage', /* ... */ ],
+		image: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring the toolbar dropdown
 
 The Image feature comes with the unified image insert dropdown component {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image insert}. It automatically collects installed image insert methods. For example, if you install the `ImageUpload` plugin, the corresponding button will automatically appear in the dropdown. You only need to add a button to the toolbar:
 
 ```js
-import { ClassicEditor, Image } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image ],
+		// ... Other configuration options ...
 		toolbar: [ 'insertImage', /* ... */ ]
 	} )
 	.then( /* ... */ )
@@ -64,12 +68,9 @@ Note that the insert methods mentioned above will only be added if you install d
 If you need to limit the methods included in the dropdown (apart from not installing a specific feature) or change their order you can use the `image.insert.integration` configuration option:
 
 ```js
-import { ClassicEditor, Image } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image ],
-		toolbar: [ 'insertImage', /* ... */ ],
+		// ... Other configuration options ...
 		image: {
 			insert: {
 				// This is the default configuration, you do not need to provide
@@ -87,20 +88,10 @@ ClassicEditor
 You also need to configure the desired contextual image toolbar items. Notice the {@link getting-started/setup/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
-import {
-	ClassicEditor,
-	Image,
-	ImageCaption,
-	ImageResize,
-	ImageStyle,
-	ImageToolbar,
-	LinkImage
-} from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
-		toolbar: [ 'insertImage', /* ... */ ],
+		// ... Other configuration options ...
 		image: {
 			toolbar: [
 				'imageStyle:block',

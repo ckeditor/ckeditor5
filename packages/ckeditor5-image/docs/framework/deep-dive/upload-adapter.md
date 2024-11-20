@@ -354,10 +354,6 @@ Other image sizes can also be provided in the response, allowing [responsive ima
 
 The {@link module:image/imageupload~ImageUpload image upload} plugin is capable of handling multiple image sizes returned by the upload adapter. It will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
 
-<info-box>
-	The {@link features/easy-image Easy Image} feature provides responsive image support {@link features/easy-image#responsive-images out of the box}.
-</info-box>
-
 Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous section](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
 
 ```js
@@ -407,6 +403,7 @@ Having implemented the adapter, you must figure out how to enable it in the WYSI
 
 You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, create a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials, Paragraph, Image, ImageUpload } from 'ckeditor5';
 
@@ -422,6 +419,7 @@ function MyCustomUploadAdapterPlugin( editor ) {
 	};
 }
 ```
+</code-switcher>
 
 Enable the `MyCustomUploadAdapterPlugin` in the editor by using the {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins`} option:
 
@@ -443,6 +441,7 @@ Run the editor and see if your implementation works. Drop an image into the WYSI
 
 Here is what the complete implementation of an `XMLHttpRequest`–based upload adapter looks like. You can use this code as a foundation to build custom upload adapters for your applications.
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials, Paragraph, Image, ImageUpload } from 'ckeditor5';
 
@@ -559,6 +558,7 @@ ClassicEditor
 		console.log( error );
 	} );
 ```
+</code-switcher>
 
 ## What's next
 

@@ -1,6 +1,6 @@
 ---
 menu-title: Drupal
-meta-title: Real-time editing in Drupal | CKEditor 5 documentation
+meta-title: Real-time editing in Drupal | CKEditor 5 Documentation
 meta-description: Learn how to set up real-time collaboration in the Drupal editing platform with the CKEditor 5 Premium Features module.
 category: installation
 order: 100
@@ -11,7 +11,7 @@ modified_at: 2023-10-06
 
 Drupal is a free and open-source web content management system (CMS) written in PHP. CKEditor&nbsp;5 WYSIWYG rich text editor is the default editor module for Drupal. The [CKEditor&nbsp;5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features with the editing platform.
 
-Currently, the module includes a full set of {@link features/collaboration collaboration tools}, namely comments, track changes, and revision history. It also provides the {@link features/productivity-pack Productivity Pack} &ndash; a set of essential formatting and navigation features &nbsp; as well as document import and export plugins.
+Currently, the module includes a full set of {@link features/collaboration collaboration tools}, namely comments, track changes, and revision history. It also provides a set of essential formatting and navigation features &nbsp; as well as document import and export plugins.
 
 ## Real-time collaboration in Drupal with CKEditor 5
 
@@ -68,7 +68,7 @@ The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugi
 * {@link features/word-count Word count}
 * Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; limitation of the free version are listed [on this page](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/wproofreader-free-vs-premium-feature-comparison)
 
-Plugin Pack also makes it possible to use some of the premium features for free. 
+Plugin Pack also makes it possible to use some of the premium features for free.
 
 Currently available premium features:
 
