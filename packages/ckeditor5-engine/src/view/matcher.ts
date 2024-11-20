@@ -401,13 +401,14 @@ function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string 
 	}
 
 	if ( typeof patterns !== 'object' || patterns instanceof RegExp ) {
-		return [ [ patterns as any, true ] ];
+		return [ [ patterns, true ] ];
 	}
 
-	// Below we do what Object.entries() does, but faster
+	// Below we do what Object.entries() does, but faster.
 	const normalizedPatterns: Array<[ string, true | string | RegExp ]> = [];
 
 	for ( const key in patterns ) {
+		// Replace with Object.hasOwn() when we upgrade to es2022.
 		if ( Object.prototype.hasOwnProperty.call( patterns, key ) ) {
 			normalizedPatterns.push( [ key, patterns[ key ] ] );
 		}
@@ -468,11 +469,11 @@ function matchAttributes(
 	if ( typeof patterns === 'object' && !( patterns instanceof RegExp ) && !Array.isArray( patterns ) ) {
 		if ( patterns.style !== undefined ) {
 			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns );
 		}
 		if ( patterns.class !== undefined ) {
 			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns );
 		}
 	} else {
 		attributeKeys.delete( 'style' );

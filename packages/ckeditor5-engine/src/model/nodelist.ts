@@ -247,7 +247,7 @@ export default class NodeList implements Iterable<Node> {
  * occupy multiple items if its offset size is greater than one.
  */
 function makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
-	const offsets = new Array<Node>();
+	const offsets = [];
 	let index = 0;
 
 	for ( const node of nodes ) {
