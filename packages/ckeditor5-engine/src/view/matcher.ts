@@ -9,7 +9,7 @@
 
 import type Element from './element.js';
 
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 

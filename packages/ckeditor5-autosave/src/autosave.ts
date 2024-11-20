@@ -20,7 +20,7 @@ import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils.js';
 
 import type { DocumentChangeEvent } from 'ckeditor5/src/engine.js';
 
-import { debounce, type DebouncedFunc } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 /* globals window */
 
@@ -81,7 +81,7 @@ export default class Autosave extends Plugin {
 	 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
-	private _debouncedSave: DebouncedFunc<( () => void )>;
+	private _debouncedSave: ReturnType<typeof debounce<( () => Promise<void> )>>;
 
 	/**
 	 * The last saved document version.

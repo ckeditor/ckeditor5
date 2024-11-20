@@ -18,7 +18,7 @@ import {
 import type View from '../view.js';
 import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
 
-import { throttle } from 'lodash-es';
+import { throttle } from 'es-toolkit/compat';
 
 // ⚠ Note, whenever changing the threshold, make sure to update the docs/support/managing-ckeditor-logo.md docs
 // as this information is also mentioned there ⚠.

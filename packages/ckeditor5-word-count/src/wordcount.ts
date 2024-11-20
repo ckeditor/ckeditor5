@@ -15,7 +15,7 @@ import { env } from 'ckeditor5/src/utils.js';
 import { modelElementToPlainText } from './utils.js';
 import type { WordCountConfig } from './wordcountconfig.js';
 
-import { throttle, isElement } from 'lodash-es';
+import { throttle } from 'es-toolkit/compat';
 
 /**
  * The word count plugin.
@@ -166,7 +166,7 @@ export default class WordCount extends Plugin {
 			} );
 		}
 
-		if ( isElement( this._config.container ) ) {
+		if ( this._config.container instanceof HTMLElement ) {
 			this._config.container!.appendChild( this.wordCountContainer );
 		}
 	}

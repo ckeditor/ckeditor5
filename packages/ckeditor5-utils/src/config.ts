@@ -7,7 +7,8 @@
  * @module utils/config
  */
 
-import { isPlainObject, isElement, cloneDeepWith } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
+import { cloneDeepWith } from 'lodash-es';
 
 /**
  * Handles a configuration dictionary.
@@ -281,7 +282,7 @@ function cloneConfig<T>( source: T ): T {
  * If it's a function it will leave reference to actuall function.
  */
 function leaveItemReferences( value: unknown ): unknown {
-	return isElement( value ) || typeof value === 'function' ? value : undefined;
+	return value instanceof HTMLElement || typeof value === 'function' ? value : undefined;
 }
 
 /**

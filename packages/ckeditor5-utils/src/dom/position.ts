@@ -10,7 +10,7 @@
 import global from './global.js';
 import Rect, { type RectSource } from './rect.js';
 import getPositionedAncestor from './getpositionedancestor.js';
-import { isFunction } from 'lodash-es';
+import { isFunction } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_POSITION // const {
 // @if CK_DEBUG_POSITION // 	default: RectDrawer,

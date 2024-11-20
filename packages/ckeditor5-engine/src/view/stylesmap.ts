@@ -7,7 +7,7 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set, unset } from 'lodash-es';
+import { get, isObject, merge, set, unset } from 'es-toolkit/compat';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).

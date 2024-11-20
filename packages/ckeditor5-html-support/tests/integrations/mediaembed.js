@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import { range } from 'lodash-es';
+import { range } from 'es-toolkit';
 import MediaEmbedElementSupport from '../../src/integrations/mediaembed.js';
 
 /* global document */

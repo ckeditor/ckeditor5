@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui.js';
-import { isObject, identity } from 'lodash-es';
+import { isObject, identity } from 'es-toolkit/compat';
 import ImageStyleEditing from './imagestyleediting.js';
 import utils from './utils.js';
 import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';

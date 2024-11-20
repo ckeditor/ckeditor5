@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals HTMLElement */
 /* eslint-disable new-cap */
 
 import Editor from '../../src/editor/editor.js';
@@ -12,7 +13,6 @@ import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxeded
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement.js';
-import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 /**
@@ -28,7 +28,7 @@ export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		if ( isElement( sourceElementOrData ) ) {
+		if ( sourceElementOrData instanceof HTMLElement ) {
 			this.sourceElement = sourceElementOrData;
 		}
 
@@ -84,9 +84,9 @@ export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
 				editor.initPlugins()
 					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
 					// should be rendered after plugins are initialized.
-					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
+					.then( () => editor.ui.init( sourceElementOrData instanceof HTMLElement ? sourceElementOrData : null ) )
 					.then( () => {
-						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+						if ( !( sourceElementOrData instanceof HTMLElement ) && config.initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
 							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 							throw new CKEditorError( 'editor-create-initial-data', null );
@@ -171,5 +171,5 @@ export class ClassicTestEditorUI extends EditorUI {
 }
 
 function getInitialData( sourceElementOrData ) {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+	return sourceElementOrData instanceof HTMLElement ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }

@@ -19,8 +19,6 @@ import {
 } from 'ckeditor5/src/core.js';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
 
-import { isElement as _isElement } from 'lodash-es';
-
 /**
  * The classic editor implementation. It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
  * See the {@glink examples/builds/classic-editor demo}.
@@ -215,5 +213,5 @@ function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 }
 
 function isElement( value: any ): value is Element {
-	return _isElement( value );
+	return value instanceof HTMLElement;
 }

@@ -14,6 +14,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
 * blurhash - Copyright (c) 2018 Wolt Enterprises (MIT license).
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 
 Trademarks
 ----------

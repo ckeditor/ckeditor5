@@ -13,7 +13,7 @@ import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from '
 import SearchInfoView from '../searchinfoview.js';
 import SearchResultsView from '../searchresultsview.js';
 import FocusCycler, { type FocusableView } from '../../focuscycler.js';
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 
 import type FilteredView from '../filteredview.js';
 import type ViewCollection from '../../viewcollection.js';

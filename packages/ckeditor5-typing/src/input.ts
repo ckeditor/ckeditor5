@@ -28,7 +28,7 @@ import {
 	type ViewDocumentMutationsEvent
 } from '@ckeditor/ckeditor5-engine';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 /**
  * Handles text input coming from the keyboard or other input methods.

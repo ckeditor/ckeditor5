@@ -11,7 +11,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;

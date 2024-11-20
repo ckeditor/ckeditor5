@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-utils": "43.3.1",
     "color-convert": "2.0.1",
     "color-parse": "1.4.2",
+    "es-toolkit": "1.27.0",
     "lodash-es": "4.17.21",
     "vanilla-colorful": "0.7.2"
   },

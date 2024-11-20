@@ -12,7 +12,7 @@
 import type { Translations } from './locale.js';
 import CKEditorError from './ckeditorerror.js';
 import global from './dom/global.js';
-import { merge } from 'lodash-es';
+import { merge } from 'es-toolkit/compat';
 import { type ArrayOrItem } from './toarray.js';
 
 declare global {

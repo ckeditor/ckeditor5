@@ -11,7 +11,7 @@
 
 import Observer from './observer.js';
 import { startsWithFiller } from '../filler.js';
-import { isEqualWith } from 'lodash-es';
+import { isEqualWith } from 'es-toolkit/compat';
 
 import type DomConverter from '../domconverter.js';
 import type View from '../view.js';

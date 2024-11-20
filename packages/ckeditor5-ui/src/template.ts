@@ -23,7 +23,8 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import { isObject, cloneDeepWith } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
+import { cloneDeepWith } from 'lodash-es';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 

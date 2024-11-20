@@ -22,8 +22,6 @@ import {
 import DecoupledEditorUI from './decouplededitorui.js';
 import DecoupledEditorUIView from './decouplededitoruiview.js';
 
-import { isElement as _isElement } from 'lodash-es';
-
 /**
  * The decoupled editor implementation. It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
@@ -257,5 +255,5 @@ function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 }
 
 function isElement( value: any ): value is Element {
-	return _isElement( value );
+	return value instanceof HTMLElement;
 }

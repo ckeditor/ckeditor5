@@ -12,6 +12,7 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
+    "es-toolkit": "1.27.0",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {

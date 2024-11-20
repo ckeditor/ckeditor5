@@ -6,7 +6,6 @@
 /**
  * @module image/imageresize/imageresizebuttons
  */
-import { map } from 'lodash-es';
 
 import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
@@ -301,7 +300,7 @@ export default class ImageResizeButtons extends Plugin {
 					} )
 				};
 
-				const allDropdownValues = map( optionsWithSerializedValues, 'valueWithUnits' );
+				const allDropdownValues = Object.values( optionsWithSerializedValues ).map( option => option.valueWithUnits );
 
 				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnCustomButtonCallback( allDropdownValues ) );
 			} else {

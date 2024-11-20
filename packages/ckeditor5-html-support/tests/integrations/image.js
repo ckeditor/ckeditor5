@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { range } from 'lodash-es';
+import { range } from 'es-toolkit';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';

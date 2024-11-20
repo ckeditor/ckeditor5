@@ -36,7 +36,7 @@ import {
 
 import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 import MentionsView from './ui/mentionsview.js';
 import DomWrapperView from './ui/domwrapperview.js';

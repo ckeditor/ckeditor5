@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
 import defaultConfig from './schemadefinitions.js';
-import { mergeWith } from 'lodash-es';
+import { mergeWith } from 'es-toolkit/compat';
 import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**

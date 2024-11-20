@@ -5,7 +5,7 @@
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 
 describe( 'Accessibility', () => {
 	let editor, accessibility;

@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit';
 
 if ( window.logNative === undefined ) {
 	window.logNative = true;

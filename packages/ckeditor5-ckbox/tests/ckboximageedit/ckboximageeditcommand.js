@@ -23,7 +23,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import _ from 'lodash-es';
+import * as _ from 'es-toolkit';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
 import CKBoxEditing from '../../src/ckboxediting.js';
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';

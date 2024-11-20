@@ -11,7 +11,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { diffString } from 'json-diff';
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import TableWalker from '../../src/tablewalker.js';
 
