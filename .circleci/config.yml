@@ -24,6 +24,9 @@ parameters:
   isStaleBot:
     type: boolean
     default: false
+  trueParam:
+    type: boolean
+    default: true
 
 orbs:
   continuation: circleci/continuation@0.1.2
