@@ -317,7 +317,7 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
 function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array<NormalizedPropertyPattern> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( pattern => {
-			if ( typeof pattern === 'string' || pattern instanceof RegExp ) {
+			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
 				return prefix ?
 					[ prefix, pattern, true ] :
 					[ pattern, true ];

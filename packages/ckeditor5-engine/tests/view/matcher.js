@@ -123,6 +123,34 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
+		it( 'should match all element attributes (`true` in an array)', () => {
+			const pattern = {
+				attributes: [ true ]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { title: 'foobar' } );
+			const el2 = new Element( document, 'p', { title: '', alt: 'alternative'	} );
+			const el3 = new Element( document, 'p' );
+
+			let result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
+
+			result = matcher.match( el2 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title', 'alt' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
 		it( 'should not match style and class attributes using "attributes: true" pattern', () => {
 			const pattern = {
 				attributes: true
@@ -416,7 +444,7 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foobar'	} );
+			const el1 = new Element( document, 'p', { title: 'foobar' } );
 			const el2 = new Element( document, 'p', { title: '' } );
 			const el3 = new Element( document, 'p' );
 
@@ -434,6 +462,26 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
 			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
 
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match if element has given attribute list', () => {
+			const pattern = {
+				attributes: [ 'title', 'id' ]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { title: 'foo', id: 'bar' } );
+			const el2 = new Element( document, 'p', { title: 'foo' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title', 'id' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
