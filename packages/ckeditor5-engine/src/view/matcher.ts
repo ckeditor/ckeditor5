@@ -387,7 +387,7 @@ function matchPatterns(
 function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( pattern => {
-			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
+			if ( typeof pattern == 'string' || pattern instanceof RegExp ) {
 				return [ pattern, true ];
 			}
 
