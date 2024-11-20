@@ -10,7 +10,6 @@
 import type Element from './element.js';
 
 import { logWarning } from '@ckeditor/ckeditor5-utils';
-import { isPlainObject } from 'lodash-es';
 
 /**
  * View matcher class.
@@ -182,24 +181,7 @@ export default class Matcher {
 
 		// Check element's attributes.
 		if ( pattern.attributes ) {
-			let excludeAttributes;
-
-			// The `style` and `class` attribute keys are deprecated. Only allow them in object pattern
-			// for backward compatibility.
-			if ( isPlainObject( pattern.attributes ) ) {
-				if ( ( pattern.attributes as any ).style !== undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-deprecated-attributes-style-key', pattern.attributes as any );
-				}
-				if ( ( pattern.attributes as any ).class !== undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-deprecated-attributes-class-key', pattern.attributes as any );
-				}
-			} else {
-				excludeAttributes = [ 'class', 'style' ];
-			}
-
-			const attributesMatch = element._getAttributesMatch( normalizePatterns( pattern.attributes ), excludeAttributes );
+			const attributesMatch = matchAttributes( pattern.attributes, element );
 
 			if ( attributesMatch ) {
 				// TODO temporary
@@ -211,8 +193,7 @@ export default class Matcher {
 
 		// Check element's classes.
 		if ( pattern.classes ) {
-			const normalizedPatterns = normalizePatterns( pattern.classes, 'class' );
-			const classesMatch = element._getAttributesMatch( normalizedPatterns ) as Array<[ string, string ]> | undefined;
+			const classesMatch = matchClasses( pattern.classes, element );
 
 			if ( classesMatch ) {
 				// TODO temporary
@@ -224,8 +205,7 @@ export default class Matcher {
 
 		// Check element's styles.
 		if ( pattern.styles ) {
-			const normalizedPatterns = normalizePatterns( pattern.styles, 'style' );
-			const stylesMatch = element._getAttributesMatch( normalizedPatterns ) as Array<[ string, string ]> | undefined;
+			const stylesMatch = matchStyles( pattern.styles, element );
 
 			if ( stylesMatch ) {
 				// TODO temporary
@@ -337,7 +317,7 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
 function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array<NormalizedPropertyPattern> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( pattern => {
-			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
+			if ( typeof pattern === 'string' || pattern instanceof RegExp ) {
 				return prefix ?
 					[ prefix, pattern, true ] :
 					[ pattern, true ];
@@ -366,6 +346,7 @@ function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array
 	const normalizedPatterns: Array<NormalizedPropertyPattern> = [];
 
 	for ( const key in patterns ) {
+		// Replace with Object.hasOwn() when we upgrade to es2022.
 		if ( Object.prototype.hasOwnProperty.call( patterns, key ) ) {
 			normalizedPatterns.push(
 				prefix ?
@@ -376,6 +357,61 @@ function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array
 	}
 
 	return normalizedPatterns;
+}
+
+/**
+ * Checks if attributes of provided element can be matched against provided patterns.
+ *
+ * @param patterns Object with information about attributes to match. Each key of the object will be
+ * used as attribute name. Value of each key can be a string or regular expression to match against attribute value.
+ * @param  element Element which attributes will be tested.
+ * @returns Returns array with matched attribute names or `null` if no attributes were matched.
+ */
+function matchAttributes(
+	patterns: AttributePatterns,
+	element: Element
+): Array<[ string, string? ]> | undefined {
+	let excludeAttributes;
+
+	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
+	// for backward compatibility.
+	if ( typeof patterns === 'object' && !( patterns instanceof RegExp ) && !Array.isArray( patterns ) ) {
+		if ( patterns.style !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns );
+		}
+		if ( patterns.class !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns );
+		}
+	} else {
+		excludeAttributes = [ 'class', 'style' ];
+	}
+
+	return element._getAttributesMatch( normalizePatterns( patterns ), excludeAttributes );
+}
+
+/**
+ * Checks if classes of provided element can be matched against provided patterns.
+ *
+ * @param patterns Array of strings or regular expressions to match against element's classes.
+ * @param element Element which classes will be tested.
+ * @returns Returns array with matched class names or `null` if no classes were matched.
+ */
+function matchClasses( patterns: ClassPatterns, element: Element ): Array<[ string, string ]> | undefined {
+	return element._getAttributesMatch( normalizePatterns( patterns, 'class' ) ) as Array<[ string, string ]> | undefined;
+}
+
+/**
+ * Checks if styles of provided element can be matched against provided patterns.
+ *
+ * @param patterns Object with information about styles to match. Each key of the object will be
+ * used as style name. Value of each key can be a string or regular expression to match against style value.
+ * @param element Element which styles will be tested.
+ * @returns Returns array with matched style names or `null` if no styles were matched.
+ */
+function matchStyles( patterns: StylePatterns, element: Element ): Array<[ string, string ]> | undefined {
+	return element._getAttributesMatch( normalizePatterns( patterns, 'style' ) ) as Array<[ string, string ]> | undefined;
 }
 
 /**
