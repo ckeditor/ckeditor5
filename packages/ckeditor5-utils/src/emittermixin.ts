@@ -842,8 +842,7 @@ function getCallbacksForEvent( source: EmitterInternal, eventName: string ): Eve
 
 	let currentEventName = eventName;
 
-	// eslint-disable-next-line no-constant-condition
-	while ( true ) {
+	do {
 		const event = source._events[ currentEventName ];
 
 		if ( event && event.callbacks && event.callbacks.length ) {
@@ -852,12 +851,10 @@ function getCallbacksForEvent( source: EmitterInternal, eventName: string ): Eve
 
 		const colonIndex = currentEventName.lastIndexOf( ':' );
 
-		if ( colonIndex > -1 ) {
-			currentEventName = currentEventName.substring( 0, colonIndex );
-		} else {
-			return null;
-		}
-	}
+		currentEventName = colonIndex > -1 ? currentEventName.substring( 0, colonIndex ) : '';
+	} while ( currentEventName );
+
+	return null;
 }
 
 /**
