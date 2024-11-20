@@ -117,35 +117,35 @@ jobs:
       - bootstrap_repository_command
       - prepare_environment_command
       - run:
-          when: always
+          when: true
           name: Validate versions of CKEditor 5 dependencies
           command: yarn run check-dependencies:versions-match
       - run:
-          when: always
+          when: true
           name: Validate "ckeditor5-metadata.json" files
           command: node scripts/ci/validate-metadata-files.mjs
       - run:
-          when: always
+          when: true
           name: Check if all SVG files are optimized
           command: yarn run clean-up-svg-icons --verify-only
       - run:
-          when: always
+          when: true
           name: Validate manual test directories
           command: node scripts/ci/check-manual-tests-directory-structure.mjs
       - run:
-          when: always
+          when: true
           name: Execute ESLint
           command: yarn run lint
       - run:
-          when: always
+          when: true
           name: Execute Stylelint
           command: yarn run stylelint
       - run:
-          when: always
+          when: true
           name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
           command: yarn run check-theme-lark-imports
       - run:
-          when: always
+          when: true
           name: Check if all packages are exported in the "ckeditor5" package
           command: yarn run check-exports
 
