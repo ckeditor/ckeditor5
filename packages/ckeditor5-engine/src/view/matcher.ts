@@ -185,7 +185,7 @@ export default class Matcher {
 
 			if ( attributesMatch ) {
 				// TODO temporary
-				match.attributes = Array.from( new Set( attributesMatch.map( item => item[ 0 ] ) ) );
+				match.attributes = attributesMatch.map( item => item[ 0 ] );
 			} else {
 				return null;
 			}
@@ -197,7 +197,7 @@ export default class Matcher {
 
 			if ( classesMatch ) {
 				// TODO temporary
-				match.classes = Array.from( new Set( classesMatch.map( item => item[ 1 ] ) ) );
+				match.classes = classesMatch.map( item => item[ 1 ] );
 			} else {
 				return null;
 			}
@@ -209,7 +209,7 @@ export default class Matcher {
 
 			if ( stylesMatch ) {
 				// TODO temporary
-				match.styles = Array.from( new Set( stylesMatch.map( item => item[ 1 ] ) ) );
+				match.styles = stylesMatch.map( item => item[ 1 ] );
 			} else {
 				return null;
 			}
