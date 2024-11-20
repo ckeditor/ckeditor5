@@ -919,7 +919,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error invalid-license-key
 				 */
-				throw new CKEditorError( 'invalid-license-key', this );
+				throw new CKEditorError( 'invalid-license-key' );
 			}
 
 			if ( reason == 'expired' ) {
@@ -929,7 +929,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-expired
 				 */
-				throw new CKEditorError( 'license-key-expired', this );
+				throw new CKEditorError( 'license-key-expired' );
 			}
 
 			if ( reason == 'domainLimit' ) {
@@ -941,7 +941,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-domain-limit
 				 */
-				throw new CKEditorError( 'license-key-domain-limit', this );
+				throw new CKEditorError( 'license-key-domain-limit' );
 			}
 
 			if ( reason == 'featureNotAllowed' ) {
@@ -954,17 +954,18 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * @error license-key-plugin-not-allowed
 				 * @param {String} pluginName The plugin you tried to load.
 				 */
-				throw new CKEditorError( 'license-key-plugin-not-allowed', this, { pluginName } );
+				throw new CKEditorError( 'license-key-plugin-not-allowed', null, { pluginName } );
 			}
 
 			if ( reason == 'evaluationLimit' ) {
 				/**
 				 * You have exceeded the editor operation limit available for your evaluation license key.
 				 * Please restart the editor to continue using it.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-evaluation-limit
 				 */
-				throw new CKEditorError( 'license-key-evaluation-limit', this );
+				throw new CKEditorError( 'license-key-evaluation-limit' );
 			}
 
 			if ( reason == 'trialLimit' ) {
@@ -975,7 +976,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-trial-limit
 				 */
-				throw new CKEditorError( 'license-key-trial-limit', this );
+				throw new CKEditorError( 'license-key-trial-limit' );
 			}
 
 			if ( reason == 'developmentLimit' ) {
@@ -986,7 +987,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-development-limit
 				 */
-				throw new CKEditorError( 'license-key-development-limit', this );
+				throw new CKEditorError( 'license-key-development-limit' );
 			}
 
 			if ( reason == 'usageLimit' ) {
@@ -1002,7 +1003,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-usage-limit
 				 */
-				throw new CKEditorError( 'license-key-usage-limit', this );
+				throw new CKEditorError( 'license-key-usage-limit' );
 			}
 
 			if ( reason == 'distributionChannel' ) {
@@ -1019,7 +1020,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-invalid-distribution-channel
 				 */
-				throw new CKEditorError( 'license-key-invalid-distribution-channel', this );
+				throw new CKEditorError( 'license-key-invalid-distribution-channel' );
 			}
 
 			/* istanbul ignore next -- @preserve */
