@@ -62,7 +62,7 @@ First, import the injection script as an NPM package and use it in your TypeScri
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
 
 const { CKEditor, CKEditorPremiumFeatures } = await loadCKEditorCloud({
-	version: '45.0.0',
+	version: '{@var ckeditor5-version}',
 
 	// Optional configuration:
 	premium: true,
