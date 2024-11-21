@@ -68,7 +68,8 @@ function getPluginsUsageData( collection: PluginCollection<Editor> ): Array<Plug
 				isPremium: !!isPremiumPlugin,
 				name: pluginName!
 			};
-		} );
+		} )
+		.sort( ( a, b ) => a.name.localeCompare( b.name, 'en' ) );
 }
 
 function getToolbarUsageData( toolbarConfig: ToolbarConfig | undefined ): ToolbarUsageData | undefined {

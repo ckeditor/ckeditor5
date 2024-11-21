@@ -51,9 +51,9 @@ describe( 'getEditorUsageData()', () => {
 		} );
 
 		expect( usageData.plugins.map( ( { name } ) => name ) ).to.deep.equal( [
-			'Dialog', 'AccessibilityHelp', 'ClipboardMarkersUtils', 'ClipboardPipeline', 'Enter', 'Delete', 'WidgetTypeAround',
-			'Widget', 'DragDropTarget', 'DragDropBlockToolbar', 'DragDrop', 'PastePlainText', 'Clipboard', 'SelectAllEditing',
-			'SelectAllUI', 'SelectAll', 'ShiftEnter', 'Input', 'Typing', 'UndoEditing', 'UndoUI', 'Undo', 'Essentials'
+			'AccessibilityHelp', 'Clipboard', 'ClipboardMarkersUtils', 'ClipboardPipeline', 'Delete', 'Dialog', 'DragDrop',
+			'DragDropBlockToolbar', 'DragDropTarget', 'Enter', 'Essentials', 'Input', 'PastePlainText', 'SelectAll',
+			'SelectAllEditing', 'SelectAllUI', 'ShiftEnter', 'Typing', 'Undo', 'UndoEditing', 'UndoUI', 'Widget', 'WidgetTypeAround'
 		] );
 
 		expect( usageData.distribution ).to.be.deep.equal( {
@@ -245,9 +245,9 @@ describe( 'getEditorUsageData()', () => {
 			} );
 
 			expect( getEditorUsageData( editor ).plugins ).to.deep.equal( [
+				makeBasePluginUsageData( 'Bold', { isOfficial: true } ),
 				makeBasePluginUsageData( 'BoldEditing', { isOfficial: true } ),
-				makeBasePluginUsageData( 'BoldUI', { isOfficial: true } ),
-				makeBasePluginUsageData( 'Bold', { isOfficial: true } )
+				makeBasePluginUsageData( 'BoldUI', { isOfficial: true } )
 			] );
 		} );
 
@@ -306,6 +306,36 @@ describe( 'getEditorUsageData()', () => {
 				] );
 			} );
 		}
+
+		it( 'should return array of plugins alphabetically sorted', async () => {
+			class PluginA extends Plugin {
+				static get pluginName() {
+					return 'A';
+				}
+
+				init() {}
+			}
+
+			class PluginB extends Plugin {
+				static get pluginName() {
+					return 'B';
+				}
+
+				init() {}
+			}
+
+			editor = await ClassicTestEditor.create( domElement, {
+				plugins: [
+					PluginB,
+					PluginA
+				]
+			} );
+
+			expect( getEditorUsageData( editor ).plugins ).to.deep.equal( [
+				makeBasePluginUsageData( 'A' ),
+				makeBasePluginUsageData( 'B' )
+			] );
+		} );
 	} );
 
 	describe( '#toolbar', () => {
