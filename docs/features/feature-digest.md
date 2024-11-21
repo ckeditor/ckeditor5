@@ -960,20 +960,6 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				suggestions that they can accept or discard.
 			</td>
 		</tr>
-		<tr id="sidebar-modes" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes}
-				</span>
-			</td>
-			<td>
-				There are three built-in UIs to display comment threads and suggestion
-				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-				You can also display them together in more advanced scenarios where
-				various annotation sources (comments, suggestions) are connected to
-				different UIs, or even create your own UI for annotations.
-			</td>
-		</tr>
 		<tr id="users-list-and-permissions">
 			<td>
 				{@link features/users Users list and permissions
