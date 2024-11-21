@@ -44,7 +44,7 @@
 				height: 1.25em;
 				width: auto;
 				vertical-align: middle;
-				/* Overwrite the `.ck-icon` property to prevent the icon from being blurry while using zooming in. */
+				/* Overwrite the `.ck-icon` `will-change` property to prevent the icon from being blurry while using zooming in. */
 				will-change: unset;
 			}
 		}
