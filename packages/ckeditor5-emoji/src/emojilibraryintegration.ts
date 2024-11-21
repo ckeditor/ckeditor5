@@ -22,6 +22,7 @@ import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
  */
 export default class EmojiLibraryIntegration extends Plugin {
 	private localDataUrl!: string;
+	private emojiDatabase!: Database;
 
 	/**
 	 * @inheritDoc
@@ -52,11 +53,11 @@ export default class EmojiLibraryIntegration extends Plugin {
 	 * @public
 	 */
 	public queryEmoji( searchQuery: string ): Promise<Array<MentionFeedObjectItem>> {
-		const emojiDatabase = new Database( {
+		this.emojiDatabase = new Database( {
 			dataSource: this.localDataUrl
 		} );
 
-		return emojiDatabase.getEmojiBySearchQuery( searchQuery )
+		return this.emojiDatabase.getEmojiBySearchQuery( searchQuery )
 			.then( queryResult => {
 				return ( queryResult as Array<NativeEmoji> ).map( emoji => {
 					return {

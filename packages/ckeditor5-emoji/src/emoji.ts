@@ -7,7 +7,7 @@
  * @module emoji/emoji
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import EmojiMentionIntegration from './emojimentionintegration.js';
@@ -38,6 +38,17 @@ export default class Emoji extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'emoji', {
+			dropdownLimit: 10
+		} );
 	}
 
 	/**

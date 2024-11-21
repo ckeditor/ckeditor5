@@ -13,16 +13,6 @@ import type {
 import type InsertEmojiCommand from './insertemojicommand.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[Emoji.pluginName]: Emoji;
-		[EmojiMentionIntegration.pluginName]: EmojiMentionIntegration;
-		[EmojiLibraryIntegration.pluginName]: EmojiLibraryIntegration;
-	}
-
-	interface CommandsMap {
-		insertEmoji: InsertEmojiCommand;
-	}
-
 	interface EditorConfig {
 
 		/**
@@ -31,5 +21,15 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * Read more in {@link module:emoji/emojiconfig~EmojiConfig}.
 		 */
 		emoji?: EmojiConfig;
+	}
+
+	interface PluginsMap {
+		[Emoji.pluginName]: Emoji;
+		[EmojiMentionIntegration.pluginName]: EmojiMentionIntegration;
+		[EmojiLibraryIntegration.pluginName]: EmojiLibraryIntegration;
+	}
+
+	interface CommandsMap {
+		insertEmoji: InsertEmojiCommand;
 	}
 }

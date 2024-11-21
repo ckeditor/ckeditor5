@@ -89,7 +89,7 @@ export default class EmojiMentionIntegration extends Plugin {
 
 		itemElement.classList.add( 'custom-item' );
 		itemElement.id = `mention-list-item-id-${ item.id }`;
-		itemElement.textContent = `${ item.text } ${ item.id } `;
+		itemElement.textContent = `${ item.text } ${ item.id.replace( 'emoji:', ':' ) }`;
 		itemElement.style.width = '100%';
 		itemElement.style.display = 'block';
 
