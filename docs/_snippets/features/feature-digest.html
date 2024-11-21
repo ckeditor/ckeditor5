@@ -26,4 +26,36 @@
 		pointer-events: none;
 		cursor: pointer;
 	}
+
+	table {
+  		border-collapse: collapse;
+	}
+
+	table tr:last-child > td {
+		border-bottom-color: #000;
+	}
+
+	tr.feature > td:first-child {
+		border-top-color: #000;
+		border-left-color: #000;
+	}
+
+	tr.feature > td:last-child {
+		border-top-color: #000;
+		border-right-color: #000;
+	}
+
+	tr.subfeature > td:first-child {
+		border-left-color: #000;
+	}
+
+	tr.subfeature > td:last-child {
+		border-right-color: #000;
+	}
+
+	tr.subfeature > td:first-child > span {
+		display: flex;
+		align-items: center;
+		margin-left: 12px;
+	}
 </style>
