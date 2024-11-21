@@ -56,7 +56,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * A map containing callbacks between view element names and functions evaluating length of view elements
 	 * in model.
 	 */
-	private _viewToModelLengthCallbacks: Record<string, ( element: ViewElement ) => number> = {};
+	private _viewToModelLengthCallbacks = new Map<string, ( element: ViewElement ) => number>();
 
 	/**
 	 * Model marker name to view elements mapping.
@@ -461,7 +461,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		viewElementName: string,
 		lengthCallback: ( element: ViewElement ) => number
 	): void {
-		this._viewToModelLengthCallbacks[ viewElementName ] = lengthCallback;
+		this._viewToModelLengthCallbacks.set( viewElementName, lengthCallback );
 	}
 
 	/**
@@ -562,7 +562,9 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		while ( stack.length > 0 ) {
 			const node = stack.pop()!;
 
-			const callback = ( node as any ).name && this._viewToModelLengthCallbacks[ ( node as any ).name ];
+			const callback = ( node as any ).name &&
+				this._viewToModelLengthCallbacks.size > 0 &&
+				this._viewToModelLengthCallbacks.get( ( node as any ).name );
 
 			if ( callback ) {
 				len += callback( node as ViewElement );
