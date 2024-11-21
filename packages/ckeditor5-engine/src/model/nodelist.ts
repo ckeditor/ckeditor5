@@ -210,7 +210,6 @@ export default class NodeList implements Iterable<Node> {
 		// Remove nodes from this nodelist.
 		let offset = this.indexToOffset( indexStart );
 		const nodes = this._nodes.splice( indexStart, howMany );
-
 		const lastNode = nodes[ nodes.length - 1 ];
 		const removedOffsetSum = lastNode.startOffset! + lastNode.offsetSize - offset;
 		this._offsetToNode.splice( offset, removedOffsetSum );
@@ -229,6 +228,35 @@ export default class NodeList implements Iterable<Node> {
 		}
 
 		return nodes;
+	}
+
+	/**
+	 * Removes children nodes provided as an array.
+	 *
+	 * @internal
+	 * @param nodes Array of nodes.
+	 */
+	public _removeNodesArray( nodes: Array<Node> ): void {
+		if ( nodes.length == 0 ) {
+			return;
+		}
+
+		for ( const node of nodes ) {
+			node._index = null;
+			node._startOffset = null;
+		}
+
+		this._nodes = this._nodes.filter( node => node.index !== null );
+		this._offsetToNode = this._offsetToNode.filter( node => node.index !== null );
+
+		let offset = 0;
+
+		for ( let i = 0; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
 	}
 
 	/**

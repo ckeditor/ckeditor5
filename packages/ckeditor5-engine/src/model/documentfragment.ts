@@ -341,6 +341,21 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 		return nodes;
 	}
 
+	/**
+	 * Removes children nodes provided as an array and sets
+	 * the {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 *
+	 * @internal
+	 * @param nodes Array of nodes.
+	 */
+	public _removeChildrenArray( nodes: Array<Node> ): void {
+		this._children._removeNodesArray( nodes );
+
+		for ( const node of nodes ) {
+			( node as any ).parent = null;
+		}
+	}
+
 	// @if CK_DEBUG_ENGINE // public override toString(): 'documentFragment' {
 	// @if CK_DEBUG_ENGINE // 	return 'documentFragment';
 	// @if CK_DEBUG_ENGINE // }
