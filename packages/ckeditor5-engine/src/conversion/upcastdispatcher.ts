@@ -226,6 +226,7 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 			// Remove all empty elements that were created while splitting.
 			this._removeEmptyElements();
 
+			// Move all items that were converted in context tree to the document fragment.
 			const parent = this._modelCursor.parent;
 			const children = parent._removeChildren( 0, parent.childCount );
 
