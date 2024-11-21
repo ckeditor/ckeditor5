@@ -41,7 +41,7 @@
 			top: -0.1em;
 
 			& .ck-icon {
-				height: 1.25em;
+				height: 1.2em;
 				width: auto;
 				vertical-align: middle;
 				/* Overwrite the `.ck-icon` `will-change` property to prevent the icon from being blurry while using zooming in. */
