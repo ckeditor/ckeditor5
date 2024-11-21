@@ -7,7 +7,7 @@
 #
 msgid ""
 msgstr ""
-"Language: zh\n"
+"Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
