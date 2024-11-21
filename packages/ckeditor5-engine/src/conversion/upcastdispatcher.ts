@@ -499,6 +499,8 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * as some elements might have become empty after other empty elements were removed from them.
 	 */
 	private _removeEmptyElements(): void {
+		// For every parent, prepare an array of children (empty elements) to remove from it.
+		// Then, in next step, we will remove all children together, which is faster than removing them one by one.
 		const toRemove = new Map<ModelElement | ModelDocumentFragment, Array<ModelElement>>();
 
 		for ( const element of this._splitParts.keys() ) {
