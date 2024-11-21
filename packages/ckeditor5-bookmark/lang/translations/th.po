@@ -13,44 +13,44 @@ msgstr ""
 
 msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
 msgid "Bookmark"
-msgstr ""
+msgstr "บุ๊กมาร์ก"
 
 msgctxt "The button in the bookmark insert form."
 msgid "Insert"
-msgstr ""
+msgstr "แทรก"
 
 msgctxt "The button in the bookmark update form."
 msgid "Update"
-msgstr ""
+msgstr "อัปเดต"
 
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
-msgstr ""
+msgstr "แก้ไขบุ๊กมาร์ก"
 
 msgctxt "Toolbar button tooltip for bookmark remove button."
 msgid "Remove bookmark"
-msgstr ""
+msgstr "ลบบุ๊กมาร์ก"
 
 msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
 msgid "Bookmark name"
-msgstr ""
+msgstr "ชื่อบุ๊กมาร์ก"
 
 msgctxt "The description of bookmark input in the bookmark insert form."
 msgid "Enter the bookmark name without spaces."
-msgstr ""
+msgstr "ป้อนชื่อบุ๊กมาร์กโดยไม่มีช่องว่าง"
 
 msgctxt "The error message. Displayed when the bookmark name is empty."
 msgid "Bookmark must not be empty."
-msgstr ""
+msgstr "บุ๊กมาร์กต้องไม่เว้นว่างไว้"
 
 msgctxt "The error message. Displayed when provided name includes spaces."
 msgid "Bookmark name cannot contain space characters."
-msgstr ""
+msgstr "ชื่อบุ๊กมาร์กต้องไม่มีการเว้นวรรคระหว่างอักขระ"
 
 msgctxt "The error message. Displayed when provided name already exists."
 msgid "Bookmark name already exists."
-msgstr ""
+msgstr "มีชื่อบุ๊กมาร์กนี้อยู่เรียบร้อยแล้ว"
 
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
-msgstr ""
+msgstr "วิดเจ็ตบุ๊กมาร์ก"

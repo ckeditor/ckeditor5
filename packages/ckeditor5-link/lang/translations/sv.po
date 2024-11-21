@@ -61,4 +61,4 @@ msgstr "Flytta bort från länken"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Bläddra till mål"

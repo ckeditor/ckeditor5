@@ -63,4 +63,4 @@ msgstr "কোনো লিঙ্কের বাইরে সরান"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "টার্গেটে স্ক্রল করুন"

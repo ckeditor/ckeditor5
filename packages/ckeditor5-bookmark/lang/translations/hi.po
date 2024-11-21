@@ -13,44 +13,44 @@ msgstr ""
 
 msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
 msgid "Bookmark"
-msgstr ""
+msgstr "बुकमार्क"
 
 msgctxt "The button in the bookmark insert form."
 msgid "Insert"
-msgstr ""
+msgstr "इंसर्ट"
 
 msgctxt "The button in the bookmark update form."
 msgid "Update"
-msgstr ""
+msgstr "अपडेट"
 
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
-msgstr ""
+msgstr "बुकमार्क एडिट करें"
 
 msgctxt "Toolbar button tooltip for bookmark remove button."
 msgid "Remove bookmark"
-msgstr ""
+msgstr "बुकमार्क हटाएं"
 
 msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
 msgid "Bookmark name"
-msgstr ""
+msgstr "बुकमार्क का नाम"
 
 msgctxt "The description of bookmark input in the bookmark insert form."
 msgid "Enter the bookmark name without spaces."
-msgstr ""
+msgstr "बिना स्पेस के बुकमार्क का नाम लिखें."
 
 msgctxt "The error message. Displayed when the bookmark name is empty."
 msgid "Bookmark must not be empty."
-msgstr ""
+msgstr "बुकमार्क खाली नहीं होना चाहिए."
 
 msgctxt "The error message. Displayed when provided name includes spaces."
 msgid "Bookmark name cannot contain space characters."
-msgstr ""
+msgstr "बुकमार्क नाम में स्पेस नहीं हो सकते."
 
 msgctxt "The error message. Displayed when provided name already exists."
 msgid "Bookmark name already exists."
-msgstr ""
+msgstr "बुकमार्क नाम पहले से मौजूद है."
 
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
-msgstr ""
+msgstr "बुकमार्क विजिट"

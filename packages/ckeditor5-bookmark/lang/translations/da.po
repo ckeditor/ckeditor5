@@ -13,44 +13,44 @@ msgstr ""
 
 msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
 msgid "Bookmark"
-msgstr ""
+msgstr "Bogmærke"
 
 msgctxt "The button in the bookmark insert form."
 msgid "Insert"
-msgstr ""
+msgstr "Indsæt"
 
 msgctxt "The button in the bookmark update form."
 msgid "Update"
-msgstr ""
+msgstr "Opdater"
 
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
-msgstr ""
+msgstr "Rediger bogmærke"
 
 msgctxt "Toolbar button tooltip for bookmark remove button."
 msgid "Remove bookmark"
-msgstr ""
+msgstr "Fjern bogmærke"
 
 msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
 msgid "Bookmark name"
-msgstr ""
+msgstr "Bogmærkenavn"
 
 msgctxt "The description of bookmark input in the bookmark insert form."
 msgid "Enter the bookmark name without spaces."
-msgstr ""
+msgstr "Indtast bogmærkenavnet uden mellemrum."
 
 msgctxt "The error message. Displayed when the bookmark name is empty."
 msgid "Bookmark must not be empty."
-msgstr ""
+msgstr "Bogmærke må ikke være tomt."
 
 msgctxt "The error message. Displayed when provided name includes spaces."
 msgid "Bookmark name cannot contain space characters."
-msgstr ""
+msgstr "Bogmærkenavnet må ikke indholde mellemrum."
 
 msgctxt "The error message. Displayed when provided name already exists."
 msgid "Bookmark name already exists."
-msgstr ""
+msgstr "Bogmærkenavnet findes allerede."
 
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
-msgstr ""
+msgstr "bogmærke-widget"

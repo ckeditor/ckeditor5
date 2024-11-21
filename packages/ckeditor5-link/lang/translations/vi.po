@@ -61,4 +61,4 @@ msgstr "Di chuyển ra khỏi một liên kết"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Cuộn đến mục tiêu"

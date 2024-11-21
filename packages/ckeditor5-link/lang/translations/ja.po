@@ -61,4 +61,4 @@ msgstr "リンクの外に移動する"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "ターゲットまでスクロール"

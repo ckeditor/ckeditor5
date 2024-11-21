@@ -7,7 +7,7 @@
 #
 msgid ""
 msgstr ""
-"Language: zh_TW\n"
+"Language: zh-tw\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
@@ -61,4 +61,4 @@ msgstr "移出連結"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "捲動至目標"

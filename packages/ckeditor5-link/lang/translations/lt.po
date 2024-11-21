@@ -61,4 +61,4 @@ msgstr "Išeiti iš nuorodos"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Slinkti iki paskirties vietos"

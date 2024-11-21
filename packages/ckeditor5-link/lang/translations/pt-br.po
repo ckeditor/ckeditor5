@@ -7,7 +7,7 @@
 #
 msgid ""
 msgstr ""
-"Language: pt_BR\n"
+"Language: pt-br\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
@@ -61,4 +61,4 @@ msgstr "Sair de um link"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Rolar para o destino"

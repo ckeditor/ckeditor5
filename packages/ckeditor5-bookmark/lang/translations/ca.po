@@ -13,44 +13,44 @@ msgstr ""
 
 msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
 msgid "Bookmark"
-msgstr ""
+msgstr "Marcador"
 
 msgctxt "The button in the bookmark insert form."
 msgid "Insert"
-msgstr ""
+msgstr "Introduir"
 
 msgctxt "The button in the bookmark update form."
 msgid "Update"
-msgstr ""
+msgstr "Actualitzar"
 
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
-msgstr ""
+msgstr "Edita el marcador"
 
 msgctxt "Toolbar button tooltip for bookmark remove button."
 msgid "Remove bookmark"
-msgstr ""
+msgstr "Elimina el marcador"
 
 msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
 msgid "Bookmark name"
-msgstr ""
+msgstr "Nom del marcador"
 
 msgctxt "The description of bookmark input in the bookmark insert form."
 msgid "Enter the bookmark name without spaces."
-msgstr ""
+msgstr "Introdueix el nom del marcador sense espais."
 
 msgctxt "The error message. Displayed when the bookmark name is empty."
 msgid "Bookmark must not be empty."
-msgstr ""
+msgstr "El marcador no pot estar buit."
 
 msgctxt "The error message. Displayed when provided name includes spaces."
 msgid "Bookmark name cannot contain space characters."
-msgstr ""
+msgstr "El nom del marcador no pot contenir espais."
 
 msgctxt "The error message. Displayed when provided name already exists."
 msgid "Bookmark name already exists."
-msgstr ""
+msgstr "El nom del marcador ja existeix."
 
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
-msgstr ""
+msgstr "giny de marcador"
