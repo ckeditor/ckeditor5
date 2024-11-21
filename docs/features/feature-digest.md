@@ -2019,26 +2019,4 @@ Upload and manage your files using file management features. Take advantage of C
 	</tbody>
 </table>
 
-<style>
-	tr {
-		display: flex;
-	}
-
-	td:first-child, th:first-child {
-		flex: 1;
-	}
-
-	td:nth-child(2), th:nth-child(2) {
-		flex: 2;
-	}
-
-	.background-gray {
-		background-color: #F5F5F5;
-	}
-
-	tr.subfeature > td:first-child > span {
-		display: flex;
-		align-items: center;
-		margin-left: 12px;
-	}
-</style>
+{@snippet features/feature-digest}
