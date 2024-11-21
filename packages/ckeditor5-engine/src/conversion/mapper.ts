@@ -56,7 +56,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * A map containing callbacks between view element names and functions evaluating length of view elements
 	 * in model.
 	 */
-	private _viewToModelLengthCallbacks = new Map<string, ( element: ViewElement ) => number>();
+	private _viewToModelLengthCallbacks: Record<string, ( element: ViewElement ) => number> = {};
 
 	/**
 	 * Model marker name to view elements mapping.
@@ -461,7 +461,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		viewElementName: string,
 		lengthCallback: ( element: ViewElement ) => number
 	): void {
-		this._viewToModelLengthCallbacks.set( viewElementName, lengthCallback );
+		this._viewToModelLengthCallbacks[ viewElementName ] = lengthCallback;
 	}
 
 	/**
@@ -556,25 +556,30 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns Length of the node in the tree model.
 	 */
 	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
-		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
-			const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
+		const stack = [ viewNode ];
+		let len = 0;
 
-			return callback( viewNode as ViewElement );
-		} else if ( this._viewToModelMapping.has( viewNode as ViewElement ) ) {
-			return 1;
-		} else if ( viewNode.is( '$text' ) ) {
-			return viewNode.data.length;
-		} else if ( viewNode.is( 'uiElement' ) ) {
-			return 0;
-		} else {
-			let len = 0;
+		while ( stack.length > 0 ) {
+			const node = stack.pop()!;
 
-			for ( const child of ( viewNode as ViewElement ).getChildren() ) {
-				len += this.getModelLength( child );
+			const callback = ( node as any ).name && this._viewToModelLengthCallbacks[ ( node as any ).name ];
+
+			if ( callback ) {
+				len += callback( node as ViewElement );
+			} else if ( this._viewToModelMapping.has( node as ViewElement ) ) {
+				len += 1;
+			} else if ( node.is( '$text' ) ) {
+				len += node.data.length;
+			} else if ( node.is( 'uiElement' ) ) {
+				continue;
+			} else {
+				for ( const child of ( node as ViewElement ).getChildren() ) {
+					stack.push( child );
+				}
 			}
-
-			return len;
 		}
+
+		return len;
 	}
 
 	/**
