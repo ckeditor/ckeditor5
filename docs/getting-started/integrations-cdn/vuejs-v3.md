@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 3+
-meta-title: Vue.js 3+ rich text editor component with CDN | CKEditor 5 documentation
+meta-title: Vue.js 3+ rich text editor component with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with CDN.
 category: cloud
 order: 50
@@ -25,7 +25,7 @@ CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich t
 This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 Start by installing the Vue integration for CKEditor&nbsp;5 from npm:
@@ -70,20 +70,13 @@ const config = computed( () => {
 		return null;
 	}
 
-	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
-	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+	const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+	const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
 
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Essentials,
-			Paragraph,
-			Bold,
-			Italic,
-			Mention,
-			SlashCommand
-		]
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
 } );
 </script>
@@ -201,20 +194,13 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 // Editor loading and configuration is skipped for brevity.
 
 const config = computed( () => {
-	const { Essentials, Paragraph, Bold, Italic, Mention } = cloud.data.value.CKEditor;
-	const { SlashCommand } = cloud.data.value.CKEditorPremiumFeatures;
+	const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+	const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
 
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Essentials,
-			Paragraph,
-			Bold,
-			Italic,
-			Mention,
-			SlashCommand
-		]
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
 } );
 </script>
@@ -398,6 +384,77 @@ const cloud = useCKEditorCloud( {
 	translations: [ 'es' ]
 } );
 </script>
+```
+
+### TypeScript support
+
+The CKEditor&nbsp;5 Vue component is written in TypeScript and provides type definitions. If you use TypeScript in your project, you can take advantage of them. To do so, import the component and its types using an `import type` statement from a special package containing type definitions. Take a look at the following example:
+
+```html
+<script setup>
+import { useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
+import type { ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+const cloud = useCKEditorCloud( {
+	version: '{@var ckeditor5-version}',
+	translations: [ 'es' ]
+} );
+
+const TestEditor = computed<typeof ClassicEditor | null>( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const {
+		ClassicEditor: BaseEditor,
+		Paragraph,
+		Essentials,
+		Heading,
+		Bold,
+		Italic
+	} = cloud.data.value.CKEditor;
+
+	return class TestEditor extends BaseEditor {
+		static builtinPlugins = [
+			Essentials,
+			Paragraph,
+			Heading,
+			Bold,
+			Italic
+		];
+	};
+} );
+</script>
+```
+
+In the example above, the ClassicEditor type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor&nbsp;5 types file but a synthetic TypeScript module providing type definitions for the editor. The `ckeditor5` package supplies the actual typings, which depend on the `@ckeditor/ckeditor5-react` package.
+
+Although this setup might seem complex, it prevents users from directly importing anything from the `ckeditor5` package, which could lead to duplicated code issues.
+
+#### Type definitions for premium features
+
+If you want to use types for premium features, you can import them similarly to the base editor types. Remember that you need to install the `ckeditor5-premium-features` package to use them. You can do it by running the following command:
+
+```bash
+npm install --save-dev ckeditor5-premium-features
+```
+
+After installing the package, you can import the types in the following way:
+
+```html
+<script setup>
+// ...
+import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium-features.d.ts';
+// ...
+</script>
+```
+
+## Known issues
+
+While type definitions for the base editor should be available out of the box, some bundlers do not install the `ckeditor5` package, which provides typing for the editor. If you encounter any issues with the type definitions, you can install the `ckeditor5` package manually:
+
+```bash
+npm install --save-dev ckeditor5
 ```
 
 ## Contributing and reporting issues

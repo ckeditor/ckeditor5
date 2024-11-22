@@ -192,7 +192,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, osName ] of os ) {
 				it( `should detect ${ osName } OS`, async () => {
-					sinon.stub( env, flag ).value( true );
+					mockFlag( flag );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -200,6 +200,12 @@ describe( 'getEditorUsageData()', () => {
 						os: osName
 					} );
 				} );
+			}
+
+			function mockFlag( mockFlag ) {
+				for ( const [ flag ] of os ) {
+					sinon.stub( env, flag ).value( flag === mockFlag );
+				}
 			}
 		} );
 
@@ -212,11 +218,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, browser ] of browsers ) {
 				it( `should detect ${ browser } browser`, async () => {
-					sinon.stub( env, flag ).value( true );
-
-					if ( flag !== 'isBlink' ) {
-						sinon.stub( env, 'isBlink' ).value( false );
-					}
+					mockFlag( flag );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -224,6 +226,12 @@ describe( 'getEditorUsageData()', () => {
 						browser
 					} );
 				} );
+			}
+
+			function mockFlag( mockFlag ) {
+				for ( const [ flag ] of browsers ) {
+					sinon.stub( env, flag ).value( flag === mockFlag );
+				}
 			}
 		} );
 	} );

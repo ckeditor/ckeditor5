@@ -1,6 +1,6 @@
 ---
 category: setup
-meta-title: Content Security Policy | CKEditor 5 documentation
+meta-title: Content Security Policy | CKEditor 5 Documentation
 meta-description: Learn about the CKEditor 5 Content Security Policy.
 order: 110
 ---
@@ -9,9 +9,17 @@ order: 110
 
 CKEditor&nbsp;5 is compatible with applications that use [<abbr title="Content Security Policy">CSP</abbr> rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) and helps developers build a secure web.
 
-## Recommended CSP configuration
+## Recommended CSP configuration for Cloud deployments
 
-The recommended CSP configuration that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
+The recommended CSP configuration for {@link getting-started/licensing/usage-based-billing#cloud-hosted Cloud deployments} that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
+
+```
+default-src 'none'; connect-src 'self'; script-src 'self' https://cdn.ckeditor.com https://proxy-event.ckeditor.com ; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *
+```
+
+## Recommended CSP configuration for self-hosted deployments
+
+The recommended CSP configuration for self-hosted deployments (npm/ZIP) that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
 
 ```
 default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *
@@ -29,7 +37,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance: `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor&nbsp;5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-	**Note**: If CKEditor&nbsp;5 is served from another host, for example the official CDN, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+	**Note**: If CKEditor&nbsp;5 is served from {@link getting-started/licensing/usage-based-billing#cloud-hosted Cloud}, make sure the value of `script-src` includes the required hosts, one for the CDN, and one for the {@link getting-started/licensing/usage-based-billing#license-check-and-usage-data license check server}: `script-src 'self' https://cdn.ckeditor.com https://proxy-event.ckeditor.com`.
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:
