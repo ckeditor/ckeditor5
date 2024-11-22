@@ -227,9 +227,10 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 			this._removeEmptyElements();
 
 			// Move all items that were converted in context tree to the document fragment.
-			for ( const item of Array.from( this._modelCursor.parent.getChildren() ) ) {
-				writer.append( item, documentFragment );
-			}
+			const parent = this._modelCursor.parent;
+			const children = parent._removeChildren( 0, parent.childCount );
+
+			documentFragment._insertChild( 0, children );
 
 			// Extract temporary markers elements from model and set as static markers collection.
 			( documentFragment as any ).markers = extractMarkersFromModelFragment( documentFragment, writer );
@@ -498,18 +499,26 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * as some elements might have become empty after other empty elements were removed from them.
 	 */
 	private _removeEmptyElements(): void {
-		let anyRemoved = false;
+		// For every parent, prepare an array of children (empty elements) to remove from it.
+		// Then, in next step, we will remove all children together, which is faster than removing them one by one.
+		const toRemove = new Map<ModelElement | ModelDocumentFragment, Array<ModelElement>>();
 
 		for ( const element of this._splitParts.keys() ) {
 			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
-				this.conversionApi.writer.remove( element );
+				const children = toRemove.get( element.parent! ) || [];
+
+				children.push( element );
 				this._splitParts.delete( element );
 
-				anyRemoved = true;
+				toRemove.set( element.parent!, children );
 			}
 		}
 
-		if ( anyRemoved ) {
+		for ( const [ parent, children ] of toRemove ) {
+			parent._removeChildrenArray( children );
+		}
+
+		if ( toRemove.size ) {
 			this._removeEmptyElements();
 		}
 	}

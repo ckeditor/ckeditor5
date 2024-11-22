@@ -1,6 +1,6 @@
 ---
 category: self-hosted
-meta-title: Compatibility with Laravel using a ZIP archive | CKEditor 5 documentation
+meta-title: Compatibility with Laravel using a ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Laravel using a ZIP archive.
 order: 70
 menu-title: Laravel
@@ -47,6 +47,15 @@ After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ck
 ```
 
 Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` file in the `resources/views` directory to import them. All the necessary markup is in the `index.html` file from the ZIP archive. You can copy and paste it into your template. Pay attention to the paths of the import map and CSS link &ndash; they should reflect your folder structure. The template should look similar to the one below:
+
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from ZIP:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
 
 ```html
 <!DOCTYPE html>

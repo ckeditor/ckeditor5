@@ -1,6 +1,6 @@
 ---
 menu-title: Multi-root integration
-meta-title: React rich text editor multi-root hook with CDN | CKEditor 5 documentation
+meta-title: React rich text editor multi-root hook with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with CDN.
 category: react-cdn
 order: 20
@@ -19,8 +19,6 @@ modified_at: 2024-04-25
 
 This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react-default-npm in this guide}.
 
-This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
-
 <info-box hint>
 	The multi-root editors in React are supported since version 6.2.0 of this package.
 
@@ -29,8 +27,10 @@ This guide assumes you already have a React project. If you want to create a new
 
 ## Quick start
 
+This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
+
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/setup/editor-types#multi-root-editor multi-root editor type}.
@@ -66,11 +66,10 @@ const MultiRootEditorDemo = withCKCloud(
 			Essentials,
 			Paragraph
 			Bold,
-			Italic,
-			Mention
+			Italic
 		} = cloud.CKEditor;
 
-		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+		const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 		class MultiRootEditor extends MultiRootEditorBase {
 			static builtinPlugins = [
@@ -78,14 +77,11 @@ const MultiRootEditorDemo = withCKCloud(
 				Paragraph,
 				Bold,
 				Italic,
-				Mention,
-				SlashCommand
+				FormatPainter
 			];
 
 			static defaultConfig = {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			};
 		}
 

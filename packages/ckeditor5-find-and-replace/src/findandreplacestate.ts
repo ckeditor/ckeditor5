@@ -118,7 +118,7 @@ export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin
 		} );
 
 		this.on<ObservableChangeEvent<ResultType | null>>( 'change:highlightedResult', ( ) => {
-			this.refreshHighlightOffset();
+			this.refreshHighlightOffset( model );
 		} );
 	}
 
@@ -149,18 +149,33 @@ export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin
 	/**
 	 * Refreshes the highlight result offset based on it's index within the result list.
 	 */
-	public refreshHighlightOffset(): void {
+	public refreshHighlightOffset( model: Model ): void {
 		const { highlightedResult, results } = this;
-		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
 
 		if ( highlightedResult ) {
-			this.highlightedOffset = Array.from( results )
-				.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
-				.indexOf( highlightedResult ) + 1;
+			this.highlightedOffset = sortSearchResultsByMarkerPositions( model, [ ...results ] ).indexOf( highlightedResult ) + 1;
 		} else {
 			this.highlightedOffset = 0;
 		}
 	}
+}
+
+/**
+ * Sorts search results by marker positions. Make sure that the results are sorted in the same order as they appear in the document
+ * to avoid issues with the `find next` command. Apparently, the order of the results in the state might be different than the order
+ * of the markers in the model.
+ */
+export function sortSearchResultsByMarkerPositions( model: Model, results: Array<ResultType> ): Array<ResultType> {
+	const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
+
+	// `compareWith` doesn't play well with multi-root documents, so we need to sort results by root name first
+	// and then sort them within each root. It prevents "random" order of results when the document has multiple roots.
+	// See more: https://github.com/ckeditor/ckeditor5/pull/17292#issuecomment-2442084549
+	return model.document.getRootNames().flatMap( rootName =>
+		results
+			.filter( result => result.marker!.getStart().root.rootName === rootName )
+			.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
+	);
 }
 
 /**

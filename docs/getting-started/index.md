@@ -2,7 +2,7 @@
 category: getting-started
 order: 10
 menu-title: Quick Start
-meta-title: CKEditor 5 Installation Quick Start | CKEditor 5 documentation
+meta-title: CKEditor 5 installation quick start | CKEditor 5 Documentation
 meta-description: Learn how to start with CKEditor 5, the modern JavaScript-rich text editor. Find installation guides, tutorials, and integration tips.
 ---
 
@@ -26,11 +26,11 @@ If your dive into using our WYSIWYG editor is only starting, find out how to kic
 
 Do you want to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
 
-* Integrate CKEditor&nbsp;5 with Angular using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm/ZIP}
-* Integrate CKEditor&nbsp;5 with React using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm/ZIP}
-* Integrate CKEditor&nbsp;5 with Next.js using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm/ZIP}
-* Integrate CKEditor&nbsp;5 with Vue.js 3.x using {@link getting-started/integrations-cdn/vuejs-v3 CDN} or {@link getting-started/integrations/vuejs-v3 npm/ZIP}
-* Integrate CKEditor&nbsp;5 with Vue.js 2.x using {@link getting-started/integrations/vuejs-v2 npm/ZIP}
+* Integrate CKEditor&nbsp;5 with Angular using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm}.
+* Integrate CKEditor&nbsp;5 with React using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm}.
+* Integrate CKEditor&nbsp;5 with Next.js using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm}.
+* Integrate CKEditor&nbsp;5 with Vue.js 3.x using {@link getting-started/integrations-cdn/vuejs-v3 CDN} or {@link getting-started/integrations/vuejs-v3 npm}.
+* Integrate CKEditor&nbsp;5 with Vue.js 2.x using {@link getting-started/integrations/vuejs-v2 npm}.
 
 However, integration steps for some more frameworks are also documented. Refer to their documentation on the left to learn how to use them.
 
