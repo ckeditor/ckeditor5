@@ -1,6 +1,6 @@
 ---
 category: setup
-meta-title: Getting and setting data | CKEditor 5 documentation
+meta-title: Getting and setting data | CKEditor 5 Documentation
 meta-description: Deep-dive into handling data with CKEditor 5.
 order: 10
 ---

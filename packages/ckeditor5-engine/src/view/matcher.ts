@@ -8,7 +8,6 @@
  */
 
 import type Element from './element.js';
-
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**

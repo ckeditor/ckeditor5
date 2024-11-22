@@ -25,6 +25,16 @@ export default class StylesMap implements ElementAttributeValue {
 	private _styles: Styles;
 
 	/**
+	 * Cached list of style names for faster access.
+	 */
+	private _cachedStyleNames: Array<string> | null = null;
+
+	/**
+	 * Cached list of expanded style names for faster access.
+	 */
+	private _cachedExpandedStyleNames: Array<string> | null = null;
+
+	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
 	 */
 	private readonly _styleProcessor: StylesProcessor;
@@ -201,6 +211,9 @@ export default class StylesMap implements ElementAttributeValue {
 	public set( styles: Styles ): void;
 
 	public set( nameOrObject: string | Styles, valueOrObject?: StyleValue ): void {
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
+
 		if ( isObject( nameOrObject ) ) {
 			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
 				this._styleProcessor.toNormalizedForm( key, value, this._styles );
@@ -240,6 +253,9 @@ export default class StylesMap implements ElementAttributeValue {
 	 */
 	public remove( names: ArrayOrItem<string> ): void {
 		for ( const name of toArray( names ) ) {
+			this._cachedStyleNames = null;
+			this._cachedExpandedStyleNames = null;
+
 			const path = toPath( name );
 
 			unset( this._styles, path );
@@ -413,12 +429,14 @@ export default class StylesMap implements ElementAttributeValue {
 		}
 
 		if ( expand ) {
-			return this._styleProcessor.getStyleNames( this._styles );
+			this._cachedExpandedStyleNames = this._cachedExpandedStyleNames || this._styleProcessor.getStyleNames( this._styles );
+
+			return this._cachedExpandedStyleNames;
 		}
 
-		const entries = this.getStylesEntries();
+		this._cachedStyleNames = this._cachedStyleNames || this.getStylesEntries().map( ( [ key ] ) => key );
 
-		return entries.map( ( [ key ] ) => key );
+		return this._cachedStyleNames;
 	}
 
 	/**
@@ -433,6 +451,8 @@ export default class StylesMap implements ElementAttributeValue {
 	 */
 	public clear(): void {
 		this._styles = {};
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
 	}
 
 	/**

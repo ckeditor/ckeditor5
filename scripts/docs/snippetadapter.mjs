@@ -558,7 +558,7 @@ function getPackageDependenciesPaths() {
 		absolute: true
 	};
 
-	return globSync( [ 'packages/*/node_modules', 'external/*/packages/*/node_modules' ], globOptions )
+	return globSync( [ 'packages/*/node_modules', 'external/ckeditor5-commercial/packages/*/node_modules' ], globOptions )
 		.map( p => upath.normalize( p ) );
 }
 

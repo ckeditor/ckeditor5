@@ -386,11 +386,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * The `licenseKey` property is missing in the editor configuration.
 				 *
-				 * 	* If you are using the editor in a commercial setup, please provide your license key.
-				 * 	* If you still need to acquire a key, please [contact us](https://ckeditor.com/contact/) or
-				 *	  [create a free account with a 14 day premium features trial](https://portal.ckeditor.com/checkout?plan=free).
-				 * 	* If you are using the editor under a GPL license or another license from our Open Source Initiative,
-				 * 	  use the 'GPL' license key instead.
+				 * * If you are using the editor in a commercial setup, please provide your license key.
+				 * * If you still need to acquire a key, please [contact us](https://ckeditor.com/contact/) or
+				 *   [create a free account with a 14 day premium features trial](https://portal.ckeditor.com/checkout?plan=free).
+				 * * If you are using the editor under a GPL license or another license from our Open Source Initiative,
+				 *   use the 'GPL' license key instead.
 				 *
 				 * ```js
 				 * ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -919,7 +919,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error invalid-license-key
 				 */
-				throw new CKEditorError( 'invalid-license-key', this );
+				throw new CKEditorError( 'invalid-license-key' );
 			}
 
 			if ( reason == 'expired' ) {
@@ -929,7 +929,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-expired
 				 */
-				throw new CKEditorError( 'license-key-expired', this );
+				throw new CKEditorError( 'license-key-expired' );
 			}
 
 			if ( reason == 'domainLimit' ) {
@@ -941,7 +941,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-domain-limit
 				 */
-				throw new CKEditorError( 'license-key-domain-limit', this );
+				throw new CKEditorError( 'license-key-domain-limit' );
 			}
 
 			if ( reason == 'featureNotAllowed' ) {
@@ -954,28 +954,29 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * @error license-key-plugin-not-allowed
 				 * @param {String} pluginName The plugin you tried to load.
 				 */
-				throw new CKEditorError( 'license-key-plugin-not-allowed', this, { pluginName } );
+				throw new CKEditorError( 'license-key-plugin-not-allowed', null, { pluginName } );
 			}
 
 			if ( reason == 'evaluationLimit' ) {
 				/**
 				 * You have exceeded the editor operation limit available for your evaluation license key.
 				 * Please restart the editor to continue using it.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-evaluation-limit
 				 */
-				throw new CKEditorError( 'license-key-evaluation-limit', this );
+				throw new CKEditorError( 'license-key-evaluation-limit' );
 			}
 
 			if ( reason == 'trialLimit' ) {
 				/**
 				 * You have exceeded the editor operation limit for your trial license key.
 				 * Please restart the editor to continue using it.
-				 * [@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
 				 *
 				 * @error license-key-trial-limit
 				 */
-				throw new CKEditorError( 'license-key-trial-limit', this );
+				throw new CKEditorError( 'license-key-trial-limit' );
 			}
 
 			if ( reason == 'developmentLimit' ) {
@@ -986,15 +987,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-development-limit
 				 */
-				throw new CKEditorError( 'license-key-development-limit', this );
+				throw new CKEditorError( 'license-key-development-limit' );
 			}
 
 			if ( reason == 'usageLimit' ) {
 				/**
 				 * You have reached the usage limit of your license key. This can occur in the following situations:
 				 *
-				 * 	* You are on a free subscription without a connected payment method and have exceeded the allowed usage threshold.
-				 * 	* Your account has overdue invoices and the grace period has ended.
+				 * * You are on a free subscription without a connected payment method and have exceeded the allowed usage threshold.
+				 * * Your account has overdue invoices and the grace period has ended.
 				 *
 				 * To extend the limit and restore access, please update the required details in the
 				 * [Customer Portal](https://portal.ckeditor.com) or
@@ -1002,24 +1003,24 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * @error license-key-usage-limit
 				 */
-				throw new CKEditorError( 'license-key-usage-limit', this );
+				throw new CKEditorError( 'license-key-usage-limit' );
 			}
 
 			if ( reason == 'distributionChannel' ) {
 				/**
 				 * Your license does not allow the current distribution channel.
 				 *
-				 * 	* With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
-				 * 	* With the CKEditor Cloud plans, you may use the editor via our CDN.
-				 * 	* With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
-				 * 	  or a ZIP package (self-hosted) or Cloud (CDN)
+				 * * With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
+				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
+				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
+				 *   or a ZIP package (self-hosted) or Cloud (CDN)
 				 *
 				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
 				 *
 				 * @error license-key-invalid-distribution-channel
 				 */
-				throw new CKEditorError( 'license-key-invalid-distribution-channel', this );
+				throw new CKEditorError( 'license-key-invalid-distribution-channel' );
 			}
 
 			/* istanbul ignore next -- @preserve */
