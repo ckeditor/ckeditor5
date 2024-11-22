@@ -7,11 +7,12 @@
  * @module emoji/emojilibraryintegration
  */
 
+import { Database } from 'emoji-picker-element';
+import { formatEmojiId, getShowAllEmojiId } from './utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
-
-import { Database } from 'emoji-picker-element';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
+
 // @ts-expect-error This import works.
 import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 
@@ -22,7 +23,6 @@ import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
  */
 export default class EmojiLibraryIntegration extends Plugin {
 	private localDataUrl!: string;
-	private emojiDatabase!: Database;
 
 	/**
 	 * @inheritDoc
@@ -48,23 +48,32 @@ export default class EmojiLibraryIntegration extends Plugin {
 	}
 
 	/**
-	 * Feed function for mention config.
+	 * Returns feed function for mention config.
 	 *
 	 * @public
 	 */
-	public queryEmoji( searchQuery: string ): Promise<Array<MentionFeedObjectItem>> {
-		this.emojiDatabase = new Database( {
+	public getQueryEmojiFn( queryLimit: number ): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
+		const emojiDatabase = new Database( {
 			dataSource: this.localDataUrl
 		} );
 
-		return this.emojiDatabase.getEmojiBySearchQuery( searchQuery )
-			.then( queryResult => {
-				return ( queryResult as Array<NativeEmoji> ).map( emoji => {
-					return {
-						id: `emoji:${ emoji.annotation.replace( / /g, '_' ) }:`,
-						text: emoji.unicode
-					};
+		return async ( searchQuery: string ) => {
+			const processedQuery = await emojiDatabase.getEmojiBySearchQuery( searchQuery )
+				.then( queryResult => {
+					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
+						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
+
+						return {
+							id: formatEmojiId( id ),
+							text: emoji.unicode
+						};
+					} );
 				} );
-			} );
+
+			return [
+				...processedQuery.filter( ( item, index ) => index < queryLimit - 1 ),
+				{ id: getShowAllEmojiId() }
+			];
+		};
 	}
 }

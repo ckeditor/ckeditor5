@@ -46,6 +46,7 @@ export default class Emoji extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		// TODO: is this needed?
 		editor.config.define( 'emoji', {
 			dropdownLimit: 10
 		} );

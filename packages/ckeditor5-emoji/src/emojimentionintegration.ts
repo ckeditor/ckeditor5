@@ -9,6 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiLibraryIntegration from './emojilibraryintegration.js';
+import { removeEmojiPrefix, getShowAllEmojiId, isEmojiId, DEFAULT_DROPDOWN_LIMIT } from './utils.js';
 
 import {
 	type MentionFeed,
@@ -21,6 +22,8 @@ import {
  * @internal
  */
 export default class EmojiMentionIntegration extends Plugin {
+	private emojiDropdownLimit: number;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -48,6 +51,8 @@ export default class EmojiMentionIntegration extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		this.emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' ) || DEFAULT_DROPDOWN_LIMIT;
+
 		this._setupMentionConfiguration();
 	}
 
@@ -71,9 +76,9 @@ export default class EmojiMentionIntegration extends Plugin {
 		config.push( {
 			marker: ':',
 			minimumCharacters: 1,
-			dropdownLimit: editor.config.get( 'emoji.dropdownLimit' ) || Infinity,
+			dropdownLimit: this.emojiDropdownLimit,
 			itemRenderer: this._customItemRenderer,
-			feed: emojiLibraryIntegration.queryEmoji
+			feed: emojiLibraryIntegration.getQueryEmojiFn( this.emojiDropdownLimit )
 		} );
 
 		editor.config.set( 'mention.feeds', config );
@@ -89,9 +94,13 @@ export default class EmojiMentionIntegration extends Plugin {
 
 		itemElement.classList.add( 'custom-item' );
 		itemElement.id = `mention-list-item-id-${ item.id }`;
-		itemElement.textContent = `${ item.text } ${ item.id.replace( 'emoji:', ':' ) }`;
 		itemElement.style.width = '100%';
 		itemElement.style.display = 'block';
+
+		itemElement.textContent = item.id === getShowAllEmojiId() ?
+			// TODO: Use `t()` here.
+			'See more...' :
+			`${ item.text } ${ removeEmojiPrefix( item.id ) }`;
 
 		return itemElement;
 	}
@@ -105,12 +114,16 @@ export default class EmojiMentionIntegration extends Plugin {
 		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
-			if ( eventData.mention.id.startsWith( 'emoji:' ) ) {
-				this.editor.model.change( () => {
-					this.editor.execute( 'insertEmoji', eventData.text, eventData.range );
+			if ( eventData.mention.id === getShowAllEmojiId() ) {
+				console.log( 'SHOWING EMOJI WINDOW' );
 
-					event.stop();
+				event.stop();
+			} else if ( isEmojiId( eventData.mention.id ) ) {
+				this.editor.model.change( () => {
+					this.editor.execute( 'insertEmoji', eventData.mention.text, eventData.range );
 				} );
+
+				event.stop();
 			}
 		}, { priority: 'high' } );
 	}

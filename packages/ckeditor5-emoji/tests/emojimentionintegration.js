@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Emoji from '../src/emoji.js';
 import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
 import EmojiMentionIntegration from '../src/emojimentionintegration.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 describe( 'EmojiMentionIntegration', () => {
 	let editor, editorElement;
@@ -18,8 +21,13 @@ describe( 'EmojiMentionIntegration', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Emoji, Mention ],
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [
+				Emoji,
+				Paragraph,
+				Essentials,
+				Mention
+			],
 			emoji: {
 				dropdownLimit: 10
 			}
@@ -85,12 +93,44 @@ describe( 'EmojiMentionIntegration', () => {
 			expect( item.style.width ).to.equal( '100%' );
 			expect( item.style.display ).to.equal( 'block' );
 		} );
+
+		it( 'should render the show all emoji item properly', () => {
+			const item = itemRenderer( { id: 'emoji:__SHOW_ALL_EMOJI__:' } );
+
+			expect( item.nodeName ).to.equal( 'SPAN' );
+			expect( Array.from( item.classList ) ).to.deep.equal( [ 'custom-item' ] );
+			expect( item.id ).to.equal( 'mention-list-item-id-emoji:__SHOW_ALL_EMOJI__:' );
+			expect( item.textContent ).to.equal( 'See more...' );
+			expect( item.style.width ).to.equal( '100%' );
+			expect( item.style.display ).to.equal( 'block' );
+		} );
 	} );
 
-	// TODO: fix
-	describe.skip( '_overrideMentionExecuteListener()', () => {
-		it( 'overrides the mention command execution', () => {
-			editor.commands.execute( 'mention', { mention: { id: 'foo', text: 'bar' } } );
+	describe( '_overrideMentionExecuteListener()', () => {
+		it( 'overrides the mention command execution when inserting an emoji', () => {
+			setModelData( editor.model, '<paragraph>[Hello world!]</paragraph>' );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[Hello world!]</paragraph>' );
+
+			const range = editor.model.document.selection.getFirstRange();
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:foo:', text: 'bar' } } );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
+		} );
+
+		it( 'overrides the mention command execution when triggering show all emoji button', () => {
+			const consoleStub = sinon.stub( console, 'log' );
+
+			setModelData( editor.model, '<paragraph>[Hello world!]</paragraph>' );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[Hello world!]</paragraph>' );
+
+			const range = editor.model.document.selection.getFirstRange();
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:' } } );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[Hello world!]</paragraph>' );
+
+			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'SHOWING EMOJI WINDOW' );
 		} );
 	} );
 } );
