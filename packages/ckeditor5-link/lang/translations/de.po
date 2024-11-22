@@ -61,4 +61,4 @@ msgstr "Linkauswahl aufheben"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Zum Ziel scrollen"

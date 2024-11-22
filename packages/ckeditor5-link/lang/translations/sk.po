@@ -61,4 +61,4 @@ msgstr "Presunúť sa mimo odkazu"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Prejsť na cieľ"

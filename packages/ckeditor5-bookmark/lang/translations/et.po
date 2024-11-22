@@ -13,44 +13,44 @@ msgstr ""
 
 msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
 msgid "Bookmark"
-msgstr ""
+msgstr "Järjehoidja"
 
 msgctxt "The button in the bookmark insert form."
 msgid "Insert"
-msgstr ""
+msgstr "Sisesta"
 
 msgctxt "The button in the bookmark update form."
 msgid "Update"
-msgstr ""
+msgstr "Uuenda"
 
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
-msgstr ""
+msgstr "Muuda järjehoidjat"
 
 msgctxt "Toolbar button tooltip for bookmark remove button."
 msgid "Remove bookmark"
-msgstr ""
+msgstr "Eemalda järjehoidja"
 
 msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
 msgid "Bookmark name"
-msgstr ""
+msgstr "Järjehoidja nimi"
 
 msgctxt "The description of bookmark input in the bookmark insert form."
 msgid "Enter the bookmark name without spaces."
-msgstr ""
+msgstr "Sisestage järjehoidja nimi ilma tühikuteta."
 
 msgctxt "The error message. Displayed when the bookmark name is empty."
 msgid "Bookmark must not be empty."
-msgstr ""
+msgstr "Järjehoidja väli ei tohi olla tühi."
 
 msgctxt "The error message. Displayed when provided name includes spaces."
 msgid "Bookmark name cannot contain space characters."
-msgstr ""
+msgstr "Järjehoidja nimi ei tohi sisaldada tühikuid."
 
 msgctxt "The error message. Displayed when provided name already exists."
 msgid "Bookmark name already exists."
-msgstr ""
+msgstr "Järjehoidja nimi on juba olemas."
 
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
-msgstr ""
+msgstr "järjehoidja vidin"

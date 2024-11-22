@@ -61,4 +61,4 @@ msgstr "Siirrä linkin ulkopuolelle"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Etsi kohde vierittämällä"

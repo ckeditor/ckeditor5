@@ -61,4 +61,4 @@ msgstr "ย้ายออกจากลิงก์"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "เลื่อนไปยังเป้าหมาย"

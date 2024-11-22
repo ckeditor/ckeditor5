@@ -61,4 +61,4 @@ msgstr "Sair de uma ligação"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Deslize até ao destino"

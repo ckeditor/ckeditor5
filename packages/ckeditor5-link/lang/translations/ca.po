@@ -61,4 +61,4 @@ msgstr "Surt d'un enllaç"
 
 msgctxt "Button scrolling to the link target."
 msgid "Scroll to target"
-msgstr ""
+msgstr "Desplaça't fins a la destinació"
