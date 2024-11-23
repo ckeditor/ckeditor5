@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
-import type { Range } from 'ckeditor5/src/engine.js';
+import { LivePosition, type Range } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
 import { isLinkableElement } from './utils.js';
@@ -175,12 +175,18 @@ export default class LinkCommand extends Command {
 					return range;
 				}
 
-				if ( !displayedText ) {
-					displayedText = linkHref == linkText ? href : linkText;
+				// Make a copy not to override the command param value.
+				let newText = displayedText;
+
+				if ( !newText ) {
+					// Replace the link text with the new href if previously href was equal to text.
+					// For example: `<a href="http://ckeditor.com/">http://ckeditor.com/</a>`.
+					newText = linkHref && linkHref == linkText ? href : linkText;
 				}
 
-				if ( displayedText != linkText ) {
-					range = model.insertContent( writer.createText( displayedText ), range );
+				// Only if needed.
+				if ( newText != linkText ) {
+					range = model.insertContent( writer.createText( newText ), range );
 				}
 
 				return range;
@@ -196,7 +202,6 @@ export default class LinkCommand extends Command {
 					let linkRange = findAttributeRange( position, 'linkHref', linkHref, model );
 
 					linkRange = updateLinkTextIfNeeded( linkRange, linkHref );
-
 					updateLinkAttributes( linkRange );
 
 					// Put the selection at the end of the updated link.
@@ -231,7 +236,8 @@ export default class LinkCommand extends Command {
 
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
 				// omitting nodes where the `linkHref` attribute is disallowed.
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
+				const selectionRanges = Array.from( selection.getRanges() );
+				const ranges = model.schema.getValidRanges( selectionRanges, 'linkHref' );
 
 				// But for the first, check whether the `linkHref` attribute is allowed on selected blocks (e.g. the "image" element).
 				const allowedRanges = [];
@@ -253,14 +259,30 @@ export default class LinkCommand extends Command {
 					}
 				}
 
+				// Store the selection ranges in a pseudo live range array (stickiness to the outside of the range).
+				const stickyPseudoRanges = selectionRanges.map( range => ( {
+					start: LivePosition.fromPosition( range.start, 'toPrevious' ),
+					end: LivePosition.fromPosition( range.end, 'toNext' )
+				} ) );
+
+				// Update or set links (including text update if needed).
 				for ( let range of rangesToUpdate ) {
-					const linkHref = ( range.start.textNode || range.start.nodeAfter! ).getAttribute( 'linkHref' ) as string;
+					const linkHref = ( range.start.textNode || range.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
 
 					range = updateLinkTextIfNeeded( range, linkHref );
 					updateLinkAttributes( range );
 				}
 
-				// TODO writer.setSelection( ... ); as the original selection got trimmed by replacing content
+				// The original selection got trimmed by replacing content so we need to restore it.
+				writer.setSelection( stickyPseudoRanges.map( pseudoRange => {
+					const start = pseudoRange.start.toPosition();
+					const end = pseudoRange.end.toPosition();
+
+					pseudoRange.start.detach();
+					pseudoRange.end.detach();
+
+					return model.createRange( start, end );
+				} ) );
 			}
 		} );
 	}
