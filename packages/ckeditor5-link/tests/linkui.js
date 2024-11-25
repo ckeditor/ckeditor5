@@ -2075,55 +2075,46 @@ describe( 'LinkUI', () => {
 				const command = editor.commands.get( 'link' );
 
 				expect( formView.urlInputView.fieldView.value ).to.be.undefined;
-				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'o' );
 
 				command.value = 'http://cksource.com';
 				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
 			} );
 
-			it( 'should execute link command on formView#submit event', () => {
-				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			it( 'should bind formView.displayedTextInputView#value to LinkUI#selectedLinkableText', () => {
+				linkUIFeature.selectedLinkableText = 'foo';
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'foo' );
+				expect( formView.displayedTextInputView.isEnabled ).to.be.true;
 
-				formView.urlInputView.fieldView.value = 'http://ckeditor.com';
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
-				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'o' );
+				linkUIFeature.selectedLinkableText = undefined;
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( undefined );
+				expect( formView.displayedTextInputView.isEnabled ).to.be.false;
 
-				formView.urlInputView.fieldView.value = 'http://cksource.com';
-				formView.fire( 'submit' );
-
-				expect( executeSpy.calledOnce ).to.be.true;
-				expect( executeSpy.calledWithExactly(
-					'link',
-					'http://cksource.com',
-					{
-						linkDecorator1: false,
-						linkDecorator2: true,
-						linkDecorator3: false
-					},
-					'o'
-				) ).to.be.true;
+				linkUIFeature.selectedLinkableText = 'bar';
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'bar' );
+				expect( formView.displayedTextInputView.isEnabled ).to.be.true;
 			} );
 
 			it( 'should execute link command on formView#submit event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 				formView.urlInputView.fieldView.value = 'http://ckeditor.com';
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
-				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'o' );
+				formView.displayedTextInputView.fieldView.value = 'CKEditor 5';
 
-				formView.urlInputView.fieldView.value = 'http://cksource.com';
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'CKEditor 5' );
+
 				formView.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.be.true;
 				expect( executeSpy.calledWithExactly(
 					'link',
-					'http://cksource.com',
+					'http://ckeditor.com',
 					{
 						linkDecorator1: false,
 						linkDecorator2: true,
 						linkDecorator3: false
 					},
-					'o'
+					'CKEditor 5'
 				) ).to.be.true;
 			} );
 
@@ -2283,6 +2274,10 @@ describe( 'LinkUI', () => {
 					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 					setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
+
+					linkUIFeature._showUI( true ); // ToolbarView
+					linkUIFeature._showUI( true ); // FormView
+
 					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
 					expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'ooba' );
 					expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
@@ -2305,7 +2300,7 @@ describe( 'LinkUI', () => {
 							linkDecorator2: true,
 							linkDecorator3: false
 						},
-						'ooba'
+						undefined // Not modified displayed text.
 					);
 				} );
 
