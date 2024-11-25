@@ -29,7 +29,6 @@ import {
 
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
-import { findAttributeRange } from 'ckeditor5/src/typing.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
@@ -1128,14 +1127,14 @@ export default class LinkUI extends Plugin {
 		const editing = this.editor.editing;
 		const selectedLink = this._getSelectedLinkElement();
 
-		if ( selectedLink ) {
-			const linkRange = editing.mapper.toModelRange( editing.view.createRangeOn( selectedLink ) );
-			const linkHref = ( linkRange.start.textNode || linkRange.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
-
-			return extractTextFromLinkRange( findAttributeRange( linkRange.start, 'linkHref', linkHref, model ) );
+		if ( !selectedLink ) {
+			return extractTextFromLinkRange( model.document.selection.getFirstRange()! );
 		}
 
-		return extractTextFromLinkRange( model.document.selection.getFirstRange()! );
+		const viewLinkRange = editing.view.createRangeOn( selectedLink );
+		const linkRange = editing.mapper.toModelRange( viewLinkRange );
+
+		return extractTextFromLinkRange( linkRange );
 	}
 
 	/**
