@@ -16,8 +16,8 @@
     "ckeditor5": "43.3.1",
     "@ckeditor/ckeditor5-core": "43.3.1",
     "@ckeditor/ckeditor5-typing": "43.3.1",
-    "emoji-picker-element": "^1.22.8",
-    "emoji-picker-element-data": "^1.6.1"
+    "emoji-picker-element": "1.25.0",
+    "emoji-picker-element-data": "1.6.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
