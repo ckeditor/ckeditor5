@@ -518,9 +518,10 @@ export default class LinkUI extends Plugin {
 				this._addActionsView();
 			}
 
-			// Be sure panel with link is visible.
+			// Be sure panel with link is visible and focused.
 			if ( forceVisible ) {
 				this._balloon.showStack( 'main' );
+				this.actionsView!.focus();
 			}
 		}
 

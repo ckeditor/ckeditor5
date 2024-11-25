@@ -475,9 +475,10 @@ export default class BookmarkUI extends Plugin {
 				this._addActionsView();
 			}
 
-			// Be sure panel with bookmark is visible.
+			// Be sure panel with bookmark is visible and focused.
 			if ( forceVisible ) {
 				this._balloon.showStack( 'main' );
+				this.actionsView!.focus();
 			}
 		}
 
