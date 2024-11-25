@@ -14,3 +14,7 @@ msgstr ""
 msgctxt "Button appearing at the end of the list of results of emoji search."
 msgid "Show all emoji..."
 msgstr "Show all emoji..."
+
+msgctxt "Placeholder label when the search list is empty."
+msgid "No results..."
+msgstr "No results..."

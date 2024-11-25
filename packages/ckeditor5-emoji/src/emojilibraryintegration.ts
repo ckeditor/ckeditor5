@@ -8,7 +8,7 @@
  */
 
 import { Database } from 'emoji-picker-element';
-import { formatEmojiId, getShowAllEmojiId } from './utils.js';
+import { formatEmojiId, getShowAllEmojiId, getNoResultsEmojiId } from './utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
@@ -22,7 +22,7 @@ import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
  * @internal
  */
 export default class EmojiLibraryIntegration extends Plugin {
-	private localDataUrl!: string;
+	declare private localDataUrl: string;
 
 	/**
 	 * @inheritDoc
@@ -48,9 +48,14 @@ export default class EmojiLibraryIntegration extends Plugin {
 	}
 
 	/**
-	 * Returns feed function for mention config.
-	 *
-	 * @public
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		URL.revokeObjectURL( this.localDataUrl );
+	}
+
+	/**
+	 * Returns the `feed()` callback for mention config.
 	 */
 	public getQueryEmojiFn( queryLimit: number ): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
 		const emojiDatabase = new Database( {
@@ -58,6 +63,11 @@ export default class EmojiLibraryIntegration extends Plugin {
 		} );
 
 		return async ( searchQuery: string ) => {
+			// `getEmojiBySearchQuery()` returns nothing when querying with a single character.
+			if ( searchQuery.length < 2 ) {
+				return [];
+			}
+
 			const processedQuery = await emojiDatabase.getEmojiBySearchQuery( searchQuery )
 				.then( queryResult => {
 					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
@@ -70,10 +80,18 @@ export default class EmojiLibraryIntegration extends Plugin {
 					} );
 				} );
 
-			return [
+			const filteredResults = [
 				...processedQuery.filter( ( item, index ) => index < queryLimit - 1 ),
 				{ id: getShowAllEmojiId() }
 			];
+
+			if ( filteredResults.length === 1 ) {
+				filteredResults.unshift(
+					{ id: getNoResultsEmojiId() }
+				);
+			}
+
+			return filteredResults;
 		};
 	}
 }

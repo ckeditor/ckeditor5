@@ -45,17 +45,29 @@ describe( 'EmojiLibraryIntegration', () => {
 
 		beforeEach( () => {
 			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
-			// const classInstance = editor.plugins.get( EmojiLibraryIntegration.pluginName );
-
-			// queryEmoji = message => feed.call( classInstance, message );
 		} );
 
 		it( 'should be a function', () => {
 			expect( queryEmoji ).to.be.instanceOf( Function );
 		} );
 
+		it( 'should return nothing when querying a single character', () => {
+			return queryEmoji( 'a' ).then( queryResult => {
+				expect( queryResult ).to.deep.equal( [] );
+			} );
+		} );
+
+		it( 'should return note informing that nothing is found when query found nothing', () => {
+			return queryEmoji( '!@#$%^&*()' ).then( queryResult => {
+				expect( queryResult ).to.deep.equal( [
+					{ id: 'emoji:__NO_RESULTS__:' },
+					{ id: 'emoji:__SHOW_ALL_EMOJI__:' }
+				] );
+			} );
+		} );
+
 		it( 'should query single emoji properly properly', () => {
-			return queryEmoji( 'poland' ).then( queryResult => {
+			return queryEmoji( 'flag_poland' ).then( queryResult => {
 				expect( queryResult ).to.deep.equal( [
 					{ id: 'emoji:flag_poland:', text: '🇵🇱' },
 					{ id: 'emoji:__SHOW_ALL_EMOJI__:' }
@@ -65,7 +77,7 @@ describe( 'EmojiLibraryIntegration', () => {
 
 		it( 'should query multiple emojis properly properly', () => {
 			return queryEmoji( 'face' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 10 );
+				expect( queryResult.length ).to.equal( 6 );
 
 				queryResult.forEach( item => {
 					expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
