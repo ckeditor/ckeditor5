@@ -259,11 +259,12 @@ export default class LinkUI extends Plugin {
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
 
-		formView.displayedTextInputView.fieldView.bind( 'value' ).to( linkCommand, 'text' );
+		// formView.displayedTextInputView.fieldView.bind( 'value' ).to( linkCommand, 'text' );
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
-		formView.displayedTextInputView.bind( 'isEnabled' ).to( linkCommand, 'canHaveDisplayedText' );
+		// formView.displayedTextInputView.bind( 'isEnabled' ).to( linkCommand, 'canHaveDisplayedText' );
+		formView.displayedTextInputView.isEnabled = true;
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 		// Disable the "save" button if the command is disabled.
@@ -1026,23 +1027,31 @@ export default class LinkUI extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 		const model = this.editor.model;
-		let target: PositionOptions[ 'target' ];
 
 		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
 			// There are cases when we highlight selection using a marker (#7705, #4721).
-			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME )! );
-			const newRange = view.createRange(
-				view.createPositionBefore( markerViewElements[ 0 ] ),
-				view.createPositionAfter( markerViewElements[ markerViewElements.length - 1 ] )
-			);
+			const markerViewElements = this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME );
 
-			target = view.domConverter.viewRangeToDom( newRange );
-		} else {
-			// Make sure the target is calculated on demand at the last moment because a cached DOM range
-			// (which is very fragile) can desynchronize with the state of the editing view if there was
-			// any rendering done in the meantime. This can happen, for instance, when an inline widget
-			// gets unlinked.
-			target = () => {
+			// Marker could be removed by link text override and end up in the graveyard.
+			if ( markerViewElements ) {
+				const markerViewElementsArray = Array.from( markerViewElements );
+				const newRange = view.createRange(
+					view.createPositionBefore( markerViewElementsArray[ 0 ] ),
+					view.createPositionAfter( markerViewElementsArray[ markerViewElementsArray.length - 1 ] )
+				);
+
+				return {
+					target: view.domConverter.viewRangeToDom( newRange )
+				};
+			}
+		}
+
+		// Make sure the target is calculated on demand at the last moment because a cached DOM range
+		// (which is very fragile) can desynchronize with the state of the editing view if there was
+		// any rendering done in the meantime. This can happen, for instance, when an inline widget
+		// gets unlinked.
+		return {
+			target: () => {
 				const targetLink = this._getSelectedLinkElement();
 
 				return targetLink ?
@@ -1050,10 +1059,8 @@ export default class LinkUI extends Plugin {
 					view.domConverter.mapViewToDom( targetLink )! :
 					// Otherwise attach panel to the selection.
 					view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
-			};
-		}
-
-		return { target };
+			}
+		};
 	}
 
 	/**
