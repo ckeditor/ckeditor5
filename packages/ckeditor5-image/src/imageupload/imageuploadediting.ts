@@ -371,6 +371,10 @@ export default class ImageUploadEditing extends Plugin {
 			.then( () => {
 				const promise = loader.upload();
 
+				if ( editor.ui ) {
+					editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
+				}
+
 				for ( const imageElement of imageUploadElements.get( loader.id )! ) {
 					// Force re–paint in Safari. Without it, the image will display with a wrong size.
 					// https://github.com/ckeditor/ckeditor5/issues/1975
@@ -406,10 +410,6 @@ export default class ImageUploadEditing extends Plugin {
 					model.enqueueChange( { isUndoable: false }, writer => {
 						writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
 					} );
-				}
-
-				if ( editor.ui ) {
-					editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
 				}
 
 				return promise;
