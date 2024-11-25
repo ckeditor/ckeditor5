@@ -13,7 +13,7 @@ import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
 import { LivePosition, type Range } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
-import { isLinkableElement } from './utils.js';
+import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
 import type ManualDecorator from './utils/manualdecorator.js';
 
 /**
@@ -323,23 +323,4 @@ export default class LinkCommand extends Command {
 
 		return true;
 	}
-}
-
-/**
- * Returns a text of a link range.
- *
- * If the returned value is `null`, it means that the selection contains elements other than text nodes.
- */
-function extractTextFromLinkRange( range: Range ): string | undefined {
-	let text = '';
-
-	for ( const item of range.getItems() ) {
-		if ( !item.is( '$text' ) && !item.is( '$textProxy' ) ) {
-			return;
-		}
-
-		text += item.data;
-	}
-
-	return text;
 }

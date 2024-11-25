@@ -29,6 +29,7 @@ import {
 
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
+import { findAttributeRange } from 'ckeditor5/src/typing.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
@@ -44,6 +45,7 @@ import {
 	isLinkElement,
 	isScrollableToTarget,
 	scrollToTarget,
+	extractTextFromLinkRange,
 	LINK_KEYSTROKE
 } from './utils.js';
 
@@ -82,6 +84,17 @@ export default class LinkUI extends Plugin {
 	public advancedView: LinkAdvancedView | null = null;
 
 	/**
+	 * The selected text of the link or text that is selected and can become a link.
+	 *
+	 * Note: It is `undefined` when the current selection does not allow for text,
+	 * for example any non text node is selected or multiple blocks are selected.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public selectedLinkableText: string | undefined;
+
+	/**
 	 * The contextual balloon plugin instance.
 	 */
 	private _balloon!: ContextualBalloon;
@@ -113,6 +126,8 @@ export default class LinkUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = this.editor.t;
+
+		this.set( 'selectedLinkableText', undefined );
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -259,12 +274,11 @@ export default class LinkUI extends Plugin {
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
 
-		// formView.displayedTextInputView.fieldView.bind( 'value' ).to( linkCommand, 'text' );
+		formView.displayedTextInputView.fieldView.bind( 'value' ).to( this, 'selectedLinkableText' );
+		formView.displayedTextInputView.bind( 'isEnabled' ).to( this, 'selectedLinkableText', value => value !== undefined );
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
-		// formView.displayedTextInputView.bind( 'isEnabled' ).to( linkCommand, 'canHaveDisplayedText' );
-		formView.displayedTextInputView.isEnabled = true;
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 		// Disable the "save" button if the command is disabled.
@@ -279,14 +293,15 @@ export default class LinkUI extends Plugin {
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			if ( formView.isValid() ) {
-				const { value } = formView.urlInputView.fieldView.element!;
-				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
+				const url = formView.urlInputView.fieldView.element!.value;
+				const parsedUrl = addLinkProtocolIfApplicable( url, defaultProtocol );
+				const displayedText = formView.displayedTextInputView.fieldView.element!.value;
 
 				editor.execute(
 					'link',
 					parsedUrl,
 					this._getDecoratorSwitchesState(),
-					formView.displayedTextInputView.fieldView.element!.value
+					displayedText !== this.selectedLinkableText ? displayedText : undefined
 				);
 
 				this._closeFormView();
@@ -706,7 +721,10 @@ export default class LinkUI extends Plugin {
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView!.displayedTextInputView.fieldView.value = linkCommand.text || '';
+
+		this.selectedLinkableText = this._getSelectedLinkableText();
+
+		this.formView!.displayedTextInputView.fieldView.value = this.selectedLinkableText || '';
 		this.formView!.urlInputView.fieldView.value = linkCommand.value || '';
 
 		// Select input when form view is currently visible.
@@ -748,6 +766,8 @@ export default class LinkUI extends Plugin {
 		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
 		// when the user cancels the editing form.
 		linkCommand.restoreManualDecoratorStates();
+
+		this.selectedLinkableText = undefined;
 
 		if ( linkCommand.value !== undefined ) {
 			this._removeAdvancedView();
@@ -1098,6 +1118,24 @@ export default class LinkUI extends Plugin {
 				return null;
 			}
 		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getSelectedLinkableText(): string | undefined {
+		const model = this.editor.model;
+		const editing = this.editor.editing;
+		const selectedLink = this._getSelectedLinkElement();
+
+		if ( selectedLink ) {
+			const linkRange = editing.mapper.toModelRange( editing.view.createRangeOn( selectedLink ) );
+			const linkHref = ( linkRange.start.textNode || linkRange.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
+
+			return extractTextFromLinkRange( findAttributeRange( linkRange.start, 'linkHref', linkHref, model ) );
+		}
+
+		return extractTextFromLinkRange( model.document.selection.getFirstRange()! );
 	}
 
 	/**
