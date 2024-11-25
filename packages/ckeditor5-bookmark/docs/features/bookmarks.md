@@ -17,7 +17,7 @@ Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/book
 To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In the example below it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
 
 <info-box info>
-	The Bookmarks feature is production-ready but does not yet include integration with the linking experience yet (see [#17230](https://github.com/ckeditor/ckeditor5/issues/17230)).
+	The Bookmarks feature is production-ready but does not include integration with the linking experience yet (see [#17230](https://github.com/ckeditor/ckeditor5/issues/17230)).
 	
 	Integrators should guide their users on linking to bookmarks using the `#` anchors.
 </info-box>
