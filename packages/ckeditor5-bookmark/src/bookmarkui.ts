@@ -478,7 +478,15 @@ export default class BookmarkUI extends Plugin {
 			// Be sure panel with bookmark is visible and focused.
 			if ( forceVisible ) {
 				this._balloon.showStack( 'main' );
-				this.actionsView!.focus();
+
+				// While it'd be better to focus it using FocusCycler in the view element, it's not possible
+				// because focusing it like that would cause the tooltip and focus border to show on the
+				// button, which is not desired. So we focus it here, to explicit tell browser to move focus to the
+				// balloon, but we don't want to show the focus border.
+				//
+				// It should be called only if ballon is shown using toolbar button, as focusing the balloon while
+				// triggering the bookmark from the editable would cause the focus to be lost from such editable.
+				this.actionsView!.element!.focus();
 			}
 		}
 
