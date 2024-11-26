@@ -10,7 +10,6 @@ import { Typing } from '@ckeditor/ckeditor5-typing';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Emoji from '../src/emoji.js';
 import EmojiMentionIntegration from '../src/emojimentionintegration.js';
-import InsertEmojiCommand from '../src/insertemojicommand.js';
 
 describe( 'Emoji', () => {
 	let editor, editorElement;
@@ -48,9 +47,5 @@ describe( 'Emoji', () => {
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
 		expect( Emoji.isPremiumPlugin ).to.be.false;
-	} );
-
-	it( 'should register the "style" command', () => {
-		expect( editor.commands.get( 'insertEmoji' ) ).to.be.instanceOf( InsertEmojiCommand );
 	} );
 } );

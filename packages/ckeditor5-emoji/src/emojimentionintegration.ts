@@ -148,8 +148,8 @@ export default class EmojiMentionIntegration extends Plugin {
 				console.log( 'SHOWING EMOJI WINDOW' );
 			}
 
-			this.editor.model.change( () => {
-				this.editor.execute( 'insertEmoji', textToInsert, eventData.range );
+			this.editor.model.change( writer => {
+				this.editor.model.insertContent( writer.createText( textToInsert ), eventData.range );
 			} );
 
 			event.stop();
