@@ -189,15 +189,19 @@ export interface LinkConfig {
 	 *
 	 * * `'linkPreview'`,
 	 * * `'editLink'`,
+	 * * `'linkProperties'`
 	 * * `'unlink'`.
 	 *
 	 * The default configuration for link toolbar is:
 	 *
 	 * ```ts
 	 * const linkConfig = {
-	 * 	toolbar: [ 'linkPreview', '|', 'editLink', 'unlink' ]
+	 * 	toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
 	 * };
 	 * ```
+	 *
+	 * The `linkProperties` toolbar item is only available when at least one manual decorator is defined in the
+	 * {@link module:link/linkconfig~LinkConfig#decorators decorators configuration}.
 	 *
 	 * Of course, the same buttons can also be used in the
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
