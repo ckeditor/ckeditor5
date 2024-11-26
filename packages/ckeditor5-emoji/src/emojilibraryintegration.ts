@@ -80,7 +80,7 @@ export default class EmojiLibraryIntegration extends Plugin {
 				} );
 
 			return [
-				...processedQuery.filter( ( item, index ) => index < queryLimit - 1 ),
+				...processedQuery.slice( 0, queryLimit - 1 ),
 				{ id: getShowAllEmojiId() }
 			];
 		};
