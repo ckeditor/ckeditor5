@@ -1,4 +1,4 @@
-CKEditor&nbsp;5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)
+CKEditor&nbsp;5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)<!-- omit in toc -->
 ===================================
 
 [![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
@@ -13,29 +13,28 @@ CKEditor&nbsp;5 is a modern JavaScript rich-text editor with MVC architecture, c
 
 ![A composition of screenshots presenting various features of CKEditor&nbsp;5 rich text editor](https://raw.githubusercontent.com/ckeditor/ckeditor5/master/docs/assets/img/CKEditor-5.png)
 
-## Table of contents
+## Table of contents<!-- omit in toc -->
 
-- [CKEditor 5 ](#ckeditor5-)
-	- [Table of contents](#table-of-contents)
-	- [Quick start](#quick-start)
-		- [CKEditor 5 Builder](#ckeditor5-builder)
-		- [TypeScript support](#typescript-support)
-		- [CKEditor 5 advanced installation](#ckeditor5-advanced-installation)
-			- [CKEditor 5 Framework](#ckeditor5-framework)
-	- [Documentation and FAQ](#documentation-and-faq)
-	- [Releases](#releases)
-	- [Editing and collaboration features](#editing-and-collaboration-features)
-	- [Contributing and project organization](#contributing-and-project-organization)
-		- [Ideas and discussions](#ideas-and-discussions)
-		- [Development](#development)
-		- [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
-	- [License](#license)
+- [Quick start](#quick-start)
+	- [CKEditor 5 Builder](#ckeditor-5-builder)
+	- [TypeScript support](#typescript-support)
+	- [CKEditor 5 advanced installation](#ckeditor-5-advanced-installation)
+		- [CKEditor 5 Framework](#ckeditor-5-framework)
+- [Documentation and FAQ](#documentation-and-faq)
+- [Releases](#releases)
+- [Editing and collaboration features](#editing-and-collaboration-features)
+- [Create a free account and test full potential](#create-a-free-account-and-test-full-potential)
+- [Contributing and project organization](#contributing-and-project-organization)
+	- [Ideas and discussions](#ideas-and-discussions)
+	- [Development](#development)
+	- [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
+- [License](#license)
 
 ## Quick start
 
 Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/quick-start.html) guide to learn more about CKEditor&nbsp;5 installation.
 
-### CKEditor&nbsp;5 Builder
+### CKEditor 5 Builder
 
 The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
 
@@ -43,14 +42,14 @@ The easiest way to start using CKEditor&nbsp;5 with all the features you need is
 
 CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native type definitions. Check out our dedicated guide to read more about [TypeScript support](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/typescript-support.html).
 
-### CKEditor&nbsp;5 advanced installation
+### CKEditor 5 advanced installation
 
 For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we prepared integrations with popular JavaScript frameworks:
 * [Angular](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/angular.html)
 * [React](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/react/react.html)
 * [Vue](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/vuejs-v3.html)
 
-#### CKEditor&nbsp;5 Framework
+#### CKEditor 5 Framework
 
 CKEditor&nbsp;5 is also a framework for creating custom-made rich text editing solutions.
 
@@ -84,6 +83,10 @@ From collaborative editing support providing comments and tracking changes, thro
 The number of options and the ease of customization and adding new ones make the editing experience even better for any environment and professional background.
 
 Refer to the [CKEditor&nbsp;5 Features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html) documentation for details.
+
+## Create a free account and test full potential
+
+If you want to check full CKEditor&nbsp;5 capabilities, including premium features, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
 
 ## Contributing and project organization
 

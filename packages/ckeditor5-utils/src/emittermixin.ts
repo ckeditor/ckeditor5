@@ -836,21 +836,25 @@ function getCallbacksListsForNamespace( source: EmitterInternal, eventName: stri
  * for callbacks for it's more generic version.
  */
 function getCallbacksForEvent( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ] | null {
-	let event;
-
-	if ( !source._events || !( event = source._events[ eventName ] ) || !event.callbacks.length ) {
-		// There are no callbacks registered for specified eventName.
-		// But this could be a specific-type event that is in a namespace.
-		if ( eventName.indexOf( ':' ) > -1 ) {
-			// If the eventName is specific, try to find callback lists for more generic event.
-			return getCallbacksForEvent( source, eventName.substr( 0, eventName.lastIndexOf( ':' ) ) );
-		} else {
-			// If this is a top-level generic event, return null;
-			return null;
-		}
+	if ( !source._events ) {
+		return null;
 	}
 
-	return event.callbacks;
+	let currentEventName = eventName;
+
+	do {
+		const event = source._events[ currentEventName ];
+
+		if ( event && event.callbacks && event.callbacks.length ) {
+			return event.callbacks;
+		}
+
+		const colonIndex = currentEventName.lastIndexOf( ':' );
+
+		currentEventName = colonIndex > -1 ? currentEventName.substring( 0, colonIndex ) : '';
+	} while ( currentEventName );
+
+	return null;
 }
 
 /**

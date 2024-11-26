@@ -1,6 +1,6 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component (npm) | CKEditor 5 documentation
+meta-title: React rich text editor component (npm) | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the default React component with npm.
 category: react-npm
 order: 10
@@ -18,11 +18,11 @@ order: 10
 
 CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
+
+This guide assumes that you already have a React project. If you do not have one, see the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to create it.
 
 First, install the CKEditor&nbsp;5 packages:
 
@@ -43,10 +43,19 @@ npm install @ckeditor/ckeditor5-react
 
 Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```jsx
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
@@ -57,11 +66,8 @@ function App() {
 			editor={ ClassicEditor }
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: {
-					// Mention configuration
-				},
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ],
 				initialData: '<p>Hello from CKEditor 5 in React!</p>',
 			} }
 		/>
@@ -305,11 +311,22 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ( {
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[ Symbol.iterator ]: function* () {}
-	} );
+		[Symbol.iterator]: function* () {}
+	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 
 const SomeComponent = ( { value, onChange } ) => {

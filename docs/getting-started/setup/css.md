@@ -1,7 +1,7 @@
 ---
 category: setup
 menu-title: Editor and content styles
-meta-title: Editor and content styles | CKEditor 5 documentation
+meta-title: Editor and content styles | CKEditor 5 Documentation
 meta-description: Learn how to style the editor and content with CSS.
 order: 90
 modified_at: 2024-06-25

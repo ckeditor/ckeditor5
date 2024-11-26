@@ -304,7 +304,7 @@ for ( const range of wordRanges ) {
 
 <code-switcher>
 ```js
-// Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:
+// Add observer for double-click and extend a generic DomEventObserver class by a native DOM dblclick event:
 import { DomEventObserver } from 'ckeditor5';
 
 class DoubleClickObserver extends DomEventObserver {
