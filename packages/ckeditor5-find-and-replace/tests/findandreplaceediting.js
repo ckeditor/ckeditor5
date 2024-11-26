@@ -89,6 +89,34 @@ describe( 'FindAndReplaceEditing', () => {
 			);
 		} );
 
+		it( 'should properly highlight text after an inline widgets with text content', () => {
+			registerInlinePlaceholderWidget( editor );
+
+			editor.setData(
+				'<p>' +
+					'text Foo text' +
+					'<span class="placeholder">Bar Foo baz</span>' +
+					'some Foo text' +
+				'</p>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[]text Foo text<placeholder>Bar Foo baz</placeholder>some Foo text</paragraph>'
+			);
+
+			findAndReplaceEditing.find( 'Foo' );
+
+			expect( getSearchResultHTML() ).to.equal(
+				'<p>' +
+					'text <span class="ck-find-result"><span class="ck-find-result_selected">Foo</span></span> text' +
+					'<span class="ck-widget placeholder" contenteditable="false">' +
+						'Bar <span class="ck-find-result">Foo</span> baz' +
+					'</span>' +
+					'some <span class="ck-find-result">Foo</span> text' +
+				'</p>'
+			);
+		} );
+
 		it( 'highlight iterates over all found words', () => {
 			editor.setData( '<p>Chleb Chleb</p><p>Chleb</p>' );
 
