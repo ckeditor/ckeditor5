@@ -15,7 +15,8 @@
   "dependencies": {
     "ckeditor5": "43.3.0",
     "@ckeditor/ckeditor5-core": "43.3.0",
-    "@ckeditor/ckeditor5-typing": "43.3.0"
+    "@ckeditor/ckeditor5-typing": "43.3.0",
+    "emoji-picker-element": "^1.23.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
