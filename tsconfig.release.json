@@ -6,6 +6,6 @@
   "compilerOptions": {
     "sourceMap": false,
     "declaration": true,
-		"moduleResolution": "bundler"
+    "moduleResolution": "bundler"
   }
 }
