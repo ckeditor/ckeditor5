@@ -882,8 +882,6 @@ export default class LinkUI extends Plugin {
 			editor.editing.view.focus();
 		}
 
-		// TODO: Remove dynamically registered views
-
 		// If the bookmarks view is visible, remove it because it can be on top of the stack.
 		this._removeBookmarksView();
 
@@ -1118,7 +1116,9 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns selected link text content.
+	 * If link is not selected it returns the selected text.
+	 * If selection or link includes non text node (inline object or block) then returns undefined.
 	 */
 	private _getSelectedLinkableText(): string | undefined {
 		const model = this.editor.model;

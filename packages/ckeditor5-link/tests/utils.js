@@ -15,6 +15,7 @@ import Text from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import {
@@ -491,7 +492,7 @@ describe( 'utils', () => {
 			}
 
 			editor = await ModelTestEditor.create( {
-				plugins: [ Paragraph, InlineWidget ]
+				plugins: [ Paragraph, InlineWidget, BoldEditing ]
 			} );
 		} );
 
@@ -505,6 +506,22 @@ describe( 'utils', () => {
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
 			expect( text ).to.equal( 'bar' );
+		} );
+
+		it( 'should extract text from range even when split into multiple text nodes with different style', () => {
+			setModelData( editor.model,
+				'<paragraph>' +
+					'abc[fo' +
+					'<$text bold="true">ob</$text>' +
+					'ar]def' +
+				'</paragraph>'
+			);
+
+			expect( editor.model.document.getRoot().getChild( 0 ).childCount ).to.equal( 3 );
+
+			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
+
+			expect( text ).to.equal( 'foobar' );
 		} );
 
 		it( 'should return undefined if range includes an inline object', () => {
