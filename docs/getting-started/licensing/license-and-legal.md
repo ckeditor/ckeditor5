@@ -1,12 +1,9 @@
 ---
-# Scope:
-# * Clarify copyright and license conditions.
-
 category: licensing
 meta-title: Editor license | CKEditor 5 Documentation
 meta-description: Choosing the right licence type for you needs.
 menu-title: Editor license
-order: 10
+order: 30
 modified_at: 2024-10-28
 ---
 
@@ -32,4 +29,4 @@ Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSour
 
 ## Trademarks
 
-CKEditor is a trademark of [CKSource Holding sp. z o.o.](http://cksource.com/) All other brand and product names are trademarks, registered trademarks, or service marks of their respective holders.
+CKEditor is a trademark of [CKSource Holding sp. z o.o.](https://cksource.com/) All other brand and product names are trademarks, registered trademarks, or service marks of their respective holders.

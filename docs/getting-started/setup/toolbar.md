@@ -320,6 +320,11 @@ DecoupledEditor
 		document.querySelector( '#toolbarContainer' ).appendChild( editor.ui.view.toolbar.element );
 	} );
 ```
+### Balloon toolbar
+
+A ballon toolbar is a special instance of the main toolbar, available in the {@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon and ballon block} editors. Instead of being fixed to the editing area, it pops up when the user selects some content and provides a toolset for editing as pictured below.
+
+{@img assets/img/balloon-toolbar.png 850 Balloon toolbar inside the editor.}
 
 ## Block toolbar
 
@@ -343,9 +348,9 @@ To access the block toolbar, you need to click the button with braille pattern d
 
 The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator} is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
-The block toolbar complements the <!-- update to builder preset when ready-->[balloon editor type](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
+The block toolbar complements the [balloon editor type](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
 
-See the <!-- update to builder preset when ready-->{@link examples/builds/balloon-block-editor balloon block editor example} page, too.
+See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 
 ### Block toolbar installation
 

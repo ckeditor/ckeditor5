@@ -210,7 +210,6 @@ export default class NodeList implements Iterable<Node> {
 		// Remove nodes from this nodelist.
 		let offset = this.indexToOffset( indexStart );
 		const nodes = this._nodes.splice( indexStart, howMany );
-
 		const lastNode = nodes[ nodes.length - 1 ];
 		const removedOffsetSum = lastNode.startOffset! + lastNode.offsetSize - offset;
 		this._offsetToNode.splice( offset, removedOffsetSum );
@@ -232,6 +231,37 @@ export default class NodeList implements Iterable<Node> {
 	}
 
 	/**
+	 * Removes children nodes provided as an array. These nodes do not need to be direct siblings.
+	 *
+	 * This method is faster than removing nodes one by one, as it recalculates offsets only once.
+	 *
+	 * @internal
+	 * @param nodes Array of nodes.
+	 */
+	public _removeNodesArray( nodes: Array<Node> ): void {
+		if ( nodes.length == 0 ) {
+			return;
+		}
+
+		for ( const node of nodes ) {
+			node._index = null;
+			node._startOffset = null;
+		}
+
+		this._nodes = this._nodes.filter( node => node.index !== null );
+		this._offsetToNode = this._offsetToNode.filter( node => node.index !== null );
+
+		let offset = 0;
+
+		for ( let i = 0; i < this._nodes.length; i++ ) {
+			this._nodes[ i ]._index = i;
+			this._nodes[ i ]._startOffset = offset;
+
+			offset += this._nodes[ i ].offsetSize;
+		}
+	}
+
+	/**
 	 * Converts `NodeList` instance to an array containing nodes that were inserted in the node list. Nodes
 	 * are also converted to their plain object representation.
 	 *
@@ -247,13 +277,13 @@ export default class NodeList implements Iterable<Node> {
  * occupy multiple items if its offset size is greater than one.
  */
 function makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
-	const offsets: Array<Node> = [];
+	const offsets = [];
+	let index = 0;
 
 	for ( const node of nodes ) {
-		const start = offsets.length;
-
-		offsets.length += node.offsetSize;
-		offsets.fill( node, start );
+		for ( let i = 0; i < node.offsetSize; i++ ) {
+			offsets[ index++ ] = node;
+		}
 	}
 
 	return offsets;

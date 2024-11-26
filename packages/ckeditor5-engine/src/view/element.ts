@@ -923,17 +923,17 @@ function normalize( document: Document, nodes: string | Item | Iterable<string |
 		nodes = [ nodes ];
 	}
 
-	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes )
-		.map( node => {
-			if ( typeof node == 'string' ) {
-				return new Text( document, node );
-			}
+	const normalizedNodes: Array<Node> = [];
 
-			if ( node instanceof TextProxy ) {
-				return new Text( document, node.data );
-			}
+	for ( const node of nodes ) {
+		if ( typeof node == 'string' ) {
+			normalizedNodes.push( new Text( document, node ) );
+		} else if ( node instanceof TextProxy ) {
+			normalizedNodes.push( new Text( document, node.data ) );
+		} else {
+			normalizedNodes.push( node );
+		}
+	}
 
-			return node;
-		} );
+	return normalizedNodes;
 }
