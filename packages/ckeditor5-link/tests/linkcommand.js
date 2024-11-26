@@ -25,11 +25,6 @@ describe( 'LinkCommand', () => {
 				} );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-				model.schema.register( 'imageInline', {
-					inheritAllFrom: '$inlineObject',
-					allowAttributes: [ 'alt', 'src', 'srcset', 'linkHref' ],
-					disallowIn: [ 'caption' ]
-				} );
 			} );
 	} );
 
