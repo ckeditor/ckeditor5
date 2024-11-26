@@ -19,6 +19,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
@@ -47,7 +48,7 @@ describe( 'LinkUI', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ]
+			plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote, BoldEditing ]
 		} );
 
 		linkUIFeature = editor.plugins.get( LinkUI );
@@ -2295,6 +2296,85 @@ describe( 'LinkUI', () => {
 
 				expect( getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo<$text linkHref="http://ckeditor.com">http://ckeditor.com</$text>[]ar</paragraph>'
+				);
+			} );
+
+			it( 'should populate form on open on collapsed selection in link with text matching href but styled', () => {
+				setModelData( editor.model,
+					'<paragraph>' +
+						'fo' +
+						'<$text linkHref="http://cksource.com">htt[]p://</$text>' +
+						'<$text linkHref="http://cksource.com" bold="true">cksource.com</$text>' +
+						'ar' +
+					'</paragraph>'
+				);
+
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				linkUIFeature._showUI(); // ToolbarView
+				linkUIFeature._showUI(); // FormView
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'http://cksource.com' );
+				expect( formView.displayedTextInputView.isEnabled ).to.be.true;
+
+				formView.urlInputView.fieldView.value = 'http://ckeditor.com';
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'http://cksource.com' );
+
+				formView.fire( 'submit' );
+
+				expect( executeSpy.calledOnce ).to.be.true;
+				expect( executeSpy.calledWithExactly(
+					'link',
+					'http://ckeditor.com',
+					{},
+					undefined
+				) ).to.be.true;
+
+				expect( getModelData( editor.model ) ).to.equal(
+					'<paragraph>fo<$text linkHref="http://ckeditor.com">http://ckeditor.com</$text>[]ar</paragraph>'
+				);
+			} );
+
+			it( 'should populate form on open on collapsed selection in link with text matching href but styled' +
+				'and update text', () => {
+				setModelData( editor.model,
+					'<paragraph>' +
+						'fo' +
+						'<$text linkHref="http://cksource.com">htt[]p://</$text>' +
+						'<$text linkHref="http://cksource.com" bold="true">cksource.com</$text>' +
+						'ar' +
+					'</paragraph>'
+				);
+
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				linkUIFeature._showUI(); // ToolbarView
+				linkUIFeature._showUI(); // FormView
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'http://cksource.com' );
+				expect( formView.displayedTextInputView.isEnabled ).to.be.true;
+
+				formView.displayedTextInputView.fieldView.value = 'CKSource';
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
+				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'CKSource' );
+
+				formView.fire( 'submit' );
+
+				expect( executeSpy.calledOnce ).to.be.true;
+				expect( executeSpy.calledWithExactly(
+					'link',
+					'http://cksource.com',
+					{},
+					'CKSource'
+				) ).to.be.true;
+
+				expect( getModelData( editor.model ) ).to.equal(
+					'<paragraph>fo<$text linkHref="http://cksource.com">CKSource</$text>[]ar</paragraph>'
 				);
 			} );
 

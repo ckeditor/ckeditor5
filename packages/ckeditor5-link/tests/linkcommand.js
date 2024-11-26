@@ -37,16 +37,6 @@ describe( 'LinkCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe.skip( 'constructor', () => {
-		it( 'should set `text` property to empty string', () => {
-			expect( command.text ).to.be.equal( '' );
-		} );
-
-		it( 'should set `canHaveDisplayedText` property to empty `false`', () => {
-			expect( command.canHaveDisplayedText ).to.be.false;
-		} );
-	} );
-
 	describe( 'isEnabled', () => {
 		// This test doesn't tests every possible case.
 		// refresh() uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
@@ -187,92 +177,6 @@ describe( 'LinkCommand', () => {
 
 					expect( command.isEnabled ).to.be.false;
 				} );
-			} );
-		} );
-	} );
-
-	describe.skip( 'text', () => {
-		describe( 'collapsed selection', () => {
-			it( 'should be equal to whole text placed inside element with `linkHref` attribute', () => {
-				setData( model, '<$text linkHref="url">foo[]bar</$text>' );
-
-				expect( command.canHaveDisplayedText ).to.be.true;
-				expect( command.text ).to.equal( 'foobar' );
-			} );
-
-			it( 'should be an empty string when selection is placed inside element without `linkHref` attribute', () => {
-				setData( model, '<$text bold="true">foo[]bar</$text>' );
-
-				expect( command.canHaveDisplayedText ).to.be.true;
-				expect( command.text ).to.equal( '' );
-			} );
-
-			it( 'should be an empty string when selection contains also non-text element in the middle', () => {
-				setData( model,
-					'<$text linkHref="url">f[]oo</$text>' +
-					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
-					'<$text linkHref="url">bar</$text>'
-				);
-
-				expect( command.canHaveDisplayedText ).to.be.false;
-				expect( command.value ).to.equal( 'url' );
-				expect( command.text ).to.equal( '' );
-			} );
-
-			it( 'should be an empty string when selection contains also non-text element at the beginning', () => {
-				setData( model,
-					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
-					'<$text linkHref="url">f[]oo</$text>' +
-					'<$text linkHref="url">bar</$text>'
-				);
-
-				expect( command.canHaveDisplayedText ).to.be.false;
-				expect( command.value ).to.equal( 'url' );
-				expect( command.text ).to.equal( '' );
-			} );
-		} );
-
-		describe( 'non-collapsed selection', () => {
-			it( 'should be equal to the text when selection contains only elements with `linkHref` attribute', () => {
-				setData( model, 'fo[<$text linkHref="url">ob</$text>]ar' );
-
-				expect( command.canHaveDisplayedText ).to.be.true;
-				expect( command.text ).to.equal( 'ob' );
-			} );
-
-			it( 'should be equal to the selected text when selection is placed inside element without `linkHref` attribute', () => {
-				setData( model, '<$text bold="true">f[ooba]r</$text>' );
-
-				expect( command.canHaveDisplayedText ).to.be.true;
-				expect( command.text ).to.equal( 'ooba' );
-			} );
-
-			it( 'should be undefined when selection contains not only elements with `linkHref` attribute', () => {
-				setData( model, 'f[o<$text linkHref="url">ob</$text>]ar' );
-
-				expect( command.canHaveDisplayedText ).to.be.true;
-				expect( command.value ).to.be.undefined;
-				expect( command.text ).to.equal( 'oob' );
-			} );
-
-			it( 'should be an empty string when selection contains also non-text element', () => {
-				setData( model,
-					'<$text linkHref="url">f[oo</$text>' +
-					'<imageInline src="/assets/sample.png" linkHref="url"></imageInline>' +
-					'<$text linkHref="url">b]ar</$text>'
-				);
-
-				expect( command.canHaveDisplayedText ).to.be.false;
-				expect( command.value ).to.equal( 'url' );
-				expect( command.text ).to.equal( '' );
-			} );
-
-			it( 'should be an empty string when selection contains only non-text element', () => {
-				setData( model, '[<imageInline src="/assets/sample.png" linkHref="url"></imageInline>]' );
-
-				expect( command.canHaveDisplayedText ).to.be.false;
-				expect( command.value ).to.equal( 'url' );
-				expect( command.text ).to.equal( '' );
 			} );
 		} );
 	} );
