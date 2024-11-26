@@ -18,12 +18,12 @@
     "@ckeditor/ckeditor5-typing": "43.3.1",
     "@ckeditor/ckeditor5-utils": "43.3.1",
     "ckeditor5": "43.3.1",
-    "emoji-picker-element-data": "1.6.1",
-    "emoji-picker-element": "1.25.0"
+    "emoji-picker-element": "1.25.0",
+    "emoji-picker-element-data": "1.6.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-clipboard": "43.3.1",
-    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "43.3.1",
     "@ckeditor/ckeditor5-editor-classic": "43.3.1",
     "@ckeditor/ckeditor5-engine": "43.3.1",
     "@ckeditor/ckeditor5-enter": "43.3.1",

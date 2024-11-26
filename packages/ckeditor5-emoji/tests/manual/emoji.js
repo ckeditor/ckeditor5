@@ -5,8 +5,9 @@
 
 /* globals console:false, window, document */
 
-import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+
+import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import Emoji from '../../src/emoji.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
@@ -16,7 +17,15 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Typing, Paragraph, Undo, Enter, Emoji, Bookmark, Clipboard ],
+		plugins: [
+			Bookmark,
+			Clipboard,
+			Emoji,
+			Enter,
+			Paragraph,
+			Typing,
+			Undo
+		],
 		toolbar: [ 'link', 'undo', 'redo', 'emoji', 'bookmark' ]
 	} )
 	.then( editor => {
