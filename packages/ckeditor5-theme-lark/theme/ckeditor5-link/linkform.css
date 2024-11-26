@@ -43,7 +43,7 @@
 			margin: 0;
 
 			@mixin ck-media-phone {
-				margin: var(--ck-spacing-large) var(--ck-spacing-medium)  var(--ck-spacing-medium)  var(--ck-spacing-medium);
+				margin: var(--ck-spacing-large) var(--ck-spacing-medium) var(--ck-spacing-medium) var(--ck-spacing-medium);
 			}
 		}
 
