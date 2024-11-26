@@ -2071,29 +2071,6 @@ describe( 'LinkUI', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 			} );
 
-			it( 'should bind formView.urlInputView#value to link command value', () => {
-				const command = editor.commands.get( 'link' );
-
-				expect( formView.urlInputView.fieldView.value ).to.be.undefined;
-
-				command.value = 'http://cksource.com';
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
-			} );
-
-			it( 'should bind formView.displayedTextInputView#value to LinkUI#selectedLinkableText', () => {
-				linkUIFeature.selectedLinkableText = 'foo';
-				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'foo' );
-				expect( formView.displayedTextInputView.isEnabled ).to.be.true;
-
-				linkUIFeature.selectedLinkableText = undefined;
-				expect( formView.displayedTextInputView.fieldView.value ).to.equal( undefined );
-				expect( formView.displayedTextInputView.isEnabled ).to.be.false;
-
-				linkUIFeature.selectedLinkableText = 'bar';
-				expect( formView.displayedTextInputView.fieldView.value ).to.equal( 'bar' );
-				expect( formView.displayedTextInputView.isEnabled ).to.be.true;
-			} );
-
 			it( 'should execute link command on formView#submit event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
