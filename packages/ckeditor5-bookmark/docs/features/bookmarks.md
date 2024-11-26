@@ -14,7 +14,7 @@ The bookmarks feature allows for adding and managing the bookmarks anchors attac
 
 Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`).
 
-To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
+You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
 
 {@snippet features/bookmark}
 
@@ -36,9 +36,9 @@ By default, all bookmarks created in the editor only have the `id="..."` attribu
 
 ## Integration with the link feature
 
-Bookmarks integrate with links, providing a smooth linking experience. Having some bookmarks in your content, you can move to the "Bookmarks" panel, which is available during link creation. It will display all available bookmarks. You can choose one of the bookmarks from the list, insert it, and your link will point to it.
+Bookmarks integrate with {@link features/link links}, providing a smooth linking experience. If you have any bookmarks in your content, you can access the "Bookmarks" panel available during link creation. It will display all bookmarks available in the edited content. Choose one of the anchors from the list and use it as a link target.
 
-{@img assets/img/bookmarks-panel.png The bookmarks panel displayed during link creation}
+{@img assets/img/bookmarks-panel.png 600 The bookmarks panel displayed during link creation}
 
 ## Installation
 
