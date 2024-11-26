@@ -13,6 +13,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
 
+// @ts-expect-error This import works.
 import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 
 /**
