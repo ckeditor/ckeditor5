@@ -168,7 +168,7 @@ export default class LinkCommand extends Command {
 				falsyManualDecorators.forEach( item => writer.removeAttribute( item, range ) );
 			};
 
-			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range => {
+			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range | undefined => {
 				const linkText = extractTextFromLinkRange( range );
 
 				if ( !linkText ) {
@@ -186,10 +186,18 @@ export default class LinkCommand extends Command {
 
 				// Only if needed.
 				if ( newText != linkText ) {
-					range = model.insertContent( writer.createText( newText ), range );
+					return model.insertContent( writer.createText( newText ), range );
 				}
+			};
 
-				return range;
+			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
+				writer.setSelection( linkRange.end );
+
+				// Remove the `linkHref` attribute and all link decorators from the selection.
+				// It stops adding a new content into the link element.
+				for ( const key of [ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ] ) {
+					writer.removeSelectionAttribute( key );
+				}
 			};
 
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
@@ -199,13 +207,16 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					const linkHref = selection.getAttribute( 'linkHref' ) as string;
-					let linkRange = findAttributeRange( position, 'linkHref', linkHref, model );
+					const linkRange = findAttributeRange( position, 'linkHref', linkHref, model );
+					const newLinkRange = updateLinkTextIfNeeded( linkRange, linkHref );
 
-					linkRange = updateLinkTextIfNeeded( linkRange, linkHref );
-					updateLinkAttributes( linkRange );
+					updateLinkAttributes( newLinkRange || linkRange );
 
-					// Put the selection at the end of the updated link.
-					writer.setSelection( linkRange.end );
+					// Put the selection at the end of the updated link only when text was changed.
+					// When text was not altered we keep the original selection.
+					if ( newLinkRange ) {
+						collapseSelectionAtLinkEnd( newLinkRange );
+					}
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
@@ -219,18 +230,12 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const linkRange = model.insertContent( writer.createText( displayedText || href, attributes ), position );
+					const newLinkRange = model.insertContent( writer.createText( displayedText || href, attributes ), position );
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
-					writer.setSelection( linkRange.end );
+					collapseSelectionAtLinkEnd( newLinkRange );
 				}
-
-				// Remove the `linkHref` attribute and all link decorators from the selection.
-				// It stops adding a new content into the link element.
-				[ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ].forEach( item => {
-					writer.removeSelectionAttribute( item );
-				} );
 			} else {
 				// Non-collapsed selection.
 
@@ -269,7 +274,7 @@ export default class LinkCommand extends Command {
 				for ( let range of rangesToUpdate ) {
 					const linkHref = ( range.start.textNode || range.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
 
-					range = updateLinkTextIfNeeded( range, linkHref );
+					range = updateLinkTextIfNeeded( range, linkHref ) || range;
 					updateLinkAttributes( range );
 				}
 
