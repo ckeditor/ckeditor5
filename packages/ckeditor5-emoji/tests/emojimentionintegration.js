@@ -75,6 +75,8 @@ describe( 'EmojiMentionIntegration', () => {
 	} );
 
 	it( 'should pass correct config for mention plugin when there is another, non-conflicting mention feed config', async () => {
+		await editor.destroy();
+
 		editor = await ClassicEditor.create( editorElement, {
 			plugins: [
 				Emoji,
@@ -106,6 +108,8 @@ describe( 'EmojiMentionIntegration', () => {
 	} );
 
 	it( 'should not pass config for mention plugin when there is another conflicting mention feed config', async () => {
+		await editor.destroy();
+
 		editor = await ClassicEditor.create( editorElement, {
 			plugins: [
 				Emoji,
@@ -160,17 +164,6 @@ describe( 'EmojiMentionIntegration', () => {
 			expect( item.style.display ).to.equal( 'block' );
 		} );
 
-		it( 'should render the no results item properly', () => {
-			const item = itemRenderer( { id: 'emoji:__NO_RESULTS__:' } );
-
-			expect( item.nodeName ).to.equal( 'SPAN' );
-			expect( Array.from( item.classList ) ).to.deep.equal( [ 'custom-item' ] );
-			expect( item.id ).to.equal( 'mention-list-item-id-emoji:__NO_RESULTS__:' );
-			expect( item.textContent ).to.equal( 'No results...' );
-			expect( item.style.width ).to.equal( '100%' );
-			expect( item.style.display ).to.equal( 'block' );
-		} );
-
 		it( 'should render the show all emoji item properly', () => {
 			const item = itemRenderer( { id: 'emoji:__SHOW_ALL_EMOJI__:' } );
 
@@ -185,6 +178,8 @@ describe( 'EmojiMentionIntegration', () => {
 
 	describe( '_overrideMentionExecuteListener()', () => {
 		it( 'does not override the regular mention command execution', async () => {
+			await editor.destroy();
+
 			editor = await ClassicEditor.create( editorElement, {
 				plugins: [
 					Emoji,

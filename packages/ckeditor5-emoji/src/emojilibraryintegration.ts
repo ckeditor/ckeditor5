@@ -8,12 +8,11 @@
  */
 
 import { Database } from 'emoji-picker-element';
-import { formatEmojiId, getShowAllEmojiId, getNoResultsEmojiId } from './utils.js';
+import { formatEmojiId, getShowAllEmojiId } from './utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
 
-// @ts-expect-error This import works.
 import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 
 /**
@@ -80,18 +79,10 @@ export default class EmojiLibraryIntegration extends Plugin {
 					} );
 				} );
 
-			const filteredResults = [
+			return [
 				...processedQuery.filter( ( item, index ) => index < queryLimit - 1 ),
 				{ id: getShowAllEmojiId() }
 			];
-
-			if ( filteredResults.length === 1 ) {
-				filteredResults.unshift(
-					{ id: getNoResultsEmojiId() }
-				);
-			}
-
-			return filteredResults;
 		};
 	}
 }

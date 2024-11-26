@@ -8,7 +8,6 @@ export const DEFAULT_MENTION_MARKER = ':';
 
 const EMOJI_PREFIX = 'emoji';
 const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
-const NO_RESULTS = '__NO_RESULTS__';
 
 export function isEmojiId( string: string ): boolean {
 	return new RegExp( `^${ EMOJI_PREFIX }:[^:]+:$` ).test( string );
@@ -24,8 +23,4 @@ export function removeEmojiPrefix( formattedEmojiId: string ): string {
 
 export function getShowAllEmojiId(): string {
 	return formatEmojiId( SHOW_ALL_EMOJI );
-}
-
-export function getNoResultsEmojiId(): string {
-	return formatEmojiId( NO_RESULTS );
 }

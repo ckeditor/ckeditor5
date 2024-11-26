@@ -57,15 +57,6 @@ describe( 'EmojiLibraryIntegration', () => {
 			} );
 		} );
 
-		it( 'should return note informing that nothing is found when query found nothing', () => {
-			return queryEmoji( '!@#$%^&*()' ).then( queryResult => {
-				expect( queryResult ).to.deep.equal( [
-					{ id: 'emoji:__NO_RESULTS__:' },
-					{ id: 'emoji:__SHOW_ALL_EMOJI__:' }
-				] );
-			} );
-		} );
-
 		it( 'should query single emoji properly properly', () => {
 			return queryEmoji( 'flag_poland' ).then( queryResult => {
 				expect( queryResult ).to.deep.equal( [

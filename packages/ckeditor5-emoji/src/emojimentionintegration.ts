@@ -14,7 +14,6 @@ import EmojiLibraryIntegration from './emojilibraryintegration.js';
 import {
 	DEFAULT_DROPDOWN_LIMIT,
 	DEFAULT_MENTION_MARKER,
-	getNoResultsEmojiId,
 	getShowAllEmojiId,
 	isEmojiId,
 	removeEmojiPrefix
@@ -116,10 +115,6 @@ export default class EmojiMentionIntegration extends Plugin {
 			itemElement.style.display = 'block';
 
 			switch ( item.id ) {
-				case getNoResultsEmojiId():
-					itemElement.textContent = t( 'No results...' );
-
-					break;
 				case getShowAllEmojiId():
 					itemElement.textContent = t( 'Show all emoji...' );
 
@@ -146,10 +141,6 @@ export default class EmojiMentionIntegration extends Plugin {
 			}
 
 			let textToInsert = eventData.mention.text;
-
-			if ( eventData.mention.id === getNoResultsEmojiId() ) {
-				textToInsert = '';
-			}
 
 			if ( eventData.mention.id === getShowAllEmojiId() ) {
 				textToInsert = '';
