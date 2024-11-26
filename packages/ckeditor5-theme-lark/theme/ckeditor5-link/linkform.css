@@ -4,58 +4,95 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-/*
- * Style link form differently when manual decorators are available.
- * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
- */
-.ck.ck-link-form_layout-vertical {
-	padding: 0;
-	min-width: var(--ck-input-width);
+:root {
+	--ck-link-panel-width: 340px;
+	--ck-link-list-view-max-height: 240px;
+	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
+}
 
-	& .ck-labeled-field-view {
-		margin: var(--ck-spacing-large) var(--ck-spacing-large) var(--ck-spacing-small);
+@mixin ck-media-phone {
+	:root {
+		--ck-link-panel-width: 300px;
+	}
+}
 
-		& .ck-input-text {
-			min-width: 0;
-			width: 100%;
+/* Generic class that wraps each form view. */
+.ck.ck-link__panel {
+	width: var(--ck-link-panel-width);
+
+	&:focus {
+		outline: none;
+	}
+
+	/* Header */
+	& .ck-form__header {
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+
+		& > .ck:not(:first-child) {
+			margin-inline-start: var(--ck-spacing-small);
 		}
 	}
 
-	& > .ck-button {
-		padding: var(--ck-spacing-standard);
-		margin: 0;
-		width: 50%;
-		border-radius: 0;
+	/* Form */
+	& .ck-responsive-form.ck-link__form {
+		width: 100%;
 
-		&:not(:focus) {
+		& > * {
+			margin: 0;
+
+			@mixin ck-media-phone {
+				margin: var(--ck-spacing-large) var(--ck-spacing-medium)  var(--ck-spacing-medium)  var(--ck-spacing-medium);
+			}
+		}
+
+		& > .ck:not(:first-child) {
+			margin-top: var(--ck-spacing-large);
+		}
+
+		& .ck-labeled-field-view {
+			& input {
+				width: 100%;
+			}
+		}
+
+		/* "Link" input field and the "Insert" button */
+		& .ck-link-and-submit {
+			& .ck-button-insert {
+				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
+				height: 30px;
+				margin-inline-start: var(--ck-spacing-medium);
+			}
+
+			@mixin ck-media-phone {
+				& > .ck {
+					margin: 0;
+				}
+
+				& .ck-button-insert {
+					margin-top: var(--ck-spacing-large);
+				}
+			}
+		}
+	}
+
+	/* Link list of panel view items that can be presented as a list (e.g. list of decorators). */
+	& .ck-link__list {
+		&.ck-link__list-border-top {
+			margin-top: var(--ck-spacing-medium);
 			border-top: 1px solid var(--ck-color-base-border);
 		}
 
-		@mixin ck-dir ltr {
-			margin-left: 0;
-		}
-
-		@mixin ck-dir rtl {
-			margin-left: 0;
-
-			&:last-of-type {
-				border-right: 1px solid var(--ck-color-base-border);
-			}
+		& .ck-link__button {
+			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+			border-radius: 0;
 		}
 	}
 
-	/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */
-	& .ck.ck-list {
-		margin: 0 var(--ck-spacing-large);
-
-		& .ck-button.ck-switchbutton {
-			padding: 0;
-			width: 100%;
-
-			&:hover {
-				background: none;
-			}
-		}
+	& .ck-link__empty-list-info {
+		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
+		text-align: center;
+		font-style: italic;
 	}
 }

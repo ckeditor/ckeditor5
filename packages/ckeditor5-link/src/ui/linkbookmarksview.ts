@@ -26,6 +26,8 @@ import {
 
 import { icons } from 'ckeditor5/src/core.js';
 
+import '../../theme/linkbookmarks.css';
+
 /**
  * The link bookmarks list view.
  */
