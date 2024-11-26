@@ -24,6 +24,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { CustomTitle } from './utils/customtitleplugin.js';
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 
 describe( 'Drag and Drop target', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropTarget;
@@ -507,6 +508,46 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 2 )
+			) ).to.be.true;
+		} );
+
+		it( 'should put drop target marker inside a text node (even if dragged range is an inline object with block content)', () => {
+			model.schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			model.schema.register( 'widgetTitle', { isLimit: true, allowIn: 'inlineWidget', allowContentOf: '$block' } );
+
+			editor.conversion.for( 'editingDowncast' )
+				.elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidget( viewWriter.createContainerElement( 'span' ), viewWriter );
+					}
+				} )
+				.elementToElement( {
+					model: 'widgetTitle',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidgetEditable( viewWriter.createEditableElement( 'h1' ), viewWriter );
+					}
+				} );
+
+			setModelData( model, '<paragraph>[<inlineWidget><widgetTitle>abc</widgetTitle></inlineWidget>]foobar</paragraph>' );
+
+			const modelPosition = model.createPositionAt( root.getChild( 0 ), 4 );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			const domNode = domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode;
+
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			dragDropTarget.updateDropMarker(
+				mapper.findMappedViewAncestor( viewPosition ),
+				[ view.createRange( viewPosition ) ],
+				clientX,
+				clientY,
+				false,
+				LiveRange.fromRange( model.document.selection.getFirstRange() )
+			);
+
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getChild( 0 ), 4 )
 			) ).to.be.true;
 		} );
 

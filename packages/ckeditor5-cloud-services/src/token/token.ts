@@ -49,6 +49,11 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	private _tokenRefreshTimeout?: ReturnType<typeof setTimeout>;
 
 	/**
+	 * Flag indicating whether the token has been destroyed.
+	 */
+	private _isDestroyed = false;
+
+	/**
 	 * Creates `Token` instance.
 	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
@@ -163,6 +168,8 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * Destroys token instance. Stops refreshing.
 	 */
 	public destroy(): void {
+		this._isDestroyed = true;
+
 		clearTimeout( this._tokenRefreshTimeout );
 	}
 
@@ -196,9 +203,13 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * Registers a refresh token timeout for the time taken from token.
 	 */
 	private _registerRefreshTokenTimeout( timeoutTime?: number ) {
-		const tokenRefreshTimeoutTime = timeoutTime || this._getTokenRefreshTimeoutTime();
-
 		clearTimeout( this._tokenRefreshTimeout );
+
+		if ( this._isDestroyed ) {
+			return;
+		}
+
+		const tokenRefreshTimeoutTime = timeoutTime || this._getTokenRefreshTimeoutTime();
 
 		this._tokenRefreshTimeout = setTimeout( () => {
 			this.refreshToken();

@@ -14,6 +14,8 @@ import { ButtonView } from 'ckeditor5/src/ui.js';
 // import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 // import emojiIcon from './path/to/emoji-icon.svg'; // An SVG icon for the button
 import 'emoji-picker-element'; // Import emoji-picker-element
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import EmojiMentionIntegration from './emojimentionintegration.js';
 
 import '../theme/emoji.css';
 
@@ -25,7 +27,7 @@ export default class Emoji extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Typing ] as const;
+		return [ Typing, Mention, EmojiMentionIntegration ] as const;
 	}
 
 	/**

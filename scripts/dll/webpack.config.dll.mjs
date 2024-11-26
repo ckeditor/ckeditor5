@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-import path from 'path';
+import path from 'upath';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 import { bundler, loaders } from '@ckeditor/ckeditor5-dev-utils';
@@ -20,7 +20,7 @@ const require = module.createRequire( import.meta.url );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
 const { CI } = process.env;
 
-if ( CKEDITOR5_ROOT_PATH !== process.cwd() ) {
+if ( CKEDITOR5_ROOT_PATH !== path.toUnix( process.cwd() ) ) {
 	throw new Error( 'This script should be called from the package root directory.' );
 }
 

@@ -7,7 +7,7 @@
  * @module core/editor/utils/editorusagedata
  */
 
-import { env, global } from '@ckeditor/ckeditor5-utils';
+import { env, global, uid } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from '../editor.js';
 import type { ToolbarConfig, ToolbarConfigItem } from '../editorconfig.js';
@@ -30,7 +30,7 @@ export function getEditorUsageData( editor: Editor ): EditorUsageData {
 		plugins: getPluginsUsageData( editor.plugins ),
 		distribution: getDistributionUsageData(),
 		env: getEnvUsageData(),
-		integrations: Object.create( null ),
+		integration: Object.create( null ),
 		menuBar: {
 			isVisible: !!editor.config.get( 'menuBar.isVisible' )
 		},
@@ -141,14 +141,14 @@ function getEnvUsageData(): EnvUsageData {
 
 function getSessionId(): string {
 	if ( !localStorage.getItem( '__ckeditor-session-id' ) ) {
-		localStorage.setItem( '__ckeditor-session-id', crypto.randomUUID() );
+		localStorage.setItem( '__ckeditor-session-id', uid() );
 	}
 
 	return localStorage.getItem( '__ckeditor-session-id' )!;
 }
 
 function getPageSessionID() {
-	global.window.CKEDITOR_PAGE_SESSION_ID = global.window.CKEDITOR_PAGE_SESSION_ID || crypto.randomUUID();
+	global.window.CKEDITOR_PAGE_SESSION_ID = global.window.CKEDITOR_PAGE_SESSION_ID || uid();
 
 	return global.window.CKEDITOR_PAGE_SESSION_ID;
 }
@@ -185,7 +185,7 @@ export type EditorUsageData = {
 		channel: string;
 	};
 	env: EnvUsageData;
-	integrations: {
+	integration: {
 		[integrationName: string]: IntegrationUsageData;
 	};
 };

@@ -105,4 +105,4 @@ export default class MenuBarMenuPanelView extends View implements FocusableView 
  *
  * They are reflected as CSS class suffixes on the panel view element.
  */
-export type MenuBarMenuPanelPosition = 'se' | 'sw' | 'ne' | 'nw' | 'w' | 'e';
+export type MenuBarMenuPanelPosition = 'se' | 'sw' | 'ne' | 'nw' | 'w' | 'ws' | 'e' | 'es';

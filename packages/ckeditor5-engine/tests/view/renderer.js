@@ -189,6 +189,19 @@ describe( 'Renderer', () => {
 			expect( renderer.markedAttributes.size ).to.equal( 0 );
 		} );
 
+		it( 'should remove all attributes', () => {
+			domRoot.setAttribute( 'style', 'border:1px solid red' );
+			domRoot.setAttribute( 'class', 'bar' );
+
+			renderer.markToSync( 'attributes', viewRoot );
+			renderer.render();
+
+			expect( domRoot.getAttribute( 'class' ) ).to.be.not.ok;
+			expect( domRoot.getAttribute( 'style' ) ).to.be.not.ok;
+
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+		} );
+
 		it( 'should add children', () => {
 			viewRoot._appendChild( new ViewText( viewDocument, 'foo' ) );
 

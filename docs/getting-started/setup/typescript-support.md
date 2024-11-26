@@ -1,7 +1,7 @@
 ---
 category: setup
 menu-title: TypeScript support
-meta-title: TypeScript support | CKEditor 5 documentation
+meta-title: TypeScript support | CKEditor 5 Documentation
 meta-description: Handle setup, integrations, and development of CKEditor 5 features with TypeScript.
 modified_at: 2024-06-25
 order: 100
@@ -51,6 +51,44 @@ The latest versions of our official components for Angular, React, and Vue 3 wer
 * {@link getting-started/integrations/angular Angular component}
 * {@link getting-started/integrations/react-default-npm React component}
 * {@link getting-started/integrations/vuejs-v3 Vue.js 3+ component}
+
+### Types for Vanilla CDN import
+
+To use CKEditor&nbsp;5 with TypeScript from the CDN, it is recommended to use the official CKEditor&nbsp;5 CDN injection script. This script provides type definitions for the CDN build exports.
+
+First, import the injection script as an NPM package and use it in your TypeScript project. Here is an example:
+
+```ts
+import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
+
+const { CKEditor, CKEditorPremiumFeatures } = await loadCKEditorCloud({
+	version: '45.0.0',
+
+	// Optional configuration:
+	premium: true,
+	translations: ['en', 'de'],
+});
+
+// Now you can use CKEditor and CKEditorPremiumFeatures.
+const { CaseChange } = CKEditorPremiumFeatures;
+const { Alignment } = CKEditor;
+```
+
+The script above will load CKEditor&nbsp;5 from the CDN (including CSS) and provide type definitions for `CKEditor`, `CKEditorPremiumFeatures`, and `CKBox`. Note that `CKEditor` and `CKEditorPremiumFeatures` are also available globally. You can access them via the `window` object using `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES` keys.
+
+#### Known Issues
+
+While type definitions for the base editor should be available out of the box, some bundlers may not install the `ckeditor5` package, which provides typing for the editor. If you encounter issues with type definitions, install the `ckeditor5` package manually:
+
+```bash
+npm install --save-dev ckeditor5
+```
+
+If you want to use premium features, install the `ckeditor5-premium-features` package as well:
+
+```bash
+npm install --save-dev ckeditor5-premium-features
+```
 
 ## Developing plugins with TypeScript
 
