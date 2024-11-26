@@ -273,9 +273,7 @@ export default class LinkUI extends Plugin {
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, getFormValidators( editor ) );
 
-		formView.displayedTextInputView.fieldView.bind( 'value' ).to( this, 'selectedLinkableText' );
 		formView.displayedTextInputView.bind( 'isEnabled' ).to( this, 'selectedLinkableText', value => value !== undefined );
-		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
