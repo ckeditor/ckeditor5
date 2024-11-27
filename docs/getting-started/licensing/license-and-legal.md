@@ -9,7 +9,7 @@ modified_at: 2024-11-20
 
 # Editor license and legal terms
 
-CKEditor is dual-licensed. This means we make it available under a choice between an open source and a commercial license.
+CKEditor is dual-licensed. This means you can choose between an open source and a commercial license.
 
 ## Open source license
 
