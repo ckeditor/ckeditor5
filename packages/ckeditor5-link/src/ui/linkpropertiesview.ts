@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/ui/linkadvancedview
+ * @module link/ui/linkpropertiesview
  */
 
 import {
@@ -31,11 +31,11 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/linkform.css';
 
 /**
- * The link form view controller class.
+ * The link properties view controller class.
  *
- * See {@link module:link/ui/linkadvancedview~LinkAdvancedView}.
+ * See {@link module:link/ui/linkpropertiesview~LinkPropertiesView}.
  */
-export default class LinkAdvancedView extends View {
+export default class LinkPropertiesView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -74,7 +74,7 @@ export default class LinkAdvancedView extends View {
 	private readonly _focusCycler: FocusCycler;
 
 	/**
-	 * Creates an instance of the {@link module:link/ui/linkadvancedview~LinkAdvancedView} class.
+	 * Creates an instance of the {@link module:link/ui/linkpropertiesview~LinkPropertiesView} class.
 	 *
 	 * Also see {@link #render}.
 	 *
@@ -108,7 +108,7 @@ export default class LinkAdvancedView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel', 'ck-link__advanced' ],
+				class: [ 'ck', 'ck-link__panel', 'ck-link__properties' ],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
@@ -190,7 +190,7 @@ export default class LinkAdvancedView extends View {
 		const t = this.locale!.t;
 
 		const header = new FormHeaderView( this.locale, {
-			label: t( 'Advanced' )
+			label: t( 'Link properties' )
 		} );
 
 		header.children.add( this.backButtonView, 0 );
@@ -225,9 +225,9 @@ export default class LinkAdvancedView extends View {
 }
 
 /**
- * Fired when the {@link ~LinkAdvancedView#backButtonView} is pressed.
+ * Fired when the {@link ~LinkPropertiesView#backButtonView} is pressed.
  *
- * @eventName ~LinkAdvancedView#back
+ * @eventName ~LinkPropertiesView#back
  */
 export type BackEvent = {
 	name: 'back';

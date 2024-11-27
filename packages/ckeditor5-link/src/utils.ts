@@ -15,7 +15,8 @@ import type {
 	Schema,
 	ViewAttributeElement,
 	ViewNode,
-	ViewDocumentFragment
+	ViewDocumentFragment,
+	Range
 } from 'ckeditor5/src/engine.js';
 
 import type { Editor } from 'ckeditor5/src/core.js';
@@ -235,6 +236,25 @@ export function scrollToTarget( editor: Editor, link: string ): boolean {
 	} );
 
 	return true;
+}
+
+/**
+ * Returns a text of a link range.
+ *
+ * If the returned value is `undefined`, it means that the range contains elements other than text nodes.
+ */
+export function extractTextFromLinkRange( range: Range ): string | undefined {
+	let text = '';
+
+	for ( const item of range.getItems() ) {
+		if ( !item.is( '$text' ) && !item.is( '$textProxy' ) ) {
+			return;
+		}
+
+		text += item.data;
+	}
+
+	return text;
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };
