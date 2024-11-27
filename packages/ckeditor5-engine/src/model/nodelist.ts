@@ -164,6 +164,8 @@ export default class NodeList implements Iterable<Node> {
 	 * @param nodes Nodes to be inserted.
 	 */
 	public _insertNodes( index: number, nodes: Iterable<Node> ): void {
+		const nodesArray: Array<Node> = [];
+
 		// Validation.
 		for ( const node of nodes ) {
 			if ( !( node instanceof Node ) ) {
@@ -174,16 +176,15 @@ export default class NodeList implements Iterable<Node> {
 				 */
 				throw new CKEditorError( 'model-nodelist-insertnodes-not-node', this );
 			}
-		}
 
-		const nodesArray = Array.from( nodes );
-		const offsetsArray = makeOffsetsArray( nodesArray );
+			nodesArray.push( node );
+		}
 
 		let offset = this.indexToOffset( index );
 
 		// Splice nodes array and offsets array into the nodelist.
-		this._nodes = spliceArray<Node>( this._nodes, nodesArray, index, 0 );
-		this._offsetToNode = spliceArray<Node>( this._offsetToNode, offsetsArray, offset, 0 );
+		spliceArray( this._nodes, nodesArray, index );
+		spliceArray( this._offsetToNode, makeOffsetsArray( nodesArray ), offset );
 
 		// Refresh indexes and offsets for nodes inside this node list. We need to do this for all inserted nodes and all nodes after them.
 		for ( let i = index; i < this._nodes.length; i++ ) {
@@ -231,7 +232,9 @@ export default class NodeList implements Iterable<Node> {
 	}
 
 	/**
-	 * Removes children nodes provided as an array.
+	 * Removes children nodes provided as an array. These nodes do not need to be direct siblings.
+	 *
+	 * This method is faster than removing nodes one by one, as it recalculates offsets only once.
 	 *
 	 * @internal
 	 * @param nodes Array of nodes.
