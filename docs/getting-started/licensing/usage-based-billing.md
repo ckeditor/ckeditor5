@@ -18,7 +18,7 @@ Under the Usage-based billing (UBB) model, your costs are based on how frequentl
 	* You have a Custom plan that allows self-hosting.
 </info-box>
 
-## Key Terms
+## Key terms
 
 Familiarizing yourself with these key terms related to usage-based billing will help you choose the right pricing plan for your needs:
 
