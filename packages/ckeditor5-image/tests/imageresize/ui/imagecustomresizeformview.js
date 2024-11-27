@@ -14,7 +14,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-describe( 'ImageColumnResizeFormView', () => {
+describe( 'ImageCustomResizeFormView', () => {
 	let view;
 
 	testUtils.createSinonSandbox();
@@ -28,8 +28,7 @@ describe( 'ImageColumnResizeFormView', () => {
 			view.render();
 
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-image-custom-resize-form' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-image-custom-resize__panel' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -44,12 +43,9 @@ describe( 'ImageColumnResizeFormView', () => {
 		it( 'should create child views', () => {
 			expect( view.labeledInput ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
-			expect( view.cancelButtonView ).to.be.instanceOf( View );
+			expect( view.backButtonView ).to.be.instanceOf( View );
 
 			view.render();
-
-			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
-			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
@@ -60,10 +56,10 @@ describe( 'ImageColumnResizeFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
+		it( 'should fire `cancel` event on backButtonView#execute', () => {
 			const spy = sinon.spy();
 			view.on( 'cancel', spy );
-			view.cancelButtonView.fire( 'execute' );
+			view.backButtonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -85,7 +81,7 @@ describe( 'ImageColumnResizeFormView', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.labeledInput,
 					view.saveButtonView,
-					view.cancelButtonView
+					view.backButtonView
 				] );
 			} );
 
@@ -96,7 +92,7 @@ describe( 'ImageColumnResizeFormView', () => {
 
 				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.labeledInput.element );
 				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
+				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.backButtonView.element );
 			} );
 
 			describe( 'activates keyboard navigation in the form', () => {
@@ -139,7 +135,7 @@ describe( 'ImageColumnResizeFormView', () => {
 
 					// Mock the cancel button is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.cancelButtonView.element;
+					view.focusTracker.focusedElement = view.backButtonView.element;
 
 					const spy = sinon.spy( view.saveButtonView, 'focus' );
 
