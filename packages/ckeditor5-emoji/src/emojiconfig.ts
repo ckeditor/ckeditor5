@@ -4,7 +4,7 @@
  */
 
 /**
- * @module emoji/emojieditorconfig
+ * @module emoji/emojiconfig
  */
 
 /**

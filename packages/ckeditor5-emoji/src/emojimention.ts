@@ -4,12 +4,13 @@
  */
 
 /**
- * @module emoji/emojimentionintegration
+ * @module emoji/emojimention
  */
 
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiLibraryIntegration from './emojilibraryintegration.js';
+import EmojiPicker from './emojipicker.js';
 
 import {
 	DEFAULT_DROPDOWN_LIMIT,
@@ -25,26 +26,26 @@ import {
 } from '@ckeditor/ckeditor5-mention';
 
 /**
- * Part of the emoji logic.
+ * The emoji mention plugin.
  *
- * @internal
+ * Introduces the autocomplete of emojis while typing.
  */
-export default class EmojiMentionIntegration extends Plugin {
-	private emojiDropdownLimit: number;
-	private mentionMarker: string;
+export default class EmojiMention extends Plugin {
+	private _emojiDropdownLimit: number;
+	private _mentionMarker: string;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiLibraryIntegration ] as const;
+		return [ 'Mention', EmojiLibraryIntegration ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'EmojiMentionIntegration' as const;
+		return 'EmojiMention' as const;
 	}
 
 	/**
@@ -60,11 +61,11 @@ export default class EmojiMentionIntegration extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' ) || DEFAULT_DROPDOWN_LIMIT;
-		this.mentionMarker = editor.config.get( 'emoji.marker' ) || DEFAULT_MENTION_MARKER;
+		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' ) || DEFAULT_DROPDOWN_LIMIT;
+		this._mentionMarker = editor.config.get( 'emoji.marker' ) || DEFAULT_MENTION_MARKER;
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
-		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this.mentionMarker );
+		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this._mentionMarker );
 
 		if ( markerAlreadyUsed ) {
 			/**
@@ -73,7 +74,7 @@ export default class EmojiMentionIntegration extends Plugin {
 			 * @error emoji-config-marker-already-used
 			 * @param {string} marker Used marker.
 			 */
-			logWarning( 'emoji-config-marker-already-used', { marker: this.mentionMarker } );
+			logWarning( 'emoji-config-marker-already-used', { marker: this._mentionMarker } );
 
 			return;
 		}
@@ -91,10 +92,10 @@ export default class EmojiMentionIntegration extends Plugin {
 		const emojiLibraryIntegration = this.editor.plugins.get( EmojiLibraryIntegration );
 
 		const emojiMentionFeedConfig = {
-			marker: this.mentionMarker,
-			dropdownLimit: this.emojiDropdownLimit,
+			marker: this._mentionMarker,
+			dropdownLimit: this._emojiDropdownLimit,
 			itemRenderer: this._getCustomItemRendererFn( this.editor.t ),
-			feed: emojiLibraryIntegration.getQueryEmojiFn( this.emojiDropdownLimit )
+			feed: emojiLibraryIntegration.getQueryEmojiFn( this._emojiDropdownLimit )
 		};
 
 		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
@@ -141,16 +142,23 @@ export default class EmojiMentionIntegration extends Plugin {
 			}
 
 			let textToInsert = eventData.mention.text;
+			let postInsertionCallback;
 
 			if ( eventData.mention.id === getShowAllEmojiId() ) {
 				textToInsert = '';
 
-				console.log( 'SHOWING EMOJI WINDOW' );
+				postInsertionCallback = () => this.editor.plugins.get( EmojiPicker ).showUI();
+
+				// TODO: showUI() called from here does not focus properly.
 			}
 
 			this.editor.model.change( writer => {
 				this.editor.model.insertContent( writer.createText( textToInsert ), eventData.range );
 			} );
+
+			if ( postInsertionCallback ) {
+				postInsertionCallback();
+			}
 
 			event.stop();
 		}, { priority: 'high' } );

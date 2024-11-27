@@ -6,7 +6,7 @@
 /* globals console:false, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Emoji } from '../../src/index.js';
+import { EmojiPicker } from '../../src/index.js';
 
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
@@ -18,7 +18,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			Emoji,
+			EmojiPicker,
 			Clipboard,
 			Enter,
 			Mention,

@@ -10,11 +10,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import Emoji from '../src/emoji.js';
 import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
-import EmojiMentionIntegration from '../src/emojimentionintegration.js';
+import EmojiMention from '../src/emojimention.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-describe( 'EmojiMentionIntegration', () => {
+describe( 'EmojiMention', () => {
 	let editor, editorElement, consoleLogStub, consoleWarnStub;
 
 	beforeEach( async () => {
@@ -44,21 +44,21 @@ describe( 'EmojiMentionIntegration', () => {
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( EmojiMentionIntegration.pluginName ).to.equal( 'EmojiMentionIntegration' );
+		expect( EmojiMention.pluginName ).to.equal( 'EmojiMention' );
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMentionIntegration.requires ).to.deep.equal( [
+		expect( EmojiMention.requires ).to.deep.equal( [
 			EmojiLibraryIntegration
 		] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiMentionIntegration.isOfficialPlugin ).to.be.true;
+		expect( EmojiMention.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiMentionIntegration.isPremiumPlugin ).to.be.false;
+		expect( EmojiMention.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should pass correct config for mention plugin', () => {

@@ -1,5 +1,3 @@
-## foo
+## Emoji plugin
 
-### bar
-
-1. baz
+This test allows for testing of both `EmojiMention` and `EmojiPicker` plugins.

@@ -10,10 +10,10 @@
 import { Database } from 'emoji-picker-element';
 import { formatEmojiId, getShowAllEmojiId } from './utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
+import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
+import EmojiPicker from './emojipicker.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
-
-import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 
 /**
  * Integration with external emoji library.
@@ -67,7 +67,9 @@ export default class EmojiLibraryIntegration extends Plugin {
 				return [];
 			}
 
-			const processedQuery = await emojiDatabase.getEmojiBySearchQuery( searchQuery )
+			const isEmojiPickerUsed = this.editor.plugins.has( EmojiPicker ); // TODO: don't check every time, only check once.
+
+			const emojis = await emojiDatabase.getEmojiBySearchQuery( searchQuery )
 				.then( queryResult => {
 					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
 						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
@@ -79,10 +81,9 @@ export default class EmojiLibraryIntegration extends Plugin {
 					} );
 				} );
 
-			return [
-				...processedQuery.slice( 0, queryLimit - 1 ),
-				{ id: getShowAllEmojiId() }
-			];
+			return isEmojiPickerUsed ?
+				[ ...emojis.slice( 0, queryLimit - 1 ), { id: getShowAllEmojiId() } ] :
+				emojis.slice( 0, queryLimit );
 		};
 	}
 }
