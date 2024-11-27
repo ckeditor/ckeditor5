@@ -13,7 +13,7 @@ The emoji feature lets you insert emojis from the editor toolbar, or directly on
 
 Use the emoji toolbar button {@icon @ckeditor/ckeditor5-emoji/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis.
 
-<!-- {@snippet features/emoji} does not work yet -->
+{@snippet features/emoji}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
