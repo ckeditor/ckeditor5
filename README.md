@@ -86,7 +86,7 @@ Refer to the [CKEditor&nbsp;5 Features](https://ckeditor.com/docs/ckeditor5/late
 
 ## Create a free account and test full potential
 
-If you want to check full CKEditor&nbsp;5 capabilities, including premium features, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+If you want to check full CKEditor&nbsp;5 capabilities, including premium features, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/checkout?plan=free).
 
 ## Contributing and project organization
 
