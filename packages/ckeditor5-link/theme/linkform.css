@@ -21,10 +21,6 @@
 		& .ck-link-and-submit {
 			display: flex;
 
-			& > .ck-labeled-field-view {
-				flex: 1;
-			}
-
 			@mixin ck-media-phone {
 				flex-direction: column;
 
