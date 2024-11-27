@@ -179,8 +179,8 @@ export default class Element extends Node {
 	 *
 	 * @returns Child nodes iterator.
 	 */
-	public getChildren(): Array<Node> {
-		return this._children;
+	public getChildren(): IterableIterator<Node> {
+		return this._children[ Symbol.iterator ]();
 	}
 
 	/**
