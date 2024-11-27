@@ -209,9 +209,14 @@ export default class LinkUI extends Plugin {
 	 * Creates views.
 	 */
 	private _createViews() {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
 		this.toolbarView = this._createToolbarView();
 		this.formView = this._createFormView();
-		this.propertiesView = this._createPropertiesView();
+
+		if ( linkCommand.manualDecorators.length ) {
+			this.propertiesView = this._createPropertiesView();
+		}
 
 		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
 			this.bookmarksView = this._createBookmarksView();

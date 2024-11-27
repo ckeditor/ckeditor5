@@ -1179,6 +1179,13 @@ describe( 'LinkUI', () => {
 	describe( '_addPropertiesView()', () => {
 		beforeEach( () => {
 			editor.editing.view.document.isFocused = true;
+			editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+				id: 'linkIsBar',
+				label: 'Bar',
+				attributes: {
+					target: '_blank'
+				}
+			} ) );
 		} );
 
 		it( 'should create #propertiesView', () => {
@@ -2810,6 +2817,16 @@ describe( 'LinkUI', () => {
 	} );
 
 	describe( 'properties view', () => {
+		beforeEach( () => {
+			editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+				id: 'linkIsBar',
+				label: 'Bar',
+				attributes: {
+					target: '_blank'
+				}
+			} ) );
+		} );
+
 		it( 'can be closed by clicking the back button', () => {
 			const spy = sinon.spy();
 
