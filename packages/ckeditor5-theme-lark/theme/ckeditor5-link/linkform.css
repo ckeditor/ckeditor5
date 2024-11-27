@@ -52,14 +52,15 @@
 		& .ck-labeled-field-view {
 			& input {
 				width: 100%;
+				/* To overwrite default min-width value to prevent inputs from growing and and stick out beyond the panel. */
+				min-width: 100%;
 			}
 		}
 
 		/* "Link" input field and the "Insert" button */
 		& .ck-link-and-submit {
 			& .ck-button-insert {
-				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
-				height: 30px;
+				padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-large);
 				margin-inline-start: var(--ck-spacing-medium);
 			}
 
