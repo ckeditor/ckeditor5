@@ -29,4 +29,9 @@ See the [`@ckeditor/ckeditor5-table` package](https://ckeditor.com/docs/ckeditor
 
 ## License
 
-Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).
+Licensed under a dual-license model, this software is available under:
+
+* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
+* or commercial license terms from CKSource Holding sp. z o.o.
+
+For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
