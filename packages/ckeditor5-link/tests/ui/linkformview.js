@@ -37,7 +37,6 @@ describe( 'LinkFormView', () => {
 
 		it( 'should create child views', () => {
 			expect( view.backButtonView ).to.be.instanceOf( View );
-			expect( view.settingsButtonView ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.displayedTextInputView ).to.be.instanceOf( View );
 			expect( view.urlInputView ).to.be.instanceOf( View );
@@ -79,7 +78,6 @@ describe( 'LinkFormView', () => {
 				 * 	header
 				 * 		backButtonView
 				 * 		label
-				 * 		settingsButtonView
 				 * 	div
 				 * 		displayedTextInputView
 				 * 		div
@@ -100,7 +98,6 @@ describe( 'LinkFormView', () => {
 				const formChildren = view.template.children[ 0 ].get( 1 ).template.children[ 0 ];
 
 				expect( headerChildren.get( 0 ) ).to.equal( view.backButtonView );
-				expect( headerChildren.get( 2 ) ).to.equal( view.settingsButtonView );
 				expect( formChildren.last.template.children[ 1 ] ).to.equal( view.saveButtonView );
 			} );
 		} );
@@ -112,7 +109,6 @@ describe( 'LinkFormView', () => {
 				view.urlInputView,
 				view.saveButtonView,
 				view.backButtonView,
-				view.settingsButtonView,
 				view.displayedTextInputView
 			] );
 		} );
@@ -126,8 +122,7 @@ describe( 'LinkFormView', () => {
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.backButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.settingsButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.displayedTextInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.displayedTextInputView.element );
 
 			view.destroy();
 		} );
@@ -325,8 +320,7 @@ describe( 'LinkFormView', () => {
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), element );
 			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.backButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.settingsButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.displayedTextInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.displayedTextInputView.element );
 
 			view.destroy();
 		} );

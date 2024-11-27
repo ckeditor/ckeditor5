@@ -18,12 +18,12 @@ import {
 	SwitchButtonView
 } from '@ckeditor/ckeditor5-ui';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import LinkAdvancedView from '../../src/ui/linkadvancedview.js';
+import LinkPropertiesView from '../../src/ui/linkpropertiesview.js';
 import ManualDecorator from '../../src/utils/manualdecorator.js';
 
 const mockLocale = { t: val => val };
 
-describe( 'LinkAdvancedView', () => {
+describe( 'LinkPropertiesView', () => {
 	let view, collection, linkCommand, decorator1, decorator2, decorator3;
 
 	testUtils.createSinonSandbox();
@@ -64,7 +64,7 @@ describe( 'LinkAdvancedView', () => {
 			decorator3
 		] );
 
-		view = new LinkAdvancedView( mockLocale );
+		view = new LinkPropertiesView( mockLocale );
 
 		view.listChildren.bindTo( collection ).using( decorator => {
 			const button = new SwitchButtonView();
@@ -159,7 +159,7 @@ describe( 'LinkAdvancedView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new LinkAdvancedView( mockLocale, linkCommand );
+			const view = new LinkPropertiesView( mockLocale, linkCommand );
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();

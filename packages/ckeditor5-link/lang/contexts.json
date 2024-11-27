@@ -4,6 +4,7 @@
 	"Link URL": "Label for the URL input in the Link URL editing balloon.",
 	"Link URL must not be empty.": "An error text displayed when user attempted to enter an empty URL.",
 	"Link image": "Label for the image link button.",
+	"Link properties": "Label for the link properties link balloon title.",
 	"Edit link": "Button opening the Link URL editing balloon.",
 	"Open link in new tab": "Button opening the link in new browser tab.",
 	"This link has no URL": "Label explaining that a link has no URL set (the URL is empty).",
@@ -14,7 +15,6 @@
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link.",
 	"Bookmarks": "Title for a feature displaying a list of bookmarks.",
 	"No bookmarks available.": "A message displayed instead of a list of bookmarks if it is empty.",
-	"Advanced": "Title for a feature displaying advanced link settings.",
 	"Displayed text": "The label of the input field for the displayed text of the link.",
 	"Back": "The label of the button that returns to the previous view."
 }

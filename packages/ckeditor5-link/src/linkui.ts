@@ -33,7 +33,7 @@ import { isWidget } from 'ckeditor5/src/widget.js';
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
 import LinkBookmarksView from './ui/linkbookmarksview.js';
-import LinkAdvancedView from './ui/linkadvancedview.js';
+import LinkPropertiesView from './ui/linkpropertiesview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
@@ -78,9 +78,9 @@ export default class LinkUI extends Plugin {
 	public bookmarksView: LinkBookmarksView | null = null;
 
 	/**
-	 * The form view displaying advanced link settings.
+	 * The form view displaying properties link settings.
 	 */
-	public advancedView: LinkAdvancedView | null = null;
+	public propertiesView: LinkPropertiesView & ViewWithCssTransitionDisabler | null = null;
 
 	/**
 	 * The selected text of the link or text that is selected and can become a link.
@@ -188,8 +188,8 @@ export default class LinkUI extends Plugin {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
-		if ( this.advancedView ) {
-			this.advancedView.destroy();
+		if ( this.propertiesView ) {
+			this.propertiesView.destroy();
 		}
 
 		if ( this.formView ) {
@@ -209,9 +209,14 @@ export default class LinkUI extends Plugin {
 	 * Creates views.
 	 */
 	private _createViews() {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
 		this.toolbarView = this._createToolbarView();
 		this.formView = this._createFormView();
-		this.advancedView = this._createAdvancedView();
+
+		if ( linkCommand.manualDecorators.length ) {
+			this.propertiesView = this._createPropertiesView();
+		}
 
 		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
 			this.bookmarksView = this._createBookmarksView();
@@ -228,10 +233,18 @@ export default class LinkUI extends Plugin {
 	private _createToolbarView(): ToolbarView {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView( editor.locale );
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		toolbarView.class = 'ck-link-toolbar';
 
-		toolbarView.fillFromConfig( editor.config.get( 'link.toolbar' )!, editor.ui.componentFactory );
+		// Remove the linkProperties button if there are no manual decorators, as it would be useless.
+		let toolbarItems = editor.config.get( 'link.toolbar' )!;
+
+		if ( !linkCommand.manualDecorators.length ) {
+			toolbarItems = toolbarItems.filter( item => item !== 'linkProperties' );
+		}
+
+		toolbarView.fillFromConfig( toolbarItems, editor.ui.componentFactory );
 
 		// Close the panel on esc key press when the **link toolbar have focus**.
 		toolbarView.keystrokes.set( 'Esc', ( data, cancel ) => {
@@ -281,9 +294,6 @@ export default class LinkUI extends Plugin {
 		// Disable the "save" button if the command is disabled.
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
-		// Show the "Advanced" button only when there are manual decorators.
-		formView.settingsButtonView.bind( 'isVisible' ).to( linkCommand, 'manualDecorators', decorators => decorators.length > 0 );
-
 		// Change the "Save" button label depending on the command state.
 		formView.saveButtonView.bind( 'label' ).to( linkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
 
@@ -313,15 +323,6 @@ export default class LinkUI extends Plugin {
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
 			this._closeFormView();
-		} );
-
-		this.listenTo( formView.settingsButtonView, 'execute', () => {
-			this._balloon.add( {
-				view: this.advancedView!,
-				position: this._getBalloonPositionData()
-			} );
-
-			this.advancedView!.focus();
 		} );
 
 		// Close the panel on esc key press when the **form has focus**.
@@ -392,21 +393,20 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:link/ui/linkadvancedview~LinkAdvancedView} instance.
+	 * Creates the {@link module:link/ui/linkpropertiesview~LinkPropertiesView} instance.
 	 */
-	private _createAdvancedView(): LinkAdvancedView {
+	private _createPropertiesView(): LinkPropertiesView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
-		const view = new LinkAdvancedView( this.editor.locale );
+
+		const view = new ( CssTransitionDisablerMixin( LinkPropertiesView ) )( editor.locale );
 
 		// Hide the panel after clicking the back button.
 		this.listenTo( view, 'back', () => {
-			// Make sure the focus always gets back to the editable _before_ removing the focused form view.
-			// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
+			// Move focus back to the editing view to prevent from losing it while current view is removed.
 			editor.editing.view.focus();
 
-			this._removeAdvancedView();
-			this.formView!.focus();
+			this._removePropertiesView();
 		} );
 
 		view.listChildren.bindTo( linkCommand.manualDecorators ).using( manualDecorator => {
@@ -425,6 +425,7 @@ export default class LinkUI extends Plugin {
 
 			button.on( 'execute', () => {
 				manualDecorator.set( 'value', !button.isOn );
+				editor.execute( 'link', linkCommand.value!, this._getDecoratorSwitchesState() );
 			} );
 
 			return button;
@@ -552,6 +553,31 @@ export default class LinkUI extends Plugin {
 
 			this.listenTo<ButtonExecuteEvent>( button, 'execute', () => {
 				this._addFormView();
+			} );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'linkProperties', locale => {
+			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+			const button = new ButtonView( locale );
+			const t = locale.t;
+
+			button.set( {
+				label: t( 'Link properties' ),
+				icon: icons.settings,
+				tooltip: true
+			} );
+
+			button.bind( 'isEnabled' ).to(
+				linkCommand, 'isEnabled',
+				linkCommand, 'value',
+				linkCommand, 'manualDecorators',
+				( isEnabled, href, manualDecorators ) => isEnabled && !!href && manualDecorators.length > 0
+			);
+
+			this.listenTo<ButtonExecuteEvent>( button, 'execute', () => {
+				this._addPropertiesView();
 			} );
 
 			return button;
@@ -733,6 +759,29 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Adds the {@link #propertiesView} to the {@link #_balloon}.
+	 */
+	private _addPropertiesView(): void {
+		if ( !this.propertiesView ) {
+			this._createViews();
+		}
+
+		if ( this._arePropertiesInPanel ) {
+			return;
+		}
+
+		this.propertiesView!.disableCssTransitions();
+
+		this._balloon.add( {
+			view: this.propertiesView!,
+			position: this._getBalloonPositionData()
+		} );
+
+		this.propertiesView!.enableCssTransitions();
+		this.propertiesView!.focus();
+	}
+
+	/**
 	 * Adds the {@link #bookmarksView} to the {@link #_balloon}.
 	 */
 	private _addBookmarksView(): void {
@@ -753,21 +802,13 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Closes the form view. Decides whether the balloon should be hidden completely or if the action view should be shown. This is
 	 * decided upon the link command value (which has a value if the document selection is in the link).
-	 *
-	 * Additionally, if any {@link module:link/linkconfig~LinkConfig#decorators} are defined in the editor configuration, the state of
-	 * switch buttons responsible for manual decorator handling is restored.
 	 */
 	private _closeFormView(): void {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
-		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
-		// when the user cancels the editing form.
-		linkCommand.restoreManualDecoratorStates();
-
 		this.selectedLinkableText = undefined;
 
 		if ( linkCommand.value !== undefined ) {
-			this._removeAdvancedView();
 			this._removeFormView();
 		} else {
 			this._hideUI();
@@ -775,11 +816,11 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Removes the {@link #advancedView} from the {@link #_balloon}.
+	 * Removes the {@link #propertiesView} from the {@link #_balloon}.
 	 */
-	private _removeAdvancedView(): void {
-		if ( this._isAdvancedInPanel ) {
-			this._balloon.remove( this.advancedView! );
+	private _removePropertiesView(): void {
+		if ( this._arePropertiesInPanel ) {
+			this._balloon.remove( this.propertiesView! );
 		}
 	}
 
@@ -885,10 +926,10 @@ export default class LinkUI extends Plugin {
 		// If the bookmarks view is visible, remove it because it can be on top of the stack.
 		this._removeBookmarksView();
 
-		// If the advanced form view is visible, remove it because it can be on top of the stack.
-		this._removeAdvancedView();
+		// If the properties form view is visible, remove it because it can be on top of the stack.
+		this._removePropertiesView();
 
-		// Then remove the form view because it's beneath the advanced form.
+		// Then remove the form view because it's beneath the properties form.
 		this._removeFormView();
 
 		// Finally, remove the link toolbar view because it's last in the stack.
@@ -956,10 +997,10 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #propertiesView} is in the {@link #_balloon}.
 	 */
-	private get _isAdvancedInPanel(): boolean {
-		return !!this.advancedView && this._balloon.hasView( this.advancedView );
+	private get _arePropertiesInPanel(): boolean {
+		return !!this.propertiesView && this._balloon.hasView( this.propertiesView );
 	}
 
 	/**
@@ -984,11 +1025,11 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #propertiesView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
-	private get _isAdvancedVisible(): boolean {
-		return !!this.advancedView && this._balloon.visibleView === this.advancedView;
+	private get _isPropertiesVisible(): boolean {
+		return !!this.propertiesView && this._balloon.visibleView === this.propertiesView;
 	}
 
 	/**
@@ -1016,19 +1057,19 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView}, {@link #toolbarView}, {@link #bookmarksView}
+	 * Returns `true` when {@link #propertiesView}, {@link #toolbarView}, {@link #bookmarksView}
 	 * or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
-		return this._isAdvancedInPanel || this._areBookmarksInPanel || this._isFormInPanel || this._isToolbarInPanel;
+		return this._arePropertiesInPanel || this._areBookmarksInPanel || this._isFormInPanel || this._isToolbarInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #advancedView}, {@link #bookmarksView}, {@link #toolbarView}
+	 * Returns `true` when {@link #propertiesView}, {@link #bookmarksView}, {@link #toolbarView}
 	 * or {@link #formView} is in the {@link #_balloon} and it is currently visible.
 	 */
 	private get _isUIVisible(): boolean {
-		return this._isAdvancedVisible || this._areBookmarksVisible || this._isFormVisible || this._isToolbarVisible;
+		return this._isPropertiesVisible || this._areBookmarksVisible || this._isFormVisible || this._isToolbarVisible;
 	}
 
 	/**
