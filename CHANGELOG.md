@@ -1,20 +1,48 @@
 Changelog
 =========
 
-## [44.0.0](https://github.com/ckeditor/ckeditor5/compare/v43.3.1...v44.0.0) (November 27, 2024)
+## [44.0.0](https://github.com/ckeditor/ckeditor5/compare/v43.3.1...v44.0.0) (December 2, 2024)
+
+## Release Highlights
+
+We're excited to introduce CKEditor 5 v44.0.0, a release packed with impactful updates designed to enhance your editing experience and simplify access to our premium offerings. Here's what’s new:
+
+#### 🚀 Self-service plans: simplified access to premium features
+
+We’re introducing flexible self-service plans that put you in control with full transparency. Now, you can:
+
+* [Choose the plan](#TODO_Insert_URL) that fits your needs, pay only for what you use, and get started instantly with [a commitment-free trial](#TODO_Insert_URL).
+* Seamlessly manage your license keys, track usage, and more in the new [**Customer Portal**](#TODO_Insert_URL).
+
+💡 **Important for current users:**
+
+If you’re upgrading to v44.0.0+, ensure a smooth transition by updating your license keys in the editor, as we implemented a new format of the key. To get the new key, visit the [Customer Portal](#TODO_Insert_URL).
+
+📣 The open-source version and licensing remains unchanged. These updates apply exclusively to our commercial offerings. Read more in https://github.com/ckeditor/ckeditor5/issues/17317.
+
+#### 🔖 Bookmarks: organize content with ease
+
+Say hello to [**Bookmarks**](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html), a long-awaited feature that simplifies content navigation within the editor. With this release, you can:
+
+* Add anchors as reference points within text.
+* Link to the created bookmarks in the editor to navigate to specific locations within complex documents, such as contracts or technical manuals.
+
+📍 Future updates to Bookmarks and the linking experience are planned for the next releases. Follow progress and share your feedback on [GitHub](https://github.com/ckeditor/ckeditor5/issues/17230).
+
+#### ⚡ Performance improvements: faster table rendering
+
+The current release includes another stride towards improving the performance aspect of the editor, this time focusing on how tables are handled in the content. Implemented optimizations have made table rendering 3x faster, with the average load time of a document with a very long, complex tables dropping from around 4.5 seconds to just 1.5 seconds.
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * `config.licenseKey` is now a required property in the editor configuration. Use `'GPL'` for installations under the GPL terms. See [#17317](https://github.com/ckeditor/ckeditor5/issues/17317).
-* `config.licenseKey` is now a required property in the editor configuration. Use `'GPL'` for installations under the GPL terms. See [#17317](git+https://github.com/cksource/ckeditor5-commercial/issues/17317).
 
 ### Features
 
-* **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: Introduces the Bookmarks feature. Closes [#1944](https://github.com/ckeditor/ckeditor5/issues/1944). ([commit](https://github.com/ckeditor/ckeditor5/commit/21c6f46f47a95866e759e0ce7834e1c91a9a92bf))
+* **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: Introduced the Bookmarks feature. Closes [#1944](https://github.com/ckeditor/ckeditor5/issues/1944). ([commit](https://github.com/ckeditor/ckeditor5/commit/21c6f46f47a95866e759e0ce7834e1c91a9a92bf))
 
 ### Bug fixes
 
-* **[bookmarks](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmarks)**: Avoid global state to improve icons tree-shaking. ([commit](https://github.com/ckeditor/ckeditor5/commit/49edd0134adc46a45c72aa2b8c1b15cf65a9a8c4))
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: An in-text drop of an inline object with elements inside should be possible. Closes [#16101](https://github.com/ckeditor/ckeditor5/issues/16101). ([commit](https://github.com/ckeditor/ckeditor5/commit/e1093ebe9b029bf8fbc158470079b90e335b763c))
 * **[cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)**: Handle refresh token when editor destroyed during token fetching. Closes [#17462](https://github.com/ckeditor/ckeditor5/issues/17462). ([commit](https://github.com/ckeditor/ckeditor5/commit/9bd899ec20dbc21922cf46caa59f4d9dce100331))
 * **[editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)**: Excluded modal windows from the Classic Editor's integration between dialogs and the sticky toolbar. Closes [#17339](https://github.com/ckeditor/ckeditor5/issues/17339). ([commit](https://github.com/ckeditor/ckeditor5/commit/3ef74d9f3f44e866a93f747527f24af4bf6e2f1c))
@@ -47,9 +75,6 @@ Changelog
   Huge thanks to [Ben Demboski](https://github.com/bendemboski) for this contribution!
 * Changes related to the introduction of self-service channel for CKEditor 5 Premium Features. See [#17317](https://github.com/ckeditor/ckeditor5/issues/17317). ([commit](https://github.com/ckeditor/ckeditor5/commit/5d0fe1e75677b63577d96cbecb1300284c76b24c))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/847a87991359156697047e31d266c828f8437aa0))
-
-  Internal (build-*): Updated builds.
-* Changes related to the introduction of self-service channel for CKEditor 5 Premium Features. See [#17317](git+https://github.com/cksource/ckeditor5-commercial/issues/17317).
 
 ### Released packages
 
