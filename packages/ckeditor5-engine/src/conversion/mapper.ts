@@ -12,7 +12,6 @@ import ModelRange from '../model/range.js';
 
 import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
-import ViewText from '../view/text.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -658,9 +657,9 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		const nodeBefore = viewPosition.nodeBefore;
 		const nodeAfter = viewPosition.nodeAfter;
 
-		if ( nodeBefore instanceof ViewText ) {
+		if ( nodeBefore && nodeBefore.is( 'view:$text' ) ) {
 			return new ViewPosition( nodeBefore, nodeBefore.data.length );
-		} else if ( nodeAfter instanceof ViewText ) {
+		} else if ( nodeAfter && nodeAfter.is( 'view:$text' ) ) {
 			return new ViewPosition( nodeAfter, 0 );
 		}
 

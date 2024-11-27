@@ -227,25 +227,24 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 
 				// Handle event listener callbacks first.
 				if ( callbacks ) {
-					// Arguments passed to each callback.
-					const callbackArgs = [ eventInfo, ...args ];
-
 					// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
 					// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
 					// failed if callbacks were added to the queue before currently processed callback.
 					// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
 					// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
-					callbacks = Array.from( callbacks );
+					callbacks = callbacks.slice();
 
 					for ( let i = 0; i < callbacks.length; i++ ) {
-						callbacks[ i ].callback.apply( this, callbackArgs );
+						const fn = callbacks[ i ].callback;
+
+						fn.call( this, eventInfo, ...args );
 
 						// Remove the callback from future requests if off() has been called.
 						if ( eventInfo.off.called ) {
 							// Remove the called mark for the next calls.
 							delete eventInfo.off.called;
 
-							this._removeEventListener( event, callbacks[ i ].callback );
+							this._removeEventListener( event, fn );
 						}
 
 						// Do not execute next callbacks if stop() was called.

@@ -288,6 +288,10 @@ export default class Element extends Node {
 	 * Removes children nodes provided as an array and sets
 	 * the {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
 	 *
+	 * These nodes do not need to be direct siblings.
+	 *
+	 * This method is faster than removing nodes one by one, as it recalculates offsets only once.
+	 *
 	 * @internal
 	 * @param nodes Array of nodes.
 	 */
