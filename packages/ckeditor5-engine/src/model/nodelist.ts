@@ -232,9 +232,7 @@ export default class NodeList implements Iterable<Node> {
 	}
 
 	/**
-	 * Removes children nodes provided as an array. These nodes do not need to be direct siblings.
-	 *
-	 * This method is faster than removing nodes one by one, as it recalculates offsets only once.
+	 * Removes children nodes provided as an array.
 	 *
 	 * @internal
 	 * @param nodes Array of nodes.
