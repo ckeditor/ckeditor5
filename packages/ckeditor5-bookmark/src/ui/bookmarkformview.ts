@@ -182,7 +182,7 @@ export default class BookmarkFormView extends View {
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	public focus(): void {
-		this._focusCycler.focusFirst();
+		this.idInputView!.focus();
 	}
 
 	/**
