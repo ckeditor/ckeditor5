@@ -5,31 +5,31 @@ Changelog
 
 ## Release Highlights
 
-We're excited to introduce CKEditor 5 v44.0.0, a release packed with impactful updates designed to enhance your editing experience and simplify access to our premium offerings. Here's what’s new:
+We are excited to introduce CKEditor 5 v44.0.0, a release packed with high impact updates designed to enhance your editing experience and simplify access to our premium offers. Here's what’s new:
 
-#### 🚀 Self-service plans: simplified access to premium features
+#### 🚀 Self-service plans: Simplified access to premium features
 
-We’re introducing flexible self-service plans that put you in control with full transparency. Now, you can:
+We are introducing flexible self-service plans that put you in control with full transparency. Now, you can:
 
 * [Choose the plan](#TODO_Insert_URL) that fits your needs, pay only for what you use, and get started instantly with [a commitment-free trial](#TODO_Insert_URL).
 * Seamlessly manage your license keys, track usage, and more in the new [**Customer Portal**](#TODO_Insert_URL).
 
 💡 **Important for current users:**
 
-If you’re upgrading to v44.0.0+, ensure a smooth transition by updating your license keys in the editor, as we implemented a new format of the key. To get the new key, visit the [Customer Portal](#TODO_Insert_URL).
+If you are upgrading to v44.0.0+, ensure a smooth transition by updating your license keys in the editor, as we implemented a new format of the key. To get the new key, visit the [Customer Portal](#TODO_Insert_URL).
 
-📣 The open-source version and licensing remains unchanged. These updates apply exclusively to our commercial offerings. Read more in https://github.com/ckeditor/ckeditor5/issues/17317.
+📣 The open-source version and licensing remains unchanged. These updates apply exclusively to our commercial offers. Read more in https://github.com/ckeditor/ckeditor5/issues/17317.
 
-#### 🔖 Bookmarks: organize content with ease
+#### 🔖 Bookmarks: Organize your content with ease
 
 Say hello to [**Bookmarks**](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html), a long-awaited feature that simplifies content navigation within the editor. With this release, you can:
 
 * Add anchors as reference points within text.
-* Link to the created bookmarks in the editor to navigate to specific locations within complex documents, such as contracts or technical manuals.
+* Link to the newly created bookmarks in the editor to navigate to specific locations within complex documents, such as contracts or technical manuals.
 
-📍 Future updates to Bookmarks and the linking experience are planned for the next releases. Follow progress and share your feedback on [GitHub](https://github.com/ckeditor/ckeditor5/issues/17230).
+📍 Future updates to Bookmarks and the linking experience are planned for the upcoming releases. Follow progress and share your feedback on [GitHub](https://github.com/ckeditor/ckeditor5/issues/17230).
 
-#### ⚡ Performance improvements: faster table rendering
+#### ⚡ Performance improvements: Faster table rendering
 
 The current release includes another stride towards improving the performance aspect of the editor, this time focusing on how tables are handled in the content. Implemented optimizations have made table rendering 3x faster, with the average load time of a document with a very long, complex tables dropping from around 4.5 seconds to just 1.5 seconds.
 
@@ -53,9 +53,9 @@ The current release includes another stride towards improving the performance as
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination line should be rendered properly on tables. Closes [ckeditor/ckeditor5#17158](https://github.com/ckeditor/ckeditor5/issues/17158).
 * **[restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: Remove existing restricted editing markers when setting new data to prevent marker resurrection. Closes [#9646](https://github.com/ckeditor/ckeditor5/issues/9646), [#16721](https://github.com/ckeditor/ckeditor5/issues/16721). ([commit](https://github.com/ckeditor/ckeditor5/commit/c66459d5013eab429b66196ca4463491e6f99a3f))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Letter descenders should not be clipped in the top-level menu bar categories. Closes [#17422](https://github.com/ckeditor/ckeditor5/issues/17422). ([commit](https://github.com/ckeditor/ckeditor5/commit/b8f2f87cb4230aee5060e6120a97e7c5013de1ee))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Export `AttributeData`, `FormatData` and `Description` typings from package.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The menu or dropdown panels will no longer be placed in an incorrect position when a optimal position can't be found. Closes [#17220](https://github.com/ckeditor/ckeditor5/issues/17220). ([commit](https://github.com/ckeditor/ckeditor5/commit/00e9a7f8dff63e789a35f0123eb99889dbbe69f9))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The dialog plugin should not handle Esc key press when default-prevented by the guest view. Closes [#17343](https://github.com/ckeditor/ckeditor5/issues/17343). ([commit](https://github.com/ckeditor/ckeditor5/commit/bf148979a2cf72c1f90dbc1254e642a3e6e072f4))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Export the `AttributeData`, `FormatData` and `Description` typings from package.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The menu or dropdown panels will no longer be placed in an incorrect position when a optimal position cannot be found. Closes [#17220](https://github.com/ckeditor/ckeditor5/issues/17220). ([commit](https://github.com/ckeditor/ckeditor5/commit/00e9a7f8dff63e789a35f0123eb99889dbbe69f9))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The dialog plugin should not handle <kbd>Esc</kbd> key press when default-prevented by the guest view. Closes [#17343](https://github.com/ckeditor/ckeditor5/issues/17343). ([commit](https://github.com/ckeditor/ckeditor5/commit/bf148979a2cf72c1f90dbc1254e642a3e6e072f4))
 * **[upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)**: Editor should no longer crash when executing undo while an image is still being uploaded. ([commit](https://github.com/ckeditor/ckeditor5/commit/e29811f4919175f1aa02a0510b93936c9334b2d1))
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Use binary search in `insertToPriorityArray()` for better performance when handling big tables. ([commit](https://github.com/ckeditor/ckeditor5/commit/2e416d27116121e190a605b51b0ec78ead4c4382))
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: No longer scroll to the top of the document if pasted element is larger than scrollable editable. Closes [#17079](https://github.com/ckeditor/ckeditor5/issues/17079). ([commit](https://github.com/ckeditor/ckeditor5/commit/5cf9f9184f8e3c4b485ee6a119bb951a0c247aac))
