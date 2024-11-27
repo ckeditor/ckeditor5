@@ -29,7 +29,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import type { DeleteCommand } from 'ckeditor5/src/typing.js';
 import { isWidget, WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
 
-import BookmarkFormView, { type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
+import BookmarkFormView, { type BookmarkFormViewCancelEvent, type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
 import type UpdateBookmarkCommand from './updatebookmarkcommand.js';
 import type InsertBookmarkCommand from './insertbookmarkcommand.js';
 
@@ -185,7 +185,7 @@ export default class BookmarkUI extends Plugin {
 		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, getFormValidators( editor ) );
 
 		formView.idInputView.fieldView.bind( 'value' ).to( updateBookmarkCommand, 'value' );
-		formView.buttonView.bind( 'label' ).to( updateBookmarkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
+		formView.saveButtonView.bind( 'label' ).to( updateBookmarkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.idInputView.bind( 'isEnabled' ).toMany(
@@ -195,11 +195,16 @@ export default class BookmarkUI extends Plugin {
 		);
 
 		// Disable the "save" button if the command is disabled.
-		formView.buttonView.bind( 'isEnabled' ).toMany(
+		formView.saveButtonView.bind( 'isEnabled' ).toMany(
 			commands,
 			'isEnabled',
 			( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 		);
+
+		// Close the panel on form after clicking back button.
+		this.listenTo<BookmarkFormViewCancelEvent>( formView, 'cancel', () => {
+			this._hideFormView();
+		} );
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
@@ -400,7 +405,7 @@ export default class BookmarkUI extends Plugin {
 	private _removeFormView(): void {
 		// Blur the input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
-		this.formView!.buttonView.focus();
+		this.formView!.saveButtonView.focus();
 
 		// Reset the ID field to update the state of the submit button.
 		this.formView!.idInputView.fieldView.reset();
