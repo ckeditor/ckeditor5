@@ -5,7 +5,7 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-/* Generic class that wraps each form view. */
+/* Generic class that wraps each link balloon view. */
 .ck.ck-link__panel {
 
 	/* Form */
