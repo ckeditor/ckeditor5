@@ -14,7 +14,7 @@ The bookmarks feature allows for adding and managing the bookmarks anchors attac
 
 Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`).
 
-To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
+You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
 
 {@snippet features/bookmark}
 
@@ -27,11 +27,18 @@ To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/cke
 Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
 
 The feature converts anchors into bookmarks during the {@link getting-started/setup/getting-and-setting-data#initializing-the-editor-with-data initialization of the editor} or while {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata replacing the editor data with `setData()`}. The notation based on the `id` attribute in an `a` HTML element without a `href` attribute is converted. Similar notations meet the conditions, too:
+
 * an `a` HTML element with a `name` attribute,
 * an `a` HTML element with the same `name` and `id` attributes,
 * an `a` HTML element with different `name` and `id` attributes.
 
 By default, all bookmarks created in the editor only have the `id="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}.
+
+## Integration with the link feature
+
+Bookmarks integrate with {@link features/link links}, providing a smooth linking experience. If you have any bookmarks in your content, you can access the "Bookmarks" panel available during link creation. It will display all bookmarks available in the edited content. Choose one of the anchors from the list and use it as a link target.
+
+{@img assets/img/bookmarks-panel.png 600 The bookmarks panel displayed during link creation}
 
 ## Installation
 
@@ -101,6 +108,7 @@ Here are some other CKEditor&nbsp;5 features that you can use similarly to the b
 ## Common API
 
 The {@link module:bookmark/bookmark~Bookmark} plugin registers the `'bookmark'` UI button component implemented by the {@link module:bookmark/bookmarkui~BookmarkUI bookmark UI feature}, and the following commands:
+
 * the `'insertBookmark'` command implemented by the {@link module:bookmark/insertbookmarkcommand~InsertBookmarkCommand editing feature}.
 * the `'updateBookmark'` command implemented by the {@link module:bookmark/updatebookmarkcommand~UpdateBookmarkCommand editing feature}.
 

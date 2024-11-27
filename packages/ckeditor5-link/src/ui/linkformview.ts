@@ -53,11 +53,6 @@ export default class LinkFormView extends View {
 	public backButtonView: ButtonView;
 
 	/**
-	 * The Settings button view displayed in the header.
-	 */
-	public settingsButtonView: ButtonView;
-
-	/**
 	 * The Save button view.
 	 */
 	public saveButtonView: ButtonView;
@@ -120,7 +115,6 @@ export default class LinkFormView extends View {
 
 		// Create buttons
 		this.backButtonView = this._createBackButton();
-		this.settingsButtonView = this._createSettingsButton();
 		this.saveButtonView = this._createSaveButton();
 
 		// Create input fields
@@ -183,7 +177,6 @@ export default class LinkFormView extends View {
 			this.saveButtonView,
 			...this.listChildren,
 			this.backButtonView,
-			this.settingsButtonView,
 			this.displayedTextInputView
 		];
 
@@ -266,22 +259,6 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates a settings button view that opens the advanced settings panel.
-	 */
-	private _createSettingsButton(): ButtonView {
-		const t = this.locale!.t;
-		const settingsButton = new ButtonView( this.locale );
-
-		settingsButton.set( {
-			label: t( 'Advanced' ),
-			icon: icons.settings,
-			tooltip: true
-		} );
-
-		return settingsButton;
-	}
-
-	/**
 	 * Creates a save button view that inserts the link.
 	 */
 	private _createSaveButton(): ButtonView {
@@ -310,7 +287,6 @@ export default class LinkFormView extends View {
 		} );
 
 		header.children.add( this.backButtonView, 0 );
-		header.children.add( this.settingsButtonView );
 
 		return header;
 	}
