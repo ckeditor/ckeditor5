@@ -48,6 +48,14 @@ describe( 'ImageCustomResizeFormView', () => {
 			view.render();
 		} );
 
+		it( 'should create header element at the top', () => {
+			view.render();
+
+			const header = view.children.first;
+
+			expect( header.children.last.element.classList.contains( 'ck-form__header__label' ) ).to.be.true;
+		} );
+
 		it( 'should create #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );

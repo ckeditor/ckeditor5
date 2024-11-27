@@ -31,5 +31,6 @@
 	"Paragraph": "Dropdown option label for the paragraph format.",
 	"Color picker": "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.).",
 	"Insert": "Label for the Insert button.",
-	"Update": "Label for the Update button."
+	"Update": "Label for the Update button.",
+	"Back": "Label for the Back button."
 }
