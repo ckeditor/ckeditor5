@@ -33,7 +33,7 @@
     "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
