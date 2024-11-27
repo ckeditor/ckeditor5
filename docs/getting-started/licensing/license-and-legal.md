@@ -13,18 +13,18 @@ CKEditor is dual-licensed. This means we make it available under a choice betwee
 
 ## Open source license
 
-The open source distribution of CKEditor is licensed under the terms of GPL 2+. If you plan to use CKEditor under this license, you can register your application using [the CKEditor GPL 2+ license registration form](https://info.ckeditor.com/l/1018062/2024-08-22/39jtg).
+The open source distribution of CKEditor&nbsp;5 is licensed under the terms of GPL 2+. If you plan to use CKEditor&nbsp;5 under this license, you can register your application using the [CKEditor&nbsp;5 GPL 2+ license registration form](https://info.ckeditor.com/l/1018062/2024-08-22/39jtg).
 
-If you are running an open source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) – we will be happy to support your project with [a CKEditor 5 open source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
+If you are running an open source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a[CKEditor&nbsp;5 open source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
 
-**Note:** the CKEditor Free Plan is licensed under the GPL 2+ license.
+**Note:** the CKEditor&nbsp;5 Free Plan is licensed under the GPL 2+ license.
 
 ## Commercial license
 
 The commercial license unlocks many benefits:
 
 * No GPL restrictions
-* Self-hosted CKEditor
+* Self-hosted CKEditor&nbsp;5
 * Additionally paid Premium features such as:
 	* Asynchronous and Real-Time Collaboration
 	* Import from Word
@@ -38,7 +38,7 @@ The commercial license unlocks many benefits:
 * White-labeling
 * Technical support
 
-[Visit the CKEditor Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/signup).
+[Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/signup).
 
 ## Sources of intellectual property included in CKEditor
 
