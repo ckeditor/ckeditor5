@@ -135,6 +135,20 @@ export default class LinkCommand extends Command {
 	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} removes all
 	 * decorator attributes.
 	 *
+	 * An optional parameter called `displayedText` is to add or update text of the link that represents the `href`. For example:
+	 * ```ts
+	 * const linkCommand = editor.commands.get( 'link' );
+	 *
+	 * // Adding a new link with `displayedText` attribute.
+	 * linkCommand.execute( 'http://example.com', {}, 'Example' );
+	 * ```
+	 *
+	 * The above code will create an anchor like this:
+	 *
+	 * ```html
+	 * <a href="http://example.com">Example</a>
+	 * ```
+	 *
 	 * @fires execute
 	 * @param href Link destination.
 	 * @param manualDecoratorIds The information about manual decorator attributes to be applied or removed upon execution.
