@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-link__panel {
+.ck.ck-link__panel.ck-link__bookmarks {
 	& > .ck-list__bookmark-items {
 		max-height: min( var(--ck-link-list-view-max-height), 40vh );
 
