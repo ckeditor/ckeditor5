@@ -87,9 +87,9 @@ describe( 'ImageCustomResizeFormView', () => {
 				view.render();
 
 				expect( view._focusables.map( f => f ) ).to.have.members( [
+					view.backButtonView,
 					view.labeledInput,
-					view.saveButtonView,
-					view.backButtonView
+					view.saveButtonView
 				] );
 			} );
 
@@ -98,9 +98,9 @@ describe( 'ImageCustomResizeFormView', () => {
 
 				view.render();
 
-				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.labeledInput.element );
-				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.backButtonView.element );
+				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.backButtonView.element );
+				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.labeledInput.element );
+				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.saveButtonView.element );
 			} );
 
 			describe( 'activates keyboard navigation in the form', () => {

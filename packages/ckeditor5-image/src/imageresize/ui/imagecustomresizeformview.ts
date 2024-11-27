@@ -152,9 +152,9 @@ export default class ImageCustomResizeFormView extends View {
 		} );
 
 		const childViews = [
+			this.backButtonView,
 			this.labeledInput,
-			this.saveButtonView,
-			this.backButtonView
+			this.saveButtonView
 		];
 
 		childViews.forEach( v => {
