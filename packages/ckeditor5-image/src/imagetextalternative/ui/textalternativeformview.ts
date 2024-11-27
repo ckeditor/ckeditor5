@@ -134,8 +134,6 @@ export default class TextAlternativeFormView extends View {
 	public override render(): void {
 		super.render();
 
-		this.keystrokes.listenTo( this.element! );
-
 		submitHandler( {
 			view: this
 		} );
