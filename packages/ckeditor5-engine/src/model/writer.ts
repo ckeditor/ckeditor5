@@ -23,7 +23,7 @@ import DocumentSelection from './documentselection.js';
 import Element from './element.js';
 import Position, { type PositionOffset, type PositionStickiness } from './position.js';
 import Range from './range.js';
-import type RootElement from './rootelement.js';
+import RootElement from './rootelement.js';
 import Text from './text.js';
 
 import type { Marker } from './markercollection.js';
@@ -193,7 +193,7 @@ export default class Writer {
 	): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( item.is( 'model:$text' ) && item.data == '' ) {
+		if ( item instanceof Text && item.data == '' ) {
 			return;
 		}
 
@@ -231,13 +231,13 @@ export default class Writer {
 
 		const version = position.root.document ? position.root.document.version : null;
 
-		const children = item.is( 'model:documentFragment' ) ?
+		const children = item instanceof DocumentFragment ?
 			item._removeChildren( 0, item.childCount ) :
 			item;
 
 		const insert = new InsertOperation( position, children, version );
 
-		if ( item.is( 'model:$text' ) ) {
+		if ( item instanceof Text ) {
 			insert.shouldReceiveAttributes = true;
 		}
 
@@ -245,7 +245,7 @@ export default class Writer {
 		this.model.applyOperation( insert );
 
 		// When element is a DocumentFragment we need to move its markers to Document#markers.
-		if ( item.is( 'model:documentFragment' ) ) {
+		if ( item instanceof DocumentFragment ) {
 			for ( const [ markerName, markerRange ] of item.markers ) {
 				// We need to migrate marker range from DocumentFragment to Document.
 				const rangeRootPosition = Position._createAt( markerRange.root, 0 );
@@ -335,7 +335,7 @@ export default class Writer {
 		itemOrPosition?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes.is( 'model:documentFragment' ) || attributes.is( 'model:element' ) || attributes.is( 'model:position' ) ) {
+		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
 			this.insert( this.createText( text ), attributes, itemOrPosition );
 		} else {
 			this.insert( this.createText( text, attributes ), itemOrPosition, offset );
@@ -412,7 +412,7 @@ export default class Writer {
 		itemOrPositionOrOffset?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes.is( 'model:documentFragment' ) || attributes.is( 'model:element' ) || attributes.is( 'model:position' ) ) {
+		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
 			this.insert( this.createElement( name ), attributes, itemOrPositionOrOffset );
 		} else {
 			this.insert( this.createElement( name, attributes ), itemOrPositionOrOffset, offset );
@@ -537,7 +537,7 @@ export default class Writer {
 	public setAttribute( key: string, value: unknown, itemOrRange: Item | Range ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange.is( 'model:range' ) ) {
+		if ( itemOrRange instanceof Range ) {
 			const ranges = itemOrRange.getMinimalFlatRanges();
 
 			for ( const range of ranges ) {
@@ -581,7 +581,7 @@ export default class Writer {
 	public removeAttribute( key: string, itemOrRange: Item | Range ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange.is( 'model:range' ) ) {
+		if ( itemOrRange instanceof Range ) {
 			const ranges = itemOrRange.getMinimalFlatRanges();
 
 			for ( const range of ranges ) {
@@ -606,7 +606,7 @@ export default class Writer {
 			}
 		};
 
-		if ( !( itemOrRange.is( 'model:range' ) ) ) {
+		if ( !( itemOrRange instanceof Range ) ) {
 			removeAttributesFromItem( itemOrRange );
 		} else {
 			for ( const item of itemOrRange.getItems() ) {
@@ -651,7 +651,7 @@ export default class Writer {
 	): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( !( range.is( 'model:range' ) ) ) {
+		if ( !( range instanceof Range ) ) {
 			/**
 			 * Invalid range to move.
 			 *
@@ -704,7 +704,7 @@ export default class Writer {
 	public remove( itemOrRange: Item | Range ): void {
 		this._assertWriterUsedCorrectly();
 
-		const rangeToRemove = itemOrRange.is( 'model:range' ) ? itemOrRange : Range._createOn( itemOrRange );
+		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
 		const ranges = rangeToRemove.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
@@ -732,7 +732,7 @@ export default class Writer {
 		// If part of the marker is removed, create additional marker operation for undo purposes.
 		this._addOperationForAffectedMarkers( 'merge', position );
 
-		if ( !( nodeBefore && nodeBefore.is( 'model:element' ) ) ) {
+		if ( !( nodeBefore instanceof Element ) ) {
 			/**
 			 * Node before merge position must be an element.
 			 *
@@ -741,7 +741,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-merge-no-element-before', this );
 		}
 
-		if ( !( nodeAfter && nodeAfter.is( 'model:element' ) ) ) {
+		if ( !( nodeAfter instanceof Element ) ) {
 			/**
 			 * Node after merge position must be an element.
 			 *
@@ -896,7 +896,7 @@ export default class Writer {
 	public rename( element: Element | DocumentFragment, newName: string ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( !( element.is( 'model:element' ) ) ) {
+		if ( !( element instanceof Element ) ) {
 			/**
 			 * Trying to rename an object which is not an instance of Element.
 			 *
@@ -1796,7 +1796,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 
 	// Because position in the loop is not the iterator position (see let position comment), the last position in
 	// the while loop will be last but one position in the range. We need to check the last position manually.
-	if ( position && position.is( 'model:position' ) && position != lastSplitPosition && valueBefore != value ) {
+	if ( position instanceof Position && position != lastSplitPosition && valueBefore != value ) {
 		addOperation();
 	}
 
@@ -1900,7 +1900,7 @@ function isSameTree( rootA: Node | DocumentFragment, rootB: Node | DocumentFragm
 	}
 
 	// If both roots are documents root it is operation within the document what we still treat as the same tree.
-	if ( rootA.is( 'model:rootElement' ) && rootB.is( 'model:rootElement' ) ) {
+	if ( rootA instanceof RootElement && rootB instanceof RootElement ) {
 		return true;
 	}
 
