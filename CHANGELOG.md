@@ -11,14 +11,14 @@ We are excited to introduce CKEditor 5 v44.0.0, a release packed with high impac
 
 We are introducing flexible self-service plans that put you in control with full transparency. Now, you can:
 
-* [Choose the plan](#TODO_Insert_URL) that fits your needs, pay only for what you use, and get started instantly with [a commitment-free trial](#TODO_Insert_URL).
-* Seamlessly manage your license keys, track usage, and more in the new [**Customer Portal**](#TODO_Insert_URL).
+* [Choose the plan](https://ckeditor.com/pricing/) that fits your needs, pay only for what you use, and get started instantly with [a commitment-free trial](https://portal.ckeditor.com/checkout?plan=free).
+* Seamlessly manage your license keys, track usage, and more in the new [**Customer Portal**](https://portal.ckeditor.com/).
 
 💡 **Important for current users:**
 
-If you are upgrading to v44.0.0+, ensure a smooth transition by updating your license keys in the editor, as we implemented a new format of the key. To get the new key, visit the [Customer Portal](#TODO_Insert_URL).
+If you are upgrading to v44.0.0+, ensure a smooth transition by updating your license keys in the editor, as we implemented a new format of the key. To get the new key, visit the [Customer Portal](https://portal.ckeditor.com/). You can also refer to our [license key and activation guide](https://ckeditor.com/docs//ckeditor5/latest/getting-started/licensing/license-key-and-activation.html) for help with logging in to the portal.
 
-📣 The open-source version and licensing remains unchanged. These updates apply exclusively to our commercial offers. Read more in https://github.com/ckeditor/ckeditor5/issues/17317.
+📣 The open-source licensing remains unchanged. However, `config.licenseKey` is now a required property in the editor configuration. Use `'GPL'` for installations under the GPL terms. Read more in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-44.html).
 
 #### 🔖 Bookmarks: Organize your content with ease
 
