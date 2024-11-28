@@ -11,7 +11,7 @@
 		display: flex;
 		flex-direction: column;
 
-		/* "Size" input field and the "Save" button */
+		/* "Text alternative" input field and the "Save" button */
 		& .ck-input-and-submit {
 			display: flex;
 
