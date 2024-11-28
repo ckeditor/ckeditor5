@@ -21,7 +21,8 @@ import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
  * @internal
  */
 export default class EmojiLibraryIntegration extends Plugin {
-	declare private localDataUrl: string;
+	declare private _hasEmojiPicker: boolean;
+	declare private _localDataUrl: string;
 
 	/**
 	 * @inheritDoc
@@ -41,7 +42,9 @@ export default class EmojiLibraryIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this.localDataUrl = URL.createObjectURL(
+		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
+
+		this._localDataUrl = URL.createObjectURL(
 			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
 		);
 	}
@@ -50,7 +53,7 @@ export default class EmojiLibraryIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
-		URL.revokeObjectURL( this.localDataUrl );
+		URL.revokeObjectURL( this._localDataUrl );
 	}
 
 	/**
@@ -58,7 +61,7 @@ export default class EmojiLibraryIntegration extends Plugin {
 	 */
 	public getQueryEmojiFn( queryLimit: number ): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
 		const emojiDatabase = new Database( {
-			dataSource: this.localDataUrl
+			dataSource: this._localDataUrl
 		} );
 
 		return async ( searchQuery: string ) => {
@@ -66,8 +69,6 @@ export default class EmojiLibraryIntegration extends Plugin {
 			if ( searchQuery.length < 2 ) {
 				return [];
 			}
-
-			const isEmojiPickerUsed = this.editor.plugins.has( EmojiPicker ); // TODO: don't check every time, only check once.
 
 			const emojis = await emojiDatabase.getEmojiBySearchQuery( searchQuery )
 				.then( queryResult => {
@@ -81,8 +82,8 @@ export default class EmojiLibraryIntegration extends Plugin {
 					} );
 				} );
 
-			return isEmojiPickerUsed ?
-				[ ...emojis.slice( 0, queryLimit - 1 ), { id: getShowAllEmojiId() } ] :
+			return this._hasEmojiPicker ?
+				[ ...emojis.slice( 0, queryLimit - 1 ), { id: getShowAllEmojiId(), text: searchQuery } ] :
 				emojis.slice( 0, queryLimit );
 		};
 	}

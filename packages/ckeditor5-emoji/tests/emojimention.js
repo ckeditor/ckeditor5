@@ -49,7 +49,7 @@ describe( 'EmojiMention', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( EmojiMention.requires ).to.deep.equal( [
-			EmojiLibraryIntegration
+			'Mention', EmojiLibraryIntegration
 		] );
 	} );
 
@@ -243,11 +243,11 @@ describe( 'EmojiMention', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
 			const range = editor.model.document.selection.getFirstRange();
-			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:' } } );
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' } } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
-			expect( consoleLogStub.firstCall.args[ 0 ] ).to.equal( 'SHOWING EMOJI WINDOW' );
+			expect( document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'input#search' ).value ).to.equal( 'flag_poland' );
 		} );
 	} );
 } );

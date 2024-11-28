@@ -78,13 +78,17 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * @internal
 	 */
-	public showUI(): void {
+	public showUI( initialSearchValue?: string ): void {
 		this._balloon.add( {
 			view: this._emojiDialog,
 			position: this._getBalloonPositionData()
 		} );
 
 		this._emojiDialog.focus();
+
+		if ( initialSearchValue ) {
+			this._emojiDialog.updateSearchValue( initialSearchValue );
+		}
 	}
 
 	/**
@@ -102,12 +106,9 @@ export default class EmojiPicker extends Plugin {
 	private _getBalloonPositionData() {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
-		let target = null;
 
 		// Set a target position by converting view selection range to DOM.
-		target = () => view.domConverter.viewRangeToDom(
-			viewDocument.selection.getFirstRange()!
-		);
+		const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
 
 		return {
 			target
@@ -133,13 +134,19 @@ export default class EmojiPicker extends Plugin {
 			this._hideUI();
 		} );
 
+		// Close the dialog while focus is in the editor.
+		editor.keystrokes.set( 'Esc', () => {
+			this._hideUI();
+		} );
+
+		// Close the dialog while focus is in it.
 		emojiDialog.emojiElement.addEventListener( 'keydown', event => {
 			if ( event.key === 'Escape' ) {
 				this._hideUI();
 			}
 		} );
 
-		// Hide the form view when clicking outside the balloon.
+		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
 			emitter: emojiDialog,
 			contextElements: [ this._balloon.view.element! ],
@@ -171,9 +178,15 @@ class EmojiDialog extends View {
 		} );
 	}
 
-	public focus() {
-		const inputElement = this.emojiElement.shadowRoot!.querySelector<HTMLElement>( 'input#search' )!;
+	private _getInputElement(): HTMLInputElement {
+		return this.emojiElement.shadowRoot!.querySelector( 'input#search' )!;
+	}
 
-		inputElement.focus();
+	public updateSearchValue( newValue: string ): void {
+		this._getInputElement().value = newValue;
+	}
+
+	public focus(): void {
+		this._getInputElement().focus();
 	}
 }

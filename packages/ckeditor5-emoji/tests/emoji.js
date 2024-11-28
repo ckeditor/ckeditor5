@@ -5,11 +5,9 @@
 
 /* global document */
 
+import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
-import { Typing } from '@ckeditor/ckeditor5-typing';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Emoji from '../src/emoji.js';
-import EmojiMentionIntegration from '../src/emojimentionintegration.js';
 
 describe( 'Emoji', () => {
 	let editor, editorElement;
@@ -19,7 +17,7 @@ describe( 'Emoji', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Emoji ]
+			plugins: [ Emoji, Mention ]
 		} );
 	} );
 
@@ -35,9 +33,8 @@ describe( 'Emoji', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( Emoji.requires ).to.deep.equal( [
-			Typing,
-			Mention,
-			EmojiMentionIntegration
+			EmojiMention,
+			EmojiPicker
 		] );
 	} );
 

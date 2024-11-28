@@ -6,7 +6,7 @@
 /* global document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Emoji from '../src/emoji.js';
+import { Emoji, EmojiMention } from '../src/index.js';
 import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 
@@ -61,7 +61,7 @@ describe( 'EmojiLibraryIntegration', () => {
 			return queryEmoji( 'flag_poland' ).then( queryResult => {
 				expect( queryResult ).to.deep.equal( [
 					{ id: 'emoji:flag_poland:', text: '🇵🇱' },
-					{ id: 'emoji:__SHOW_ALL_EMOJI__:' }
+					{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' }
 				] );
 			} );
 		} );
@@ -77,6 +77,29 @@ describe( 'EmojiLibraryIntegration', () => {
 						expect( typeof item.text ).to.equal( 'string' );
 					}
 				} );
+
+				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( true );
+			} );
+		} );
+
+		it( 'should not include the show all emoji button when EmojiPicker plugin is not available', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ]
+			} );
+
+			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+
+			return queryEmoji( 'face' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 6 );
+
+				queryResult.forEach( item => {
+					expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
+					expect( typeof item.text ).to.equal( 'string' );
+				} );
+
+				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( false );
 			} );
 		} );
 	} );

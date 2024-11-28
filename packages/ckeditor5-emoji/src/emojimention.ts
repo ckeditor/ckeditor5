@@ -147,7 +147,7 @@ export default class EmojiMention extends Plugin {
 			if ( eventData.mention.id === getShowAllEmojiId() ) {
 				textToInsert = '';
 
-				postInsertionCallback = () => this.editor.plugins.get( EmojiPicker ).showUI();
+				postInsertionCallback = () => this.editor.plugins.get( EmojiPicker ).showUI( eventData.mention.text );
 
 				// TODO: showUI() called from here does not focus properly.
 			}
