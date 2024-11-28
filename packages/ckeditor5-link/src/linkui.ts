@@ -220,7 +220,7 @@ export default class LinkUI extends Plugin {
 
 		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
 			this.bookmarksView = this._createBookmarksView();
-			this.formView.listChildren.add( this._createBookmarksButton() );
+			this.formView.providersListChildren.add( this._createBookmarksButton() );
 		}
 
 		// Attach lifecycle actions to the the balloon.

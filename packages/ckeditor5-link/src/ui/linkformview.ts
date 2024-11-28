@@ -78,9 +78,9 @@ export default class LinkFormView extends View {
 	public readonly formChildren: ViewCollection;
 
 	/**
-	 * A collection of child views in the footer.
+	 * A collection of child views in the providers list.
 	 */
-	public readonly listChildren: ViewCollection<ButtonView>;
+	public readonly providersListChildren: ViewCollection<ButtonView>;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -122,16 +122,16 @@ export default class LinkFormView extends View {
 		this.urlInputView = this._createUrlInput();
 
 		this.formChildren = this._createFormChildren();
-		this.listChildren = this.createCollection();
+		this.providersListChildren = this.createCollection();
 		this.children = this.createCollection( [
 			this._createHeaderView(),
 			this._createFormView()
 		] );
 
-		// Add list view to the children when the first item is added to the list.
+		// Add providers list view to the children when the first item is added to the list.
 		// This is to avoid adding the list view when the form is empty.
-		this.listenTo( this.listChildren, 'add', () => {
-			this.stopListening( this.listChildren, 'add' );
+		this.listenTo( this.providersListChildren, 'add', () => {
+			this.stopListening( this.providersListChildren, 'add' );
 			this.children.add( this._createProvidersListView() );
 		} );
 
@@ -175,7 +175,7 @@ export default class LinkFormView extends View {
 		const childViews = [
 			this.urlInputView,
 			this.saveButtonView,
-			...this.listChildren,
+			...this.providersListChildren,
 			this.backButtonView,
 			this.displayedTextInputView
 		];
@@ -328,7 +328,7 @@ export default class LinkFormView extends View {
 			}
 		} );
 
-		providersListView.items.bindTo( this.listChildren ).using( def => {
+		providersListView.items.bindTo( this.providersListChildren ).using( def => {
 			const listItemView = new ListItemView( this.locale );
 
 			listItemView.children.add( def );

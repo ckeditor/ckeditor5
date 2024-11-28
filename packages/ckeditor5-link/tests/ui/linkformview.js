@@ -292,7 +292,7 @@ describe( 'LinkFormView', () => {
 				label: 'Button'
 			} );
 
-			view.listChildren.add( button );
+			view.providersListChildren.add( button );
 		} );
 
 		afterEach( () => {
@@ -315,7 +315,7 @@ describe( 'LinkFormView', () => {
 				label: 'Button'
 			} );
 
-			view.listChildren.add( button );
+			view.providersListChildren.add( button );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 			const listView = view.template.children[ 0 ].get( 2 );
