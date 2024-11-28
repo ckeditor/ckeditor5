@@ -223,9 +223,7 @@ export default class BookmarkFormView extends View {
 	}
 
 	/**
-	 * Populates the {@link #children} collection of the form.
-	 *
-	 * @returns The children of bookmark form view.
+	 * Creates the view collection of the form.
 	 */
 	private _createFormChildren(): ViewCollection {
 		const bookmarkInputAndSubmit = new View( this.locale );
