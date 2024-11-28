@@ -113,11 +113,11 @@ export default class LinkFormView extends View {
 
 		this._validators = validators;
 
-		// Create buttons
+		// Create buttons.
 		this.backButtonView = this._createBackButton();
 		this.saveButtonView = this._createSaveButton();
 
-		// Create input fields
+		// Create input fields.
 		this.displayedTextInputView = this._createDisplayedTextInput();
 		this.urlInputView = this._createUrlInput();
 
