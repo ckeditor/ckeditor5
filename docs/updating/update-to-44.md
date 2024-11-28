@@ -26,7 +26,7 @@ Below are the most important changes that require your attention when upgrading 
 
 Version 44.0.0 introduced a change in the license configuration. The `config.licenseKey` is now a required property in the editor configuration. Whether you are using CKEditor&nbsp;5 commercially or under open-source terms, you will need to specify this property in your configuration.
 
-* **Commercial licenses**: For current users with a commercial license, you must retrieve your license key from the [Customer Portal](https://portal.ckeditor.com/) and add it to your editor configuration. [Format of the key has changed](#new license-key-format)
+* **Commercial licenses**: For current users with a commercial license, you must retrieve your license key from the [Customer Portal](https://portal.ckeditor.com/) and add it to your editor configuration. [Format of the key has changed](#new-license-key-format) in this release.
 * **Open-Source installations**: If you are self-hosting CKEditor&nbsp;5 under the GPL terms, you will need to set `config.licenseKey` to `'GPL'` in your configuration.
 * **Cloud CDN setups**: If you are using cloud-distributed CKEditor&nbsp;5 delivered via our CDN, you need a license key. You can create a [free account](https://portal.ckeditor.com/checkout?plan=free). All accounts are granted a 14-day trial for Premium Features (no credit card required).
 
