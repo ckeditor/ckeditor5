@@ -78,9 +78,9 @@ export default class LinkFormView extends View {
 	public readonly formChildren: ViewCollection;
 
 	/**
-	 * A collection of child views in the footer.
+	 * A collection of child views in the providers list.
 	 */
-	public readonly listChildren: ViewCollection<ButtonView>;
+	public readonly providersListChildren: ViewCollection<ButtonView>;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -122,17 +122,17 @@ export default class LinkFormView extends View {
 		this.urlInputView = this._createUrlInput();
 
 		this.formChildren = this._createFormChildren();
-		this.listChildren = this.createCollection();
+		this.providersListChildren = this.createCollection();
 		this.children = this.createCollection( [
 			this._createHeaderView(),
 			this._createFormView()
 		] );
 
-		// Add list view to the children when the first item is added to the list.
+		// Add providers list view to the children when the first item is added to the list.
 		// This is to avoid adding the list view when the form is empty.
-		this.listenTo( this.listChildren, 'add', () => {
-			this.stopListening( this.listChildren, 'add' );
-			this.children.add( this._createListView() );
+		this.listenTo( this.providersListChildren, 'add', () => {
+			this.stopListening( this.providersListChildren, 'add' );
+			this.children.add( this._createProvidersListView() );
 		} );
 
 		this._focusCycler = new FocusCycler( {
@@ -175,7 +175,7 @@ export default class LinkFormView extends View {
 		const childViews = [
 			this.urlInputView,
 			this.saveButtonView,
-			...this.listChildren,
+			...this.providersListChildren,
 			this.backButtonView,
 			this.displayedTextInputView
 		];
@@ -248,7 +248,7 @@ export default class LinkFormView extends View {
 		const backButton = new ButtonView( this.locale );
 
 		backButton.set( {
-			label: t( 'Cancel' ),
+			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
 		} );
@@ -270,7 +270,7 @@ export default class LinkFormView extends View {
 			tooltip: true,
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-insert ck-button-action ck-button-bold'
+			class: 'ck-button-action ck-button-bold'
 		} );
 
 		return saveButton;
@@ -315,21 +315,20 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates a view for the list at the bottom.
+	 * Creates a view for the providers list.
 	 */
-	private _createListView(): ListView {
-		const listView = new ListView( this.locale );
+	private _createProvidersListView(): ListView {
+		const providersListView = new ListView( this.locale );
 
-		listView.extendTemplate( {
+		providersListView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-link__list',
-					'ck-link__list-border-top'
+					'ck-link__providers-list'
 				]
 			}
 		} );
 
-		listView.items.bindTo( this.listChildren ).using( def => {
+		providersListView.items.bindTo( this.providersListChildren ).using( def => {
 			const listItemView = new ListItemView( this.locale );
 
 			listItemView.children.add( def );
@@ -337,7 +336,7 @@ export default class LinkFormView extends View {
 			return listItemView;
 		} );
 
-		return listView;
+		return providersListView;
 	}
 
 	/**
@@ -379,7 +378,7 @@ export default class LinkFormView extends View {
 		linkInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-link-and-submit' ]
+				class: [ 'ck', 'ck-input-and-submit' ]
 			},
 			children: [
 				this.urlInputView,
