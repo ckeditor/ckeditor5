@@ -8,245 +8,280 @@
 				"type": "feature",
 				"link": "features/general-html-support",
 				"name": "Advanced HTML Editing",
-				"description": "Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags."
+				"description": "Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.",
+				"shortDescription": "Edit and customize HTML elements, attributes, and styles with full control."
 			},
 			{
 				"id": "full-page-html",
 				"type": "subfeature",
 				"link": "features/full-page-html",
 				"name": "Full page HTML",
-				"description": "Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from <code>&lt;html&gt;</code> to <code>&lt;/html&gt;</code>), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's <code>&lt;body&gt;</code>), this feature enables markup invisible to the end user."
+				"description": "Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from <code>&lt;html&gt;</code> to <code>&lt;/html&gt;</code>), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's <code>&lt;body&gt;</code>), this feature enables markup invisible to the end user.",
+				"shortDescription": "Edit entire HTML documents, including metadata, beyond visible content."
 			},
 			{
 				"id": "general-html-support",
 				"type": "subfeature",
 				"link": "features/general-html-support",
 				"name": "General HTML Support (GHS)",
-				"description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output."
+				"description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.",
+				"shortDescription": "Enable unsupported HTML elements, attributes, and styles in the editor."
 			},
 			{
 				"id": "html-comment",
 				"type": "subfeature",
 				"link": "features/html-comments",
 				"name": "HTML comment",
-				"description": "By default, the editor filters out all HTML comments on initialization. The <code>{@link features/html-comments HTML comment}</code> feature lets developers keep HTML comments in the document without displaying them to the user."
+				"description": "By default, the editor filters out all HTML comments on initialization. The <code>{@link features/html-comments HTML comment}</code> feature lets developers keep HTML comments in the document without displaying them to the user.",
+				"shortDescription": "Keep HTML comments in your document without displaying them to users."
 			},
 			{
 				"id": "html-embed",
 				"type": "subfeature",
 				"link": "features/html-embed",
 				"name": "HTML embed",
-				"description": "The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments."
+				"description": "The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.",
+				"shortDescription": "Embed custom HTML snippets directly into your content."
 			},
 			{
 				"id": "show-blocks",
 				"type": "subfeature",
 				"link": "features/show-blocks",
 				"name": "Show blocks",
-				"description": "The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box."
+				"description": "The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.",
+				"shortDescription": "Visualize and outline all block-level elements in your content."
 			},
 			{
 				"id": "source-editing",
 				"type": "subfeature",
 				"link": "features/source-editing",
 				"name": "Source editing",
-				"description": "The source editing feature lets you view and edit the source of your document."
+				"description": "The source editing feature lets you view and edit the source of your document.",
+				"shortDescription": "View and edit the source code of your document."
 			},
 			{
 				"id": "block-formatting",
 				"type": "feature",
 				"link": "features/block-quote",
 				"name": "Block formatting",
-				"description": "Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages."
+				"description": "Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.",
+				"shortDescription": "Organize and emphasize content with headings, block quotes, and horizontal lines."
 			},
 			{
 				"id": "block-quotes",
 				"type": "subfeature",
 				"link": "features/block-quote",
 				"name": "Block quote",
-				"description": "The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text."
+				"description": "The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.",
+				"shortDescription": "Add visually distinct block quotes to emphasize key excerpts."
 			},
 			{
 				"id": "headings-paragraph",
 				"type": "subfeature",
 				"link": "features/headings",
 				"name": "Headings/paragraph",
-				"description": "The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines."
+				"description": "The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.",
+				"shortDescription": "Structure content with headings for better readability and hierarchy."
 			},
 			{
 				"id": "horizontal-line",
 				"type": "subfeature",
 				"link": "features/horizontal-line",
 				"name": "Horizontal line",
-				"description": "The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic."
+				"description": "The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.",
+				"shortDescription": "Insert horizontal lines to divide content or indicate topic changes."
 			},
 			{
 				"id": "block-indentation",
 				"type": "subfeature",
 				"link": "features/indent",
 				"name": "Block indentation",
-				"description": "The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content."
+				"description": "The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.",
+				"shortDescription": "Adjust text block indentation for better content structure."
 			},
 			{
 				"id": "bookmark",
 				"type": "feature",
 				"link": "features/bookmarks",
 				"name": "Bookmarks",
-				"description": "The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation boosting efficiency."
+				"description": "The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation boosting efficiency.",
+				"shortDescription": "Add bookmarks for quick navigation to key content sections."
 			},
 			{
 				"id": "clipboard",
 				"type": "feature",
 				"link": "framework/deep-dive/clipboard",
 				"name": "Clipboard",
-				"description": "Copy, cut, and paste content within the editor or from external sources."
+				"description": "Copy, cut, and paste content within the editor or from external sources.",
+				"shortDescription": "Easily copy, cut, and paste content within or outside the editor."
 			},
 			{
 				"id": "code-blocks",
 				"type": "feature",
 				"link": "features/code-blocks",
 				"name": "Code blocks",
-				"description": "Supports the insertion and management of pre-formatted code snippets with distinct styling."
+				"description": "Supports the insertion and management of pre-formatted code snippets with distinct styling.",
+				"shortDescription": "Insert preformatted code snippets with distinct styling."
 			},
 			{
 				"id": "drag-and-drop",
 				"type": "feature",
 				"link": "features/drag-drop",
 				"name": "Drag and drop",
-				"description": "Rearrange elements within a document, including moving text blocks, images, or other content types."
+				"description": "Rearrange elements within a document, including moving text blocks, images, or other content types.",
+				"shortDescription": "Reorganize text and elements using drag-and-drop functionality."
 			},
 			{
 				"id": "font-formatting",
 				"type": "feature",
 				"link": "features/font",
 				"name": "Font formatting",
-				"description": "The font feature lets you change font family, size, and color (including background color). All of these options are configurable."
+				"description": "The font feature lets you change font family, size, and color (including background color). All of these options are configurable.",
+				"shortDescription": "Customize font family, size, and color for tailored text presentation."
 			},
 			{
 				"id": "font-background-color",
 				"type": "subfeature",
 				"link": "features/font#configuring-the-font-color-and-font-background-color-features",
 				"name": "Font background color",
-				"description": "Effortlessly make the words stand out even more with a colored background."
+				"description": "Effortlessly make the words stand out even more with a colored background.",
+				"shortDescription": "Highlight text with a colored background for emphasis."
 			},
 			{
 				"id": "font-color",
 				"type": "subfeature",
 				"link": "features/font#configuring-the-font-color-and-font-background-color-features",
 				"name": "Font color",
-				"description": "Effortlessly make the letters stand out with their own color."
+				"description": "Effortlessly make the letters stand out with their own color.",
+				"shortDescription": "Apply custom colors to text for improved readability or style."
 			},
 			{
 				"id": "font-family",
 				"type": "subfeature",
 				"link": "features/font#configuring-the-font-family-feature",
 				"name": "Font family",
-				"description": "Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc."
+				"description": "Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.",
+				"shortDescription": "Choose suitable font families for your content needs."
 			},
 			{
 				"id": "font-size",
 				"type": "subfeature",
 				"link": "features/font#configuring-the-font-size-feature",
 				"name": "Font size",
-				"description": "Easily control the size of the letters."
+				"description": "Easily control the size of the letters.",
+				"shortDescription": "Adjust font size for better readability and emphasis."
 			},
 			{
 				"id": "image",
 				"type": "feature",
 				"link": "features/images-overview",
 				"name": "Image",
-				"description": "The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subfeature background-grays lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images."
+				"description": "The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subfeature background-grays lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.",
+				"shortDescription": "Add, style, and manage images with captions, resizing, and linking options."
 			},
 			{
 				"id": "image-all-text",
 				"type": "subfeature",
 				"link": "features/images-text-alternative",
 				"name": "Image alt text",
-				"description": "Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts."
+				"description": "Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.",
+				"shortDescription": "Add alt text to images for accessibility and SEO improvements."
 			},
 			{
 				"id": "image-captions",
 				"type": "subfeature",
 				"link": "features/images-captions",
 				"name": "Image captions",
-				"description": "Add optional captions for images, which are shown below the picture."
+				"description": "Add optional captions for images, which are shown below the picture.",
+				"shortDescription": "Add captions below images to provide context."
 			},
 			{
 				"id": "image-insert-via-url",
 				"type": "subfeature",
 				"link": "features/images-inserting",
 				"name": "Image insert via URL",
-				"description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online."
+				"description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.",
+				"shortDescription": "Insert images directly using their URLs."
 			},
 			{
 				"id": "image-linking",
 				"type": "subfeature",
 				"link": "features/images-linking",
 				"name": "Image linking",
-				"description": "The <code>{@link module:link/linkimage~LinkImage}</code> plugin lets you use images as links."
+				"description": "The <code>{@link module:link/linkimage~LinkImage}</code> plugin lets you use images as links.",
+				"shortDescription": "Turn images into clickable links for interactive content."
 			},
 			{
 				"id": "image-resize",
 				"type": "subfeature",
 				"link": "features/images-resizing",
 				"name": "Image resize",
-				"description": "The image resize feature lets you change the width of images in your content. It is implemented by the <code>{@link module:image/imageresize~ImageResize}</code> plugin."
+				"description": "The image resize feature lets you change the width of images in your content. It is implemented by the <code>{@link module:image/imageresize~ImageResize}</code> plugin.",
+				"shortDescription": "Easily resize images for better content fit."
 			},
 			{
 				"id": "image-styles",
 				"type": "subfeature",
 				"link": "features/images-styles",
 				"name": "Image styles",
-				"description": "The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa."
+				"description": "The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.",
+				"shortDescription": "Apply custom styles and alignments to images."
 			},
 			{
 				"id": "image-upload",
 				"type": "subfeature",
 				"link": "features/image-upload",
 				"name": "Image upload",
-				"description": "Inserting <code>{@link features/images-overview images}</code> into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images."
+				"description": "Inserting <code>{@link features/images-overview images}</code> into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.",
+				"shortDescription": "Upload images directly from your device to the editor."
 			},
 			{
 				"id": "responsive-images",
 				"type": "subfeature",
 				"link": "features/images-responsive",
 				"name": "Responsive images",
-				"description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the <code>{@link features/ckbox CKBox asset manager}</code>. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a <code>&lt;picture&gt;</code> element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth."
+				"description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the <code>{@link features/ckbox CKBox asset manager}</code>. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a <code>&lt;picture&gt;</code> element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
+				"shortDescription": "Automatically optimize images for different screen sizes."
 			},
 			{
 				"id": "links",
 				"type": "feature",
 				"link": "features/link",
 				"name": "Links",
-				"description": "Facilitates the addition of hyperlinks to text, automatically converting typed or pasted URLs into clickable links, and allowing manual insertion and editing of links."
+				"description": "Facilitates the addition of hyperlinks to text, automatically converting typed or pasted URLs into clickable links, and allowing manual insertion and editing of links.",
+				"shortDescription": "Add and manage hyperlinks in your text."
 			},
 			{
 				"id": "lists",
 				"type": "feature",
 				"link": "features/lists",
 				"name": "Lists",
-				"description": "Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists."
+				"description": "Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.",
+				"shortDescription": "Create to-do, bulleted, and numbered lists with customizable styles."
 			},
 			{
 				"id": "list-indentation",
 				"type": "subfeature",
 				"link": "features/lists-editing#indenting-lists",
 				"name": "List indentation",
-				"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them)."
+				"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).",
+				"shortDescription": "Control list item indentation for nested lists."
 			},
 			{
 				"id": "list-start-index",
 				"type": "subfeature",
 				"link": "features/lists#list-start-index",
 				"name": "List start index",
-				"description": "The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though."
+				"description": "The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.",
+				"shortDescription": "Set custom start numbers for ordered lists."
 			},
 			{
 				"id": "list-styles",
 				"type": "subfeature",
 				"link": "features/lists#list-styles",
 				"name": "List styles",
-				"description": "The list style feature introduces some more styles for the list item markers. When <code>{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled}</code>, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar."
+				"description": "The list style feature introduces some more styles for the list item markers. When <code>{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled}</code>, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.",
+				"shortDescription": "Customize list markers for unique styles."
 			},
 			{
 				"id": "multi-level-lists",
@@ -254,42 +289,48 @@
 				"link": "features/multi-level-lists",
 				"name": "Multi-level lists",
 				"isPremium": true,
-				"description": "Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word."
+				"description": "Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.",
+				"shortDescription": "Create hierarchical multi-level lists with numbering."
 			},
 			{
 				"id": "nested-lists",
 				"type": "subfeature",
 				"link": "features/lists-editing#indenting-lists",
 				"name": "Nested lists",
-				"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them)."
+				"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).",
+				"shortDescription": "Easily create nested lists for complex content."
 			},
 			{
 				"id": "ordered-lists",
 				"type": "subfeature",
 				"link": "features/lists",
 				"name": "Ordered lists",
-				"description": "The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type."
+				"description": "The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.",
+				"shortDescription": "Add structured ordered lists with flexible formatting options."
 			},
 			{
 				"id": "reversed-list",
 				"type": "subfeature",
 				"link": "features/lists#reversed-list",
 				"name": "Reversed list",
-				"description": "The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions)."
+				"description": "The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).",
+				"shortDescription": "Reverse list numbering for countdowns or steps."
 			},
 			{
 				"id": "to-do-lists",
 				"type": "subfeature",
 				"link": "features/todo-lists",
 				"name": "To-do lists",
-				"description": "The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of <code>{@link features/lists bulleted and numbered lists}</code>, so you can nest a to-do list together with any combination of other lists."
+				"description": "The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of <code>{@link features/lists bulleted and numbered lists}</code>, so you can nest a to-do list together with any combination of other lists.",
+				"shortDescription": "Create interactive to-do lists with checkboxes."
 			},
 			{
 				"id": "unordered-lists",
 				"type": "subfeature",
 				"link": "features/lists",
 				"name": "Unordered lists",
-				"description": "The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape."
+				"description": "The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.",
+				"shortDescription": "Add unordered lists with customizable markers."
 			},
 			{
 				"id": "mermaid",
@@ -297,168 +338,192 @@
 				"link": "features/mermaid",
 				"name": "Mermaid",
 				"isExperimental": true,
-				"description": "You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more."
+				"description": "You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.",
+				"shortDescription": "Create diagrams and charts using Markdown-inspired syntax."
 			},
 			{
 				"id": "remove-formatting",
 				"type": "feature",
 				"link": "features/remove-format",
 				"name": "Remove formatting",
-				"description": "The remove format feature lets you quickly remove any text formatting applied using inline HTML elements and CSS styles, like basic text styles (bold, italic) or font family, size, and color. This feature does not remove block-level formatting (headings, images) or semantic data (links)."
+				"description": "The remove format feature lets you quickly remove any text formatting applied using inline HTML elements and CSS styles, like basic text styles (bold, italic) or font family, size, and color. This feature does not remove block-level formatting (headings, images) or semantic data (links).",
+				"shortDescription": "Quickly strip inline styles and formatting from text."
 			},
 			{
 				"id": "select-all",
 				"type": "feature",
 				"link": "features/select-all",
 				"name": "Select all",
-				"description": "Enables the selection of all content within the editor with a single command or shortcut."
+				"description": "Enables the selection of all content within the editor with a single command or shortcut.",
+				"shortDescription": "Select all content within the editor instantly."
 			},
 			{
 				"id": "tables",
 				"type": "feature",
 				"link": "features/tables",
 				"name": "Tables",
-				"description": "CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation."
+				"description": "CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.",
+				"shortDescription": "Design and manage tables with advanced editing options."
 			},
 			{
 				"id": "columns-resizing",
 				"type": "subfeature",
 				"link": "features/tables-resize",
 				"name": "Columns resizing",
-				"description": "The <code>{@link module:table/tablecolumnresize~TableColumnResize}</code> plugin lets you resize tables and individual table columns. It gives you complete control over column width."
+				"description": "The <code>{@link module:table/tablecolumnresize~TableColumnResize}</code> plugin lets you resize tables and individual table columns. It gives you complete control over column width.",
+				"shortDescription": "Resize table columns for precise layout control."
 			},
 			{
 				"id": "insert-delete-columns-and-rows",
 				"type": "subfeature",
 				"link": "features/tables#table-contextual-toolbar",
 				"name": "Insert/delete columns & rows",
-				"description": "The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells."
+				"description": "The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.",
+				"shortDescription": "Easily add or remove table rows and columns."
 			},
 			{
 				"id": "merge-and-split-cells",
 				"type": "subfeature",
 				"link": "features/tables#table-contextual-toolbar",
 				"name": "Merge & split cells",
-				"description": "The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells."
+				"description": "The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.",
+				"shortDescription": "Merge or split table cells as needed."
 			},
 			{
 				"id": "nesting",
 				"type": "subfeature",
 				"link": "features/tables#nesting-tables",
 				"name": "Nesting",
-				"description": "CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one."
+				"description": "CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.",
+				"shortDescription": "Nest tables within other tables for complex layouts."
 			},
 			{
 				"id": "styling-tables-and-cells",
 				"type": "subfeature",
 				"link": "features/tables-styling",
 				"name": "Styling tables & cells",
-				"description": "CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment."
+				"description": "CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.",
+				"shortDescription": "Apply custom styles to tables and individual cells."
 			},
 			{
 				"id": "table-headers",
 				"type": "subfeature",
 				"link": "features/tables#default-table-headers",
 				"name": "Table headers",
-				"description": "To make every inserted table have <code>n</code> number of rows and columns as table headers by default, set an optional table configuration property <code>defaultHeadings</code>."
+				"description": "To make every inserted table have <code>n</code> number of rows and columns as table headers by default, set an optional table configuration property <code>defaultHeadings</code>.",
+				"shortDescription": "Set default table headers for better structure."
 			},
 			{
 				"id": "table-selection",
 				"type": "subfeature",
 				"link": "features/tables#table-selection",
 				"name": "Table selection",
-				"description": "The <code>{@link module:table/tableselection~TableSelection}</code> plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the <code>Table</code> plugin."
+				"description": "The <code>{@link module:table/tableselection~TableSelection}</code> plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the <code>Table</code> plugin.",
+				"shortDescription": "Select and format specific table areas easily."
 			},
 			{
 				"id": "tables-caption",
 				"type": "subfeature",
 				"link": "features/tables-caption",
 				"name": "Tables caption",
-				"description": "The <code>{@link module:table/tablecaption~TableCaption}</code> plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers."
+				"description": "The <code>{@link module:table/tablecaption~TableCaption}</code> plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.",
+				"shortDescription": "Add captions to tables to improve accessibility."
 			},
 			{
 				"id": "text-alignment",
 				"type": "feature",
 				"link": "features/text-alignment",
 				"name": "Text alignment",
-				"description": "Allows the adjustment of text alignment to the left, right, center, or justify and permits the alteration of indentation."
+				"description": "Allows the adjustment of text alignment to the left, right, center, or justify and permits the alteration of indentation.",
+				"shortDescription": "Align text left, right, center, or justify with ease."
 			},
 			{
 				"id": "text-formatting",
 				"type": "feature",
 				"link": "features/basic-styles",
 				"name": "Text formatting",
-				"description": "CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections."
+				"description": "CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.",
+				"shortDescription": "Apply bold, italic, underline, and other formatting styles to text."
 			},
 			{
 				"id": "bold",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Bold",
-				"description": "Making the letters look like the good time were never gone."
+				"description": "Making the letters look like the good time were never gone.",
+				"shortDescription": "Make text bold for emphasis."
 			},
 			{
 				"id": "code",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Code",
-				"description": "Snippet look like a terminal from the 1990s movie."
+				"description": "Snippet look like a terminal from the 1990s movie.",
+				"shortDescription": "Insert inline code snippets for technical content."
 			},
 			{
 				"id": "highlight",
 				"type": "subfeature",
 				"link": "features/highlight",
 				"name": "Highlight",
-				"description": "Highlight makes important content stand out, either with font color or background fill."
+				"description": "Highlight makes important content stand out, either with font color or background fill.",
+				"shortDescription": "Highlight text with color for emphasis."
 			},
 			{
 				"id": "italic",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Italic",
-				"description": "Making the letters look like seashore pines."
+				"description": "Making the letters look like seashore pines.",
+				"shortDescription": "Italicize text for subtle emphasis."
 			},
 			{
 				"id": "strikethrough",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Strikethrough",
-				"description": "Never mind, will not need it anymore."
+				"description": "Never mind, will not need it anymore.",
+				"shortDescription": "Strike through text to indicate removal."
 			},
 			{
 				"id": "styles",
 				"type": "subfeature",
 				"link": "features/style",
 				"name": "Styles",
-				"description": "The styles feature lets you easily apply predefined styles available for block and inline content."
+				"description": "The styles feature lets you easily apply predefined styles available for block and inline content.",
+				"shortDescription": "Apply predefined styles to block and inline elements."
 			},
 			{
 				"id": "subscript",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Subscript",
-				"description": "Fine print at the bottom, like atom numbers."
+				"description": "Fine print at the bottom, like atom numbers.",
+				"shortDescription": "Add subscript text for chemical formulas or footnotes."
 			},
 			{
 				"id": "superscript",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Superscript",
-				"description": "Fine print on top, like references in a book."
+				"description": "Fine print on top, like references in a book.",
+				"shortDescription": "Add superscript text for exponents or references."
 			},
 			{
 				"id": "underline",
 				"type": "subfeature",
 				"link": "features/basic-styles",
 				"name": "Underline",
-				"description": "Stuff looks important, yo. Or like a link, too."
+				"description": "Stuff looks important, yo. Or like a link, too.",
+				"shortDescription": "Underline text to highlight importance."
 			},
 			{
 				"id": "undo-redo",
 				"type": "feature",
 				"link": "features/undo-redo",
 				"name": "Undo/redo",
-				"description": "Backtrack or repeat actions for editing purposes."
+				"description": "Backtrack or repeat actions for editing purposes.",
+				"shortDescription": "Easily undo or redo recent actions."
 			}
 		]
 	},
