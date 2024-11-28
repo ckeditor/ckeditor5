@@ -252,7 +252,7 @@ export default class ImageCustomResizeFormView extends View {
 		const saveButton = new ButtonView( this.locale );
 
 		saveButton.set( {
-			label: t( 'Resize' ),
+			label: t( 'Save' ),
 			tooltip: true,
 			withText: true,
 			type: 'submit',
