@@ -792,42 +792,48 @@
 				"link": "features/ai-assistant-overview",
 				"name": "AI Assistant",
 				"isPremium": true,
-				"description": "The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models."
+				"description": "The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.",
+				"shortDescription": "Leverage AI for content creation, processing, and customizable integrations."
 			},
 			{
 				"id": "automation",
 				"type": "feature",
 				"link": "features/autoformat",
 				"name": "Automation",
-				"description": "Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!"
+				"description": "Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!",
+				"shortDescription": "Streamline tasks like formatting, linking, and saving with automation tools."
 			},
 			{
 				"id": "autoformatting",
 				"type": "subfeature",
 				"link": "features/autoformat",
 				"name": "Autoformatting",
-				"description": "Use <strong>Autoformatting </strong>to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs."
+				"description": "Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.",
+				"shortDescription": "Quickly format content using Markdown-like shortcuts."
 			},
 			{
 				"id": "autolink",
 				"type": "subfeature",
 				"link": "features/link#autolink-feature",
 				"name": "Autolink",
-				"description": "With <strong>Autolink</strong>, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use."
+				"description": "With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.",
+				"shortDescription": "Automatically convert URLs and emails into clickable links."
 			},
 			{
 				"id": "automatic-text-transformation",
 				"type": "subfeature",
 				"link": "features/text-transformation",
 				"name": "Automatic text transformations",
-				"description": "The <strong>Automatic Text Transformation </strong>autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms."
+				"description": "The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.",
+				"shortDescription": "Automatically expand abbreviations or autocorrect text based on predefined rules."
 			},
 			{
 				"id": "autosave",
 				"type": "subfeature",
 				"link": "features/autosave",
 				"name": "Autosave",
-				"description": "The <strong>Autosave </strong>feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup."
+				"description": "The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.",
+				"shortDescription": "Automatically save changes for uninterrupted workflow."
 			},
 			{
 				"id": "case-change",
@@ -835,14 +841,16 @@
 				"link": "features/case-change",
 				"name": "Case change",
 				"isPremium": true,
-				"description": "The Case Change feature simplifies adjusting text cases within a document. With just a single click, users can shift text between UPPERCASE, lowercase, and Title Case options. The case transformation can be applied to various text blocks (paragraph, heading, or list item) by placing the cursor within the block. Alternatively, users can select a specific fragment of text they wish to modify. This feature enhances the editing workflow by removing the need for manual case adjustments."
+				"description": "The Case Change feature simplifies adjusting text cases within a document. With just a single click, users can shift text between UPPERCASE, lowercase, and Title Case options. The case transformation can be applied to various text blocks (paragraph, heading, or list item) by placing the cursor within the block. Alternatively, users can select a specific fragment of text they wish to modify. This feature enhances the editing workflow by removing the need for manual case adjustments.",
+				"shortDescription": "Easily switch text cases between uppercase, lowercase, and title case."
 			},
 			{
 				"id": "find-and-replace",
 				"type": "feature",
 				"link": "features/find-and-replace",
 				"name": "Find and replace",
-				"description": "The Find and Replace feature in CKEditor 5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency."
+				"description": "The Find and Replace feature in CKEditor 5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency.",
+				"shortDescription": "Search and replace text efficiently across your document."
 			},
 			{
 				"id": "format-painter",
@@ -850,14 +858,16 @@
 				"link": "features/format-painter",
 				"name": "Format painter",
 				"isPremium": true,
-				"description": "The Format Painter feature lets users clone formatting from one section and apply it to others within a document. This tool speeds up maintaining style consistency across the document. Once initiated, Format Painter can continue to apply the copied formatting to multiple sections consecutively. This \"continuous painting\" ensures a uniform style is achieved quickly without the need to repeatedly select the formatting options for each new section."
+				"description": "The Format Painter feature lets users clone formatting from one section and apply it to others within a document. This tool speeds up maintaining style consistency across the document. Once initiated, Format Painter can continue to apply the copied formatting to multiple sections consecutively. This \"continuous painting\" ensures a uniform style is achieved quickly without the need to repeatedly select the formatting options for each new section.",
+				"shortDescription": "Clone and apply formatting for consistent styling across sections."
 			},
 			{
 				"id": "keyboard-shortcuts",
 				"type": "feature",
 				"link": "features/accessibility#keyboard-shortcuts",
 				"name": "Keyboard shortcuts",
-				"description": "CKEditor 5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users."
+				"description": "CKEditor 5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users.",
+				"shortDescription": "Boost productivity with keyboard shortcuts for editing and accessibility."
 			},
 			{
 				"id": "mathtype",
@@ -865,7 +875,8 @@
 				"link": "features/math-equations",
 				"name": "MathType",
 				"isPremium": true,
-				"description": "Math Equations allows you to add properly formatted mathematical notation and chemical formulas to your documents. This feature supports the inclusion of math equations, which can be handwritten on a tablet and automatically converted into well-formed digital text. It also offers simple numbering of equations and the ability to customize with various fonts and colors, enhancing readability and presentation in your content."
+				"description": "Math Equations allows you to add properly formatted mathematical notation and chemical formulas to your documents. This feature supports the inclusion of math equations, which can be handwritten on a tablet and automatically converted into well-formed digital text. It also offers simple numbering of equations and the ability to customize with various fonts and colors, enhancing readability and presentation in your content.",
+				"shortDescription": "Insert formatted math equations and chemical formulas into your content."
 			},
 			{
 				"id": "merge-fields",
@@ -873,21 +884,24 @@
 				"link": "features/merge-fields",
 				"name": "Merge fields",
 				"isPremium": true,
-				"description": "Merge Fields allows the inclusion of placeholders in your content, facilitating the creation of document templates, especially useful for email templates and document automation. These placeholders can later be replaced with dynamic values by the customer's application, enabling tasks like mass email distribution or generation of personalized documents."
+				"description": "Merge Fields allows the inclusion of placeholders in your content, facilitating the creation of document templates, especially useful for email templates and document automation. These placeholders can later be replaced with dynamic values by the customer's application, enabling tasks like mass email distribution or generation of personalized documents.",
+				"shortDescription": "Add placeholders for dynamic values in templates and documents."
 			},
 			{
 				"id": "paste-from-google-docs",
 				"type": "feature",
 				"link": "features/paste-from-google-docs",
 				"name": "Paste from Google Docs",
-				"description": "Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature."
+				"description": "Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature.",
+				"shortDescription": "Retain formatting when pasting content from Google Docs."
 			},
 			{
 				"id": "paste-from-office",
 				"type": "feature",
 				"link": "features/paste-from-office",
 				"name": "Paste from Office",
-				"description": "Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature."
+				"description": "Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature.",
+				"shortDescription": "Preserve formatting and structure when pasting from Microsoft Office."
 			},
 			{
 				"id": "paste-from-office-enhanced",
@@ -895,14 +909,16 @@
 				"link": "features/paste-from-office-enhanced",
 				"name": "Paste from Office Enhanced",
 				"isPremium": true,
-				"description": "The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor 5 without compromising on formatting."
+				"description": "The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor 5 without compromising on formatting.",
+				"shortDescription": "Accurately preserve advanced formatting when pasting from Word or Excel."
 			},
 			{
 				"id": "paste-plain-text",
 				"type": "feature",
 				"link": "features/paste-plain-text",
 				"name": "Paste plain text",
-				"description": "The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text pasted into the document adopts the style of the surrounding content, effectively described as \"pasting without formatting.\" Additionally, it intelligently converts double-line breaks into paragraphs and single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document."
+				"description": "The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text pasted into the document adopts the style of the surrounding content, effectively described as \"pasting without formatting.\" Additionally, it intelligently converts double-line breaks into paragraphs and single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.",
+				"shortDescription": "Paste content without formatting for clean and consistent styling."
 			},
 			{
 				"id": "slash-commands",
@@ -910,14 +926,16 @@
 				"link": "features/slash-commands",
 				"name": "Slash commands",
 				"isPremium": true,
-				"description": "The Slash Commands feature lets users insert block elements and apply styles using just the keyboard. By pressing the / key, a panel with suggested commands appears, enabling quick and mouse-free actions. Users can filter through these commands by typing additional phrases after the /, making it easier to find specific commands. Additionally, the option to customize personal commands is available, allowing for a tailored editing experience."
+				"description": "The Slash Commands feature lets users insert block elements and apply styles using just the keyboard. By pressing the / key, a panel with suggested commands appears, enabling quick and mouse-free actions. Users can filter through these commands by typing additional phrases after the /, making it easier to find specific commands. Additionally, the option to customize personal commands is available, allowing for a tailored editing experience.",
+				"shortDescription": "Quickly add and style content using slash commands for efficiency."
 			},
 			{
 				"id": "special-characters",
 				"type": "feature",
 				"link": "features/special-characters",
 				"name": "Special characters",
-				"description": "Insert a variety of unique symbols and characters into your document with CKEditor 5's Special Characters feature. This includes mathematical operators, currency symbols, punctuation, graphic symbols like arrows or bullets, and Unicode letters that are not typically available on standard keyboards, such as umlauts or diacritics. Additionally, the feature supports the insertion of emojis. This tool is particularly useful for enhancing the detail and accuracy of content that requires specialized symbols."
+				"description": "Insert a variety of unique symbols and characters into your document with CKEditor 5's Special Characters feature. This includes mathematical operators, currency symbols, punctuation, graphic symbols like arrows or bullets, and Unicode letters that are not typically available on standard keyboards, such as umlauts or diacritics. Additionally, the feature supports the insertion of emojis. This tool is particularly useful for enhancing the detail and accuracy of content that requires specialized symbols.",
+				"shortDescription": "Add unique symbols, characters, and emojis to your content."
 			},
 			{
 				"id": "templates",
@@ -925,7 +943,8 @@
 				"link": "features/template",
 				"name": "Templates",
 				"isPremium": true,
-				"description": "The Templates feature enables the insertion of predefined content structures into documents, ranging from small content pieces, like formatted tables, to complete document frameworks, like formal letter templates. Templates accelerate the document creation process while ensuring adherence to the company's content and document policies."
+				"description": "The Templates feature enables the insertion of predefined content structures into documents, ranging from small content pieces, like formatted tables, to complete document frameworks, like formal letter templates. Templates accelerate the document creation process while ensuring adherence to the company's content and document policies.",
+				"shortDescription": "Insert predefined templates for faster and consistent document creation."
 			}
 		]
 	},
