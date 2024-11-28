@@ -5,130 +5,44 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-:root {
-	--ck-link-panel-width: 340px;
-	--ck-link-list-view-max-height: 240px;
-	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
-}
-
+/* Generic class that wraps each link balloon view. */
 .ck.ck-link__panel {
-	width: var(--ck-link-panel-width);
-
-	&:focus {
-		outline: none;
-	}
-
-	/* Header */
-	& .ck-form__header {
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-
-		& > .ck:not(:first-child) {
-			margin-left: var(--ck-spacing-small);
-		}
-	}
 
 	/* Form */
 	& .ck-responsive-form.ck-link__form {
 		display: flex;
 		flex-direction: column;
 
-		& > * {
-			margin: 0;
-
-			@mixin ck-media-phone {
-				margin: var(--ck-spacing-large) var(--ck-spacing-medium)  var(--ck-spacing-medium)  var(--ck-spacing-medium);
-			}
-		}
-
-		& > .ck:not(:first-child) {
-			margin-top: var(--ck-spacing-large);
-		}
-
 		& .ck-labeled-field-view {
 			flex-grow: 1;
-
-			& input {
-				width: 100%;
-			}
 		}
 
 		/* "Link" input field and the "Insert" button */
-		& .ck-link-and-submit {
+		& .ck-input-and-submit {
 			display: flex;
-
-			& > .ck-labeled-field-view {
-				flex: 1;
-			}
-
-			& .ck-button-insert {
-				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
-				margin-left: var(--ck-spacing-medium);
-				height: 30px;
-			}
 
 			@mixin ck-media-phone {
 				flex-direction: column;
 
-				& > .ck {
-					margin: 0;
-				}
-
-				& .ck-button-insert {
-					margin-top: var(--ck-spacing-large);
+				& .ck-button {
 					justify-content: center;
 				}
 			}
 		}
 	}
 
-	/* Link list */
-	& .ck-link__list {
+	& .ck-link__providers-list {
 		display: flex;
 		flex-direction: column;
 
-		&.ck-link__list-border-top {
-			margin-top: var(--ck-spacing-medium);
-			border-top: 1px solid var(--ck-color-base-border);
-		}
-
 		& .ck-link__button {
-			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
-			border-radius: 0;
-
 			& > .ck-button__label {
 				flex-grow: 1;
 			}
 		}
 	}
 
-	& .ck-link__empty-list-info {
-		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
-		text-align: center;
-		font-style: italic;
-	}
-
 	& .ck-link__items:empty {
 		display: none;
-	}
-
-	& > .ck-list__bookmark-items {
-		max-height: min( var(--ck-link-list-view-max-height), 40vh );
-		overflow-x: hidden;
-		overflow-y: auto;
-		overscroll-behavior: contain;
-
-		& .ck-button {
-			& > .ck-icon {
-				width: var(--ck-link-list-view-icon-size);
-				height: var(--ck-link-list-view-icon-size);
-				flex-shrink: 0;
-			}
-
-			& > .ck-button__label {
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-			}
-		}
 	}
 }

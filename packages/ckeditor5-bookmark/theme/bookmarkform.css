@@ -5,37 +5,24 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-bookmark-view {
-	&:focus {
-		outline: none;
-	}
-}
+.ck.ck-bookmark__panel {
+	/* Form */
+	& .ck-responsive-form.ck-bookmark__form {
+		display: flex;
+		flex-direction: column;
 
-.ck.ck-bookmark-form {
-	display: flex;
-	align-items: flex-start;
+		/* "Bookmark" input field and the "Save" button */
+		& .ck-input-and-submit {
+			display: flex;
+			align-items: flex-start;
 
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
+			& > .ck-labeled-field-view {
+				flex-grow: 1;
+			}
 
-		& .ck-button,
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
-		}
-
-		& .ck-button {
-			justify-content: center;
-		}
-	}
-
-	&.ck-responsive-form {
-		& > .ck-button {
 			@mixin ck-media-phone {
-				&:nth-last-child(1) {
-					margin: var(--ck-spacing-large);
-					padding: 0 var(--ck-spacing-standard);
-					border-radius: var(--ck-border-radius);
-				}
+				flex-direction: column;
+				align-items: stretch;
 			}
 		}
 	}

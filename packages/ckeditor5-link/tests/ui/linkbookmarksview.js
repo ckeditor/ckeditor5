@@ -108,6 +108,7 @@ describe( 'LinkBookmarksView', () => {
 				const button = view.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
 
 				expect( button ).to.equal( view.backButtonView );
+				expect( button.template.children[ 0 ].get( 1 ).text ).to.equal( 'Back' );
 			} );
 		} );
 
