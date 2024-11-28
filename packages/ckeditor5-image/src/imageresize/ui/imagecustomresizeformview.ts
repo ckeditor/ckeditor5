@@ -179,12 +179,9 @@ export default class ImageCustomResizeFormView extends View {
 	}
 
 	/**
-	 * Populates the {@link #children} collection of the form.
-	 *
-	 * @returns The children of resize form view.
+	 * Creates a form view collection.
 	 */
 	private _createFormChildren(): ViewCollection {
-		const children = this.createCollection();
 		const resizeInputAndSubmit = new View();
 
 		resizeInputAndSubmit.setTemplate( {
@@ -198,9 +195,9 @@ export default class ImageCustomResizeFormView extends View {
 			]
 		} );
 
-		children.add( resizeInputAndSubmit );
-
-		return children;
+		return this.createCollection( [
+			resizeInputAndSubmit
+		] );
 	}
 
 	/**
