@@ -190,7 +190,7 @@ export default class ImageCustomResizeFormView extends View {
 		resizeInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-resize-and-submit' ]
+				class: [ 'ck', 'ck-input-and-submit' ]
 			},
 			children: [
 				this.labeledInput,
@@ -256,7 +256,7 @@ export default class ImageCustomResizeFormView extends View {
 			tooltip: true,
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-resize ck-button-action ck-button-bold'
+			class: 'ck-button-action ck-button-bold'
 		} );
 
 		return saveButton;

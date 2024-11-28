@@ -12,7 +12,7 @@
 		flex-direction: column;
 
 		/* "Size" input field and the "Save" button */
-		& .ck-resize-and-submit {
+		& .ck-input-and-submit {
 			display: flex;
 
 			& > .ck-labeled-field-view {
