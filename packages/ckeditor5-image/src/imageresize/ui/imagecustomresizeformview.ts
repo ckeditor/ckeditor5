@@ -98,11 +98,11 @@ export default class ImageCustomResizeFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 		this.unit = unit;
 
-		// Create buttons
+		// Create buttons.
 		this.backButtonView = this._createBackButton();
 		this.saveButtonView = this._createSaveButton();
 
-		// Create input fields
+		// Create input fields.
 		this.labeledInput = this._createLabeledInputView();
 		this.formChildren = this._createFormChildren();
 
