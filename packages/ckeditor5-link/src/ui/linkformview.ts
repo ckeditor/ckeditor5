@@ -132,7 +132,7 @@ export default class LinkFormView extends View {
 		// This is to avoid adding the list view when the form is empty.
 		this.listenTo( this.listChildren, 'add', () => {
 			this.stopListening( this.listChildren, 'add' );
-			this.children.add( this._createListView() );
+			this.children.add( this._createProvidersListView() );
 		} );
 
 		this._focusCycler = new FocusCycler( {
@@ -315,21 +315,20 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates a view for the list at the bottom.
+	 * Creates a view for the providers list.
 	 */
-	private _createListView(): ListView {
-		const listView = new ListView( this.locale );
+	private _createProvidersListView(): ListView {
+		const providersListView = new ListView( this.locale );
 
-		listView.extendTemplate( {
+		providersListView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-link__list',
-					'ck-link__list-border-top'
+					'ck-link__providers-list'
 				]
 			}
 		} );
 
-		listView.items.bindTo( this.listChildren ).using( def => {
+		providersListView.items.bindTo( this.listChildren ).using( def => {
 			const listItemView = new ListItemView( this.locale );
 
 			listItemView.children.add( def );
@@ -337,7 +336,7 @@ export default class LinkFormView extends View {
 			return listItemView;
 		} );
 
-		return listView;
+		return providersListView;
 	}
 
 	/**

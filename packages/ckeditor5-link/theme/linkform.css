@@ -31,8 +31,7 @@
 		}
 	}
 
-	/* Link list */
-	& .ck-link__list {
+	& .ck-link__providers-list {
 		display: flex;
 		flex-direction: column;
 

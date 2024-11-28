@@ -25,4 +25,10 @@
 			}
 		}
 	}
+
+	& .ck-link__empty-list-info {
+		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
+		text-align: center;
+		font-style: italic;
+	}
 }

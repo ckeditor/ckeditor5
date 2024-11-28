@@ -76,22 +76,13 @@
 		}
 	}
 
-	/* Link list of panel view items that can be presented as a list (e.g. list of decorators). */
-	& .ck-link__list {
-		&.ck-link__list-border-top {
-			margin-top: var(--ck-spacing-medium);
-			border-top: 1px solid var(--ck-color-base-border);
-		}
+	& .ck-link__providers-list {
+		margin-top: var(--ck-spacing-medium);
+		border-top: 1px solid var(--ck-color-base-border);
 
 		& .ck-link__button {
 			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
 			border-radius: 0;
 		}
-	}
-
-	& .ck-link__empty-list-info {
-		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
-		text-align: center;
-		font-style: italic;
 	}
 }
