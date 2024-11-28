@@ -35,7 +35,7 @@
 	& .ck-responsive-form.ck-text-alternative__form {
 		width: 100%;
 
-		/* "Size" input field and the "Save" button */
+		/* "Text alternative" input field and the "Save" button */
 		& .ck-input-and-submit {
 			margin: 0;
 
