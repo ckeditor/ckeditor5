@@ -18,13 +18,13 @@
 		}
 
 		/* "Link" input field and the "Insert" button */
-		& .ck-link-and-submit {
+		& .ck-input-and-submit {
 			display: flex;
 
 			@mixin ck-media-phone {
 				flex-direction: column;
 
-				& .ck-button-insert {
+				& .ck-button {
 					justify-content: center;
 				}
 			}

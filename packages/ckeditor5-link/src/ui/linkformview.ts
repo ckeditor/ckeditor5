@@ -270,7 +270,7 @@ export default class LinkFormView extends View {
 			tooltip: true,
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-insert ck-button-action ck-button-bold'
+			class: 'ck-button-action ck-button-bold'
 		} );
 
 		return saveButton;
@@ -378,7 +378,7 @@ export default class LinkFormView extends View {
 		linkInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-link-and-submit' ]
+				class: [ 'ck', 'ck-input-and-submit' ]
 			},
 			children: [
 				this.urlInputView,
