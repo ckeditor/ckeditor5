@@ -101,6 +101,12 @@ export default class TextAlternativeFormView extends View {
 
 		this._focusables = new ViewCollection();
 
+		// Close the panel on esc key press when the **form has focus**.
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<TextAlternativeFormViewCancelEvent>( 'cancel' );
+			cancel();
+		} );
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -166,28 +172,27 @@ export default class TextAlternativeFormView extends View {
 	}
 
 	/**
-	 * Populates the {@link #children} collection of the form.
-	 *
-	 * @returns The children of text alternative form view.
+	 * Creates a form child view collection.
 	 */
 	private _createFormChildren(): ViewCollection {
-		const children = this.createCollection();
-		const textAlternativeInputAndSubmit = new View();
+		const textAlternativeInputAndSubmit = new View( this.locale );
 
 		textAlternativeInputAndSubmit.setTemplate( {
 			tag: 'div',
+
 			attributes: {
 				class: [ 'ck', 'ck-input-and-submit' ]
 			},
+
 			children: [
 				this.labeledInput,
 				this.saveButtonView
 			]
 		} );
 
-		children.add( textAlternativeInputAndSubmit );
-
-		return children;
+		return this.createCollection( [
+			textAlternativeInputAndSubmit
+		] );
 	}
 
 	/**
@@ -240,7 +245,6 @@ export default class TextAlternativeFormView extends View {
 
 		saveButton.set( {
 			label: t( 'Save' ),
-			tooltip: true,
 			withText: true,
 			type: 'submit',
 			class: 'ck-button-action ck-button-bold'
