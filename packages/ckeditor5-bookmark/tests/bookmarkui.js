@@ -1139,7 +1139,7 @@ describe( 'BookmarkUI', () => {
 				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
 			} );
 
-			it( 'should have "Update" label when bookmark is selected', () => {
+			it( 'should have "Save" label when bookmark is selected', () => {
 				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
@@ -1147,10 +1147,10 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.saveButtonView.label ).to.equal( 'Update' );
+				expect( formView.saveButtonView.label ).to.equal( 'Save' );
 			} );
 
-			it( 'should have "Update" label when bookmark already inserted but balloon is not closed.', () => {
+			it( 'should have "Save" label when bookmark already inserted but balloon is not closed.', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 				bookmarkUIFeature._showFormView();
 				formView = bookmarkUIFeature.formView;
@@ -1162,7 +1162,7 @@ describe( 'BookmarkUI', () => {
 				formView.fire( 'submit' );
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.saveButtonView.label ).to.equal( 'Update' );
+				expect( formView.saveButtonView.label ).to.equal( 'Save' );
 			} );
 		} );
 	} );

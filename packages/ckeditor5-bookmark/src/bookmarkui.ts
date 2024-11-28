@@ -185,7 +185,7 @@ export default class BookmarkUI extends Plugin {
 		const formView = new ( CssTransitionDisablerMixin( BookmarkFormView ) )( locale, getFormValidators( editor ) );
 
 		formView.idInputView.fieldView.bind( 'value' ).to( updateBookmarkCommand, 'value' );
-		formView.saveButtonView.bind( 'label' ).to( updateBookmarkCommand, 'value', value => value ? t( 'Update' ) : t( 'Insert' ) );
+		formView.saveButtonView.bind( 'label' ).to( updateBookmarkCommand, 'value', value => value ? t( 'Save' ) : t( 'Insert' ) );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.idInputView.bind( 'isEnabled' ).toMany(
