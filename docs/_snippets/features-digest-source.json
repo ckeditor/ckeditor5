@@ -1,4 +1,5 @@
-		<tr id="advanced-html-editing" class="feature">
+[
+		{ "id": "advanced-html-editing", "type": "feature",
 			<td>
 				{@link features/general-html-support Advanced HTML Editing}
 			</td>
@@ -9,8 +10,8 @@
 				HTML comments, and editing of the full page content, including meta
 				tags.
 			</td>
-		</tr>
-		<tr id="full-page-html" class="subfeature background-gray">
+		},
+		{ "id": "full-page-html", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/full-page-html Full page HTML}
@@ -25,8 +26,8 @@
 				<code>&lt;body&gt;</code>), this feature enables markup invisible
 				to the end user.
 			</td>
-		</tr>
-		<tr id="general-html-support" class="subfeature background-gray">
+		},
+		{ "id": "general-html-support", "type": "subfeature",
 			<td>
 				 <span>
 				 	{@img assets/img/enter-arrow.svg}&nbsp;{@link features/general-html-support General HTML Support (GHS)}
@@ -38,8 +39,8 @@
 				plugins. GHS lets you add elements, attributes, classes, and styles to
 				the source. It also ensures this markup stays in the editor window and the output.
 			</td>
-		</tr>
-		<tr id="html-comment" class="subfeature background-gray">
+		},
+		{ "id": "html-comment", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-comments HTML comment}
@@ -51,8 +52,8 @@
 				feature lets developers keep HTML comments in the document without
 				displaying them to the user.
 			</td>
-		</tr>
-		<tr id="html-embed" class="subfeature background-gray">
+		},
+		{ "id": "html-embed", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-embed HTML embed}
@@ -63,8 +64,8 @@
 				The feature is meant for more advanced users who want to directly
 				interact with HTML fragments.
 			</td>
-		</tr>
-		<tr id="show-blocks" class="subfeature background-gray">
+		},
+		{ "id": "show-blocks", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/show-blocks Show blocks}
@@ -76,8 +77,8 @@
 				outline and displays their element name in the top-left corner of the
 				box.
 			</td>
-		</tr>
-		<tr id="source-editing" class="subfeature background-gray">
+		},
+		{ "id": "source-editing", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/source-editing Source editing}
@@ -87,8 +88,8 @@
 				The source editing feature lets you view and edit the source of your
 				document.
 			</td>
-		</tr>
-		<tr id="block-formatting" class="feature">
+		},
+		{ "id": "block-formatting", "type": "feature",
 			<td>
 				{@link features/block-quote Block formatting}
 			</td>
@@ -100,8 +101,8 @@
 				for visual hierarchy, insert horizontal lines to delineate sections, and
 				use block quotes to highlight excerpts or important passages.
 			</td>
-		</tr>
-		<tr id="block-quotes" class="subfeature background-gray">
+		},
+		{ "id": "block-quotes", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/block-quote Block quote}
@@ -112,8 +113,8 @@
 				quotes in your content. It is also an attractive way to draw the
 				readers' attention to selected parts of the text.
 			</td>
-		</tr>
-		<tr id="headings-paragraph" class="subfeature background-gray">
+		},
+		{ "id": "headings-paragraph", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/headings Headings/paragraph}
@@ -124,8 +125,8 @@
 				to parts of the text. They make your content easier to scan by both
 				readers and search engines.
 			</td>
-		</tr>
-		<tr id="horizontal-line" class="subfeature background-gray">
+		},
+		{ "id": "horizontal-line", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/horizontal-line Horizontal line}
@@ -136,8 +137,8 @@
 				sections by inserting horizontal lines (also known as horizontal rules).
 				It is an easy way to organize the content or indicate a change of topic.
 			</td>
-		</tr>
-		<tr id="block-indentation" class="subfeature background-gray">
+		},
+		{ "id": "block-indentation", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/indent Block indentation}
@@ -148,8 +149,8 @@
 				such as paragraphs, headings, or lists. This way you can visually
 				distinguish parts of your content.
 			</td>
-		</tr>
-		<tr id="bookmark" class="feature">
+		},
+		{ "id": "bookmark", "type": "feature",
 			<td>
 				{@link features/bookmarks Bookmarks}
 			</td>
@@ -158,16 +159,16 @@
 				attached to the content of the editor. These provide fast access to important
 				content sections, and speed up the navigation boosting efficiency.
 			</td>
-		</tr>
-		<tr id="clipboard" class="feature">
+		},
+		{ "id": "clipboard", "type": "feature",
 			<td>
 				{@link framework/deep-dive/clipboard Clipboard}
 			</td>
 			<td>
 				Copy, cut, and paste content within the editor or from external sources.
 			</td>
-		</tr>
-		<tr id="code-blocks" class="feature">
+		},
+		{ "id": "code-blocks", "type": "feature",
 			<td>
 				{@link features/code-blocks Code blocks}
 			</td>
@@ -175,8 +176,8 @@
 				Supports the insertion and management of pre-formatted code snippets with
 				distinct styling.
 			</td>
-		</tr>
-		<tr id="drag-and-drop" class="feature">
+		},
+		{ "id": "drag-and-drop", "type": "feature",
 			<td>
 				{@link features/drag-drop Drag and drop}
 			</td>
@@ -184,8 +185,8 @@
 				Rearrange elements within a document, including moving text blocks,
 				images, or other content types.
 			</td>
-		</tr>
-		<tr id="font-formatting" class="feature">
+		},
+		{ "id": "font-formatting", "type": "feature",
 			<td>
 				{@link features/font Font formatting}
 			</td>
@@ -193,8 +194,8 @@
 				The font feature lets you change font family, size, and color (including
 				background color). All of these options are configurable.
 			</td>
-		</tr>
-		<tr id="font-background-color" class="subfeature background-gray">
+		},
+		{ "id": "font-background-color", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}
@@ -203,16 +204,16 @@
 			<td>
 				Effortlessly make the words stand out even more with a colored background.
 			</td>
-		</tr>
-		<tr id="font-color" class="subfeature background-gray">
+		},
+		{ "id": "font-color", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}
 				</span>
 			</td>
 			<td>Effortlessly make the letters stand out with their own color.</td>
-		</tr>
-		<tr id="font-family" class="subfeature background-gray">
+		},
+		{ "id": "font-family", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-family-feature Font family}
@@ -222,16 +223,16 @@
 				Choose from a predefined set of fonts, depending on the type of content
 				and its destination - print, screen, etc.
 			</td>
-		</tr>
-		<tr id="font-size" class="subfeature background-gray">
+		},
+		{ "id": "font-size", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-size-feature Font size}
 				</span>
 			</td>
 			<td>Easily control the size of the letters.</td>
-		</tr>
-		<tr id="image" class="feature">
+		},
+		{ "id": "image", "type": "feature",
 			<td>
 				{@link features/images-overview Image}
 			</td>
@@ -242,8 +243,8 @@
 				via URL, use responsive images, resize images, add captions, set
 				different image styles, and link images.
 			</td>
-		</tr>
-		<tr id="image-all-text" class="subfeature background-gray">
+		},
+		{ "id": "image-all-text", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-text-alternative Image alt text}
@@ -254,8 +255,8 @@
 				improves accessibility by telling screen readers and search engines what
 				the image depicts.
 			</td>
-		</tr>
-		<tr id="image-captions" class="subfeature background-gray">
+		},
+		{ "id": "image-captions", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-captions Image captions}
@@ -264,8 +265,8 @@
 			<td>
 				Add optional captions for images, which are shown below the picture.
 			</td>
-		</tr>
-		<tr id="image-insert-via-url" class="subfeature background-gray">
+		},
+		{ "id": "image-insert-via-url", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-inserting Image insert via URL}
@@ -276,8 +277,8 @@
 				can also configure CKEditor 5 to let you insert images using URLs. This
 				way, you can save time by adding images that are already online.
 			</td>
-		</tr>
-		<tr id="image-linking" class="subfeature background-gray">
+		},
+		{ "id": "image-linking", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-linking Image linking}
@@ -288,8 +289,8 @@
 				<code>{@link module:link/linkimage~LinkImage}</code>
 				plugin lets you use images as links.
 			</td>
-		</tr>
-		<tr id="image-resize" class="subfeature background-gray">
+		},
+		{ "id": "image-resize", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-resizing Image resize}
@@ -301,8 +302,8 @@
 				<code>{@link module:image/imageresize~ImageResize}</code>
 				plugin.
 			</td>
-		</tr>
-		<tr id="image-styles" class="subfeature background-gray">
+		},
+		{ "id": "image-styles", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-styles Image styles}
@@ -313,8 +314,8 @@
 				works by applying CSS classes to images or changing their type from
 				inline to block or vice versa.
 			</td>
-		</tr>
-		<tr id="image-upload" class="subfeature background-gray">
+		},
+		{ "id": "image-upload", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/image-upload Image upload}
@@ -327,8 +328,8 @@
 				properly configured rich-text editor, there are several ways for the end
 				user to insert images.
 			</td>
-		</tr>
-		<tr id="responsive-images" class="subfeature background-gray">
+		},
+		{ "id": "responsive-images", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-responsive Responsive images}
@@ -344,8 +345,8 @@
 				dimensions most suitable for the presented page resolution, which makes
 				the image load much faster and saves bandwidth.
 			</td>
-		</tr>
-		<tr id="links" class="feature">
+		},
+		{ "id": "links", "type": "feature",
 			<td>
 				{@link features/link Links}
 			</td>
@@ -354,8 +355,8 @@
 				typed or pasted URLs into clickable links, and allowing manual insertion
 				and editing of links.
 			</td>
-		</tr>
-		<tr id="lists" class="feature">
+		},
+		{ "id": "lists", "type": "feature",
 			<td>
 				{@link features/lists Lists}
 			</td>
@@ -366,8 +367,8 @@
 				creating reversed lists, adjusting list indentation, and crafting nested
 				lists.
 			</td>
-		</tr>
-		<tr id="list-indentation" class="subfeature background-gray">
+		},
+		{ "id": "list-indentation", "type": "subfeature",
 			<td>
 				{@link features/lists-editing#indenting-lists List indentation}
 			</td>
@@ -377,8 +378,8 @@
 				the indent and outdent buttons allow for indenting list items
 				(nesting them).
 			</td>
-		</tr>
-		<tr id="list-start-index" class="subfeature background-gray">
+		},
+		{ "id": "list-start-index", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-start-index List start index}
@@ -390,8 +391,8 @@
 				the list styles section). Sometimes, you may want to start a list with
 				some other digit or letter, though.
 			</td>
-		</tr>
-		<tr id="list-styles" class="subfeature background-gray">
+		},
+		{ "id": "list-styles", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-styles List styles}
@@ -406,8 +407,8 @@
 				via the dropdown. It opens when you click the arrow next to the
 				appropriate list button in the toolbar.
 			</td>
-		</tr>
-		<tr id="multi-level-lists" class="subfeature background-gray">
+		},
+		{ "id": "multi-level-lists", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/multi-level-lists Multi-level lists
@@ -423,8 +424,8 @@
 				organization in complex documents. The feature offers full compatibility
 				with Microsoft Word.
 			</td>
-		</tr>
-		<tr id="nested-lists" class="subfeature background-gray">
+		},
+		{ "id": "nested-lists", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists-editing#indenting-lists Nested lists}
@@ -435,8 +436,8 @@
 				the indent and outdent buttons allow for indenting list items
 				(nesting them).
 			</td>
-		</tr>
-		<tr id="ordered-lists" class="subfeature background-gray">
+		},
+		{ "id": "ordered-lists", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Ordered lists}
@@ -449,8 +450,8 @@
 				continuity of numbering and indentation. You can also easily control the
 				list markers type.
 			</td>
-		</tr>
-		<tr id="reversed-list" class="subfeature background-gray">
+		},
+		{ "id": "reversed-list", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#reversed-list Reversed list}
@@ -462,8 +463,8 @@
 				countdowns and things-to-do lists that need to reproduce steps in a
 				reversed order (for example, in disassembly instructions).
 			</td>
-		</tr>
-		<tr id="to-do-lists" class="subfeature background-gray">
+		},
+		{ "id": "to-do-lists", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/todo-lists To-do lists}
@@ -475,8 +476,8 @@
 				so you can nest a to-do list together with any combination of other
 				lists.
 			</td>
-		</tr>
-		<tr id="unordered-lists" class="subfeature background-gray">
+		},
+		{ "id": "unordered-lists", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Unordered lists}
@@ -489,8 +490,8 @@
 				continuity of numbering and indentation. You can also easily control the
 				list markers' shape.
 			</td>
-		</tr>
-		<tr id="mermaid" class="feature">
+		},
+		{ "id": "mermaid", "type": "feature",
 			<td>
 				{@link features/mermaid Mermaid <span class="tree__item__badge tree__item__badge_new"
 				data-badge-tooltip="Experimental feature">Exp</span>}
@@ -501,8 +502,8 @@
 				Markdown-inspired syntax to create and dynamically modify flowcharts,
 				Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
 			</td>
-		</tr>
-		<tr id="remove-formatting" class="feature">
+		},
+		{ "id": "remove-formatting", "type": "feature",
 			<td>
 				{@link features/remove-format Remove formatting}
 			</td>
@@ -513,8 +514,8 @@
 				not remove block-level formatting (headings, images) or semantic data
 				(links).
 			</td>
-		</tr>
-		<tr id="select-all" class="feature">
+		},
+		{ "id": "select-all", "type": "feature",
 			<td>
 				{@link features/select-all Select all}
 			</td>
@@ -522,8 +523,8 @@
 				Enables the selection of all content within the editor with a single
 				command or shortcut.
 			</td>
-		</tr>
-		<tr id="tables" class="feature">
+		},
+		{ "id": "tables", "type": "feature",
 			<td>
 				{@link features/tables Tables}
 			</td>
@@ -533,8 +534,8 @@
 				insert and delete columns and rows, as well as create nested tables for
 				complex data presentation.
 			</td>
-		</tr>
-		<tr id="columns-resizing" class="subfeature background-gray">
+		},
+		{ "id": "columns-resizing", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-resize Columns resizing}
@@ -546,8 +547,8 @@
 				plugin lets you resize tables and individual table columns. It gives you
 				complete control over column width.
 			</td>
-		</tr>
-		<tr id="insert-delete-columns-and-rows" class="subfeature background-gray">
+		},
+		{ "id": "insert-delete-columns-and-rows", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}
@@ -557,8 +558,8 @@
 				The basic table features allow users to insert tables into content, add
 				or remove columns and rows and merge or split cells.
 			</td>
-		</tr>
-		<tr id="merge-and-split-cells" class="subfeature background-gray">
+		},
+		{ "id": "merge-and-split-cells", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Merge & split cells}
@@ -568,8 +569,8 @@
 				The basic table features allow users to insert tables into content, add
 				or remove columns and rows, and merge or split cells.
 			</td>
-		</tr>
-		<tr id="nesting" class="subfeature background-gray">
+		},
+		{ "id": "nesting", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#nesting-tables Nesting}
@@ -580,8 +581,8 @@
 				used for creating advanced charts or layouts based on tables. The nested
 				table can be formatted just like a regular one.
 			</td>
-		</tr>
-		<tr id="styling-tables-and-cells" class="subfeature background-gray">
+		},
+		{ "id": "styling-tables-and-cells", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-styling Styling tables & cells}
@@ -592,8 +593,8 @@
 				look of tables and table cells. You can control border color and style,
 				background color, padding, or text alignment.
 			</td>
-		</tr>
-		<tr id="table-headers" class="subfeature background-gray">
+		},
+		{ "id": "table-headers", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#default-table-headers Table headers}
@@ -604,8 +605,8 @@
 				columns as table headers by default, set an optional table configuration
 				property <code>defaultHeadings</code>.
 			</td>
-		</tr>
-		<tr id="table-selection" class="subfeature background-gray">
+		},
+		{ "id": "table-selection", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-selection Table selection}
@@ -621,8 +622,8 @@
 				cells at once. The table selection plugin is loaded automatically
 				by the <code>Table</code> plugin.
 			</td>
-		</tr>
-		<tr id="tables-caption" class="subfeature background-gray">
+		},
+		{ "id": "tables-caption", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-caption Tables caption}
@@ -634,8 +635,8 @@
 				plugin lets you add captions to your tables. Table captions also improve
 				accessibility as they are recognized by screen readers.
 			</td>
-		</tr>
-		<tr id="text-alignment" class="feature">
+		},
+		{ "id": "text-alignment", "type": "feature",
 			<td>
 				{@link features/text-alignment Text alignment}
 			</td>
@@ -643,8 +644,8 @@
 				Allows the adjustment of text alignment to the left, right, center, or
 				justify and permits the alteration of indentation.
 			</td>
-		</tr>
-		<tr id="text-formatting" class="feature">
+		},
+		{ "id": "text-formatting", "type": "feature",
 			<td>
 				{@link features/basic-styles Text formatting}
 			</td>
@@ -656,24 +657,24 @@
 				their text to improve readability, match branding guidelines, or
 				highlight important content sections.
 			</td>
-		</tr>
-		<tr id="bold" class="subfeature background-gray">
+		},
+		{ "id": "bold", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Bold}
 				</span>
 			</td>
 			<td>Making the letters look like the good time were never gone.</td>
-		</tr>
-		<tr id="code" class="subfeature background-gray">
+		},
+		{ "id": "code", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Code}
 				</span>
 			</td>
 			<td>Snippet look like a terminal from the 1990s movie.</td>
-		</tr>
-		<tr id="highlight" class="subfeature background-gray">
+		},
+		{ "id": "highlight", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/highlight Highlight}
@@ -683,24 +684,24 @@
 				Highlight makes important content stand out, either with font color or
 				background fill.
 			</td>
-		</tr>
-		<tr id="italic" class="subfeature background-gray">
+		},
+		{ "id": "italic", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Italic}
 				</span>
 			</td>
 			<td>Making the letters look like seashore pines.</td>
-		</tr>
-		<tr id="strikethrough" class="subfeature background-gray">
+		},
+		{ "id": "strikethrough", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Strikethrough}
 				</span>
 			</td>
 			<td>Never mind, will not need it anymore.</td>
-		</tr>
-		<tr id="styles" class="subfeature background-gray">
+		},
+		{ "id": "styles", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/style Styles}
@@ -710,37 +711,37 @@
 				The styles feature lets you easily apply predefined styles available for
 				block and inline content.
 			</td>
-		</tr>
-		<tr id="subscript" class="subfeature background-gray">
+		},
+		{ "id": "subscript", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Subscript}
 				</span>
 			</td>
 			<td>Fine print at the bottom, like atom numbers.</td>
-		</tr>
-		<tr id="superscript" class="subfeature background-gray">
+		},
+		{ "id": "superscript", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Superscript}
 				</span>
 			</td>
 			<td>Fine print on top, like references in a book.</td>
-		</tr>
-		<tr id="underline" class="subfeature background-gray">
+		},
+		{ "id": "underline", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Underline}
 				</span>
 			</td>
 			<td>Stuff looks important, yo. Or like a link, too.</td>
-		</tr>
-		<tr id="undo-redo" class="feature">
+		},
+		{ "id": "undo-redo", "type": "feature",
 			<td>
 				{@link features/undo-redo Undo/redo}
 			</td>
 			<td>Backtrack or repeat actions for editing purposes.</td>
-		</tr>
+		},
 
 
 
@@ -752,7 +753,7 @@
 
 
 
-		<tr id="asynchronous-collaboration" class="feature">
+		{ "id": "asynchronous-collaboration", "type": "feature",
 			<td>
 				{@link features/collaboration Asynchronous collaboration
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -765,8 +766,8 @@
 				content within the application. It integrates Track Changes, Comments,
 				and Revision History features to facilitate collaboration.
 			</td>
-		</tr>
-		<tr id="local-data-storage" class="subfeature background-gray">
+		},
+		{ "id": "local-data-storage", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/collaboration Local data storage
@@ -779,8 +780,8 @@
 				In asynchronous collaboration, data is maintained on the client's
 				servers.
 			</td>
-		</tr>
-		<tr id="comments" class="feature">
+		},
+		{ "id": "comments", "type": "feature",
 			<td>
 				{@link features/comments Comments
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -792,8 +793,8 @@
 				text and block elements such as images. It also allows the users to
 				discuss in threads and remove comments when they finish the discussion.
 			</td>
-		</tr>
-		<tr id="comments-archive" class="subfeature background-gray">
+		},
+		{ "id": "comments-archive", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments Comments archive
@@ -810,8 +811,8 @@
 				restore archived comments if necessary. It helps to simplify the
 				feedback management process.
 			</td>
-		</tr>
-		<tr id="comments-outside-editor" class="subfeature background-gray">
+		},
+		{ "id": "comments-outside-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments-outside-editor Comments outside editor
@@ -825,8 +826,8 @@
 				<code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such
 				integration is enabling comments on non-editor form fields.
 			</td>
-		</tr>
-		<tr id="sidebar-modes" class="subfeature background-gray">
+		},
+		{ "id": "sidebar-modes", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes
@@ -842,8 +843,8 @@
 				various annotation sources (comments, suggestions) are connected to
 				different UIs or even create your UI for annotations.
 			</td>
-		</tr>
-		<tr id="mentions" class="feature">
+		},
+		{ "id": "mentions", "type": "feature",
 			<td>
 				{@link features/mentions Mentions}
 			</td>
@@ -852,8 +853,8 @@
 				input. Typing a predetermined marker, like @ or #, prompts a panel to
 				appear, offering autocomplete suggestions.
 			</td>
-		</tr>
-		<tr id="real-time-collaboration" class="feature">
+		},
+		{ "id": "real-time-collaboration", "type": "feature",
 			<td>
 				{@link features/real-time-collaboration Real-time collaboration
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -866,8 +867,8 @@
 				automatically solves all conflicts if users make changes at the same
 				time.
 			</td>
-		</tr>
-		<tr id="co-authoring" class="subfeature background-gray">
+		},
+		{ "id": "co-authoring", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/users-in-real-time-collaboration Co-authoring
@@ -877,8 +878,8 @@
 				</span>
 			</td>
 			<td>Multiple user real-time editing and content creation feature.</td>
-		</tr>
-		<tr id="on-premises" class="subfeature background-gray">
+		},
+		{ "id": "on-premises", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs onpremises/index On-premises
@@ -891,8 +892,8 @@
 				On-premises real-time collaboration version to deploy to client's own
 				infrastructure, includes a private cloud.
 			</td>
-		</tr>
-		<tr id="saas" class="subfeature background-gray">
+		},
+		{ "id": "saas", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs guides/collaboration/quick-start SaaS
@@ -902,8 +903,8 @@
 				</span>
 			</td>
 			<td>Real-time collaboration provided as a service by CKSource.</td>
-		</tr>
-		<tr id="revision-history" class="feature">
+		},
+		{ "id": "revision-history", "type": "feature",
 			<td>
 				{@link features/revision-history Revision history
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -918,8 +919,8 @@
 				revisions. You can rename, compare, and restore older revisions on the
 				go.
 			</td>
-		</tr>
-		<tr id="track-changes" class="feature">
+		},
+		{ "id": "track-changes", "type": "feature",
 			<td>
 				{@link features/track-changes Track changes
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -932,8 +933,8 @@
 				switch to the track changes mode. All their changes will then create
 				suggestions that they can accept or discard.
 			</td>
-		</tr>
-		<tr id="users-list-and-permissions" class="feature">
+		},
+		{ "id": "users-list-and-permissions", "type": "feature",
 			<td>
 				{@link features/users Users list and permissions
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -954,7 +955,7 @@
 
 
 
-		<tr id="content-generation" class="feature">
+		{ "id": "content-generation", "type": "feature",
 			<td>
 				{@link features/export-pdf Content generation
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -962,8 +963,8 @@
 				}
 			</td>
 			<td>CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</td>
-		</tr>
-		<tr id="export-to-pdf" class="subfeature background-gray">
+		},
+		{ "id": "export-to-pdf", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-pdf Export to PDF
@@ -977,8 +978,8 @@
 				footers, include page breaks, embed images, and choose from various
 				fonts.
 			</td>
-		</tr>
-		<tr id="export-to-word" class="subfeature background-gray">
+		},
+		{ "id": "export-to-word", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-word Export to Word
@@ -993,8 +994,8 @@
 				document includes suggestions, comments, page breaks, and embedded
 				images.
 			</td>
-		</tr>
-		<tr id="import-from-word" class="subfeature background-gray">
+		},
+		{ "id": "import-from-word", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/import-word Import from Word
@@ -1008,8 +1009,8 @@
 				while retaining the original styling, as well as comments and change
 				tracking annotations.
 			</td>
-		</tr>
-		<tr id="markdown-output" class="feature">
+		},
+		{ "id": "markdown-output", "type": "feature",
 			<td>
 				{@link features/markdown Markdown output}
 			</td>
@@ -1019,8 +1020,8 @@
 				efficient Markdown editor, allowing the creation of text documents using
 				the simplified formatting syntax favored by developers.
 			</td>
-		</tr>
-		<tr id="media-embed" class="feature">
+		},
+		{ "id": "media-embed", "type": "feature",
 			<td>
 				{@link features/media-embed Media embed}
 			</td>
@@ -1029,8 +1030,8 @@
 				Pasting a media URL directly into the editor content automatically
 				embeds the media.
 			</td>
-		</tr>
-		<tr id="paste-markdown" class="feature">
+		},
+		{ "id": "paste-markdown", "type": "feature",
 			<td>
 				{@link features/paste-markdown Paste Markdown
 					<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>
@@ -1041,8 +1042,8 @@
 				straight into the editor. It will be then converted into rich text on
 				the fly.
 			</td>
-		</tr>
-		<tr id="xml-output" class="feature">
+		},
+		{ "id": "xml-output", "type": "feature",
 			<td>
 				{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor XML output}
 			</td>
@@ -1050,7 +1051,7 @@
 				Turn your content into parsable XML files for automation and
 				cross-platform interoperability.
 			</td>
-		</tr>
+		},
 
 
 
@@ -1064,7 +1065,7 @@
 
 
 
-		<tr id="document-outline" class="feature">
+		{ "id": "document-outline", "type": "feature",
 			<td>
 				{@link features/document-outline Document outline
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1079,8 +1080,8 @@
 				allows for customization of the outline's location within the user
 				interface, catering to different user preferences for workspace layout.
 			</td>
-		</tr>
-		<tr id="page-utilities" class="feature">
+		},
+		{ "id": "page-utilities", "type": "feature",
 			<td>
 				{@link features/minimap Page utilities}
 			</td>
@@ -1088,8 +1089,8 @@
 				CKEditor 5 Page Utilities enables users to dictate the structuring and
 				print formatting of their documents effectively.
 			</td>
-		</tr>
-		<tr id="content-minimap" class="subfeature background-gray">
+		},
+		{ "id": "content-minimap", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/minimap Content minimap}
@@ -1099,8 +1100,8 @@
 				Offers a concise, birds-eye view of the document's content,
 				allowing for quick navigation and content management.
 			</td>
-		</tr>
-		<tr id="document-title" class="subfeature background-gray">
+		},
+		{ "id": "document-title", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/title Document title}
@@ -1110,8 +1111,8 @@
 				Allows users to set and modify the document's title within the
 				editing interface, ensuring accurate reflection of the contents.
 			</td>
-		</tr>
-		<tr id="page-break" class="subfeature background-gray">
+		},
+		{ "id": "page-break", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/page-break Page break}
@@ -1122,8 +1123,8 @@
 				the definition of page endings and beginnings for optimal layout and
 				print clarity.
 			</td>
-		</tr>
-		<tr id="pagination" class="feature">
+		},
+		{ "id": "pagination", "type": "feature",
 			<td>
 				{@link features/pagination Pagination
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1139,8 +1140,8 @@
 				text and elements will appear page-by-page, Pagination aids in the creation of professional and polished
 				documents.
 			</td>
-		</tr>
-		<tr id="table-of-contents" class="feature">
+		},
+		{ "id": "table-of-contents", "type": "feature",
 			<td>
 				{@link features/table-of-contents Table of contents
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1155,12 +1156,12 @@
 				within the document are reflected immediately in the table of contents,
 				accurately representing the document structure.
 			</td>
-		</tr>
+		},
 
 
 
 
-		<tr id="ai-assistant" class="feature">
+		{ "id": "ai-assistant", "type": "feature",
 			<td>
 				{@link features/ai-assistant-overview AI Assistant
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1175,15 +1176,15 @@
 				integration with multiple AI API providers: OpenAI, Azure OpenAI, and
 				Amazon Bedrock. You can also integrate it with custom models.
 			</td>
-		</tr>
-		<tr id="automation" class="feature">
+		},
+		{ "id": "automation", "type": "feature",
 			<td>
 				{@link features/autoformat Automation}
 			</td>
 			<td>Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!
 			</td>
-		</tr>
-		<tr id="autoformatting" class="subfeature background-gray">
+		},
+		{ "id": "autoformatting", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autoformat Autoformatting}
@@ -1194,8 +1195,8 @@
 				quick formatting without needing to navigate through toolbar buttons or
 				dropdown menus. This feature caters to the most common formatting needs.
 			</td>
-		</tr>
-		<tr id="autolink" class="subfeature background-gray">
+		},
+		{ "id": "autolink", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/link#autolink-feature Autolink}
@@ -1207,8 +1208,8 @@
 				functionality is enabled by default, ensuring that links are always
 				ready to use.
 			</td>
-		</tr>
-		<tr id="automatic-text-transformation" class="subfeature background-gray">
+		},
+		{ "id": "automatic-text-transformation", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/text-transformation Automatic text transformations}
@@ -1222,8 +1223,8 @@
 				commonly used to automate the expansion of abbreviations or short
 				phrases into their full forms.
 			</td>
-		</tr>
-		<tr id="autosave" class="subfeature background-gray">
+		},
+		{ "id": "autosave", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autosave Autosave}
@@ -1235,8 +1236,8 @@
 				modified. This could involve sending the latest version of the document
 				to the server, providing peace of mind through continuous backup.
 			</td>
-		</tr>
-		<tr id="case-change" class="feature">
+		},
+		{ "id": "case-change", "type": "feature",
 			<td>
 				{@link features/case-change Case change
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1253,8 +1254,8 @@
 				enhances the editing workflow by removing the need for manual case
 				adjustments.
 			</td>
-		</tr>
-		<tr id="find-and-replace" class="feature">
+		},
+		{ "id": "find-and-replace", "type": "feature",
 			<td>
 				{@link features/find-and-replace Find and replace}
 			</td>
@@ -1264,8 +1265,8 @@
 				them with different text. This function helps speed up editing and
 				maintain content consistency.
 			</td>
-		</tr>
-		<tr id="format-painter" class="feature">
+		},
+		{ "id": "format-painter", "type": "feature",
 			<td>
 				{@link features/format-painter Format painter
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1281,8 +1282,8 @@
 				uniform style is achieved quickly without the need to repeatedly select
 				the formatting options for each new section.
 			</td>
-		</tr>
-		<tr id="keyboard-shortcuts" class="feature">
+		},
+		{ "id": "keyboard-shortcuts", "type": "feature",
 			<td>
 				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}
 			</td>
@@ -1290,8 +1291,8 @@
 				CKEditor 5 supports various keyboard shortcuts that boost productivity
 				and provide necessary accessibility to screen reader users.
 			</td>
-		</tr>
-		<tr id="mathtype" class="feature">
+		},
+		{ "id": "mathtype", "type": "feature",
 			<td>
 				{@link features/math-equations MathType
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1307,8 +1308,8 @@
 				various fonts and colors, enhancing readability and presentation in your
 				content.
 			</td>
-		</tr>
-		<tr id="merge-fields" class="feature">
+		},
+		{ "id": "merge-fields", "type": "feature",
 			<td>
 				{@link features/merge-fields Merge fields
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1323,8 +1324,8 @@
 				enabling tasks like mass email distribution or generation of
 				personalized documents.
 			</td>
-		</tr>
-		<tr id="paste-from-google-docs" class="feature">
+		},
+		{ "id": "paste-from-google-docs", "type": "feature",
 			<td>
 				{@link features/paste-from-google-docs Paste from Google Docs}
 			</td>
@@ -1333,8 +1334,8 @@
 				Microsoft Excel and preserve its original structure and formatting. This
 				is the basic, open-source Paste from Office feature.
 			</td>
-		</tr>
-		<tr id="paste-from-office" class="feature">
+		},
+		{ "id": "paste-from-office", "type": "feature",
 			<td>
 				{@link features/paste-from-office Paste from Office}
 			</td>
@@ -1343,8 +1344,8 @@
 				Microsoft Excel and preserve its original structure and formatting. This
 				is the basic, open-source Paste from Office feature.
 			</td>
-		</tr>
-		<tr id="paste-from-office-enhanced" class="feature">
+		},
+		{ "id": "paste-from-office-enhanced", "type": "feature",
 			<td>
 				{@link features/paste-from-office-enhanced Paste from Office Enhanced
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1358,8 +1359,8 @@
 				layouts. The feature facilitates the transfer of documents from Word to
 				CKEditor 5 without compromising on formatting.
 			</td>
-		</tr>
-		<tr id="paste-plain-text" class="feature">
+		},
+		{ "id": "paste-plain-text", "type": "feature",
 			<td>
 				{@link features/paste-plain-text Paste plain text}
 			</td>
@@ -1369,8 +1370,8 @@
 				without formatting." Additionally, it intelligently converts double-line breaks into paragraphs and
 				single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.
 			</td>
-		</tr>
-		<tr id="slash-commands" class="feature">
+		},
+		{ "id": "slash-commands", "type": "feature",
 			<td>
 				{@link features/slash-commands Slash commands
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1386,8 +1387,8 @@
 				to customize personal commands is available, allowing for a tailored
 				editing experience.
 			</td>
-		</tr>
-		<tr id="special-characters" class="feature">
+		},
+		{ "id": "special-characters", "type": "feature",
 			<td>
 				{@link features/special-characters Special characters}
 			</td>
@@ -1401,8 +1402,8 @@
 				useful for enhancing the detail and accuracy of content that requires
 				specialized symbols.
 			</td>
-		</tr>
-		<tr id="templates" class="feature">
+		},
+		{ "id": "templates", "type": "feature",
 			<td>
 				{@link features/template Templates
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1433,7 +1434,7 @@
 
 
 
-		<tr id="editor-placeholder" class="feature">
+		{ "id": "editor-placeholder", "type": "feature",
 			<td>
 				{@link features/editor-placeholder Editor placeholder}
 			</td>
@@ -1443,8 +1444,8 @@
 				native DOM placeholder attribute used by inputs. Not to be confused with
 				content placeholder.
 			</td>
-		</tr>
-		<tr id="editor-ui-types" class="feature">
+		},
+		{ "id": "editor-ui-types", "type": "feature",
 			<td>
 				{@link getting-started/setup/editor-types Editor UI types}
 			</td>
@@ -1454,8 +1455,8 @@
 				configurable toolbar or keyboard shortcuts. Some of these features are
 				only available with certain editor types.
 			</td>
-		</tr>
-		<tr id="balloon-block-editor" class="subfeature background-gray">
+		},
+		{ "id": "balloon-block-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
@@ -1467,8 +1468,8 @@
 				content area and following the selection in the document. The toolbar
 				gives access to additional block–level editing features.
 			</td>
-		</tr>
-		<tr id="balloon-editor" class="subfeature background-gray">
+		},
+		{ "id": "balloon-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
@@ -1479,8 +1480,8 @@
 				is that the toolbar appears in a balloon next to the selection (when the
 				selection is not empty).
 			</td>
-		</tr>
-		<tr id="classic-editor" class="subfeature background-gray">
+		},
+		{ "id": "classic-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#classic-editor Classic editor}
@@ -1492,8 +1493,8 @@
 				specific position on the page, usually as a part of a form that you use
 				to submit some content to the server.
 			</td>
-		</tr>
-		<tr id="decoupled-editor" class="subfeature background-gray">
+		},
+		{ "id": "decoupled-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}
@@ -1505,8 +1506,8 @@
 				best for creating documents, which are usually later printed or exported
 				to PDF files.
 			</td>
-		</tr>
-		<tr id="inline-editor" class="subfeature background-gray">
+		},
+		{ "id": "inline-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#inline-editor Inline editor}
@@ -1520,8 +1521,8 @@
 				location on a web page instead of doing it in a separate administration
 				section.
 			</td>
-		</tr>
-		<tr id="multi-root-editor" class="subfeature background-gray">
+		},
+		{ "id": "multi-root-editor", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
@@ -1535,8 +1536,8 @@
 				editor instance share the same configuration, toolbar, undo stack, and
 				produce one document.
 			</td>
-		</tr>
-		<tr id="professionally-translated-language-packs" class="feature">
+		},
+		{ "id": "professionally-translated-language-packs", "type": "feature",
 			<td>
 				{@link getting-started/setup/ui-language Professionally translated language packs}
 			</td>
@@ -1548,8 +1549,8 @@
 				including elements like toolbars, dropdowns, and buttons, to ensure an
 				optimal editing experience.1
 			</td>
-		</tr>
-		<tr id="toolbar-and-menus" class="feature">
+		},
+		{ "id": "toolbar-and-menus", "type": "feature",
 			<td>
 				{@link getting-started/setup/toolbar Toolbar and menus}
 			</td>
@@ -1563,8 +1564,8 @@
 				Toolbar option allows for the expansion of the standard toolbar over
 				multiple lines to display more tools simultaneously.
 			</td>
-		</tr>
-		<tr id="balloon-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "balloon-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
@@ -1573,8 +1574,8 @@
 			<td>
 				A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
 			</td>
-		</tr>
-		<tr id="block-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "block-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#block-toolbar Block toolbar}
@@ -1585,8 +1586,8 @@
 				left-hand side of the content area, useful when the main toolbar is not
 				accessible (for example in certain layouts, like balloon block editor).
 			</td>
-		</tr>
-		<tr id="classic-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "classic-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}
@@ -1598,16 +1599,16 @@
 				dropdowns that you can use to format, manage, insert, and change
 				elements of your content.
 			</td>
-		</tr>
-		<tr id="collapsible-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "collapsible-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}
 				</span>
 			</td>
 			<td>Collapsible toolbar for UI space efficiency.</td>
-		</tr>
-		<tr id="image-contextual-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "image-contextual-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}
@@ -1628,8 +1629,8 @@
 				by the {@link features/ckbox CKBox asset manager}.
 				Shown below is an example contextual toolbar with an extended set of buttons.
 			</td>
-		</tr>
-		<tr id="menu-bar" class="subfeature background-gray">
+		},
+		{ "id": "menu-bar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/menubar Menu bar}
@@ -1644,24 +1645,24 @@
 				a default preset structure based on the plugins loaded in the editor. However, you can arrange it to
 				suit your needs, remove unnecessary items, or add menu items related to your custom features.
 			</td>
-		</tr>
-		<tr id="multiline-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "multiline-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}
 				</span>
 			</td>
 			<td>Multiline toolbar for easy access to all functions.</td>
-		</tr>
-		<tr id="nesting-toolbars-in-dropdowns" class="subfeature background-gray">
+		},
+		{ "id": "nesting-toolbars-in-dropdowns", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}
 				</span>
 			</td>
 			<td>Nested toolbars for space efficiency and task-oriented access.</td>
-		</tr>
-		<tr id="sidebar-annotations-bar" class="subfeature background-gray">
+		},
+		{ "id": "sidebar-annotations-bar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode#wide-sidebar Wide sidebar}
@@ -1674,8 +1675,8 @@
 				various annotation sources (comments, suggestions) are connected to
 				different UIs, or even create your own UI for annotations.
 			</td>
-		</tr>
-		<tr id="table-contextual-toolbar" class="subfeature background-gray">
+		},
+		{ "id": "table-contextual-toolbar", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Table contextual toolbar}
@@ -1689,9 +1690,9 @@
 				columns and rows and merging or splitting cells. If these features are configured, the toolbar will also
 				contain buttons for captions and table and cell properties.
 			</td>
-		</tr>
+		},
 		<!-- Link & bookmark contextual toolbar coming soon, it's closer than it appears in the mirror -->
-		<tr id="watchdog" class="feature">
+		{ "id": "watchdog", "type": "feature",
 			<td>
 				{@link features/watchdog Watchdog}
 			</td>
@@ -1700,7 +1701,7 @@
 				crashes. It saves your content just before the crash and creates a new
 				instance of the editor with your content intact.
 			</td>
-		</tr>
+		},
 
 
 
@@ -1709,7 +1710,7 @@
 
 
 
-		<tr id="accessibility-support" class="feature">
+		{ "id": "accessibility-support", "type": "feature",
 			<td>
 				{@link features/accessibility Accessibility support}
 			</td>
@@ -1724,8 +1725,8 @@
 				detailed in the Accessibility Conformance Report, ensuring broad
 				accessibility compliance.
 			</td>
-		</tr>
-		<tr id="read-only-support" class="feature">
+		},
+		{ "id": "read-only-support", "type": "feature",
 			<td>
 				{@link features/read-only Read-only support}
 			</td>
@@ -1739,8 +1740,8 @@
 				need to be accessible for copying or by screen readers. This mode can be
 				toggled on and off by system triggers.
 			</td>
-		</tr>
-		<tr id="restricted-editing" class="feature">
+		},
+		{ "id": "restricted-editing", "type": "feature",
 			<td>
 				{@link features/restricted-editing Restricted editing}
 			</td>
@@ -1755,8 +1756,8 @@
 				fills in editable details such as names, dates, or product names without
 				altering the rest of the document.
 			</td>
-		</tr>
-		<tr id="text-part-language" class="feature">
+		},
+		{ "id": "text-part-language", "type": "feature",
 			<td>
 				{@link features/language Text Part Language}
 			</td>
@@ -1771,8 +1772,8 @@
 				specification, facilitating the creation of more accessible and
 				comprehensible multilingual content.
 			</td>
-		</tr>
-		<tr id="word-and-character-counter" class="feature">
+		},
+		{ "id": "word-and-character-counter", "type": "feature",
 			<td>
 				{@link features/word-count Word and character counter}
 			</td>
@@ -1782,8 +1783,8 @@
 				This functionality assists in managing content length and ensuring it
 				meets specific requirements or limits.
 			</td>
-		</tr>
-		<tr id="wproofreader" class="feature">
+		},
+		{ "id": "wproofreader", "type": "feature",
 			<td>
 				{@link features/spelling-and-grammar-checking WProofreader
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1800,7 +1801,7 @@
 				accessibility standards. It also detects sentence-level errors and
 				offers context-based correction suggestions.
 			</td>
-		</tr>
+		},
 
 
 
@@ -1808,7 +1809,7 @@
 
 
 
-		<tr id="editor-sdk" class="feature">
+		{ "id": "editor-sdk", "type": "feature",
 			<td>
 				{@link framework/index Editor SDK}<!-- missing in docs -->
 			</td>
@@ -1822,8 +1823,8 @@
 				Inspector - a comprehensive suite of debugging tools - are provided,
 				helping accelerate development work.
 			</td>
-		</tr>
-		<tr id="ckeditor5-inspector" class="subfeature background-gray">
+		},
+		{ "id": "ckeditor5-inspector", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}
@@ -1833,8 +1834,8 @@
 				{@link framework/architecture/editing-engine#model model}, {@link
 				framework/architecture/editing-engine#view view}, and {@link
 				framework/architecture/core-editor-architecture#commands commands}.</td>
-		</tr>
-		<tr id="cloud-services-rest-api" class="subfeature background-gray">
+		},
+		{ "id": "cloud-services-rest-api", "type": "subfeature",
 			<td>
 				<span>
 					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
@@ -1843,8 +1844,8 @@
 			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration
 				services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although
 				some features can also be used directly through REST APIs.</td>
-		</tr>
-		<tr id="themes" class="feature">
+		},
+		{ "id": "themes", "type": "feature",
 			<td>
 				{@link framework/theme-customization Themes}
 			</td>
@@ -1852,8 +1853,8 @@
 				The default theme of CKEditor 5 can be customized to match most visual
 				integration requirements.
 			</td>
-		</tr>
-		<tr id="ui-library" class="feature">
+		},
+		{ "id": "ui-library", "type": "feature",
 			<td>
 				{@link framework/architecture/ui-library UI Library}
 			</td>
@@ -1865,7 +1866,7 @@
 				modular UI that seamlessly integrates with other components of the
 				ecosystem.
 			</td>
-		</tr>
+		},
 
 
 
@@ -1874,7 +1875,7 @@
 
 
 
-		<tr id="base64-upload-adapter" class="feature">
+		{ "id": "base64-upload-adapter", "type": "feature",
 			<td>
 				{@link features/base64-upload-adapter Base64 Upload Adapter}
 			</td>
@@ -1883,8 +1884,8 @@
 				output. Images are stored with other content in the database without
 				server-side processing.
 			</td>
-		</tr>
-		<tr id="ckbox" class="feature">
+		},
+		{ "id": "ckbox", "type": "feature",
 			<td>
 				{@link features/ckbox CKBox
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1899,8 +1900,8 @@
 				and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as
 				cloud SaaS.
 			</td>
-		</tr>
-		<tr id="ckfinder" class="feature">
+		},
+		{ "id": "ckfinder", "type": "feature",
 			<td>
 				{@link features/ckfinder CKFinder
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1912,8 +1913,8 @@
 				content. CKFinder is a powerful file manager with various image editing
 				and image upload options.
 			</td>
-		</tr>
-		<tr id="custom-upload-adapter" class="feature">
+		},
+		{ "id": "custom-upload-adapter", "type": "feature",
 			<td>
 				{@link features/image-upload#implementing-your-own-upload-adapter Custom Upload Adapter}
 			</td>
@@ -1921,8 +1922,8 @@
 				Have your own file management solution? Use this adapter to integrate
 				your preferred software with CKEditor.
 			</td>
-		</tr>
-		<tr id="simple-upload-adapter" class="feature">
+		},
+		{ "id": "simple-upload-adapter", "type": "feature",
 			<td>
 				{@link features/simple-upload-adapter Simple Upload Adapter}
 			</td>
@@ -1930,8 +1931,8 @@
 				Upload images to your server using the <code>XMLHttpRequest</code> API with a
 				minimal editor configuration.
 			</td>
-		</tr>
-		<tr id="uploadcare" class="feature">
+		},
+		{ "id": "uploadcare", "type": "feature",
 			<td>
 				<a href="https://uploadcare.com/">Uploadcare<span class="tree__item__badge tree__item__badge_premium"
 						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
@@ -1946,4 +1947,5 @@
 				conversion, progressive JPEG, and options for preview, resize, stretch,
 				crop, content-aware crop, and setting fill color.
 			</td>
-		</tr>
+		},
+]
