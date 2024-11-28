@@ -15,6 +15,5 @@
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link.",
 	"Bookmarks": "Title for a feature displaying a list of bookmarks.",
 	"No bookmarks available.": "A message displayed instead of a list of bookmarks if it is empty.",
-	"Displayed text": "The label of the input field for the displayed text of the link.",
-	"Back": "The label of the button that returns to the previous view."
+	"Displayed text": "The label of the input field for the displayed text of the link."
 }

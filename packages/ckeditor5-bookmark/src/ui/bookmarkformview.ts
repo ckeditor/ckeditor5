@@ -230,9 +230,11 @@ export default class BookmarkFormView extends View {
 
 		bookmarkInputAndSubmit.setTemplate( {
 			tag: 'div',
+
 			attributes: {
 				class: [ 'ck', 'ck-input-and-submit' ]
 			},
+
 			children: [
 				this.idInputView,
 				this.saveButtonView

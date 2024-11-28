@@ -20,9 +20,11 @@
 		/* "Link" input field and the "Insert" button */
 		& .ck-input-and-submit {
 			display: flex;
+			align-items: flex-start;
 
 			@mixin ck-media-phone {
 				flex-direction: column;
+				align-items: stretch;
 
 				& .ck-button {
 					justify-content: center;
