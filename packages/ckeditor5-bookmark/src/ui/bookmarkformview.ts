@@ -228,8 +228,7 @@ export default class BookmarkFormView extends View {
 	 * @returns The children of bookmark form view.
 	 */
 	private _createFormChildren(): ViewCollection {
-		const children = this.createCollection();
-		const bookmarkInputAndSubmit = new View();
+		const bookmarkInputAndSubmit = new View( this.locale );
 
 		bookmarkInputAndSubmit.setTemplate( {
 			tag: 'div',
@@ -242,9 +241,9 @@ export default class BookmarkFormView extends View {
 			]
 		} );
 
-		children.add( bookmarkInputAndSubmit );
-
-		return children;
+		return this.createCollection( [
+			bookmarkInputAndSubmit
+		] );
 	}
 
 	/**
