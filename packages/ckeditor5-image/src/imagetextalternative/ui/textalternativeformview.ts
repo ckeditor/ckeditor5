@@ -177,7 +177,7 @@ export default class TextAlternativeFormView extends View {
 		textAlternativeInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-text-alternative-and-submit' ]
+				class: [ 'ck', 'ck-input-and-submit' ]
 			},
 			children: [
 				this.labeledInput,
@@ -243,7 +243,7 @@ export default class TextAlternativeFormView extends View {
 			tooltip: true,
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-action ck-button-bold ck-button-text-alternative'
+			class: 'ck-button-action ck-button-bold'
 		} );
 
 		return saveButton;
