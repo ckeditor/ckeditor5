@@ -243,7 +243,7 @@ export default class TextAlternativeFormView extends View {
 			tooltip: true,
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-action ck-button-bold'
+			class: 'ck-button-action ck-button-bold ck-button-text-alternative'
 		} );
 
 		return saveButton;

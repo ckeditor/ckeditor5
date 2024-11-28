@@ -5,78 +5,22 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-:root {
-	--ck-text-alternative-panel-width: 380px;
-	--ck-text-alternative-list-view-max-height: 240px;
-	--ck-text-alternative-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
-}
-
 .ck.ck-text-alternative__panel {
-	width: var(--ck-text-alternative-panel-width);
-
-	&:focus {
-		outline: none;
-	}
-
-	/* Header */
-	& .ck-form__header {
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-
-		& > .ck:not(:first-child) {
-			margin-left: var(--ck-spacing-small);
-		}
-	}
-
 	/* Form */
 	& .ck-responsive-form.ck-text-alternative__form {
 		display: flex;
 		flex-direction: column;
 
-		& > * {
-			margin: 0;
-
-			@mixin ck-media-phone {
-				margin: var(--ck-spacing-large) var(--ck-spacing-medium)  var(--ck-spacing-medium)  var(--ck-spacing-medium);
-			}
-		}
-
-		& > .ck:not(:first-child) {
-			margin-top: var(--ck-spacing-large);
-		}
-
-		& .ck-labeled-field-view {
-			flex-grow: 1;
-
-			& input {
-				width: 100%;
-			}
-		}
-
-		/* "Save" input field and the "Insert" button */
+		/* "Size" input field and the "Save" button */
 		& .ck-text-alternative-and-submit {
 			display: flex;
 
 			& > .ck-labeled-field-view {
-				flex: 1;
-			}
-
-			& .ck-button-action {
-				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
-				margin-left: var(--ck-spacing-medium);
-				height: 30px;
+				flex-grow: 1;
 			}
 
 			@mixin ck-media-phone {
 				flex-direction: column;
-
-				& > .ck {
-					margin: 0;
-				}
-
-				& .ck-button-action {
-					margin-top: var(--ck-spacing-large);
-					justify-content: center;
-				}
 			}
 		}
 	}
