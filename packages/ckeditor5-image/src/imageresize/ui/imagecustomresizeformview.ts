@@ -114,6 +114,12 @@ export default class ImageCustomResizeFormView extends View {
 		this._focusables = new ViewCollection();
 		this._validators = validators;
 
+		// Close the panel on esc key press when the **form has focus**.
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<ImageCustomResizeFormViewCancelEvent>( 'cancel' );
+			cancel();
+		} );
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -182,13 +188,15 @@ export default class ImageCustomResizeFormView extends View {
 	 * Creates a form view collection.
 	 */
 	private _createFormChildren(): ViewCollection {
-		const resizeInputAndSubmit = new View();
+		const resizeInputAndSubmit = new View( this.locale );
 
 		resizeInputAndSubmit.setTemplate( {
 			tag: 'div',
+
 			attributes: {
 				class: [ 'ck', 'ck-input-and-submit' ]
 			},
+
 			children: [
 				this.labeledInput,
 				this.saveButtonView
@@ -250,7 +258,6 @@ export default class ImageCustomResizeFormView extends View {
 
 		saveButton.set( {
 			label: t( 'Save' ),
-			tooltip: true,
 			withText: true,
 			type: 'submit',
 			class: 'ck-button-action ck-button-bold'
