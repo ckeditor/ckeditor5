@@ -10,6 +10,7 @@
 import {
 	ButtonView,
 	FocusCycler,
+	FormHeaderView,
 	LabeledFieldView,
 	View,
 	ViewCollection,
@@ -48,9 +49,9 @@ export default class ImageCustomResizeFormView extends View {
 	public readonly unit: string;
 
 	/**
-	 * An input with a label.
+	 * The Back button view displayed in the header.
 	 */
-	public labeledInput: LabeledFieldView<InputNumberView>;
+	public backButtonView: ButtonView;
 
 	/**
 	 * A button used to submit the form.
@@ -58,9 +59,19 @@ export default class ImageCustomResizeFormView extends View {
 	public saveButtonView: ButtonView;
 
 	/**
-	 * A button used to cancel the form.
+	 * An input with a label.
 	 */
-	public cancelButtonView: ButtonView;
+	public labeledInput: LabeledFieldView<InputNumberView>;
+
+	/**
+	 * A collection of child views.
+	 */
+	public readonly children: ViewCollection;
+
+	/**
+	 * A collection of child views in the form.
+	 */
+	public readonly formChildren: ViewCollection;
 
 	/**
 	 * A collection of views which can be focused in the form.
@@ -82,21 +93,32 @@ export default class ImageCustomResizeFormView extends View {
 	 */
 	constructor( locale: Locale, unit: string, validators: Array<ImageCustomResizeFormValidatorCallback> ) {
 		super( locale );
-		const t = this.locale!.t;
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.unit = unit;
 
+		// Create buttons.
+		this.backButtonView = this._createBackButton();
+		this.saveButtonView = this._createSaveButton();
+
+		// Create input fields.
 		this.labeledInput = this._createLabeledInputView();
+		this.formChildren = this._createFormChildren();
 
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
-		this.saveButtonView.type = 'submit';
-
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
+		this.children = this.createCollection( [
+			this._createHeaderView(),
+			this._createFormView()
+		] );
 
 		this._focusables = new ViewCollection();
 		this._validators = validators;
+
+		// Close the panel on esc key press when the **form has focus**.
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<ImageCustomResizeFormViewCancelEvent>( 'cancel' );
+			cancel();
+		} );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -113,22 +135,15 @@ export default class ImageCustomResizeFormView extends View {
 
 		this.setTemplate( {
 			tag: 'form',
+
 			attributes: {
-				class: [
-					'ck',
-					'ck-image-custom-resize-form',
-					'ck-responsive-form'
-				],
+				class: [ 'ck', 'ck-image-custom-resize__panel' ],
 
 				// https://github.com/ckeditor/ckeditor5-image/issues/40
 				tabindex: '-1'
 			},
 
-			children: [
-				this.labeledInput,
-				this.saveButtonView,
-				this.cancelButtonView
-			]
+			children: this.children
 		} );
 	}
 
@@ -138,18 +153,25 @@ export default class ImageCustomResizeFormView extends View {
 	public override render(): void {
 		super.render();
 
+		submitHandler( {
+			view: this
+		} );
+
+		const childViews = [
+			this.backButtonView,
+			this.labeledInput,
+			this.saveButtonView
+		];
+
+		childViews.forEach( v => {
+			// Register the view as focusable.
+			this._focusables.add( v );
+
+			// Register the view in the focus tracker.
+			this.focusTracker.add( v.element! );
+		} );
+
 		this.keystrokes.listenTo( this.element! );
-
-		submitHandler( { view: this } );
-
-		[ this.labeledInput, this.saveButtonView, this.cancelButtonView ]
-			.forEach( v => {
-				// Register the view as focusable.
-				this._focusables.add( v );
-
-				// Register the view in the focus tracker.
-				this.focusTracker.add( v.element! );
-			} );
 	}
 
 	/**
@@ -163,34 +185,100 @@ export default class ImageCustomResizeFormView extends View {
 	}
 
 	/**
-	 * Creates the button view.
-	 *
-	 * @param label The button label
-	 * @param icon The button's icon.
-	 * @param className The additional button CSS class name.
-	 * @param eventName The event name that the ButtonView#execute event will be delegated to.
-	 * @returns The button view instance.
+	 * Creates a form view collection.
 	 */
-	private _createButton( label: string, icon: string, className: string, eventName?: string ): ButtonView {
-		const button = new ButtonView( this.locale );
+	private _createFormChildren(): ViewCollection {
+		const resizeInputAndSubmit = new View( this.locale );
 
-		button.set( {
-			label,
-			icon,
+		resizeInputAndSubmit.setTemplate( {
+			tag: 'div',
+
+			attributes: {
+				class: [ 'ck', 'ck-input-and-submit' ]
+			},
+
+			children: [
+				this.labeledInput,
+				this.saveButtonView
+			]
+		} );
+
+		return this.createCollection( [
+			resizeInputAndSubmit
+		] );
+	}
+
+	/**
+	 * Creates a form view for the image resize form.
+	 */
+	private _createFormView(): View {
+		const form = new View( this.locale );
+
+		form.setTemplate( {
+			tag: 'div',
+
+			attributes: {
+				class: [
+					'ck',
+					'ck-image-custom-resize__form',
+					'ck-responsive-form'
+				]
+			},
+
+			children: this.formChildren
+		} );
+
+		return form;
+	}
+
+	/**
+	 * Creates a back button view that cancels the form.
+	 */
+	private _createBackButton(): ButtonView {
+		const t = this.locale!.t;
+		const backButton = new ButtonView( this.locale );
+
+		backButton.set( {
+			label: t( 'Back' ),
+			icon: icons.previousArrow,
 			tooltip: true
 		} );
 
-		button.extendTemplate( {
-			attributes: {
-				class: className
-			}
+		backButton.delegate( 'execute' ).to( this, 'cancel' );
+
+		return backButton;
+	}
+
+	/**
+	 * Creates a save button view that resize the image.
+	 */
+	private _createSaveButton(): ButtonView {
+		const t = this.locale!.t;
+		const saveButton = new ButtonView( this.locale );
+
+		saveButton.set( {
+			label: t( 'Save' ),
+			withText: true,
+			type: 'submit',
+			class: 'ck-button-action ck-button-bold'
 		} );
 
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
+		return saveButton;
+	}
 
-		return button;
+	/**
+	 * Creates a header view for the form.
+	 */
+	private _createHeaderView(): FormHeaderView {
+		const t = this.locale!.t;
+
+		const header = new FormHeaderView( this.locale, {
+			label: t( 'Image Resize' )
+		} );
+
+		header.children.add( this.backButtonView, 0 );
+
+		return header;
 	}
 
 	/**
