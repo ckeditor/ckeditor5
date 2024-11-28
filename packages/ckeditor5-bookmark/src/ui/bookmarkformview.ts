@@ -225,13 +225,13 @@ export default class BookmarkFormView extends View {
 	/**
 	 * Populates the {@link #children} collection of the form.
 	 *
-	 * @returns The children of resize form view.
+	 * @returns The children of bookmark form view.
 	 */
 	private _createFormChildren(): ViewCollection {
 		const children = this.createCollection();
-		const resizeInputAndSubmit = new View();
+		const bookmarkInputAndSubmit = new View();
 
-		resizeInputAndSubmit.setTemplate( {
+		bookmarkInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [ 'ck', 'ck-input-and-submit' ]
@@ -242,7 +242,7 @@ export default class BookmarkFormView extends View {
 			]
 		} );
 
-		children.add( resizeInputAndSubmit );
+		children.add( bookmarkInputAndSubmit );
 
 		return children;
 	}
@@ -289,14 +289,14 @@ export default class BookmarkFormView extends View {
 	}
 
 	/**
-	 * Creates a save button view that resize the image.
+	 * Creates a save button view that saves the bookmark.
 	 */
 	private _createSaveButton(): ButtonView {
 		const t = this.locale!.t;
 		const saveButton = new ButtonView( this.locale );
 
 		saveButton.set( {
-			label: t( 'Resize' ),
+			label: t( 'Save' ),
 			tooltip: true,
 			withText: true,
 			type: 'submit',
