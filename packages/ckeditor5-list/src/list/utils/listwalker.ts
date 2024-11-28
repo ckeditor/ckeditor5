@@ -193,11 +193,11 @@ export default class ListWalker {
  * Iterates sibling list blocks starting from the given node.
  */
 export class SiblingListBlocksIterator implements IterableIterator<ListIteratorValue> {
-	private node: Node | null;
-	private isForward: boolean;
-	private previousNodesByIndent: Array<ListElement> = [];
-	private previous: ListElement | null = null;
-	private previousNodeIndent: number | null = null;
+	private _node: Node | null;
+	private _isForward: boolean;
+	private _previousNodesByIndent: Array<ListElement> = [];
+	private _previous: ListElement | null = null;
+	private _previousNodeIndent: number | null = null;
 
 	/**
 	 * @param node The model node.
@@ -207,8 +207,8 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
 		node: Node | null,
 		direction: 'forward' | 'backward' = 'forward'
 	) {
-		this.node = node;
-		this.isForward = direction === 'forward';
+		this._node = node;
+		this._isForward = direction === 'forward';
 	}
 
 	public [ Symbol.iterator ](): IterableIterator<ListIteratorValue> {
@@ -216,42 +216,42 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
 	}
 
 	public next(): IteratorResult<ListIteratorValue> {
-		if ( !isListItemBlock( this.node ) ) {
+		if ( !isListItemBlock( this._node ) ) {
 			return { done: true, value: undefined };
 		}
 
 		let nodeIndent = null;
 		let previousNodeInList: ListElement | null = null;
 
-		if ( this.previous ) {
-			nodeIndent = this.node.getAttribute( 'listIndent' );
-			const previousNodeIndent = this.previousNodeIndent!;
+		if ( this._previous ) {
+			nodeIndent = this._node.getAttribute( 'listIndent' );
+			const previousNodeIndent = this._previousNodeIndent!;
 
 			// Let's find previous node for the same indent.
 			// We're going to need that when we get back to previous indent.
 			if ( nodeIndent > previousNodeIndent ) {
-				this.previousNodesByIndent[ previousNodeIndent ] = this.previous;
+				this._previousNodesByIndent[ previousNodeIndent ] = this._previous;
 			}
 			// Restore the one for given indent.
 			else if ( nodeIndent < previousNodeIndent ) {
-				previousNodeInList = this.previousNodesByIndent[ nodeIndent ];
-				this.previousNodesByIndent.length = nodeIndent;
+				previousNodeInList = this._previousNodesByIndent[ nodeIndent ];
+				this._previousNodesByIndent.length = nodeIndent;
 			}
 			// Same indent.
 			else {
-				previousNodeInList = this.previous;
+				previousNodeInList = this._previous;
 			}
 		}
 
 		const value = {
-			node: this.node,
-			previous: this.previous,
+			node: this._node,
+			previous: this._previous,
 			previousNodeInList
 		};
 
-		this.previous = this.node as ListElement;
-		this.previousNodeIndent = nodeIndent;
-		this.node = this.isForward ? this.node.nextSibling : this.node.previousSibling;
+		this._previous = this._node as ListElement;
+		this._previousNodeIndent = nodeIndent;
+		this._node = this._isForward ? this._node.nextSibling : this._node.previousSibling;
 
 		return { value, done: false };
 	}
