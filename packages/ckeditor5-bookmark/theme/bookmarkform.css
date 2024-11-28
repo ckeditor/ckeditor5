@@ -5,84 +5,24 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-:root {
-	--ck-bookmark-panel-width: 340px;
-	--ck-bookmark-list-view-max-height: 240px;
-	--ck-bookmark-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
-}
-
-.ck.ck-bookmark-view {
-	&:focus {
-		outline: none;
-	}
-}
-
 .ck.ck-bookmark__panel {
-	width: var(--ck-bookmark-panel-width);
-
-	&:focus {
-		outline: none;
-	}
-
-	/* Header */
-	& .ck-form__header {
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-
-		& > .ck:not(:first-child) {
-			margin-left: var(--ck-spacing-small);
-		}
-	}
-
 	/* Form */
 	& .ck-responsive-form.ck-bookmark__form {
 		display: flex;
 		flex-direction: column;
 
-		& > * {
-			margin: 0;
-
-			@mixin ck-media-phone {
-				margin: var(--ck-spacing-large) var(--ck-spacing-medium)  var(--ck-spacing-medium)  var(--ck-spacing-medium);
-			}
-		}
-
-		& > .ck:not(:first-child) {
-			margin-top: var(--ck-spacing-large);
-		}
-
-		& .ck-labeled-field-view {
-			flex-grow: 1;
-
-			& input {
-				width: 100%;
-			}
-		}
-
-		/* "Bookmark" input field and the "Update" button */
-		& .ck-bookmark-and-submit {
+		/* "Bookmark" input field and the "Save" button */
+		& .ck-input-and-submit {
 			display: flex;
+			align-items: flex-start;
 
 			& > .ck-labeled-field-view {
-				flex: 1;
-			}
-
-			& .ck-button-action {
-				padding: var(--ck-spacing-tiny) var(--ck-spacing-large);
-				margin-left: var(--ck-spacing-medium);
-				height: 30px;
+				flex-grow: 1;
 			}
 
 			@mixin ck-media-phone {
 				flex-direction: column;
-
-				& > .ck {
-					margin: 0;
-				}
-
-				& .ck-button-action {
-					margin-top: var(--ck-spacing-large);
-					justify-content: center;
-				}
+				align-items: stretch;
 			}
 		}
 	}

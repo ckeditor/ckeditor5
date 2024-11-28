@@ -228,7 +228,7 @@ export default class BookmarkFormView extends View {
 		resizeInputAndSubmit.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-bookmark-and-submit' ]
+				class: [ 'ck', 'ck-input-and-submit' ]
 			},
 			children: [
 				this.idInputView,
