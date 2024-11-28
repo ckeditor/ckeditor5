@@ -114,7 +114,7 @@ export default class ListWalker {
 	public* [ Symbol.iterator ](): Iterator<ListElement> {
 		const nestedItems: Array<ListElement> = [];
 
-		for ( const { node } of iterateSiblingListBlocks( this._getStartNode(), this._isForward ? 'forward' : 'backward' ) ) {
+		for ( const { node } of new SiblingListBlocksIterator( this._getStartNode(), this._isForward ? 'forward' : 'backward' ) ) {
 			const indent = node.getAttribute( 'listIndent' );
 
 			// Leaving a nested list.
@@ -191,47 +191,63 @@ export default class ListWalker {
 
 /**
  * Iterates sibling list blocks starting from the given node.
- *
- * @internal
- * @param node The model node.
- * @param direction Iteration direction.
- * @returns The object with `node` and `previous` {@link module:engine/model/element~Element blocks}.
  */
-export function* iterateSiblingListBlocks(
-	node: Node | null,
-	direction: 'forward' | 'backward' = 'forward'
-): IterableIterator<ListIteratorValue> {
-	const isForward = direction == 'forward';
-	const previousNodesByIndent: Array<ListElement> = []; // Last seen nodes of lower indented lists.
-	let previous = null;
+export class SiblingListBlocksIterator implements IterableIterator<ListIteratorValue> {
+	private node: Node | null;
+	private isForward: boolean;
+	private previousNodesByIndent: Array<ListElement> = [];
+	private previous: ListElement | null = null;
+	private previousNodeIndent: number | null = null;
 
-	while ( isListItemBlock( node ) ) {
-		let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
+	/**
+	 * @param node The model node.
+	 * @param direction Iteration direction.
+	 */
+	constructor(
+		node: Node | null,
+		direction: 'forward' | 'backward' = 'forward'
+	) {
+		this.node = node;
+		this.isForward = direction === 'forward';
+	}
 
-		if ( previous ) {
-			const nodeIndent = node.getAttribute( 'listIndent' );
-			const previousNodeIndent = previous.getAttribute( 'listIndent' );
+	public [ Symbol.iterator ](): IterableIterator<ListIteratorValue> {
+		return this;
+	}
 
-			// Let's find previous node for the same indent.
-			// We're going to need that when we get back to previous indent.
+	public next(): IteratorResult<ListIteratorValue> {
+		if ( !isListItemBlock( this.node ) ) {
+			return { done: true, value: undefined };
+		}
+
+		let nodeIndent = null;
+		let previousNodeInList: ListElement | null = null;
+
+		if ( this.previous ) {
+			nodeIndent = this.node.getAttribute( 'listIndent' ) as number;
+			const previousNodeIndent = this.previousNodeIndent!;
+
 			if ( nodeIndent > previousNodeIndent ) {
-				previousNodesByIndent[ previousNodeIndent ] = previous;
-			}
-			// Restore the one for given indent.
-			else if ( nodeIndent < previousNodeIndent ) {
-				previousNodeInList = previousNodesByIndent[ nodeIndent ];
-				previousNodesByIndent.length = nodeIndent;
-			}
-			// Same indent.
-			else {
-				previousNodeInList = previous;
+				this.previousNodesByIndent[ previousNodeIndent ] = this.previous;
+			} else if ( nodeIndent < previousNodeIndent ) {
+				previousNodeInList = this.previousNodesByIndent[ nodeIndent ];
+				this.previousNodesByIndent.length = nodeIndent;
+			} else {
+				previousNodeInList = this.previous;
 			}
 		}
 
-		yield { node, previous, previousNodeInList };
+		const value = {
+			node: this.node,
+			previous: this.previous,
+			previousNodeInList
+		};
 
-		previous = node;
-		node = isForward ? node.nextSibling : node.previousSibling;
+		this.previous = this.node as ListElement;
+		this.previousNodeIndent = nodeIndent;
+		this.node = this.isForward ? this.node.nextSibling : this.node.previousSibling;
+
+		return { value, done: false };
 	}
 }
 
@@ -256,12 +272,12 @@ export class ListBlocksIterable {
 	 * Iterates over all blocks of a list.
 	 */
 	public [ Symbol.iterator ](): Iterator<ListIteratorValue> {
-		return iterateSiblingListBlocks( this._listHead, 'forward' );
+		return new SiblingListBlocksIterator( this._listHead );
 	}
 }
 
 /**
- * Object returned by `iterateSiblingListBlocks()` when traversing a list.
+ * Object returned by `SiblingListBlocksIterator` when traversing a list.
  *
  * @internal
  */
