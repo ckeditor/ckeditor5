@@ -537,7 +537,8 @@
 				"link": "features/collaboration",
 				"name": "Asynchronous collaboration",
 				"isPremium": true,
-				"description": "Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration."
+				"description": "Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.",
+				"shortDescription": "Work collaboratively with team members asynchronously using Track Changes, Comments, and Revision History."
 			},
 			{
 				"id": "local-data-storage",
@@ -545,7 +546,8 @@
 				"link": "features/collaboration",
 				"name": "Local data storage",
 				"isPremium": true,
-				"description": "In asynchronous collaboration, data is maintained on the client's servers."
+				"description": "In asynchronous collaboration, data is maintained on the client's servers.",
+				"shortDescription": "Store collaborative data on local client servers for security and control."
 			},
 			{
 				"id": "comments",
@@ -553,7 +555,8 @@
 				"link": "features/comments",
 				"name": "Comments",
 				"isPremium": true,
-				"description": "Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion."
+				"description": "Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.",
+				"shortDescription": "Add, discuss, and resolve comments for seamless content collaboration."
 			},
 			{
 				"id": "comments-archive",
@@ -561,7 +564,8 @@
 				"link": "features/comments",
 				"name": "Comments archive",
 				"isPremium": true,
-				"description": "Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process."
+				"description": "Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.",
+				"shortDescription": "Archive resolved comments for streamlined feedback management and future reference."
 			},
 			{
 				"id": "comments-outside-editor",
@@ -569,7 +573,8 @@
 				"link": "features/comments-outside-editor",
 				"name": "Comments outside editor",
 				"isPremium": true,
-				"description": "The comments feature API, together with <code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields."
+				"description": "The comments feature API, together with <code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.",
+				"shortDescription": "Extend comment functionality to non-editor fields for enhanced application integration."
 			},
 			{
 				"id": "sidebar-modes",
@@ -577,14 +582,16 @@
 				"link": "features/annotations-display-mode",
 				"name": "Sidebar modes",
 				"isPremium": true,
-				"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations."
+				"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.",
+				"shortDescription": "Choose between wide, narrow, or inline UIs to display annotations and comments."
 			},
 			{
 				"id": "mentions",
 				"type": "feature",
 				"link": "features/mentions",
 				"name": "Mentions",
-				"description": "The mention feature supports smart autocompletion triggered by user input. Typing a predetermined marker, like @ or #, prompts a panel to appear, offering autocomplete suggestions."
+				"description": "The mention feature supports smart autocompletion triggered by user input. Typing a predetermined marker, like @ or #, prompts a panel to appear, offering autocomplete suggestions.",
+				"shortDescription": "Notify and tag users in content using smart autocompletion with @mentions."
 			},
 			{
 				"id": "real-time-collaboration",
@@ -592,7 +599,8 @@
 				"link": "features/real-time-collaboration",
 				"name": "Real-time collaboration",
 				"isPremium": true,
-				"description": "Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time."
+				"description": "Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.",
+				"shortDescription": "Collaborate in real-time with automatic conflict resolution for seamless teamwork."
 			},
 			{
 				"id": "co-authoring",
@@ -600,7 +608,8 @@
 				"link": "features/users-in-real-time-collaboration",
 				"name": "Co-authoring",
 				"isPremium": true,
-				"description": "Multiple user real-time editing and content creation feature."
+				"description": "Multiple user real-time editing and content creation feature.",
+				"shortDescription": "Edit and create content simultaneously with multiple users in real time."
 			},
 			{
 				"id": "on-premises",
@@ -608,7 +617,8 @@
 				"link": "@cs",
 				"name": "onpremises/index On-premises",
 				"isPremium": true,
-				"description": "On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud."
+				"description": "On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.",
+				"shortDescription": "Deploy real-time collaboration on your infrastructure for full control and privacy."
 			},
 			{
 				"id": "saas",
@@ -616,7 +626,8 @@
 				"link": "@cs",
 				"name": "guides/collaboration/quick-start SaaS",
 				"isPremium": true,
-				"description": "Real-time collaboration provided as a service by CKSource."
+				"description": "Real-time collaboration provided as a service by CKSource.",
+				"shortDescription": "Access real-time collaboration as a cloud service managed by CKSource."
 			},
 			{
 				"id": "revision-history",
@@ -624,7 +635,8 @@
 				"link": "features/revision-history",
 				"name": "Revision history",
 				"isPremium": true,
-				"description": "The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go."
+				"description": "The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.",
+				"shortDescription": "Track, compare, and restore document versions with detailed revision history."
 			},
 			{
 				"id": "track-changes",
@@ -632,7 +644,8 @@
 				"link": "features/track-changes",
 				"name": "Track changes",
 				"isPremium": true,
-				"description": "The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard."
+				"description": "The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard.",
+				"shortDescription": "Monitor and manage document edits with automatic suggestion tracking."
 			},
 			{
 				"id": "users-list-and-permissions",
@@ -640,7 +653,8 @@
 				"link": "features/users",
 				"name": "Users list and permissions",
 				"isPremium": true,
-				"description": "The <code>{@link module:collaboration-core/users~Users}</code> plugin and related plugins let you manage user data and permissions. This is essential when many users are working on the same document."
+				"description": "The <code>{@link module:collaboration-core/users~Users}</code> plugin and related plugins let you manage user data and permissions. This is essential when many users are working on the same document.",
+				"shortDescription": "Manage user roles and permissions for secure, collaborative editing."
 			}
 		]
 	},
