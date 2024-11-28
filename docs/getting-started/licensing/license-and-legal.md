@@ -38,7 +38,7 @@ The commercial license unlocks many benefits:
 * White-labeling
 * Technical support
 
-[Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/signup).
+[Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
 
 ## Sources of intellectual property included in CKEditor
 

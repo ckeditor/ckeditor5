@@ -19,7 +19,7 @@ npm install ckeditor5
 
 ## Create free account
 
-If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/signup).
+If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/checkout?plan=free).
 
 ## Demo
 
