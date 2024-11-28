@@ -3,7 +3,7 @@ Changelog
 
 ## [44.0.0](https://github.com/ckeditor/ckeditor5/compare/v43.3.1...v44.0.0) (December 2, 2024)
 
-## Release Highlights
+### Release Highlights
 
 We are excited to introduce CKEditor 5 v44.0.0, a release packed with high impact updates designed to enhance your editing experience and simplify access to our premium offers. Here's what’s new:
 
