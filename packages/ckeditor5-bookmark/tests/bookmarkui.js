@@ -451,12 +451,12 @@ describe( 'BookmarkUI', () => {
 			expect( idInputView.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should bind buttonView #isEnabled to insert and update command', () => {
+		it( 'should bind saveButtonView #isEnabled to insert and update command', () => {
 			const insertBookmark = editor.commands.get( 'insertBookmark' );
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
 			bookmarkUIFeature._showFormView();
-			const buttonView = bookmarkUIFeature.formView.buttonView;
+			const buttonView = bookmarkUIFeature.formView.saveButtonView;
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = true;
@@ -1125,7 +1125,7 @@ describe( 'BookmarkUI', () => {
 				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
 
-				expect( formView.buttonView.label ).to.equal( 'Insert' );
+				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
 			} );
 
 			it( 'should have "Insert" label when bookmark is not selected', () => {
@@ -1136,10 +1136,10 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.buttonView.label ).to.equal( 'Insert' );
+				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
 			} );
 
-			it( 'should have "Update" label when bookmark is selected', () => {
+			it( 'should have "Save" label when bookmark is selected', () => {
 				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
@@ -1147,22 +1147,22 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.buttonView.label ).to.equal( 'Update' );
+				expect( formView.saveButtonView.label ).to.equal( 'Save' );
 			} );
 
-			it( 'should have "Update" label when bookmark already inserted but balloon is not closed.', () => {
+			it( 'should have "Save" label when bookmark already inserted but balloon is not closed.', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 				bookmarkUIFeature._showFormView();
 				formView = bookmarkUIFeature.formView;
 
-				expect( formView.buttonView.label ).to.equal( 'Insert' );
+				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
 
 				formView.idInputView.fieldView.value = 'new_id';
 
 				formView.fire( 'submit' );
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.buttonView.label ).to.equal( 'Update' );
+				expect( formView.saveButtonView.label ).to.equal( 'Save' );
 			} );
 		} );
 	} );
@@ -1236,6 +1236,15 @@ describe( 'BookmarkUI', () => {
 			expect( () => {
 				bookmarkUIFeature._hideFormView();
 			} ).to.not.throw();
+		} );
+
+		it( 'should be called when the back button is clicked', () => {
+			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+
+			bookmarkUIFeature._showFormView();
+			formView.backButtonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
