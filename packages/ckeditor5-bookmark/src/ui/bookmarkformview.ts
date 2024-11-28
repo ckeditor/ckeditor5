@@ -113,6 +113,12 @@ export default class BookmarkFormView extends View {
 			this._createFormView()
 		] );
 
+		// Close the panel on esc key press when the **form has focus**.
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<BookmarkFormViewCancelEvent>( 'cancel' );
+			cancel();
+		} );
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,

@@ -226,12 +226,6 @@ export default class BookmarkUI extends Plugin {
 			editor.ui.update();
 		} );
 
-		// Close the panel on esc key press when the **form has focus**.
-		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hideFormView();
-			cancel();
-		} );
-
 		return formView;
 	}
 
