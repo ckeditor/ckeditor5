@@ -25,10 +25,6 @@ import {
 } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
 
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-
 /**
  * The link properties view controller class.
  *
