@@ -227,7 +227,7 @@ export default class LinkBookmarksView extends View {
 		const backButton = new ButtonView( this.locale );
 
 		backButton.set( {
-			label: t( 'Cancel' ),
+			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
 		} );

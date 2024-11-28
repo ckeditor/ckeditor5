@@ -100,6 +100,13 @@ describe( 'LinkFormView', () => {
 				expect( headerChildren.get( 0 ) ).to.equal( view.backButtonView );
 				expect( formChildren.last.template.children[ 1 ] ).to.equal( view.saveButtonView );
 			} );
+
+			it( 'should `backButtonView` has correct label', () => {
+				const headerChildren = view.template.children[ 0 ].get( 0 ).template.children[ 0 ];
+				const backButton = headerChildren.get( 0 );
+
+				expect( backButton.template.children[ 0 ].get( 1 ).text ).to.equal( 'Back' );
+			} );
 		} );
 	} );
 
