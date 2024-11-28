@@ -100,11 +100,11 @@ export default class BookmarkFormView extends View {
 
 		this._validators = validators;
 
-		// Create buttons
+		// Create buttons.
 		this.backButtonView = this._createBackButton();
 		this.saveButtonView = this._createSaveButton();
 
-		// Create input fields
+		// Create input fields.
 		this.idInputView = this._createIdInput();
 		this.formChildren = this._createFormChildren();
 
@@ -248,7 +248,7 @@ export default class BookmarkFormView extends View {
 	}
 
 	/**
-	 * Creates a form view for the image resize form.
+	 * Creates a form view for the bookmark form.
 	 */
 	private _createFormView(): View {
 		const form = new View( this.locale );
