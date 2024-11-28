@@ -294,7 +294,6 @@ export default class BookmarkFormView extends View {
 
 		saveButton.set( {
 			label: t( 'Save' ),
-			tooltip: true,
 			withText: true,
 			type: 'submit',
 			class: 'ck-button-action ck-button-bold'
