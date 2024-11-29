@@ -42,13 +42,12 @@ const __dirname = upath.dirname( __filename );
 } )();
 
 function generateCapability( capability ) {
-	return `<section class="capability">
-	<h2>${ capability.name }</h2>
-	<p class="description">${ capability.description }</p>
-	<div class="features-list">
-		${ capability.features.map( feature => generateFeature( feature ) ).join( '\n' ) }
-	</div>
-</section>`;
+	return `
+## ${ capability.name }
+<p class="description">${ capability.description }</p>
+<div class="features-list">
+	${ capability.features.map( feature => generateFeature( feature ) ).join( '\n' ) }
+</div>`;
 }
 
 function generateFeature( feature, isSubFeature = false ) {
