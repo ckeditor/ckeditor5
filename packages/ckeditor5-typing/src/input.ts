@@ -25,7 +25,8 @@ import {
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
-	type ViewDocumentMutationsEvent
+	type ViewDocumentMutationsEvent,
+	type ViewDocumentInputEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce } from 'lodash-es';
@@ -74,11 +75,13 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
+		this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', () => {
 			// Flush queue on the next beforeinput event because it could happen
 			// that the mutation observer does not notice the DOM change in time.
 			this._compositionQueue.flush( 'next beforeinput' );
+		}, { priority: 'high' } );
 
+		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			const { text, selection: viewSelection } = data;
 
 			let modelRanges;
