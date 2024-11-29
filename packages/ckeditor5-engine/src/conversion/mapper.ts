@@ -12,7 +12,6 @@ import ModelRange from '../model/range.js';
 
 import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
-import ViewText from '../view/text.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -556,25 +555,32 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns Length of the node in the tree model.
 	 */
 	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
-		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
-			const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
+		const stack = [ viewNode ];
+		let len = 0;
 
-			return callback( viewNode as ViewElement );
-		} else if ( this._viewToModelMapping.has( viewNode as ViewElement ) ) {
-			return 1;
-		} else if ( viewNode.is( '$text' ) ) {
-			return viewNode.data.length;
-		} else if ( viewNode.is( 'uiElement' ) ) {
-			return 0;
-		} else {
-			let len = 0;
+		while ( stack.length > 0 ) {
+			const node = stack.pop()!;
 
-			for ( const child of ( viewNode as ViewElement ).getChildren() ) {
-				len += this.getModelLength( child );
+			const callback = ( node as any ).name &&
+				this._viewToModelLengthCallbacks.size > 0 &&
+				this._viewToModelLengthCallbacks.get( ( node as any ).name );
+
+			if ( callback ) {
+				len += callback( node as ViewElement );
+			} else if ( this._viewToModelMapping.has( node as ViewElement ) ) {
+				len += 1;
+			} else if ( node.is( '$text' ) ) {
+				len += node.data.length;
+			} else if ( node.is( 'uiElement' ) ) {
+				continue;
+			} else {
+				for ( const child of ( node as ViewElement ).getChildren() ) {
+					stack.push( child );
+				}
 			}
-
-			return len;
 		}
+
+		return len;
 	}
 
 	/**
@@ -658,9 +664,9 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		const nodeBefore = viewPosition.nodeBefore;
 		const nodeAfter = viewPosition.nodeAfter;
 
-		if ( nodeBefore instanceof ViewText ) {
+		if ( nodeBefore && nodeBefore.is( 'view:$text' ) ) {
 			return new ViewPosition( nodeBefore, nodeBefore.data.length );
-		} else if ( nodeAfter instanceof ViewText ) {
+		} else if ( nodeAfter && nodeAfter.is( 'view:$text' ) ) {
 			return new ViewPosition( nodeAfter, 0 );
 		}
 
