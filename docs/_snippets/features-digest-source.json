@@ -9,55 +9,57 @@
 				"link": "features/general-html-support",
 				"name": "Advanced HTML Editing",
 				"description": "Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.",
-				"shortDescription": "Edit and customize HTML elements, attributes, and styles with full control."
-			},
-			{
-				"id": "full-page-html",
-				"type": "subfeature",
-				"link": "features/full-page-html",
-				"name": "Full page HTML",
-				"description": "Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from <code>&lt;html&gt;</code> to <code>&lt;/html&gt;</code>), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's <code>&lt;body&gt;</code>), this feature enables markup invisible to the end user.",
-				"shortDescription": "Edit entire HTML documents, including metadata, beyond visible content."
-			},
-			{
-				"id": "general-html-support",
-				"type": "subfeature",
-				"link": "features/general-html-support",
-				"name": "General HTML Support (GHS)",
-				"description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.",
-				"shortDescription": "Enable unsupported HTML elements, attributes, and styles in the editor."
-			},
-			{
-				"id": "html-comment",
-				"type": "subfeature",
-				"link": "features/html-comments",
-				"name": "HTML comment",
-				"description": "By default, the editor filters out all HTML comments on initialization. The <code>{@link features/html-comments HTML comment}</code> feature lets developers keep HTML comments in the document without displaying them to the user.",
-				"shortDescription": "Keep HTML comments in your document without displaying them to users."
-			},
-			{
-				"id": "html-embed",
-				"type": "subfeature",
-				"link": "features/html-embed",
-				"name": "HTML embed",
-				"description": "The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.",
-				"shortDescription": "Embed custom HTML snippets directly into your content."
-			},
-			{
-				"id": "show-blocks",
-				"type": "subfeature",
-				"link": "features/show-blocks",
-				"name": "Show blocks",
-				"description": "The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.",
-				"shortDescription": "Visualize and outline all block-level elements in your content."
-			},
-			{
-				"id": "source-editing",
-				"type": "subfeature",
-				"link": "features/source-editing",
-				"name": "Source editing",
-				"description": "The source editing feature lets you view and edit the source of your document.",
-				"shortDescription": "View and edit the source code of your document."
+				"shortDescription": "Edit and customize HTML elements, attributes, and styles with full control.",
+				"subFeatures": [
+					{
+						"id": "full-page-html",
+						"type": "subFeature",
+						"link": "features/full-page-html",
+						"name": "Full page HTML",
+						"description": "Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from <code>&lt;html&gt;</code> to <code>&lt;/html&gt;</code>), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's <code>&lt;body&gt;</code>), this feature enables markup invisible to the end user.",
+						"shortDescription": "Edit entire HTML documents, including metadata, beyond visible content."
+					},
+					{
+						"id": "general-html-support",
+						"type": "subFeature",
+						"link": "features/general-html-support",
+						"name": "General HTML Support (GHS)",
+						"description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.",
+						"shortDescription": "Enable unsupported HTML elements, attributes, and styles in the editor."
+					},
+					{
+						"id": "html-comment",
+						"type": "subFeature",
+						"link": "features/html-comments",
+						"name": "HTML comment",
+						"description": "By default, the editor filters out all HTML comments on initialization. The <code>{@link features/html-comments HTML comment}</code> feature lets developers keep HTML comments in the document without displaying them to the user.",
+						"shortDescription": "Keep HTML comments in your document without displaying them to users."
+					},
+					{
+						"id": "html-embed",
+						"type": "subFeature",
+						"link": "features/html-embed",
+						"name": "HTML embed",
+						"description": "The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.",
+						"shortDescription": "Embed custom HTML snippets directly into your content."
+					},
+					{
+						"id": "show-blocks",
+						"type": "subFeature",
+						"link": "features/show-blocks",
+						"name": "Show blocks",
+						"description": "The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.",
+						"shortDescription": "Visualize and outline all block-level elements in your content."
+					},
+					{
+						"id": "source-editing",
+						"type": "subFeature",
+						"link": "features/source-editing",
+						"name": "Source editing",
+						"description": "The source editing feature lets you view and edit the source of your document.",
+						"shortDescription": "View and edit the source code of your document."
+					}
+				]
 			},
 			{
 				"id": "block-formatting",
@@ -65,39 +67,41 @@
 				"link": "features/block-quote",
 				"name": "Block formatting",
 				"description": "Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.",
-				"shortDescription": "Organize and emphasize content with headings, block quotes, and horizontal lines."
-			},
-			{
-				"id": "block-quotes",
-				"type": "subfeature",
-				"link": "features/block-quote",
-				"name": "Block quote",
-				"description": "The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.",
-				"shortDescription": "Add visually distinct block quotes to emphasize key excerpts."
-			},
-			{
-				"id": "headings-paragraph",
-				"type": "subfeature",
-				"link": "features/headings",
-				"name": "Headings/paragraph",
-				"description": "The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.",
-				"shortDescription": "Structure content with headings for better readability and hierarchy."
-			},
-			{
-				"id": "horizontal-line",
-				"type": "subfeature",
-				"link": "features/horizontal-line",
-				"name": "Horizontal line",
-				"description": "The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.",
-				"shortDescription": "Insert horizontal lines to divide content or indicate topic changes."
-			},
-			{
-				"id": "block-indentation",
-				"type": "subfeature",
-				"link": "features/indent",
-				"name": "Block indentation",
-				"description": "The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.",
-				"shortDescription": "Adjust text block indentation for better content structure."
+				"shortDescription": "Organize and emphasize content with headings, block quotes, and horizontal lines.",
+				"subFeatures": [
+					{
+						"id": "block-quotes",
+						"type": "subFeature",
+						"link": "features/block-quote",
+						"name": "Block quote",
+						"description": "The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.",
+						"shortDescription": "Add visually distinct block quotes to emphasize key excerpts."
+					},
+					{
+						"id": "headings-paragraph",
+						"type": "subFeature",
+						"link": "features/headings",
+						"name": "Headings/paragraph",
+						"description": "The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.",
+						"shortDescription": "Structure content with headings for better readability and hierarchy."
+					},
+					{
+						"id": "horizontal-line",
+						"type": "subFeature",
+						"link": "features/horizontal-line",
+						"name": "Horizontal line",
+						"description": "The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.",
+						"shortDescription": "Insert horizontal lines to divide content or indicate topic changes."
+					},
+					{
+						"id": "block-indentation",
+						"type": "subFeature",
+						"link": "features/indent",
+						"name": "Block indentation",
+						"description": "The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.",
+						"shortDescription": "Adjust text block indentation for better content structure."
+					}
+				]
 			},
 			{
 				"id": "bookmark",
@@ -137,111 +141,115 @@
 				"link": "features/font",
 				"name": "Font formatting",
 				"description": "The font feature lets you change font family, size, and color (including background color). All of these options are configurable.",
-				"shortDescription": "Customize font family, size, and color for tailored text presentation."
-			},
-			{
-				"id": "font-background-color",
-				"type": "subfeature",
-				"link": "features/font#configuring-the-font-color-and-font-background-color-features",
-				"name": "Font background color",
-				"description": "Effortlessly make the words stand out even more with a colored background.",
-				"shortDescription": "Highlight text with a colored background for emphasis."
-			},
-			{
-				"id": "font-color",
-				"type": "subfeature",
-				"link": "features/font#configuring-the-font-color-and-font-background-color-features",
-				"name": "Font color",
-				"description": "Effortlessly make the letters stand out with their own color.",
-				"shortDescription": "Apply custom colors to text for improved readability or style."
-			},
-			{
-				"id": "font-family",
-				"type": "subfeature",
-				"link": "features/font#configuring-the-font-family-feature",
-				"name": "Font family",
-				"description": "Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.",
-				"shortDescription": "Choose suitable font families for your content needs."
-			},
-			{
-				"id": "font-size",
-				"type": "subfeature",
-				"link": "features/font#configuring-the-font-size-feature",
-				"name": "Font size",
-				"description": "Easily control the size of the letters.",
-				"shortDescription": "Adjust font size for better readability and emphasis."
+				"shortDescription": "Customize font family, size, and color for tailored text presentation.",
+				"subFeatures": [
+					{
+						"id": "font-background-color",
+						"type": "subFeature",
+						"link": "features/font#configuring-the-font-color-and-font-background-color-features",
+						"name": "Font background color",
+						"description": "Effortlessly make the words stand out even more with a colored background.",
+						"shortDescription": "Highlight text with a colored background for emphasis."
+					},
+					{
+						"id": "font-color",
+						"type": "subFeature",
+						"link": "features/font#configuring-the-font-color-and-font-background-color-features",
+						"name": "Font color",
+						"description": "Effortlessly make the letters stand out with their own color.",
+						"shortDescription": "Apply custom colors to text for improved readability or style."
+					},
+					{
+						"id": "font-family",
+						"type": "subFeature",
+						"link": "features/font#configuring-the-font-family-feature",
+						"name": "Font family",
+						"description": "Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.",
+						"shortDescription": "Choose suitable font families for your content needs."
+					},
+					{
+						"id": "font-size",
+						"type": "subFeature",
+						"link": "features/font#configuring-the-font-size-feature",
+						"name": "Font size",
+						"description": "Easily control the size of the letters.",
+						"shortDescription": "Adjust font size for better readability and emphasis."
+					}
+				]
 			},
 			{
 				"id": "image",
 				"type": "feature",
 				"link": "features/images-overview",
 				"name": "Image",
-				"description": "The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subfeature background-grays lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.",
-				"shortDescription": "Add, style, and manage images with captions, resizing, and linking options."
-			},
-			{
-				"id": "image-all-text",
-				"type": "subfeature",
-				"link": "features/images-text-alternative",
-				"name": "Image alt text",
-				"description": "Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.",
-				"shortDescription": "Add alt text to images for accessibility and SEO improvements."
-			},
-			{
-				"id": "image-captions",
-				"type": "subfeature",
-				"link": "features/images-captions",
-				"name": "Image captions",
-				"description": "Add optional captions for images, which are shown below the picture.",
-				"shortDescription": "Add captions below images to provide context."
-			},
-			{
-				"id": "image-insert-via-url",
-				"type": "subfeature",
-				"link": "features/images-inserting",
-				"name": "Image insert via URL",
-				"description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.",
-				"shortDescription": "Insert images directly using their URLs."
-			},
-			{
-				"id": "image-linking",
-				"type": "subfeature",
-				"link": "features/images-linking",
-				"name": "Image linking",
-				"description": "The <code>{@link module:link/linkimage~LinkImage}</code> plugin lets you use images as links.",
-				"shortDescription": "Turn images into clickable links for interactive content."
-			},
-			{
-				"id": "image-resize",
-				"type": "subfeature",
-				"link": "features/images-resizing",
-				"name": "Image resize",
-				"description": "The image resize feature lets you change the width of images in your content. It is implemented by the <code>{@link module:image/imageresize~ImageResize}</code> plugin.",
-				"shortDescription": "Easily resize images for better content fit."
-			},
-			{
-				"id": "image-styles",
-				"type": "subfeature",
-				"link": "features/images-styles",
-				"name": "Image styles",
-				"description": "The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.",
-				"shortDescription": "Apply custom styles and alignments to images."
-			},
-			{
-				"id": "image-upload",
-				"type": "subfeature",
-				"link": "features/image-upload",
-				"name": "Image upload",
-				"description": "Inserting <code>{@link features/images-overview images}</code> into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.",
-				"shortDescription": "Upload images directly from your device to the editor."
-			},
-			{
-				"id": "responsive-images",
-				"type": "subfeature",
-				"link": "features/images-responsive",
-				"name": "Responsive images",
-				"description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the <code>{@link features/ckbox CKBox asset manager}</code>. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a <code>&lt;picture&gt;</code> element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
-				"shortDescription": "Automatically optimize images for different screen sizes."
+				"description": "The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subFeature background-grays lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.",
+				"shortDescription": "Add, style, and manage images with captions, resizing, and linking options.",
+				"subFeatures": [
+					{
+						"id": "image-all-text",
+						"type": "subFeature",
+						"link": "features/images-text-alternative",
+						"name": "Image alt text",
+						"description": "Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.",
+						"shortDescription": "Add alt text to images for accessibility and SEO improvements."
+					},
+					{
+						"id": "image-captions",
+						"type": "subFeature",
+						"link": "features/images-captions",
+						"name": "Image captions",
+						"description": "Add optional captions for images, which are shown below the picture.",
+						"shortDescription": "Add captions below images to provide context."
+					},
+					{
+						"id": "image-insert-via-url",
+						"type": "subFeature",
+						"link": "features/images-inserting",
+						"name": "Image insert via URL",
+						"description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.",
+						"shortDescription": "Insert images directly using their URLs."
+					},
+					{
+						"id": "image-linking",
+						"type": "subFeature",
+						"link": "features/images-linking",
+						"name": "Image linking",
+						"description": "The <code>{@link module:link/linkimage~LinkImage}</code> plugin lets you use images as links.",
+						"shortDescription": "Turn images into clickable links for interactive content."
+					},
+					{
+						"id": "image-resize",
+						"type": "subFeature",
+						"link": "features/images-resizing",
+						"name": "Image resize",
+						"description": "The image resize feature lets you change the width of images in your content. It is implemented by the <code>{@link module:image/imageresize~ImageResize}</code> plugin.",
+						"shortDescription": "Easily resize images for better content fit."
+					},
+					{
+						"id": "image-styles",
+						"type": "subFeature",
+						"link": "features/images-styles",
+						"name": "Image styles",
+						"description": "The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.",
+						"shortDescription": "Apply custom styles and alignments to images."
+					},
+					{
+						"id": "image-upload",
+						"type": "subFeature",
+						"link": "features/image-upload",
+						"name": "Image upload",
+						"description": "Inserting <code>{@link features/images-overview images}</code> into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.",
+						"shortDescription": "Upload images directly from your device to the editor."
+					},
+					{
+						"id": "responsive-images",
+						"type": "subFeature",
+						"link": "features/images-responsive",
+						"name": "Responsive images",
+						"description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the <code>{@link features/ckbox CKBox asset manager}</code>. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a <code>&lt;picture&gt;</code> element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
+						"shortDescription": "Automatically optimize images for different screen sizes."
+					}
+				]
 			},
 			{
 				"id": "links",
@@ -257,80 +265,82 @@
 				"link": "features/lists",
 				"name": "Lists",
 				"description": "Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.",
-				"shortDescription": "Create to-do, bulleted, and numbered lists with customizable styles."
-			},
-			{
-				"id": "list-indentation",
-				"type": "subfeature",
-				"link": "features/lists-editing#indenting-lists",
-				"name": "List indentation",
-				"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).",
-				"shortDescription": "Control list item indentation for nested lists."
-			},
-			{
-				"id": "list-start-index",
-				"type": "subfeature",
-				"link": "features/lists#list-start-index",
-				"name": "List start index",
-				"description": "The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.",
-				"shortDescription": "Set custom start numbers for ordered lists."
-			},
-			{
-				"id": "list-styles",
-				"type": "subfeature",
-				"link": "features/lists#list-styles",
-				"name": "List styles",
-				"description": "The list style feature introduces some more styles for the list item markers. When <code>{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled}</code>, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.",
-				"shortDescription": "Customize list markers for unique styles."
-			},
-			{
-				"id": "multi-level-lists",
-				"type": "subfeature",
-				"link": "features/multi-level-lists",
-				"name": "Multi-level lists",
-				"isPremium": true,
-				"description": "Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.",
-				"shortDescription": "Create hierarchical multi-level lists with numbering."
-			},
-			{
-				"id": "nested-lists",
-				"type": "subfeature",
-				"link": "features/lists-editing#indenting-lists",
-				"name": "Nested lists",
-				"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).",
-				"shortDescription": "Easily create nested lists for complex content."
-			},
-			{
-				"id": "ordered-lists",
-				"type": "subfeature",
-				"link": "features/lists",
-				"name": "Ordered lists",
-				"description": "The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.",
-				"shortDescription": "Add structured ordered lists with flexible formatting options."
-			},
-			{
-				"id": "reversed-list",
-				"type": "subfeature",
-				"link": "features/lists#reversed-list",
-				"name": "Reversed list",
-				"description": "The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).",
-				"shortDescription": "Reverse list numbering for countdowns or steps."
-			},
-			{
-				"id": "to-do-lists",
-				"type": "subfeature",
-				"link": "features/todo-lists",
-				"name": "To-do lists",
-				"description": "The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of <code>{@link features/lists bulleted and numbered lists}</code>, so you can nest a to-do list together with any combination of other lists.",
-				"shortDescription": "Create interactive to-do lists with checkboxes."
-			},
-			{
-				"id": "unordered-lists",
-				"type": "subfeature",
-				"link": "features/lists",
-				"name": "Unordered lists",
-				"description": "The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.",
-				"shortDescription": "Add unordered lists with customizable markers."
+				"shortDescription": "Create to-do, bulleted, and numbered lists with customizable styles.",
+				"subFeatures": [
+					{
+						"id": "list-indentation",
+						"type": "subFeature",
+						"link": "features/lists-editing#indenting-lists",
+						"name": "List indentation",
+						"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).",
+						"shortDescription": "Control list item indentation for nested lists."
+					},
+					{
+						"id": "list-start-index",
+						"type": "subFeature",
+						"link": "features/lists#list-start-index",
+						"name": "List start index",
+						"description": "The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.",
+						"shortDescription": "Set custom start numbers for ordered lists."
+					},
+					{
+						"id": "list-styles",
+						"type": "subFeature",
+						"link": "features/lists#list-styles",
+						"name": "List styles",
+						"description": "The list style feature introduces some more styles for the list item markers. When <code>{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled}</code>, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.",
+						"shortDescription": "Customize list markers for unique styles."
+					},
+					{
+						"id": "multi-level-lists",
+						"type": "subFeature",
+						"link": "features/multi-level-lists",
+						"name": "Multi-level lists",
+						"isPremium": true,
+						"description": "Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.",
+						"shortDescription": "Create hierarchical multi-level lists with numbering."
+					},
+					{
+						"id": "nested-lists",
+						"type": "subFeature",
+						"link": "features/lists-editing#indenting-lists",
+						"name": "Nested lists",
+						"description": "Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).",
+						"shortDescription": "Easily create nested lists for complex content."
+					},
+					{
+						"id": "ordered-lists",
+						"type": "subFeature",
+						"link": "features/lists",
+						"name": "Ordered lists",
+						"description": "The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.",
+						"shortDescription": "Add structured ordered lists with flexible formatting options."
+					},
+					{
+						"id": "reversed-list",
+						"type": "subFeature",
+						"link": "features/lists#reversed-list",
+						"name": "Reversed list",
+						"description": "The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).",
+						"shortDescription": "Reverse list numbering for countdowns or steps."
+					},
+					{
+						"id": "to-do-lists",
+						"type": "subFeature",
+						"link": "features/todo-lists",
+						"name": "To-do lists",
+						"description": "The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of <code>{@link features/lists bulleted and numbered lists}</code>, so you can nest a to-do list together with any combination of other lists.",
+						"shortDescription": "Create interactive to-do lists with checkboxes."
+					},
+					{
+						"id": "unordered-lists",
+						"type": "subFeature",
+						"link": "features/lists",
+						"name": "Unordered lists",
+						"description": "The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.",
+						"shortDescription": "Add unordered lists with customizable markers."
+					}
+				]
 			},
 			{
 				"id": "mermaid",
@@ -363,71 +373,73 @@
 				"link": "features/tables",
 				"name": "Tables",
 				"description": "CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.",
-				"shortDescription": "Design and manage tables with advanced editing options."
-			},
-			{
-				"id": "columns-resizing",
-				"type": "subfeature",
-				"link": "features/tables-resize",
-				"name": "Columns resizing",
-				"description": "The <code>{@link module:table/tablecolumnresize~TableColumnResize}</code> plugin lets you resize tables and individual table columns. It gives you complete control over column width.",
-				"shortDescription": "Resize table columns for precise layout control."
-			},
-			{
-				"id": "insert-delete-columns-and-rows",
-				"type": "subfeature",
-				"link": "features/tables#table-contextual-toolbar",
-				"name": "Insert/delete columns & rows",
-				"description": "The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.",
-				"shortDescription": "Easily add or remove table rows and columns."
-			},
-			{
-				"id": "merge-and-split-cells",
-				"type": "subfeature",
-				"link": "features/tables#table-contextual-toolbar",
-				"name": "Merge & split cells",
-				"description": "The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.",
-				"shortDescription": "Merge or split table cells as needed."
-			},
-			{
-				"id": "nesting",
-				"type": "subfeature",
-				"link": "features/tables#nesting-tables",
-				"name": "Nesting",
-				"description": "CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.",
-				"shortDescription": "Nest tables within other tables for complex layouts."
-			},
-			{
-				"id": "styling-tables-and-cells",
-				"type": "subfeature",
-				"link": "features/tables-styling",
-				"name": "Styling tables & cells",
-				"description": "CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.",
-				"shortDescription": "Apply custom styles to tables and individual cells."
-			},
-			{
-				"id": "table-headers",
-				"type": "subfeature",
-				"link": "features/tables#default-table-headers",
-				"name": "Table headers",
-				"description": "To make every inserted table have <code>n</code> number of rows and columns as table headers by default, set an optional table configuration property <code>defaultHeadings</code>.",
-				"shortDescription": "Set default table headers for better structure."
-			},
-			{
-				"id": "table-selection",
-				"type": "subfeature",
-				"link": "features/tables#table-selection",
-				"name": "Table selection",
-				"description": "The <code>{@link module:table/tableselection~TableSelection}</code> plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the <code>Table</code> plugin.",
-				"shortDescription": "Select and format specific table areas easily."
-			},
-			{
-				"id": "tables-caption",
-				"type": "subfeature",
-				"link": "features/tables-caption",
-				"name": "Tables caption",
-				"description": "The <code>{@link module:table/tablecaption~TableCaption}</code> plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.",
-				"shortDescription": "Add captions to tables to improve accessibility."
+				"shortDescription": "Design and manage tables with advanced editing options.",
+				"subFeatures": [
+					{
+						"id": "columns-resizing",
+						"type": "subFeature",
+						"link": "features/tables-resize",
+						"name": "Columns resizing",
+						"description": "The <code>{@link module:table/tablecolumnresize~TableColumnResize}</code> plugin lets you resize tables and individual table columns. It gives you complete control over column width.",
+						"shortDescription": "Resize table columns for precise layout control."
+					},
+					{
+						"id": "insert-delete-columns-and-rows",
+						"type": "subFeature",
+						"link": "features/tables#table-contextual-toolbar",
+						"name": "Insert/delete columns & rows",
+						"description": "The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.",
+						"shortDescription": "Easily add or remove table rows and columns."
+					},
+					{
+						"id": "merge-and-split-cells",
+						"type": "subFeature",
+						"link": "features/tables#table-contextual-toolbar",
+						"name": "Merge & split cells",
+						"description": "The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.",
+						"shortDescription": "Merge or split table cells as needed."
+					},
+					{
+						"id": "nesting",
+						"type": "subFeature",
+						"link": "features/tables#nesting-tables",
+						"name": "Nesting",
+						"description": "CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.",
+						"shortDescription": "Nest tables within other tables for complex layouts."
+					},
+					{
+						"id": "styling-tables-and-cells",
+						"type": "subFeature",
+						"link": "features/tables-styling",
+						"name": "Styling tables & cells",
+						"description": "CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.",
+						"shortDescription": "Apply custom styles to tables and individual cells."
+					},
+					{
+						"id": "table-headers",
+						"type": "subFeature",
+						"link": "features/tables#default-table-headers",
+						"name": "Table headers",
+						"description": "To make every inserted table have <code>n</code> number of rows and columns as table headers by default, set an optional table configuration property <code>defaultHeadings</code>.",
+						"shortDescription": "Set default table headers for better structure."
+					},
+					{
+						"id": "table-selection",
+						"type": "subFeature",
+						"link": "features/tables#table-selection",
+						"name": "Table selection",
+						"description": "The <code>{@link module:table/tableselection~TableSelection}</code> plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the <code>Table</code> plugin.",
+						"shortDescription": "Select and format specific table areas easily."
+					},
+					{
+						"id": "tables-caption",
+						"type": "subFeature",
+						"link": "features/tables-caption",
+						"name": "Tables caption",
+						"description": "The <code>{@link module:table/tablecaption~TableCaption}</code> plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.",
+						"shortDescription": "Add captions to tables to improve accessibility."
+					}
+				]
 			},
 			{
 				"id": "text-alignment",
@@ -443,79 +455,81 @@
 				"link": "features/basic-styles",
 				"name": "Text formatting",
 				"description": "CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.",
-				"shortDescription": "Apply bold, italic, underline, and other formatting styles to text."
-			},
-			{
-				"id": "bold",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Bold",
-				"description": "Making the letters look like the good time were never gone.",
-				"shortDescription": "Make text bold for emphasis."
-			},
-			{
-				"id": "code",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Code",
-				"description": "Snippet look like a terminal from the 1990s movie.",
-				"shortDescription": "Insert inline code snippets for technical content."
-			},
-			{
-				"id": "highlight",
-				"type": "subfeature",
-				"link": "features/highlight",
-				"name": "Highlight",
-				"description": "Highlight makes important content stand out, either with font color or background fill.",
-				"shortDescription": "Highlight text with color for emphasis."
-			},
-			{
-				"id": "italic",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Italic",
-				"description": "Making the letters look like seashore pines.",
-				"shortDescription": "Italicize text for subtle emphasis."
-			},
-			{
-				"id": "strikethrough",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Strikethrough",
-				"description": "Never mind, will not need it anymore.",
-				"shortDescription": "Strike through text to indicate removal."
-			},
-			{
-				"id": "styles",
-				"type": "subfeature",
-				"link": "features/style",
-				"name": "Styles",
-				"description": "The styles feature lets you easily apply predefined styles available for block and inline content.",
-				"shortDescription": "Apply predefined styles to block and inline elements."
-			},
-			{
-				"id": "subscript",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Subscript",
-				"description": "Fine print at the bottom, like atom numbers.",
-				"shortDescription": "Add subscript text for chemical formulas or footnotes."
-			},
-			{
-				"id": "superscript",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Superscript",
-				"description": "Fine print on top, like references in a book.",
-				"shortDescription": "Add superscript text for exponents or references."
-			},
-			{
-				"id": "underline",
-				"type": "subfeature",
-				"link": "features/basic-styles",
-				"name": "Underline",
-				"description": "Stuff looks important, yo. Or like a link, too.",
-				"shortDescription": "Underline text to highlight importance."
+				"shortDescription": "Apply bold, italic, underline, and other formatting styles to text.",
+				"subFeatures": [
+					{
+						"id": "bold",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Bold",
+						"description": "Making the letters look like the good time were never gone.",
+						"shortDescription": "Make text bold for emphasis."
+					},
+					{
+						"id": "code",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Code",
+						"description": "Snippet look like a terminal from the 1990s movie.",
+						"shortDescription": "Insert inline code snippets for technical content."
+					},
+					{
+						"id": "highlight",
+						"type": "subFeature",
+						"link": "features/highlight",
+						"name": "Highlight",
+						"description": "Highlight makes important content stand out, either with font color or background fill.",
+						"shortDescription": "Highlight text with color for emphasis."
+					},
+					{
+						"id": "italic",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Italic",
+						"description": "Making the letters look like seashore pines.",
+						"shortDescription": "Italicize text for subtle emphasis."
+					},
+					{
+						"id": "strikethrough",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Strikethrough",
+						"description": "Never mind, will not need it anymore.",
+						"shortDescription": "Strike through text to indicate removal."
+					},
+					{
+						"id": "styles",
+						"type": "subFeature",
+						"link": "features/style",
+						"name": "Styles",
+						"description": "The styles feature lets you easily apply predefined styles available for block and inline content.",
+						"shortDescription": "Apply predefined styles to block and inline elements."
+					},
+					{
+						"id": "subscript",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Subscript",
+						"description": "Fine print at the bottom, like atom numbers.",
+						"shortDescription": "Add subscript text for chemical formulas or footnotes."
+					},
+					{
+						"id": "superscript",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Superscript",
+						"description": "Fine print on top, like references in a book.",
+						"shortDescription": "Add superscript text for exponents or references."
+					},
+					{
+						"id": "underline",
+						"type": "subFeature",
+						"link": "features/basic-styles",
+						"name": "Underline",
+						"description": "Stuff looks important, yo. Or like a link, too.",
+						"shortDescription": "Underline text to highlight importance."
+					}
+				]
 			},
 			{
 				"id": "undo-redo",
@@ -538,16 +552,18 @@
 				"name": "Asynchronous collaboration",
 				"isPremium": true,
 				"description": "Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.",
-				"shortDescription": "Work collaboratively with team members asynchronously using Track Changes, Comments, and Revision History."
-			},
-			{
-				"id": "local-data-storage",
-				"type": "subfeature",
-				"link": "features/collaboration",
-				"name": "Local data storage",
-				"isPremium": true,
-				"description": "In asynchronous collaboration, data is maintained on the client's servers.",
-				"shortDescription": "Store collaborative data on local client servers for security and control."
+				"shortDescription": "Work collaboratively with team members asynchronously using Track Changes, Comments, and Revision History.",
+				"subFeatures": [
+					{
+						"id": "local-data-storage",
+						"type": "subFeature",
+						"link": "features/collaboration",
+						"name": "Local data storage",
+						"isPremium": true,
+						"description": "In asynchronous collaboration, data is maintained on the client's servers.",
+						"shortDescription": "Store collaborative data on local client servers for security and control."
+					}
+				]
 			},
 			{
 				"id": "comments",
@@ -556,34 +572,36 @@
 				"name": "Comments",
 				"isPremium": true,
 				"description": "Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.",
-				"shortDescription": "Add, discuss, and resolve comments for seamless content collaboration."
-			},
-			{
-				"id": "comments-archive",
-				"type": "subfeature",
-				"link": "features/comments",
-				"name": "Comments archive",
-				"isPremium": true,
-				"description": "Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.",
-				"shortDescription": "Archive resolved comments for streamlined feedback management and future reference."
-			},
-			{
-				"id": "comments-outside-editor",
-				"type": "subfeature",
-				"link": "features/comments-outside-editor",
-				"name": "Comments outside editor",
-				"isPremium": true,
-				"description": "The comments feature API, together with <code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.",
-				"shortDescription": "Extend comment functionality to non-editor fields for enhanced application integration."
-			},
-			{
-				"id": "sidebar-modes",
-				"type": "subfeature",
-				"link": "features/annotations-display-mode",
-				"name": "Sidebar modes",
-				"isPremium": true,
-				"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.",
-				"shortDescription": "Choose between wide, narrow, or inline UIs to display annotations and comments."
+				"shortDescription": "Add, discuss, and resolve comments for seamless content collaboration.",
+				"subFeatures": [
+					{
+						"id": "comments-archive",
+						"type": "subFeature",
+						"link": "features/comments",
+						"name": "Comments archive",
+						"isPremium": true,
+						"description": "Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.",
+						"shortDescription": "Archive resolved comments for streamlined feedback management and future reference."
+					},
+					{
+						"id": "comments-outside-editor",
+						"type": "subFeature",
+						"link": "features/comments-outside-editor",
+						"name": "Comments outside editor",
+						"isPremium": true,
+						"description": "The comments feature API, together with <code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.",
+						"shortDescription": "Extend comment functionality to non-editor fields for enhanced application integration."
+					},
+					{
+						"id": "sidebar-modes",
+						"type": "subFeature",
+						"link": "features/annotations-display-mode",
+						"name": "Sidebar modes",
+						"isPremium": true,
+						"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.",
+						"shortDescription": "Choose between wide, narrow, or inline UIs to display annotations and comments."
+					}
+				]
 			},
 			{
 				"id": "mentions",
@@ -600,34 +618,36 @@
 				"name": "Real-time collaboration",
 				"isPremium": true,
 				"description": "Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.",
-				"shortDescription": "Collaborate in real-time with automatic conflict resolution for seamless teamwork."
-			},
-			{
-				"id": "co-authoring",
-				"type": "subfeature",
-				"link": "features/users-in-real-time-collaboration",
-				"name": "Co-authoring",
-				"isPremium": true,
-				"description": "Multiple user real-time editing and content creation feature.",
-				"shortDescription": "Edit and create content simultaneously with multiple users in real time."
-			},
-			{
-				"id": "on-premises",
-				"type": "subfeature",
-				"link": "@cs",
-				"name": "onpremises/index On-premises",
-				"isPremium": true,
-				"description": "On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.",
-				"shortDescription": "Deploy real-time collaboration on your infrastructure for full control and privacy."
-			},
-			{
-				"id": "saas",
-				"type": "subfeature",
-				"link": "@cs",
-				"name": "guides/collaboration/quick-start SaaS",
-				"isPremium": true,
-				"description": "Real-time collaboration provided as a service by CKSource.",
-				"shortDescription": "Access real-time collaboration as a cloud service managed by CKSource."
+				"shortDescription": "Collaborate in real-time with automatic conflict resolution for seamless teamwork.",
+				"subFeatures": [
+					{
+						"id": "co-authoring",
+						"type": "subFeature",
+						"link": "features/users-in-real-time-collaboration",
+						"name": "Co-authoring",
+						"isPremium": true,
+						"description": "Multiple user real-time editing and content creation feature.",
+						"shortDescription": "Edit and create content simultaneously with multiple users in real time."
+					},
+					{
+						"id": "on-premises",
+						"type": "subFeature",
+						"link": "@cs",
+						"name": "onpremises/index On-premises",
+						"isPremium": true,
+						"description": "On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.",
+						"shortDescription": "Deploy real-time collaboration on your infrastructure for full control and privacy."
+					},
+					{
+						"id": "saas",
+						"type": "subFeature",
+						"link": "@cs",
+						"name": "guides/collaboration/quick-start SaaS",
+						"isPremium": true,
+						"description": "Real-time collaboration provided as a service by CKSource.",
+						"shortDescription": "Access real-time collaboration as a cloud service managed by CKSource."
+					}
+				]
 			},
 			{
 				"id": "revision-history",
@@ -668,31 +688,33 @@
 				"link": "features/export-pdf",
 				"name": "Content generation",
 				"isPremium": true,
-				"description": "CKEditor 5 may be your universal starting point for generating content in several recognizable formats."
-			},
-			{
-				"id": "export-to-pdf",
-				"type": "subfeature",
-				"link": "features/export-pdf",
-				"name": "Export to PDF",
-				"isPremium": true,
-				"description": "Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts."
-			},
-			{
-				"id": "export-to-word",
-				"type": "subfeature",
-				"link": "features/export-word",
-				"name": "Export to Word",
-				"isPremium": true,
-				"description": "Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images."
-			},
-			{
-				"id": "import-from-word",
-				"type": "subfeature",
-				"link": "features/import-word",
-				"name": "Import from Word",
-				"isPremium": true,
-				"description": "Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations."
+				"description": "CKEditor 5 may be your universal starting point for generating content in several recognizable formats.",
+				"subFeatures": [
+					{
+						"id": "export-to-pdf",
+						"type": "subFeature",
+						"link": "features/export-pdf",
+						"name": "Export to PDF",
+						"isPremium": true,
+						"description": "Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts."
+					},
+					{
+						"id": "export-to-word",
+						"type": "subFeature",
+						"link": "features/export-word",
+						"name": "Export to Word",
+						"isPremium": true,
+						"description": "Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images."
+					},
+					{
+						"id": "import-from-word",
+						"type": "subFeature",
+						"link": "features/import-word",
+						"name": "Import from Word",
+						"isPremium": true,
+						"description": "Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations."
+					}
+				]
 			},
 			{
 				"id": "markdown-output",
@@ -741,28 +763,30 @@
 				"type": "feature",
 				"link": "features/minimap",
 				"name": "Page utilities",
-				"description": "CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively."
-			},
-			{
-				"id": "content-minimap",
-				"type": "subfeature",
-				"link": "features/minimap",
-				"name": "Content minimap",
-				"description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management."
-			},
-			{
-				"id": "document-title",
-				"type": "subfeature",
-				"link": "features/title",
-				"name": "Document title",
-				"description": "Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents."
-			},
-			{
-				"id": "page-break",
-				"type": "subfeature",
-				"link": "features/page-break",
-				"name": "Page break",
-				"description": "Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity."
+				"description": "CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.",
+				"subFeatures": [
+					{
+						"id": "content-minimap",
+						"type": "subFeature",
+						"link": "features/minimap",
+						"name": "Content minimap",
+						"description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management."
+					},
+					{
+						"id": "document-title",
+						"type": "subFeature",
+						"link": "features/title",
+						"name": "Document title",
+						"description": "Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents."
+					},
+					{
+						"id": "page-break",
+						"type": "subFeature",
+						"link": "features/page-break",
+						"name": "Page break",
+						"description": "Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity."
+					}
+				]
 			},
 			{
 				"id": "pagination",
@@ -801,39 +825,41 @@
 				"link": "features/autoformat",
 				"name": "Automation",
 				"description": "Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!",
-				"shortDescription": "Streamline tasks like formatting, linking, and saving with automation tools."
-			},
-			{
-				"id": "autoformatting",
-				"type": "subfeature",
-				"link": "features/autoformat",
-				"name": "Autoformatting",
-				"description": "Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.",
-				"shortDescription": "Quickly format content using Markdown-like shortcuts."
-			},
-			{
-				"id": "autolink",
-				"type": "subfeature",
-				"link": "features/link#autolink-feature",
-				"name": "Autolink",
-				"description": "With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.",
-				"shortDescription": "Automatically convert URLs and emails into clickable links."
-			},
-			{
-				"id": "automatic-text-transformation",
-				"type": "subfeature",
-				"link": "features/text-transformation",
-				"name": "Automatic text transformations",
-				"description": "The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.",
-				"shortDescription": "Automatically expand abbreviations or autocorrect text based on predefined rules."
-			},
-			{
-				"id": "autosave",
-				"type": "subfeature",
-				"link": "features/autosave",
-				"name": "Autosave",
-				"description": "The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.",
-				"shortDescription": "Automatically save changes for uninterrupted workflow."
+				"shortDescription": "Streamline tasks like formatting, linking, and saving with automation tools.",
+				"subFeatures": [
+					{
+						"id": "autoformatting",
+						"type": "subFeature",
+						"link": "features/autoformat",
+						"name": "Autoformatting",
+						"description": "Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.",
+						"shortDescription": "Quickly format content using Markdown-like shortcuts."
+					},
+					{
+						"id": "autolink",
+						"type": "subFeature",
+						"link": "features/link#autolink-feature",
+						"name": "Autolink",
+						"description": "With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.",
+						"shortDescription": "Automatically convert URLs and emails into clickable links."
+					},
+					{
+						"id": "automatic-text-transformation",
+						"type": "subFeature",
+						"link": "features/text-transformation",
+						"name": "Automatic text transformations",
+						"description": "The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.",
+						"shortDescription": "Automatically expand abbreviations or autocorrect text based on predefined rules."
+					},
+					{
+						"id": "autosave",
+						"type": "subFeature",
+						"link": "features/autosave",
+						"name": "Autosave",
+						"description": "The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.",
+						"shortDescription": "Automatically save changes for uninterrupted workflow."
+					}
+				]
 			},
 			{
 				"id": "case-change",
@@ -964,49 +990,51 @@
 				"type": "feature",
 				"link": "getting-started/setup/editor-types",
 				"name": "Editor UI types",
-				"description": "The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types."
-			},
-			{
-				"id": "balloon-block-editor",
-				"type": "subfeature",
-				"link": "getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor",
-				"name": "Balloon block editor",
-				"description": "Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features."
-			},
-			{
-				"id": "balloon-editor",
-				"type": "subfeature",
-				"link": "getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor",
-				"name": "Balloon block editor",
-				"description": "Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty)."
-			},
-			{
-				"id": "classic-editor",
-				"type": "subfeature",
-				"link": "getting-started/setup/editor-types#classic-editor",
-				"name": "Classic editor",
-				"description": "Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server."
-			},
-			{
-				"id": "decoupled-editor",
-				"type": "subfeature",
-				"link": "getting-started/setup/editor-types#decoupled-editor-document",
-				"name": "Decoupled editor",
-				"description": "The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files."
-			},
-			{
-				"id": "inline-editor",
-				"type": "subfeature",
-				"link": "getting-started/setup/editor-types#inline-editor",
-				"name": "Inline editor",
-				"description": "The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section."
-			},
-			{
-				"id": "multi-root-editor",
-				"type": "subfeature",
-				"link": "getting-started/setup/editor-types#multi-root-editor",
-				"name": "Multi-root editor",
-				"description": "The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are “connected.” All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document."
+				"description": "The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.",
+				"subFeatures": [
+					{
+						"id": "balloon-block-editor",
+						"type": "subFeature",
+						"link": "getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor",
+						"name": "Balloon block editor",
+						"description": "Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features."
+					},
+					{
+						"id": "balloon-editor",
+						"type": "subFeature",
+						"link": "getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor",
+						"name": "Balloon block editor",
+						"description": "Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty)."
+					},
+					{
+						"id": "classic-editor",
+						"type": "subFeature",
+						"link": "getting-started/setup/editor-types#classic-editor",
+						"name": "Classic editor",
+						"description": "Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server."
+					},
+					{
+						"id": "decoupled-editor",
+						"type": "subFeature",
+						"link": "getting-started/setup/editor-types#decoupled-editor-document",
+						"name": "Decoupled editor",
+						"description": "The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files."
+					},
+					{
+						"id": "inline-editor",
+						"type": "subFeature",
+						"link": "getting-started/setup/editor-types#inline-editor",
+						"name": "Inline editor",
+						"description": "The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section."
+					},
+					{
+						"id": "multi-root-editor",
+						"type": "subFeature",
+						"link": "getting-started/setup/editor-types#multi-root-editor",
+						"name": "Multi-root editor",
+						"description": "The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are “connected.” All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document."
+					}
+				]
 			},
 			{
 				"id": "professionally-translated-language-packs",
@@ -1020,77 +1048,79 @@
 				"type": "feature",
 				"link": "getting-started/setup/toolbar",
 				"name": "Toolbar and menus",
-				"description": "The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously."
-			},
-			{
-				"id": "balloon-toolbar",
-				"type": "subfeature",
-				"link": "getting-started/setup/toolbar#balloon-toolbar",
-				"name": "Balloon toolbar",
-				"description": "A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset."
-			},
-			{
-				"id": "block-toolbar",
-				"type": "subfeature",
-				"link": "getting-started/setup/toolbar#block-toolbar",
-				"name": "Block toolbar",
-				"description": "The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor)."
-			},
-			{
-				"id": "classic-toolbar",
-				"type": "subfeature",
-				"link": "getting-started/setup/toolbar#main-editor-toolbar",
-				"name": "Classic toolbar",
-				"description": "The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content."
-			},
-			{
-				"id": "collapsible-toolbar",
-				"type": "subfeature",
-				"link": "getting-started/setup/toolbar#extended-toolbar-configuration-format",
-				"name": "Collapsible toolbar",
-				"description": "Collapsible toolbar for UI space efficiency."
-			},
-			{
-				"id": "image-contextual-toolbar",
-				"type": "subfeature",
-				"link": "features/images-overview#image-contextual-toolbar",
-				"name": "Image contextual toolbar",
-				"description": "The <code>{@link module:image/imagetoolbar~ImageToolbar}</code> plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the <code>{@link features/images-text-alternative text alternative}</code> button, the <code>{@link features/images-captions image caption}</code> button, and <code>{@link features/images-styles image styles}</code> buttons. The toolbar can also host the image editing button introduced by the <code>{@link features/ckbox CKBox asset manager}</code>. Shown below is an example contextual toolbar with an extended set of buttons."
-			},
-			{
-				"id": "menu-bar",
-				"type": "subfeature",
-				"link": "getting-started/setup/menubar",
-				"name": "Menu bar",
-				"description": "The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features."
-			},
-			{
-				"id": "multiline-toolbar",
-				"type": "subfeature",
-				"link": "getting-started/setup/toolbar#multiline-wrapping-toolbar",
-				"name": "Multiline toolbar",
-				"description": "Multiline toolbar for easy access to all functions."
-			},
-			{
-				"id": "nesting-toolbars-in-dropdowns",
-				"type": "subfeature",
-				"link": "getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars",
-				"name": "Nesting toolbars in dropdowns",
-				"description": "Nested toolbars for space efficiency and task-oriented access."
-			},
-			{
-				"id": "sidebar-annotations-bar",
-				"type": "subfeature",
-				"link": "features/annotations-display-mode#wide-sidebar",
-				"name": "Wide sidebar",
-				"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations."
-			},
-			{
-				"id": "table-contextual-toolbar",
-				"type": "subfeature",
-				"link": "features/tables#table-contextual-toolbar",
-				"name": "Table contextual toolbar",
-				"description": "The <code>{@link module:table/tabletoolbar~TableToolbar}</code> plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties."
+				"description": "The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously.",
+				"subFeatures": [
+					{
+						"id": "balloon-toolbar",
+						"type": "subFeature",
+						"link": "getting-started/setup/toolbar#balloon-toolbar",
+						"name": "Balloon toolbar",
+						"description": "A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset."
+					},
+					{
+						"id": "block-toolbar",
+						"type": "subFeature",
+						"link": "getting-started/setup/toolbar#block-toolbar",
+						"name": "Block toolbar",
+						"description": "The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor)."
+					},
+					{
+						"id": "classic-toolbar",
+						"type": "subFeature",
+						"link": "getting-started/setup/toolbar#main-editor-toolbar",
+						"name": "Classic toolbar",
+						"description": "The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content."
+					},
+					{
+						"id": "collapsible-toolbar",
+						"type": "subFeature",
+						"link": "getting-started/setup/toolbar#extended-toolbar-configuration-format",
+						"name": "Collapsible toolbar",
+						"description": "Collapsible toolbar for UI space efficiency."
+					},
+					{
+						"id": "image-contextual-toolbar",
+						"type": "subFeature",
+						"link": "features/images-overview#image-contextual-toolbar",
+						"name": "Image contextual toolbar",
+						"description": "The <code>{@link module:image/imagetoolbar~ImageToolbar}</code> plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the <code>{@link features/images-text-alternative text alternative}</code> button, the <code>{@link features/images-captions image caption}</code> button, and <code>{@link features/images-styles image styles}</code> buttons. The toolbar can also host the image editing button introduced by the <code>{@link features/ckbox CKBox asset manager}</code>. Shown below is an example contextual toolbar with an extended set of buttons."
+					},
+					{
+						"id": "menu-bar",
+						"type": "subFeature",
+						"link": "getting-started/setup/menubar",
+						"name": "Menu bar",
+						"description": "The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features."
+					},
+					{
+						"id": "multiline-toolbar",
+						"type": "subFeature",
+						"link": "getting-started/setup/toolbar#multiline-wrapping-toolbar",
+						"name": "Multiline toolbar",
+						"description": "Multiline toolbar for easy access to all functions."
+					},
+					{
+						"id": "nesting-toolbars-in-dropdowns",
+						"type": "subFeature",
+						"link": "getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars",
+						"name": "Nesting toolbars in dropdowns",
+						"description": "Nested toolbars for space efficiency and task-oriented access."
+					},
+					{
+						"id": "sidebar-annotations-bar",
+						"type": "subFeature",
+						"link": "features/annotations-display-mode#wide-sidebar",
+						"name": "Wide sidebar",
+						"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations."
+					},
+					{
+						"id": "table-contextual-toolbar",
+						"type": "subFeature",
+						"link": "features/tables#table-contextual-toolbar",
+						"name": "Table contextual toolbar",
+						"description": "The <code>{@link module:table/tabletoolbar~TableToolbar}</code> plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties."
+					}
+				]
 			},
 			{
 				"id": "watchdog",
@@ -1159,21 +1189,23 @@
 				"type": "feature",
 				"link": "framework/index",
 				"name": "Editor SDK",
-				"description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work."
-			},
-			{
-				"id": "ckeditor5-inspector",
-				"type": "subfeature",
-				"link": "framework/development-tools/inspector",
-				"name": "CKEditor&nbsp;5 inspector",
-				"description": "The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like <code>{@link framework/architecture/editing-engine#model model}</code>, <code>{@link framework/architecture/editing-engine#view view}</code>, and <code>{@link framework/architecture/core-editor-architecture#commands commands}</code>."
-			},
-			{
-				"id": "cloud-services-rest-api",
-				"type": "subfeature",
-				"link": "@cs",
-				"name": "developer-resources/apis/overview Cloud Services REST API",
-				"description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs."
+				"description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.",
+				"subFeatures": [
+					{
+						"id": "ckeditor5-inspector",
+						"type": "subFeature",
+						"link": "framework/development-tools/inspector",
+						"name": "CKEditor&nbsp;5 inspector",
+						"description": "The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like <code>{@link framework/architecture/editing-engine#model model}</code>, <code>{@link framework/architecture/editing-engine#view view}</code>, and <code>{@link framework/architecture/core-editor-architecture#commands commands}</code>."
+					},
+					{
+						"id": "cloud-services-rest-api",
+						"type": "subFeature",
+						"link": "@cs",
+						"name": "developer-resources/apis/overview Cloud Services REST API",
+						"description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs."
+					}
+				]
 			},
 			{
 				"id": "themes",
