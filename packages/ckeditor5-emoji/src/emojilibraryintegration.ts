@@ -62,7 +62,6 @@ export default class EmojiLibraryIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
-		// Make sure it works as expected. In tests, after destroying a plugin, try to read this resource. It should not be possible.
 		URL.revokeObjectURL( this._localDataUrl );
 	}
 
