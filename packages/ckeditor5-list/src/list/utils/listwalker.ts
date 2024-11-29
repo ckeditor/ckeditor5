@@ -220,11 +220,10 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
 			return { done: true, value: undefined };
 		}
 
-		let nodeIndent = null;
+		const nodeIndent = this._node.getAttribute( 'listIndent' );
 		let previousNodeInList: ListElement | null = null;
 
 		if ( this._previous ) {
-			nodeIndent = this._node.getAttribute( 'listIndent' );
 			const previousNodeIndent = this._previousNodeIndent!;
 
 			// Let's find previous node for the same indent.
@@ -234,7 +233,7 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
 			}
 			// Restore the one for given indent.
 			else if ( nodeIndent < previousNodeIndent ) {
-				previousNodeInList = this._previousNodesByIndent[ nodeIndent ];
+				previousNodeInList = this._previousNodesByIndent[ nodeIndent ] || null;
 				this._previousNodesByIndent.length = nodeIndent;
 			}
 			// Same indent.
