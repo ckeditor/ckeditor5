@@ -7,9 +7,13 @@
 
 import upath from 'upath';
 import fs from 'fs-extra';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = upath.dirname( __filename );
 
 ( async () => {
-	const digest = await fs.readJson( upath.join( import.meta.dirname, './features-digest-source.json' ) );
+	const digest = await fs.readJson( upath.join( __dirname, './features-digest-source.json' ) );
 
 	const output = [];
 
@@ -17,19 +21,34 @@ import fs from 'fs-extra';
 		output.push( generateCapability( capability ) );
 	} );
 
-	await fs.writeFile( upath.join( import.meta.dirname, './features-digest-output.html' ), output.join( '\n' ) );
+	await fs.writeFile( upath.join( __dirname, './features-digest-output.html' ), output.join( '\n' ) );
+
+	/**
+	 * Update the features digest markdown file content by to the newest HTML structure generated based on JSON data.
+	 **/
+	const startMarker = '<!--MARK_START-->';
+	const endMarker = '<!--MARK_END-->';
+	const replacementText = output.join( '\n' );
+	const filePath = upath.join( __dirname, '../features/feature-digest.md' );
+
+	const featuresDigestMdFileContent = await fs.readFile( filePath, 'utf8' );
+	const regex = new RegExp( `${ startMarker }[\\s\\S]*?${ endMarker }`, 'g' );
+
+	const modifiedContent = featuresDigestMdFileContent.replace(
+		regex, `${ startMarker }\n${ replacementText }\n${ endMarker }`
+	);
+
+	fs.writeFile( filePath, modifiedContent, 'utf8' );
 } )();
 
 function generateCapability( capability ) {
-	return `
-		<section class="capability">
-			<h2>${ capability.name }</h2>
-			<p class="description">${ capability.description }</p>
-			<div class="features-list">
-				${ capability.features.map( feature => generateFeature( feature ) ).join( '\n' ) }
-			</div>
-		</section>
-	`;
+	return `<section class="capability">
+	<h2>${ capability.name }</h2>
+	<p class="description">${ capability.description }</p>
+	<div class="features-list">
+		${ capability.features.map( feature => generateFeature( feature ) ).join( '\n' ) }
+	</div>
+</section>`;
 }
 
 function generateFeature( feature, isSubFeature = false ) {
@@ -37,21 +56,16 @@ function generateFeature( feature, isSubFeature = false ) {
 	let subFeaturesOutput = '';
 
 	if ( subFeatures ) {
-		subFeaturesOutput = `
-			<div class="subfeatures-list">
+		subFeaturesOutput = `<div class="subfeatures-list">
 				${ subFeatures.map( subFeatures => generateFeature( subFeatures, true ) ).join( '\n' ) }
-			</div>
-		`;
+			</div>`;
 	}
 
-	return `
-		<article class="feature ${ isSubFeature ? 'subfeature' : '' }">
-			<h3>${ feature.name }</h3>
-			<p>
-				<span class="short-description">${ feature.shortDescription }</span>
-				<span class="description">${ feature.description }</span>
-			</p>
-			${ subFeaturesOutput }
-		</article>
-	`;
+	return `<article id="${ feature.id }" class="feature ${ isSubFeature ? 'subfeature' : '' }">
+			<h3 class="feature-title">{@link ${ feature.link } ${ feature.name }}</h3>
+			<details>
+				<summary class="feature-short-description">${ feature.shortDescription }</summary>
+				<p class="feature-description">${ feature.description }</p>
+			</details>${ subFeaturesOutput }
+		</article>`;
 }

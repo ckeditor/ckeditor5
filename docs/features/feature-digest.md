@@ -9,2014 +9,1174 @@ order: -998
 
 CKEditor 5 offers over 150 various features, from basic editing capabilities like bold or italics to full-blown real-time collaboration, where multiple people can work on one document at the same time. This page collects them all and groups them into capabilities, features, and sub-features. Let's hope this list will help you grasp and easily digest everything CKEditor 5 has to offer.
 
-## Core editing
+<style>
+.feature {
+	padding: 1rem;
+	border: 1px solid #aaa;
+	border-radius: 8px;
+	transition: 0.5s all; /* TODO */
+}
 
-Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
+.feature:hover {
+	background-color: rgba(0, 0, 0, 0.0125);
+	box-shadow: 0 2px 10px 2px hsl(210, 22%, 91%);
+}
 
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="advanced-html-editing" class="feature">
-			<td>
-				{@link features/general-html-support Advanced HTML Editing}
-			</td>
-			<td>
-				Advanced HTML Editing provides general HTML support, offering detailed
-				control over permissible HTML elements, attributes, and styles. It
-				further allows HTML Source Code Editing, handling HTML elements,
-				HTML comments, and editing of the full page content, including meta
-				tags.
-			</td>
-		</tr>
-		<tr id="full-page-html" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/full-page-html Full page HTML}
-				</span>
-			</td>
-			<td>
-				Thanks to the full page HTML feature, you can use CKEditor 5 to edit
-				entire HTML pages (from <code>&lt;html&gt;</code> to
-				<code>&lt;/html&gt;</code>), including the page metadata. While the
-				{@link features/general-html-support General HTML Support}
-				feature focuses on elements inside the content (the document's
-				<code>&lt;body&gt;</code>), this feature enables markup invisible
-				to the end user.
-			</td>
-		</tr>
-		<tr id="general-html-support" class="subfeature background-gray">
-			<td>
-				 <span>
-				 	{@img assets/img/enter-arrow.svg}&nbsp;{@link features/general-html-support General HTML Support (GHS)}
-				 </span>
-			</td>
-			<td>
-				With the General HTML Support (GHS) feature, developers can enable HTML
-				features that are not supported by any other dedicated CKEditor 5
-				plugins. GHS lets you add elements, attributes, classes, and styles to
-				the source. It also ensures this markup stays in the editor window and the output.
-			</td>
-		</tr>
-		<tr id="html-comment" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-comments HTML comment}
-				</span>
-			</td>
-			<td class="subfeature background-gray">
-				By default, the editor filters out all HTML comments on initialization.
-				The <code>{@link features/html-comments HTML comment}</code>
-				feature lets developers keep HTML comments in the document without
-				displaying them to the user.
-			</td>
-		</tr>
-		<tr id="html-embed" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-embed HTML embed}
-				</span>
-			</td>
-			<td>
-				The HTML embed feature lets you embed any HTML snippet in your content.
-				The feature is meant for more advanced users who want to directly
-				interact with HTML fragments.
-			</td>
-		</tr>
-		<tr id="show-blocks" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/show-blocks Show blocks}
-				</span>
-			</td>
-			<td>
-				The show blocks feature allows the content creators to visualize all
-				block-level elements (except for widgets). It surrounds them with an
-				outline and displays their element name in the top-left corner of the
-				box.
-			</td>
-		</tr>
-		<tr id="source-editing" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/source-editing Source editing}
-				</span>
-			</td>
-			<td>
-				The source editing feature lets you view and edit the source of your
-				document.
-			</td>
-		</tr>
-		<tr id="block-formatting" class="feature">
-			<td>
-				{@link features/block-quote Block formatting}
-			</td>
-			<td>
-				Block Formatting allows for the organization and emphasis of content
-				through the use of Headings, Style Headings, Block Quotes, and
-				Horizontal Lines. Users can select from different levels of headings to
-				outline sections and subsections, apply various styles to these headings
-				for visual hierarchy, insert horizontal lines to delineate sections, and
-				use block quotes to highlight excerpts or important passages.
-			</td>
-		</tr>
-		<tr id="block-quotes" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/block-quote Block quote}
-				</span>
-			</td>
-			<td>
-				The block quote feature lets you easily include block quotations or pull
-				quotes in your content. It is also an attractive way to draw the
-				readers' attention to selected parts of the text.
-			</td>
-		</tr>
-		<tr id="headings-paragraph" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/headings Headings/paragraph}
-				</span>
-			</td>
-			<td>
-				The heading feature helps you structure your document by adding headings
-				to parts of the text. They make your content easier to scan by both
-				readers and search engines.
-			</td>
-		</tr>
-		<tr id="horizontal-line" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/horizontal-line Horizontal line}
-				</span>
-			</td>
-			<td>
-				The horizontal line feature lets you visually divide your content into
-				sections by inserting horizontal lines (also known as horizontal rules).
-				It is an easy way to organize the content or indicate a change of topic.
-			</td>
-		</tr>
-		<tr id="block-indentation" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/indent Block indentation}
-				</span>
-			</td>
-			<td>
-				The block indentation feature lets you set indentation for text blocks
-				such as paragraphs, headings, or lists. This way you can visually
-				distinguish parts of your content.
-			</td>
-		</tr>
-		<tr id="bookmark" class="feature">
-			<td>
-				{@link features/bookmarks Bookmarks}
-			</td>
-			<td>
-				The bookmarks feature allows for adding and managing the bookmarks anchors
-				attached to the content of the editor. These provide fast access to important
-				content sections, and speed up the navigation boosting efficiency.
-			</td>
-		</tr>
-		<tr id="clipboard" class="feature">
-			<td>
-				{@link framework/deep-dive/clipboard Clipboard}
-			</td>
-			<td>
-				Copy, cut, and paste content within the editor or from external sources.
-			</td>
-		</tr>
-		<tr id="code-blocks" class="feature">
-			<td>
-				{@link features/code-blocks Code blocks}
-			</td>
-			<td>
-				Supports the insertion and management of pre-formatted code snippets with
-				distinct styling.
-			</td>
-		</tr>
-		<tr id="drag-and-drop" class="feature">
-			<td>
-				{@link features/drag-drop Drag and drop}
-			</td>
-			<td>
-				Rearrange elements within a document, including moving text blocks,
-				images, or other content types.
-			</td>
-		</tr>
-		<tr id="font-formatting" class="feature">
-			<td>
-				{@link features/font Font formatting}
-			</td>
-			<td>
-				The font feature lets you change font family, size, and color (including
-				background color). All of these options are configurable.
-			</td>
-		</tr>
-		<tr id="font-background-color" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}
-				</span>
-			</td>
-			<td>
-				Effortlessly make the words stand out even more with a colored background.
-			</td>
-		</tr>
-		<tr id="font-color" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}
-				</span>
-			</td>
-			<td>Effortlessly make the letters stand out with their own color.</td>
-		</tr>
-		<tr id="font-family" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-family-feature Font family}
-				</span>
-			</td>
-			<td>
-				Choose from a predefined set of fonts, depending on the type of content
-				and its destination - print, screen, etc.
-			</td>
-		</tr>
-		<tr id="font-size" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-size-feature Font size}
-				</span>
-			</td>
-			<td>Easily control the size of the letters.</td>
-		</tr>
-		<tr id="image" class="feature">
-			<td>
-				{@link features/images-overview Image}
-			</td>
-			<td>
-				The image feature allows adding images of various kinds to the rich
-				content inside the editor. A large set of subfeature background-grays lets the users
-				fully control this process. Upload or paste images, insert
-				via URL, use responsive images, resize images, add captions, set
-				different image styles, and link images.
-			</td>
-		</tr>
-		<tr id="image-all-text" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-text-alternative Image alt text}
-				</span>
-			</td>
-			<td>
-				Add description text, AKA alternative text, for images. Alt text
-				improves accessibility by telling screen readers and search engines what
-				the image depicts.
-			</td>
-		</tr>
-		<tr id="image-captions" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-captions Image captions}
-				</span>
-			</td>
-			<td>
-				Add optional captions for images, which are shown below the picture.
-			</td>
-		</tr>
-		<tr id="image-insert-via-url" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-inserting Image insert via URL}
-				</span>
-			</td>
-			<td>
-				You can insert images by uploading them directly from your disk, but you
-				can also configure CKEditor 5 to let you insert images using URLs. This
-				way, you can save time by adding images that are already online.
-			</td>
-		</tr>
-		<tr id="image-linking" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-linking Image linking}
-				</span>
-			</td>
-			<td>
-				The
-				<code>{@link module:link/linkimage~LinkImage}</code>
-				plugin lets you use images as links.
-			</td>
-		</tr>
-		<tr id="image-resize" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-resizing Image resize}
-				</span>
-			</td>
-			<td>
-				The image resize feature lets you change the width of images in your
-				content. It is implemented by the
-				<code>{@link module:image/imageresize~ImageResize}</code>
-				plugin.
-			</td>
-		</tr>
-		<tr id="image-styles" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-styles Image styles}
-				</span>
-			</td>
-			<td>
-				The image styles feature lets you adjust the appearance of images. It
-				works by applying CSS classes to images or changing their type from
-				inline to block or vice versa.
-			</td>
-		</tr>
-		<tr id="image-upload" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/image-upload Image upload}
-				</span>
-			</td>
-			<td>
-				Inserting
-				{@link features/images-overview images}
-				into content created with CKEditor 5 is quite a common task. In a
-				properly configured rich-text editor, there are several ways for the end
-				user to insert images.
-			</td>
-		</tr>
-		<tr id="responsive-images" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-responsive Responsive images}
-				</span>
-			</td>
-			<td>
-				The ability to have responsive images in the rich-text editor content is
-				a great modern feature provided by the {@link features/ckbox CKBox asset manager}.
-				With a single image upload, several optimized versions of that image
-				are created, each for a different size of the display. The CKBox feature
-				produces a <code>&lt;picture&gt;</code> element with a set of optimized
-				images. The browser will automatically load the image with the
-				dimensions most suitable for the presented page resolution, which makes
-				the image load much faster and saves bandwidth.
-			</td>
-		</tr>
-		<tr id="links" class="feature">
-			<td>
-				{@link features/link Links}
-			</td>
-			<td>
-				Facilitates the addition of hyperlinks to text, automatically converting
-				typed or pasted URLs into clickable links, and allowing manual insertion
-				and editing of links.
-			</td>
-		</tr>
-		<tr id="lists" class="feature">
-			<td>
-				{@link features/lists Lists}
-			</td>
-			<td>
-				Lists allow the creation and management of various list types, including
-				to-do lists, bulleted and numbered lists, with additional customization
-				options such as list styles, setting the start number for lists,
-				creating reversed lists, adjusting list indentation, and crafting nested
-				lists.
-			</td>
-		</tr>
-		<tr id="list-indentation" class="subfeature background-gray">
-			<td>
-				{@link features/lists-editing#indenting-lists List indentation}
-			</td>
-			<td>
-				Besides controlling
-				{@link features/indent text block indentation},
-				the indent and outdent buttons allow for indenting list items
-				(nesting them).
-			</td>
-		</tr>
-		<tr id="list-start-index" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-start-index List start index}
-				</span>
-			</td>
-			<td>
-				The list start index feature allows the user to choose the starting
-				point of an ordered list. By default, this would be 1 (or A, or I – see
-				the list styles section). Sometimes, you may want to start a list with
-				some other digit or letter, though.
-			</td>
-		</tr>
-		<tr id="list-styles" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-styles List styles}
-				</span>
-			</td>
-			<td>
-				The list style feature introduces some more styles for the list item
-				markers. When
-				{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled},
-				it adds 3 styles for unordered lists and 6 styles for ordered lists
-				to choose from. The user will be able to set or change the list style
-				via the dropdown. It opens when you click the arrow next to the
-				appropriate list button in the toolbar.
-			</td>
-		</tr>
-		<tr id="multi-level-lists" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/multi-level-lists Multi-level lists
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				Multi-level lists with the legal style numbering feature allows for easy
-				creation and modification of numbered lists with counters (1, 1.1,
-				1.1.1). These are crucial for clear referencing and hierarchical
-				organization in complex documents. The feature offers full compatibility
-				with Microsoft Word.
-			</td>
-		</tr>
-		<tr id="nested-lists" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists-editing#indenting-lists Nested lists}
-				</span>
-			</td>
-			<td>
-				Besides controlling {@link features/indent text block indentation},
-				the indent and outdent buttons allow for indenting list items
-				(nesting them).
-			</td>
-		</tr>
-		<tr id="ordered-lists" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Ordered lists}
-				</span>
-			</td>
-			<td>
-				The list feature lets you create ordered (numbered) lists. The unique
-				thing about them is that you can put any content inside each list item
-				(including block elements like paragraphs and tables), retaining the
-				continuity of numbering and indentation. You can also easily control the
-				list markers type.
-			</td>
-		</tr>
-		<tr id="reversed-list" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#reversed-list Reversed list}
-				</span>
-			</td>
-			<td>
-				The reversed list feature lets the user reverse the numbering order of a
-				list, changing it from ascending to descending. This is useful in
-				countdowns and things-to-do lists that need to reproduce steps in a
-				reversed order (for example, in disassembly instructions).
-			</td>
-		</tr>
-		<tr id="to-do-lists" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/todo-lists To-do lists}
-				</span>
-			</td>
-			<td>
-				The to-do list feature lets you create a list of interactive checkboxes
-				with labels. It supports all features of {@link features/lists bulleted and numbered lists},
-				so you can nest a to-do list together with any combination of other
-				lists.
-			</td>
-		</tr>
-		<tr id="unordered-lists" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Unordered lists}
-				</span>
-			</td>
-			<td>
-				The list feature lets you create unordered (bulleted) lists. The unique
-				thing about them is that you can put any content inside each list item
-				(including block elements like paragraphs and tables), retaining the
-				continuity of numbering and indentation. You can also easily control the
-				list markers' shape.
-			</td>
-		</tr>
-		<tr id="mermaid" class="feature">
-			<td>
-				{@link features/mermaid Mermaid <span class="tree__item__badge tree__item__badge_new"
-				data-badge-tooltip="Experimental feature">Exp</span>}
-			</td>
-			<td>
-				You can create flowcharts and diagrams in CKEditor 5 thanks to the
-				experimental integration with the Mermaid library. Mermaid uses a
-				Markdown-inspired syntax to create and dynamically modify flowcharts,
-				Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
-			</td>
-		</tr>
-		<tr id="remove-formatting" class="feature">
-			<td>
-				{@link features/remove-format Remove formatting}
-			</td>
-			<td>
-				The remove format feature lets you quickly remove any text formatting
-				applied using inline HTML elements and CSS styles, like basic text
-				styles (bold, italic) or font family, size, and color. This feature does
-				not remove block-level formatting (headings, images) or semantic data
-				(links).
-			</td>
-		</tr>
-		<tr id="select-all" class="feature">
-			<td>
-				{@link features/select-all Select all}
-			</td>
-			<td>
-				Enables the selection of all content within the editor with a single
-				command or shortcut.
-			</td>
-		</tr>
-		<tr id="tables" class="feature">
-			<td>
-				{@link features/tables Tables}
-			</td>
-			<td>
-				CKEditor 5 provides robust support for tables, with the ability to merge
-				and split cells, resize columns, style tables and individual cells,
-				insert and delete columns and rows, as well as create nested tables for
-				complex data presentation.
-			</td>
-		</tr>
-		<tr id="columns-resizing" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-resize Columns resizing}
-				</span>
-			</td>
-			<td>
-				The
-				<code>{@link module:table/tablecolumnresize~TableColumnResize}</code>
-				plugin lets you resize tables and individual table columns. It gives you
-				complete control over column width.
-			</td>
-		</tr>
-		<tr id="insert-delete-columns-and-rows" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}
-				</span>
-			</td>
-			<td>
-				The basic table features allow users to insert tables into content, add
-				or remove columns and rows and merge or split cells.
-			</td>
-		</tr>
-		<tr id="merge-and-split-cells" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Merge & split cells}
-				</span>
-			</td>
-			<td>
-				The basic table features allow users to insert tables into content, add
-				or remove columns and rows, and merge or split cells.
-			</td>
-		</tr>
-		<tr id="nesting" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#nesting-tables Nesting}
-				</span>
-			</td>
-			<td>
-				CKEditor 5 allows nesting tables inside other table's cells. This may be
-				used for creating advanced charts or layouts based on tables. The nested
-				table can be formatted just like a regular one.
-			</td>
-		</tr>
-		<tr id="styling-tables-and-cells" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-styling Styling tables & cells}
-				</span>
-			</td>
-			<td>
-				CKEditor 5 comes with some additional tools that help you change the
-				look of tables and table cells. You can control border color and style,
-				background color, padding, or text alignment.
-			</td>
-		</tr>
-		<tr id="table-headers" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#default-table-headers Table headers}
-				</span>
-			</td>
-			<td>
-				To make every inserted table have <code>n</code> number of rows and
-				columns as table headers by default, set an optional table configuration
-				property <code>defaultHeadings</code>.
-			</td>
-		</tr>
-		<tr id="table-selection" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-selection Table selection}
-				</span>
-			</td>
-			<td>
-				The
-				<code>{@link module:table/tableselection~TableSelection}</code>
-				plugin introduces support for the custom selection system for tables
-				that lets you:• Select an arbitrary rectangular table fragment – a
-				few cells from different rows, a column (or a few of them) or a row (or
-				multiple rows).• Apply formatting or add a link to all selected
-				cells at once. The table selection plugin is loaded automatically
-				by the <code>Table</code> plugin.
-			</td>
-		</tr>
-		<tr id="tables-caption" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-caption Tables caption}
-				</span>
-			</td>
-			<td>
-				The
-				<code>{@link module:table/tablecaption~TableCaption}</code>
-				plugin lets you add captions to your tables. Table captions also improve
-				accessibility as they are recognized by screen readers.
-			</td>
-		</tr>
-		<tr id="text-alignment" class="feature">
-			<td>
-				{@link features/text-alignment Text alignment}
-			</td>
-			<td>
-				Allows the adjustment of text alignment to the left, right, center, or
-				justify and permits the alteration of indentation.
-			</td>
-		</tr>
-		<tr id="text-formatting" class="feature">
-			<td>
-				{@link features/basic-styles Text formatting}
-			</td>
-			<td>
-				CKEditor 5 provides developers with text editing and formatting features
-				such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript,
-				Inline Code, Highlight, and Font Styles. These features allow users to
-				style and present their content as needed. This ensures users can style
-				their text to improve readability, match branding guidelines, or
-				highlight important content sections.
-			</td>
-		</tr>
-		<tr id="bold" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Bold}
-				</span>
-			</td>
-			<td>Making the letters look like the good time were never gone.</td>
-		</tr>
-		<tr id="code" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Code}
-				</span>
-			</td>
-			<td>Snippet look like a terminal from the 1990s movie.</td>
-		</tr>
-		<tr id="highlight" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/highlight Highlight}
-				</span>
-			</td>
-			<td>
-				Highlight makes important content stand out, either with font color or
-				background fill.
-			</td>
-		</tr>
-		<tr id="italic" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Italic}
-				</span>
-			</td>
-			<td>Making the letters look like seashore pines.</td>
-		</tr>
-		<tr id="strikethrough" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Strikethrough}
-				</span>
-			</td>
-			<td>Never mind, will not need it anymore.</td>
-		</tr>
-		<tr id="styles" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/style Styles}
-				</span>
-			</td>
-			<td>
-				The styles feature lets you easily apply predefined styles available for
-				block and inline content.
-			</td>
-		</tr>
-		<tr id="subscript" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Subscript}
-				</span>
-			</td>
-			<td>Fine print at the bottom, like atom numbers.</td>
-		</tr>
-		<tr id="superscript" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Superscript}
-				</span>
-			</td>
-			<td>Fine print on top, like references in a book.</td>
-		</tr>
-		<tr id="underline" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Underline}
-				</span>
-			</td>
-			<td>Stuff looks important, yo. Or like a link, too.</td>
-		</tr>
-		<tr id="undo-redo" class="feature">
-			<td>
-				{@link features/undo-redo Undo/redo}
-			</td>
-			<td>Backtrack or repeat actions for editing purposes.</td>
-		</tr>
-	</tbody>
-</table>
+h3.feature-title {
+	padding-top: 0;
+}
 
-## Collaboration
+.feature-short-description {
+	font-weight: bold;
+}
 
-Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.
+.feature-description {
+	margin-top: 0.25em;
+}
 
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="asynchronous-collaboration" class="feature">
-			<td>
-				{@link features/collaboration Asynchronous collaboration
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				Asynchronous Collaboration in CKEditor 5 is designed for teams using a
-				turn-based approach to collaboratively write, review, and discuss
-				content within the application. It integrates Track Changes, Comments,
-				and Revision History features to facilitate collaboration.
-			</td>
-		</tr>
-		<tr id="local-data-storage" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/collaboration Local data storage
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				In asynchronous collaboration, data is maintained on the client's
-				servers.
-			</td>
-		</tr>
-		<tr id="comments" class="feature">
-			<td>
-				{@link features/comments Comments
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				Users can add side notes to marked fragments of the document, including
-				text and block elements such as images. It also allows the users to
-				discuss in threads and remove comments when they finish the discussion.
-			</td>
-		</tr>
-		<tr id="comments-archive" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments Comments archive
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				Comments threads can be either deleted or resolved. The latter provides
-				a way to archive comments that are no longer relevant, reducing clutter
-				and making it easier to focus on the most important feedback. Users can
-				access the comments archive from the toolbar and use it to view and
-				restore archived comments if necessary. It helps to simplify the
-				feedback management process.
-			</td>
-		</tr>
-		<tr id="comments-outside-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments-outside-editor Comments outside editor
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premiumfeature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				The comments feature API, together with
-				<code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such
-				integration is enabling comments on non-editor form fields.
-			</td>
-		</tr>
-		<tr id="sidebar-modes" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				There are three built-in UIs to display comment threads and suggestion
-				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-				You can also display them together in more advanced scenarios where
-				various annotation sources (comments, suggestions) are connected to
-				different UIs or even create your UI for annotations.
-			</td>
-		</tr>
-		<tr id="mentions" class="feature">
-			<td>
-				{@link features/mentions Mentions}
-			</td>
-			<td>
-				The mention feature supports smart autocompletion triggered by user
-				input. Typing a predetermined marker, like @ or #, prompts a panel to
-				appear, offering autocomplete suggestions.
-			</td>
-		</tr>
-		<tr id="real-time-collaboration" class="feature">
-			<td>
-				{@link features/real-time-collaboration Real-time collaboration 
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				Real-Time Collaboration in CKEditor 5 is designed for users who are
-				writing, reviewing, and commenting on content simultaneously. It also
-				automatically solves all conflicts if users make changes at the same
-				time.
-			</td>
-		</tr>
-		<tr id="co-authoring" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/users-in-real-time-collaboration Co-authoring
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>Multiple user real-time editing and content creation feature.</td>
-		</tr>
-		<tr id="on-premises" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs onpremises/index On-premises
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				On-premises real-time collaboration version to deploy to client's own
-				infrastructure, includes a private cloud.
-			</td>
-		</tr>
-		<tr id="saas" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs guides/collaboration/quick-start SaaS
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>Real-time collaboration provided as a service by CKSource.</td>
-		</tr>
-		<tr id="revision-history" class="feature">
-			<td>
-				{@link features/revision-history Revision history
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The revision history feature is a document versioning tool. It allows
-				CKEditor 5 users to create and view the chronological revision history
-				of their content. These versions are listed in the side panel. The
-				preview mode allows for easy viewing of content development between
-				revisions. You can rename, compare, and restore older revisions on the
-				go.
-			</td>
-		</tr>
-		<tr id="track-changes" class="feature">
-			<td>
-				{@link features/track-changes Track changes
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The track changes feature brings automatic suggestion marking for the
-				document as you change it. When editing the document, the user can
-				switch to the track changes mode. All their changes will then create
-				suggestions that they can accept or discard.
-			</td>
-		</tr>
-		<tr id="users-list-and-permissions" class="feature">
-			<td>
-				{@link features/users Users list and permissions
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The
-				<code>{@link module:collaboration-core/users~Users}</code>
-				plugin and related plugins let you manage user data and permissions.
-				This is essential when many users are working on the same document.
-			</td>
-		</tr>
-	</tbody>
-</table>
+.feature + .feature {
+	margin-top: 1em;
+}
 
-## Content conversion & embedding
+.subfeatures-list {
+	margin-top: 1em;
+	grid-gap: 1em;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
 
-Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.
+.subfeatures-list .feature {
+	margin-top: 0;
+	box-sizing: border-box;
+}
 
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="content-generation" class="feature">
-			<td>
-				{@link features/export-pdf Content generation
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</td>
-		</tr>
-		<tr id="export-to-pdf" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-pdf Export to PDF
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				Create a PDF from in-editor content seamlessly. Customize headers and
-				footers, include page breaks, embed images, and choose from various
-				fonts.
-			</td>
-		</tr>
-		<tr id="export-to-word" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-word Export to Word
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				Instantly convert content from the editor to a Word document with a
-				single click, maintaining its appearance and formatting. The final
-				document includes suggestions, comments, page breaks, and embedded
-				images.
-			</td>
-		</tr>
-		<tr id="import-from-word" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/import-word Import from Word
-						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
-				</span>
-			</td>
-			<td>
-				Effortlessly transform Word documents into clean HTML within CKEditor 5
-				while retaining the original styling, as well as comments and change
-				tracking annotations.
-			</td>
-		</tr>
-		<tr id="markdown-output" class="feature">
-			<td>
-				{@link features/markdown Markdown output}
-			</td>
-			<td>
-				Enable Markdown as the default output format instead of HTML with the
-				Markdown plugin. Combined with Autoformatting, CKEditor becomes an
-				efficient Markdown editor, allowing the creation of text documents using
-				the simplified formatting syntax favored by developers.
-			</td>
-		</tr>
-		<tr id="media-embed" class="feature">
-			<td>
-				{@link features/media-embed Media embed}
-			</td>
-			<td>
-				Use the insert media button in the toolbar to embed media.
-				Pasting a media URL directly into the editor content automatically
-				embeds the media.
-			</td>
-		</tr>
-		<tr id="paste-markdown" class="feature">
-			<td>
-				{@link features/paste-markdown Paste Markdown 
-					<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>
-				}
-			</td>
-			<td>
-				The paste Markdown feature lets users paste Markdown-formatted content
-				straight into the editor. It will be then converted into rich text on
-				the fly.
-			</td>
-		</tr>
-		<tr id="xml-output" class="feature">
-			<td>
-				{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor XML output}
-			</td>
-			<td>
-				Turn your content into parsable XML files for automation and
-				cross-platform interoperability.
-			</td>
-		</tr>
-	</tbody>
-</table>
+@media screen and (max-width: 600px) {
+	.subfeatures-list {
+		grid-template-columns: 1fr;
+	}
+}
 
-## Page management
+</style>
 
-Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="document-outline" class="feature">
-			<td>
-				{@link features/document-outline Document outline
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Document Outline feature automatically detects and lists document
-				headings in a sidebar, enabling faster navigation through large
-				documents. Headings are organized in a structured list, so users can
-				click and jump to different sections quickly. This feature also
-				allows for customization of the outline's location within the user
-				interface, catering to different user preferences for workspace layout.
-			</td>
-		</tr>
-		<tr id="page-utilities" class="feature">
-			<td>
-				{@link features/minimap Page utilities}
-			</td>
-			<td>
-				CKEditor 5 Page Utilities enables users to dictate the structuring and
-				print formatting of their documents effectively.
-			</td>
-		</tr>
-		<tr id="content-minimap" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/minimap Content minimap}
-				</span>
-			</td>
-			<td>
-				Offers a concise, birds-eye view of the document's content,
-				allowing for quick navigation and content management.
-			</td>
-		</tr>
-		<tr id="document-title" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/title Document title}
-				</span>
-			</td>
-			<td>
-				Allows users to set and modify the document's title within the
-				editing interface, ensuring accurate reflection of the contents.
-			</td>
-		</tr>
-		<tr id="page-break" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/page-break Page break}
-				</span>
-			</td>
-			<td>
-				Facilitates the insertion of manual breaks within the document, enabling
-				the definition of page endings and beginnings for optimal layout and
-				print clarity.
-			</td>
-		</tr>
-		<tr id="pagination" class="feature">
-			<td>
-				{@link features/pagination Pagination
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Pagination feature visually indicates where pages begin and end within a document. This feature is
-				designed to assist users in preparing their documents for printing or export to various document
-				formats, ensuring that the transition between pages is seamless and accurately reflected in the final
-				output. Users may adjust content distribution across pages as they like, ensuring well-organized
-				documents with presented content, whether in digital form or print. By providing a clear view of how
-				text and elements will appear page-by-page, Pagination aids in the creation of professional and polished
-				documents.
-			</td>
-		</tr>
-		<tr id="table-of-contents" class="feature">
-			<td>
-				{@link features/table-of-contents Table of contents
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Table of Contents feature is a dynamic tool for organizing
-				documents. It allows for the insertion of a linked table of contents
-				that automatically updates in real time as the document's content
-				changes. This means changes made to headings or structured sections
-				within the document are reflected immediately in the table of contents,
-				accurately representing the document structure.
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-## Productivity
-
-Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="ai-assistant" class="feature">
-			<td>
-				{@link features/ai-assistant-overview AI Assistant
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The AI Assistant feature enhances editing efficiency and creativity with
-				artificial intelligence capabilities. It allows users to generate new
-				content and process data through custom queries or utilize a set of
-				predefined commands that are also customizable. The feature supports
-				integration with multiple AI API providers: OpenAI, Azure OpenAI, and
-				Amazon Bedrock. You can also integrate it with custom models.
-			</td>
-		</tr>
-		<tr id="automation" class="feature">
-			<td>
-				{@link features/autoformat Automation}
-			</td>
-			<td>Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!
-			</td>
-		</tr>
-		<tr id="autoformatting" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autoformat Autoformatting}
-				</span>
-			</td>
-			<td>
-				Use <strong>Autoformatting </strong>to get Markdown-like shortcodes for
-				quick formatting without needing to navigate through toolbar buttons or
-				dropdown menus. This feature caters to the most common formatting needs.
-			</td>
-		</tr>
-		<tr id="autolink" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/link#autolink-feature Autolink}
-				</span>
-			</td>
-			<td>
-				With <strong>Autolink</strong>, typing or pasting URLs and email
-				addresses automatically transforms them into clickable links. This
-				functionality is enabled by default, ensuring that links are always
-				ready to use.
-			</td>
-		</tr>
-		<tr id="automatic-text-transformation" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/text-transformation Automatic text transformations}
-				</span>
-			</td>
-			<td>
-				The <strong>Automatic Text Transformation </strong>autocorrects or
-				transforms predefined text fragments into their designated forms. It
-				comes with a range of popular text transformations pre-configured, and
-				accepts customization by adding or removing autocorrect entries. It is
-				commonly used to automate the expansion of abbreviations or short
-				phrases into their full forms.
-			</td>
-		</tr>
-		<tr id="autosave" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autosave Autosave}
-				</span>
-			</td>
-			<td>
-				The <strong>Autosave </strong>feature guarantees that your work is never
-				lost. It automatically saves changes - for instance, when content is
-				modified. This could involve sending the latest version of the document
-				to the server, providing peace of mind through continuous backup.
-			</td>
-		</tr>
-		<tr id="case-change" class="feature">
-			<td>
-				{@link features/case-change Case change
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Case Change feature simplifies adjusting text cases within a
-				document. With just a single click, users can shift text between
-				UPPERCASE, lowercase, and Title Case options. The case transformation
-				can be applied to various text blocks (paragraph, heading, or list item)
-				by placing the cursor within the block. Alternatively, users can select
-				a specific fragment of text they wish to modify. This feature
-				enhances the editing workflow by removing the need for manual case
-				adjustments.
-			</td>
-		</tr>
-		<tr id="find-and-replace" class="feature">
-			<td>
-				{@link features/find-and-replace Find and replace}
-			</td>
-			<td>
-				The Find and Replace feature in CKEditor 5's Productivity tools
-				allows you to search for words or phrases in your document and replace
-				them with different text. This function helps speed up editing and
-				maintain content consistency.
-			</td>
-		</tr>
-		<tr id="format-painter" class="feature">
-			<td>
-				{@link features/format-painter Format painter
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Format Painter feature lets users clone formatting from one section
-				and apply it to others within a document. This tool speeds up
-				maintaining style consistency across the document. Once initiated,
-				Format Painter can continue to apply the copied formatting to multiple
-				sections consecutively. This "continuous painting" ensures a
-				uniform style is achieved quickly without the need to repeatedly select
-				the formatting options for each new section.
-			</td>
-		</tr>
-		<tr id="keyboard-shortcuts" class="feature">
-			<td>
-				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}
-			</td>
-			<td>
-				CKEditor 5 supports various keyboard shortcuts that boost productivity
-				and provide necessary accessibility to screen reader users.
-			</td>
-		</tr>
-		<tr id="mathtype" class="feature">
-			<td>
-				{@link features/math-equations MathType
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				Math Equations allows you to add properly formatted mathematical
-				notation and chemical formulas to your documents. This feature supports
-				the inclusion of math equations, which can be handwritten on a tablet
-				and automatically converted into well-formed digital text. It also
-				offers simple numbering of equations and the ability to customize with
-				various fonts and colors, enhancing readability and presentation in your
-				content.
-			</td>
-		</tr>
-		<tr id="merge-fields" class="feature">
-			<td>
-				{@link features/merge-fields Merge fields
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				Merge Fields allows the inclusion of placeholders in your content,
-				facilitating the creation of document templates, especially useful for
-				email templates and document automation. These placeholders can later be
-				replaced with dynamic values by the customer's application,
-				enabling tasks like mass email distribution or generation of
-				personalized documents.
-			</td>
-		</tr>
-		<tr id="paste-from-google-docs" class="feature">
-			<td>
-				{@link features/paste-from-google-docs Paste from Google Docs}
-			</td>
-			<td>
-				Paste from Office features let you paste content from Microsoft Word and
-				Microsoft Excel and preserve its original structure and formatting. This
-				is the basic, open-source Paste from Office feature.
-			</td>
-		</tr>
-		<tr id="paste-from-office" class="feature">
-			<td>
-				{@link features/paste-from-office Paste from Office}
-			</td>
-			<td>
-				Paste from Office features let you paste content from Microsoft Word and
-				Microsoft Excel and preserve its original structure and formatting. This
-				is the basic, open-source Paste from Office feature.
-			</td>
-		</tr>
-		<tr id="paste-from-office-enhanced" class="feature">
-			<td>
-				{@link features/paste-from-office-enhanced Paste from Office Enhanced
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Enhanced Paste from Word/Excel feature accurately retains formatting
-				and structure when content is pasted from Microsoft Word documents into
-				the editor. This includes preserving text styles, lists, tables, and
-				layouts. The feature facilitates the transfer of documents from Word to
-				CKEditor 5 without compromising on formatting.
-			</td>
-		</tr>
-		<tr id="paste-plain-text" class="feature">
-			<td>
-				{@link features/paste-plain-text Paste plain text}
-			</td>
-			<td>
-				The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text
-				pasted into the document adopts the style of the surrounding content, effectively described as "pasting
-				without formatting." Additionally, it intelligently converts double-line breaks into paragraphs and
-				single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.
-			</td>
-		</tr>
-		<tr id="slash-commands" class="feature">
-			<td>
-				{@link features/slash-commands Slash commands
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Slash Commands feature lets users insert block elements and apply
-				styles using just the keyboard. By pressing the / key, a panel with
-				suggested commands appears, enabling quick and mouse-free actions. Users
-				can filter through these commands by typing additional phrases after the
-				/, making it easier to find specific commands. Additionally, the option
-				to customize personal commands is available, allowing for a tailored
-				editing experience.
-			</td>
-		</tr>
-		<tr id="special-characters" class="feature">
-			<td>
-				{@link features/special-characters Special characters}
-			</td>
-			<td>
-				Insert a variety of unique symbols and characters into your document
-				with CKEditor 5's Special Characters feature. This includes mathematical
-				operators, currency symbols, punctuation, graphic symbols like arrows or
-				bullets, and Unicode letters that are not typically available on
-				standard keyboards, such as umlauts or diacritics. Additionally, the
-				feature supports the insertion of emojis. This tool is particularly
-				useful for enhancing the detail and accuracy of content that requires
-				specialized symbols.
-			</td>
-		</tr>
-		<tr id="templates" class="feature">
-			<td>
-				{@link features/template Templates
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Templates feature enables the insertion of predefined content structures
-				into documents, ranging from small content pieces, like formatted
-				tables, to complete document frameworks, like formal letter templates.
-				Templates accelerate the document creation process while ensuring
-				adherence to the company's content and document policies.
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-## Configurations
-
-Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="editor-placeholder" class="feature">
-			<td>
-				{@link features/editor-placeholder Editor placeholder}
-			</td>
-			<td>
-				You can prompt the user to input content by displaying a configurable
-				placeholder text when the editor is empty. This works similarly to the
-				native DOM placeholder attribute used by inputs. Not to be confused with
-				content placeholder.
-			</td>
-		</tr>
-		<tr id="editor-ui-types" class="feature">
-			<td>
-				{@link getting-started/setup/editor-types Editor UI types}
-			</td>
-			<td>
-				The editor's user interface is dependent on the editor types. The editor
-				provides functionality through specialized features accessible via a
-				configurable toolbar or keyboard shortcuts. Some of these features are
-				only available with certain editor types.
-			</td>
-		</tr>
-		<tr id="balloon-block-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
-				</span>
-			</td>
-			<td>
-				Balloon block is essentially the balloon editor with an extra block
-				toolbar, which can be accessed using the button attached to the editable
-				content area and following the selection in the document. The toolbar
-				gives access to additional block–level editing features.
-			</td>
-		</tr>
-		<tr id="balloon-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
-				</span>
-			</td>
-			<td>
-				Balloon editor is similar to inline editor. The difference between them
-				is that the toolbar appears in a balloon next to the selection (when the
-				selection is not empty).
-			</td>
-		</tr>
-		<tr id="classic-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#classic-editor Classic editor}
-				</span>
-			</td>
-			<td>
-				Classic editor is what most users traditionally learned to associate
-				with a rich-text editor – a toolbar with an editing area placed in a
-				specific position on the page, usually as a part of a form that you use
-				to submit some content to the server.
-			</td>
-		</tr>
-		<tr id="decoupled-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}
-				</span>
-			</td>
-			<td>
-				The document editor focuses on a rich-text editing experience similar to
-				large editing packages such as Google Docs or Microsoft Word. It works
-				best for creating documents, which are usually later printed or exported
-				to PDF files.
-			</td>
-		</tr>
-		<tr id="inline-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#inline-editor Inline editor}
-				</span>
-			</td>
-			<td>
-				The inline editor comes with a floating toolbar that becomes visible
-				when the editor is focused (for example, by clicking it). A common
-				scenario for using the inline editor is offering users the possibility
-				to edit content (such as headings and other small areas) in its real
-				location on a web page instead of doing it in a separate administration
-				section.
-			</td>
-		</tr>
-		<tr id="multi-root-editor" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
-				</span>
-			</td>
-			<td>
-				The multi-root editor is an editor type that features multiple, separate
-				editable areas. The main difference between using a multi-root editor
-				and using multiple separate editors is the fact that in a multi-root
-				editor, the editors are “connected.” All editable areas of the same
-				editor instance share the same configuration, toolbar, undo stack, and
-				produce one document.
-			</td>
-		</tr>
-		<tr id="professionally-translated-language-packs" class="feature">
-			<td>
-				{@link getting-started/setup/ui-language Professionally translated language packs}
-			</td>
-			<td>
-				CKEditor 5 provides 38 professionally translated language options, along
-				with additional languages provided by community translations. CKEditor 5
-				also supports right-to-left (RTL) languages natively. When an RTL
-				language is selected, the editor automatically adjusts its interface,
-				including elements like toolbars, dropdowns, and buttons, to ensure an
-				optimal editing experience.1
-			</td>
-		</tr>
-		<tr id="toolbar-and-menus" class="feature">
-			<td>
-				{@link getting-started/setup/toolbar Toolbar and menus}
-			</td>
-			<td>
-				The Toolbar Configuration feature provides different toolbar interfaces
-				for editing content. The default toolbar includes dropdown menus and
-				buttons for various editing functions. The Balloon Toolbar appears when
-				text is selected, showing relevant tools. The Block Toolbar is accessed
-				by clicking a button on the left-hand side of the editor, providing
-				tools for the active block of content. Additionally, the Multiline
-				Toolbar option allows for the expansion of the standard toolbar over
-				multiple lines to display more tools simultaneously.
-			</td>
-		</tr>
-		<tr id="balloon-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
-				</span>
-			</td>
-			<td>
-				A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
-			</td>
-		</tr>
-		<tr id="block-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#block-toolbar Block toolbar}
-				</span>
-			</td>
-			<td>
-				The block toolbar provides an additional configurable toolbar on the
-				left-hand side of the content area, useful when the main toolbar is not
-				accessible (for example in certain layouts, like balloon block editor).
-			</td>
-		</tr>
-		<tr id="classic-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}
-				</span>
-			</td>
-			<td>
-				The toolbar is the most basic user interface element of CKEditor 5 that
-				gives you convenient access to all its features. It has buttons and
-				dropdowns that you can use to format, manage, insert, and change
-				elements of your content.
-			</td>
-		</tr>
-		<tr id="collapsible-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}
-				</span>
-			</td>
-			<td>Collapsible toolbar for UI space efficiency.</td>
-		</tr>
-		<tr id="image-contextual-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}
-				</span>
-			</td>
-			<td>
-				The
-				<code>{@link module:image/imagetoolbar~ImageToolbar}</code>
-				plugin introduces a contextual toolbar for images. The toolbar appears
-				when an image is selected and can be configured to contain any buttons
-				you want. Usually, these will be image-related options, such as the
-				{@link features/images-text-alternative text alternative}
-				button, the
-				{@link features/images-captions image caption}
-				button, and
-				{@link features/images-styles image styles}
-				buttons. The toolbar can also host the image editing button introduced
-				by the {@link features/ckbox CKBox asset manager}.
-				Shown below is an example contextual toolbar with an extended set of buttons.
-			</td>
-		</tr>
-		<tr id="menu-bar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/menubar Menu bar}
-				</span>
-			</td>
-			<td>
-				The menu bar is a user interface component that gives you access to all features provided by the editor,
-				organized in menus and categories. This familiar experience, popular in large editing desktop and online
-				packages, improves the usability of the editor. As the menu bar gathers all the editor features, the
-				toolbar can be simple and tidy, providing only the most essential and commonly used features. This is
-				especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides
-				a default preset structure based on the plugins loaded in the editor. However, you can arrange it to
-				suit your needs, remove unnecessary items, or add menu items related to your custom features.
-			</td>
-		</tr>
-		<tr id="multiline-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}
-				</span>
-			</td>
-			<td>Multiline toolbar for easy access to all functions.</td>
-		</tr>
-		<tr id="nesting-toolbars-in-dropdowns" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}
-				</span>
-			</td>
-			<td>Nested toolbars for space efficiency and task-oriented access.</td>
-		</tr>
-		<tr id="sidebar-annotations-bar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode#wide-sidebar Wide sidebar}
-				</span>
-			</td>
-			<td>
-				There are three built-in UIs to display comment threads and suggestion
-				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-				You can also display them together in more advanced scenarios where
-				various annotation sources (comments, suggestions) are connected to
-				different UIs, or even create your own UI for annotations.
-			</td>
-		</tr>
-		<tr id="table-contextual-toolbar" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Table contextual toolbar}
-				</span>
-			</td>
-			<td>
-				The
-				<code>{@link module:table/tabletoolbar~TableToolbar}</code>
-				plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is
-				selected and contains various table-related buttons. These would typically include adding or removing
-				columns and rows and merging or splitting cells. If these features are configured, the toolbar will also
-				contain buttons for captions and table and cell properties.
-			</td>
-		</tr>
-		<!-- Link & bookmark contextual toolbar coming soon, it's closer than it appears in the mirror -->
-		<tr id="watchdog" class="feature">
-			<td>
-				{@link features/watchdog Watchdog}
-			</td>
-			<td>
-				The watchdog utility protects you from data loss in case the editor
-				crashes. It saves your content just before the crash and creates a new
-				instance of the editor with your content intact.
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-## Compliance
-
-Make your content accessible to any person or restrict it to specific users.
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="accessibility-support" class="feature">
-			<td>
-				{@link features/accessibility Accessibility support}
-			</td>
-			<td>
-				CKEditor 5 includes accessibility functionality designed to ensure
-				content is accessible to all users. These features encompass keyboard
-				navigation for easier content access without a mouse, screen reader
-				compatibility facilitated by ARIA attributes, and semantic output markup
-				for clearer interpretation of content structures. CKEditor 5 meets the
-				requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at
-				levels A and AA, as well as Section 508 of the Rehabilitation Act, as
-				detailed in the Accessibility Conformance Report, ensuring broad
-				accessibility compliance.
-			</td>
-		</tr>
-		<tr id="read-only-support" class="feature">
-			<td>
-				{@link features/read-only Read-only support}
-			</td>
-			<td>
-				The Read-Only Mode feature enables content to be locked from editing
-				while still allowing it to be viewed. This mode is often used for
-				restricting editing access based on user roles, allowing only specific
-				users or groups to view the content without being able to modify it.
-				Common uses include viewing sensitive documents like financial reports,
-				software logs, or copyrighted stories that should not be altered but
-				need to be accessible for copying or by screen readers. This mode can be
-				toggled on and off by system triggers.
-			</td>
-		</tr>
-		<tr id="restricted-editing" class="feature">
-			<td>
-				{@link features/restricted-editing Restricted editing}
-			</td>
-			<td>
-				The Restricted Editing feature allows some sections of a document to be
-				designated as non-editable while others remain editable. This feature
-				supports two modes: the standard editing mode, where all content can be
-				edited, and the restricted editing mode, where users can only modify
-				parts of the content that are specifically marked as editable. This
-				functionality is useful for workflows where one group of users creates
-				document templates that include protected sections, and a second group
-				fills in editable details such as names, dates, or product names without
-				altering the rest of the document.
-			</td>
-		</tr>
-		<tr id="text-part-language" class="feature">
-			<td>
-				{@link features/language Text Part Language}
-			</td>
-			<td>
-				The Text Part Language feature allows users to specify the language of
-				individual sections of text. This capability helps in creating documents
-				that include multiple languages by ensuring that browsers and screen
-				readers correctly interpret each part according to its designated
-				language. This feature is particularly valuable for content that
-				contains text in varying directions, such as an English document with
-				Arabic citations. It supports the WCAG 3.1.2 Language of Parts
-				specification, facilitating the creation of more accessible and
-				comprehensible multilingual content.
-			</td>
-		</tr>
-		<tr id="word-and-character-counter" class="feature">
-			<td>
-				{@link features/word-count Word and character counter}
-			</td>
-			<td>
-				The Word and Character Count feature provides a real-time tracking tool
-				for monitoring the number of words and characters within the editor.
-				This functionality assists in managing content length and ensuring it
-				meets specific requirements or limits.
-			</td>
-		</tr>
-		<tr id="wproofreader" class="feature">
-			<td>
-				{@link features/spelling-and-grammar-checking WProofreader
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The Spelling and Grammar Checker is a proofreading tool that supports
-				over 80 languages and dialects. It checks spelling and grammar in real
-				time and through a separate dialog. Features include spelling
-				autocorrect, text autocomplete, and suggestions that appear on hover. Users
-				can create custom dictionaries for specific terms related to their brand
-				or company. The tool is compliant with WCAG 2.1 and Section 508
-				accessibility standards. It also detects sentence-level errors and
-				offers context-based correction suggestions.
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-## Customization
-
-Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="editor-sdk" class="feature">
-			<td>
-				{@link framework/index Editor SDK}<!-- missing in docs -->
-			</td>
-			<td>
-				Select from numerous toolbar styles and over 100 plugins to tailor an
-				editor that perfectly fits your requirements, all without needing any
-				development expertise. For those looking to go further, the CKEditor API
-				enables the creation of custom plugins or modification of the
-				editor's functionality. To assist the development process,
-				dedicated resources such as a package generator and the CKEditor 5
-				Inspector - a comprehensive suite of debugging tools - are provided,
-				helping accelerate development work.
-			</td>
-		</tr>
-		<tr id="ckeditor5-inspector" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}
-				</span>
-			</td>
-			<td>The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like
-				{@link framework/architecture/editing-engine#model model}, {@link
-				framework/architecture/editing-engine#view view}, and {@link
-				framework/architecture/core-editor-architecture#commands commands}.</td>
-		</tr>
-		<tr id="cloud-services-rest-api" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
-				</span>
-			</td>
-			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration
-				services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although
-				some features can also be used directly through REST APIs.</td>
-		</tr>
-		<tr id="themes" class="feature">
-			<td>
-				{@link framework/theme-customization Themes}
-			</td>
-			<td>
-				The default theme of CKEditor 5 can be customized to match most visual
-				integration requirements.
-			</td>
-		</tr>
-		<tr id="ui-library" class="feature">
-			<td>
-				{@link framework/architecture/ui-library UI Library}
-			</td>
-			<td>
-				The standard UI library of CKEditor 5 is
-				<code><a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
-				>@ckeditor/ckeditor5-ui</a
-				></code>. It provides base classes and helpers that allow for building a
-				modular UI that seamlessly integrates with other components of the
-				ecosystem.
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-## File management
-
-Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="base64-upload-adapter" class="feature">
-			<td>
-				{@link features/base64-upload-adapter Base64 Upload Adapter}
-			</td>
-			<td>
-				Convert inserted images into Base64-encoded strings in the editor
-				output. Images are stored with other content in the database without
-				server-side processing.
-			</td>
-		</tr>
-		<tr id="ckbox" class="feature">
-			<td>
-				{@link features/ckbox CKBox
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery
-				in your uploads with the media browser alongside an intuitive Image Editor for image adjustments.
-				Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses
-				Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading
-				and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as
-				cloud SaaS.
-			</td>
-		</tr>
-		<tr id="ckfinder" class="feature">
-			<td>
-				{@link features/ckfinder CKFinder
-					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-					<span class="tree__item__badge__text">Premium feature</span></span>
-				}
-			</td>
-			<td>
-				The CKFinder feature lets you insert images and links to files into your
-				content. CKFinder is a powerful file manager with various image editing
-				and image upload options.
-			</td>
-		</tr>
-		<tr id="custom-upload-adapter" class="feature">
-			<td>
-				{@link features/image-upload#implementing-your-own-upload-adapter Custom Upload Adapter}
-			</td>
-			<td>
-				Have your own file management solution? Use this adapter to integrate
-				your preferred software with CKEditor.
-			</td>
-		</tr>
-		<tr id="simple-upload-adapter" class="feature">
-			<td>
-				{@link features/simple-upload-adapter Simple Upload Adapter}
-			</td>
-			<td>
-				Upload images to your server using the <code>XMLHttpRequest</code> API with a
-				minimal editor configuration.
-			</td>
-		</tr>
-		<tr id="uploadcare" class="feature">
-			<td>
-				<a href="https://uploadcare.com/">Uploadcare<span class="tree__item__badge tree__item__badge_premium"
-						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
-							feature</span></span></a><!-- missing in docs -->
-			</td>
-			<td>
-				Upload, store, transform, optimize, and deliver images, videos, and
-				documents with this cloud-based file handler. Upload media from local
-				storage, web cameras, cloud services, and social networks with automated
-				media optimization through a CDN for responsive image delivery. Popular
-				features include adaptive image quality, automated image format
-				conversion, progressive JPEG, and options for preview, resize, stretch,
-				crop, content-aware crop, and setting fill color.
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-{@snippet features/feature-digest}
+<!--MARK_START-->
+<section class="capability">
+	<h2>Core editing</h2>
+	<p class="description">Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.</p>
+	<div class="features-list">
+		<article id="advanced-html-editing" class="feature ">
+			<h3 class="feature-title">{@link features/general-html-support Advanced HTML Editing}</h3>
+			<details>
+				<summary class="feature-short-description">Edit and customize HTML elements, attributes, and styles with full control.</summary>
+				<p class="feature-description">Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.</p>
+			</details><div class="subfeatures-list">
+				<article id="full-page-html" class="feature subfeature">
+			<h3 class="feature-title">{@link features/full-page-html Full page HTML}</h3>
+			<details>
+				<summary class="feature-short-description">Edit entire HTML documents, including metadata, beyond visible content.</summary>
+				<p class="feature-description">Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from <code>&lt;html&gt;</code> to <code>&lt;/html&gt;</code>), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's <code>&lt;body&gt;</code>), this feature enables markup invisible to the end user.</p>
+			</details>
+		</article>
+<article id="general-html-support" class="feature subfeature">
+			<h3 class="feature-title">{@link features/general-html-support General HTML Support (GHS)}</h3>
+			<details>
+				<summary class="feature-short-description">Enable unsupported HTML elements, attributes, and styles in the editor.</summary>
+				<p class="feature-description">With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.</p>
+			</details>
+		</article>
+<article id="html-comment" class="feature subfeature">
+			<h3 class="feature-title">{@link features/html-comments HTML comment}</h3>
+			<details>
+				<summary class="feature-short-description">Keep HTML comments in your document without displaying them to users.</summary>
+				<p class="feature-description">By default, the editor filters out all HTML comments on initialization. The <code>{@link features/html-comments HTML comment}</code> feature lets developers keep HTML comments in the document without displaying them to the user.</p>
+			</details>
+		</article>
+<article id="html-embed" class="feature subfeature">
+			<h3 class="feature-title">{@link features/html-embed HTML embed}</h3>
+			<details>
+				<summary class="feature-short-description">Embed custom HTML snippets directly into your content.</summary>
+				<p class="feature-description">The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.</p>
+			</details>
+		</article>
+<article id="show-blocks" class="feature subfeature">
+			<h3 class="feature-title">{@link features/show-blocks Show blocks}</h3>
+			<details>
+				<summary class="feature-short-description">Visualize and outline all block-level elements in your content.</summary>
+				<p class="feature-description">The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.</p>
+			</details>
+		</article>
+<article id="source-editing" class="feature subfeature">
+			<h3 class="feature-title">{@link features/source-editing Source editing}</h3>
+			<details>
+				<summary class="feature-short-description">View and edit the source code of your document.</summary>
+				<p class="feature-description">The source editing feature lets you view and edit the source of your document.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="block-formatting" class="feature ">
+			<h3 class="feature-title">{@link features/block-quote Block formatting}</h3>
+			<details>
+				<summary class="feature-short-description">Organize and emphasize content with headings, block quotes, and horizontal lines.</summary>
+				<p class="feature-description">Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.</p>
+			</details><div class="subfeatures-list">
+				<article id="block-quotes" class="feature subfeature">
+			<h3 class="feature-title">{@link features/block-quote Block quote}</h3>
+			<details>
+				<summary class="feature-short-description">Add visually distinct block quotes to emphasize key excerpts.</summary>
+				<p class="feature-description">The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.</p>
+			</details>
+		</article>
+<article id="headings-paragraph" class="feature subfeature">
+			<h3 class="feature-title">{@link features/headings Headings/paragraph}</h3>
+			<details>
+				<summary class="feature-short-description">Structure content with headings for better readability and hierarchy.</summary>
+				<p class="feature-description">The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.</p>
+			</details>
+		</article>
+<article id="horizontal-line" class="feature subfeature">
+			<h3 class="feature-title">{@link features/horizontal-line Horizontal line}</h3>
+			<details>
+				<summary class="feature-short-description">Insert horizontal lines to divide content or indicate topic changes.</summary>
+				<p class="feature-description">The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.</p>
+			</details>
+		</article>
+<article id="block-indentation" class="feature subfeature">
+			<h3 class="feature-title">{@link features/indent Block indentation}</h3>
+			<details>
+				<summary class="feature-short-description">Adjust text block indentation for better content structure.</summary>
+				<p class="feature-description">The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="bookmark" class="feature ">
+			<h3 class="feature-title">{@link features/bookmarks Bookmarks}</h3>
+			<details>
+				<summary class="feature-short-description">Add bookmarks for quick navigation to key content sections.</summary>
+				<p class="feature-description">The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation boosting efficiency.</p>
+			</details>
+		</article>
+<article id="clipboard" class="feature ">
+			<h3 class="feature-title">{@link framework/deep-dive/clipboard Clipboard}</h3>
+			<details>
+				<summary class="feature-short-description">Easily copy, cut, and paste content within or outside the editor.</summary>
+				<p class="feature-description">Copy, cut, and paste content within the editor or from external sources.</p>
+			</details>
+		</article>
+<article id="code-blocks" class="feature ">
+			<h3 class="feature-title">{@link features/code-blocks Code blocks}</h3>
+			<details>
+				<summary class="feature-short-description">Insert preformatted code snippets with distinct styling.</summary>
+				<p class="feature-description">Supports the insertion and management of pre-formatted code snippets with distinct styling.</p>
+			</details>
+		</article>
+<article id="drag-and-drop" class="feature ">
+			<h3 class="feature-title">{@link features/drag-drop Drag and drop}</h3>
+			<details>
+				<summary class="feature-short-description">Reorganize text and elements using drag-and-drop functionality.</summary>
+				<p class="feature-description">Rearrange elements within a document, including moving text blocks, images, or other content types.</p>
+			</details>
+		</article>
+<article id="font-formatting" class="feature ">
+			<h3 class="feature-title">{@link features/font Font formatting}</h3>
+			<details>
+				<summary class="feature-short-description">Customize font family, size, and color for tailored text presentation.</summary>
+				<p class="feature-description">The font feature lets you change font family, size, and color (including background color). All of these options are configurable.</p>
+			</details><div class="subfeatures-list">
+				<article id="font-background-color" class="feature subfeature">
+			<h3 class="feature-title">{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}</h3>
+			<details>
+				<summary class="feature-short-description">Highlight text with a colored background for emphasis.</summary>
+				<p class="feature-description">Effortlessly make the words stand out even more with a colored background.</p>
+			</details>
+		</article>
+<article id="font-color" class="feature subfeature">
+			<h3 class="feature-title">{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}</h3>
+			<details>
+				<summary class="feature-short-description">Apply custom colors to text for improved readability or style.</summary>
+				<p class="feature-description">Effortlessly make the letters stand out with their own color.</p>
+			</details>
+		</article>
+<article id="font-family" class="feature subfeature">
+			<h3 class="feature-title">{@link features/font#configuring-the-font-family-feature Font family}</h3>
+			<details>
+				<summary class="feature-short-description">Choose suitable font families for your content needs.</summary>
+				<p class="feature-description">Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.</p>
+			</details>
+		</article>
+<article id="font-size" class="feature subfeature">
+			<h3 class="feature-title">{@link features/font#configuring-the-font-size-feature Font size}</h3>
+			<details>
+				<summary class="feature-short-description">Adjust font size for better readability and emphasis.</summary>
+				<p class="feature-description">Easily control the size of the letters.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="image" class="feature ">
+			<h3 class="feature-title">{@link features/images-overview Image}</h3>
+			<details>
+				<summary class="feature-short-description">Add, style, and manage images with captions, resizing, and linking options.</summary>
+				<p class="feature-description">The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subFeature background-grays lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.</p>
+			</details><div class="subfeatures-list">
+				<article id="image-all-text" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-text-alternative Image alt text}</h3>
+			<details>
+				<summary class="feature-short-description">Add alt text to images for accessibility and SEO improvements.</summary>
+				<p class="feature-description">Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.</p>
+			</details>
+		</article>
+<article id="image-captions" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-captions Image captions}</h3>
+			<details>
+				<summary class="feature-short-description">Add captions below images to provide context.</summary>
+				<p class="feature-description">Add optional captions for images, which are shown below the picture.</p>
+			</details>
+		</article>
+<article id="image-insert-via-url" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-inserting Image insert via URL}</h3>
+			<details>
+				<summary class="feature-short-description">Insert images directly using their URLs.</summary>
+				<p class="feature-description">You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.</p>
+			</details>
+		</article>
+<article id="image-linking" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-linking Image linking}</h3>
+			<details>
+				<summary class="feature-short-description">Turn images into clickable links for interactive content.</summary>
+				<p class="feature-description">The <code>{@link module:link/linkimage~LinkImage}</code> plugin lets you use images as links.</p>
+			</details>
+		</article>
+<article id="image-resize" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-resizing Image resize}</h3>
+			<details>
+				<summary class="feature-short-description">Easily resize images for better content fit.</summary>
+				<p class="feature-description">The image resize feature lets you change the width of images in your content. It is implemented by the <code>{@link module:image/imageresize~ImageResize}</code> plugin.</p>
+			</details>
+		</article>
+<article id="image-styles" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-styles Image styles}</h3>
+			<details>
+				<summary class="feature-short-description">Apply custom styles and alignments to images.</summary>
+				<p class="feature-description">The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.</p>
+			</details>
+		</article>
+<article id="image-upload" class="feature subfeature">
+			<h3 class="feature-title">{@link features/image-upload Image upload}</h3>
+			<details>
+				<summary class="feature-short-description">Upload images directly from your device to the editor.</summary>
+				<p class="feature-description">Inserting <code>{@link features/images-overview images}</code> into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.</p>
+			</details>
+		</article>
+<article id="responsive-images" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-responsive Responsive images}</h3>
+			<details>
+				<summary class="feature-short-description">Automatically optimize images for different screen sizes.</summary>
+				<p class="feature-description">The ability to have responsive images in the rich-text editor content is a great modern feature provided by the <code>{@link features/ckbox CKBox asset manager}</code>. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a <code>&lt;picture&gt;</code> element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="links" class="feature ">
+			<h3 class="feature-title">{@link features/link Links}</h3>
+			<details>
+				<summary class="feature-short-description">Add and manage hyperlinks in your text.</summary>
+				<p class="feature-description">Facilitates the addition of hyperlinks to text, automatically converting typed or pasted URLs into clickable links, and allowing manual insertion and editing of links.</p>
+			</details>
+		</article>
+<article id="lists" class="feature ">
+			<h3 class="feature-title">{@link features/lists Lists}</h3>
+			<details>
+				<summary class="feature-short-description">Create to-do, bulleted, and numbered lists with customizable styles.</summary>
+				<p class="feature-description">Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.</p>
+			</details><div class="subfeatures-list">
+				<article id="list-indentation" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists-editing#indenting-lists List indentation}</h3>
+			<details>
+				<summary class="feature-short-description">Control list item indentation for nested lists.</summary>
+				<p class="feature-description">Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).</p>
+			</details>
+		</article>
+<article id="list-start-index" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists#list-start-index List start index}</h3>
+			<details>
+				<summary class="feature-short-description">Set custom start numbers for ordered lists.</summary>
+				<p class="feature-description">The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.</p>
+			</details>
+		</article>
+<article id="list-styles" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists#list-styles List styles}</h3>
+			<details>
+				<summary class="feature-short-description">Customize list markers for unique styles.</summary>
+				<p class="feature-description">The list style feature introduces some more styles for the list item markers. When <code>{@link module:list/listconfig~ListPropertiesConfig#member-styles enabled}</code>, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.</p>
+			</details>
+		</article>
+<article id="multi-level-lists" class="feature subfeature">
+			<h3 class="feature-title">{@link features/multi-level-lists Multi-level lists}</h3>
+			<details>
+				<summary class="feature-short-description">Create hierarchical multi-level lists with numbering.</summary>
+				<p class="feature-description">Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.</p>
+			</details>
+		</article>
+<article id="nested-lists" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists-editing#indenting-lists Nested lists}</h3>
+			<details>
+				<summary class="feature-short-description">Easily create nested lists for complex content.</summary>
+				<p class="feature-description">Besides controlling <code>{@link features/indent text block indentation}</code>, the indent and outdent buttons allow for indenting list items (nesting them).</p>
+			</details>
+		</article>
+<article id="ordered-lists" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists Ordered lists}</h3>
+			<details>
+				<summary class="feature-short-description">Add structured ordered lists with flexible formatting options.</summary>
+				<p class="feature-description">The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.</p>
+			</details>
+		</article>
+<article id="reversed-list" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists#reversed-list Reversed list}</h3>
+			<details>
+				<summary class="feature-short-description">Reverse list numbering for countdowns or steps.</summary>
+				<p class="feature-description">The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).</p>
+			</details>
+		</article>
+<article id="to-do-lists" class="feature subfeature">
+			<h3 class="feature-title">{@link features/todo-lists To-do lists}</h3>
+			<details>
+				<summary class="feature-short-description">Create interactive to-do lists with checkboxes.</summary>
+				<p class="feature-description">The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of <code>{@link features/lists bulleted and numbered lists}</code>, so you can nest a to-do list together with any combination of other lists.</p>
+			</details>
+		</article>
+<article id="unordered-lists" class="feature subfeature">
+			<h3 class="feature-title">{@link features/lists Unordered lists}</h3>
+			<details>
+				<summary class="feature-short-description">Add unordered lists with customizable markers.</summary>
+				<p class="feature-description">The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="mermaid" class="feature ">
+			<h3 class="feature-title">{@link features/mermaid Mermaid}</h3>
+			<details>
+				<summary class="feature-short-description">Create diagrams and charts using Markdown-inspired syntax.</summary>
+				<p class="feature-description">You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.</p>
+			</details>
+		</article>
+<article id="remove-formatting" class="feature ">
+			<h3 class="feature-title">{@link features/remove-format Remove formatting}</h3>
+			<details>
+				<summary class="feature-short-description">Quickly strip inline styles and formatting from text.</summary>
+				<p class="feature-description">The remove format feature lets you quickly remove any text formatting applied using inline HTML elements and CSS styles, like basic text styles (bold, italic) or font family, size, and color. This feature does not remove block-level formatting (headings, images) or semantic data (links).</p>
+			</details>
+		</article>
+<article id="select-all" class="feature ">
+			<h3 class="feature-title">{@link features/select-all Select all}</h3>
+			<details>
+				<summary class="feature-short-description">Select all content within the editor instantly.</summary>
+				<p class="feature-description">Enables the selection of all content within the editor with a single command or shortcut.</p>
+			</details>
+		</article>
+<article id="tables" class="feature ">
+			<h3 class="feature-title">{@link features/tables Tables}</h3>
+			<details>
+				<summary class="feature-short-description">Design and manage tables with advanced editing options.</summary>
+				<p class="feature-description">CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.</p>
+			</details><div class="subfeatures-list">
+				<article id="columns-resizing" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables-resize Columns resizing}</h3>
+			<details>
+				<summary class="feature-short-description">Resize table columns for precise layout control.</summary>
+				<p class="feature-description">The <code>{@link module:table/tablecolumnresize~TableColumnResize}</code> plugin lets you resize tables and individual table columns. It gives you complete control over column width.</p>
+			</details>
+		</article>
+<article id="insert-delete-columns-and-rows" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}</h3>
+			<details>
+				<summary class="feature-short-description">Easily add or remove table rows and columns.</summary>
+				<p class="feature-description">The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.</p>
+			</details>
+		</article>
+<article id="merge-and-split-cells" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables#table-contextual-toolbar Merge & split cells}</h3>
+			<details>
+				<summary class="feature-short-description">Merge or split table cells as needed.</summary>
+				<p class="feature-description">The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.</p>
+			</details>
+		</article>
+<article id="nesting" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables#nesting-tables Nesting}</h3>
+			<details>
+				<summary class="feature-short-description">Nest tables within other tables for complex layouts.</summary>
+				<p class="feature-description">CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.</p>
+			</details>
+		</article>
+<article id="styling-tables-and-cells" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables-styling Styling tables & cells}</h3>
+			<details>
+				<summary class="feature-short-description">Apply custom styles to tables and individual cells.</summary>
+				<p class="feature-description">CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.</p>
+			</details>
+		</article>
+<article id="table-headers" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables#default-table-headers Table headers}</h3>
+			<details>
+				<summary class="feature-short-description">Set default table headers for better structure.</summary>
+				<p class="feature-description">To make every inserted table have <code>n</code> number of rows and columns as table headers by default, set an optional table configuration property <code>defaultHeadings</code>.</p>
+			</details>
+		</article>
+<article id="table-selection" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables#table-selection Table selection}</h3>
+			<details>
+				<summary class="feature-short-description">Select and format specific table areas easily.</summary>
+				<p class="feature-description">The <code>{@link module:table/tableselection~TableSelection}</code> plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the <code>Table</code> plugin.</p>
+			</details>
+		</article>
+<article id="tables-caption" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables-caption Tables caption}</h3>
+			<details>
+				<summary class="feature-short-description">Add captions to tables to improve accessibility.</summary>
+				<p class="feature-description">The <code>{@link module:table/tablecaption~TableCaption}</code> plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="text-alignment" class="feature ">
+			<h3 class="feature-title">{@link features/text-alignment Text alignment}</h3>
+			<details>
+				<summary class="feature-short-description">Align text left, right, center, or justify with ease.</summary>
+				<p class="feature-description">Allows the adjustment of text alignment to the left, right, center, or justify and permits the alteration of indentation.</p>
+			</details>
+		</article>
+<article id="text-formatting" class="feature ">
+			<h3 class="feature-title">{@link features/basic-styles Text formatting}</h3>
+			<details>
+				<summary class="feature-short-description">Apply bold, italic, underline, and other formatting styles to text.</summary>
+				<p class="feature-description">CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.</p>
+			</details><div class="subfeatures-list">
+				<article id="bold" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Bold}</h3>
+			<details>
+				<summary class="feature-short-description">Make text bold for emphasis.</summary>
+				<p class="feature-description">Making the letters look like the good time were never gone.</p>
+			</details>
+		</article>
+<article id="code" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Code}</h3>
+			<details>
+				<summary class="feature-short-description">Insert inline code snippets for technical content.</summary>
+				<p class="feature-description">Snippet look like a terminal from the 1990s movie.</p>
+			</details>
+		</article>
+<article id="highlight" class="feature subfeature">
+			<h3 class="feature-title">{@link features/highlight Highlight}</h3>
+			<details>
+				<summary class="feature-short-description">Highlight text with color for emphasis.</summary>
+				<p class="feature-description">Highlight makes important content stand out, either with font color or background fill.</p>
+			</details>
+		</article>
+<article id="italic" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Italic}</h3>
+			<details>
+				<summary class="feature-short-description">Italicize text for subtle emphasis.</summary>
+				<p class="feature-description">Making the letters look like seashore pines.</p>
+			</details>
+		</article>
+<article id="strikethrough" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Strikethrough}</h3>
+			<details>
+				<summary class="feature-short-description">Strike through text to indicate removal.</summary>
+				<p class="feature-description">Never mind, will not need it anymore.</p>
+			</details>
+		</article>
+<article id="styles" class="feature subfeature">
+			<h3 class="feature-title">{@link features/style Styles}</h3>
+			<details>
+				<summary class="feature-short-description">Apply predefined styles to block and inline elements.</summary>
+				<p class="feature-description">The styles feature lets you easily apply predefined styles available for block and inline content.</p>
+			</details>
+		</article>
+<article id="subscript" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Subscript}</h3>
+			<details>
+				<summary class="feature-short-description">Add subscript text for chemical formulas or footnotes.</summary>
+				<p class="feature-description">Fine print at the bottom, like atom numbers.</p>
+			</details>
+		</article>
+<article id="superscript" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Superscript}</h3>
+			<details>
+				<summary class="feature-short-description">Add superscript text for exponents or references.</summary>
+				<p class="feature-description">Fine print on top, like references in a book.</p>
+			</details>
+		</article>
+<article id="underline" class="feature subfeature">
+			<h3 class="feature-title">{@link features/basic-styles Underline}</h3>
+			<details>
+				<summary class="feature-short-description">Underline text to highlight importance.</summary>
+				<p class="feature-description">Stuff looks important, yo. Or like a link, too.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="undo-redo" class="feature ">
+			<h3 class="feature-title">{@link features/undo-redo Undo/redo}</h3>
+			<details>
+				<summary class="feature-short-description">Easily undo or redo recent actions.</summary>
+				<p class="feature-description">Backtrack or repeat actions for editing purposes.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Collaboration</h2>
+	<p class="description">Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.</p>
+	<div class="features-list">
+		<article id="asynchronous-collaboration" class="feature ">
+			<h3 class="feature-title">{@link features/collaboration Asynchronous collaboration}</h3>
+			<details>
+				<summary class="feature-short-description">Work collaboratively with team members asynchronously using Track Changes, Comments, and Revision History.</summary>
+				<p class="feature-description">Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.</p>
+			</details><div class="subfeatures-list">
+				<article id="local-data-storage" class="feature subfeature">
+			<h3 class="feature-title">{@link features/collaboration Local data storage}</h3>
+			<details>
+				<summary class="feature-short-description">Store collaborative data on local client servers for security and control.</summary>
+				<p class="feature-description">In asynchronous collaboration, data is maintained on the client's servers.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="comments" class="feature ">
+			<h3 class="feature-title">{@link features/comments Comments}</h3>
+			<details>
+				<summary class="feature-short-description">Add, discuss, and resolve comments for seamless content collaboration.</summary>
+				<p class="feature-description">Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.</p>
+			</details><div class="subfeatures-list">
+				<article id="comments-archive" class="feature subfeature">
+			<h3 class="feature-title">{@link features/comments Comments archive}</h3>
+			<details>
+				<summary class="feature-short-description">Archive resolved comments for streamlined feedback management and future reference.</summary>
+				<p class="feature-description">Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.</p>
+			</details>
+		</article>
+<article id="comments-outside-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link features/comments-outside-editor Comments outside editor}</h3>
+			<details>
+				<summary class="feature-short-description">Extend comment functionality to non-editor fields for enhanced application integration.</summary>
+				<p class="feature-description">The comments feature API, together with <code>{@link module:core/context~Context}</code>, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.</p>
+			</details>
+		</article>
+<article id="sidebar-modes" class="feature subfeature">
+			<h3 class="feature-title">{@link features/annotations-display-mode Sidebar modes}</h3>
+			<details>
+				<summary class="feature-short-description">Choose between wide, narrow, or inline UIs to display annotations and comments.</summary>
+				<p class="feature-description">There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="mentions" class="feature ">
+			<h3 class="feature-title">{@link features/mentions Mentions}</h3>
+			<details>
+				<summary class="feature-short-description">Notify and tag users in content using smart autocompletion with @mentions.</summary>
+				<p class="feature-description">The mention feature supports smart autocompletion triggered by user input. Typing a predetermined marker, like @ or #, prompts a panel to appear, offering autocomplete suggestions.</p>
+			</details>
+		</article>
+<article id="real-time-collaboration" class="feature ">
+			<h3 class="feature-title">{@link features/real-time-collaboration Real-time collaboration}</h3>
+			<details>
+				<summary class="feature-short-description">Collaborate in real-time with automatic conflict resolution for seamless teamwork.</summary>
+				<p class="feature-description">Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.</p>
+			</details><div class="subfeatures-list">
+				<article id="co-authoring" class="feature subfeature">
+			<h3 class="feature-title">{@link features/users-in-real-time-collaboration Co-authoring}</h3>
+			<details>
+				<summary class="feature-short-description">Edit and create content simultaneously with multiple users in real time.</summary>
+				<p class="feature-description">Multiple user real-time editing and content creation feature.</p>
+			</details>
+		</article>
+<article id="on-premises" class="feature subfeature">
+			<h3 class="feature-title">{@link @cs onpremises/index On-premises}</h3>
+			<details>
+				<summary class="feature-short-description">Deploy real-time collaboration on your infrastructure for full control and privacy.</summary>
+				<p class="feature-description">On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.</p>
+			</details>
+		</article>
+<article id="saas" class="feature subfeature">
+			<h3 class="feature-title">{@link @cs guides/collaboration/quick-start SaaS}</h3>
+			<details>
+				<summary class="feature-short-description">Access real-time collaboration as a cloud service managed by CKSource.</summary>
+				<p class="feature-description">Real-time collaboration provided as a service by CKSource.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="revision-history" class="feature ">
+			<h3 class="feature-title">{@link features/revision-history Revision history}</h3>
+			<details>
+				<summary class="feature-short-description">Track, compare, and restore document versions with detailed revision history.</summary>
+				<p class="feature-description">The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.</p>
+			</details>
+		</article>
+<article id="track-changes" class="feature ">
+			<h3 class="feature-title">{@link features/track-changes Track changes}</h3>
+			<details>
+				<summary class="feature-short-description">Monitor and manage document edits with automatic suggestion tracking.</summary>
+				<p class="feature-description">The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard.</p>
+			</details>
+		</article>
+<article id="users-list-and-permissions" class="feature ">
+			<h3 class="feature-title">{@link features/users Users list and permissions}</h3>
+			<details>
+				<summary class="feature-short-description">Manage user roles and permissions for secure, collaborative editing.</summary>
+				<p class="feature-description">The <code>{@link module:collaboration-core/users~Users}</code> plugin and related plugins let you manage user data and permissions. This is essential when many users are working on the same document.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Content conversion & embedding</h2>
+	<p class="description">Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.</p>
+	<div class="features-list">
+		<article id="content-generation" class="feature ">
+			<h3 class="feature-title">{@link features/export-pdf Content generation}</h3>
+			<details>
+				<summary class="feature-short-description">Generate content in multiple formats like PDF and Word.</summary>
+				<p class="feature-description">CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</p>
+			</details><div class="subfeatures-list">
+				<article id="export-to-pdf" class="feature subfeature">
+			<h3 class="feature-title">{@link features/export-pdf Export to PDF}</h3>
+			<details>
+				<summary class="feature-short-description">Convert in-editor content to a PDF with customizable options.</summary>
+				<p class="feature-description">Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.</p>
+			</details>
+		</article>
+<article id="export-to-word" class="feature subfeature">
+			<h3 class="feature-title">{@link features/export-word Export to Word}</h3>
+			<details>
+				<summary class="feature-short-description">Export editor content to Word while preserving formatting and comments.</summary>
+				<p class="feature-description">Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.</p>
+			</details>
+		</article>
+<article id="import-from-word" class="feature subfeature">
+			<h3 class="feature-title">{@link features/import-word Import from Word}</h3>
+			<details>
+				<summary class="feature-short-description">Convert Word documents to HTML while keeping styling and annotations.</summary>
+				<p class="feature-description">Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="markdown-output" class="feature ">
+			<h3 class="feature-title">{@link features/markdown Markdown output}</h3>
+			<details>
+				<summary class="feature-short-description">Outputs editor content in Markdown format for developer-friendly workflows.</summary>
+				<p class="feature-description">Enable Markdown as the default output format instead of HTML with the Markdown plugin. Combined with Autoformatting, CKEditor becomes an efficient Markdown editor, allowing the creation of text documents using the simplified formatting syntax favored by developers.</p>
+			</details>
+		</article>
+<article id="media-embed" class="feature ">
+			<h3 class="feature-title">{@link features/media-embed Media embed}</h3>
+			<details>
+				<summary class="feature-short-description">Embed media by pasting a URL or using the insert media button.</summary>
+				<p class="feature-description">Use the insert media button in the toolbar to embed media. Pasting a media URL directly into the editor content automatically embeds the media.</p>
+			</details>
+		</article>
+<article id="paste-markdown" class="feature ">
+			<h3 class="feature-title">{@link features/paste-markdown Paste Markdown}</h3>
+			<details>
+				<summary class="feature-short-description">Paste Markdown-formatted text to convert it into rich text.</summary>
+				<p class="feature-description">The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.</p>
+			</details>
+		</article>
+<article id="xml-output" class="feature ">
+			<h3 class="feature-title">{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor XML output}</h3>
+			<details>
+				<summary class="feature-short-description">Transform content into XML for automation and compatibility.</summary>
+				<p class="feature-description">Turn your content into parsable XML files for automation and cross-platform interoperability.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Page management</h2>
+	<p class="description">Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.</p>
+	<div class="features-list">
+		<article id="document-outline" class="feature ">
+			<h3 class="feature-title">{@link features/document-outline Document outline}</h3>
+			<details>
+				<summary class="feature-short-description">Lists headings in a sidebar for quick navigation through documents.</summary>
+				<p class="feature-description">The Document Outline feature automatically detects and lists document headings in a sidebar, enabling faster navigation through large documents. Headings are organized in a structured list, so users can click and jump to different sections quickly. This feature also allows for customization of the outline's location within the user interface, catering to different user preferences for workspace layout.</p>
+			</details>
+		</article>
+<article id="page-utilities" class="feature ">
+			<h3 class="feature-title">{@link features/minimap Page utilities}</h3>
+			<details>
+				<summary class="feature-short-description">Manage document layout and formatting with Page Utilities.</summary>
+				<p class="feature-description">CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.</p>
+			</details><div class="subfeatures-list">
+				<article id="content-minimap" class="feature subfeature">
+			<h3 class="feature-title">{@link features/minimap Content minimap}</h3>
+			<details>
+				<summary class="feature-short-description">Provides an overview of content for quick navigation.</summary>
+				<p class="feature-description">Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.</p>
+			</details>
+		</article>
+<article id="document-title" class="feature subfeature">
+			<h3 class="feature-title">{@link features/title Document title}</h3>
+			<details>
+				<summary class="feature-short-description">Set and edit the document title for accuracy and relevance.</summary>
+				<p class="feature-description">Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents.</p>
+			</details>
+		</article>
+<article id="page-break" class="feature subfeature">
+			<h3 class="feature-title">{@link features/page-break Page break}</h3>
+			<details>
+				<summary class="feature-short-description">Insert manual page breaks for precise layout control.</summary>
+				<p class="feature-description">Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="pagination" class="feature ">
+			<h3 class="feature-title">{@link features/pagination Pagination}</h3>
+			<details>
+				<summary class="feature-short-description">Visually mark page boundaries for better document layout.</summary>
+				<p class="feature-description">The Pagination feature visually indicates where pages begin and end within a document. This feature is designed to assist users in preparing their documents for printing or export to various document formats, ensuring that the transition between pages is seamless and accurately reflected in the final output. Users may adjust content distribution across pages as they like, ensuring well-organized documents with presented content, whether in digital form or print. By providing a clear view of how text and elements will appear page-by-page, Pagination aids in the creation of professional and polished documents.</p>
+			</details>
+		</article>
+<article id="table-of-contents" class="feature ">
+			<h3 class="feature-title">{@link features/table-of-contents Table of contents}</h3>
+			<details>
+				<summary class="feature-short-description">Insert a dynamic table of contents that updates in real time.</summary>
+				<p class="feature-description">The Table of Contents feature is a dynamic tool for organizing documents. It allows for the insertion of a linked table of contents that automatically updates in real time as the document's content changes. This means changes made to headings or structured sections within the document are reflected immediately in the table of contents, accurately representing the document structure.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Productivity</h2>
+	<p class="description">Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.</p>
+	<div class="features-list">
+		<article id="ai-assistant" class="feature ">
+			<h3 class="feature-title">{@link features/ai-assistant-overview AI Assistant}</h3>
+			<details>
+				<summary class="feature-short-description">Leverage AI for content creation, processing, and customizable integrations.</summary>
+				<p class="feature-description">The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.</p>
+			</details>
+		</article>
+<article id="automation" class="feature ">
+			<h3 class="feature-title">{@link features/autoformat Automation}</h3>
+			<details>
+				<summary class="feature-short-description">Streamline tasks like formatting, linking, and saving with automation tools.</summary>
+				<p class="feature-description">Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!</p>
+			</details><div class="subfeatures-list">
+				<article id="autoformatting" class="feature subfeature">
+			<h3 class="feature-title">{@link features/autoformat Autoformatting}</h3>
+			<details>
+				<summary class="feature-short-description">Quickly format content using Markdown-like shortcuts.</summary>
+				<p class="feature-description">Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.</p>
+			</details>
+		</article>
+<article id="autolink" class="feature subfeature">
+			<h3 class="feature-title">{@link features/link#autolink-feature Autolink}</h3>
+			<details>
+				<summary class="feature-short-description">Automatically convert URLs and emails into clickable links.</summary>
+				<p class="feature-description">With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.</p>
+			</details>
+		</article>
+<article id="automatic-text-transformation" class="feature subfeature">
+			<h3 class="feature-title">{@link features/text-transformation Automatic text transformations}</h3>
+			<details>
+				<summary class="feature-short-description">Automatically expand abbreviations or autocorrect text based on predefined rules.</summary>
+				<p class="feature-description">The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.</p>
+			</details>
+		</article>
+<article id="autosave" class="feature subfeature">
+			<h3 class="feature-title">{@link features/autosave Autosave}</h3>
+			<details>
+				<summary class="feature-short-description">Automatically save changes for uninterrupted workflow.</summary>
+				<p class="feature-description">The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="case-change" class="feature ">
+			<h3 class="feature-title">{@link features/case-change Case change}</h3>
+			<details>
+				<summary class="feature-short-description">Easily switch text cases between uppercase, lowercase, and title case.</summary>
+				<p class="feature-description">The Case Change feature simplifies adjusting text cases within a document. With just a single click, users can shift text between UPPERCASE, lowercase, and Title Case options. The case transformation can be applied to various text blocks (paragraph, heading, or list item) by placing the cursor within the block. Alternatively, users can select a specific fragment of text they wish to modify. This feature enhances the editing workflow by removing the need for manual case adjustments.</p>
+			</details>
+		</article>
+<article id="find-and-replace" class="feature ">
+			<h3 class="feature-title">{@link features/find-and-replace Find and replace}</h3>
+			<details>
+				<summary class="feature-short-description">Search and replace text efficiently across your document.</summary>
+				<p class="feature-description">The Find and Replace feature in CKEditor 5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency.</p>
+			</details>
+		</article>
+<article id="format-painter" class="feature ">
+			<h3 class="feature-title">{@link features/format-painter Format painter}</h3>
+			<details>
+				<summary class="feature-short-description">Clone and apply formatting for consistent styling across sections.</summary>
+				<p class="feature-description">The Format Painter feature lets users clone formatting from one section and apply it to others within a document. This tool speeds up maintaining style consistency across the document. Once initiated, Format Painter can continue to apply the copied formatting to multiple sections consecutively. This "continuous painting" ensures a uniform style is achieved quickly without the need to repeatedly select the formatting options for each new section.</p>
+			</details>
+		</article>
+<article id="keyboard-shortcuts" class="feature ">
+			<h3 class="feature-title">{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}</h3>
+			<details>
+				<summary class="feature-short-description">Boost productivity with keyboard shortcuts for editing and accessibility.</summary>
+				<p class="feature-description">CKEditor 5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users.</p>
+			</details>
+		</article>
+<article id="mathtype" class="feature ">
+			<h3 class="feature-title">{@link features/math-equations MathType}</h3>
+			<details>
+				<summary class="feature-short-description">Insert formatted math equations and chemical formulas into your content.</summary>
+				<p class="feature-description">Math Equations allows you to add properly formatted mathematical notation and chemical formulas to your documents. This feature supports the inclusion of math equations, which can be handwritten on a tablet and automatically converted into well-formed digital text. It also offers simple numbering of equations and the ability to customize with various fonts and colors, enhancing readability and presentation in your content.</p>
+			</details>
+		</article>
+<article id="merge-fields" class="feature ">
+			<h3 class="feature-title">{@link features/merge-fields Merge fields}</h3>
+			<details>
+				<summary class="feature-short-description">Add placeholders for dynamic values in templates and documents.</summary>
+				<p class="feature-description">Merge Fields allows the inclusion of placeholders in your content, facilitating the creation of document templates, especially useful for email templates and document automation. These placeholders can later be replaced with dynamic values by the customer's application, enabling tasks like mass email distribution or generation of personalized documents.</p>
+			</details>
+		</article>
+<article id="paste-from-google-docs" class="feature ">
+			<h3 class="feature-title">{@link features/paste-from-google-docs Paste from Google Docs}</h3>
+			<details>
+				<summary class="feature-short-description">Retain formatting when pasting content from Google Docs.</summary>
+				<p class="feature-description">Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature.</p>
+			</details>
+		</article>
+<article id="paste-from-office" class="feature ">
+			<h3 class="feature-title">{@link features/paste-from-office Paste from Office}</h3>
+			<details>
+				<summary class="feature-short-description">Preserve formatting and structure when pasting from Microsoft Office.</summary>
+				<p class="feature-description">Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature.</p>
+			</details>
+		</article>
+<article id="paste-from-office-enhanced" class="feature ">
+			<h3 class="feature-title">{@link features/paste-from-office-enhanced Paste from Office Enhanced}</h3>
+			<details>
+				<summary class="feature-short-description">Accurately preserve advanced formatting when pasting from Word or Excel.</summary>
+				<p class="feature-description">The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor 5 without compromising on formatting.</p>
+			</details>
+		</article>
+<article id="paste-plain-text" class="feature ">
+			<h3 class="feature-title">{@link features/paste-plain-text Paste plain text}</h3>
+			<details>
+				<summary class="feature-short-description">Paste content without formatting for clean and consistent styling.</summary>
+				<p class="feature-description">The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text pasted into the document adopts the style of the surrounding content, effectively described as "pasting without formatting." Additionally, it intelligently converts double-line breaks into paragraphs and single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.</p>
+			</details>
+		</article>
+<article id="slash-commands" class="feature ">
+			<h3 class="feature-title">{@link features/slash-commands Slash commands}</h3>
+			<details>
+				<summary class="feature-short-description">Quickly add and style content using slash commands for efficiency.</summary>
+				<p class="feature-description">The Slash Commands feature lets users insert block elements and apply styles using just the keyboard. By pressing the / key, a panel with suggested commands appears, enabling quick and mouse-free actions. Users can filter through these commands by typing additional phrases after the /, making it easier to find specific commands. Additionally, the option to customize personal commands is available, allowing for a tailored editing experience.</p>
+			</details>
+		</article>
+<article id="special-characters" class="feature ">
+			<h3 class="feature-title">{@link features/special-characters Special characters}</h3>
+			<details>
+				<summary class="feature-short-description">Add unique symbols, characters, and emojis to your content.</summary>
+				<p class="feature-description">Insert a variety of unique symbols and characters into your document with CKEditor 5's Special Characters feature. This includes mathematical operators, currency symbols, punctuation, graphic symbols like arrows or bullets, and Unicode letters that are not typically available on standard keyboards, such as umlauts or diacritics. Additionally, the feature supports the insertion of emojis. This tool is particularly useful for enhancing the detail and accuracy of content that requires specialized symbols.</p>
+			</details>
+		</article>
+<article id="templates" class="feature ">
+			<h3 class="feature-title">{@link features/template Templates}</h3>
+			<details>
+				<summary class="feature-short-description">Insert predefined templates for faster and consistent document creation.</summary>
+				<p class="feature-description">The Templates feature enables the insertion of predefined content structures into documents, ranging from small content pieces, like formatted tables, to complete document frameworks, like formal letter templates. Templates accelerate the document creation process while ensuring adherence to the company's content and document policies.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Configurations</h2>
+	<p class="description">Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.</p>
+	<div class="features-list">
+		<article id="editor-placeholder" class="feature ">
+			<h3 class="feature-title">{@link features/editor-placeholder Editor placeholder}</h3>
+			<details>
+				<summary class="feature-short-description">Display customizable placeholder text in the editor when no content is present.</summary>
+				<p class="feature-description">You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM placeholder attribute used by inputs. Not to be confused with content placeholder.</p>
+			</details>
+		</article>
+<article id="editor-ui-types" class="feature ">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types Editor UI types}</h3>
+			<details>
+				<summary class="feature-short-description">undefined</summary>
+				<p class="feature-description">The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.</p>
+			</details><div class="subfeatures-list">
+				<article id="balloon-block-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}</h3>
+			<details>
+				<summary class="feature-short-description">Balloon editor with a block toolbar for advanced block-level editing.</summary>
+				<p class="feature-description">Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.</p>
+			</details>
+		</article>
+<article id="balloon-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon editor}</h3>
+			<details>
+				<summary class="feature-short-description">Inline editor with a toolbar that appears next to the text selection.</summary>
+				<p class="feature-description">Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).</p>
+			</details>
+		</article>
+<article id="classic-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types#classic-editor Classic editor}</h3>
+			<details>
+				<summary class="feature-short-description">Traditional editor with a fixed toolbar and editing area.</summary>
+				<p class="feature-description">Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.</p>
+			</details>
+		</article>
+<article id="decoupled-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}</h3>
+			<details>
+				<summary class="feature-short-description">Editor designed for creating documents like Google Docs or Microsoft Word.</summary>
+				<p class="feature-description">The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.</p>
+			</details>
+		</article>
+<article id="inline-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types#inline-editor Inline editor}</h3>
+			<details>
+				<summary class="feature-short-description">Floating toolbar editor for editing content directly on the web page.</summary>
+				<p class="feature-description">The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.</p>
+			</details>
+		</article>
+<article id="multi-root-editor" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}</h3>
+			<details>
+				<summary class="feature-short-description">Editor with multiple connected editable areas sharing the same configuration.</summary>
+				<p class="feature-description">The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are “connected.” All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="professionally-translated-language-packs" class="feature ">
+			<h3 class="feature-title">{@link getting-started/setup/ui-language Professionally translated language packs}</h3>
+			<details>
+				<summary class="feature-short-description">undefined</summary>
+				<p class="feature-description">CKEditor 5 provides 38 professionally translated language options, along with additional languages provided by community translations. CKEditor 5 also supports right-to-left (RTL) languages natively. When an RTL language is selected, the editor automatically adjusts its interface, including elements like toolbars, dropdowns, and buttons, to ensure an optimal editing experience.1</p>
+			</details>
+		</article>
+<article id="toolbar-and-menus" class="feature ">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar Toolbar and menus}</h3>
+			<details>
+				<summary class="feature-short-description">undefined</summary>
+				<p class="feature-description">The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously.</p>
+			</details><div class="subfeatures-list">
+				<article id="balloon-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A floating toolbar that appears when content is selected.</summary>
+				<p class="feature-description">A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.</p>
+			</details>
+		</article>
+<article id="block-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar#block-toolbar Block toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A configurable toolbar on the left side of the editor.</summary>
+				<p class="feature-description">The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor).</p>
+			</details>
+		</article>
+<article id="classic-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A standard toolbar with buttons and dropdowns for editing.</summary>
+				<p class="feature-description">The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.</p>
+			</details>
+		</article>
+<article id="collapsible-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A toolbar that collapses to save space.</summary>
+				<p class="feature-description">Collapsible toolbar for UI space efficiency.</p>
+			</details>
+		</article>
+<article id="image-contextual-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A toolbar for image-specific tools appearing upon selection.</summary>
+				<p class="feature-description">The <code>{@link module:image/imagetoolbar~ImageToolbar}</code> plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the <code>{@link features/images-text-alternative text alternative}</code> button, the <code>{@link features/images-captions image caption}</code> button, and <code>{@link features/images-styles image styles}</code> buttons. The toolbar can also host the image editing button introduced by the <code>{@link features/ckbox CKBox asset manager}</code>. Shown below is an example contextual toolbar with an extended set of buttons.</p>
+			</details>
+		</article>
+<article id="menu-bar" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/menubar Menu bar}</h3>
+			<details>
+				<summary class="feature-short-description">A familiar menu interface for accessing all editor features.</summary>
+				<p class="feature-description">The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.</p>
+			</details>
+		</article>
+<article id="multiline-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A toolbar that spans multiple lines for better tool visibility.</summary>
+				<p class="feature-description">Multiline toolbar for easy access to all functions.</p>
+			</details>
+		</article>
+<article id="nesting-toolbars-in-dropdowns" class="feature subfeature">
+			<h3 class="feature-title">{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}</h3>
+			<details>
+				<summary class="feature-short-description">Group toolbar items into dropdowns to save space.</summary>
+				<p class="feature-description">Nested toolbars for space efficiency and task-oriented access.</p>
+			</details>
+		</article>
+<article id="sidebar-annotations-bar" class="feature subfeature">
+			<h3 class="feature-title">{@link features/annotations-display-mode#wide-sidebar Wide sidebar}</h3>
+			<details>
+				<summary class="feature-short-description">A wide sidebar for comments and suggestions.</summary>
+				<p class="feature-description">There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations.</p>
+			</details>
+		</article>
+<article id="table-contextual-toolbar" class="feature subfeature">
+			<h3 class="feature-title">{@link features/tables#table-contextual-toolbar Table contextual toolbar}</h3>
+			<details>
+				<summary class="feature-short-description">A toolbar for table-related tools appearing on selection.</summary>
+				<p class="feature-description">The <code>{@link module:table/tabletoolbar~TableToolbar}</code> plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="watchdog" class="feature ">
+			<h3 class="feature-title">{@link features/watchdog Watchdog}</h3>
+			<details>
+				<summary class="feature-short-description">A utility that prevents data loss by recovering content after crashes.</summary>
+				<p class="feature-description">The watchdog utility protects you from data loss in case the editor crashes. It saves your content just before the crash and creates a new instance of the editor with your content intact.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Compliance</h2>
+	<p class="description">Make your content accessible to any person or restrict it to specific users.</p>
+	<div class="features-list">
+		<article id="accessibility-support" class="feature ">
+			<h3 class="feature-title">{@link features/accessibility Accessibility support}</h3>
+			<details>
+				<summary class="feature-short-description">Provides keyboard navigation, screen reader support, and semantic output for accessibility compliance.</summary>
+				<p class="feature-description">CKEditor 5 includes accessibility functionality designed to ensure content is accessible to all users. These features encompass keyboard navigation for easier content access without a mouse, screen reader compatibility facilitated by ARIA attributes, and semantic output markup for clearer interpretation of content structures. CKEditor 5 meets the requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at levels A and AA, as well as Section 508 of the Rehabilitation Act, as detailed in the Accessibility Conformance Report, ensuring broad accessibility compliance.</p>
+			</details>
+		</article>
+<article id="read-only-support" class="feature ">
+			<h3 class="feature-title">{@link features/read-only Read-only support}</h3>
+			<details>
+				<summary class="feature-short-description">Allows content to be viewed without editing access.</summary>
+				<p class="feature-description">The Read-Only Mode feature enables content to be locked from editing while still allowing it to be viewed. This mode is often used for restricting editing access based on user roles, allowing only specific users or groups to view the content without being able to modify it. Common uses include viewing sensitive documents like financial reports, software logs, or copyrighted stories that should not be altered but need to be accessible for copying or by screen readers. This mode can be toggled on and off by system triggers.</p>
+			</details>
+		</article>
+<article id="restricted-editing" class="feature ">
+			<h3 class="feature-title">{@link features/restricted-editing Restricted editing}</h3>
+			<details>
+				<summary class="feature-short-description">Restricts editing to specific sections of a document.</summary>
+				<p class="feature-description">The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.</p>
+			</details>
+		</article>
+<article id="text-part-language" class="feature ">
+			<h3 class="feature-title">{@link features/language Text Part Language}</h3>
+			<details>
+				<summary class="feature-short-description">Specifies languages for text sections to enhance multilingual accessibility.</summary>
+				<p class="feature-description">The Text Part Language feature allows users to specify the language of individual sections of text. This capability helps in creating documents that include multiple languages by ensuring that browsers and screen readers correctly interpret each part according to its designated language. This feature is particularly valuable for content that contains text in varying directions, such as an English document with Arabic citations. It supports the WCAG 3.1.2 Language of Parts specification, facilitating the creation of more accessible and comprehensible multilingual content.</p>
+			</details>
+		</article>
+<article id="word-and-character-counter" class="feature ">
+			<h3 class="feature-title">{@link features/word-count Word and character counter}</h3>
+			<details>
+				<summary class="feature-short-description">Tracks word and character count in real time.</summary>
+				<p class="feature-description">The Word and Character Count feature provides a real-time tracking tool for monitoring the number of words and characters within the editor. This functionality assists in managing content length and ensuring it meets specific requirements or limits.</p>
+			</details>
+		</article>
+<article id="wproofreader" class="feature ">
+			<h3 class="feature-title">{@link features/spelling-and-grammar-checking WProofreader}</h3>
+			<details>
+				<summary class="feature-short-description">Proofreads text with real-time spelling and grammar checks in 80+ languages.</summary>
+				<p class="feature-description">The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>Customization</h2>
+	<p class="description">Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.</p>
+	<div class="features-list">
+		<article id="editor-sdk" class="feature ">
+			<h3 class="feature-title">{@link framework/index Editor SDK}</h3>
+			<details>
+				<summary class="feature-short-description">Customize your editor with toolbars, plugins, and developer tools.</summary>
+				<p class="feature-description">Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.</p>
+			</details><div class="subfeatures-list">
+				<article id="ckeditor5-inspector" class="feature subfeature">
+			<h3 class="feature-title">{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}</h3>
+			<details>
+				<summary class="feature-short-description">A debugging tool for exploring editor internals.</summary>
+				<p class="feature-description">The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like <code>{@link framework/architecture/editing-engine#model model}</code>, <code>{@link framework/architecture/editing-engine#view view}</code>, and <code>{@link framework/architecture/core-editor-architecture#commands commands}</code>.</p>
+			</details>
+		</article>
+<article id="cloud-services-rest-api" class="feature subfeature">
+			<h3 class="feature-title">{@link @cs developer-resources/apis/overview Cloud Services REST API}</h3>
+			<details>
+				<summary class="feature-short-description">Cloud backend services with REST API support for collaboration.</summary>
+				<p class="feature-description">The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.</p>
+			</details>
+		</article>
+			</div>
+		</article>
+<article id="themes" class="feature ">
+			<h3 class="feature-title">{@link framework/theme-customization Themes}</h3>
+			<details>
+				<summary class="feature-short-description">Customize the editor theme to match your design needs.</summary>
+				<p class="feature-description">The default theme of CKEditor 5 can be customized to match most visual integration requirements.</p>
+			</details>
+		</article>
+<article id="ui-library" class="feature ">
+			<h3 class="feature-title">{@link framework/architecture/ui-library UI Library}</h3>
+			<details>
+				<summary class="feature-short-description">A modular UI library for seamless ecosystem integration.</summary>
+				<p class="feature-description">The standard UI library of CKEditor 5 is <code><a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui">@ckeditor/ckeditor5-ui</a></code>. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<section class="capability">
+	<h2>File management</h2>
+	<p class="description">Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.</p>
+	<div class="features-list">
+		<article id="base64-upload-adapter" class="feature ">
+			<h3 class="feature-title">{@link features/base64-upload-adapter Base64 Upload Adapter}</h3>
+			<details>
+				<summary class="feature-short-description">Encodes images as Base64 strings for database storage.</summary>
+				<p class="feature-description">Convert inserted images into Base64-encoded strings in the editor output. Images are stored with other content in the database without server-side processing.</p>
+			</details>
+		</article>
+<article id="ckbox" class="feature ">
+			<h3 class="feature-title">{@link features/ckbox CKBox}</h3>
+			<details>
+				<summary class="feature-short-description">A secure and flexible media management solution with cloud and on-premise options.</summary>
+				<p class="feature-description">Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS.</p>
+			</details>
+		</article>
+<article id="ckfinder" class="feature ">
+			<h3 class="feature-title">{@link features/ckfinder CKFinder}</h3>
+			<details>
+				<summary class="feature-short-description">A robust file manager for inserting and editing images and files.</summary>
+				<p class="feature-description">The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.</p>
+			</details>
+		</article>
+<article id="custom-upload-adapter" class="feature ">
+			<h3 class="feature-title">{@link features/image-upload#implementing-your-own-upload-adapter Custom Upload Adapter}</h3>
+			<details>
+				<summary class="feature-short-description">Integrates CKEditor with custom file management solutions.</summary>
+				<p class="feature-description">Have your own file management solution? Use this adapter to integrate your preferred software with CKEditor.</p>
+			</details>
+		</article>
+<article id="simple-upload-adapter" class="feature ">
+			<h3 class="feature-title">{@link features/simple-upload-adapter Simple Upload Adapter}</h3>
+			<details>
+				<summary class="feature-short-description">Uploads images to a server with minimal configuration.</summary>
+				<p class="feature-description">Upload images to your server using the <code>XMLHttpRequest</code> API with a minimal editor configuration.</p>
+			</details>
+		</article>
+	</div>
+</section>
+<!--MARK_END-->
