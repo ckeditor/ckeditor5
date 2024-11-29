@@ -3,13 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document setTimeout */
+/* global document setTimeout Event KeyboardEvent */
 
 import { ContextualBalloon } from 'ckeditor5/src/ui.js';
 import { EmojiPicker } from '../src/index.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
 
 describe( 'EmojiPicker', () => {
 	let editor, editorElement;
@@ -36,6 +38,7 @@ describe( 'EmojiPicker', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( EmojiPicker.requires ).to.deep.equal( [
+			EmojiLibraryIntegration,
 			ContextualBalloon
 		] );
 	} );
@@ -56,15 +59,75 @@ describe( 'EmojiPicker', () => {
 		emojiToolbarButton.click();
 
 		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 500 ) );
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
 
 		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
 
 		emojiSmileButton.click();
 
 		// Wait for the picker to act.
-		await new Promise( resolve => setTimeout( resolve, 500 ) );
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
 
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]😀</paragraph>' );
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+	} );
+
+	it( 'should close the picker when clicking outside of it', async () => {
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+		const emojiToolbarButton = Array.from( document.querySelectorAll( 'button' ) ).find( button => button.innerText === 'Emoji' );
+
+		emojiToolbarButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
+		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
+
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		expect( emojiSmileButton.checkVisibility() ).to.equal( false );
+	} );
+
+	it( 'should close the picker when focus is on the editor and escape is clicked', async () => {
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+		const emojiToolbarButton = Array.from( document.querySelectorAll( 'button' ) ).find( button => button.innerText === 'Emoji' );
+
+		emojiToolbarButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
+		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
+
+		document.querySelector( '.ck-editor' ).focus();
+
+		editor.keystrokes.press( {
+			keyCode: keyCodes.esc,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+
+		expect( emojiSmileButton.checkVisibility() ).to.equal( false );
+	} );
+
+	it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+		const emojiToolbarButton = Array.from( document.querySelectorAll( 'button' ) ).find( button => button.innerText === 'Emoji' );
+
+		emojiToolbarButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const emojiSearchBar = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'input#search' );
+		expect( emojiSearchBar.checkVisibility() ).to.equal( true );
+
+		emojiSearchBar.dispatchEvent( new KeyboardEvent( 'keydown', { bubbles: true, composed: true, key: 'Escape' } ) );
+
+		expect( emojiSearchBar.checkVisibility() ).to.equal( false );
 	} );
 } );

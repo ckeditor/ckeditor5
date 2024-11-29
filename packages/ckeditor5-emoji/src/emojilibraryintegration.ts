@@ -9,7 +9,7 @@
 
 import { Database } from 'emoji-picker-element';
 import { formatEmojiId, getShowAllEmojiId } from './utils.js';
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
 import EmojiPicker from './emojipicker.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
@@ -21,8 +21,8 @@ import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
  * @internal
  */
 export default class EmojiLibraryIntegration extends Plugin {
-	declare private _hasEmojiPicker: boolean;
-	declare private _localDataUrl: string;
+	declare protected _hasEmojiPicker: boolean;
+	declare protected _localDataUrl: string;
 
 	/**
 	 * @inheritDoc
@@ -38,21 +38,31 @@ export default class EmojiLibraryIntegration extends Plugin {
 		return true;
 	}
 
+	constructor( editor: Editor ) {
+		super( editor );
+
+		// Make it available via getter.
+		this._localDataUrl = URL.createObjectURL(
+			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
+		);
+	}
+
+	public get localDataUrl(): string {
+		return this._localDataUrl;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
 		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
-
-		this._localDataUrl = URL.createObjectURL(
-			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
-		);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
+		// Make sure it works as expected. In tests, after destroying a plugin, try to read this resource. It should not be possible.
 		URL.revokeObjectURL( this._localDataUrl );
 	}
 

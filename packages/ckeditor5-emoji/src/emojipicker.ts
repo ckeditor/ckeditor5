@@ -7,7 +7,7 @@
  * @module emoji/emojipicker
  */
 
-import 'emoji-picker-element';
+import { Picker } from 'emoji-picker-element';
 
 import {
 	ButtonView,
@@ -17,6 +17,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import EmojiLibraryIntegration from './emojilibraryintegration.js';
 
 type EmojiClickEvent = Event & {
 	detail: {
@@ -37,7 +38,7 @@ export default class EmojiPicker extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon ] as const;
+		return [ EmojiLibraryIntegration, ContextualBalloon ] as const;
 	}
 
 	/**
@@ -126,9 +127,7 @@ export default class EmojiPicker extends Plugin {
 			const emoji = ( event as EmojiClickEvent ).detail.unicode;
 
 			editor.model.change( writer => {
-				const insertPosition = editor.model.document.selection.getFirstPosition()!;
-
-				writer.insertText( emoji, insertPosition );
+				editor.model.insertContent( writer.createText( emoji ) );
 			} );
 
 			this._hideUI();
@@ -164,7 +163,9 @@ class EmojiDialog extends View {
 	constructor( editor: Editor ) {
 		super( editor.locale );
 
-		this.emojiElement = document.createElement( 'emoji-picker' );
+		this.emojiElement = new Picker( {
+			dataSource: editor.plugins.get( EmojiLibraryIntegration ).localDataUrl
+		} );
 		this.emojiElement.style.height = '400px';
 		this.emojiElement.classList.add( 'light' );
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document fetch */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Emoji, EmojiMention } from '../src/index.js';
@@ -38,6 +38,38 @@ describe( 'EmojiLibraryIntegration', () => {
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
 		expect( EmojiLibraryIntegration.isPremiumPlugin ).to.be.false;
+	} );
+
+	it( 'should expose data source under `localDataUrl`', async () => {
+		const localDataUrl = editor.plugins.get( EmojiLibraryIntegration ).localDataUrl;
+
+		expect( typeof localDataUrl ).to.equal( 'string' );
+
+		const response = await fetch( localDataUrl );
+		const data = await response.json();
+
+		expect( Array.isArray( data ) ).to.be.true;
+	} );
+
+	it( 'should clean up `localDataUrl` after its destroyed', async () => {
+		const localDataUrl = editor.plugins.get( EmojiLibraryIntegration ).localDataUrl;
+
+		expect( typeof localDataUrl ).to.equal( 'string' );
+
+		const response = await fetch( localDataUrl );
+		const data = await response.json();
+
+		expect( Array.isArray( data ) ).to.be.true;
+
+		await editor.destroy();
+
+		try {
+			await fetch( localDataUrl );
+
+			throw new Error( 'Expected to throw.' );
+		} catch ( err ) {
+			expect( err.message ).to.equal( 'Failed to fetch' );
+		}
 	} );
 
 	describe( 'queryEmoji()', () => {
