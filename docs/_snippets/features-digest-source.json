@@ -680,7 +680,7 @@
 	},
 	{
 		"name": "Content conversion & embedding",
-		"description": "",
+		"description": "Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.",
 		"features": [
 			{
 				"id": "content-generation",
@@ -689,6 +689,7 @@
 				"name": "Content generation",
 				"isPremium": true,
 				"description": "CKEditor 5 may be your universal starting point for generating content in several recognizable formats.",
+				"shortDescription": "Generate content in multiple formats like PDF and Word.",
 				"subFeatures": [
 					{
 						"id": "export-to-pdf",
@@ -696,7 +697,8 @@
 						"link": "features/export-pdf",
 						"name": "Export to PDF",
 						"isPremium": true,
-						"description": "Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts."
+						"description": "Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.",
+						"shortDescription": "Convert in-editor content to a PDF with customizable options."
 					},
 					{
 						"id": "export-to-word",
@@ -704,7 +706,8 @@
 						"link": "features/export-word",
 						"name": "Export to Word",
 						"isPremium": true,
-						"description": "Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images."
+						"description": "Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.",
+						"shortDescription": "Export editor content to Word while preserving formatting and comments."
 					},
 					{
 						"id": "import-from-word",
@@ -712,7 +715,8 @@
 						"link": "features/import-word",
 						"name": "Import from Word",
 						"isPremium": true,
-						"description": "Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations."
+						"description": "Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.",
+						"shortDescription": "Convert Word documents to HTML while keeping styling and annotations."
 					}
 				]
 			},
@@ -721,28 +725,32 @@
 				"type": "feature",
 				"link": "features/markdown",
 				"name": "Markdown output",
-				"description": "Enable Markdown as the default output format instead of HTML with the Markdown plugin. Combined with Autoformatting, CKEditor becomes an efficient Markdown editor, allowing the creation of text documents using the simplified formatting syntax favored by developers."
+				"description": "Enable Markdown as the default output format instead of HTML with the Markdown plugin. Combined with Autoformatting, CKEditor becomes an efficient Markdown editor, allowing the creation of text documents using the simplified formatting syntax favored by developers.",
+				"shortDescription": "Outputs editor content in Markdown format for developer-friendly workflows."
 			},
 			{
 				"id": "media-embed",
 				"type": "feature",
 				"link": "features/media-embed",
 				"name": "Media embed",
-				"description": "Use the insert media button in the toolbar to embed media. Pasting a media URL directly into the editor content automatically embeds the media."
+				"description": "Use the insert media button in the toolbar to embed media. Pasting a media URL directly into the editor content automatically embeds the media.",
+				"shortDescription": "Embed media by pasting a URL or using the insert media button."
 			},
 			{
 				"id": "paste-markdown",
 				"type": "feature",
 				"link": "features/paste-markdown",
 				"name": "Paste Markdown",
-				"description": "The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly."
+				"description": "The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.",
+				"shortDescription": "Paste Markdown-formatted text to convert it into rich text."
 			},
 			{
 				"id": "xml-output",
 				"type": "feature",
 				"link": "module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor",
 				"name": "XML output",
-				"description": "Turn your content into parsable XML files for automation and cross-platform interoperability."
+				"description": "Turn your content into parsable XML files for automation and cross-platform interoperability.",
+				"shortDescription": "Transform content into XML for automation and compatibility."
 			}
 		]
 	},
@@ -756,7 +764,8 @@
 				"link": "features/document-outline",
 				"name": "Document outline",
 				"isPremium": true,
-				"description": "The Document Outline feature automatically detects and lists document headings in a sidebar, enabling faster navigation through large documents. Headings are organized in a structured list, so users can click and jump to different sections quickly. This feature also allows for customization of the outline's location within the user interface, catering to different user preferences for workspace layout."
+				"description": "The Document Outline feature automatically detects and lists document headings in a sidebar, enabling faster navigation through large documents. Headings are organized in a structured list, so users can click and jump to different sections quickly. This feature also allows for customization of the outline's location within the user interface, catering to different user preferences for workspace layout.",
+				"shortDescription": "Lists headings in a sidebar for quick navigation through documents."
 			},
 			{
 				"id": "page-utilities",
@@ -764,27 +773,31 @@
 				"link": "features/minimap",
 				"name": "Page utilities",
 				"description": "CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.",
+				"shortDescription": "Manage document layout and formatting with Page Utilities.",
 				"subFeatures": [
 					{
 						"id": "content-minimap",
 						"type": "subFeature",
 						"link": "features/minimap",
 						"name": "Content minimap",
-						"description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management."
+						"description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.",
+						"shortDescription": "Provides an overview of content for quick navigation."
 					},
 					{
 						"id": "document-title",
 						"type": "subFeature",
 						"link": "features/title",
 						"name": "Document title",
-						"description": "Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents."
+						"description": "Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents.",
+						"shortDescription": "Set and edit the document title for accuracy and relevance."
 					},
 					{
 						"id": "page-break",
 						"type": "subFeature",
 						"link": "features/page-break",
 						"name": "Page break",
-						"description": "Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity."
+						"description": "Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.",
+						"shortDescription": "Insert manual page breaks for precise layout control."
 					}
 				]
 			},
@@ -794,7 +807,8 @@
 				"link": "features/pagination",
 				"name": "Pagination",
 				"isPremium": true,
-				"description": "The Pagination feature visually indicates where pages begin and end within a document. This feature is designed to assist users in preparing their documents for printing or export to various document formats, ensuring that the transition between pages is seamless and accurately reflected in the final output. Users may adjust content distribution across pages as they like, ensuring well-organized documents with presented content, whether in digital form or print. By providing a clear view of how text and elements will appear page-by-page, Pagination aids in the creation of professional and polished documents."
+				"description": "The Pagination feature visually indicates where pages begin and end within a document. This feature is designed to assist users in preparing their documents for printing or export to various document formats, ensuring that the transition between pages is seamless and accurately reflected in the final output. Users may adjust content distribution across pages as they like, ensuring well-organized documents with presented content, whether in digital form or print. By providing a clear view of how text and elements will appear page-by-page, Pagination aids in the creation of professional and polished documents.",
+				"shortDescription": "Visually mark page boundaries for better document layout."
 			},
 			{
 				"id": "table-of-contents",
@@ -802,7 +816,8 @@
 				"link": "features/table-of-contents",
 				"name": "Table of contents",
 				"isPremium": true,
-				"description": "The Table of Contents feature is a dynamic tool for organizing documents. It allows for the insertion of a linked table of contents that automatically updates in real time as the document's content changes. This means changes made to headings or structured sections within the document are reflected immediately in the table of contents, accurately representing the document structure."
+				"description": "The Table of Contents feature is a dynamic tool for organizing documents. It allows for the insertion of a linked table of contents that automatically updates in real time as the document's content changes. This means changes made to headings or structured sections within the document are reflected immediately in the table of contents, accurately representing the document structure.",
+				"shortDescription": "Insert a dynamic table of contents that updates in real time."
 			}
 		]
 	},
@@ -983,7 +998,8 @@
 				"type": "feature",
 				"link": "features/editor-placeholder",
 				"name": "Editor placeholder",
-				"description": "You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM placeholder attribute used by inputs. Not to be confused with content placeholder."
+				"description": "You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM placeholder attribute used by inputs. Not to be confused with content placeholder.",
+				"shortDescription": "Display customizable placeholder text in the editor when no content is present."
 			},
 			{
 				"id": "editor-ui-types",
@@ -997,42 +1013,48 @@
 						"type": "subFeature",
 						"link": "getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor",
 						"name": "Balloon block editor",
-						"description": "Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features."
+						"description": "Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.",
+						"shortDescription": "Balloon editor with a block toolbar for advanced block-level editing."
 					},
 					{
 						"id": "balloon-editor",
 						"type": "subFeature",
 						"link": "getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor",
-						"name": "Balloon block editor",
-						"description": "Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty)."
+						"name": "Balloon editor",
+						"description": "Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).",
+						"shortDescription": "Inline editor with a toolbar that appears next to the text selection."
 					},
 					{
 						"id": "classic-editor",
 						"type": "subFeature",
 						"link": "getting-started/setup/editor-types#classic-editor",
 						"name": "Classic editor",
-						"description": "Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server."
+						"description": "Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.",
+						"shortDescription": "Traditional editor with a fixed toolbar and editing area."
 					},
 					{
 						"id": "decoupled-editor",
 						"type": "subFeature",
 						"link": "getting-started/setup/editor-types#decoupled-editor-document",
 						"name": "Decoupled editor",
-						"description": "The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files."
+						"description": "The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.",
+						"shortDescription": "Editor designed for creating documents like Google Docs or Microsoft Word."
 					},
 					{
 						"id": "inline-editor",
 						"type": "subFeature",
 						"link": "getting-started/setup/editor-types#inline-editor",
 						"name": "Inline editor",
-						"description": "The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section."
+						"description": "The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.",
+						"shortDescription": "Floating toolbar editor for editing content directly on the web page."
 					},
 					{
 						"id": "multi-root-editor",
 						"type": "subFeature",
 						"link": "getting-started/setup/editor-types#multi-root-editor",
 						"name": "Multi-root editor",
-						"description": "The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are “connected.” All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document."
+						"description": "The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are “connected.” All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.",
+						"shortDescription": "Editor with multiple connected editable areas sharing the same configuration."
 					}
 				]
 			},
@@ -1055,70 +1077,80 @@
 						"type": "subFeature",
 						"link": "getting-started/setup/toolbar#balloon-toolbar",
 						"name": "Balloon toolbar",
-						"description": "A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset."
+						"description": "A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.",
+						"shortDescription": "A floating toolbar that appears when content is selected."
 					},
 					{
 						"id": "block-toolbar",
 						"type": "subFeature",
 						"link": "getting-started/setup/toolbar#block-toolbar",
 						"name": "Block toolbar",
-						"description": "The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor)."
+						"description": "The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor).",
+						"shortDescription": "A configurable toolbar on the left side of the editor."
 					},
 					{
 						"id": "classic-toolbar",
 						"type": "subFeature",
 						"link": "getting-started/setup/toolbar#main-editor-toolbar",
 						"name": "Classic toolbar",
-						"description": "The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content."
+						"description": "The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.",
+						"shortDescription": "A standard toolbar with buttons and dropdowns for editing."
 					},
 					{
 						"id": "collapsible-toolbar",
 						"type": "subFeature",
 						"link": "getting-started/setup/toolbar#extended-toolbar-configuration-format",
 						"name": "Collapsible toolbar",
-						"description": "Collapsible toolbar for UI space efficiency."
+						"description": "Collapsible toolbar for UI space efficiency.",
+						"shortDescription": "A toolbar that collapses to save space."
 					},
 					{
 						"id": "image-contextual-toolbar",
 						"type": "subFeature",
 						"link": "features/images-overview#image-contextual-toolbar",
 						"name": "Image contextual toolbar",
-						"description": "The <code>{@link module:image/imagetoolbar~ImageToolbar}</code> plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the <code>{@link features/images-text-alternative text alternative}</code> button, the <code>{@link features/images-captions image caption}</code> button, and <code>{@link features/images-styles image styles}</code> buttons. The toolbar can also host the image editing button introduced by the <code>{@link features/ckbox CKBox asset manager}</code>. Shown below is an example contextual toolbar with an extended set of buttons."
+						"description": "The <code>{@link module:image/imagetoolbar~ImageToolbar}</code> plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the <code>{@link features/images-text-alternative text alternative}</code> button, the <code>{@link features/images-captions image caption}</code> button, and <code>{@link features/images-styles image styles}</code> buttons. The toolbar can also host the image editing button introduced by the <code>{@link features/ckbox CKBox asset manager}</code>. Shown below is an example contextual toolbar with an extended set of buttons.",
+						"shortDescription": "A toolbar for image-specific tools appearing upon selection."
 					},
 					{
 						"id": "menu-bar",
 						"type": "subFeature",
 						"link": "getting-started/setup/menubar",
 						"name": "Menu bar",
-						"description": "The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features."
+						"description": "The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.",
+						"shortDescription": "A familiar menu interface for accessing all editor features."
 					},
 					{
 						"id": "multiline-toolbar",
 						"type": "subFeature",
 						"link": "getting-started/setup/toolbar#multiline-wrapping-toolbar",
 						"name": "Multiline toolbar",
-						"description": "Multiline toolbar for easy access to all functions."
+						"description": "Multiline toolbar for easy access to all functions.",
+						"shortDescription": "A toolbar that spans multiple lines for better tool visibility."
 					},
 					{
 						"id": "nesting-toolbars-in-dropdowns",
 						"type": "subFeature",
 						"link": "getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars",
 						"name": "Nesting toolbars in dropdowns",
-						"description": "Nested toolbars for space efficiency and task-oriented access."
+						"description": "Nested toolbars for space efficiency and task-oriented access.",
+						"shortDescription": "Group toolbar items into dropdowns to save space."
 					},
 					{
 						"id": "sidebar-annotations-bar",
 						"type": "subFeature",
 						"link": "features/annotations-display-mode#wide-sidebar",
 						"name": "Wide sidebar",
-						"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations."
+						"description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations.",
+						"shortDescription": "A wide sidebar for comments and suggestions."
 					},
 					{
 						"id": "table-contextual-toolbar",
 						"type": "subFeature",
 						"link": "features/tables#table-contextual-toolbar",
 						"name": "Table contextual toolbar",
-						"description": "The <code>{@link module:table/tabletoolbar~TableToolbar}</code> plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties."
+						"description": "The <code>{@link module:table/tabletoolbar~TableToolbar}</code> plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.",
+						"shortDescription": "A toolbar for table-related tools appearing on selection."
 					}
 				]
 			},
@@ -1127,7 +1159,8 @@
 				"type": "feature",
 				"link": "features/watchdog",
 				"name": "Watchdog",
-				"description": "The watchdog utility protects you from data loss in case the editor crashes. It saves your content just before the crash and creates a new instance of the editor with your content intact."
+				"description": "The watchdog utility protects you from data loss in case the editor crashes. It saves your content just before the crash and creates a new instance of the editor with your content intact.",
+				"shortDescription": "A utility that prevents data loss by recovering content after crashes."
 			}
 		]
 	},
@@ -1140,35 +1173,40 @@
 				"type": "feature",
 				"link": "features/accessibility",
 				"name": "Accessibility support",
-				"description": "CKEditor 5 includes accessibility functionality designed to ensure content is accessible to all users. These features encompass keyboard navigation for easier content access without a mouse, screen reader compatibility facilitated by ARIA attributes, and semantic output markup for clearer interpretation of content structures. CKEditor 5 meets the requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at levels A and AA, as well as Section 508 of the Rehabilitation Act, as detailed in the Accessibility Conformance Report, ensuring broad accessibility compliance."
+				"description": "CKEditor 5 includes accessibility functionality designed to ensure content is accessible to all users. These features encompass keyboard navigation for easier content access without a mouse, screen reader compatibility facilitated by ARIA attributes, and semantic output markup for clearer interpretation of content structures. CKEditor 5 meets the requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at levels A and AA, as well as Section 508 of the Rehabilitation Act, as detailed in the Accessibility Conformance Report, ensuring broad accessibility compliance.",
+				"shortDescription": "Provides keyboard navigation, screen reader support, and semantic output for accessibility compliance."
 			},
 			{
 				"id": "read-only-support",
 				"type": "feature",
 				"link": "features/read-only",
 				"name": "Read-only support",
-				"description": "The Read-Only Mode feature enables content to be locked from editing while still allowing it to be viewed. This mode is often used for restricting editing access based on user roles, allowing only specific users or groups to view the content without being able to modify it. Common uses include viewing sensitive documents like financial reports, software logs, or copyrighted stories that should not be altered but need to be accessible for copying or by screen readers. This mode can be toggled on and off by system triggers."
+				"description": "The Read-Only Mode feature enables content to be locked from editing while still allowing it to be viewed. This mode is often used for restricting editing access based on user roles, allowing only specific users or groups to view the content without being able to modify it. Common uses include viewing sensitive documents like financial reports, software logs, or copyrighted stories that should not be altered but need to be accessible for copying or by screen readers. This mode can be toggled on and off by system triggers.",
+				"shortDescription": "Allows content to be viewed without editing access."
 			},
 			{
 				"id": "restricted-editing",
 				"type": "feature",
 				"link": "features/restricted-editing",
 				"name": "Restricted editing",
-				"description": "The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document."
+				"description": "The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.",
+				"shortDescription": "Restricts editing to specific sections of a document."
 			},
 			{
 				"id": "text-part-language",
 				"type": "feature",
 				"link": "features/language",
 				"name": "Text Part Language",
-				"description": "The Text Part Language feature allows users to specify the language of individual sections of text. This capability helps in creating documents that include multiple languages by ensuring that browsers and screen readers correctly interpret each part according to its designated language. This feature is particularly valuable for content that contains text in varying directions, such as an English document with Arabic citations. It supports the WCAG 3.1.2 Language of Parts specification, facilitating the creation of more accessible and comprehensible multilingual content."
+				"description": "The Text Part Language feature allows users to specify the language of individual sections of text. This capability helps in creating documents that include multiple languages by ensuring that browsers and screen readers correctly interpret each part according to its designated language. This feature is particularly valuable for content that contains text in varying directions, such as an English document with Arabic citations. It supports the WCAG 3.1.2 Language of Parts specification, facilitating the creation of more accessible and comprehensible multilingual content.",
+				"shortDescription": "Specifies languages for text sections to enhance multilingual accessibility."
 			},
 			{
 				"id": "word-and-character-counter",
 				"type": "feature",
 				"link": "features/word-count",
 				"name": "Word and character counter",
-				"description": "The Word and Character Count feature provides a real-time tracking tool for monitoring the number of words and characters within the editor. This functionality assists in managing content length and ensuring it meets specific requirements or limits."
+				"description": "The Word and Character Count feature provides a real-time tracking tool for monitoring the number of words and characters within the editor. This functionality assists in managing content length and ensuring it meets specific requirements or limits.",
+				"shortDescription": "Tracks word and character count in real time."
 			},
 			{
 				"id": "wproofreader",
@@ -1176,7 +1214,8 @@
 				"link": "features/spelling-and-grammar-checking",
 				"name": "WProofreader",
 				"isPremium": true,
-				"description": "The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions."
+				"description": "The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions.",
+				"shortDescription": "Proofreads text with real-time spelling and grammar checks in 80+ languages."
 			}
 		]
 	},
@@ -1190,20 +1229,23 @@
 				"link": "framework/index",
 				"name": "Editor SDK",
 				"description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.",
+				"shortDescription": "Customize your editor with toolbars, plugins, and developer tools.",
 				"subFeatures": [
 					{
 						"id": "ckeditor5-inspector",
 						"type": "subFeature",
 						"link": "framework/development-tools/inspector",
 						"name": "CKEditor&nbsp;5 inspector",
-						"description": "The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like <code>{@link framework/architecture/editing-engine#model model}</code>, <code>{@link framework/architecture/editing-engine#view view}</code>, and <code>{@link framework/architecture/core-editor-architecture#commands commands}</code>."
+						"description": "The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like <code>{@link framework/architecture/editing-engine#model model}</code>, <code>{@link framework/architecture/editing-engine#view view}</code>, and <code>{@link framework/architecture/core-editor-architecture#commands commands}</code>.",
+						"shortDescription": "A debugging tool for exploring editor internals."
 					},
 					{
 						"id": "cloud-services-rest-api",
 						"type": "subFeature",
 						"link": "@cs",
 						"name": "developer-resources/apis/overview Cloud Services REST API",
-						"description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs."
+						"description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.",
+						"shortDescription": "Cloud backend services with REST API support for collaboration."
 					}
 				]
 			},
@@ -1212,14 +1254,16 @@
 				"type": "feature",
 				"link": "framework/theme-customization",
 				"name": "Themes",
-				"description": "The default theme of CKEditor 5 can be customized to match most visual integration requirements."
+				"description": "The default theme of CKEditor 5 can be customized to match most visual integration requirements.",
+				"shortDescription": "Customize the editor theme to match your design needs."
 			},
 			{
 				"id": "ui-library",
 				"type": "feature",
 				"link": "framework/architecture/ui-library",
 				"name": "UI Library",
-				"description": "The standard UI library of CKEditor 5 is <code><a href=\"https://www.npmjs.com/package/@ckeditor/ckeditor5-ui\">@ckeditor/ckeditor5-ui</a></code>. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem."
+				"description": "The standard UI library of CKEditor 5 is <code><a href=\"https://www.npmjs.com/package/@ckeditor/ckeditor5-ui\">@ckeditor/ckeditor5-ui</a></code>. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.",
+				"shortDescription": "A modular UI library for seamless ecosystem integration."
 			}
 		]
 	},
@@ -1232,7 +1276,8 @@
 				"type": "feature",
 				"link": "features/base64-upload-adapter",
 				"name": "Base64 Upload Adapter",
-				"description": "Convert inserted images into Base64-encoded strings in the editor output. Images are stored with other content in the database without server-side processing."
+				"description": "Convert inserted images into Base64-encoded strings in the editor output. Images are stored with other content in the database without server-side processing.",
+				"shortDescription": "Encodes images as Base64 strings for database storage."
 			},
 			{
 				"id": "ckbox",
@@ -1240,7 +1285,8 @@
 				"link": "features/ckbox",
 				"name": "CKBox",
 				"isPremium": true,
-				"description": "Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS."
+				"description": "Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS.",
+				"shortDescription": "A secure and flexible media management solution with cloud and on-premise options."
 			},
 			{
 				"id": "ckfinder",
@@ -1248,21 +1294,24 @@
 				"link": "features/ckfinder",
 				"name": "CKFinder",
 				"isPremium": true,
-				"description": "The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options."
+				"description": "The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.",
+				"shortDescription": "A robust file manager for inserting and editing images and files."
 			},
 			{
 				"id": "custom-upload-adapter",
 				"type": "feature",
 				"link": "features/image-upload#implementing-your-own-upload-adapter",
 				"name": "Custom Upload Adapter",
-				"description": "Have your own file management solution? Use this adapter to integrate your preferred software with CKEditor."
+				"description": "Have your own file management solution? Use this adapter to integrate your preferred software with CKEditor.",
+				"shortDescription": "Integrates CKEditor with custom file management solutions."
 			},
 			{
 				"id": "simple-upload-adapter",
 				"type": "feature",
 				"link": "features/simple-upload-adapter",
 				"name": "Simple Upload Adapter",
-				"description": "Upload images to your server using the <code>XMLHttpRequest</code> API with a minimal editor configuration."
+				"description": "Upload images to your server using the <code>XMLHttpRequest</code> API with a minimal editor configuration.",
+				"shortDescription": "Uploads images to a server with minimal configuration."
 			}
 		]
 	}
