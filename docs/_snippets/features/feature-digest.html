@@ -1,13 +1,13 @@
 <style>
-	tr {
+	.feature-digest tr {
 		display: flex;
 	}
 
-	td:first-child, th:first-child {
+	.feature-digest td:first-child, .feature-digest th:first-child {
 		flex: 1;
 	}
 
-	td:nth-child(2), th:nth-child(2) {
+	.feature-digest td:nth-child(2), .feature-digest th:nth-child(2) {
 		flex: 2;
 	}
 
@@ -15,51 +15,51 @@
 		background-color: #F5F5F5;
 	}
 
-	tr.subfeature > td:first-child > span {
+	.feature-digest tr.subfeature > td:first-child > span {
 		display: flex;
 		align-items: center;
 		margin-left: 12px;
 	}
 
-	.medium-zoom-image {
+	.feature-digest .medium-zoom-image {
 		z-index: 1;
 		pointer-events: none;
 		cursor: pointer;
 	}
 
-	table {
+	table.feature-digest {
   		border-collapse: collapse;
 	}
 
-	table tr:last-child > td {
+	table.feature-digest tr:last-child > td {
 		border-bottom-color: #000;
 	}
 
-	tr.feature > td:first-child {
+	.feature-digest tr.feature > td:first-child {
 		border-top-color: #000;
 		border-left-color: #000;
 	}
 
-	tr.feature > td:last-child {
+	.feature-digest tr.feature > td:last-child {
 		border-top-color: #000;
 		border-right-color: #000;
 	}
 
-	tr.feature > td:first-child a:hover .tree__item__badge_new {
+	.feature-digest tr.feature > td:first-child a:hover .tree__item__badge_new {
 		text-decoration: underline;
 		text-decoration-color: #8bc34a;
 		text-decoration-thickness: 2px;
 	}
 
-	tr.subfeature > td:first-child {
+	.feature-digest tr.subfeature > td:first-child {
 		border-left-color: #000;
 	}
 
-	tr.subfeature > td:last-child {
+	.feature-digest tr.subfeature > td:last-child {
 		border-right-color: #000;
 	}
 
-	tr.subfeature > td:first-child > span {
+	.feature-digest tr.subfeature > td:first-child > span {
 		display: flex;
 		align-items: center;
 		margin-left: 12px;

@@ -13,7 +13,7 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 
 Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -771,7 +771,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 
 Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -981,7 +981,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 
 Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1093,7 +1093,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 
 Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1200,7 +1200,7 @@ Format, organize, and navigate your documents easily with page management featur
 
 Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1472,7 +1472,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 
 Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1755,7 +1755,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 
 Make your content accessible to any person or restrict it to specific users.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1862,7 +1862,7 @@ Make your content accessible to any person or restrict it to specific users.
 
 Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1935,7 +1935,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 
 Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
