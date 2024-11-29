@@ -23,9 +23,7 @@ const __dirname = upath.dirname( __filename );
 
 	await fs.writeFile( upath.join( __dirname, './features-digest-output.html' ), output.join( '\n' ) );
 
-	/**
-	 * Update the features digest markdown file content by to the newest HTML structure generated based on JSON data.
-	 **/
+	// Update the features digest markdown file content by to the newest HTML structure generated based on JSON data.
 	const startMarker = '<!--MARK_START-->';
 	const endMarker = '<!--MARK_END-->';
 	const replacementText = output.join( '\n' );
@@ -69,7 +67,7 @@ function generateFeature( feature, isSubFeature = false ) {
 	const addExperimentalBadge = feature.isExperimental ? experimentalBadge : '';
 
 	return `<article id="${ feature.id }" class="feature ${ isSubFeature ? 'subfeature' : '' }">
-			<h3 class="feature-title">
+			<h3 class="feature-title" id="${ feature.id }">
 				{@link ${ feature.link } ${ feature.name }} ${ addPremiumBadge } ${ addExperimentalBadge }
 			</h3>
 			<details>

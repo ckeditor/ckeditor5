@@ -8,8 +8,8 @@
 				"type": "feature",
 				"link": "features/general-html-support",
 				"name": "Advanced HTML Editing",
-				"description": "Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.",
-				"shortDescription": "Edit and customize HTML elements, attributes, and styles with full control.",
+				"description": "Advanced HTML Editing features provide general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.",
+				"shortDescription": "Enable editing and customizing HTML elements, attributes, and styles with full control.",
 				"subFeatures": [
 					{
 						"id": "full-page-html",
@@ -32,7 +32,7 @@
 						"type": "subFeature",
 						"link": "features/html-comments",
 						"name": "HTML comment",
-						"description": "By default, the editor filters out all HTML comments on initialization. The <code>{@link features/html-comments HTML comment}</code> feature lets developers keep HTML comments in the document without displaying them to the user.",
+						"description": "By default, the editor filters out all HTML comments on initialization. The HTML comment feature lets developers keep HTML comments in the document without displaying them to the user.",
 						"shortDescription": "Keep HTML comments in your document without displaying them to users."
 					},
 					{
@@ -55,7 +55,7 @@
 						"id": "source-editing",
 						"type": "subFeature",
 						"link": "features/source-editing",
-						"name": "Source editing",
+						"name": "Source code editing",
 						"description": "The source editing feature lets you view and edit the source of your document.",
 						"shortDescription": "View and edit the source code of your document."
 					}
@@ -1007,6 +1007,7 @@
 				"link": "getting-started/setup/editor-types",
 				"name": "Editor UI types",
 				"description": "The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.",
+				"shortDescription": "The user interface varies by editor type, offering features via a toolbar or shortcuts.",
 				"subFeatures": [
 					{
 						"id": "balloon-block-editor",
