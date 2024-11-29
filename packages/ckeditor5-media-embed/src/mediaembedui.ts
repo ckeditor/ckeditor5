@@ -99,6 +99,8 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' )!;
 		const t = editor.locale.t;
 
+		const isMediaSelected = command.value !== undefined;
+
 		if ( !this._formView ) {
 			const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
@@ -108,7 +110,7 @@ export default class MediaEmbedUI extends Plugin {
 
 		dialog.show( {
 			id: 'mediaEmbed',
-			title: t( 'Insert media' ),
+			title: t( 'Media embed' ),
 			content: this._formView,
 			isModal: true,
 			onShow: () => {
@@ -123,7 +125,7 @@ export default class MediaEmbedUI extends Plugin {
 					onExecute: () => dialog.hide()
 				},
 				{
-					label: t( 'Accept' ),
+					label: isMediaSelected ? t( 'Save' ) : t( 'Insert' ),
 					class: 'ck-button-action',
 					withText: true,
 					onExecute: () => this._handleSubmitForm()
