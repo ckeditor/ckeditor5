@@ -124,7 +124,7 @@ export default class InsertTextObserver extends Observer {
 				viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
 					text: data
 				} ) );
-			}, { priority: 'lowest' } );
+			}, { priority: 'low' } );
 		}
 	}
 
