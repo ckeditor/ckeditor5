@@ -43,8 +43,9 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 1 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -62,8 +63,9 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 2 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -81,8 +83,9 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -101,10 +104,11 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
 			itemToListHead.set( fragment.getChild( 2 ), fragment.getChild( 1 ) );
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -123,10 +127,11 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
 			itemToListHead.set( fragment.getChild( 2 ), fragment.getChild( 1 ) );
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -145,8 +150,9 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -166,8 +172,9 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 5 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -188,8 +195,9 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
 			const itemToListHead = new Map();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 

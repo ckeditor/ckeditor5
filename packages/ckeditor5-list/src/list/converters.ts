@@ -138,32 +138,33 @@ export function reconvertItemsOnDataChange(
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
 		const itemToListHead = new Map<ListElement, ListElement>();
+		const visited = new Set<Element>();
 		const changedItems = new Set<Node>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				findAndAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
-					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
+					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead, visited );
 				} else {
 					changedItems.add( entry.position.nodeAfter! );
 				}
 			}
 			// Removed list item.
 			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				findAndAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' ) {
 				const item = entry.range.start.nodeAfter!;
 
 				if ( attributeNames.includes( entry.attributeKey ) ) {
-					findAndAddListHeadToMap( entry.range.start, itemToListHead );
+					findAndAddListHeadToMap( entry.range.start, itemToListHead, visited );
 
 					if ( entry.attributeNewValue === null ) {
-						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead, visited );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
 						if ( doesItemBlockRequiresRefresh( item as Element ) ) {

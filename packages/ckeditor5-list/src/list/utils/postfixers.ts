@@ -7,7 +7,7 @@
  * @module list/list/utils/postfixers
  */
 
-import type { Position, Writer } from 'ckeditor5/src/engine.js';
+import type { Element, Position, Writer } from 'ckeditor5/src/engine.js';
 import { SiblingListBlocksIterator, type ListIteratorValue } from './listwalker.js';
 import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model.js';
 
@@ -17,10 +17,12 @@ import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } fro
  * @internal
  * @param position The search starting position.
  * @param itemToListHead The map from list item element to the list head element.
+ * @param visited A set of elements that were already visited.
  */
 export function findAndAddListHeadToMap(
 	position: Position,
-	itemToListHead: Map<ListElement, ListElement>
+	itemToListHead: Map<ListElement, ListElement>,
+	visited: Set<Element>
 ): void {
 	const previousNode = position.nodeBefore;
 
@@ -41,6 +43,12 @@ export function findAndAddListHeadToMap(
 		// See: https://github.com/ckeditor/ckeditor5-react/issues/345.
 		for ( const { node } of new SiblingListBlocksIterator( listHead, 'backward' ) ) {
 			listHead = node;
+
+			if ( visited.has( listHead ) ) {
+				return;
+			}
+
+			visited.add( listHead );
 
 			if ( itemToListHead.has( listHead ) ) {
 				return;
