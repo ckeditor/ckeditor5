@@ -40,7 +40,7 @@ ClassicEditor
 
 * **Commercial licenses**: When upgrading to version 44.0.0 or later, users with a commercial license must update their license key to the [new format](#new-license-key-format). To update your license key, log in to the [Customer Portal](https://portal.ckeditor.com/) and copy the key associated with your subscription into your editor's configuration.
 * **Open-source installations**:
-	* **Self-hosted (npm/ZIP) installations**: If you are self-hosting CKEditor&nbsp;5 under the {@link getting-started/licensing/license-and-legal GPL 2+ terms}, you need to set `config.licenseKey` to `'GPL'` in your configuration.
+	* **Self-hosted (npm/ZIP) installations**: If you are self-hosting CKEditor&nbsp;5 under the {@link getting-started/licensing/license-and-legal GPL 2+ terms} or as a part of our [Open Source support project](https://ckeditor.com/wysiwyg-editor-open-source/), you need to set `config.licenseKey` to `'GPL'` in your configuration.
 	* **Cloud (CDN) installations**: For cloud-distributed CKEditor 5 served via [our CDN](https://cdn.ckeditor.com), you must obtain a license key from the Customer Portal. Create a [free account](https://portal.ckeditor.com/checkout?plan=free) and add the provided license key to your editor configuration.
 
 		During the 14-day trial (automatically activated upon signup), you can explore all Premium Features. After the trial ends, usage metering and editor load limits specific to your chosen plan will apply. Learn more about [available plans](https://ckeditor.com/pricing/) and {@link getting-started/licensing/usage-based-billing usage-based billing}.
