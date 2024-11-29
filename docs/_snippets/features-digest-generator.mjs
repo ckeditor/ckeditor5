@@ -61,8 +61,18 @@ function generateFeature( feature, isSubFeature = false ) {
 			</div>`;
 	}
 
+	const premiumBadge = `<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+			<span class="tree__item__badge__text">Premium feature</span>
+		</span>`;
+	const experimentalBadge = '<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>';
+
+	const addPremiumBadge = feature.isPremium ? premiumBadge : '';
+	const addExperimentalBadge = feature.isExperimental ? experimentalBadge : '';
+
 	return `<article id="${ feature.id }" class="feature ${ isSubFeature ? 'subfeature' : '' }">
-			<h3 class="feature-title">{@link ${ feature.link } ${ feature.name }}</h3>
+			<h3 class="feature-title">
+				{@link ${ feature.link } ${ feature.name }} ${ addPremiumBadge } ${ addExperimentalBadge }
+			</h3>
 			<details>
 				<summary class="feature-short-description">${ feature.shortDescription }</summary>
 				<p class="feature-description">${ feature.description }</p>
