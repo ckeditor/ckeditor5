@@ -68,7 +68,7 @@ function generateFeature( feature, isSubFeature = false ) {
 
 	return `<article id="${ feature.id }" class="feature ${ isSubFeature ? 'subfeature' : '' }">
 			<h3 class="feature-title" id="${ feature.id }">
-				{@link ${ feature.link } ${ feature.name }} ${ addPremiumBadge } ${ addExperimentalBadge }
+				{@link ${ feature.link } ${ feature.name } ${ addPremiumBadge }${ addExperimentalBadge }}
 			</h3>
 			<details>
 				<summary class="feature-short-description">${ feature.shortDescription }</summary>
