@@ -22,7 +22,7 @@ export { default as UnlinkCommand } from './unlinkcommand.js';
 export {
 	addLinkProtocolIfApplicable,
 	ensureSafeUrl,
-	isLinkableElement,
+	isLinkableElement
 } from './utils.js';
 
 export type { LinkConfig, LinkDecoratorDefinition } from './linkconfig.js';
