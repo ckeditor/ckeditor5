@@ -9,8 +9,7 @@
 
 import { Database } from 'emoji-picker-element';
 import { formatEmojiId, getShowAllEmojiId } from './utils.js';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import emojiDataRaw from 'emoji-picker-element-data/en/emojibase/data.json';
+import { Plugin } from 'ckeditor5/src/core.js';
 import EmojiPicker from './emojipicker.js';
 import type { MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
@@ -22,7 +21,6 @@ import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
  */
 export default class EmojiLibraryIntegration extends Plugin {
 	declare protected _hasEmojiPicker: boolean;
-	declare protected _localDataUrl: string;
 
 	/**
 	 * @inheritDoc
@@ -38,19 +36,6 @@ export default class EmojiLibraryIntegration extends Plugin {
 		return true;
 	}
 
-	constructor( editor: Editor ) {
-		super( editor );
-
-		// Make it available via getter.
-		this._localDataUrl = URL.createObjectURL(
-			new Blob( [ JSON.stringify( emojiDataRaw ) ] )
-		);
-	}
-
-	public get localDataUrl(): string {
-		return this._localDataUrl;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -59,19 +44,10 @@ export default class EmojiLibraryIntegration extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public override destroy(): void {
-		URL.revokeObjectURL( this._localDataUrl );
-	}
-
-	/**
 	 * Returns the `feed()` callback for mention config.
 	 */
 	public getQueryEmojiFn( queryLimit: number ): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
-		const emojiDatabase = new Database( {
-			dataSource: this._localDataUrl
-		} );
+		const emojiDatabase = new Database();
 
 		return async ( searchQuery: string ) => {
 			// `getEmojiBySearchQuery()` returns nothing when querying with a single character.

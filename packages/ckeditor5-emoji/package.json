@@ -18,8 +18,7 @@
     "@ckeditor/ckeditor5-ui": "44.0.0",
     "@ckeditor/ckeditor5-utils": "44.0.0",
     "ckeditor5": "44.0.0",
-    "emoji-picker-element": "1.25.0",
-    "emoji-picker-element-data": "1.6.1"
+    "emoji-picker-element": "1.25.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-clipboard": "44.0.0",

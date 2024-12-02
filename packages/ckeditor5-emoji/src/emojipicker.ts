@@ -163,9 +163,7 @@ class EmojiDialog extends View {
 	constructor( editor: Editor ) {
 		super( editor.locale );
 
-		this.emojiElement = new Picker( {
-			dataSource: editor.plugins.get( EmojiLibraryIntegration ).localDataUrl
-		} );
+		this.emojiElement = new Picker();
 		this.emojiElement.style.height = '400px';
 		this.emojiElement.classList.add( 'light' );
 

@@ -59,7 +59,7 @@ describe( 'EmojiPicker', () => {
 		emojiToolbarButton.click();
 
 		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
+		await new Promise( resolve => setTimeout( resolve, 750 ) );
 
 		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
 
