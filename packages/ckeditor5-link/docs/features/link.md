@@ -30,6 +30,8 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of link
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
 
+<!-- Add bookmars section once linking experience lands -->
+
 ## Installation
 
 <info-box info>

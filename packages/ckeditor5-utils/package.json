@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "43.3.1",
+  "version": "44.0.0",
   "description": "Miscellaneous utilities used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,13 +13,13 @@
   "main": "src/index.ts",
   "dependencies": {
     "lodash-es": "4.17.21",
-    "@ckeditor/ckeditor5-ui": "43.3.1"
+    "@ckeditor/ckeditor5-ui": "44.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "43.3.1",
-    "@ckeditor/ckeditor5-editor-classic": "43.3.1",
-    "@ckeditor/ckeditor5-core": "43.3.1",
-    "@ckeditor/ckeditor5-engine": "43.3.1",
+    "@ckeditor/ckeditor5-build-classic": "44.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "44.0.0",
+    "@ckeditor/ckeditor5-core": "44.0.0",
+    "@ckeditor/ckeditor5-engine": "44.0.0",
     "@types/lodash-es": "^4.17.12",
     "typescript": "5.0.4"
   },
@@ -27,7 +27,7 @@
     "typescript"
   ],
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
