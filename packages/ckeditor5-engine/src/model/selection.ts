@@ -17,7 +17,7 @@ import type DocumentSelection from './documentselection.js';
 import type Element from './element.js';
 import type Item from './item.js';
 
-import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, first, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its
@@ -667,11 +667,21 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 				yield startBlock as any;
 			}
 
-			for ( const value of range.getWalker() ) {
-				const block = value.item;
+			const lastElement = first( range.getWalker( { direction: 'backward' } ) );
 
-				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
-					yield block as Element;
+			if (
+				lastElement &&
+				lastElement.type == 'elementEnd' &&
+				lastElement.item.root.document!.model.schema.isBlock( lastElement.item )
+			) {
+				yield lastElement.item as any;
+			} else {
+				for ( const value of range.getWalker() ) {
+					const block = value.item;
+
+					if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
+						yield block as Element;
+					}
 				}
 			}
 
