@@ -28,8 +28,14 @@
 	& .ck-form__header {
 		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
 
-		& > .ck:not(:first-child) {
-			margin-inline-start: var(--ck-spacing-small);
+		/* Back button is hidden */
+		&:has(.ck-button-back.ck-hidden) {
+			padding-inline-start: var(--ck-spacing-large);
+			padding-inline-end: var(--ck-spacing-large);
+		}
+
+		& > .ck-button-back {
+			margin-inline-end: var(--ck-spacing-small);
 		}
 	}
 

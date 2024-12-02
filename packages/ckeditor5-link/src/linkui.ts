@@ -718,10 +718,12 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 */
-	private _addFormView(): void {
+	private _addFormView( showBackButton: boolean = true ): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}
+
+		this.formView!.backButtonView.isVisible = showBackButton;
 
 		if ( this._isFormInPanel ) {
 			return;
@@ -879,13 +881,13 @@ export default class LinkUI extends Plugin {
 				this._balloon.showStack( 'main' );
 			}
 
-			this._addFormView();
+			this._addFormView( !forceVisible );
 		}
 		// If there's a link under the selection...
 		else {
 			// Go to the editing UI if toolbar is already visible.
 			if ( this._isToolbarVisible ) {
-				this._addFormView();
+				this._addFormView( !forceVisible );
 			}
 			// Otherwise display just the toolbar.
 			else {

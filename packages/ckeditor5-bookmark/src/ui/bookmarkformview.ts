@@ -277,6 +277,7 @@ export default class BookmarkFormView extends View {
 		const backButton = new ButtonView( this.locale );
 
 		backButton.set( {
+			class: 'ck-button-back',
 			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
