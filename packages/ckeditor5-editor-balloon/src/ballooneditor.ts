@@ -36,6 +36,13 @@ export default class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Edit
 	/**
 	 * @inheritDoc
 	 */
+	public static override get editorName(): 'BalloonEditor' {
+		return 'BalloonEditor';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public readonly ui: BalloonEditorUI;
 
 	/**

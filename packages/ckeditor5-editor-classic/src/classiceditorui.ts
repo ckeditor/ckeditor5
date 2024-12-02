@@ -309,7 +309,9 @@ export default class ClassicEditorUI extends EditorUI {
 
 			dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
 				// Engage only when the panel is sticky, and the dialog is using one of default positions.
-				if ( !stickyPanel.isSticky || dialogView.wasMoved ) {
+				// Ignore modals because they are displayed on top of the page (and overlay) and they do not collide with anything
+				// See (https://github.com/ckeditor/ckeditor5/issues/17339).
+				if ( !stickyPanel.isSticky || dialogView.wasMoved || dialogView.isModal ) {
 					return;
 				}
 

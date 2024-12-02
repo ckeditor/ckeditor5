@@ -52,6 +52,13 @@ export default class MultiRootEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get editorName(): 'MultiRootEditor' {
+		return 'MultiRootEditor';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public readonly ui: MultiRootEditorUI;
 
 	/**

@@ -44,6 +44,13 @@ export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Ed
 	/**
 	 * @inheritDoc
 	 */
+	public static override get editorName(): 'DecoupledEditor' {
+		return 'DecoupledEditor';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public readonly ui: DecoupledEditorUI;
 
 	/**

@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
+	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
+	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
+}
+
+.ck-bookmark {
+	&.ck-widget {
+		outline: none;
+
+		& .ck-bookmark__icon .ck-icon__fill {
+			transition: fill var(--ck-bookmark-icon-animation-duration) var(--ck-bookmark-icon-animation-curve);
+		}
+
+		&:hover {
+			& .ck-bookmark__icon .ck-icon__fill {
+				fill: var(--ck-bookmark-icon-hover-fill-color);
+			}
+		}
+
+		&.ck-widget_selected {
+			.ck-bookmark__icon .ck-icon__fill {
+				fill: var(--ck-bookmark-icon-selected-fill-color);
+			}
+		}
+
+		&.ck-widget_selected,
+		&.ck-widget_selected:hover {
+			outline: none;
+		}
+
+		& .ck-bookmark__icon {
+			position: relative;
+			/* To make it align with text baseline. */
+			top: -0.1em;
+
+			& .ck-icon {
+				height: 1.2em;
+				width: auto;
+				vertical-align: middle;
+			}
+		}
+	}
+}

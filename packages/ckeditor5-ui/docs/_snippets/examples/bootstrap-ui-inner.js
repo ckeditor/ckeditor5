@@ -281,7 +281,8 @@ BootstrapEditor
 			Clipboard, Enter, Typing, Paragraph, EasyImage, Image, ImageUpload, CloudServices,
 			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
 		],
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

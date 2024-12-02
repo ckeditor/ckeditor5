@@ -47,27 +47,35 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Heading } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Heading, /* ... */ ],
 		toolbar: [ 'heading', /* ... */ ]
+		heading: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ### Installation with toolbar heading buttons
 
 To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -88,6 +96,7 @@ For example, the following editor will support only two levels of headings &ndas
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -128,6 +137,7 @@ For example, the following editor will support the following two heading options
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -161,6 +171,7 @@ To use individual toolbar buttons instead of the heading dropdown, you need to p
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', '|', 'undo', 'redo' ],
 		heading: {
 			options: [

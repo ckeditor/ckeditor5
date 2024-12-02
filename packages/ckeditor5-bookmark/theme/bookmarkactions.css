@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
+
+.ck.ck-bookmark-actions {
+	display: flex;
+	align-items: center;
+
+	& .ck-bookmark-actions__preview {
+		max-width: var(--ck-input-width);
+		min-width: 3em;
+		font-weight: normal;
+		text-overflow: ellipsis;
+		text-align: center;
+		overflow: hidden;
+
+		@mixin ck-unselectable;
+		cursor: default;
+	}
+
+	@mixin ck-media-phone {
+		display: flex;
+		flex-wrap: wrap;
+
+		& .ck-bookmark-actions__preview {
+			flex-basis: 100%;
+			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
+			min-width: auto;
+		}
+	}
+
+	&.ck-responsive-form {
+		& .ck-button {
+			@mixin ck-media-phone {
+				flex-basis: 50%;
+				margin-top: var(--ck-spacing-standard);
+			}
+		}
+	}
+}

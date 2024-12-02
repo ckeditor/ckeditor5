@@ -60,14 +60,15 @@ ClassicEditor
 					}
 				}
 			]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert media' ),
+				item => item?.label === 'Insert media' ),
 			text: 'Click to embed media.',
 			editor
 		} );

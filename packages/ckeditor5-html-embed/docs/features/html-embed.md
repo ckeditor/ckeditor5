@@ -48,19 +48,25 @@ We recommended using the {@link features/media-embed media embed} feature for em
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, HtmlEmbed } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HtmlEmbed, /* ... */ ],
 		toolbar: [ 'htmlEmbed', /* ... */ ],
+		htmlEmbed: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuration
 
@@ -73,8 +79,7 @@ However, by showing previews of the embedded HTML snippets, you expose the users
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlEmbed, /* ... */ ],
-		toolbar: [ 'htmlEmbed', /* ... */ ],
+		// ... Other configuration options ...
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: ( inputHtml ) => {

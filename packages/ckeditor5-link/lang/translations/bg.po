@@ -58,3 +58,7 @@ msgstr "Създаване на линк"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "Излизане от линк"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "Превъртете до целта"
