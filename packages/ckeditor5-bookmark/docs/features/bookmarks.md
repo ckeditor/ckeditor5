@@ -3,7 +3,7 @@ category: features
 menu-title: Bookmarks
 meta-title: Bookmarks | CKEditor 5 Documentation
 meta-description: The bookmarks feature allows for adding and managing bookmark anchors attached to the content.
-modified_at: 2024-10-21
+modified_at: 2024-11-20
 ---
 
 # Bookmarks
@@ -14,7 +14,13 @@ The bookmarks feature allows for adding and managing the bookmarks anchors attac
 
 Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`).
 
-To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In this example it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
+To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Add link} and put the bookmark name as target. In the example below it would be `#Rights`. You can change the bookmark's name or remove it by clicking the bookmark icon inside the content. A contextual bookmark toolbar will pop up.
+
+<info-box info>
+	The Bookmarks feature is production-ready but does not include integration with the linking experience yet (see [#17230](https://github.com/ckeditor/ckeditor5/issues/17230)).
+	
+	Integrators should guide their users on linking to bookmarks using the `#` anchors.
+</info-box>
 
 {@snippet features/bookmark}
 
