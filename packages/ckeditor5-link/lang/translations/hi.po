@@ -58,3 +58,7 @@ msgstr "लिंक बनाएँ"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "लिंक के बाहर जाएँ"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "टारगेट तक स्क्रॉल करें"

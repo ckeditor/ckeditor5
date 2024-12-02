@@ -7,14 +7,13 @@
  * @module engine/model/treewalker
  */
 
-import Element from './element.js';
+import type Element from './element.js';
 import {
 	default as Position,
 	getTextNodeAtPosition,
 	getNodeAfterPosition,
 	getNodeBeforePosition
 } from './position.js';
-import Text from './text.js';
 import TextProxy from './textproxy.js';
 
 import type DocumentFragment from './documentfragment.js';
@@ -218,7 +217,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 		const textNodeAtPosition = getTextNodeAtPosition( position, parent );
 		const node = textNodeAtPosition || getNodeAfterPosition( position, parent, textNodeAtPosition );
 
-		if ( node instanceof Element ) {
+		if ( node && node.is( 'model:element' ) ) {
 			if ( !this.shallow ) {
 				// Manual operations on path internals for optimization purposes. Here and in the rest of the method.
 				( position.path as Array<number> ).push( 0 );
@@ -237,7 +236,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		}
 
-		if ( node instanceof Text ) {
+		if ( node && node.is( 'model:$text' ) ) {
 			let charactersCount;
 
 			if ( this.singleCharacters ) {
@@ -298,7 +297,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 		const textNodeAtPosition = getTextNodeAtPosition( position, positionParent );
 		const node = textNodeAtPosition || getNodeBeforePosition( position, positionParent, textNodeAtPosition );
 
-		if ( node instanceof Element ) {
+		if ( node && node.is( 'model:element' ) ) {
 			position.offset--;
 
 			if ( this.shallow ) {
@@ -318,7 +317,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			return formatReturnValue( 'elementEnd', node, previousPosition, position );
 		}
 
-		if ( node instanceof Text ) {
+		if ( node && node.is( 'model:$text' ) ) {
 			let charactersCount;
 
 			if ( this.singleCharacters ) {
