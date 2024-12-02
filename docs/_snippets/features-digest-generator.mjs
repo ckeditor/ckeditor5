@@ -67,7 +67,7 @@ function generateFeature( feature, isSubFeature = false ) {
 	const addExperimentalBadge = feature.isExperimental ? experimentalBadge : '';
 
 	return `<article id="${ feature.id }" class="feature ${ isSubFeature ? 'subfeature' : '' }">
-			<h3 class="feature-title" id="${ feature.id }">
+			<h3 class="feature-title" id="feature-${ feature.id }">
 				{@link ${ feature.link } ${ feature.name } ${ addPremiumBadge }${ addExperimentalBadge }}
 			</h3>
 			<details>

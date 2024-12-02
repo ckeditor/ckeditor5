@@ -11,7 +11,7 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 
 <style>
 .feature {
-	padding: 1rem;
+	padding: 0 1rem 1rem 1rem;
 	border: 1px solid #e9e9e9;
 	border-left: 4px solid #e9e9e9;
 	background-color: white;
@@ -19,7 +19,7 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 }
 
 h3.feature-title {
-	padding-top: 0;
+	padding-top: 1rem;
 	font-size: 1.2em
 }
 .feature-title a {
@@ -118,7 +118,7 @@ h3.feature-title {
 <p class="description">Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.</p>
 <div class="features-list">
 	<article id="advanced-html-editing" class="feature ">
-			<h3 class="feature-title" id="advanced-html-editing">
+			<h3 class="feature-title" id="feature-advanced-html-editing">
 				{@link features/general-html-support Advanced HTML Editing }
 			</h3>
 			<details>
@@ -126,7 +126,7 @@ h3.feature-title {
 				<p class="feature-description">Advanced HTML Editing features provide general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.</p>
 			</details><div class="subfeatures-list">
 				<article id="full-page-html" class="feature subfeature">
-			<h3 class="feature-title" id="full-page-html">
+			<h3 class="feature-title" id="feature-full-page-html">
 				{@link features/full-page-html Full page HTML }
 			</h3>
 			<details>
@@ -135,7 +135,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="general-html-support" class="feature subfeature">
-			<h3 class="feature-title" id="general-html-support">
+			<h3 class="feature-title" id="feature-general-html-support">
 				{@link features/general-html-support General HTML Support (GHS) }
 			</h3>
 			<details>
@@ -144,7 +144,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="html-comment" class="feature subfeature">
-			<h3 class="feature-title" id="html-comment">
+			<h3 class="feature-title" id="feature-html-comment">
 				{@link features/html-comments HTML comment }
 			</h3>
 			<details>
@@ -153,7 +153,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="html-embed" class="feature subfeature">
-			<h3 class="feature-title" id="html-embed">
+			<h3 class="feature-title" id="feature-html-embed">
 				{@link features/html-embed HTML embed }
 			</h3>
 			<details>
@@ -162,7 +162,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="show-blocks" class="feature subfeature">
-			<h3 class="feature-title" id="show-blocks">
+			<h3 class="feature-title" id="feature-show-blocks">
 				{@link features/show-blocks Show blocks }
 			</h3>
 			<details>
@@ -171,7 +171,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="source-editing" class="feature subfeature">
-			<h3 class="feature-title" id="source-editing">
+			<h3 class="feature-title" id="feature-source-editing">
 				{@link features/source-editing Source code editing }
 			</h3>
 			<details>
@@ -182,7 +182,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="block-formatting" class="feature ">
-			<h3 class="feature-title" id="block-formatting">
+			<h3 class="feature-title" id="feature-block-formatting">
 				{@link features/block-quote Block formatting }
 			</h3>
 			<details>
@@ -190,7 +190,7 @@ h3.feature-title {
 				<p class="feature-description">Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.</p>
 			</details><div class="subfeatures-list">
 				<article id="block-quotes" class="feature subfeature">
-			<h3 class="feature-title" id="block-quotes">
+			<h3 class="feature-title" id="feature-block-quotes">
 				{@link features/block-quote Block quote }
 			</h3>
 			<details>
@@ -199,7 +199,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="headings-paragraph" class="feature subfeature">
-			<h3 class="feature-title" id="headings-paragraph">
+			<h3 class="feature-title" id="feature-headings-paragraph">
 				{@link features/headings Headings/paragraph }
 			</h3>
 			<details>
@@ -208,7 +208,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="horizontal-line" class="feature subfeature">
-			<h3 class="feature-title" id="horizontal-line">
+			<h3 class="feature-title" id="feature-horizontal-line">
 				{@link features/horizontal-line Horizontal line }
 			</h3>
 			<details>
@@ -217,7 +217,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="block-indentation" class="feature subfeature">
-			<h3 class="feature-title" id="block-indentation">
+			<h3 class="feature-title" id="feature-block-indentation">
 				{@link features/indent Block indentation }
 			</h3>
 			<details>
@@ -228,7 +228,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="bookmark" class="feature ">
-			<h3 class="feature-title" id="bookmark">
+			<h3 class="feature-title" id="feature-bookmark">
 				{@link features/bookmarks Bookmarks }
 			</h3>
 			<details>
@@ -237,7 +237,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="clipboard" class="feature ">
-			<h3 class="feature-title" id="clipboard">
+			<h3 class="feature-title" id="feature-clipboard">
 				{@link framework/deep-dive/clipboard Clipboard }
 			</h3>
 			<details>
@@ -246,7 +246,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="code-blocks" class="feature ">
-			<h3 class="feature-title" id="code-blocks">
+			<h3 class="feature-title" id="feature-code-blocks">
 				{@link features/code-blocks Code blocks }
 			</h3>
 			<details>
@@ -255,7 +255,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="drag-and-drop" class="feature ">
-			<h3 class="feature-title" id="drag-and-drop">
+			<h3 class="feature-title" id="feature-drag-and-drop">
 				{@link features/drag-drop Drag and drop }
 			</h3>
 			<details>
@@ -264,7 +264,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="font-formatting" class="feature ">
-			<h3 class="feature-title" id="font-formatting">
+			<h3 class="feature-title" id="feature-font-formatting">
 				{@link features/font Font formatting }
 			</h3>
 			<details>
@@ -272,7 +272,7 @@ h3.feature-title {
 				<p class="feature-description">The font feature lets you change font family, size, and color (including background color). All of these options are configurable.</p>
 			</details><div class="subfeatures-list">
 				<article id="font-background-color" class="feature subfeature">
-			<h3 class="feature-title" id="font-background-color">
+			<h3 class="feature-title" id="feature-font-background-color">
 				{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color }
 			</h3>
 			<details>
@@ -281,7 +281,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="font-color" class="feature subfeature">
-			<h3 class="feature-title" id="font-color">
+			<h3 class="feature-title" id="feature-font-color">
 				{@link features/font#configuring-the-font-color-and-font-background-color-features Font color }
 			</h3>
 			<details>
@@ -290,7 +290,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="font-family" class="feature subfeature">
-			<h3 class="feature-title" id="font-family">
+			<h3 class="feature-title" id="feature-font-family">
 				{@link features/font#configuring-the-font-family-feature Font family }
 			</h3>
 			<details>
@@ -299,7 +299,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="font-size" class="feature subfeature">
-			<h3 class="feature-title" id="font-size">
+			<h3 class="feature-title" id="feature-font-size">
 				{@link features/font#configuring-the-font-size-feature Font size }
 			</h3>
 			<details>
@@ -310,7 +310,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="image" class="feature ">
-			<h3 class="feature-title" id="image">
+			<h3 class="feature-title" id="feature-image">
 				{@link features/images-overview Image }
 			</h3>
 			<details>
@@ -318,7 +318,7 @@ h3.feature-title {
 				<p class="feature-description">The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subFeature background-grays lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.</p>
 			</details><div class="subfeatures-list">
 				<article id="image-all-text" class="feature subfeature">
-			<h3 class="feature-title" id="image-all-text">
+			<h3 class="feature-title" id="feature-image-all-text">
 				{@link features/images-text-alternative Image alt text }
 			</h3>
 			<details>
@@ -327,7 +327,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-captions" class="feature subfeature">
-			<h3 class="feature-title" id="image-captions">
+			<h3 class="feature-title" id="feature-image-captions">
 				{@link features/images-captions Image captions }
 			</h3>
 			<details>
@@ -336,7 +336,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-insert-via-url" class="feature subfeature">
-			<h3 class="feature-title" id="image-insert-via-url">
+			<h3 class="feature-title" id="feature-image-insert-via-url">
 				{@link features/images-inserting Image insert via URL }
 			</h3>
 			<details>
@@ -345,7 +345,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-linking" class="feature subfeature">
-			<h3 class="feature-title" id="image-linking">
+			<h3 class="feature-title" id="feature-image-linking">
 				{@link features/images-linking Image linking }
 			</h3>
 			<details>
@@ -354,7 +354,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-resize" class="feature subfeature">
-			<h3 class="feature-title" id="image-resize">
+			<h3 class="feature-title" id="feature-image-resize">
 				{@link features/images-resizing Image resize }
 			</h3>
 			<details>
@@ -363,7 +363,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-styles" class="feature subfeature">
-			<h3 class="feature-title" id="image-styles">
+			<h3 class="feature-title" id="feature-image-styles">
 				{@link features/images-styles Image styles }
 			</h3>
 			<details>
@@ -372,7 +372,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-upload" class="feature subfeature">
-			<h3 class="feature-title" id="image-upload">
+			<h3 class="feature-title" id="feature-image-upload">
 				{@link features/image-upload Image upload }
 			</h3>
 			<details>
@@ -381,7 +381,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="responsive-images" class="feature subfeature">
-			<h3 class="feature-title" id="responsive-images">
+			<h3 class="feature-title" id="feature-responsive-images">
 				{@link features/images-responsive Responsive images }
 			</h3>
 			<details>
@@ -392,7 +392,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="links" class="feature ">
-			<h3 class="feature-title" id="links">
+			<h3 class="feature-title" id="feature-links">
 				{@link features/link Links }
 			</h3>
 			<details>
@@ -401,7 +401,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="lists" class="feature ">
-			<h3 class="feature-title" id="lists">
+			<h3 class="feature-title" id="feature-lists">
 				{@link features/lists Lists }
 			</h3>
 			<details>
@@ -409,7 +409,7 @@ h3.feature-title {
 				<p class="feature-description">Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.</p>
 			</details><div class="subfeatures-list">
 				<article id="list-indentation" class="feature subfeature">
-			<h3 class="feature-title" id="list-indentation">
+			<h3 class="feature-title" id="feature-list-indentation">
 				{@link features/lists-editing#indenting-lists List indentation }
 			</h3>
 			<details>
@@ -418,7 +418,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="list-start-index" class="feature subfeature">
-			<h3 class="feature-title" id="list-start-index">
+			<h3 class="feature-title" id="feature-list-start-index">
 				{@link features/lists#list-start-index List start index }
 			</h3>
 			<details>
@@ -427,7 +427,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="list-styles" class="feature subfeature">
-			<h3 class="feature-title" id="list-styles">
+			<h3 class="feature-title" id="feature-list-styles">
 				{@link features/lists#list-styles List styles }
 			</h3>
 			<details>
@@ -436,7 +436,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="multi-level-lists" class="feature subfeature">
-			<h3 class="feature-title" id="multi-level-lists">
+			<h3 class="feature-title" id="feature-multi-level-lists">
 				{@link features/multi-level-lists Multi-level lists <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -447,7 +447,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="nested-lists" class="feature subfeature">
-			<h3 class="feature-title" id="nested-lists">
+			<h3 class="feature-title" id="feature-nested-lists">
 				{@link features/lists-editing#indenting-lists Nested lists }
 			</h3>
 			<details>
@@ -456,7 +456,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="ordered-lists" class="feature subfeature">
-			<h3 class="feature-title" id="ordered-lists">
+			<h3 class="feature-title" id="feature-ordered-lists">
 				{@link features/lists Ordered lists }
 			</h3>
 			<details>
@@ -465,7 +465,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="reversed-list" class="feature subfeature">
-			<h3 class="feature-title" id="reversed-list">
+			<h3 class="feature-title" id="feature-reversed-list">
 				{@link features/lists#reversed-list Reversed list }
 			</h3>
 			<details>
@@ -474,7 +474,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="to-do-lists" class="feature subfeature">
-			<h3 class="feature-title" id="to-do-lists">
+			<h3 class="feature-title" id="feature-to-do-lists">
 				{@link features/todo-lists To-do lists }
 			</h3>
 			<details>
@@ -483,7 +483,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="unordered-lists" class="feature subfeature">
-			<h3 class="feature-title" id="unordered-lists">
+			<h3 class="feature-title" id="feature-unordered-lists">
 				{@link features/lists Unordered lists }
 			</h3>
 			<details>
@@ -494,7 +494,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="mermaid" class="feature ">
-			<h3 class="feature-title" id="mermaid">
+			<h3 class="feature-title" id="feature-mermaid">
 				{@link features/mermaid Mermaid <span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>}
 			</h3>
 			<details>
@@ -503,7 +503,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="remove-formatting" class="feature ">
-			<h3 class="feature-title" id="remove-formatting">
+			<h3 class="feature-title" id="feature-remove-formatting">
 				{@link features/remove-format Remove formatting }
 			</h3>
 			<details>
@@ -512,7 +512,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="select-all" class="feature ">
-			<h3 class="feature-title" id="select-all">
+			<h3 class="feature-title" id="feature-select-all">
 				{@link features/select-all Select all }
 			</h3>
 			<details>
@@ -521,7 +521,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="tables" class="feature ">
-			<h3 class="feature-title" id="tables">
+			<h3 class="feature-title" id="feature-tables">
 				{@link features/tables Tables }
 			</h3>
 			<details>
@@ -529,7 +529,7 @@ h3.feature-title {
 				<p class="feature-description">CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.</p>
 			</details><div class="subfeatures-list">
 				<article id="columns-resizing" class="feature subfeature">
-			<h3 class="feature-title" id="columns-resizing">
+			<h3 class="feature-title" id="feature-columns-resizing">
 				{@link features/tables-resize Columns resizing }
 			</h3>
 			<details>
@@ -538,7 +538,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="insert-delete-columns-and-rows" class="feature subfeature">
-			<h3 class="feature-title" id="insert-delete-columns-and-rows">
+			<h3 class="feature-title" id="feature-insert-delete-columns-and-rows">
 				{@link features/tables#table-contextual-toolbar Insert/delete columns & rows }
 			</h3>
 			<details>
@@ -547,7 +547,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="merge-and-split-cells" class="feature subfeature">
-			<h3 class="feature-title" id="merge-and-split-cells">
+			<h3 class="feature-title" id="feature-merge-and-split-cells">
 				{@link features/tables#table-contextual-toolbar Merge & split cells }
 			</h3>
 			<details>
@@ -556,7 +556,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="nesting" class="feature subfeature">
-			<h3 class="feature-title" id="nesting">
+			<h3 class="feature-title" id="feature-nesting">
 				{@link features/tables#nesting-tables Nesting }
 			</h3>
 			<details>
@@ -565,7 +565,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="styling-tables-and-cells" class="feature subfeature">
-			<h3 class="feature-title" id="styling-tables-and-cells">
+			<h3 class="feature-title" id="feature-styling-tables-and-cells">
 				{@link features/tables-styling Styling tables & cells }
 			</h3>
 			<details>
@@ -574,7 +574,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="table-headers" class="feature subfeature">
-			<h3 class="feature-title" id="table-headers">
+			<h3 class="feature-title" id="feature-table-headers">
 				{@link features/tables#default-table-headers Table headers }
 			</h3>
 			<details>
@@ -583,7 +583,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="table-selection" class="feature subfeature">
-			<h3 class="feature-title" id="table-selection">
+			<h3 class="feature-title" id="feature-table-selection">
 				{@link features/tables#table-selection Table selection }
 			</h3>
 			<details>
@@ -592,7 +592,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="tables-caption" class="feature subfeature">
-			<h3 class="feature-title" id="tables-caption">
+			<h3 class="feature-title" id="feature-tables-caption">
 				{@link features/tables-caption Tables caption }
 			</h3>
 			<details>
@@ -603,7 +603,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="text-alignment" class="feature ">
-			<h3 class="feature-title" id="text-alignment">
+			<h3 class="feature-title" id="feature-text-alignment">
 				{@link features/text-alignment Text alignment }
 			</h3>
 			<details>
@@ -612,7 +612,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="text-formatting" class="feature ">
-			<h3 class="feature-title" id="text-formatting">
+			<h3 class="feature-title" id="feature-text-formatting">
 				{@link features/basic-styles Text formatting }
 			</h3>
 			<details>
@@ -620,7 +620,7 @@ h3.feature-title {
 				<p class="feature-description">CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.</p>
 			</details><div class="subfeatures-list">
 				<article id="bold" class="feature subfeature">
-			<h3 class="feature-title" id="bold">
+			<h3 class="feature-title" id="feature-bold">
 				{@link features/basic-styles Bold }
 			</h3>
 			<details>
@@ -629,7 +629,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="code" class="feature subfeature">
-			<h3 class="feature-title" id="code">
+			<h3 class="feature-title" id="feature-code">
 				{@link features/basic-styles Code }
 			</h3>
 			<details>
@@ -638,7 +638,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="highlight" class="feature subfeature">
-			<h3 class="feature-title" id="highlight">
+			<h3 class="feature-title" id="feature-highlight">
 				{@link features/highlight Highlight }
 			</h3>
 			<details>
@@ -647,7 +647,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="italic" class="feature subfeature">
-			<h3 class="feature-title" id="italic">
+			<h3 class="feature-title" id="feature-italic">
 				{@link features/basic-styles Italic }
 			</h3>
 			<details>
@@ -656,7 +656,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="strikethrough" class="feature subfeature">
-			<h3 class="feature-title" id="strikethrough">
+			<h3 class="feature-title" id="feature-strikethrough">
 				{@link features/basic-styles Strikethrough }
 			</h3>
 			<details>
@@ -665,7 +665,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="styles" class="feature subfeature">
-			<h3 class="feature-title" id="styles">
+			<h3 class="feature-title" id="feature-styles">
 				{@link features/style Styles }
 			</h3>
 			<details>
@@ -674,7 +674,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="subscript" class="feature subfeature">
-			<h3 class="feature-title" id="subscript">
+			<h3 class="feature-title" id="feature-subscript">
 				{@link features/basic-styles Subscript }
 			</h3>
 			<details>
@@ -683,7 +683,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="superscript" class="feature subfeature">
-			<h3 class="feature-title" id="superscript">
+			<h3 class="feature-title" id="feature-superscript">
 				{@link features/basic-styles Superscript }
 			</h3>
 			<details>
@@ -692,7 +692,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="underline" class="feature subfeature">
-			<h3 class="feature-title" id="underline">
+			<h3 class="feature-title" id="feature-underline">
 				{@link features/basic-styles Underline }
 			</h3>
 			<details>
@@ -703,7 +703,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="undo-redo" class="feature ">
-			<h3 class="feature-title" id="undo-redo">
+			<h3 class="feature-title" id="feature-undo-redo">
 				{@link features/undo-redo Undo/redo }
 			</h3>
 			<details>
@@ -717,7 +717,7 @@ h3.feature-title {
 <p class="description">Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.</p>
 <div class="features-list">
 	<article id="asynchronous-collaboration" class="feature ">
-			<h3 class="feature-title" id="asynchronous-collaboration">
+			<h3 class="feature-title" id="feature-asynchronous-collaboration">
 				{@link features/collaboration Asynchronous collaboration <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -727,7 +727,7 @@ h3.feature-title {
 				<p class="feature-description">Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.</p>
 			</details><div class="subfeatures-list">
 				<article id="local-data-storage" class="feature subfeature">
-			<h3 class="feature-title" id="local-data-storage">
+			<h3 class="feature-title" id="feature-local-data-storage">
 				{@link features/collaboration Local data storage <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -740,7 +740,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="comments" class="feature ">
-			<h3 class="feature-title" id="comments">
+			<h3 class="feature-title" id="feature-comments">
 				{@link features/comments Comments <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -750,7 +750,7 @@ h3.feature-title {
 				<p class="feature-description">Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.</p>
 			</details><div class="subfeatures-list">
 				<article id="comments-archive" class="feature subfeature">
-			<h3 class="feature-title" id="comments-archive">
+			<h3 class="feature-title" id="feature-comments-archive">
 				{@link features/comments Comments archive <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -761,7 +761,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="comments-outside-editor" class="feature subfeature">
-			<h3 class="feature-title" id="comments-outside-editor">
+			<h3 class="feature-title" id="feature-comments-outside-editor">
 				{@link features/comments-outside-editor Comments outside editor <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -772,7 +772,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="sidebar-modes" class="feature subfeature">
-			<h3 class="feature-title" id="sidebar-modes">
+			<h3 class="feature-title" id="feature-sidebar-modes">
 				{@link features/annotations-display-mode Sidebar modes <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -785,7 +785,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="mentions" class="feature ">
-			<h3 class="feature-title" id="mentions">
+			<h3 class="feature-title" id="feature-mentions">
 				{@link features/mentions Mentions }
 			</h3>
 			<details>
@@ -794,7 +794,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="real-time-collaboration" class="feature ">
-			<h3 class="feature-title" id="real-time-collaboration">
+			<h3 class="feature-title" id="feature-real-time-collaboration">
 				{@link features/real-time-collaboration Real-time collaboration <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -804,7 +804,7 @@ h3.feature-title {
 				<p class="feature-description">Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.</p>
 			</details><div class="subfeatures-list">
 				<article id="co-authoring" class="feature subfeature">
-			<h3 class="feature-title" id="co-authoring">
+			<h3 class="feature-title" id="feature-co-authoring">
 				{@link features/users-in-real-time-collaboration Co-authoring <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -815,7 +815,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="on-premises" class="feature subfeature">
-			<h3 class="feature-title" id="on-premises">
+			<h3 class="feature-title" id="feature-on-premises">
 				{@link @cs onpremises/index On-premises <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -826,7 +826,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="saas" class="feature subfeature">
-			<h3 class="feature-title" id="saas">
+			<h3 class="feature-title" id="feature-saas">
 				{@link @cs guides/collaboration/quick-start SaaS <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -839,7 +839,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="revision-history" class="feature ">
-			<h3 class="feature-title" id="revision-history">
+			<h3 class="feature-title" id="feature-revision-history">
 				{@link features/revision-history Revision history <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -850,7 +850,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="track-changes" class="feature ">
-			<h3 class="feature-title" id="track-changes">
+			<h3 class="feature-title" id="feature-track-changes">
 				{@link features/track-changes Track changes <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -861,7 +861,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="users-list-and-permissions" class="feature ">
-			<h3 class="feature-title" id="users-list-and-permissions">
+			<h3 class="feature-title" id="feature-users-list-and-permissions">
 				{@link features/users Users list and permissions <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -877,7 +877,7 @@ h3.feature-title {
 <p class="description">Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.</p>
 <div class="features-list">
 	<article id="content-generation" class="feature ">
-			<h3 class="feature-title" id="content-generation">
+			<h3 class="feature-title" id="feature-content-generation">
 				{@link features/export-pdf Content generation <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -887,7 +887,7 @@ h3.feature-title {
 				<p class="feature-description">CKEditor 5 may be your universal starting point for generating content in several recognizable formats.</p>
 			</details><div class="subfeatures-list">
 				<article id="export-to-pdf" class="feature subfeature">
-			<h3 class="feature-title" id="export-to-pdf">
+			<h3 class="feature-title" id="feature-export-to-pdf">
 				{@link features/export-pdf Export to PDF <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -898,7 +898,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="export-to-word" class="feature subfeature">
-			<h3 class="feature-title" id="export-to-word">
+			<h3 class="feature-title" id="feature-export-to-word">
 				{@link features/export-word Export to Word <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -909,7 +909,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="import-from-word" class="feature subfeature">
-			<h3 class="feature-title" id="import-from-word">
+			<h3 class="feature-title" id="feature-import-from-word">
 				{@link features/import-word Import from Word <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -922,7 +922,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="markdown-output" class="feature ">
-			<h3 class="feature-title" id="markdown-output">
+			<h3 class="feature-title" id="feature-markdown-output">
 				{@link features/markdown Markdown output }
 			</h3>
 			<details>
@@ -931,7 +931,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="media-embed" class="feature ">
-			<h3 class="feature-title" id="media-embed">
+			<h3 class="feature-title" id="feature-media-embed">
 				{@link features/media-embed Media embed }
 			</h3>
 			<details>
@@ -940,7 +940,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="paste-markdown" class="feature ">
-			<h3 class="feature-title" id="paste-markdown">
+			<h3 class="feature-title" id="feature-paste-markdown">
 				{@link features/paste-markdown Paste Markdown }
 			</h3>
 			<details>
@@ -949,7 +949,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="xml-output" class="feature ">
-			<h3 class="feature-title" id="xml-output">
+			<h3 class="feature-title" id="feature-xml-output">
 				{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor XML output }
 			</h3>
 			<details>
@@ -963,7 +963,7 @@ h3.feature-title {
 <p class="description">Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.</p>
 <div class="features-list">
 	<article id="document-outline" class="feature ">
-			<h3 class="feature-title" id="document-outline">
+			<h3 class="feature-title" id="feature-document-outline">
 				{@link features/document-outline Document outline <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -974,7 +974,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="page-utilities" class="feature ">
-			<h3 class="feature-title" id="page-utilities">
+			<h3 class="feature-title" id="feature-page-utilities">
 				{@link features/minimap Page utilities }
 			</h3>
 			<details>
@@ -982,7 +982,7 @@ h3.feature-title {
 				<p class="feature-description">CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.</p>
 			</details><div class="subfeatures-list">
 				<article id="content-minimap" class="feature subfeature">
-			<h3 class="feature-title" id="content-minimap">
+			<h3 class="feature-title" id="feature-content-minimap">
 				{@link features/minimap Content minimap }
 			</h3>
 			<details>
@@ -991,7 +991,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="document-title" class="feature subfeature">
-			<h3 class="feature-title" id="document-title">
+			<h3 class="feature-title" id="feature-document-title">
 				{@link features/title Document title }
 			</h3>
 			<details>
@@ -1000,7 +1000,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="page-break" class="feature subfeature">
-			<h3 class="feature-title" id="page-break">
+			<h3 class="feature-title" id="feature-page-break">
 				{@link features/page-break Page break }
 			</h3>
 			<details>
@@ -1011,7 +1011,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="pagination" class="feature ">
-			<h3 class="feature-title" id="pagination">
+			<h3 class="feature-title" id="feature-pagination">
 				{@link features/pagination Pagination <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1022,7 +1022,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="table-of-contents" class="feature ">
-			<h3 class="feature-title" id="table-of-contents">
+			<h3 class="feature-title" id="feature-table-of-contents">
 				{@link features/table-of-contents Table of contents <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1038,7 +1038,7 @@ h3.feature-title {
 <p class="description">Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.</p>
 <div class="features-list">
 	<article id="ai-assistant" class="feature ">
-			<h3 class="feature-title" id="ai-assistant">
+			<h3 class="feature-title" id="feature-ai-assistant">
 				{@link features/ai-assistant-overview AI Assistant <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1049,7 +1049,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="automation" class="feature ">
-			<h3 class="feature-title" id="automation">
+			<h3 class="feature-title" id="feature-automation">
 				{@link features/autoformat Automation }
 			</h3>
 			<details>
@@ -1057,7 +1057,7 @@ h3.feature-title {
 				<p class="feature-description">Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!</p>
 			</details><div class="subfeatures-list">
 				<article id="autoformatting" class="feature subfeature">
-			<h3 class="feature-title" id="autoformatting">
+			<h3 class="feature-title" id="feature-autoformatting">
 				{@link features/autoformat Autoformatting }
 			</h3>
 			<details>
@@ -1066,7 +1066,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="autolink" class="feature subfeature">
-			<h3 class="feature-title" id="autolink">
+			<h3 class="feature-title" id="feature-autolink">
 				{@link features/link#autolink-feature Autolink }
 			</h3>
 			<details>
@@ -1075,7 +1075,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="automatic-text-transformation" class="feature subfeature">
-			<h3 class="feature-title" id="automatic-text-transformation">
+			<h3 class="feature-title" id="feature-automatic-text-transformation">
 				{@link features/text-transformation Automatic text transformations }
 			</h3>
 			<details>
@@ -1084,7 +1084,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="autosave" class="feature subfeature">
-			<h3 class="feature-title" id="autosave">
+			<h3 class="feature-title" id="feature-autosave">
 				{@link features/autosave Autosave }
 			</h3>
 			<details>
@@ -1095,7 +1095,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="case-change" class="feature ">
-			<h3 class="feature-title" id="case-change">
+			<h3 class="feature-title" id="feature-case-change">
 				{@link features/case-change Case change <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1106,7 +1106,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="find-and-replace" class="feature ">
-			<h3 class="feature-title" id="find-and-replace">
+			<h3 class="feature-title" id="feature-find-and-replace">
 				{@link features/find-and-replace Find and replace }
 			</h3>
 			<details>
@@ -1115,7 +1115,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="format-painter" class="feature ">
-			<h3 class="feature-title" id="format-painter">
+			<h3 class="feature-title" id="feature-format-painter">
 				{@link features/format-painter Format painter <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1126,7 +1126,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="keyboard-shortcuts" class="feature ">
-			<h3 class="feature-title" id="keyboard-shortcuts">
+			<h3 class="feature-title" id="feature-keyboard-shortcuts">
 				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts }
 			</h3>
 			<details>
@@ -1135,7 +1135,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="mathtype" class="feature ">
-			<h3 class="feature-title" id="mathtype">
+			<h3 class="feature-title" id="feature-mathtype">
 				{@link features/math-equations MathType <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1146,7 +1146,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="merge-fields" class="feature ">
-			<h3 class="feature-title" id="merge-fields">
+			<h3 class="feature-title" id="feature-merge-fields">
 				{@link features/merge-fields Merge fields <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1157,7 +1157,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="paste-from-google-docs" class="feature ">
-			<h3 class="feature-title" id="paste-from-google-docs">
+			<h3 class="feature-title" id="feature-paste-from-google-docs">
 				{@link features/paste-from-google-docs Paste from Google Docs }
 			</h3>
 			<details>
@@ -1166,7 +1166,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="paste-from-office" class="feature ">
-			<h3 class="feature-title" id="paste-from-office">
+			<h3 class="feature-title" id="feature-paste-from-office">
 				{@link features/paste-from-office Paste from Office }
 			</h3>
 			<details>
@@ -1175,7 +1175,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="paste-from-office-enhanced" class="feature ">
-			<h3 class="feature-title" id="paste-from-office-enhanced">
+			<h3 class="feature-title" id="feature-paste-from-office-enhanced">
 				{@link features/paste-from-office-enhanced Paste from Office Enhanced <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1186,7 +1186,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="paste-plain-text" class="feature ">
-			<h3 class="feature-title" id="paste-plain-text">
+			<h3 class="feature-title" id="feature-paste-plain-text">
 				{@link features/paste-plain-text Paste plain text }
 			</h3>
 			<details>
@@ -1195,7 +1195,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="slash-commands" class="feature ">
-			<h3 class="feature-title" id="slash-commands">
+			<h3 class="feature-title" id="feature-slash-commands">
 				{@link features/slash-commands Slash commands <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1206,7 +1206,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="special-characters" class="feature ">
-			<h3 class="feature-title" id="special-characters">
+			<h3 class="feature-title" id="feature-special-characters">
 				{@link features/special-characters Special characters }
 			</h3>
 			<details>
@@ -1215,7 +1215,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="templates" class="feature ">
-			<h3 class="feature-title" id="templates">
+			<h3 class="feature-title" id="feature-templates">
 				{@link features/template Templates <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1231,7 +1231,7 @@ h3.feature-title {
 <p class="description">Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.</p>
 <div class="features-list">
 	<article id="editor-placeholder" class="feature ">
-			<h3 class="feature-title" id="editor-placeholder">
+			<h3 class="feature-title" id="feature-editor-placeholder">
 				{@link features/editor-placeholder Editor placeholder }
 			</h3>
 			<details>
@@ -1240,7 +1240,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="editor-ui-types" class="feature ">
-			<h3 class="feature-title" id="editor-ui-types">
+			<h3 class="feature-title" id="feature-editor-ui-types">
 				{@link getting-started/setup/editor-types Editor UI types }
 			</h3>
 			<details>
@@ -1248,7 +1248,7 @@ h3.feature-title {
 				<p class="feature-description">The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.</p>
 			</details><div class="subfeatures-list">
 				<article id="balloon-block-editor" class="feature subfeature">
-			<h3 class="feature-title" id="balloon-block-editor">
+			<h3 class="feature-title" id="feature-balloon-block-editor">
 				{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor }
 			</h3>
 			<details>
@@ -1257,7 +1257,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="balloon-editor" class="feature subfeature">
-			<h3 class="feature-title" id="balloon-editor">
+			<h3 class="feature-title" id="feature-balloon-editor">
 				{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon editor }
 			</h3>
 			<details>
@@ -1266,7 +1266,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="classic-editor" class="feature subfeature">
-			<h3 class="feature-title" id="classic-editor">
+			<h3 class="feature-title" id="feature-classic-editor">
 				{@link getting-started/setup/editor-types#classic-editor Classic editor }
 			</h3>
 			<details>
@@ -1275,7 +1275,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="decoupled-editor" class="feature subfeature">
-			<h3 class="feature-title" id="decoupled-editor">
+			<h3 class="feature-title" id="feature-decoupled-editor">
 				{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor }
 			</h3>
 			<details>
@@ -1284,7 +1284,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="inline-editor" class="feature subfeature">
-			<h3 class="feature-title" id="inline-editor">
+			<h3 class="feature-title" id="feature-inline-editor">
 				{@link getting-started/setup/editor-types#inline-editor Inline editor }
 			</h3>
 			<details>
@@ -1293,7 +1293,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="multi-root-editor" class="feature subfeature">
-			<h3 class="feature-title" id="multi-root-editor">
+			<h3 class="feature-title" id="feature-multi-root-editor">
 				{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor }
 			</h3>
 			<details>
@@ -1304,7 +1304,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="professionally-translated-language-packs" class="feature ">
-			<h3 class="feature-title" id="professionally-translated-language-packs">
+			<h3 class="feature-title" id="feature-professionally-translated-language-packs">
 				{@link getting-started/setup/ui-language Professionally translated language packs }
 			</h3>
 			<details>
@@ -1313,7 +1313,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="toolbar-and-menus" class="feature ">
-			<h3 class="feature-title" id="toolbar-and-menus">
+			<h3 class="feature-title" id="feature-toolbar-and-menus">
 				{@link getting-started/setup/toolbar Toolbar and menus }
 			</h3>
 			<details>
@@ -1321,7 +1321,7 @@ h3.feature-title {
 				<p class="feature-description">The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously.</p>
 			</details><div class="subfeatures-list">
 				<article id="balloon-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="balloon-toolbar">
+			<h3 class="feature-title" id="feature-balloon-toolbar">
 				{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar }
 			</h3>
 			<details>
@@ -1330,7 +1330,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="block-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="block-toolbar">
+			<h3 class="feature-title" id="feature-block-toolbar">
 				{@link getting-started/setup/toolbar#block-toolbar Block toolbar }
 			</h3>
 			<details>
@@ -1339,7 +1339,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="classic-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="classic-toolbar">
+			<h3 class="feature-title" id="feature-classic-toolbar">
 				{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar }
 			</h3>
 			<details>
@@ -1348,7 +1348,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="collapsible-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="collapsible-toolbar">
+			<h3 class="feature-title" id="feature-collapsible-toolbar">
 				{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar }
 			</h3>
 			<details>
@@ -1357,7 +1357,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="image-contextual-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="image-contextual-toolbar">
+			<h3 class="feature-title" id="feature-image-contextual-toolbar">
 				{@link features/images-overview#image-contextual-toolbar Image contextual toolbar }
 			</h3>
 			<details>
@@ -1366,7 +1366,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="menu-bar" class="feature subfeature">
-			<h3 class="feature-title" id="menu-bar">
+			<h3 class="feature-title" id="feature-menu-bar">
 				{@link getting-started/setup/menubar Menu bar }
 			</h3>
 			<details>
@@ -1375,7 +1375,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="multiline-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="multiline-toolbar">
+			<h3 class="feature-title" id="feature-multiline-toolbar">
 				{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar }
 			</h3>
 			<details>
@@ -1384,7 +1384,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="nesting-toolbars-in-dropdowns" class="feature subfeature">
-			<h3 class="feature-title" id="nesting-toolbars-in-dropdowns">
+			<h3 class="feature-title" id="feature-nesting-toolbars-in-dropdowns">
 				{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns }
 			</h3>
 			<details>
@@ -1393,7 +1393,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="sidebar-annotations-bar" class="feature subfeature">
-			<h3 class="feature-title" id="sidebar-annotations-bar">
+			<h3 class="feature-title" id="feature-sidebar-annotations-bar">
 				{@link features/annotations-display-mode#wide-sidebar Wide sidebar }
 			</h3>
 			<details>
@@ -1402,7 +1402,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="table-contextual-toolbar" class="feature subfeature">
-			<h3 class="feature-title" id="table-contextual-toolbar">
+			<h3 class="feature-title" id="feature-table-contextual-toolbar">
 				{@link features/tables#table-contextual-toolbar Table contextual toolbar }
 			</h3>
 			<details>
@@ -1413,7 +1413,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="watchdog" class="feature ">
-			<h3 class="feature-title" id="watchdog">
+			<h3 class="feature-title" id="feature-watchdog">
 				{@link features/watchdog Watchdog }
 			</h3>
 			<details>
@@ -1427,7 +1427,7 @@ h3.feature-title {
 <p class="description">Make your content accessible to any person or restrict it to specific users.</p>
 <div class="features-list">
 	<article id="accessibility-support" class="feature ">
-			<h3 class="feature-title" id="accessibility-support">
+			<h3 class="feature-title" id="feature-accessibility-support">
 				{@link features/accessibility Accessibility support }
 			</h3>
 			<details>
@@ -1436,7 +1436,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="read-only-support" class="feature ">
-			<h3 class="feature-title" id="read-only-support">
+			<h3 class="feature-title" id="feature-read-only-support">
 				{@link features/read-only Read-only support }
 			</h3>
 			<details>
@@ -1445,7 +1445,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="restricted-editing" class="feature ">
-			<h3 class="feature-title" id="restricted-editing">
+			<h3 class="feature-title" id="feature-restricted-editing">
 				{@link features/restricted-editing Restricted editing }
 			</h3>
 			<details>
@@ -1454,7 +1454,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="text-part-language" class="feature ">
-			<h3 class="feature-title" id="text-part-language">
+			<h3 class="feature-title" id="feature-text-part-language">
 				{@link features/language Text Part Language }
 			</h3>
 			<details>
@@ -1463,7 +1463,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="word-and-character-counter" class="feature ">
-			<h3 class="feature-title" id="word-and-character-counter">
+			<h3 class="feature-title" id="feature-word-and-character-counter">
 				{@link features/word-count Word and character counter }
 			</h3>
 			<details>
@@ -1472,7 +1472,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="wproofreader" class="feature ">
-			<h3 class="feature-title" id="wproofreader">
+			<h3 class="feature-title" id="feature-wproofreader">
 				{@link features/spelling-and-grammar-checking WProofreader <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1488,7 +1488,7 @@ h3.feature-title {
 <p class="description">Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.</p>
 <div class="features-list">
 	<article id="editor-sdk" class="feature ">
-			<h3 class="feature-title" id="editor-sdk">
+			<h3 class="feature-title" id="feature-editor-sdk">
 				{@link framework/index Editor SDK }
 			</h3>
 			<details>
@@ -1496,7 +1496,7 @@ h3.feature-title {
 				<p class="feature-description">Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.</p>
 			</details><div class="subfeatures-list">
 				<article id="ckeditor5-inspector" class="feature subfeature">
-			<h3 class="feature-title" id="ckeditor5-inspector">
+			<h3 class="feature-title" id="feature-ckeditor5-inspector">
 				{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector }
 			</h3>
 			<details>
@@ -1505,7 +1505,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="cloud-services-rest-api" class="feature subfeature">
-			<h3 class="feature-title" id="cloud-services-rest-api">
+			<h3 class="feature-title" id="feature-cloud-services-rest-api">
 				{@link @cs developer-resources/apis/overview Cloud Services REST API }
 			</h3>
 			<details>
@@ -1516,7 +1516,7 @@ h3.feature-title {
 			</div>
 		</article>
 <article id="themes" class="feature ">
-			<h3 class="feature-title" id="themes">
+			<h3 class="feature-title" id="feature-themes">
 				{@link framework/theme-customization Themes }
 			</h3>
 			<details>
@@ -1525,7 +1525,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="ui-library" class="feature ">
-			<h3 class="feature-title" id="ui-library">
+			<h3 class="feature-title" id="feature-ui-library">
 				{@link framework/architecture/ui-library UI Library }
 			</h3>
 			<details>
@@ -1539,7 +1539,7 @@ h3.feature-title {
 <p class="description">Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.</p>
 <div class="features-list">
 	<article id="base64-upload-adapter" class="feature ">
-			<h3 class="feature-title" id="base64-upload-adapter">
+			<h3 class="feature-title" id="feature-base64-upload-adapter">
 				{@link features/base64-upload-adapter Base64 Upload Adapter }
 			</h3>
 			<details>
@@ -1548,7 +1548,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="ckbox" class="feature ">
-			<h3 class="feature-title" id="ckbox">
+			<h3 class="feature-title" id="feature-ckbox">
 				{@link features/ckbox CKBox <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1559,7 +1559,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="ckfinder" class="feature ">
-			<h3 class="feature-title" id="ckfinder">
+			<h3 class="feature-title" id="feature-ckfinder">
 				{@link features/ckfinder CKFinder <span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 			<span class="tree__item__badge__text">Premium feature</span>
 		</span>}
@@ -1570,7 +1570,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="custom-upload-adapter" class="feature ">
-			<h3 class="feature-title" id="custom-upload-adapter">
+			<h3 class="feature-title" id="feature-custom-upload-adapter">
 				{@link features/image-upload#implementing-your-own-upload-adapter Custom Upload Adapter }
 			</h3>
 			<details>
@@ -1579,7 +1579,7 @@ h3.feature-title {
 			</details>
 		</article>
 <article id="simple-upload-adapter" class="feature ">
-			<h3 class="feature-title" id="simple-upload-adapter">
+			<h3 class="feature-title" id="feature-simple-upload-adapter">
 				{@link features/simple-upload-adapter Simple Upload Adapter }
 			</h3>
 			<details>
