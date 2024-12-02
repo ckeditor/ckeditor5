@@ -8,7 +8,7 @@
  */
 
 import type { Position, Writer } from 'ckeditor5/src/engine.js';
-import { iterateSiblingListBlocks, type ListIteratorValue } from './listwalker.js';
+import { SiblingListBlocksIterator, type ListIteratorValue } from './listwalker.js';
 import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model.js';
 
 /**
@@ -35,11 +35,11 @@ export function findAndAddListHeadToMap(
 
 		// Previously, the loop below was defined like this:
 		//
-		// 		for ( { node: listHead } of iterateSiblingListBlocks( listHead, 'backward' ) )
+		// 		for ( { node: listHead } of new SiblingListBlocksIterator( listHead, 'backward' ) )
 		//
 		// Unfortunately, such a destructuring is incorrectly transpiled by Babel and the loop never ends.
 		// See: https://github.com/ckeditor/ckeditor5-react/issues/345.
-		for ( const { node } of iterateSiblingListBlocks( listHead, 'backward' ) ) {
+		for ( const { node } of new SiblingListBlocksIterator( listHead, 'backward' ) ) {
 			listHead = node;
 
 			if ( itemToListHead.has( listHead ) ) {

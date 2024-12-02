@@ -8,17 +8,15 @@
  */
 
 /**
- * Splices one array into another. To be used instead of `Array.prototype.splice` as the latter may
- * throw "Maximum call stack size exceeded" when passed huge number of items to insert.
- *
- * Note: in contrary to Array.splice, this function does not modify the original `target`.
+ * Splices one array into another. To be used instead of `Array.prototype.splice` for better
+ * performance and because the latter may throw "Maximum call stack size exceeded" error when
+ * passing huge number of items to insert.
  *
  * ```ts
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 0, 0 );	// [ 3, 4, 1, 2 ]
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 1 );	// [ 1, 3, 4 ]
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 0 );	// [ 1, 3, 4, 2 ]
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 2, 0 );	// [ 1, 2, 3, 4 ]
- * spliceArray( [ 1, 2 ], [],       0, 1 );	// [ 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 0 );	// [ 3, 4, 1, 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 1 );	// [ 1, 3, 4, 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 2 );	// [ 1, 2, 3, 4 ]
+ * spliceArray( [ 1, 2 ], [],       0 );	// [ 1, 2 ]
  * ```
  *
  * @param target Array to be spliced.
@@ -29,28 +27,20 @@
  * @returns New spliced array.
  */
 export default function spliceArray<T>(
-	target: ReadonlyArray<T>,
-	source: ReadonlyArray<T>,
-	start: number,
-	count: number
-): Array<T> {
-	const targetLength = target.length;
-	const sourceLength = source.length;
-	const result = new Array<T>( targetLength - count + sourceLength );
+	targetArray: Array<T>,
+	insertArray: Array<T>,
+	index: number
+): void {
+	const originalLength = targetArray.length;
+	const insertLength = insertArray.length;
 
-	let i = 0;
-
-	for ( ; i < start && i < targetLength; i++ ) {
-		result[ i ] = target[ i ];
+	// Shift elements in the target array to make space for insertArray
+	for ( let i = originalLength - 1; i >= index; i-- ) {
+		targetArray[ i + insertLength ] = targetArray[ i ];
 	}
 
-	for ( let j = 0; j < sourceLength; j++, i++ ) {
-		result[ i ] = source[ j ];
+	// Copy elements from insertArray into the target array
+	for ( let i = 0; i < insertLength; i++ ) {
+		targetArray[ index + i ] = insertArray[ i ];
 	}
-
-	for ( let k = start + count; k < targetLength; k++, i++ ) {
-		result[ i ] = target[ k ];
-	}
-
-	return result;
 }
