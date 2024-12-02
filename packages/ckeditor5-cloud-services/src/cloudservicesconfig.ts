@@ -92,7 +92,7 @@ export interface CloudServicesConfig {
 	 * to refresh the token.
 	 *
 	 * You can find more information about token endpoints in the
-	 * {@glink @cs guides/easy-image/quick-start##configuration Cloud Services - Quick start}
+	 * {@glink @cs developer-resources/easy-image/service-details.html Easy Image} guide
 	 * and {@glink @cs developer-resources/security/token-endpoint Cloud Services - Token endpoint} documentation.
 	 *
 	 * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
