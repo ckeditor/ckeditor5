@@ -165,10 +165,6 @@ class ObservablePropertyBinding {
 	}
 }
 
-function bind( property: string, callback?: ( value: any ) => any ) {
-	return new ObservablePropertyBinding( property, callback );
-}
-
 /**
  * TODO
  */
@@ -189,7 +185,7 @@ class ExampleView extends NextGenView {
 			<button type="button" id="123" @click=${ this.onClick }>
 				<label for="123">
 					Static ${ staticText }.
-					Clicked ${ bind( 'value' ) } (x10 = ${ b( 'value', value => value * 10 ) }).
+					Clicked ${ b( 'value' ) } (x10 = ${ b( 'value', value => value * 10 ) }).
 				</label>
 			</button>
 		`;
