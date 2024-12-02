@@ -60,7 +60,8 @@ ClassicEditor
 				height: 600,
 				width: 800
 			}
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

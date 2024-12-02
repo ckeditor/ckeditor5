@@ -56,7 +56,8 @@ ClassicEditor
 			],
 			toolbar: [ 'resizeImage', '|', 'ckboxImageEdit' ]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editorResizeUIDropdown = editor;

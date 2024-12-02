@@ -22,6 +22,7 @@ import { AccessibilityHelp } from 'ckeditor5/src/ui.js';
  *
  * It includes:
  *
+ * * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp},
  * * {@link module:clipboard/clipboard~Clipboard},
  * * {@link module:enter/enter~Enter},
  * * {@link module:select-all/selectall~SelectAll},

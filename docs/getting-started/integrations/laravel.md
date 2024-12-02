@@ -1,11 +1,12 @@
 ---
-category: installation
-meta-title: Compatibility with Laravel | CKEditor 5 documentation
+category: self-hosted
+meta-title: Compatibility with Laravel using a ZIP archive | CKEditor 5 Documentation
+meta-description: Integrate CKEditor 5 with Laravel using a ZIP archive.
 order: 70
 menu-title: Laravel
 ---
 
-# Compatibility with Laravel
+# Compatibility with Laravel using ZIP
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
@@ -14,109 +15,6 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 ## Setting up the project
 
 This guide assume you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
-
-## Integrating from CDN
-
-Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `public` directory in your app. Your folder structure should resemble this one:
-
-```plain
-├── app
-├── bootstrap
-├── config
-├── database
-├── public
-│   ├── assets
-|      ├── vendor
-|          └── ckeditor5.js
-│   ├── .htaccess
-│   ├── favicon.ico
-│   ├── index.php
-│   └── robots.txt
-├── resources
-│   ├── views
-|      ├── welcome.blade.php
-|      └── ...
-├── routes
-└── ...
-```
-
-Inside the file, paste the JavaScript code from CKEditor&nbsp;5 Builder. The code will differ depending on your chosen preset and features. But it should look similar to this:
-
-```js
-import {
-	ClassicEditor,
-	AccessibilityHelp,
-	Autosave,
-	Bold,
-	Essentials,
-	Italic,
-	Mention,
-	Paragraph,
-	SelectAll,
-	Undo
-} from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-const editorConfig = {
-	toolbar: {
-		items: ['undo', 'redo', '|', 'selectAll', '|', 'bold', 'italic', '|', 'accessibilityHelp'],
-		shouldNotGroupWhenFull: false
-	},
-	placeholder: 'Type or paste your content here!',
-	plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	mention: {
-		feeds: [
-			{
-				marker: '@',
-				feed: [
-					/* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
-				]
-			}
-		]
-	},
-	initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
-};
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), editorConfig )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-```
-
-Then, modify the `welcome.blade.php` file in the `resources/views` directory to include the CKEditor&nbsp;5 scripts. All necessary scripts and links are in the HTML snippet from CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>CKE5 in Laravel</title>
-	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
-	<script type="importmap">
-		{
-			"imports": {
-				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
-				"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
-				"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
-			}
-		}
-	</script>
-	<script type="module" src="{{ URL::asset('assets/vendor/ckeditor5.js') }}"></script>
-</head>
-<body>
-	<div id="editor"></div>
-</body>
-</html>
-```
-
-Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
 
 ## Integrating using ZIP
 
@@ -149,6 +47,15 @@ After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ck
 ```
 
 Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` file in the `resources/views` directory to import them. All the necessary markup is in the `index.html` file from the ZIP archive. You can copy and paste it into your template. Pay attention to the paths of the import map and CSS link &ndash; they should reflect your folder structure. The template should look similar to the one below:
+
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from ZIP:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
 
 ```html
 <!DOCTYPE html>
@@ -192,6 +99,7 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` f
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',

@@ -33,23 +33,25 @@ You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, MediaEmbed } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MediaEmbed, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ]
 		mediaEmbed: {
-			// Configuration
-			// ...
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box>
 	Depending on how you will configure this feature, you may need to use services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) to display content of embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
@@ -177,8 +179,7 @@ For instance, to leave only the previewable providers, configure this feature as
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, /* ... */ ],
-		toolbar: [ 'mediaEmbed', /* ... */ ]
+		// ... Other configuration options ...
 		mediaEmbed: {
 			removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
 		}
@@ -194,8 +195,7 @@ To override the default providers, use {@link module:media-embed/mediaembedconfi
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, /* ... */ ],,
-		toolbar: [ 'mediaEmbed', /* ... */ ]
+		// ... Other configuration options ...
 		mediaEmbed: {
 			providers: [
 				{

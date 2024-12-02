@@ -1,13 +1,14 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component | CKEditor 5 documentation
-category: installation
+meta-title: Angular rich text editor component (npm) | CKEditor 5 Documentation
+meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
+category: self-hosted
 order: 30
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component
+# Angular rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -17,19 +18,11 @@ order: 30
 
 Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
 
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
 
-### Setting up the project
-
-This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
-
-### Installing from npm
+This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
 First, install the CKEditor 5 packages:
 
@@ -50,19 +43,28 @@ npm install @ckeditor/ckeditor5-angular
 
 The following setup differs depending on the type of components you use.
 
-#### Standalone components
+### Standalone components
 
 Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
 
 Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The example below shows how to use the component with open-source and premium plugins.
+
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
 
 ```ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -77,14 +79,9 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
-		// mention: {
-		//     Mention configuration
-		// }
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -106,7 +103,7 @@ Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 <ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-#### NGModule components
+### NGModule components
 
 If you want to use NGModule components, add the `CKEditorModule` to the `imports` array. It will make the CKEditor&nbsp;5 component available in your Angular application.
 
@@ -120,13 +117,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { AppComponent } from './app.component';
 
 @NgModule( {
-	declarations: [
-		AppComponent
-	],
-	imports: [
-		BrowserModule,
-		CKEditorModule
-	],
+	declarations: [ AppComponent ],
+	imports: [ BrowserModule, CKEditorModule ],
 	providers: [],
 	bootstrap: [ AppComponent ]
 } )
@@ -135,12 +127,21 @@ export class AppModule { }
 
 Then, import the editor in your Angular component and assign it to a `public` property to make it accessible from the template. The below example shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -153,14 +154,9 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
-		// mention: {
-		//     Mention configuration
-		// }
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -521,7 +517,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+import { DecoupledEditor, Essentials, Italic, Paragraph, Bold } from 'ckeditor5';
 
 @Component( {
 	selector: 'app-root',
@@ -536,7 +532,8 @@ export class AppComponent {
 
 	public Editor = DecoupledEditor;
 	public config = {
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Bold, Essentials, Italic, Paragraph ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	}
 	public onReady( editor: DecoupledEditor ): void {
@@ -607,8 +604,8 @@ export class AppComponent {
 	title = 'angular';
 	public Editor = ClassicEditor;
 	public config = {
-		translations: [ coreTranslations, premiumFeaturesTranslations ],
-		// More configuration options...
+		// ... Other configuration options ...
+		translations: [ coreTranslations, premiumFeaturesTranslations ]
 	}
 }
 ```
@@ -667,11 +664,22 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ( {
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[ Symbol.iterator ]: function* () {}
-	} );
+		[Symbol.iterator]: function* () {}
+	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 ```
 

@@ -59,7 +59,8 @@ ClassicEditor
 					type: 'pen'
 				}
 			]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

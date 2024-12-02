@@ -31,7 +31,7 @@ Learn more about Mermaid syntax and usage in a [dedicated article](https://ckedi
 	Please note that this plugin is not imported from the main CKEditor&nbsp;5 file, but from its own package.
 </infobox>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package. Also, that this import is different than the standard CKEditor&nbsp;5 plugins import:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package. Also, that this import is different than the standard CKEditor&nbsp;5 plugins import:
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
@@ -41,6 +41,7 @@ import '@ckeditor/ckeditor5-mermaid/dist/index.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Mermaid, /* ... */ ],
 		toolbar: [ 'mermaid', /* ... */ ]
 	} )

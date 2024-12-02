@@ -91,8 +91,9 @@ export { default as spliceArray } from './splicearray.js';
 
 export { default as uid } from './uid.js';
 export { default as delay, type DelayedFunc } from './delay.js';
-export { default as verifyLicense } from './verifylicense.js';
 export { default as wait } from './wait.js';
+export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
+export { default as crc32, type CRCData } from './crc32.js';
 
 export * from './unicode.js';
 

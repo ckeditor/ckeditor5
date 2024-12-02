@@ -49,6 +49,10 @@ describe( 'MultiRootEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
+		it( 'it\'s possible to extract editor name from editor instance', () => {
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'MultiRootEditor' );
+		} );
+
 		it( 'has a Data Interface', () => {
 			expect( MultiRootEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
 			expect( MultiRootEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );

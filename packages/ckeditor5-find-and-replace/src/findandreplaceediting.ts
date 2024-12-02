@@ -292,7 +292,7 @@ export default class FindAndReplaceEditing extends Plugin {
 			this.state!.highlightedResult = changedSearchResults[ 0 ];
 		} else {
 			// If there is already highlight item then refresh highlight offset after appending new items.
-			this.state!.refreshHighlightOffset();
+			this.state!.refreshHighlightOffset( model );
 		}
 	};
 }

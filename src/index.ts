@@ -11,6 +11,7 @@ export * from '@ckeditor/ckeditor5-autoformat';
 export * from '@ckeditor/ckeditor5-autosave';
 export * from '@ckeditor/ckeditor5-basic-styles';
 export * from '@ckeditor/ckeditor5-block-quote';
+export * from '@ckeditor/ckeditor5-bookmark';
 export * from '@ckeditor/ckeditor5-ckbox';
 export * from '@ckeditor/ckeditor5-ckfinder';
 export * from '@ckeditor/ckeditor5-clipboard';

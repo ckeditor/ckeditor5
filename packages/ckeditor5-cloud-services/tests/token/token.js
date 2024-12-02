@@ -216,8 +216,17 @@ describe( 'Token', () => {
 	} );
 
 	describe( 'destroy', () => {
+		let clock;
+
+		beforeEach( () => {
+			clock = sinon.useFakeTimers();
+		} );
+
+		afterEach( () => {
+			clock.restore();
+		} );
+
 		it( 'should stop refreshing the token', async () => {
-			const clock = sinon.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
@@ -239,8 +248,79 @@ describe( 'Token', () => {
 			await clock.tickAsync( 3600000 );
 
 			expect( requests.length ).to.equal( 2 );
+		} );
 
-			clock.restore();
+		// See https://github.com/ckeditor/ckeditor5/issues/17462.
+		it( 'should stop refreshing the token when editor destroyed before token request rejects', async () => {
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+
+			const token = new Token( 'http://token-endpoint', { autoRefresh: true } );
+			const registerRefreshTokenTimeoutSpy = testUtils.sinon.spy( token, '_registerRefreshTokenTimeout' );
+
+			const initPromise = token.init();
+
+			// Editor is destroyed before the token request is resolved.
+			token.destroy();
+
+			// Simulate token fetching error.
+			requests[ 0 ].error();
+
+			try {
+				await initPromise;
+				throw new Error( 'Promise should be rejected' );
+			} catch ( error ) {
+				expect( error ).to.match( /Network Error/ );
+			}
+
+			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
+			sinon.assert.calledOnce( consoleWarnStub );
+			expect( requests.length ).to.equal( 1 );
+
+			await clock.tickAsync( 10 * 1000 );
+
+			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
+			sinon.assert.calledOnce( consoleWarnStub );
+			expect( requests.length ).to.equal( 1 );
+
+			await clock.tickAsync( 3600000 );
+			await clock.tickAsync( 3600000 );
+
+			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
+			sinon.assert.calledOnce( consoleWarnStub );
+			expect( requests.length ).to.equal( 1 );
+		} );
+
+		// Related to https://github.com/ckeditor/ckeditor5/issues/17462.
+		it( 'should stop refreshing the token when editor destroyed before token request resolves', async () => {
+			const token = new Token( 'http://token-endpoint', { autoRefresh: true } );
+			const registerRefreshTokenTimeoutSpy = testUtils.sinon.spy( token, '_registerRefreshTokenTimeout' );
+
+			const initPromise = token.init();
+
+			// Editor is destroyed before the token request is resolved.
+			token.destroy();
+
+			// Simulate token response.
+			requests[ 0 ].respond( 200, '', getTestTokenValue( 1500 ) );
+
+			try {
+				await initPromise;
+			} catch ( error ) {
+				throw new Error( 'Promise should not be rejected' );
+			}
+
+			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
+			expect( requests.length ).to.equal( 1 );
+
+			await clock.tickAsync( 3600000 );
+
+			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
+			expect( requests.length ).to.equal( 1 );
+
+			await clock.tickAsync( 3600000 );
+
+			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
+			expect( requests.length ).to.equal( 1 );
 		} );
 	} );
 

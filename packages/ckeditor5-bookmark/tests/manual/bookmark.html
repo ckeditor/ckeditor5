@@ -1,0 +1,328 @@
+<h2>Editor with enabled wrapped anchors conversion</h2>
+<div id="editor">
+	<p>
+		<a id="very-long-bookmark-name-and-even-longer-than-you-ever-expected"></a> very long bookmark name
+	</p>
+	<h3>Pointed bookmarks</h3>
+	<p>
+		<a id="foo"></a>
+	</p>
+	<p>
+		text<a id="bar"></a>
+	</p>
+	<p>
+		space before <a id="baz"></a>
+	</p>
+	<p>
+		<a id="xyz"></a>text
+	</p>
+	<p>
+		<a id="bookmark_01"></a> space after
+	</p>
+	<p>
+		space before <a id="another_bookmark_name"></a> space after
+	</p>
+
+	<blockquote>
+		<p>
+			<a id="blockquote_with_pointed_bookmark"></a>Blockquote with a bookmark inside
+		</p>
+	</blockquote>
+
+	<h3>Wrapped bookmarks</h3>
+	<p>
+		<a name="wrapped_bookmark_name">
+			wrapped with only name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name">
+			wrapped with different id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="foo">
+			wrapped with the same id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo">
+			wrapped only with the id
+		</a>
+	</p>
+	<blockquote>
+		<p>
+			<a id="blockquote_with_wrapped_bookmark">Blockquote with a wrapped bookmark inside</a>
+		</p>
+	</blockquote>
+
+	<h3>Pointed bookmarks (contains not only the id attribute)</h3>
+	<p>
+		<a name="wrapped_bookmark_name"></a>pointed with only name
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name"></a>pointed with different id and name
+	</p>
+	<p>
+		<a id="foo" name="foo"></a>pointed with the same id and name
+	</p>
+	<p>
+		<a id="foo"></a>pointed only with the id
+	</p>
+
+	<p>Example text at the beginning of the editor content.</p>
+	<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates,<img
+			src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/mario.png"> accusantium! Eaque recusandae fugit illum
+		laudantium. Sequi excepturi aliquid nulla in facilis repellat, autem enim voluptates amet commodi adipisci nobis
+		tempore? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Modi dolor minus ut? Reiciendis, similique!
+		Recusandae autem nisi necessitatibus amet, quae similique ipsum repellat dolor hic sequi adipisci, dolore, fugit
+		aliquam?</p>
+	<ul>
+		<li>Item 1</li>
+		<li>Item 2</li>
+		<li>Item 3</li>
+		<li>Item 4</li>
+	</ul>
+	<figure class="image"><img src="sample.jpg"></figure>
+	<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas mollitia laudantium laboriosam, vitae molestiae
+		velit voluptate aliquid autem nisi minima, quis maiores at iste accusamus ipsam odio facilis iusto? Explicabo!</p>
+	<p></p>
+	<figure class="table">
+		<table>
+			<tbody>
+				<tr>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+				</tr>
+				<tr>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+				</tr>
+				<tr>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+				</tr>
+				<tr>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p></p>
+</div>
+
+<br>
+<h2>Editor with disabled wrapped anchors conversion</h2>
+<div id="editor-wrapped-anchors-not-allowed">
+	<h3>Pointed bookmarks</h3>
+	<p>
+		<a id="foo"></a>
+	</p>
+	<p>
+		text<a id="bar"></a>
+	</p>
+	<p>
+		space before <a id="baz"></a>
+	</p>
+	<p>
+		<a id="xyz"></a>text
+	</p>
+	<p>
+		<a id="bookmark_01"></a> space after
+	</p>
+	<p>
+		space before <a id="another_bookmark_name"></a> space after
+	</p>
+
+	<h3>Wrapped bookmarks</h3>
+	<p>
+		<a name="wrapped_bookmark_name">
+			wrapped with only name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name">
+			wrapped with different id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="foo">
+			wrapped with the same id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo">
+			wrapped only with the id
+		</a>
+	</p>
+
+	<h3>Pointed bookmarks (contains not only the id attribute)</h3>
+	<p>
+		<a name="wrapped_bookmark_name"></a>pointed with only name
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name"></a>pointed with different id and name
+	</p>
+	<p>
+		<a id="foo" name="foo"></a>pointed with the same id and name
+	</p>
+	<p>
+		<a id="foo"></a>pointed only with the id
+	</p>
+</div>
+
+<br>
+<h2>Editor (with GHS) with enabled wrapped anchors conversion</h2>
+<div id="editor-with-ghs">
+	<h3>Pointed bookmarks</h3>
+	<p>
+		<a id="foo"></a>
+	</p>
+	<p>
+		text<a id="bar"></a>
+	</p>
+	<p>
+		space before <a id="baz"></a>
+	</p>
+	<p>
+		<a id="xyz"></a>text
+	</p>
+	<p>
+		<a id="bookmark_01"></a> space after
+	</p>
+	<p>
+		space before <a id="another_bookmark_name"></a> space after
+	</p>
+
+	<h3>Wrapped bookmarks</h3>
+	<p>
+		<a name="wrapped_bookmark_name">
+			wrapped with only name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name">
+			wrapped with different id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="foo">
+			wrapped with the same id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo">
+			wrapped only with the id
+		</a>
+	</p>
+
+	<h3>Pointed bookmarks (contains not only the id attribute)</h3>
+	<p>
+		<a name="wrapped_bookmark_name"></a>pointed with only name
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name"></a>pointed with different id and name
+	</p>
+	<p>
+		<a id="foo" name="foo"></a>pointed with the same id and name
+	</p>
+	<p>
+		<a id="foo"></a>pointed only with the id
+	</p>
+</div>
+
+<br>
+<h2>Editor (with GHS) with disabled wrapped anchors conversion</h2>
+<div id="editor-with-ghs-wrapped-anchors-not-allowed">
+	<h3>Pointed bookmarks</h3>
+	<p>
+		<a id="foo"></a>
+	</p>
+	<p>
+		text<a id="bar"></a>
+	</p>
+	<p>
+		space before <a id="baz"></a>
+	</p>
+	<p>
+		<a id="xyz"></a>text
+	</p>
+	<p>
+		<a id="bookmark_01"></a> space after
+	</p>
+	<p>
+		space before <a id="another_bookmark_name"></a> space after
+	</p>
+
+	<h3>Wrapped bookmarks</h3>
+	<p>
+		<a name="wrapped_bookmark_name">
+			wrapped with only name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name">
+			wrapped with different id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo" name="foo">
+			wrapped with the same id and name
+		</a>
+	</p>
+	<p>
+		<a id="foo">
+			wrapped only with the id
+		</a>
+	</p>
+
+	<h3>Pointed bookmarks (contains not only the id attribute)</h3>
+	<p>
+		<a name="wrapped_bookmark_name"></a>pointed with only name
+	</p>
+	<p>
+		<a id="foo" name="wrapped_bookmark_name"></a>pointed with different id and name
+	</p>
+	<p>
+		<a id="foo" name="foo"></a>pointed with the same id and name
+	</p>
+	<p>
+		<a id="foo"></a>pointed only with the id
+	</p>
+</div>
+
+<br>
+<h2>Editor with RTL</h2>
+<div id="editor-rtl">
+	<p>
+		<a id="foo"></a>
+	</p>
+	<p>
+		text<a id="bar"></a>
+	</p>
+	<p>
+		space before <a id="baz"></a>
+	</p>
+	<p>
+		<a id="xyz"></a>text
+	</p>
+	<p>
+		<a id="bookmark_01"></a> space after
+	</p>
+	<p>
+		space before <a id="another_bookmark_name"></a> space after
+	</p>
+	<p>
+		Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas mollitia laudantium laboriosam, vitae molestiae velit voluptate aliquid autem nisi minima, quis maiores at iste
+		accusamus ipsam odio facilis iusto? Explicabo!
+	</p>
+</div>

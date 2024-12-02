@@ -87,7 +87,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
 		language: 'en'
@@ -120,7 +120,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		translations: [
 			coreTranslations,
 			premiumFeaturesTranslations
@@ -160,7 +160,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		translations: [
 			coreTranslations,
 			premiumFeaturesTranslations
@@ -192,7 +192,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>'
+		licenseKey: '<YOUR_LICENSE_KEY>'
 	} );
 </script>
 ```

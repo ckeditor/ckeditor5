@@ -28,7 +28,8 @@ MultiRootEditor
 					'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
 					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 				]
-			}
+			},
+			licenseKey: 'GPL'
 		}
 	)
 	.then( editor => {
