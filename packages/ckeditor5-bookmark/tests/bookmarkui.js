@@ -262,6 +262,14 @@ describe( 'BookmarkUI', () => {
 
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'should return focus to editable after executing a command', () => {
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				button.fire( 'execute' );
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 

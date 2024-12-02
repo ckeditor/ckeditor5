@@ -302,6 +302,7 @@ export default class BookmarkUI extends Plugin {
 
 			this.listenTo( button, 'execute', () => {
 				editor.execute( 'delete' );
+				editor.editing.view.focus();
 			} );
 
 			return button;
