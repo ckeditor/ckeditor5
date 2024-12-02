@@ -14,6 +14,7 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 	padding: 1rem;
 	border: 1px solid #e9e9e9;
 	border-left: 4px solid #e9e9e9;
+	background-color: white;
 	transition: 0.5s all; /* TODO */
 }
 
@@ -69,6 +70,11 @@ h3.feature-title {
 	color: #555;
 }
 
+.feature:target {
+	border-left-color: rgb(161 131 217);
+	animation: ck-hash-animation 2s 1;
+}
+
 .feature + .feature {
 	margin-top: 1em;
 }
@@ -89,6 +95,18 @@ h3.feature-title {
 @media screen and (max-width: 600px) {
 	.subfeatures-list {
 		grid-template-columns: 1fr;
+	}
+}
+
+@keyframes ck-hash-animation {
+	from {
+		background-color: white;
+	}
+	50% {
+		background-color: rgba(161, 131, 217,0.25);
+	}
+	to {
+		background-color: white;
 	}
 }
 
