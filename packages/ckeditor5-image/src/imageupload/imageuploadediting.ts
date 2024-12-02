@@ -276,7 +276,16 @@ export default class ImageUploadEditing extends Plugin {
 							// If the image was inserted to the graveyard for good (**not** replaced by another image),
 							// only then abort the loading process.
 							if ( !insertedImagesIds.has( uploadId ) ) {
-								loader.abort();
+								// ... but abort it only if all remain images that share the same loader are in the graveyard too.
+								// This is to prevent situation when we have two images in uploading state and one of them is being
+								// placed in the graveyard (e.g. using undo). The other one should not be aborted.
+								const allImagesThatShareUploaderInGraveyard = Array
+									.from( this._uploadImageElements.get( uploadId )! )
+									.every( element => element.root.rootName == '$graveyard' );
+
+								if ( allImagesThatShareUploaderInGraveyard ) {
+									loader.abort();
+								}
 							}
 						} else {
 							// Remember the upload id of the inserted image. If it acted as a replacement for another
