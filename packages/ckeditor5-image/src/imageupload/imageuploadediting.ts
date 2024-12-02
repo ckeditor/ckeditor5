@@ -266,7 +266,10 @@ export default class ImageUploadEditing extends Plugin {
 									imageElement: imageElement as Element
 								} );
 
-								this._uploadedImages.delete( uploadId );
+								// While it makes sense to remove the image from the `_uploadedImages` map here,
+								// it's counterintuitive for the user that pastes image in uploading several times.
+								// It'll work the first time, but the next time the image will be empty because the
+								// `_uploadedImages` no longer contain the response.
 							}
 
 							continue;
