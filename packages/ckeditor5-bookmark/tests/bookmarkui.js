@@ -146,6 +146,12 @@ describe( 'BookmarkUI', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should toggle the balloon UI with hidden back button', () => {
+			button.fire( 'execute' );
+
+			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.false;
+		} );
 	}
 
 	describe( 'bookmark toolbar components', () => {
@@ -209,6 +215,12 @@ describe( 'BookmarkUI', () => {
 
 				updateBookmarkCommand.isEnabled = false;
 				expect( button.isEnabled ).to.equal( false );
+			} );
+
+			it( 'should toggle the balloon UI with visible back button', () => {
+				button.fire( 'execute' );
+
+				expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
 			} );
 
 			it( 'should trigger #_showFormView() on execute', () => {
