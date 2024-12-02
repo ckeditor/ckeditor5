@@ -27,7 +27,6 @@
 		& td,
 		& th {
 			min-width: 2em;
-			padding: .4em;
 
 			/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
 			However, the border is a content style, so it should use .ck-content (so it works outside the editor).
@@ -81,4 +80,11 @@ when content is available outside the editor. See https://github.com/ckeditor/ck
 	 * See https://github.com/ckeditor/ckeditor5/issues/9117.
 	 */
 	width: 100%;
+}
+
+.ck-editor__editable .ck-table-cell-content {
+	box-sizing: border-box;
+	min-height: 100%;
+	padding: .4em;
+	margin: -1px;
 }

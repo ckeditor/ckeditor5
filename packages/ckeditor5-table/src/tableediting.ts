@@ -143,7 +143,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'tableCell',
 			view: downcastCell( { asWidget: true } )
 		} );

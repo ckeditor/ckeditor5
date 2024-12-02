@@ -111,9 +111,23 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 				const cellElementName = isHeading ? 'th' : 'td';
 
-				result = options.asWidget ?
-					toWidgetEditable( writer.createEditableElement( cellElementName ), writer ) :
-					writer.createContainerElement( cellElementName );
+				const cellElement = writer.createContainerElement( cellElementName );
+
+				if ( options.asWidget ) {
+					const divElement = toWidgetEditable(
+						writer.createEditableElement( 'div', { class: 'ck-table-cell-content' } ),
+						writer
+					);
+
+					writer.insert(
+						writer.createPositionAt( divElement, 0 ),
+						writer.createSlot()
+					);
+
+					writer.insert( writer.createPositionAt( cellElement, 0 ), divElement );
+				}
+
+				result = cellElement;
 				break;
 			}
 		}
