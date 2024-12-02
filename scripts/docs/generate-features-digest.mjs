@@ -12,8 +12,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = upath.dirname( __filename );
 
-( async () => {
-	const digest = await fs.readJson( upath.join( __dirname, './features-digest-source.json' ) );
+export default async function generateFeaturesDigest() {
+	const digest = await fs.readJson( upath.join( __dirname, '../../docs/data/features-digest-source.json' ) );
 
 	const output = [];
 
@@ -21,13 +21,11 @@ const __dirname = upath.dirname( __filename );
 		output.push( generateCapability( capability ) );
 	} );
 
-	await fs.writeFile( upath.join( __dirname, './features-digest-output.html' ), output.join( '\n' ) );
-
 	// Update the features digest markdown file content by to the newest HTML structure generated based on JSON data.
-	const startMarker = '<!--MARK_START-->';
-	const endMarker = '<!--MARK_END-->';
+	const startMarker = '<!--FEATURES_DIGEST_START-->';
+	const endMarker = '<!--FEATURES_DIGEST_END-->';
 	const replacementText = output.join( '\n' );
-	const filePath = upath.join( __dirname, '../features/feature-digest.md' );
+	const filePath = upath.join( __dirname, '../../docs/features/feature-digest.md' );
 
 	const featuresDigestMdFileContent = await fs.readFile( filePath, 'utf8' );
 	const regex = new RegExp( `${ startMarker }[\\s\\S]*?${ endMarker }`, 'g' );
@@ -36,8 +34,10 @@ const __dirname = upath.dirname( __filename );
 		regex, `${ startMarker }\n${ replacementText }\n${ endMarker }`
 	);
 
-	fs.writeFile( filePath, modifiedContent, 'utf8' );
-} )();
+	await fs.writeFile( filePath, modifiedContent, 'utf8' );
+
+	console.log( 'Features digest have been built.' );
+}
 
 function generateCapability( capability ) {
 	return `

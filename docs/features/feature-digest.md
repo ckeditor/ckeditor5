@@ -112,7 +112,7 @@ h3.feature-title {
 
 </style>
 
-<!--MARK_START-->
+<!--FEATURES_DIGEST_START-->
 
 ## Core editing
 <p class="description">Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.</p>
@@ -1588,4 +1588,4 @@ h3.feature-title {
 			</details>
 		</article>
 </div>
-<!--MARK_END-->
+<!--FEATURES_DIGEST_END-->
