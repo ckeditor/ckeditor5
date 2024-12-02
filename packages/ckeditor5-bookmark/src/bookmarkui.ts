@@ -326,7 +326,7 @@ export default class BookmarkUI extends Plugin {
 		} );
 
 		// Execute the command.
-		this.listenTo( view, 'execute', () => this._showFormView( false ) );
+		this.listenTo( view, 'execute', () => this._showFormView( updateCommand.isEnabled ) );
 
 		view.bind( 'isEnabled' ).toMany(
 			[ insertCommand, updateCommand ],

@@ -147,10 +147,20 @@ describe( 'BookmarkUI', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should toggle the balloon UI with hidden back button', () => {
+		it( 'should toggle the balloon UI with hidden back button (if not updating)', () => {
+			editor.commands.get( 'updateBookmark' ).isEnabled = false;
+
 			button.fire( 'execute' );
 
 			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.false;
+		} );
+
+		it( 'should toggle the balloon UI with visible back button (if updating)', () => {
+			editor.commands.get( 'updateBookmark' ).isEnabled = true;
+
+			button.fire( 'execute' );
+
+			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
 		} );
 	}
 
