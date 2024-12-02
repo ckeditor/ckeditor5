@@ -5,10 +5,12 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Emoji, EmojiMention } from '../src/index.js';
-import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
 
 describe( 'EmojiLibraryIntegration', () => {
 	let editor, editorElement;
@@ -18,7 +20,7 @@ describe( 'EmojiLibraryIntegration', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Emoji, Mention ]
+			plugins: [ Emoji, Mention, Essentials, Paragraph ]
 		} );
 	} );
 

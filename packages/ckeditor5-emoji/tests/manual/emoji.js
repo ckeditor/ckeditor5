@@ -7,26 +7,22 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { Emoji } from '../../src/index.js';
-
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Emoji,
-			Clipboard,
-			Enter,
 			Mention,
-			Paragraph,
-			Typing,
-			Undo
+			Essentials,
+			Paragraph
 		],
-		toolbar: [ 'undo', 'redo', 'emoji' ]
+		toolbar: [ 'undo', 'redo', 'emoji' ],
+		menuBar: {
+			isVisible: true
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

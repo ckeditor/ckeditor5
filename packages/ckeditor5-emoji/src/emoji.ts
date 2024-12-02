@@ -11,8 +11,6 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import EmojiMention from './emojimention.js';
 import EmojiPicker from './emojipicker.js';
 
-import '../theme/emoji.css';
-
 /**
  * The emoji plugin.
  *

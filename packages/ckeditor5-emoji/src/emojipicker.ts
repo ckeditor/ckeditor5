@@ -10,14 +10,18 @@
 import { Picker } from 'emoji-picker-element';
 
 import {
-	ButtonView,
 	clickOutsideHandler,
 	ContextualBalloon,
-	View
+	View,
+	ButtonView,
+	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiLibraryIntegration from './emojilibraryintegration.js';
+
+import '../theme/emojipicker.css';
+import { getEmojiButtonCreator } from './utils.js';
 
 type EmojiClickEvent = Event & {
 	detail: {
@@ -32,7 +36,7 @@ type EmojiClickEvent = Event & {
  */
 export default class EmojiPicker extends Plugin {
 	private _balloon!: ContextualBalloon;
-	declare private _emojiDialog: EmojiDialog;
+	declare private _emojiView: EmojiView;
 
 	/**
 	 * @inheritDoc
@@ -60,20 +64,17 @@ export default class EmojiPicker extends Plugin {
 	 */
 	public init(): void {
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
-		this._emojiDialog = this._createEmojiDialog();
+		this._emojiView = this._createEmojiView();
 
-		this.editor.ui.componentFactory.add( 'emoji', () => {
-			const button = new ButtonView();
-
-			button.set( {
-				label: this.editor.t( 'Emoji' ),
-				withText: true
-			} );
-
-			button.on( 'execute', () => this.showUI() );
-
-			return button;
+		const createButton = getEmojiButtonCreator( {
+			editor: this.editor,
+			icon: icons.cog, // TODO: update the icon when ready. See https://github.com/ckeditor/ckeditor5/issues/17378
+			label: this.editor.t( 'Emoji' ),
+			callback: () => this.showUI()
 		} );
+
+		this.editor.ui.componentFactory.add( 'emoji', () => createButton( ButtonView ) );
+		this.editor.ui.componentFactory.add( 'menuBar:emoji', () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 
 	/**
@@ -81,14 +82,14 @@ export default class EmojiPicker extends Plugin {
 	 */
 	public showUI( initialSearchValue?: string ): void {
 		this._balloon.add( {
-			view: this._emojiDialog,
+			view: this._emojiView,
 			position: this._getBalloonPositionData()
 		} );
 
-		this._emojiDialog.focus();
+		this._emojiView.focus();
 
 		if ( initialSearchValue ) {
-			this._emojiDialog.updateSearchValue( initialSearchValue );
+			this._emojiView.updateSearchValue( initialSearchValue );
 		}
 	}
 
@@ -96,7 +97,7 @@ export default class EmojiPicker extends Plugin {
 	 * @internal
 	 */
 	private _hideUI() {
-		this._balloon.remove( this._emojiDialog );
+		this._balloon.remove( this._emojiView );
 
 		this.editor.editing.view.focus();
 	}
@@ -119,11 +120,11 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * @internal
 	 */
-	private _createEmojiDialog() {
+	private _createEmojiView() {
 		const editor = this.editor;
-		const emojiDialog = new EmojiDialog( editor );
+		const emojiView = new EmojiView( editor );
 
-		emojiDialog.emojiElement.addEventListener( 'emoji-click', event => {
+		emojiView.emojiElement.addEventListener( 'emoji-click', event => {
 			const emoji = ( event as EmojiClickEvent ).detail.unicode;
 
 			editor.model.change( writer => {
@@ -139,7 +140,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		// Close the dialog while focus is in it.
-		emojiDialog.emojiElement.addEventListener( 'keydown', event => {
+		emojiView.emojiElement.addEventListener( 'keydown', event => {
 			if ( event.key === 'Escape' ) {
 				this._hideUI();
 			}
@@ -147,25 +148,24 @@ export default class EmojiPicker extends Plugin {
 
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
-			emitter: emojiDialog,
+			emitter: emojiView,
 			contextElements: [ this._balloon.view.element! ],
 			callback: () => this._hideUI(),
-			activator: () => this._balloon.visibleView === emojiDialog
+			activator: () => this._balloon.visibleView === emojiView
 		} );
 
-		return emojiDialog;
+		return emojiView;
 	}
 }
 
-class EmojiDialog extends View {
+class EmojiView extends View {
 	public emojiElement: HTMLElement;
 
 	constructor( editor: Editor ) {
 		super( editor.locale );
 
 		this.emojiElement = new Picker();
-		this.emojiElement.style.height = '400px';
-		this.emojiElement.classList.add( 'light' );
+		this.emojiElement.classList.add( 'light', 'ck', 'ck-emoji-picker' );
 
 		const emojiView = new View( editor.locale );
 
@@ -182,7 +182,10 @@ class EmojiDialog extends View {
 	}
 
 	public updateSearchValue( newValue: string ): void {
-		this._getInputElement().value = newValue;
+		const inputElement = this._getInputElement();
+
+		inputElement.value = newValue;
+		inputElement.dispatchEvent( new Event( 'input' ) );
 	}
 
 	public focus(): void {

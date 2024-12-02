@@ -1,4 +1,5 @@
 {
+	"Emoji": "Label of the button that inserts an emoji.",
 	"Show all emoji...": "Button appearing at the end of the list of results of emoji search.",
 	"No results...": "Placeholder label when the search list is empty."
 }

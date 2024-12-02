@@ -6,7 +6,9 @@
 /* global document */
 
 import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Emoji', () => {
@@ -17,7 +19,7 @@ describe( 'Emoji', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Emoji, Mention ]
+			plugins: [ Emoji, Mention, Essentials, Paragraph ]
 		} );
 	} );
 
