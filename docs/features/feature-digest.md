@@ -3,7 +3,7 @@ category: features
 menu-title: Feature digest
 meta-title: Feature digest | CKEditor 5 Documentation
 meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page collects them all.
-modified_at: 2024-10-17
+modified_at: 2024-11-20
 order: -998
 ---
 
@@ -13,7 +13,7 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 
 Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -21,7 +21,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="advanced-html-editing" >
+		<tr id="advanced-html-editing" class="feature">
 			<td>
 				{@link features/general-html-support Advanced HTML Editing}
 			</td>
@@ -36,7 +36,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="full-page-html" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/full-page-html Full page HTML}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/full-page-html Full page HTML}
 				</span>
 			</td>
 			<td>
@@ -52,7 +52,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="general-html-support" class="subfeature background-gray">
 			<td>
 				 <span>
-				 	{@img assets/img/enter-arrow.svg}&nbsp;{@link features/general-html-support General HTML Support (GHS)}
+				 	<span class="subfeature-icon"></span>&nbsp;{@link features/general-html-support General HTML Support (GHS)}
 				 </span>
 			</td>
 			<td>
@@ -65,7 +65,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="html-comment" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-comments HTML comment}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/html-comments HTML comment}
 				</span>
 			</td>
 			<td class="subfeature background-gray">
@@ -78,7 +78,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="html-embed" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/html-embed HTML embed}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/html-embed HTML embed}
 				</span>
 			</td>
 			<td>
@@ -90,7 +90,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="show-blocks" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/show-blocks Show blocks}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/show-blocks Show blocks}
 				</span>
 			</td>
 			<td>
@@ -103,7 +103,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="source-editing" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/source-editing Source editing}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing Source editing}
 				</span>
 			</td>
 			<td>
@@ -111,7 +111,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				document.
 			</td>
 		</tr>
-		<tr id="block-formatting">
+		<tr id="block-formatting" class="feature">
 			<td>
 				{@link features/block-quote Block formatting}
 			</td>
@@ -127,7 +127,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="block-quotes" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/block-quote Block quote}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/block-quote Block quote}
 				</span>
 			</td>
 			<td>
@@ -139,7 +139,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="headings-paragraph" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/headings Headings/paragraph}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/headings Headings/paragraph}
 				</span>
 			</td>
 			<td>
@@ -151,7 +151,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="horizontal-line" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/horizontal-line Horizontal line}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/horizontal-line Horizontal line}
 				</span>
 			</td>
 			<td>
@@ -163,7 +163,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="block-indentation" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/indent Block indentation}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/indent Block indentation}
 				</span>
 			</td>
 			<td>
@@ -172,7 +172,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				distinguish parts of your content.
 			</td>
 		</tr>
-		<tr id="bookmark">
+		<tr id="bookmark" class="feature">
 			<td>
 				{@link features/bookmarks Bookmarks}
 			</td>
@@ -182,7 +182,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				content sections, and speed up the navigation boosting efficiency.
 			</td>
 		</tr>
-		<tr id="clipboard">
+		<tr id="clipboard" class="feature">
 			<td>
 				{@link framework/deep-dive/clipboard Clipboard}
 			</td>
@@ -190,7 +190,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				Copy, cut, and paste content within the editor or from external sources.
 			</td>
 		</tr>
-		<tr id="code-blocks">
+		<tr id="code-blocks" class="feature">
 			<td>
 				{@link features/code-blocks Code blocks}
 			</td>
@@ -199,7 +199,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				distinct styling.
 			</td>
 		</tr>
-		<tr id="drag-and-drop">
+		<tr id="drag-and-drop" class="feature">
 			<td>
 				{@link features/drag-drop Drag and drop}
 			</td>
@@ -208,7 +208,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				images, or other content types.
 			</td>
 		</tr>
-		<tr id="font-formatting">
+		<tr id="font-formatting" class="feature">
 			<td>
 				{@link features/font Font formatting}
 			</td>
@@ -220,7 +220,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="font-background-color" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font background color}
 				</span>
 			</td>
 			<td>
@@ -230,7 +230,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="font-color" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/font#configuring-the-font-color-and-font-background-color-features Font color}
 				</span>
 			</td>
 			<td>Effortlessly make the letters stand out with their own color.</td>
@@ -238,7 +238,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="font-family" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-family-feature Font family}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/font#configuring-the-font-family-feature Font family}
 				</span>
 			</td>
 			<td>
@@ -249,12 +249,12 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="font-size" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/font#configuring-the-font-size-feature Font size}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/font#configuring-the-font-size-feature Font size}
 				</span>
 			</td>
 			<td>Easily control the size of the letters.</td>
 		</tr>
-		<tr id="image">
+		<tr id="image" class="feature">
 			<td>
 				{@link features/images-overview Image}
 			</td>
@@ -269,7 +269,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-all-text" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-text-alternative Image alt text}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-text-alternative Image alt text}
 				</span>
 			</td>
 			<td>
@@ -281,7 +281,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-captions" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-captions Image captions}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-captions Image captions}
 				</span>
 			</td>
 			<td>
@@ -291,7 +291,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-insert-via-url" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-inserting Image insert via URL}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-inserting Image insert via URL}
 				</span>
 			</td>
 			<td>
@@ -303,7 +303,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-linking" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-linking Image linking}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-linking Image linking}
 				</span>
 			</td>
 			<td>
@@ -315,7 +315,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-resize" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-resizing Image resize}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-resizing Image resize}
 				</span>
 			</td>
 			<td>
@@ -328,7 +328,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-styles" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-styles Image styles}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-styles Image styles}
 				</span>
 			</td>
 			<td>
@@ -340,7 +340,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="image-upload" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/image-upload Image upload}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/image-upload Image upload}
 				</span>
 			</td>
 			<td>
@@ -354,7 +354,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="responsive-images" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-responsive Responsive images}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-responsive Responsive images}
 				</span>
 			</td>
 			<td>
@@ -368,7 +368,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				the image load much faster and saves bandwidth.
 			</td>
 		</tr>
-		<tr id="links">
+		<tr id="links" class="feature">
 			<td>
 				{@link features/link Links}
 			</td>
@@ -378,7 +378,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				and editing of links.
 			</td>
 		</tr>
-		<tr id="lists">
+		<tr id="lists" class="feature">
 			<td>
 				{@link features/lists Lists}
 			</td>
@@ -404,7 +404,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="list-start-index" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-start-index List start index}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists#list-start-index List start index}
 				</span>
 			</td>
 			<td>
@@ -417,7 +417,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="list-styles" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#list-styles List styles}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists#list-styles List styles}
 				</span>
 			</td>
 			<td>
@@ -433,7 +433,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="multi-level-lists" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/multi-level-lists Multi-level lists
+					<span class="subfeature-icon"></span>&nbsp;{@link features/multi-level-lists Multi-level lists
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -450,7 +450,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="nested-lists" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists-editing#indenting-lists Nested lists}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists-editing#indenting-lists Nested lists}
 				</span>
 			</td>
 			<td>
@@ -462,7 +462,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="ordered-lists" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Ordered lists}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists Ordered lists}
 				</span>
 			</td>
 			<td>
@@ -476,7 +476,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="reversed-list" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists#reversed-list Reversed list}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists#reversed-list Reversed list}
 				</span>
 			</td>
 			<td>
@@ -489,7 +489,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="to-do-lists" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/todo-lists To-do lists}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/todo-lists To-do lists}
 				</span>
 			</td>
 			<td>
@@ -502,7 +502,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="unordered-lists" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/lists Unordered lists}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists Unordered lists}
 				</span>
 			</td>
 			<td>
@@ -513,7 +513,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				list markers' shape.
 			</td>
 		</tr>
-		<tr id="mermaid">
+		<tr id="mermaid" class="feature">
 			<td>
 				{@link features/mermaid Mermaid <span class="tree__item__badge tree__item__badge_new"
 				data-badge-tooltip="Experimental feature">Exp</span>}
@@ -525,7 +525,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
 			</td>
 		</tr>
-		<tr id="remove-formatting">
+		<tr id="remove-formatting" class="feature">
 			<td>
 				{@link features/remove-format Remove formatting}
 			</td>
@@ -537,7 +537,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				(links).
 			</td>
 		</tr>
-		<tr id="select-all">
+		<tr id="select-all" class="feature">
 			<td>
 				{@link features/select-all Select all}
 			</td>
@@ -546,7 +546,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				command or shortcut.
 			</td>
 		</tr>
-		<tr id="tables">
+		<tr id="tables" class="feature">
 			<td>
 				{@link features/tables Tables}
 			</td>
@@ -560,7 +560,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="columns-resizing" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-resize Columns resizing}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables-resize Columns resizing}
 				</span>
 			</td>
 			<td>
@@ -573,7 +573,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="insert-delete-columns-and-rows" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables#table-contextual-toolbar Insert/delete columns & rows}
 				</span>
 			</td>
 			<td>
@@ -584,7 +584,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="merge-and-split-cells" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Merge & split cells}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables#table-contextual-toolbar Merge & split cells}
 				</span>
 			</td>
 			<td>
@@ -595,7 +595,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="nesting" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#nesting-tables Nesting}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables#nesting-tables Nesting}
 				</span>
 			</td>
 			<td>
@@ -607,7 +607,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="styling-tables-and-cells" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-styling Styling tables & cells}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables-styling Styling tables & cells}
 				</span>
 			</td>
 			<td>
@@ -619,19 +619,19 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="table-headers" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#default-table-headers Table headers}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables#default-table-headers Table headers}
 				</span>
 			</td>
 			<td>
 				To make every inserted table have <code>n</code> number of rows and
 				columns as table headers by default, set an optional table configuration
-				property <code>defaultHeadings</code> .
+				property <code>defaultHeadings</code>.
 			</td>
 		</tr>
 		<tr id="table-selection" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-selection Table selection}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables#table-selection Table selection}
 				</span>
 			</td>
 			<td>
@@ -648,7 +648,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="tables-caption" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables-caption Tables caption}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables-caption Tables caption}
 				</span>
 			</td>
 			<td>
@@ -658,7 +658,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				accessibility as they are recognized by screen readers.
 			</td>
 		</tr>
-		<tr id="text-alignment">
+		<tr id="text-alignment" class="feature">
 			<td>
 				{@link features/text-alignment Text alignment}
 			</td>
@@ -667,7 +667,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				justify and permits the alteration of indentation.
 			</td>
 		</tr>
-		<tr id="text-formatting">
+		<tr id="text-formatting" class="feature">
 			<td>
 				{@link features/basic-styles Text formatting}
 			</td>
@@ -683,7 +683,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="bold" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Bold}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Bold}
 				</span>
 			</td>
 			<td>Making the letters look like the good time were never gone.</td>
@@ -691,7 +691,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="code" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Code}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Code}
 				</span>
 			</td>
 			<td>Snippet look like a terminal from the 1990s movie.</td>
@@ -699,7 +699,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="highlight" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/highlight Highlight}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/highlight Highlight}
 				</span>
 			</td>
 			<td>
@@ -710,7 +710,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="italic" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Italic}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Italic}
 				</span>
 			</td>
 			<td>Making the letters look like seashore pines.</td>
@@ -718,7 +718,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="strikethrough" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Strikethrough}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Strikethrough}
 				</span>
 			</td>
 			<td>Never mind, will not need it anymore.</td>
@@ -726,7 +726,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="styles" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/style Styles}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/style Styles}
 				</span>
 			</td>
 			<td>
@@ -737,7 +737,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="subscript" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Subscript}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Subscript}
 				</span>
 			</td>
 			<td>Fine print at the bottom, like atom numbers.</td>
@@ -745,7 +745,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="superscript" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Superscript}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Superscript}
 				</span>
 			</td>
 			<td>Fine print on top, like references in a book.</td>
@@ -753,12 +753,12 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="underline" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/basic-styles Underline}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/basic-styles Underline}
 				</span>
 			</td>
 			<td>Stuff looks important, yo. Or like a link, too.</td>
 		</tr>
-		<tr id="undo-redo">
+		<tr id="undo-redo" class="feature">
 			<td>
 				{@link features/undo-redo Undo/redo}
 			</td>
@@ -771,7 +771,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 
 Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -779,7 +779,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="asynchronous-collaboration">
+		<tr id="asynchronous-collaboration" class="feature">
 			<td>
 				{@link features/collaboration Asynchronous collaboration
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -796,7 +796,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="local-data-storage" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/collaboration Local data storage
+					<span class="subfeature-icon"></span>&nbsp;{@link features/collaboration Local data storage
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -807,7 +807,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				servers.
 			</td>
 		</tr>
-		<tr id="comments">
+		<tr id="comments" class="feature">
 			<td>
 				{@link features/comments Comments
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -823,7 +823,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="comments-archive" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments Comments archive
+					<span class="subfeature-icon"></span>&nbsp;{@link features/comments Comments archive
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -841,7 +841,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="comments-outside-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/comments-outside-editor Comments outside editor
+					<span class="subfeature-icon"></span>&nbsp;{@link features/comments-outside-editor Comments outside editor
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premiumfeature</span></span>
 					}
@@ -856,7 +856,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="sidebar-modes" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes
+					<span class="subfeature-icon"></span>&nbsp;{@link features/annotations-display-mode Sidebar modes
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -870,7 +870,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				different UIs or even create your UI for annotations.
 			</td>
 		</tr>
-		<tr id="mentions">
+		<tr id="mentions" class="feature">
 			<td>
 				{@link features/mentions Mentions}
 			</td>
@@ -880,7 +880,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				appear, offering autocomplete suggestions.
 			</td>
 		</tr>
-		<tr id="real-time-collaboration">
+		<tr id="real-time-collaboration" class="feature">
 			<td>
 				{@link features/real-time-collaboration Real-time collaboration 
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -897,7 +897,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="co-authoring" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/users-in-real-time-collaboration Co-authoring
+					<span class="subfeature-icon"></span>&nbsp;{@link features/users-in-real-time-collaboration Co-authoring
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -908,7 +908,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="on-premises" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs onpremises/index On-premises
+					<span class="subfeature-icon"></span>&nbsp;{@link @cs onpremises/index On-premises
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -922,7 +922,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="saas" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs guides/collaboration/quick-start SaaS
+					<span class="subfeature-icon"></span>&nbsp;{@link @cs guides/collaboration/quick-start SaaS
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -930,7 +930,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 			</td>
 			<td>Real-time collaboration provided as a service by CKSource.</td>
 		</tr>
-		<tr id="revision-history">
+		<tr id="revision-history" class="feature">
 			<td>
 				{@link features/revision-history Revision history
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -946,7 +946,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				go.
 			</td>
 		</tr>
-		<tr id="track-changes">
+		<tr id="track-changes" class="feature">
 			<td>
 				{@link features/track-changes Track changes
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -960,21 +960,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 				suggestions that they can accept or discard.
 			</td>
 		</tr>
-		<tr id="sidebar-modes" class="subfeature background-gray">
-			<td>
-				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode Sidebar modes}
-				</span>
-			</td>
-			<td>
-				There are three built-in UIs to display comment threads and suggestion
-				annotations: the wide sidebar, the narrow sidebar, and inline balloons.
-				You can also display them together in more advanced scenarios where
-				various annotation sources (comments, suggestions) are connected to
-				different UIs, or even create your own UI for annotations.
-			</td>
-		</tr>
-		<tr id="users-list-and-permissions">
+		<tr id="users-list-and-permissions" class="feature">
 			<td>
 				{@link features/users Users list and permissions
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -995,7 +981,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 
 Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1003,7 +989,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="content-generation">
+		<tr id="content-generation" class="feature">
 			<td>
 				{@link features/export-pdf Content generation
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1015,7 +1001,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		<tr id="export-to-pdf" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-pdf Export to PDF
+					<span class="subfeature-icon"></span>&nbsp;{@link features/export-pdf Export to PDF
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -1030,7 +1016,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		<tr id="export-to-word" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/export-word Export to Word
+					<span class="subfeature-icon"></span>&nbsp;{@link features/export-word Export to Word
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -1046,7 +1032,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		<tr id="import-from-word" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/import-word Import from Word
+					<span class="subfeature-icon"></span>&nbsp;{@link features/import-word Import from Word
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 					}
@@ -1058,7 +1044,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				tracking annotations.
 			</td>
 		</tr>
-		<tr id="markdown-output">
+		<tr id="markdown-output" class="feature">
 			<td>
 				{@link features/markdown Markdown output}
 			</td>
@@ -1069,7 +1055,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				the simplified formatting syntax favored by developers.
 			</td>
 		</tr>
-		<tr id="media-embed">
+		<tr id="media-embed" class="feature">
 			<td>
 				{@link features/media-embed Media embed}
 			</td>
@@ -1079,7 +1065,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				embeds the media.
 			</td>
 		</tr>
-		<tr id="paste-markdown">
+		<tr id="paste-markdown" class="feature">
 			<td>
 				{@link features/paste-markdown Paste Markdown 
 					<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>
@@ -1091,7 +1077,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 				the fly.
 			</td>
 		</tr>
-		<tr id="xml-output">
+		<tr id="xml-output" class="feature">
 			<td>
 				{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor XML output}
 			</td>
@@ -1107,7 +1093,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 
 Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1115,7 +1101,7 @@ Format, organize, and navigate your documents easily with page management featur
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="document-outline">
+		<tr id="document-outline" class="feature">
 			<td>
 				{@link features/document-outline Document outline
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1131,7 +1117,7 @@ Format, organize, and navigate your documents easily with page management featur
 				interface, catering to different user preferences for workspace layout.
 			</td>
 		</tr>
-		<tr id="page-utilities">
+		<tr id="page-utilities" class="feature">
 			<td>
 				{@link features/minimap Page utilities}
 			</td>
@@ -1143,7 +1129,7 @@ Format, organize, and navigate your documents easily with page management featur
 		<tr id="content-minimap" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/minimap Content minimap}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/minimap Content minimap}
 				</span>
 			</td>
 			<td>
@@ -1154,7 +1140,7 @@ Format, organize, and navigate your documents easily with page management featur
 		<tr id="document-title" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/title Document title}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/title Document title}
 				</span>
 			</td>
 			<td>
@@ -1165,7 +1151,7 @@ Format, organize, and navigate your documents easily with page management featur
 		<tr id="page-break" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/page-break Page break}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/page-break Page break}
 				</span>
 			</td>
 			<td>
@@ -1174,7 +1160,7 @@ Format, organize, and navigate your documents easily with page management featur
 				print clarity.
 			</td>
 		</tr>
-		<tr id="pagination">
+		<tr id="pagination" class="feature">
 			<td>
 				{@link features/pagination Pagination
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1191,7 +1177,7 @@ Format, organize, and navigate your documents easily with page management featur
 				documents.
 			</td>
 		</tr>
-		<tr id="table-of-contents">
+		<tr id="table-of-contents" class="feature">
 			<td>
 				{@link features/table-of-contents Table of contents
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1214,7 +1200,7 @@ Format, organize, and navigate your documents easily with page management featur
 
 Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1222,7 +1208,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="ai-assistant">
+		<tr id="ai-assistant" class="feature">
 			<td>
 				{@link features/ai-assistant-overview AI Assistant
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1238,7 +1224,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				Amazon Bedrock. You can also integrate it with custom models.
 			</td>
 		</tr>
-		<tr id="automation">
+		<tr id="automation" class="feature">
 			<td>
 				{@link features/autoformat Automation}
 			</td>
@@ -1248,7 +1234,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		<tr id="autoformatting" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autoformat Autoformatting}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/autoformat Autoformatting}
 				</span>
 			</td>
 			<td>
@@ -1260,7 +1246,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		<tr id="autolink" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/link#autolink-feature Autolink}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/link#autolink-feature Autolink}
 				</span>
 			</td>
 			<td>
@@ -1273,7 +1259,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		<tr id="automatic-text-transformation" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/text-transformation Automatic text transformations}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/text-transformation Automatic text transformations}
 				</span>
 			</td>
 			<td>
@@ -1288,7 +1274,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		<tr id="autosave" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/autosave Autosave}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/autosave Autosave}
 				</span>
 			</td>
 			<td>
@@ -1298,7 +1284,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				to the server, providing peace of mind through continuous backup.
 			</td>
 		</tr>
-		<tr id="case-change">
+		<tr id="case-change" class="feature">
 			<td>
 				{@link features/case-change Case change
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1316,7 +1302,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				adjustments.
 			</td>
 		</tr>
-		<tr id="find-and-replace">
+		<tr id="find-and-replace" class="feature">
 			<td>
 				{@link features/find-and-replace Find and replace}
 			</td>
@@ -1327,7 +1313,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				maintain content consistency.
 			</td>
 		</tr>
-		<tr id="format-painter">
+		<tr id="format-painter" class="feature">
 			<td>
 				{@link features/format-painter Format painter
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1344,7 +1330,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				the formatting options for each new section.
 			</td>
 		</tr>
-		<tr id="keyboard-shortcuts">
+		<tr id="keyboard-shortcuts" class="feature">
 			<td>
 				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}
 			</td>
@@ -1353,7 +1339,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				and provide necessary accessibility to screen reader users.
 			</td>
 		</tr>
-		<tr id="mathtype">
+		<tr id="mathtype" class="feature">
 			<td>
 				{@link features/math-equations MathType
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1370,7 +1356,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				content.
 			</td>
 		</tr>
-		<tr id="merge-fields">
+		<tr id="merge-fields" class="feature">
 			<td>
 				{@link features/merge-fields Merge fields
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1386,7 +1372,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				personalized documents.
 			</td>
 		</tr>
-		<tr id="paste-from-google-docs">
+		<tr id="paste-from-google-docs" class="feature">
 			<td>
 				{@link features/paste-from-google-docs Paste from Google Docs}
 			</td>
@@ -1396,7 +1382,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				is the basic, open-source Paste from Office feature.
 			</td>
 		</tr>
-		<tr id="paste-from-office">
+		<tr id="paste-from-office" class="feature">
 			<td>
 				{@link features/paste-from-office Paste from Office}
 			</td>
@@ -1406,7 +1392,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				is the basic, open-source Paste from Office feature.
 			</td>
 		</tr>
-		<tr id="paste-from-office-enhanced">
+		<tr id="paste-from-office-enhanced" class="feature">
 			<td>
 				{@link features/paste-from-office-enhanced Paste from Office Enhanced
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1421,7 +1407,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				CKEditor 5 without compromising on formatting.
 			</td>
 		</tr>
-		<tr id="paste-plain-text">
+		<tr id="paste-plain-text" class="feature">
 			<td>
 				{@link features/paste-plain-text Paste plain text}
 			</td>
@@ -1432,7 +1418,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.
 			</td>
 		</tr>
-		<tr id="slash-commands">
+		<tr id="slash-commands" class="feature">
 			<td>
 				{@link features/slash-commands Slash commands
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1449,7 +1435,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				editing experience.
 			</td>
 		</tr>
-		<tr id="special-characters">
+		<tr id="special-characters" class="feature">
 			<td>
 				{@link features/special-characters Special characters}
 			</td>
@@ -1464,7 +1450,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				specialized symbols.
 			</td>
 		</tr>
-		<tr id="templates">
+		<tr id="templates" class="feature">
 			<td>
 				{@link features/template Templates
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1486,7 +1472,7 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 
 Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1494,7 +1480,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="editor-placeholder">
+		<tr id="editor-placeholder" class="feature">
 			<td>
 				{@link features/editor-placeholder Editor placeholder}
 			</td>
@@ -1505,7 +1491,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				content placeholder.
 			</td>
 		</tr>
-		<tr id="editor-ui-types">
+		<tr id="editor-ui-types" class="feature">
 			<td>
 				{@link getting-started/setup/editor-types Editor UI types}
 			</td>
@@ -1519,7 +1505,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="balloon-block-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
 				</span>
 			</td>
 			<td>
@@ -1532,7 +1518,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="balloon-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor Balloon block editor}
 				</span>
 			</td>
 			<td>
@@ -1544,7 +1530,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="classic-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#classic-editor Classic editor}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/editor-types#classic-editor Classic editor}
 				</span>
 			</td>
 			<td>
@@ -1557,7 +1543,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="decoupled-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/editor-types#decoupled-editor-document Decoupled editor}
 				</span>
 			</td>
 			<td>
@@ -1570,7 +1556,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="inline-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#inline-editor Inline editor}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/editor-types#inline-editor Inline editor}
 				</span>
 			</td>
 			<td>
@@ -1585,7 +1571,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="multi-root-editor" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
 				</span>
 			</td>
 			<td>
@@ -1597,7 +1583,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				produce one document.
 			</td>
 		</tr>
-		<tr id="professionally-translated-language-packs">
+		<tr id="professionally-translated-language-packs" class="feature">
 			<td>
 				{@link getting-started/setup/ui-language Professionally translated language packs}
 			</td>
@@ -1610,7 +1596,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				optimal editing experience.1
 			</td>
 		</tr>
-		<tr id="toolbar-and-menus">
+		<tr id="toolbar-and-menus" class="feature">
 			<td>
 				{@link getting-started/setup/toolbar Toolbar and menus}
 			</td>
@@ -1628,7 +1614,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="balloon-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/toolbar#balloon-toolbar Balloon toolbar}
 				</span>
 			</td>
 			<td>
@@ -1638,7 +1624,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="block-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#block-toolbar Block toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/toolbar#block-toolbar Block toolbar}
 				</span>
 			</td>
 			<td>
@@ -1650,7 +1636,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="classic-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/toolbar#main-editor-toolbar Classic toolbar}
 				</span>
 			</td>
 			<td>
@@ -1663,7 +1649,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="collapsible-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/toolbar#extended-toolbar-configuration-format Collapsible toolbar}
 				</span>
 			</td>
 			<td>Collapsible toolbar for UI space efficiency.</td>
@@ -1671,7 +1657,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="image-contextual-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/images-overview#image-contextual-toolbar Image contextual toolbar}
 				</span>
 			</td>
 			<td>
@@ -1693,7 +1679,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="menu-bar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/menubar Menu bar}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/menubar Menu bar}
 				</span>
 			</td>
 			<td>
@@ -1709,7 +1695,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="multiline-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/toolbar#multiline-wrapping-toolbar Multiline toolbar}
 				</span>
 			</td>
 			<td>Multiline toolbar for easy access to all functions.</td>
@@ -1717,7 +1703,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="nesting-toolbars-in-dropdowns" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}
+					<span class="subfeature-icon"></span>&nbsp;{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars Nesting toolbars in dropdowns}
 				</span>
 			</td>
 			<td>Nested toolbars for space efficiency and task-oriented access.</td>
@@ -1725,7 +1711,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="sidebar-annotations-bar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/annotations-display-mode#wide-sidebar Wide sidebar}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/annotations-display-mode#wide-sidebar Wide sidebar}
 				</span>
 			</td>
 			<td>
@@ -1739,7 +1725,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="table-contextual-toolbar" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link features/tables#table-contextual-toolbar Table contextual toolbar}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables#table-contextual-toolbar Table contextual toolbar}
 				</span>
 			</td>
 			<td>
@@ -1752,7 +1738,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 			</td>
 		</tr>
 		<!-- Link & bookmark contextual toolbar coming soon, it's closer than it appears in the mirror -->
-		<tr id="watchdog">
+		<tr id="watchdog" class="feature">
 			<td>
 				{@link features/watchdog Watchdog}
 			</td>
@@ -1769,7 +1755,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 
 Make your content accessible to any person or restrict it to specific users.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1777,7 +1763,7 @@ Make your content accessible to any person or restrict it to specific users.
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="accessibility-support">
+		<tr id="accessibility-support" class="feature">
 			<td>
 				{@link features/accessibility Accessibility support}
 			</td>
@@ -1793,7 +1779,7 @@ Make your content accessible to any person or restrict it to specific users.
 				accessibility compliance.
 			</td>
 		</tr>
-		<tr id="read-only-support">
+		<tr id="read-only-support" class="feature">
 			<td>
 				{@link features/read-only Read-only support}
 			</td>
@@ -1808,7 +1794,7 @@ Make your content accessible to any person or restrict it to specific users.
 				toggled on and off by system triggers.
 			</td>
 		</tr>
-		<tr id="restricted-editing">
+		<tr id="restricted-editing" class="feature">
 			<td>
 				{@link features/restricted-editing Restricted editing}
 			</td>
@@ -1824,7 +1810,7 @@ Make your content accessible to any person or restrict it to specific users.
 				altering the rest of the document.
 			</td>
 		</tr>
-		<tr id="text-part-language">
+		<tr id="text-part-language" class="feature">
 			<td>
 				{@link features/language Text Part Language}
 			</td>
@@ -1840,7 +1826,7 @@ Make your content accessible to any person or restrict it to specific users.
 				comprehensible multilingual content.
 			</td>
 		</tr>
-		<tr id="word-and-character-counter">
+		<tr id="word-and-character-counter" class="feature">
 			<td>
 				{@link features/word-count Word and character counter}
 			</td>
@@ -1851,7 +1837,7 @@ Make your content accessible to any person or restrict it to specific users.
 				meets specific requirements or limits.
 			</td>
 		</tr>
-		<tr id="wproofreader">
+		<tr id="wproofreader" class="feature">
 			<td>
 				{@link features/spelling-and-grammar-checking WProofreader
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1876,7 +1862,7 @@ Make your content accessible to any person or restrict it to specific users.
 
 Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1884,7 +1870,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="editor-sdk">
+		<tr id="editor-sdk" class="feature">
 			<td>
 				{@link framework/index Editor SDK}<!-- missing in docs -->
 			</td>
@@ -1902,7 +1888,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		<tr id="ckeditor5-inspector" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}
+					<span class="subfeature-icon"></span>&nbsp;{@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}
 				</span>
 			</td>
 			<td>The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like
@@ -1913,14 +1899,14 @@ Customize your editor even further. Use components and helpers from our UI libra
 		<tr id="cloud-services-rest-api" class="subfeature background-gray">
 			<td>
 				<span>
-					{@img assets/img/enter-arrow.svg}&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
+					<span class="subfeature-icon"></span>&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
 				</span>
 			</td>
 			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration
 				services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although
 				some features can also be used directly through REST APIs.</td>
 		</tr>
-		<tr id="themes">
+		<tr id="themes" class="feature">
 			<td>
 				{@link framework/theme-customization Themes}
 			</td>
@@ -1929,14 +1915,14 @@ Customize your editor even further. Use components and helpers from our UI libra
 				integration requirements.
 			</td>
 		</tr>
-		<tr id="ui-library">
+		<tr id="ui-library" class="feature">
 			<td>
 				{@link framework/architecture/ui-library UI Library}
 			</td>
 			<td>
 				The standard UI library of CKEditor 5 is
 				<code><a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
-				 >@ckeditor/ckeditor5-ui</a
+				>@ckeditor/ckeditor5-ui</a
 				></code>. It provides base classes and helpers that allow for building a
 				modular UI that seamlessly integrates with other components of the
 				ecosystem.
@@ -1949,7 +1935,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 
 Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.
 
-<table>
+<table class="feature-digest">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -1957,7 +1943,7 @@ Upload and manage your files using file management features. Take advantage of C
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="base64-upload-adapter">
+		<tr id="base64-upload-adapter" class="feature">
 			<td>
 				{@link features/base64-upload-adapter Base64 Upload Adapter}
 			</td>
@@ -1967,7 +1953,7 @@ Upload and manage your files using file management features. Take advantage of C
 				server-side processing.
 			</td>
 		</tr>
-		<tr id="ckbox">
+		<tr id="ckbox" class="feature">
 			<td>
 				{@link features/ckbox CKBox
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1983,7 +1969,7 @@ Upload and manage your files using file management features. Take advantage of C
 				cloud SaaS.
 			</td>
 		</tr>
-		<tr id="ckfinder">
+		<tr id="ckfinder" class="feature">
 			<td>
 				{@link features/ckfinder CKFinder
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
@@ -1996,7 +1982,7 @@ Upload and manage your files using file management features. Take advantage of C
 				and image upload options.
 			</td>
 		</tr>
-		<tr id="custom-upload-adapter">
+		<tr id="custom-upload-adapter" class="feature">
 			<td>
 				{@link features/image-upload#implementing-your-own-upload-adapter Custom Upload Adapter}
 			</td>
@@ -2005,7 +1991,7 @@ Upload and manage your files using file management features. Take advantage of C
 				your preferred software with CKEditor.
 			</td>
 		</tr>
-		<tr id="simple-upload-adapter">
+		<tr id="simple-upload-adapter" class="feature">
 			<td>
 				{@link features/simple-upload-adapter Simple Upload Adapter}
 			</td>
@@ -2014,7 +2000,7 @@ Upload and manage your files using file management features. Take advantage of C
 				minimal editor configuration.
 			</td>
 		</tr>
-		<tr id="uploadcare">
+		<tr id="uploadcare" class="feature">
 			<td>
 				<a href="https://uploadcare.com/">Uploadcare<span class="tree__item__badge tree__item__badge_premium"
 						data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium
@@ -2033,26 +2019,4 @@ Upload and manage your files using file management features. Take advantage of C
 	</tbody>
 </table>
 
-<style>
-	tr {
-		display: flex;
-	}
-
-	td:first-child, th:first-child {
-		flex: 1;
-	}
-
-	td:nth-child(2), th:nth-child(2) {
-		flex: 2;
-	}
-
-	.background-gray {
-		background-color: #F5F5F5;
-	}
-
-	tr.subfeature > td:first-child > span {
-		display: flex;
-		align-items: center;
-		margin-left: 12px;
-	}
-</style>
+{@snippet features/feature-digest}
