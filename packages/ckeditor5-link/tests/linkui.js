@@ -166,6 +166,11 @@ describe( 'LinkUI', () => {
 				command.isEnabled = !initState;
 				expect( linkButton.isEnabled ).to.equal( !initState );
 			} );
+
+			it( 'should toggle the link UI with hidden back button', () => {
+				linkButton.fire( 'execute' );
+				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.false;
+			} );
 		}
 
 		describe( 'the "linkPreview" toolbar button', () => {
@@ -300,6 +305,12 @@ describe( 'LinkUI', () => {
 				button.fire( 'execute' );
 
 				sinon.assert.calledOnce( stubAddForm );
+			} );
+
+			it( 'should open link form view with back button', () => {
+				button.fire( 'execute' );
+
+				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.true;
 			} );
 		} );
 

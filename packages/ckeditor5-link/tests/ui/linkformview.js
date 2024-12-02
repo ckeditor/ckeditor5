@@ -107,6 +107,13 @@ describe( 'LinkFormView', () => {
 
 				expect( backButton.template.children[ 0 ].get( 1 ).text ).to.equal( 'Back' );
 			} );
+
+			it( 'should `backButtonView` has correct CSS class', () => {
+				const headerChildren = view.template.children[ 0 ].get( 0 ).template.children[ 0 ];
+				const backButton = headerChildren.get( 0 );
+
+				expect( backButton.class ).to.equal( 'ck-button-back' );
+			} );
 		} );
 	} );
 
