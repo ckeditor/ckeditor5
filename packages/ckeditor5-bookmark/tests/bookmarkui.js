@@ -146,6 +146,24 @@ describe( 'BookmarkUI', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should toggle the balloon UI with hidden back button (if not updating)', () => {
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
+
+			sinon.stub( updateBookmark, 'isEnabled' ).get( () => false );
+			button.fire( 'execute' );
+
+			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.false;
+		} );
+
+		it( 'should toggle the balloon UI with visible back button (if updating)', () => {
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
+
+			sinon.stub( updateBookmark, 'isEnabled' ).get( () => true );
+			button.fire( 'execute' );
+
+			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
+		} );
 	}
 
 	describe( 'bookmark toolbar components', () => {
@@ -209,6 +227,15 @@ describe( 'BookmarkUI', () => {
 
 				updateBookmarkCommand.isEnabled = false;
 				expect( button.isEnabled ).to.equal( false );
+			} );
+
+			it( 'should toggle the balloon UI with visible back button', () => {
+				const updateBookmarkCommand = editor.commands.get( 'updateBookmark' );
+
+				sinon.stub( updateBookmarkCommand, 'isEnabled' ).get( () => true );
+				button.fire( 'execute' );
+
+				expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
 			} );
 
 			it( 'should trigger #_showFormView() on execute', () => {

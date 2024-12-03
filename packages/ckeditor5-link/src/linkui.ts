@@ -255,6 +255,7 @@ export default class LinkUI extends Plugin {
 		// Open the form view on Ctrl+K when the **link toolbar have focus**..
 		toolbarView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
 			this._addFormView();
+
 			cancel();
 		} );
 
@@ -727,11 +728,11 @@ export default class LinkUI extends Plugin {
 			return;
 		}
 
-		const editor = this.editor;
-		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
+		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && !!linkCommand.value;
 
 		this._balloon.add( {
 			view: this.formView!,

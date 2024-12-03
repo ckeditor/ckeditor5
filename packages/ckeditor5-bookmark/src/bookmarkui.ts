@@ -373,8 +373,7 @@ export default class BookmarkUI extends Plugin {
 			return;
 		}
 
-		const editor = this.editor;
-		const updateBookmarkCommand: UpdateBookmarkCommand = editor.commands.get( 'updateBookmark' )!;
+		const updateBookmarkCommand: UpdateBookmarkCommand = this.editor.commands.get( 'updateBookmark' )!;
 
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
@@ -384,6 +383,7 @@ export default class BookmarkUI extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
+		this.formView!.backButtonView.isVisible = updateBookmarkCommand.isEnabled;
 		this.formView!.idInputView.fieldView.value = updateBookmarkCommand.value || '';
 
 		// Select input when form view is currently visible.

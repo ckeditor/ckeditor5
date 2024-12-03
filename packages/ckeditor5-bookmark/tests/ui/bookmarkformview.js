@@ -65,6 +65,11 @@ describe( 'BookmarkFormView', () => {
 			expect( formHeaderView.children.get( 0 ) ).to.equal( view.backButtonView );
 		} );
 
+		it( 'should create back button view with proper classes', () => {
+			expect( view.backButtonView.element.classList.contains( 'ck-button' ) ).to.be.true;
+			expect( view.backButtonView.element.classList.contains( 'ck-button-back' ) ).to.be.true;
+		} );
+
 		it( 'should create #focusTracker instance', () => {
 			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
