@@ -724,16 +724,15 @@ export default class LinkUI extends Plugin {
 			this._createViews();
 		}
 
-		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
-
-		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && !!linkCommand.value;
-
 		if ( this._isFormInPanel ) {
 			return;
 		}
 
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
+		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && !!linkCommand.value;
 
 		this._balloon.add( {
 			view: this.formView!,
