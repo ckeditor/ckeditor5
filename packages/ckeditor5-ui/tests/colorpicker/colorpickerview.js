@@ -318,9 +318,32 @@ describe( 'ColorPickerView', () => {
 
 			view.picker.dispatchEvent( event );
 
-			clock.tick( 200 );
-
 			expect( view.color ).to.equal( '#ff0000' );
+		} );
+
+		// See more: https://github.com/ckeditor/ckeditor5/issues/17069
+		it( 'should debounce third party events due to selection issues', () => {
+			const colorChangedSpy = sinon.spy( view, 'fire' );
+			const makeColorEvent = color => new CustomEvent( 'color-changed', {
+				detail: {
+					value: color
+				}
+			} );
+
+			view.picker.dispatchEvent( makeColorEvent( '#ff0000' ) );
+			expect( view.color ).to.equal( '#ff0000' );
+
+			view.picker.dispatchEvent( makeColorEvent( '#00ff00' ) );
+			expect( view.color ).to.equal( '#00ff00' );
+
+			view.picker.dispatchEvent( makeColorEvent( '#0000ff' ) );
+			expect( view.color ).to.equal( '#0000ff' );
+
+			clock.tick( 400 );
+
+			expect( colorChangedSpy ).not.calledWithMatch( 'colorSelected', { color: '#ff0000' } );
+			expect( colorChangedSpy ).not.calledWithMatch( 'colorSelected', { color: '#00ff00' } );
+			expect( colorChangedSpy ).calledWithMatch( 'colorSelected', { color: '#0000ff' } );
 		} );
 
 		it( 'should render without input if "hideInput" is set on true', () => {
