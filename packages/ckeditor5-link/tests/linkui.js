@@ -2933,7 +2933,9 @@ describe( 'LinkUI with Bookmark', () => {
 		it( 'should create #bookmarksView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			linkUIFeature._showUI();
+			linkUIFeature._showUI( {
+				showBackButton: true
+			} );
 
 			expect( linkUIFeature.bookmarksView ).to.be.instanceOf( LinkBookmarksView );
 		} );

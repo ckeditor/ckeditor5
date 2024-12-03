@@ -723,7 +723,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 */
-	private _addFormView( { showBackButton }: { showBackButton: boolean } ): void {
+	private _addFormView( { showBackButton = false }: { showBackButton?: boolean } = {} ): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}
