@@ -99,14 +99,14 @@ A token URL and other authentication methods will be assigned to this specific e
 
 ### Trial license key
 
-This key grants access to **all features**. It is valid for **14 days**. It does not consume editor loads, but editor is limited functionally (for example: session time, number of changes). It is **perfect for evaluating the platform** and all its features. It can be used only for evaluation purposes.
+This key grants access to **all features**. It is valid for **14 days**. It does not consume editor loads if you are on the usage-based billing plan, but editor is limited functionally (for example: session time, number of changes). It is **perfect for evaluating the platform** and all its features. It can be used only for evaluation purposes.
 
 * **Features**: Grants access to all features and add-ons.
 * **Duration**: Valid for 14 days.
 * **Functionality**: The editor is limited functionally, such as session time and the number of changes allowed.
 * **Intended use**: Ideal for evaluating the platform and all its features.
 * **Usage limitation**: Can only be used for evaluation purposes and not for production.
-* **Editor loads**: Does not consume editor loads.
+* **Editor loads**: Does not consume editor loads regardless of the plan type.
 
 You can sign up for the [CKEditor Premium Features 14-day free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor.
 
@@ -121,17 +121,19 @@ This key grants access to your subscription features. It does not consume editor
 	* The editor will show a banner informing it was launched for development purposes.
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.
-* **Editor loads**: Does not consume editor loads.
+* **Editor loads**: Does not consume editor loads regardless of the plan type.
 
 ### Production license key
 
-This key grants access to your subscription features without imposing any limitations. It **consumes editor loads** (after the 14 days trial period ends).
+This key grants access to your subscription features without imposing any operational limitations.
 
 * **Features**: Grants access to subscription features.
 * **Functionality**: The editor functions without any restrictions.
 * **Intended use**: Meant for production environments where the software is actively used by end-users.
 * **Usage limitation**: None specified.
-* **Editor loads**: Consumes editor loads.
+* **Editor loads**: Depending on your plan type:
+    * Consumes editor loads if you are on our usage-based billing plans.
+	* Does not consume editor loads if you are not on a plan with usage-based billing.
 
 ### Evaluation license key
 
