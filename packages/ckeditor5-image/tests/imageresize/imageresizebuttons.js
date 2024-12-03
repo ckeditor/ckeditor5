@@ -5,6 +5,7 @@
 
 /* global document */
 
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Image from '../../src/image.js';
@@ -108,6 +109,108 @@ describe( 'ImageResizeButtons', () => {
 			command.isEnabled = false;
 
 			expect( plugin.isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'resize options main toolbar buttons', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ClassicEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons, ImageCustomResizeUI ],
+					image: {
+						resizeUnit: '%',
+						resizeOptions: [ {
+							name: 'resizeImage:original',
+							value: null,
+							icon: 'original'
+						},
+						{
+							name: 'resizeImage:custom',
+							value: 'custom',
+							icon: 'custom'
+						},
+						{
+							name: 'resizeImage:25',
+							value: '25',
+							icon: 'small'
+						},
+						{
+							name: 'resizeImage:50',
+							value: '50',
+							icon: 'medium'
+						},
+						{
+							name: 'resizeImage:75',
+							value: '75',
+							icon: 'large'
+						} ]
+					},
+					toolbar: [ 'resizeImage:original', 'resizeImage:custom', 'resizeImage:25', 'resizeImage:50', 'resizeImage:75' ]
+				} );
+
+			plugin = editor.plugins.get( 'ImageResizeButtons' );
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor && editor.state !== 'destroyed' ) {
+				await editor.destroy();
+			}
+		} );
+
+		it( 'should register resize options as items in the main toolbar', () => {
+			const toolbar = editor.ui.view.toolbar;
+
+			expect( toolbar.items.map( item => item.label ) ).to.deep.equal( [
+				'Resize image to the original size',
+				'Custom image size',
+				'Resize image to 25%',
+				'Resize image to 50%',
+				'Resize image to 75%'
+			] );
+		} );
+
+		it( 'should synchronize button states with command\'s isEnabled property', () => {
+			const toolbar = editor.ui.view.toolbar;
+			const resizeCommand = editor.commands.get( 'resizeImage' );
+			const resizeComponents = toolbar.items.filter( item => item.label && item.label.includes( 'Resize image' ) );
+
+			resizeCommand.isEnabled = true;
+			expect( resizeComponents.every( item => item.isEnabled ) ).to.be.true;
+
+			resizeCommand.isEnabled = false;
+			expect( resizeComponents.every( item => item.isEnabled ) ).to.be.false;
+		} );
+
+		it( 'should properly sync isOn states of buttons', () => {
+			const toolbar = editor.ui.view.toolbar;
+			const resizeCommand = editor.commands.get( 'resizeImage' );
+			const resizeComponents = toolbar.items.filter( item => item.label && item.label.includes( 'Resize image' ) );
+
+			resizeCommand.isEnabled = false;
+			resizeCommand.value = undefined;
+
+			expect( resizeComponents.every( item => item.isOn ) ).to.be.false;
+
+			resizeCommand.isEnabled = false;
+			expect( resizeComponents.every( item => item.isOn ) ).to.be.false;
+
+			resizeCommand.value = undefined;
+			resizeCommand.isEnabled = true;
+			expect( resizeComponents.every( item => item.isOn ) ).to.be.false;
+
+			resizeCommand.value = { width: '50%' };
+			resizeCommand.isEnabled = true;
+
+			expect( resizeComponents[ 2 ].isOn ).to.be.true;
+
+			resizeCommand.isEnabled = false;
+			expect( resizeComponents[ 2 ].isOn ).to.be.false;
 		} );
 	} );
 

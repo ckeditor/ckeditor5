@@ -116,7 +116,14 @@ const imageConfig2 = {
 
 const config2 = {
 	...commonConfig,
-	image: imageConfig2
+	image: imageConfig2,
+	toolbar: [
+		...commonConfig.toolbar, '|',
+		'resizeImage:50',
+		'resizeImage:75',
+		'resizeImage:original',
+		'resizeImage:custom'
+	]
 };
 
 ClassicEditor
