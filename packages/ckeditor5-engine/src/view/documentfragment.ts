@@ -17,6 +17,7 @@ import type { default as Document, ChangeType } from './document.js';
 
 import type Item from './item.js';
 import type Node from './node.js';
+import { ViewNodeChangeEvent } from "./node.js";
 
 /**
  * Document fragment.
@@ -176,7 +177,7 @@ export default class DocumentFragment extends /* #__PURE__ */ EmitterMixin( Type
 	 * @returns Number of inserted nodes.
 	 */
 	public _insertChild( index: number, items: Item | string | Iterable<Item | string> ): number {
-		this._fireChange( 'children', this );
+		this._fireChange( 'children', this, { index } );
 		let count = 0;
 
 		const nodes = normalize( this.document, items );
@@ -206,7 +207,7 @@ export default class DocumentFragment extends /* #__PURE__ */ EmitterMixin( Type
 	 * @returns The array of removed nodes.
 	 */
 	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
-		this._fireChange( 'children', this );
+		this._fireChange( 'children', this, { index } );
 
 		for ( let i = index; i < index + howMany; i++ ) {
 			( this._children[ i ] as any ).parent = null;
@@ -216,14 +217,14 @@ export default class DocumentFragment extends /* #__PURE__ */ EmitterMixin( Type
 	}
 
 	/**
-	 * Fires `change` event with given type of the change.
-	 *
 	 * @internal
 	 * @param type Type of the change.
 	 * @param node Changed node.
+	 * @param data Additional data.
+	 * @fires change
 	 */
-	public _fireChange( type: ChangeType, node: Node | DocumentFragment ): void {
-		this.fire( 'change:' + type, node );
+	public _fireChange( type: ChangeType, node: Node | DocumentFragment, data?: unknown ): void {
+		this.fire( `change:${ type }`, node, data );
 	}
 
 	/**

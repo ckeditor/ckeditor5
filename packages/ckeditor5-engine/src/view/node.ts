@@ -257,13 +257,14 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @internal
 	 * @param type Type of the change.
 	 * @param node Changed node.
+	 * @param data Additional data.
 	 * @fires change
 	 */
-	public _fireChange( type: ChangeType, node: Node ): void {
-		this.fire<ViewNodeChangeEvent>( `change:${ type }`, node );
+	public _fireChange( type: ChangeType, node: Node, data?: unknown ): void {
+		this.fire<ViewNodeChangeEvent>( `change:${ type }`, node, data );
 
 		if ( this.parent ) {
-			this.parent._fireChange( type, node );
+			this.parent._fireChange( type, node, data );
 		}
 	}
 
@@ -304,9 +305,13 @@ Node.prototype.is = function( type: string ): boolean {
 };
 
 /**
- * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or data changes.
+ * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or text changes.
  *
  * Change event is bubbled – it is fired on all ancestors.
+ *
+ * All change events as the first parameter receive the node that has changed (the node for which children, attributes or text changed).
+ *
+ * If `change:children` event is fired, there is an additional second parameter, which is an object with additional data related to change.
  *
  * @eventName ~Node#change
  * @eventName ~Node#change:children
@@ -315,5 +320,5 @@ Node.prototype.is = function( type: string ): boolean {
  */
 export type ViewNodeChangeEvent = {
 	name: 'change' | `change:${ ChangeType }`;
-	args: [ changedNode: Node ];
+	args: [ changedNode: Node, data?: unknown ];
 };

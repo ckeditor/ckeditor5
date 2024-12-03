@@ -4,6 +4,7 @@
  */
 
 import Mapper from '../../src/conversion/mapper.js';
+import { MapperCache } from '../../src/conversion/mapper.js';
 
 import ModelElement from '../../src/model/element.js';
 import ModelRootElement from '../../src/model/rootelement.js';
@@ -21,6 +22,7 @@ import ViewDocumentFragment from '../../src/view/documentfragment.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { ViewAttributeElement } from '../../src/index.js';
 
 describe( 'Mapper', () => {
 	let viewDocument;
@@ -872,4 +874,326 @@ describe( 'Mapper', () => {
 			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
 		} );
 	} );
+} );
+
+describe.only( 'MapperCache', () => {
+	let cache, viewContainer, viewDocument, viewTextAb, viewSpan, viewEm, viewTextCd, viewTextEf, viewTextGh;
+
+	beforeEach( () => {
+		viewDocument = new ViewDocument( new StylesProcessor() );
+		cache = new MapperCache();
+
+		// <p>ab<span>cd<em>ef</em></span>gh</p>.
+		viewTextAb = new ViewText( viewDocument, 'ab' );
+		viewTextCd = new ViewText( viewDocument, 'cd' );
+		viewTextEf = new ViewText( viewDocument, 'ef' );
+		viewEm = new ViewAttributeElement( viewDocument, 'em', null, [ viewTextEf ] );
+		viewSpan = new ViewAttributeElement( viewDocument, 'span', null, [ viewTextCd, viewEm ] );
+		viewTextGh = new ViewText( viewDocument, 'gh' );
+		viewContainer = new ViewElement( viewDocument, 'p', null, [ viewTextAb, viewSpan, viewTextGh ] );
+	} );
+
+	describe( 'get()', () => {
+		it( 'should start tracking and return position at the start of element if element was not tracked before', () => {
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 6 );
+
+			expect( viewPosition.parent ).to.equal( viewContainer );
+			expect( viewPosition.offset ).to.equal( 0 );
+			expect( modelOffset ).to.equal( 0 );
+		} );
+
+		it( 'should return previously saved position', () => {
+			cache.startTracking( viewContainer );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 6 );
+
+			expect( viewPosition.parent ).to.equal( viewContainer );
+			expect( viewPosition.offset ).to.equal( 2 );
+			expect( modelOffset ).to.equal( 6 );
+		} );
+
+		it( 'should return previously saved position (deep)', () => {
+			cache.startTracking( viewContainer );
+			cache.save( viewEm, 0, viewContainer, 4 );
+
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 4 );
+
+			expect( viewPosition.parent ).to.equal( viewEm );
+			expect( viewPosition.offset ).to.equal( 0 );
+			expect( modelOffset ).to.equal( 4 );
+		} );
+
+		it( 'should return closest saved position if exact position was not saved', () => {
+			cache.startTracking( viewContainer );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 8 );
+
+			expect( viewPosition.parent ).to.equal( viewContainer );
+			expect( viewPosition.offset ).to.equal( 2 );
+			expect( modelOffset ).to.equal( 6 );
+		} );
+
+		it( 'should return closest saved position if exact position was not saved (deep)', () => {
+			cache.startTracking( viewContainer );
+			cache.save( viewEm, 0, viewContainer, 4 );
+
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 8 );
+
+			expect( viewPosition.parent ).to.equal( viewEm );
+			expect( viewPosition.offset ).to.equal( 0 );
+			expect( modelOffset ).to.equal( 4 );
+		} );
+
+		it( 'should return closest saved position if exact position was not saved (multiple saved positions)', () => {
+			cache.startTracking( viewContainer );
+
+			// Save model offsets in random order to give extra spice and cover some code...
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewContainer, 1, viewContainer, 2 );
+
+			check( 1, viewContainer, 0, 0 );
+			check( 3, viewContainer, 1, 2 );
+			check( 5, viewSpan, 1, 4 );
+			check( 7, viewContainer, 2, 6 );
+			check( 9, viewContainer, 3, 8 );
+		} );
+	} );
+
+	describe( 'save()', () => {
+		it( 'should not overwrite previously saved cache for given model offset', () => {
+			cache.startTracking( viewContainer );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewSpan, 2, viewContainer, 6 );
+
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 6 );
+
+			expect( viewPosition.parent ).to.equal( viewContainer );
+			expect( viewPosition.offset ).to.equal( 2 );
+			expect( modelOffset ).to.equal( 6 );
+		} );
+	} );
+
+	describe( 'stopTracking()', () => {
+		it( 'should remove all cache data', () => {
+			cache.startTracking( viewContainer );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.stopTracking( viewContainer );
+
+			const { viewPosition, modelOffset } = cache.get( viewContainer, 2 );
+
+			expect( viewPosition.parent ).to.equal( viewContainer );
+			expect( viewPosition.offset ).to.equal( 0 );
+			expect( modelOffset ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'cache invalidation', () => {
+		it( 'should invalidate part of the existing cache when a node is inserted', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>ef</em></span>^gh</p> -> <p>ab<span>cd<em>ef</em></span><strong></strong>gh</p>.
+			// This should invalidate cache starting from `<span>` (yes, that's correct, we invalidate a bit more than necessary).
+			viewContainer._insertChild( 2, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 3, viewContainer, 1, 2 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 6, viewContainer, 1, 2 );
+			check( 8, viewContainer, 1, 2 );
+		} );
+
+		it( 'should invalidate part of the existing cache when a node is inserted (deep)', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			// Although we don't overwrite cache item when we save another cache for the same model offset,
+			// we store metadata with `viewEm`, which affects how cache is invalidated (it can be invalidated more precisely).
+			cache.save( viewEm, 1, viewContainer, 4 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>^ef</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// This should invalidate cache starting from `<em>`.
+			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 3, viewContainer, 1, 2 );
+			check( 4, viewSpan, 1, 4 );
+			check( 5, viewSpan, 1, 4 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 6, viewSpan, 1, 4 );
+			check( 8, viewSpan, 1, 4 );
+		} );
+
+		it( 'should invalidate part of the existing cache when a node is inserted (deep #2 - direct parent not cached)', () => {
+			// This is a similar scenario as above, but this time, `<em>` -- the direct parent of insertion -- is not cached.
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>^ef</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// This should invalidate cache starting from before `<span>` (not before `<em>`).
+			// That's because `<em>` is not cached, so we invalidate starting from before its parent.
+			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 3, viewContainer, 1, 2 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 4, viewSpan, 1, 4 );
+			check( 6, viewSpan, 1, 4 );
+		} );
+
+		it( 'should invalidate part of the existing cache when a node is inserted (deep #3 - only top element cached)', () => {
+			// This is a similar scenario as above, but this time, `<em>` -- the direct parent of insertion -- is not cached.
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>^ef</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// This should invalidate cache starting from before `<span>` (not before `<em>`).
+			// That's because `<em>` is not cached, so we invalidate starting from before its parent.
+			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 3, viewContainer, 1, 2 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 4, viewContainer, 1, 2 );
+			check( 6, viewContainer, 1, 2 );
+		} );
+
+		it( 'nothing happens if change is after valid cache', () => {
+			// This is a similar scenario as above, but this time, `<em>` -- the direct parent of insertion -- is not cached.
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+
+			// <p>ab<span>cd<em>ef</em></span>gh^</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// Only `<span>` was cached so far.
+			viewContainer._insertChild( 3, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 3, viewContainer, 1, 2 );
+			check( 6, viewContainer, 2, 6 );
+			check( 7, viewContainer, 2, 6 );
+
+			// No new cache added yet:
+			check( 8, viewContainer, 2, 6 );
+			check( 9, viewContainer, 2, 6 );
+		} );
+
+		it( 'should invalidate all cache if change is at the beginning of tracked element', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>^ab<span>cd<em>ef</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em>ef</em></span>gh</p>.
+			// This should invalidate all cache.
+			viewContainer._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Cache is cleared, the closest value is returned:
+			check( 1, viewContainer, 0, 0 );
+			check( 2, viewContainer, 0, 0 );
+			check( 8, viewContainer, 0, 0 );
+		} );
+
+		it( 'should invalidate cache when text node changes', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>ef</em></span>gh^</p> -> <p><strong></strong>ab<span>cd<em>ef</em></span>ghi</p>.
+			// This should invalidate cache starting from before `"ghi"`.
+			viewTextGh._data = 'ghi';
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 4, viewSpan, 1, 4 );
+			check( 6, viewContainer, 2, 6 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 8, viewContainer, 2, 6 );
+		} );
+
+		it( 'should invalidate cache when text node changes (deep)', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewEm, 1, viewContainer, 6 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>ef^</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em>efx</em></span></p>.
+			// This should invalidate cache starting from before `"efx"`.
+			viewTextEf._data = 'efx';
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 4, viewSpan, 1, 4 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 6, viewSpan, 1, 4 );
+			check( 8, viewSpan, 1, 4 );
+		} );
+
+		it( 'should invalidate cache when text node changes (deep - text node not cached)', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+			cache.save( viewContainer, 3, viewContainer, 8 );
+
+			// <p>ab<span>cd<em>ef^</em></span>gh^</p> -> <p><strong></strong>ab<span>cd<em>efx</em></span></p>.
+			// This should invalidate cache starting from before `"ghi"`.
+			viewTextEf._data = 'efx';
+
+			// Retained cached:
+			check( 2, viewContainer, 1, 2 );
+			check( 4, viewSpan, 1, 4 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 6, viewSpan, 1, 4 );
+			check( 8, viewSpan, 1, 4 );
+		} );
+	} );
+
+	function check( modelOffsetToCheck, expectedViewParent, expectedViewOffset, expectedModelOffset ) {
+		const { viewPosition, modelOffset } = cache.get( viewContainer, modelOffsetToCheck );
+
+		expect( viewPosition.parent ).to.equal( expectedViewParent );
+		expect( viewPosition.offset ).to.equal( expectedViewOffset );
+		expect( modelOffset ).to.equal( expectedModelOffset );
+	}
 } );
