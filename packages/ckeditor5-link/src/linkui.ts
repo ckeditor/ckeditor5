@@ -625,7 +625,15 @@ export default class LinkUI extends Plugin {
 		view.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 		// Show the panel on button click.
-		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => this._showUI( true ) );
+		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => {
+			this._showUI( true );
+
+			// Open the form view on-top of the toolbar view if it's already visible.
+			// It should be visible every time the link is selected.
+			if ( this._getSelectedLinkElement() ) {
+				this._addFormView();
+			}
+		} );
 
 		return view;
 	}

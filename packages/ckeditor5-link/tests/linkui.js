@@ -172,6 +172,14 @@ describe( 'LinkUI', () => {
 
 				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.false;
 			} );
+
+			it( 'should open on-top of the toolbar if the link is selected', () => {
+				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+
+				linkButton.fire( 'execute' );
+
+				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+			} );
 		}
 
 		describe( 'the "linkPreview" toolbar button', () => {
