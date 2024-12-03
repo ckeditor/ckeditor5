@@ -7,21 +7,19 @@
  * @module emoji/emojimention
  */
 
+import { Database } from 'emoji-picker-element';
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import EmojiLibraryIntegration from './emojilibraryintegration.js';
 import EmojiPicker from './emojipicker.js';
-
-import {
-	getShowAllEmojiId,
-	isEmojiId,
-	removeEmojiPrefix
-} from './utils.js';
+import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
 
 import {
 	type MentionFeed,
 	type MentionFeedObjectItem
 } from '@ckeditor/ckeditor5-mention';
+
+const EMOJI_PREFIX = 'emoji';
+const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
 
 /**
  * The emoji mention plugin.
@@ -31,12 +29,15 @@ import {
 export default class EmojiMention extends Plugin {
 	private _emojiDropdownLimit: number;
 	private _mentionMarker: string;
+	private _hasEmojiPicker: boolean;
+	private _showAllEmojiId: string;
+	private _emojiDatabase: Database;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Mention', EmojiLibraryIntegration ] as const;
+		return [ 'Mention' ] as const;
 	}
 
 	/**
@@ -66,6 +67,9 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._mentionMarker = editor.config.get( 'emoji.marker' )!;
+		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
+		this._showAllEmojiId = this._formatEmojiId( SHOW_ALL_EMOJI );
+		this._emojiDatabase = new Database();
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
 		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this._mentionMarker );
@@ -86,19 +90,29 @@ export default class EmojiMention extends Plugin {
 		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 	}
 
+	private _isEmojiId( string: string ): boolean {
+		return new RegExp( `^${ EMOJI_PREFIX }:[^:]+:$` ).test( string );
+	}
+
+	private _formatEmojiId( id: string ): string {
+		return `${ EMOJI_PREFIX }:${ id }:`;
+	}
+
+	private _removeEmojiPrefix( formattedEmojiId: string ): string {
+		return formattedEmojiId.replace( new RegExp( `^${ EMOJI_PREFIX }:` ), ':' );
+	}
+
 	/**
 	 * Initializes the configuration for emojis in the mention feature.
 	 *
 	 * @internal
 	 */
 	private _setupMentionConfiguration( mentionFeedsConfigs: Array<MentionFeed> ): void {
-		const emojiLibraryIntegration = this.editor.plugins.get( EmojiLibraryIntegration );
-
 		const emojiMentionFeedConfig = {
 			marker: this._mentionMarker,
 			dropdownLimit: this._emojiDropdownLimit,
 			itemRenderer: this._getCustomItemRendererFn( this.editor.t ),
-			feed: emojiLibraryIntegration.getQueryEmojiFn( this._emojiDropdownLimit )
+			feed: this._getQueryEmojiFn()
 		};
 
 		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
@@ -119,12 +133,12 @@ export default class EmojiMention extends Plugin {
 			itemElement.style.display = 'block';
 
 			switch ( item.id ) {
-				case getShowAllEmojiId():
+				case this._showAllEmojiId:
 					itemElement.textContent = t( 'Show all emoji...' );
 
 					break;
 				default:
-					itemElement.textContent = `${ item.text } ${ removeEmojiPrefix( item.id ) }`;
+					itemElement.textContent = `${ item.text } ${ this._removeEmojiPrefix( item.id ) }`;
 			}
 
 			return itemElement;
@@ -140,14 +154,14 @@ export default class EmojiMention extends Plugin {
 		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
-			if ( !isEmojiId( eventData.mention.id ) ) {
+			if ( !this._isEmojiId( eventData.mention.id ) ) {
 				return;
 			}
 
 			let textToInsert = eventData.mention.text;
 			let shouldShowEmojiView;
 
-			if ( eventData.mention.id === getShowAllEmojiId() ) {
+			if ( eventData.mention.id === this._showAllEmojiId ) {
 				shouldShowEmojiView = true;
 
 				textToInsert = '';
@@ -165,5 +179,33 @@ export default class EmojiMention extends Plugin {
 
 			event.stop();
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Returns the `feed()` callback for mention config.
+	 */
+	private _getQueryEmojiFn(): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
+		return async ( searchQuery: string ) => {
+			// `getEmojiBySearchQuery()` returns nothing when querying with a single character.
+			if ( searchQuery.length < 2 ) {
+				return [];
+			}
+
+			const emojis = await this._emojiDatabase.getEmojiBySearchQuery( searchQuery )
+				.then( queryResult => {
+					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
+						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
+
+						return {
+							id: this._formatEmojiId( id ),
+							text: emoji.unicode
+						};
+					} );
+				} );
+
+			return this._hasEmojiPicker ?
+				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: this._showAllEmojiId, text: searchQuery } ] :
+				emojis.slice( 0, this._emojiDropdownLimit );
+		};
 	}
 }

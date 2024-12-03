@@ -12,7 +12,6 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
 
 describe( 'EmojiPicker', () => {
 	let editor, editorElement;
@@ -42,7 +41,6 @@ describe( 'EmojiPicker', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( EmojiPicker.requires ).to.deep.equal( [
-			EmojiLibraryIntegration,
 			ContextualBalloon
 		] );
 	} );

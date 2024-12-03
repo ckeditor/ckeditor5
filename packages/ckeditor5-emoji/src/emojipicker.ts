@@ -7,6 +7,8 @@
  * @module emoji/emojipicker
  */
 
+import '../theme/emojipicker.css';
+import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Picker } from 'emoji-picker-element';
 
 import {
@@ -16,12 +18,6 @@ import {
 	ButtonView,
 	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
-
-import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
-import EmojiLibraryIntegration from './emojilibraryintegration.js';
-
-import '../theme/emojipicker.css';
-import { getEmojiButtonCreator } from './utils.js';
 
 type EmojiClickEvent = Event & {
 	detail: {
@@ -42,7 +38,7 @@ export default class EmojiPicker extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiLibraryIntegration, ContextualBalloon ] as const;
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**
@@ -66,15 +62,30 @@ export default class EmojiPicker extends Plugin {
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this._emojiView = this._createEmojiView();
 
-		const createButton = getEmojiButtonCreator( {
-			editor: this.editor,
-			icon: icons.cog, // TODO: update the icon when ready. See https://github.com/ckeditor/ckeditor5/issues/17378
+		this.editor.ui.componentFactory.add( 'emoji', () => this._createButton( ButtonView ) );
+		this.editor.ui.componentFactory.add( 'menuBar:emoji', () => this._createButton( MenuBarMenuListItemButtonView ) );
+	}
+
+	/**
+	 * Creates a (toolbar or menu bar) button for the emoji picker feature.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const button = new ButtonClass( this.editor.locale ) as InstanceType<T>;
+
+		button.set( {
 			label: this.editor.t( 'Emoji' ),
-			callback: () => this.showUI()
+			icon: icons.cog // TODO: update the icon when ready. See https://github.com/ckeditor/ckeditor5/issues/17378
 		} );
 
-		this.editor.ui.componentFactory.add( 'emoji', () => createButton( ButtonView ) );
-		this.editor.ui.componentFactory.add( 'menuBar:emoji', () => createButton( MenuBarMenuListItemButtonView ) );
+		if ( button instanceof ButtonView ) {
+			button.set( {
+				tooltip: true
+			} );
+		}
+
+		button.on( 'execute', () => this.showUI() );
+
+		return button;
 	}
 
 	/**
