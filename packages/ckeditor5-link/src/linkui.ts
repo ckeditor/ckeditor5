@@ -254,7 +254,10 @@ export default class LinkUI extends Plugin {
 
 		// Open the form view on Ctrl+K when the **link toolbar have focus**..
 		toolbarView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
-			this._addFormView();
+			this._addFormView( {
+				showBackButton: true
+			} );
+
 			cancel();
 		} );
 
@@ -552,7 +555,9 @@ export default class LinkUI extends Plugin {
 			button.bind( 'isEnabled' ).to( linkCommand );
 
 			this.listenTo<ButtonExecuteEvent>( button, 'execute', () => {
-				this._addFormView();
+				this._addFormView( {
+					showBackButton: true
+				} );
 			} );
 
 			return button;
@@ -718,7 +723,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 */
-	private _addFormView( showBackButton: boolean = true ): void {
+	private _addFormView( { showBackButton }: { showBackButton: boolean } ): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}
@@ -881,13 +886,17 @@ export default class LinkUI extends Plugin {
 				this._balloon.showStack( 'main' );
 			}
 
-			this._addFormView( !forceVisible );
+			this._addFormView( {
+				showBackButton: !forceVisible
+			} );
 		}
 		// If there's a link under the selection...
 		else {
 			// Go to the editing UI if toolbar is already visible.
 			if ( this._isToolbarVisible ) {
-				this._addFormView( !forceVisible );
+				this._addFormView( {
+					showBackButton: !forceVisible
+				} );
 			}
 			// Otherwise display just the toolbar.
 			else {

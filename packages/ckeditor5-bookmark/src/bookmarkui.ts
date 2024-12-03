@@ -281,7 +281,9 @@ export default class BookmarkUI extends Plugin {
 			button.bind( 'isEnabled' ).to( updateBookmarkCommand );
 
 			this.listenTo( button, 'execute', () => {
-				this._showFormView( true );
+				this._showFormView( {
+					showBackButton: true
+				} );
 			} );
 
 			return button;
@@ -326,7 +328,9 @@ export default class BookmarkUI extends Plugin {
 		} );
 
 		// Execute the command.
-		this.listenTo( view, 'execute', () => this._showFormView( updateCommand.isEnabled ) );
+		this.listenTo( view, 'execute', () => this._showFormView( {
+			showBackButton: updateCommand.isEnabled
+		} ) );
 
 		view.bind( 'isEnabled' ).toMany(
 			[ insertCommand, updateCommand ],
@@ -364,7 +368,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 */
-	private _addFormView( showBackButton: boolean ): void {
+	private _addFormView( { showBackButton }: { showBackButton: boolean } ): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}
@@ -419,7 +423,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Shows the {@link #formView}.
 	 */
-	private _showFormView( showBackButton: boolean ): void {
+	private _showFormView( { showBackButton = false }: { showBackButton?: boolean } = {} ): void {
 		if ( !this.formView ) {
 			this._createViews();
 		}
@@ -428,7 +432,9 @@ export default class BookmarkUI extends Plugin {
 			this._showFakeVisualSelection();
 		}
 
-		this._addFormView( showBackButton );
+		this._addFormView( {
+			showBackButton
+		} );
 
 		// Be sure panel with bookmark is visible.
 		this._balloon.showStack( 'main' );

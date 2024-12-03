@@ -1128,7 +1128,9 @@ describe( 'BookmarkUI', () => {
 		it( 'should create #formView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			bookmarkUIFeature._addFormView();
+			bookmarkUIFeature._addFormView( {
+				showBackButton: true
+			} );
 
 			expect( bookmarkUIFeature.formView ).to.be.instanceOf( BookmarkFormView );
 		} );
@@ -1136,7 +1138,9 @@ describe( 'BookmarkUI', () => {
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			bookmarkUIFeature._addFormView();
+			bookmarkUIFeature._addFormView( {
+				showBackButton: true
+			} );
 			formView = bookmarkUIFeature.formView;
 
 			expect( balloon.visibleView ).to.equal( formView );
@@ -1145,14 +1149,18 @@ describe( 'BookmarkUI', () => {
 		it( 'should implement the CSS transition disabling feature', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			bookmarkUIFeature._addFormView();
+			bookmarkUIFeature._addFormView( {
+				showBackButton: true
+			} );
 
 			expect( bookmarkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
 		} );
 
 		describe( 'button label', () => {
 			it( 'should have "Insert" by default', () => {
-				bookmarkUIFeature._addFormView();
+				bookmarkUIFeature._addFormView( {
+					showBackButton: true
+				} );
 				formView = bookmarkUIFeature.formView;
 
 				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
@@ -1161,7 +1169,9 @@ describe( 'BookmarkUI', () => {
 			it( 'should have "Insert" label when bookmark is not selected', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-				bookmarkUIFeature._addFormView();
+				bookmarkUIFeature._addFormView( {
+					showBackButton: true
+				} );
 				formView = bookmarkUIFeature.formView;
 
 				bookmarkUIFeature._showFormView();
@@ -1172,7 +1182,9 @@ describe( 'BookmarkUI', () => {
 			it( 'should have "Save" label when bookmark is selected', () => {
 				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
-				bookmarkUIFeature._addFormView();
+				bookmarkUIFeature._addFormView( {
+					showBackButton: true
+				} );
 				formView = bookmarkUIFeature.formView;
 
 				bookmarkUIFeature._showFormView();
