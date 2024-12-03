@@ -13,8 +13,6 @@ import EmojiLibraryIntegration from './emojilibraryintegration.js';
 import EmojiPicker from './emojipicker.js';
 
 import {
-	DEFAULT_DROPDOWN_LIMIT,
-	DEFAULT_MENTION_MARKER,
 	getShowAllEmojiId,
 	isEmojiId,
 	removeEmojiPrefix
@@ -61,8 +59,13 @@ export default class EmojiMention extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' ) || DEFAULT_DROPDOWN_LIMIT;
-		this._mentionMarker = editor.config.get( 'emoji.marker' ) || DEFAULT_MENTION_MARKER;
+		this.editor.config.define( 'emoji', {
+			dropdownLimit: 6,
+			marker: ':'
+		} );
+
+		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
+		this._mentionMarker = editor.config.get( 'emoji.marker' )!;
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
 		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this._mentionMarker );
@@ -142,12 +145,12 @@ export default class EmojiMention extends Plugin {
 			}
 
 			let textToInsert = eventData.mention.text;
-			let postInsertionCallback;
+			let shouldShowEmojiView;
 
 			if ( eventData.mention.id === getShowAllEmojiId() ) {
-				textToInsert = '';
+				shouldShowEmojiView = true;
 
-				postInsertionCallback = () => this.editor.plugins.get( EmojiPicker ).showUI( eventData.mention.text );
+				textToInsert = '';
 
 				// TODO: showUI() called from here does not focus properly.
 			}
@@ -156,8 +159,8 @@ export default class EmojiMention extends Plugin {
 				this.editor.model.insertContent( writer.createText( textToInsert ), eventData.range );
 			} );
 
-			if ( postInsertionCallback ) {
-				postInsertionCallback();
+			if ( shouldShowEmojiView ) {
+				this.editor.plugins.get( EmojiPicker ).showUI( eventData.mention.text );
 			}
 
 			event.stop();

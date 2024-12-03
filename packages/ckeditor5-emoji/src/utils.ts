@@ -6,9 +6,6 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import { ButtonView, type MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
-export const DEFAULT_DROPDOWN_LIMIT = 6;
-export const DEFAULT_MENTION_MARKER = ':';
-
 const EMOJI_PREFIX = 'emoji';
 const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
 
