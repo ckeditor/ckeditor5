@@ -884,12 +884,16 @@ export default class LinkUI extends Plugin {
 		}
 		// If there's a link under the selection...
 		else {
-			// Go to the editing UI if toolbar is already visible.
-			if ( this._isToolbarVisible ) {
+			if ( forceVisible && this._getSelectedLinkElement() ) {
+				// Show the toolbar below of the form view if user selected link and triggered
+				// the balloon from the toolbar or the menu bar.
+				this._addToolbarView();
 				this._addFormView();
-			}
-			// Otherwise display just the toolbar.
-			else {
+			} else if ( this._isToolbarVisible ) {
+				// Go to the editing UI if toolbar is already visible.
+				this._addFormView();
+			} else {
+				// Otherwise display just the toolbar.
 				this._addToolbarView();
 			}
 
