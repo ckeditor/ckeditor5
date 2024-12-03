@@ -261,9 +261,13 @@ export default class ImageUploadEditing extends Plugin {
 							// to restore response object from the internal map.
 							if ( !isInsertedInGraveyard && this._uploadedImages.has( uploadId ) ) {
 								// Fire `uploadComplete` to set proper attributes on the image element.
-								this.fire<ImageUploadCompleteEvent>( 'uploadComplete', {
-									data: this._uploadedImages.get( uploadId )!,
-									imageElement: imageElement as Element
+								editor.model.enqueueChange( { isUndoable: false }, writer => {
+									writer.setAttribute( 'uploadStatus', 'complete', imageElement );
+
+									this.fire<ImageUploadCompleteEvent>( 'uploadComplete', {
+										data: this._uploadedImages.get( uploadId )!,
+										imageElement: imageElement as Element
+									} );
 								} );
 
 								// While it makes sense to remove the image from the `_uploadedImages` map here,
