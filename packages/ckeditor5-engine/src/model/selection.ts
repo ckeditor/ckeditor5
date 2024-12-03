@@ -667,10 +667,13 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 				yield startBlock as any;
 			}
 
+			const firstElement = first( range.getWalker() );
 			const lastElement = first( range.getWalker( { direction: 'backward' } ) );
 
 			if (
+				firstElement &&
 				lastElement &&
+				firstElement.item === lastElement.item &&
 				lastElement.type == 'elementEnd' &&
 				lastElement.item.root.document!.model.schema.isBlock( lastElement.item )
 			) {
