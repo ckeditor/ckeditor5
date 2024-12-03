@@ -67,6 +67,45 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
+	 * Displays the balloon with the emoji picker.
+	 *
+	 * @param initialSearchValue Allows opening the emoji picker with given search query already typed in.
+	 */
+	public showUI( initialSearchValue?: string ): void {
+		this._balloon.add( {
+			view: this._emojiView,
+			position: this._getBalloonPositionData()
+		} );
+
+		this._emojiView.focus();
+
+		if ( initialSearchValue ) {
+			this._emojiView.updateSearchValue( initialSearchValue );
+		}
+	}
+
+	/**
+	 * Hides the balloon with the emoji picker.
+	 */
+	private _hideUI() {
+		this._balloon.remove( this._emojiView );
+
+		this.editor.editing.view.focus();
+	}
+
+	private _getBalloonPositionData() {
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
+
+		// Set a target position by converting view selection range to DOM.
+		const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
+
+		return {
+			target
+		};
+	}
+
+	/**
 	 * Creates a (toolbar or menu bar) button for the emoji picker feature.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
@@ -89,47 +128,7 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * @internal
-	 */
-	public showUI( initialSearchValue?: string ): void {
-		this._balloon.add( {
-			view: this._emojiView,
-			position: this._getBalloonPositionData()
-		} );
-
-		this._emojiView.focus();
-
-		if ( initialSearchValue ) {
-			this._emojiView.updateSearchValue( initialSearchValue );
-		}
-	}
-
-	/**
-	 * @internal
-	 */
-	private _hideUI() {
-		this._balloon.remove( this._emojiView );
-
-		this.editor.editing.view.focus();
-	}
-
-	/**
-	 * @internal
-	 */
-	private _getBalloonPositionData() {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
-
-		// Set a target position by converting view selection range to DOM.
-		const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
-
-		return {
-			target
-		};
-	}
-
-	/**
-	 * @internal
+	 * Creates the emoji picker view.
 	 */
 	private _createEmojiView() {
 		const editor = this.editor;

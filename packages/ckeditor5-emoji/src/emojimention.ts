@@ -36,6 +36,42 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.editor.config.define( 'emoji', {
+			dropdownLimit: 6,
+			marker: ':'
+		} );
+
+		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
+		this._mentionMarker = editor.config.get( 'emoji.marker' )!;
+
+		this._showAllEmojiId = formatEmojiId( SHOW_ALL_EMOJI );
+		this._emojiDatabase = new Database();
+
+		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
+		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this._mentionMarker );
+
+		if ( markerAlreadyUsed ) {
+			/**
+				 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
+				 *
+				 * @error emoji-config-marker-already-used
+				 * @param {string} marker Used marker.
+				 */
+			logWarning( 'emoji-config-marker-already-used', { marker: this._mentionMarker } );
+
+			return;
+		}
+
+		this._setupMentionConfiguration( mentionFeedsConfigs );
+		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ 'Mention' ] as const;
 	}
@@ -57,62 +93,12 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this.editor.config.define( 'emoji', {
-			dropdownLimit: 6,
-			marker: ':'
-		} );
-
-		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
-		this._mentionMarker = editor.config.get( 'emoji.marker' )!;
-
-		this._showAllEmojiId = this._formatEmojiId( SHOW_ALL_EMOJI );
-		this._emojiDatabase = new Database();
-
-		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
-		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this._mentionMarker );
-
-		if ( markerAlreadyUsed ) {
-			/**
-			 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
-			 *
-			 * @error emoji-config-marker-already-used
-			 * @param {string} marker Used marker.
-			 */
-			logWarning( 'emoji-config-marker-already-used', { marker: this._mentionMarker } );
-
-			return;
-		}
-
-		this._setupMentionConfiguration( mentionFeedsConfigs );
-		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public init(): void {
 		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
 	}
 
-	private _isEmojiId( string: string ): boolean {
-		return new RegExp( `^${ EMOJI_PREFIX }:[^:]+:$` ).test( string );
-	}
-
-	private _formatEmojiId( id: string ): string {
-		return `${ EMOJI_PREFIX }:${ id }:`;
-	}
-
-	private _removeEmojiPrefix( formattedEmojiId: string ): string {
-		return formattedEmojiId.replace( new RegExp( `^${ EMOJI_PREFIX }:` ), ':' );
-	}
-
 	/**
 	 * Initializes the configuration for emojis in the mention feature.
-	 *
-	 * @internal
 	 */
 	private _setupMentionConfiguration( mentionFeedsConfigs: Array<MentionFeed> ): void {
 		const emojiMentionFeedConfig = {
@@ -127,8 +113,6 @@ export default class EmojiMention extends Plugin {
 
 	/**
 	 * Returns the `itemRenderer()` callback for mention config.
-	 *
-	 * @internal
 	 */
 	private _getCustomItemRendererFn( t: LocaleTranslate ) {
 		return ( item: MentionFeedObjectItem ) => {
@@ -145,7 +129,7 @@ export default class EmojiMention extends Plugin {
 
 					break;
 				default:
-					itemElement.textContent = `${ item.text } ${ this._removeEmojiPrefix( item.id ) }`;
+					itemElement.textContent = `${ item.text } ${ removeEmojiPrefix( item.id ) }`;
 			}
 
 			return itemElement;
@@ -154,14 +138,12 @@ export default class EmojiMention extends Plugin {
 
 	/**
 	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
-	 *
-	 * @internal
 	 */
 	private _overrideMentionExecuteListener() {
 		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
-			if ( !this._isEmojiId( eventData.mention.id ) ) {
+			if ( !isEmojiId( eventData.mention.id ) ) {
 				return;
 			}
 
@@ -204,7 +186,7 @@ export default class EmojiMention extends Plugin {
 						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
 						return {
-							id: this._formatEmojiId( id ),
+							id: formatEmojiId( id ),
 							text: emoji.unicode
 						};
 					} );
@@ -215,4 +197,16 @@ export default class EmojiMention extends Plugin {
 				emojis.slice( 0, this._emojiDropdownLimit );
 		};
 	}
+}
+
+function isEmojiId( string: string ): boolean {
+	return new RegExp( `^${ EMOJI_PREFIX }:[^:]+:$` ).test( string );
+}
+
+function formatEmojiId( id: string ): string {
+	return `${ EMOJI_PREFIX }:${ id }:`;
+}
+
+function removeEmojiPrefix( formattedEmojiId: string ): string {
+	return formattedEmojiId.replace( new RegExp( `^${ EMOJI_PREFIX }:` ), ':' );
 }
