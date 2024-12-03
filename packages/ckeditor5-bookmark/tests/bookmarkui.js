@@ -148,16 +148,18 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should toggle the balloon UI with hidden back button (if not updating)', () => {
-			editor.commands.get( 'updateBookmark' ).isEnabled = false;
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
+			sinon.stub( updateBookmark, 'isEnabled' ).get( () => false );
 			button.fire( 'execute' );
 
 			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.false;
 		} );
 
 		it( 'should toggle the balloon UI with visible back button (if updating)', () => {
-			editor.commands.get( 'updateBookmark' ).isEnabled = true;
+			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
+			sinon.stub( updateBookmark, 'isEnabled' ).get( () => true );
 			button.fire( 'execute' );
 
 			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
@@ -228,6 +230,9 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should toggle the balloon UI with visible back button', () => {
+				const updateBookmarkCommand = editor.commands.get( 'updateBookmark' );
+
+				sinon.stub( updateBookmarkCommand, 'isEnabled' ).get( () => true );
 				button.fire( 'execute' );
 
 				expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
@@ -1128,9 +1133,7 @@ describe( 'BookmarkUI', () => {
 		it( 'should create #formView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			bookmarkUIFeature._addFormView( {
-				showBackButton: true
-			} );
+			bookmarkUIFeature._addFormView();
 
 			expect( bookmarkUIFeature.formView ).to.be.instanceOf( BookmarkFormView );
 		} );
@@ -1138,9 +1141,7 @@ describe( 'BookmarkUI', () => {
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			bookmarkUIFeature._addFormView( {
-				showBackButton: true
-			} );
+			bookmarkUIFeature._addFormView();
 			formView = bookmarkUIFeature.formView;
 
 			expect( balloon.visibleView ).to.equal( formView );
@@ -1149,18 +1150,14 @@ describe( 'BookmarkUI', () => {
 		it( 'should implement the CSS transition disabling feature', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			bookmarkUIFeature._addFormView( {
-				showBackButton: true
-			} );
+			bookmarkUIFeature._addFormView();
 
 			expect( bookmarkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
 		} );
 
 		describe( 'button label', () => {
 			it( 'should have "Insert" by default', () => {
-				bookmarkUIFeature._addFormView( {
-					showBackButton: true
-				} );
+				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
 
 				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
@@ -1169,9 +1166,7 @@ describe( 'BookmarkUI', () => {
 			it( 'should have "Insert" label when bookmark is not selected', () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-				bookmarkUIFeature._addFormView( {
-					showBackButton: true
-				} );
+				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
 
 				bookmarkUIFeature._showFormView();
@@ -1182,9 +1177,7 @@ describe( 'BookmarkUI', () => {
 			it( 'should have "Save" label when bookmark is selected', () => {
 				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
-				bookmarkUIFeature._addFormView( {
-					showBackButton: true
-				} );
+				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
 
 				bookmarkUIFeature._showFormView();

@@ -169,6 +169,7 @@ describe( 'LinkUI', () => {
 
 			it( 'should toggle the link UI with hidden back button', () => {
 				linkButton.fire( 'execute' );
+
 				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.false;
 			} );
 		}
@@ -308,6 +309,12 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should open link form view with back button', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				// Simulate link selection.
+				linkCommand.isEnabled = true;
+				linkCommand.value = 'http://ckeditor.com';
+
 				button.fire( 'execute' );
 
 				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.true;
@@ -2933,9 +2940,7 @@ describe( 'LinkUI with Bookmark', () => {
 		it( 'should create #bookmarksView', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			linkUIFeature._showUI( {
-				showBackButton: true
-			} );
+			linkUIFeature._showUI();
 
 			expect( linkUIFeature.bookmarksView ).to.be.instanceOf( LinkBookmarksView );
 		} );
