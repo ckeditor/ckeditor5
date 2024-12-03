@@ -670,7 +670,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 			const containedElement = range.getContainedElement();
 
 			if ( containedElement ) {
-				// Fast path for selection that contains only one element (e.g. big table)
+				// Fast path for selection that contains only one element (e.g. big table).
 				yield containedElement;
 			} else {
 				for ( const value of range.getWalker() ) {
