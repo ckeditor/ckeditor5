@@ -6,12 +6,11 @@
 /* global document, console */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Emoji, EmojiMention } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import Emoji from '../src/emoji.js';
-import EmojiMention from '../src/emojimention.js';
 
 describe( 'EmojiMention', () => {
 	let editor, editorElement, consoleLogStub, consoleWarnStub;

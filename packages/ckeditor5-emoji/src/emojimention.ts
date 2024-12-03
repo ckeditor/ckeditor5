@@ -29,9 +29,9 @@ const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
 export default class EmojiMention extends Plugin {
 	private _emojiDropdownLimit: number;
 	private _mentionMarker: string;
-	private _hasEmojiPicker: boolean;
 	private _showAllEmojiId: string;
 	private _emojiDatabase: Database;
+	declare private _hasEmojiPicker: boolean;
 
 	/**
 	 * @inheritDoc
@@ -67,7 +67,7 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._mentionMarker = editor.config.get( 'emoji.marker' )!;
-		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
+
 		this._showAllEmojiId = this._formatEmojiId( SHOW_ALL_EMOJI );
 		this._emojiDatabase = new Database();
 
@@ -88,6 +88,13 @@ export default class EmojiMention extends Plugin {
 
 		this._setupMentionConfiguration( mentionFeedsConfigs );
 		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
 	}
 
 	private _isEmojiId( string: string ): boolean {
