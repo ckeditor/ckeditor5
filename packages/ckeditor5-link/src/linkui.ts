@@ -625,7 +625,15 @@ export default class LinkUI extends Plugin {
 		view.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 		// Show the panel on button click.
-		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => this._showUI( true ) );
+		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => {
+			this._showUI( true );
+
+			// Open the form view on-top of the toolbar view if it's already visible.
+			// It should be visible every time the link is selected.
+			if ( this._getSelectedLinkElement() ) {
+				this._addFormView();
+			}
+		} );
 
 		return view;
 	}
@@ -884,16 +892,12 @@ export default class LinkUI extends Plugin {
 		}
 		// If there's a link under the selection...
 		else {
-			if ( forceVisible && this._getSelectedLinkElement() ) {
-				// Show the toolbar below of the form view if user selected link and triggered
-				// the balloon from the toolbar or the menu bar.
-				this._addToolbarView();
+			// Go to the editing UI if toolbar is already visible.
+			if ( this._isToolbarVisible ) {
 				this._addFormView();
-			} else if ( this._isToolbarVisible ) {
-				// Go to the editing UI if toolbar is already visible.
-				this._addFormView();
-			} else {
-				// Otherwise display just the toolbar.
+			}
+			// Otherwise display just the toolbar.
+			else {
 				this._addToolbarView();
 			}
 
