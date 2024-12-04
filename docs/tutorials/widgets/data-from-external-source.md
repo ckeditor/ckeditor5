@@ -11,8 +11,10 @@ In this tutorial, you will learn how to implement a widget that fetches data fro
 
 You will build an "external data fetch" feature that allows users to insert a predefined widget that will show the current Bitcoin rate and it will be updated with the set time interval fetching data from a predefined external source. You will use widget utilities and conversion to define the behavior of this feature. Later on, you will use {@link framework/architecture/ui-library UI library} to create a {@link module:ui/button/buttonview~ButtonView} that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
 
+If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+
 <info-box>
-	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+	If you want to use this tutorial with CDN, follow the steps in the [Adapt this tutorial to CDN](#adapt-this-tutorial-to-cdn) section.
 </info-box>
 
 ## Before you start
@@ -23,17 +25,19 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 The overall project structure will be similar to one described in the {@link tutorials/widgets/implementing-an-inline-widget#bootstrapping-the-project Bootstrapping the project} section of the "Implementing an inline widget" tutorial.
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to start the editor.
-
-The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source/starter-files), run the `npm install` command, and you can start coding right away.
+The easiest way to get started is to grab the starter project using the commands below.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/data-from-external-source/starter-files
+npx -y degit ckeditor/ckeditor5-tutorials-examples/data-from-external-source/starter-files data-from-external-source
+cd data-from-external-source
 
 npm install
 npm run dev
 ```
+
+This will create a new directory called `data-from-external-source` with the necessary files. The `npm install` command will install all the dependencies, and `npm run dev` will start the development server.
+
+The editor with some basic plugins is created in the `main.js` file.
 
 First, lets define the `ExternalDataWidget` plugin. The project structure should be as follows:
 
@@ -104,27 +108,13 @@ Finally, you need to load the `ExternalDataWidget` plugin in your `main.js` file
 ```js
 // main.js
 
-import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
 import ExternalDataWidget from './external-data-widget/externaldatawidget';
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( { editor: 'editor' } );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 
@@ -435,6 +425,7 @@ import ExternalDataWidgetCommand from './externaldatawidgetcommand';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 
 		// Insert the "external" button into the editor toolbar.
@@ -576,9 +567,57 @@ You can see the external data widget implementation in action in the editor belo
 If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source/final-project) available.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/data-from-external-source/final-project
+npx -y degit ckeditor/ckeditor5-tutorials-examples/data-from-external-source/final-project final-project
+cd final-project
 
 npm install
 npm run dev
 ```
+
+## Adapt this tutorial to CDN
+
+If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
+
+First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 Framework – tutorial CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello world!</p>
+		</div>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+
+		<script type="module" src="/main.js"></script>
+	</body>
+</html>
+```
+
+The CSS file contains the editor and content styles. Consequentially, you do not need to import styles into your JavaScript file.
+
+```js
+// Before:
+import 'ckeditor5/ckeditor5.css';
+
+// After:
+// No need to import the styles.
+```
+
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR`. You can use it in your project to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
+
+```js
+// Before:
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+
+// After:
+const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
+```
+
+After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.

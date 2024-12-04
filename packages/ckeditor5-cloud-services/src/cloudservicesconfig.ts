@@ -88,8 +88,11 @@ export interface CloudServicesConfig {
 	 * 	} )
 	 * ```
 	 *
+	 * If the request to the token endpoint fails, the editor will call the token request function every 5 seconds in attempt
+	 * to refresh the token.
+	 *
 	 * You can find more information about token endpoints in the
-	 * {@glink @cs guides/easy-image/quick-start#create-token-endpoint Cloud Services - Quick start}
+	 * {@glink @cs developer-resources/easy-image/service-details Easy Image} guide
 	 * and {@glink @cs developer-resources/security/token-endpoint Cloud Services - Token endpoint} documentation.
 	 *
 	 * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
@@ -102,7 +105,10 @@ export interface CloudServicesConfig {
 	 *
 	 * The upload URL is unique for each customer and can be found in the
 	 * [CKEditor Ecosystem customer dashboard](https://dashboard.ckeditor.com) after subscribing to the Easy Image service.
-	 * To learn how to start using Easy Image, check the {@glink @cs guides/easy-image/quick-start Easy Image - Quick start} documentation.
+	 * To learn more, check the {@glink @cs developer-resources/easy-image/service-details
+	 * Easy Image} guide.
+	 *
+	 * Note: Easy Image is a legacy product and only maintained for existing clients.
 	 *
 	 * Note: Make sure to also set the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} configuration option.
 	 */

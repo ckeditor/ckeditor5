@@ -8,5 +8,7 @@
  */
 
 export { default as Autoformat } from './autoformat.js';
+export { default as blockAutoformatEditing } from './blockautoformatediting.js';
+export { default as inlineAutoformatEditing } from './inlineautoformatediting.js';
 
 import './augmentation.js';

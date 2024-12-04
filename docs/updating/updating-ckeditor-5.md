@@ -24,7 +24,7 @@ To help you with a smooth update, we have prepared migration guides that describ
 	Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
 </info-box>
 
-You can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) or [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
+You can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) or [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 
 1. Read the changelog.
 2. Update your packages.

@@ -49,6 +49,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( RestrictedEditingModeEditing.pluginName ).to.equal( 'RestrictedEditingModeEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( RestrictedEditingModeEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( RestrictedEditingModeEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should be loaded', () => {
 			expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 		} );
@@ -233,6 +241,26 @@ describe( 'RestrictedEditingModeEditing', () => {
 				editor.setData( '<p>foo <span class="foo bar">bar</span> baz</p>' );
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
+			} );
+
+			it( 'should remove previous `restrictedEditingException` markers before setting new ones', () => {
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.false;
+
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.true;
 			} );
 		} );
 

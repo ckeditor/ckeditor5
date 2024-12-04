@@ -65,6 +65,14 @@ describe( 'MediaEmbedEditing', () => {
 		expect( MediaEmbedEditing.pluginName ).to.equal( 'MediaEmbedEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( MediaEmbedEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( MediaEmbedEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
 			describe( '#providers', () => {
@@ -205,6 +213,10 @@ describe( 'MediaEmbedEditing', () => {
 
 						it( 'upcasts the URL (youtube)', () => {
 							testMediaUpcast( [
+								'https://www.youtube.com/shorts/foo',
+								'www.youtube.com/shorts/foo',
+								'youtube.com/shorts/foo',
+
 								'https://www.youtube.com/watch?v=foo',
 								'www.youtube.com/watch?v=foo',
 								'youtube.com/watch?v=foo',
@@ -301,7 +313,11 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.instagram.com/p/foo',
 								'www.instagram.com/p/foo',
-								'instagram.com/p/foo'
+								'instagram.com/p/foo',
+
+								'https://www.instagram.com/reel/Foo/',
+								'www.instagram.com/reel/Foo/',
+								'instagram.com/reel/Foo/'
 							] );
 						} );
 
@@ -309,7 +325,11 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.twitter.com/foo/bar',
 								'www.twitter.com/foo/bar',
-								'twitter.com/foo/bar'
+								'twitter.com/foo/bar',
+
+								'https://www.x.com/foo/bar',
+								'www.x.com/foo/bar',
+								'x.com/foo/bar'
 							] );
 						} );
 

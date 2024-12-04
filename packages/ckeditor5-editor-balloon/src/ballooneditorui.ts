@@ -86,6 +86,7 @@ export default class BalloonEditorUI extends EditorUI {
 		editingView.attachDomRoot( editableElement );
 
 		this._initPlaceholder();
+		this._initMenuBar( this.view.menuBarView! );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -98,7 +99,10 @@ export default class BalloonEditorUI extends EditorUI {
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
-		editingView.detachDomRoot( view.editable.name! );
+		if ( editingView.getDomRoot( view.editable.name! ) ) {
+			editingView.detachDomRoot( view.editable.name! );
+		}
+
 		view.destroy();
 	}
 

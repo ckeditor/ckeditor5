@@ -12,7 +12,10 @@ import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbar
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
-import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
+import type {
+	EditorUIReadyEvent,
+	EditorUIUpdateEvent
+} from '../../editorui/editorui.js';
 
 import {
 	Plugin,
@@ -30,10 +33,11 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type {
-	DocumentSelection,
-	DocumentSelectionChangeRangeEvent,
-	Schema
+import {
+	Observer,
+	type DocumentSelection,
+	type DocumentSelectionChangeRangeEvent,
+	type Schema
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
@@ -99,6 +103,13 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ContextualBalloon ] as const;
 	}
@@ -113,11 +124,9 @@ export default class BalloonToolbar extends Plugin {
 		this.toolbarView = this._createToolbarView();
 		this.focusTracker = new FocusTracker();
 
-		// Wait for the EditorUI#init. EditableElement is not available before.
-		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
-			this.focusTracker.add( editor.ui.getEditableElement()! );
-			this.focusTracker.add( this.toolbarView.element! );
-		} );
+		// Track focusable elements in the toolbar and the editable elements.
+		this._trackFocusableEditableElements();
+		this.focusTracker.add( this.toolbarView );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		editor.ui.addToolbar( this.toolbarView, {
@@ -246,7 +255,7 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Don not show the toolbar when all components inside are disabled
+		// Do not show the toolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
 		if ( Array.from( this.toolbarView.items ).every( ( item: any ) => item.isEnabled !== undefined && !item.isEnabled ) ) {
 			return;
@@ -273,6 +282,31 @@ export default class BalloonToolbar extends Plugin {
 			this.stopListening( this.editor.ui, 'update' );
 			this._balloon.remove( this.toolbarView );
 		}
+	}
+
+	/**
+	 * Add or remove editable elements to the focus tracker. It watches added and removed roots
+	 * and adds or removes their editable elements to the focus tracker.
+	 */
+	private _trackFocusableEditableElements() {
+		const { editor, focusTracker } = this;
+		const { editing } = editor;
+
+		editing.view.addObserver( class TrackEditableElements extends Observer {
+			/**
+			 * @inheritDoc
+			 */
+			public observe( domElement: HTMLElement ) {
+				focusTracker.add( domElement );
+			}
+
+			/**
+			 * @inheritDoc
+			 */
+			public stopObserving( domElement: HTMLElement ) {
+				focusTracker.remove( domElement );
+			}
+		} );
 	}
 
 	/**

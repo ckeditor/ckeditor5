@@ -14,6 +14,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
@@ -41,7 +42,7 @@ describe( 'LinkUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ LinkEditing, LinkUI, Paragraph, BlockQuote ]
+				plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -64,6 +65,14 @@ describe( 'LinkUI', () => {
 
 	it( 'should be named', () => {
 		expect( LinkUI.pluginName ).to.equal( 'LinkUI' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LinkUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LinkUI.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should load ContextualBalloon', () => {
@@ -1015,6 +1024,18 @@ describe( 'LinkUI', () => {
 			linkUIFeature._hideUI();
 
 			expect( editor.model.markers.has( 'link-ui' ) ).to.be.false;
+		} );
+
+		it( 'should not throw if selection includes soft break before text item', () => {
+			linkUIFeature._hideUI();
+
+			setModelData( editor.model, '<paragraph>[<softBreak></softBreak>fo]</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( () => {
+				linkUIFeature._hideUI();
+			} ).to.not.throw();
 		} );
 	} );
 

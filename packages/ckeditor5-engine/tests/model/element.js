@@ -195,6 +195,28 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( '_removeChildrenArray', () => {
+		it( 'should remove children from the element', () => {
+			const _1 = new Text( '_1' );
+			const _2 = new Text( '_2' );
+			const _3 = new Text( '_3' );
+			const _4 = new Text( '_4' );
+			const _5 = new Text( '_5' );
+			const _6 = new Text( '_6' );
+
+			const element = new Element( 'elem', [], [ _1, _2, _3, _4, _5, _6 ] );
+
+			element._removeChildrenArray( [ _2, _3, _4 ] );
+
+			expect( element.childCount ).to.equal( 3 );
+			expect( element.maxOffset ).to.equal( 6 );
+
+			expect( element.getChild( 0 ) ).to.have.property( 'data' ).that.equals( '_1' );
+			expect( element.getChild( 1 ) ).to.have.property( 'data' ).that.equals( '_5' );
+			expect( element.getChild( 2 ) ).to.have.property( 'data' ).that.equals( '_6' );
+		} );
+	} );
+
 	describe( 'getNodeByPath', () => {
 		it( 'should return this node if path is empty', () => {
 			const element = new Element( 'elem' );
@@ -298,6 +320,28 @@ describe( 'Element', () => {
 			expect( element.getChildStartOffset( p ) ).to.equal( 0 );
 			expect( element.getChildStartOffset( bar ) ).to.equal( 1 );
 			expect( element.getChildStartOffset( h ) ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'getChildAtOffset', () => {
+		it( 'should return child at given offset', () => {
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const p = element.getChild( 0 );
+			const bar = element.getChild( 1 );
+			const h = element.getChild( 2 );
+
+			expect( element.getChildAtOffset( 0 ) ).to.equal( p );
+			expect( element.getChildAtOffset( 1 ) ).to.equal( bar );
+			expect( element.getChildAtOffset( 2 ) ).to.equal( bar );
+			expect( element.getChildAtOffset( 3 ) ).to.equal( bar );
+			expect( element.getChildAtOffset( 4 ) ).to.equal( h );
+		} );
+
+		it( 'should return null for incorrect offset', () => {
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+
+			expect( element.getChildAtOffset( -1 ) ).to.be.null;
+			expect( element.getChildAtOffset( 5 ) ).to.be.null;
 		} );
 	} );
 

@@ -3,6 +3,7 @@ category: examples-builds
 meta-title: Multi-root editor example | CKEditor 5 Documentation
 order: 60
 toc: false
+contributeUrl: false
 classes: main__content--no-toc
 ---
 
@@ -16,7 +17,7 @@ The main difference between using a multi-root editor and using multiple separat
 
 ## Editor example configuration
 
-Check out the {@link getting-started/quick-start Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+Check out the {@link getting-started/integrations-cdn/quick-start Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
 
 <details>
 <summary>View editor configuration script</summary>
@@ -48,6 +49,7 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
+			licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 			plugins: [
 				Essentials,
 				Heading,

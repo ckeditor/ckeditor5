@@ -28,7 +28,7 @@ import {
 	type Locale
 } from 'ckeditor5/src/utils.js';
 
-import type { ListPropertiesConfig } from '../../listconfig.js';
+import type { NormalizedListPropertiesConfig } from '../utils/config.js';
 
 import '../../../theme/listproperties.css';
 
@@ -120,7 +120,7 @@ export default class ListPropertiesView extends View {
 	constructor(
 		locale: Locale,
 		{ enabledProperties, styleButtonViews, styleGridAriaLabel }: {
-			enabledProperties: ListPropertiesConfig;
+			enabledProperties: NormalizedListPropertiesConfig;
 			styleButtonViews: Array<ButtonView> | null;
 			styleGridAriaLabel: string;
 		}
@@ -149,7 +149,7 @@ export default class ListPropertiesView extends View {
 
 		// The rendering of the styles grid is conditional. When there is no styles grid, the view will render without collapsible
 		// for numbered list properties, hence simplifying the layout.
-		if ( enabledProperties.styles ) {
+		if ( styleButtonViews && styleButtonViews.length ) {
 			this.stylesView = this._createStylesView( styleButtonViews!, styleGridAriaLabel );
 			this.children.add( this.stylesView );
 		} else {
@@ -302,7 +302,7 @@ export default class ListPropertiesView extends View {
 	 * @param enabledProperties An object containing the configuration of enabled list property names
 	 * (see {@link #constructor}).
 	 */
-	private _addNumberedListPropertyViews( enabledProperties: ListPropertiesConfig ) {
+	private _addNumberedListPropertyViews( enabledProperties: NormalizedListPropertiesConfig ) {
 		const t = this.locale.t;
 		const numberedPropertyViews = [];
 
@@ -317,7 +317,7 @@ export default class ListPropertiesView extends View {
 		}
 
 		// When there are some style buttons, pack the numbered list properties into a collapsible to separate them.
-		if ( enabledProperties.styles ) {
+		if ( this.stylesView ) {
 			this.additionalPropertiesCollapsibleView = new CollapsibleView( this.locale, numberedPropertyViews );
 
 			this.additionalPropertiesCollapsibleView.set( {

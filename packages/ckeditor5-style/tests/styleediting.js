@@ -71,6 +71,14 @@ describe( 'StyleEditing', () => {
 		expect( StyleEditing.pluginName ).to.equal( 'StyleEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StyleEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StyleEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should soft-require the GHS plugin, and require utils, and integrations', () => {
 		expect( StyleEditing.requires ).to.deep.equal( [
 			'GeneralHtmlSupport', StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport

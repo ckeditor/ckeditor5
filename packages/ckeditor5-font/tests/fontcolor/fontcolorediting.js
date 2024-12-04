@@ -25,12 +25,20 @@ describe( 'FontColorEditing', () => {
 		} )
 	);
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
 		expect( FontColorEditing.pluginName ).to.equal( 'FontColorEditing' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontColorEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontColorEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should set proper schema rules', () => {

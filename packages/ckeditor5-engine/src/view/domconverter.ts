@@ -174,7 +174,7 @@ export default class DomConverter {
 		this.document = document;
 		this.renderingMode = renderingMode;
 		this.blockFillerMode = blockFillerMode || ( renderingMode === 'editing' ? 'br' : 'nbsp' );
-		this.preElements = [ 'pre' ];
+		this.preElements = [ 'pre', 'textarea' ];
 		this.blockElements = [
 			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
 			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
@@ -233,7 +233,7 @@ export default class DomConverter {
 			this._domToViewMapping.delete( domElement );
 			this._viewToDomMapping.delete( viewElement );
 
-			for ( const child of Array.from( domElement.children ) ) {
+			for ( const child of domElement.children ) {
 				this.unbindDomElement( child as DomElement );
 			}
 		}
@@ -563,7 +563,17 @@ export default class DomConverter {
 				!first( childView.getAttributes() );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {
-				yield* this.viewChildrenToDom( childView, options );
+				// `RawElement` doesn't have #children defined, so they need to be temporarily rendered
+				// and extracted directly.
+				if ( childView.is( 'rawElement' ) ) {
+					const tempElement = this._domDocument.createElement( childView.name );
+
+					childView.render( tempElement, this );
+
+					yield* [ ...tempElement.childNodes ];
+				} else {
+					yield* this.viewChildrenToDom( childView, options );
+				}
 			} else {
 				if ( transparentRendering ) {
 					/**
@@ -1463,6 +1473,9 @@ export default class DomConverter {
 			// for inline objects can verify if the element is empty.
 			if ( this._isInlineObjectElement( viewElement ) ) {
 				inlineNodes.push( viewElement );
+
+				// Inline object content should be handled as a flow-root.
+				this._processDomInlineNodes( null, nestedInlineNodes, options );
 			} else {
 				// It's an inline element that is not an object (like <b>, <i>) or a block element.
 				for ( const inlineNode of nestedInlineNodes ) {
@@ -1699,23 +1712,27 @@ export default class DomConverter {
 			direction: getNext ? 'forward' : 'backward'
 		} );
 
-		for ( const value of treeWalker ) {
+		for ( const { item } of treeWalker ) {
+			// Found a text node in the same container element.
+			if ( item.is( '$textProxy' ) ) {
+				return item;
+			}
+			// Found a transparent element, skip it and continue inside it.
+			else if ( item.is( 'element' ) && item.getCustomProperty( 'dataPipeline:transparentRendering' ) ) {
+				continue;
+			}
 			// <br> found – it works like a block boundary, so do not scan further.
-			if ( value.item.is( 'element', 'br' ) ) {
+			else if ( item.is( 'element', 'br' ) ) {
 				return null;
 			}
 			// Found an inline object (for example an image).
-			else if ( this._isInlineObjectElement( value.item ) ) {
-				return value.item;
+			else if ( this._isInlineObjectElement( item ) ) {
+				return item;
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
-			else if ( value.item.is( 'containerElement' ) ) {
+			else if ( item.is( 'containerElement' ) ) {
 				return null;
-			}
-			// Found a text node in the same container element.
-			else if ( value.item.is( '$textProxy' ) ) {
-				return value.item;
 			}
 		}
 

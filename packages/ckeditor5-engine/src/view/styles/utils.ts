@@ -253,7 +253,7 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * ```
  */
 export function getShorthandValues( string: string ): Array<string> {
-	const matches = string.matchAll( CSS_SHORTHAND_VALUE_REGEXP );
+	const matches = string.trim().slice( 0, 1500 ).matchAll( CSS_SHORTHAND_VALUE_REGEXP );
 
 	return Array.from( matches ).map( i => i[ 0 ] );
 }

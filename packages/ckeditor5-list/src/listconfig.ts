@@ -7,6 +7,8 @@
  * @module list/listconfig
  */
 
+import { type ArrayOrItem } from 'ckeditor5/src/utils.js';
+
 /**
  * The configuration of the {@link module:list/list~List list} feature
  * and the {@link module:list/legacylist~LegacyList legacy list} feature.
@@ -86,7 +88,7 @@ export interface ListPropertiesConfig {
 	 *
 	 * @default true
 	 */
-	styles?: boolean | ListPropertiesStyleConfig;
+	styles?: boolean | ListPropertiesStyleConfig | ArrayOrItem<ListPropertiesStyleListType>;
 
 	/**
 	 * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists. As a
@@ -110,6 +112,33 @@ export interface ListPropertiesConfig {
 }
 
 export interface ListPropertiesStyleConfig {
+
+	/**
+	 * Enable style feature for the given list type only.
+	 *
+	 * ```ts
+	 * {
+	 * 	list: {
+	 * 		properties: {
+	 * 			styles: {
+	 * 				listTypes: 'numbered'
+	 * 			}
+	 *
+	 * 			// ...
+	 * 		}
+	 * 	},
+	 *
+	 * 	// ...
+	 * }
+	 * ```
+	 *
+     *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
+	 * @default ['bulleted','numbered']
+	 */
+	listTypes?: ArrayOrItem<ListPropertiesStyleListType>;
 
 	/**
 	 * When set `true`, the list style feature will use the `type` attribute of `<ul>` and `<ol>` elements instead of the `list-style-type`
@@ -140,3 +169,5 @@ export interface ListPropertiesStyleConfig {
 	 */
 	useAttribute?: boolean;
 }
+
+export type ListPropertiesStyleListType = 'numbered' | 'bulleted';

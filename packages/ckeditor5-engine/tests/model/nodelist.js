@@ -51,6 +51,21 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
+	describe( 'getNodeAtOffset', () => {
+		it( 'should return node at given offset', () => {
+			expect( nodes.getNodeAtOffset( 0 ) ).to.equal( p );
+			expect( nodes.getNodeAtOffset( 1 ) ).to.equal( foo );
+			expect( nodes.getNodeAtOffset( 2 ) ).to.equal( foo );
+			expect( nodes.getNodeAtOffset( 3 ) ).to.equal( foo );
+			expect( nodes.getNodeAtOffset( 4 ) ).to.equal( img );
+		} );
+
+		it( 'should return null for wrong offset', () => {
+			expect( nodes.getNodeAtOffset( -1 ) ).to.be.null;
+			expect( nodes.getNodeAtOffset( 5 ) ).to.be.null;
+		} );
+	} );
+
 	describe( 'getNodeIndex', () => {
 		it( 'should return an index at which given node is stored', () => {
 			expect( nodes.getNodeIndex( p ) ).to.equal( 0 );
@@ -122,12 +137,16 @@ describe( 'NodeList', () => {
 	} );
 
 	describe( '_insertNodes', () => {
-		it( 'should insert nodes at given index', () => {
+		it( 'should insert nodes at given index and refresh its nodes index and startOffset values', () => {
 			const newImg = new Element( 'imageBlock' );
-			nodes._insertNodes( 1, [ newImg ] );
-
 			const bar = new Text( 'bar', { bold: true } );
 			const xyz = new Text( 'xyz' );
+
+			expect( newImg.index ).to.equal( null );
+			expect( bar.index ).to.equal( null );
+			expect( xyz.index ).to.equal( null );
+
+			nodes._insertNodes( 1, [ newImg ] );
 			nodes._insertNodes( 4, [ bar, xyz ] );
 
 			expect( nodes.length ).to.equal( 6 );
@@ -155,6 +174,20 @@ describe( 'NodeList', () => {
 			expect( nodes.getNodeStartOffset( img ) ).to.equal( 5 );
 			expect( nodes.getNodeStartOffset( bar ) ).to.equal( 6 );
 			expect( nodes.getNodeStartOffset( xyz ) ).to.equal( 9 );
+
+			expect( p.index ).to.equal( 0 );
+			expect( newImg.index ).to.equal( 1 );
+			expect( foo.index ).to.equal( 2 );
+			expect( img.index ).to.equal( 3 );
+			expect( bar.index ).to.equal( 4 );
+			expect( xyz.index ).to.equal( 5 );
+
+			expect( p.startOffset ).to.equal( 0 );
+			expect( newImg.startOffset ).to.equal( 1 );
+			expect( foo.startOffset ).to.equal( 2 );
+			expect( img.startOffset ).to.equal( 5 );
+			expect( bar.startOffset ).to.equal( 6 );
+			expect( xyz.startOffset ).to.equal( 9 );
 		} );
 
 		it( 'should throw if not a Node is inserted', () => {
@@ -175,8 +208,14 @@ describe( 'NodeList', () => {
 	} );
 
 	describe( '_removeNodes', () => {
-		it( 'should remove one or more nodes from given index', () => {
-			nodes._removeNodes( 0, 2 );
+		it( 'should remove and return one or more nodes from given index and refresh index and startOffset values', () => {
+			const removedNodes = nodes._removeNodes( 0, 2 );
+
+			expect( removedNodes ).to.deep.equal( [ p, foo ] );
+			expect( p.index ).to.equal( null );
+			expect( foo.index ).to.equal( null );
+			expect( p.startOffset ).to.equal( null );
+			expect( foo.startOffset ).to.equal( null );
 
 			expect( nodes.length ).to.equal( 1 );
 			expect( nodes.maxOffset ).to.equal( 1 );
@@ -184,10 +223,17 @@ describe( 'NodeList', () => {
 			expect( nodes.getNode( 0 ) ).to.equal( img );
 			expect( nodes.getNodeIndex( img ) ).to.equal( 0 );
 			expect( nodes.getNodeStartOffset( img ) ).to.equal( 0 );
+
+			expect( img.index ).to.equal( 0 );
+			expect( img.startOffset ).to.equal( 0 );
 		} );
 
 		it( 'should remove one node if howMany parameter was not specified', () => {
-			nodes._removeNodes( 1 );
+			const removedNodes = nodes._removeNodes( 1 );
+
+			expect( removedNodes ).to.deep.equal( [ foo ] );
+			expect( foo.index ).to.equal( null );
+			expect( foo.startOffset ).to.equal( null );
 
 			expect( nodes.length ).to.equal( 2 );
 			expect( nodes.maxOffset ).to.equal( 2 );
@@ -197,9 +243,45 @@ describe( 'NodeList', () => {
 
 			expect( nodes.getNodeIndex( p ) ).to.equal( 0 );
 			expect( nodes.getNodeIndex( img ) ).to.equal( 1 );
+			expect( p.index ).to.equal( 0 );
+			expect( img.index ).to.equal( 1 );
 
 			expect( nodes.getNodeStartOffset( p ) ).to.equal( 0 );
 			expect( nodes.getNodeStartOffset( img ) ).to.equal( 1 );
+			expect( p.startOffset ).to.equal( 0 );
+			expect( img.startOffset ).to.equal( 1 );
+		} );
+	} );
+
+	describe( '_removeNodesArray', () => {
+		it( 'should remove nodes from given index and refresh index and startOffset values', () => {
+			nodes._removeNodesArray( [ foo ] );
+
+			expect( foo.index ).to.equal( null );
+			expect( foo.startOffset ).to.equal( null );
+
+			expect( nodes.length ).to.equal( 2 );
+			expect( nodes.maxOffset ).to.equal( 2 );
+
+			expect( nodes.getNode( 0 ) ).to.equal( p );
+			expect( nodes.getNode( 1 ) ).to.equal( img );
+
+			expect( nodes.getNodeIndex( p ) ).to.equal( 0 );
+			expect( nodes.getNodeIndex( img ) ).to.equal( 1 );
+			expect( p.index ).to.equal( 0 );
+			expect( img.index ).to.equal( 1 );
+
+			expect( nodes.getNodeStartOffset( p ) ).to.equal( 0 );
+			expect( nodes.getNodeStartOffset( img ) ).to.equal( 1 );
+			expect( p.startOffset ).to.equal( 0 );
+			expect( img.startOffset ).to.equal( 1 );
+		} );
+
+		it( 'should early exit when array is empty', () => {
+			nodes._removeNodesArray( [] );
+
+			expect( nodes.length ).to.equal( 3 );
+			expect( nodes.maxOffset ).to.equal( 5 );
 		} );
 	} );
 

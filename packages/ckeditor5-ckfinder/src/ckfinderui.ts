@@ -8,12 +8,7 @@
  */
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import {
-	ButtonView,
-	FileDialogButtonView,
-	MenuBarMenuListItemButtonView,
-	MenuBarMenuListItemFileDialogButtonView
-} from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 import type CKFinderCommand from './ckfindercommand.js';
@@ -34,6 +29,13 @@ export default class CKFinderUI extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'CKFinderUI' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -151,6 +153,8 @@ export default class CKFinderUI extends Plugin {
 	 * Creates a button for images management for the menu bar.
 	 */
 	private _createImageMenuBarButton( type: 'insertOnly' | 'insertNested' ): MenuBarMenuListItemButtonView {
+		// Use t() stored in a variable with a different name to reuse existing translations from another package.
+		const translateVariableKey = this.editor.locale.t;
 		const t = this.editor.locale.t;
 		const button = this._createButton( MenuBarMenuListItemButtonView );
 
@@ -159,7 +163,7 @@ export default class CKFinderUI extends Plugin {
 
 		switch ( type ) {
 			case 'insertOnly':
-				button.label = t( 'Image' );
+				button.label = translateVariableKey( 'Image' );
 				break;
 			case 'insertNested':
 				button.label = t( 'With file manager' );

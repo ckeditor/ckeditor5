@@ -173,6 +173,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 			MenuBarMenuBehaviors.openOnButtonClick( this );
 			MenuBarMenuBehaviors.openOnArrowRightKey( this );
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
+			MenuBarMenuBehaviors.openAndFocusOnEnterKeyPress( this );
 			MenuBarMenuBehaviors.closeOnParentClose( this );
 		}
 	}
@@ -211,7 +212,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 			} );
 
 			this.panelView.position = (
-				optimalPanelPosition ? optimalPanelPosition.name : this._panelPositions[ 0 ].name
+				optimalPanelPosition ? optimalPanelPosition.name : this._defaultMenuPositionName
 			) as MenuBarMenuPanelPosition;
 		} );
 	}
@@ -244,6 +245,26 @@ export default class MenuBarMenuView extends View implements FocusableView {
 				return [ westSouth, westNorth, eastSouth, eastNorth ];
 			} else {
 				return [ southWest, southEast, northWest, northEast ];
+			}
+		}
+	}
+
+	/**
+	 * The default position of the panel when the menu is opened.
+	 * It is used when the optimal position cannot be calculated.
+	 */
+	private get _defaultMenuPositionName(): MenuBarMenuPanelPosition {
+		if ( this.locale!.uiLanguageDirection === 'ltr' ) {
+			if ( this.parentMenuView ) {
+				return 'es';
+			} else {
+				return 'se';
+			}
+		} else {
+			if ( this.parentMenuView ) {
+				return 'ws';
+			} else {
+				return 'sw';
 			}
 		}
 	}

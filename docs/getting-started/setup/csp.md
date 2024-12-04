@@ -1,6 +1,7 @@
 ---
 category: setup
-meta-title: Content Security Policy | CKEditor 5 documentation
+meta-title: Content Security Policy | CKEditor 5 Documentation
+meta-description: Learn about the CKEditor 5 Content Security Policy.
 order: 110
 ---
 
@@ -8,12 +9,20 @@ order: 110
 
 CKEditor&nbsp;5 is compatible with applications that use [<abbr title="Content Security Policy">CSP</abbr> rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) and helps developers build a secure web.
 
-## Recommended CSP configuration
+## Recommended CSP configuration for Cloud deployments
 
-The recommended CSP configuration that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
+The recommended CSP configuration for {@link getting-started/licensing/usage-based-billing#cloud-hosted Cloud deployments} that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
 
 ```
-default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self'; frame-src *
+default-src 'none'; connect-src 'self'; script-src 'self' https://cdn.ckeditor.com https://proxy-event.ckeditor.com ; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *
+```
+
+## Recommended CSP configuration for self-hosted deployments
+
+The recommended CSP configuration for self-hosted deployments (npm/ZIP) that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
+
+```
+default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *
 ```
 
 ## Impact of CSP on editor features
@@ -28,7 +37,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance: `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor&nbsp;5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-	**Note**: If CKEditor&nbsp;5 is served from another host, for example the official CDN, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+	**Note**: If CKEditor&nbsp;5 is served from {@link getting-started/licensing/usage-based-billing#cloud-hosted Cloud}, make sure the value of `script-src` includes the required hosts, one for the CDN, and one for the {@link getting-started/licensing/usage-based-billing#license-check-and-usage-data license check server}: `script-src 'self' https://cdn.ckeditor.com https://proxy-event.ckeditor.com`.
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:
@@ -36,6 +45,9 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 		* Displaying the {@link features/media-embed media embed} feature placeholders for the inserted media.
 
 	**Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed media embed} and {@link features/paste-from-office paste from Word} features.
+* `style-src 'self' 'unsafe-inline'`:
+	* The `self` directive allows to load styles from the site's own domain. Since v42.0.0, the editor {@link getting-started/setup/css distributes its stylesheets}. If you need to load styles from some other domain, add them explicitly: `style-src https://trusted-styles.example.com;`.
+	* The directive `unsafe-inline` is required to make the styles of certain features work properly. For instance, you are going to need it if you want to enable such editor features as {@link features/font font} or {@link features/text-alignment text alignment} or any other feature that uses the inline `style="..."` attributes in the content.
 * `frame-src *`: Necessary for the {@link features/media-embed media embed} feature to load media with previews (containing `<iframe>`).
 
 	**Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.

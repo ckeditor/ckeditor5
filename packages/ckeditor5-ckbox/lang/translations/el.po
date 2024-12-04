@@ -1,18 +1,12 @@
 # Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Greek (https://app.transifex.com/ckeditor/teams/11143/el/)\n"
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,6 +22,10 @@ msgstr "Δεν μπορεί να οριστεί κατηγορία για το �
 msgctxt "A message is displayed when the user is not authorised to access the CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
 msgstr "Δεν είναι δυνατή η πρόσβαση στον προεπιλεγμένο χώρο εργασίας"
+
+msgctxt "The title of the notification displayed when there is no permission to edit assets."
+msgid "You have no image editing permissions."
+msgstr "Δεν έχεις άδειες επεξεργασίας εικόνας."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"

@@ -31,6 +31,14 @@ describe( 'TableCellWidthEditing', () => {
 		expect( TableCellWidthEditing.pluginName ).to.equal( 'TableCellWidthEditing' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableCellWidthEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableCellWidthEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'adds tableCellWidth command', () => {
 		expect( editor.commands.get( 'tableCellWidth' ) ).to.be.instanceOf( TableCellWidthCommand );
 	} );
@@ -161,8 +169,8 @@ describe( 'TableCellWidthEditing', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should not upcast the default `width` value from <td>', () => {

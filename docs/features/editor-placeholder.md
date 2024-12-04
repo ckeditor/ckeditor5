@@ -7,7 +7,7 @@ meta-title: Editor placeholder | CKEditor 5 Documentation
 
 # Editor placeholder
 
-You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs. Not to be confused with {@link examples/framework/content-placeholder content placeholder}.
+You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs. Not to be confused with the content placeholders offered by the {@link features/merge-fields merge fields} feature.
 
 ## Demo
 
@@ -31,11 +31,13 @@ Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.
 <textarea id="editor" placeholder="Type the content here!"></textarea>
 ```
 
+<code-switcher>
 ```js
 import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 	} )
 	.then( editor => {
@@ -45,6 +47,7 @@ ClassicEditor
 		console.error( error );
 	} );
 ```
+</code-switcher>
 
 ### Using the editor configuration
 
@@ -55,11 +58,9 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 * to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
-import { ClassicEditor, Essentials } from 'ckeditor5';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, /* ... */ ],
+		// ... Other configuration options ...
 		placeholder: 'Type the content here!'
 	} )
 	.then( editor => {

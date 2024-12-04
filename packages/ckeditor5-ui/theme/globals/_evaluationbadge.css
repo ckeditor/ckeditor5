@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	/* where 7.5(px) is the font size of the evaluation badge label and 13(px) is the base font size. */
+	--ck-evaluation-badge-font-size: calc(var(--ck-font-size-base) * 7.5 / 13);
+	/* where 7.5(px) is the line height of the evaluation badge label and 13(px) is the base font size. */
+	--ck-evaluation-badge-line-height: calc(var(--ck-font-size-base) * 7.5 / 13);
+	/* where -0.2(px) is the letter spacing of the evaluation badge label and 13(px) is the base font size. */
+	--ck-evaluation-badge-letter-spacing: calc(var(--ck-font-size-base) * -0.2 / 13);
+	--ck-evaluation-badge-padding-vertical: 2px;
+	--ck-evaluation-badge-padding-horizontal: 4px;
+	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
+	--ck-evaluation-badge-border-radius: var(--ck-border-radius);
+	--ck-evaluation-badge-background: hsl(0, 0%, 100%);
+	--ck-evaluation-badge-border-color: var(--ck-color-focus-border);
+}
+
+.ck.ck-balloon-panel.ck-evaluation-badge-balloon {
+	--ck-border-radius: var(--ck-evaluation-badge-border-radius);
+
+	box-shadow: none;
+	background: var(--ck-evaluation-badge-background);
+	min-height: unset;
+	z-index: calc( var(--ck-z-panel) - 1 );
+
+	& .ck.ck-evaluation-badge {
+		line-height: var(--ck-evaluation-badge-line-height);
+		padding: var(--ck-evaluation-badge-padding-vertical) var(--ck-evaluation-badge-padding-horizontal);
+
+		& .ck-evaluation-badge__label {
+			display: block;
+			padding: 0 2px;
+			font-size: var(--ck-evaluation-badge-font-size);
+			letter-spacing: var(--ck-evaluation-badge-letter-spacing);
+			font-weight: bold;
+			line-height: normal;
+			text-transform: uppercase;
+			color: var(--ck-evaluation-badge-text-color);
+		}
+	}
+
+	&[class*="position_inside"] {
+		border-color: transparent;
+	}
+
+	&[class*="position_border"] {
+		border: var(--ck-focus-ring);
+		border-color: var(--ck-evaluation-badge-border-color);
+	}
+}
+

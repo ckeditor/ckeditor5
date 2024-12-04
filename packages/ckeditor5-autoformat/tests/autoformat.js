@@ -69,6 +69,14 @@ describe( 'Autoformat', () => {
 			expect( Autoformat.pluginName ).to.equal( 'Autoformat' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( Autoformat.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( Autoformat.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should add keystroke accessibility info', () => {
 			expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 				label: 'Revert autoformatting action',
@@ -1182,6 +1190,10 @@ describe( 'Autoformat', () => {
 					} );
 			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			it( 'should not replace asterisk with bulleted list item', () => {
 				setData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
@@ -1308,6 +1320,8 @@ describe( 'Autoformat', () => {
 						insertSpace();
 
 						expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+
+						return editor.destroy();
 					} );
 			} );
 		} );
@@ -2401,6 +2415,10 @@ describe( 'Autoformat', () => {
 					} );
 			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			it( 'should not replace asterisk with bulleted list item', () => {
 				setData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
@@ -2528,6 +2546,8 @@ describe( 'Autoformat', () => {
 						insertSpace();
 
 						expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+
+						return editor.destroy();
 					} );
 			} );
 		} );

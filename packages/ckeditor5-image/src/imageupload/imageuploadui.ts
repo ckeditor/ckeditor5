@@ -39,6 +39,13 @@ export default class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 
@@ -102,6 +109,7 @@ export default class ImageUploadUI extends Plugin {
 	private _createToolbarButton(): ButtonView {
 		const t = this.editor.locale.t;
 		const imageInsertUI: ImageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
+		const uploadImageCommand = this.editor.commands.get( 'uploadImage' )!;
 
 		const button = this._createButton( FileDialogButtonView );
 
@@ -109,7 +117,15 @@ export default class ImageUploadUI extends Plugin {
 		button.bind( 'label' ).to(
 			imageInsertUI,
 			'isImageSelected',
-			isImageSelected => isImageSelected ? t( 'Replace image from computer' ) : t( 'Upload image from computer' )
+			uploadImageCommand,
+			'isAccessAllowed',
+			( isImageSelected, isAccessAllowed ) => {
+				if ( !isAccessAllowed ) {
+					return t( 'You have no image upload permissions.' );
+				}
+
+				return isImageSelected ? t( 'Replace image from computer' ) : t( 'Upload image from computer' );
+			}
 		);
 
 		return button;

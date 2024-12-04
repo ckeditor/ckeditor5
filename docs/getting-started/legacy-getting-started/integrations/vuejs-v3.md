@@ -7,10 +7,10 @@ order: 50
 
 {@snippet installation/integrations/framework-integration}
 
-# (Legacy) Vue.js 3+ rich text editor component
+# Vue.js 3+ rich text editor component &ndash; Legacy guide
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Vue integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 integration} guide.
+	⚠️  We changed installation methods, and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Vue integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 integration} guide.
 </info-box>
 
 <p>
@@ -26,7 +26,7 @@ The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing
 Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-5-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
 <info-box>
-	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
+	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react-default-npm React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
 <info-box hint>
@@ -34,6 +34,10 @@ Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-5-
 </info-box>
 
 ## Quick start
+
+<info-box warning>
+	⚠️  This guide is only valid for version 6.0.0 of the `@ckeditor/ckeditor5-vue` package, because of the API changes introduced in version 7.0.0. If you are looking for current CKEditor&nbsp;5 Vue integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 integration} guide.
+</info-box>
 
 Install the [CKEditor&nbsp;5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build of your choice}.
 
@@ -107,9 +111,9 @@ To create an editor instance, you must first import the editor build and the com
 
 ```js
 import { createApp } from 'vue';
-import CKEditor from '@ckeditor/ckeditor5-vue';
+import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 
-createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
+createApp( { /* options */ } ).use( CkeditorPlugin ).mount( /* DOM element */ );
 ```
 
 <info-box>
@@ -242,14 +246,6 @@ Finally, import the build in your application:
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a Vue application is to build the editor from source including the collaboration plugins together with the Vue application.
 
-<info-box>
-	For such a scenario we provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
-
-	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
-
-	It is not mandatory to build applications on top of the above sample, however, it should help you get started.
-</info-box>
-
 ## Using CKEditor&nbsp;5 from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor&nbsp;5 Framework}. You have two options regarding building your application: Vite or webpack.
@@ -343,8 +339,8 @@ First, install the necessary dependencies:
 ```bash
 npm install --save \
     @ckeditor/ckeditor5-vue \
-    @ckeditor/ckeditor5-dev-translations \
-    @ckeditor/ckeditor5-dev-utils \
+    @ckeditor/ckeditor5-dev-translations@43 \
+    @ckeditor/ckeditor5-dev-utils@43 \
     postcss-loader@4 \
     raw-loader@4
 ```
@@ -383,7 +379,7 @@ module.exports = {
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
 	//	1. The icons used by CKEditor&nbsp;5 must be loaded using raw-loader,
 	//	2. The CSS used by CKEditor&nbsp;5 must be transpiled using PostCSS to load properly.
-	chainWebpack: configuration => {
+	chainWebpack: config => {
 		// (1.) To handle the editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
 
@@ -393,8 +389,9 @@ module.exports = {
 		//
 		//		svgRule.uses.clear();
 		//
-		// * or exclude ckeditor directory from node_modules:
+		// * or exclude ckeditor directories from node_modules:
 		svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
+		svgRule.exclude.add( path.join( __dirname, 'node_modules', 'ckeditor5-collaboration' ) );
 
 		// Add an entry for *.svg files belonging to CKEditor. You can either:
 		//
@@ -456,10 +453,10 @@ You can use more packages, depending on which features are needed in your applic
 // main.js
 
 import { createApp } from 'vue';
-import App from './App.vue';
-import CKEditor from '@ckeditor/ckeditor5-vue';
+import App from './app.vue';
+import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 
-createApp( App ).use( CKEditor ).mount( '#app' );
+createApp( App ).use( CkeditorPlugin ).mount( '#app' );
 ```
 
 <info-box>
@@ -526,10 +523,10 @@ You must make a few tweaks if you chose TypeScript during project initialization
 // main.ts
 
 import { createApp } from 'vue';
-import App from './App.vue';
-import CKEditor from '@ckeditor/ckeditor5-vue';
+import App from './app.vue';
+import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 
-createApp( App ).use( CKEditor ).mount( '#app' );
+createApp( App ).use( CkeditorPlugin ).mount( '#app' );
 ```
 
 Then, besides specifying the list of rich text editor options, add the `lang` property to the Vue component.

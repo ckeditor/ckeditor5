@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../../mixins/_rounded.css";
+@import "../../../../mixins/_shadow.css";
+
+:root {
+	--ck-dropdown-menu-menu-panel-max-width: 75vw;
+}
+
+.ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
+	@mixin ck-drop-shadow;
+
+	background: var(--ck-color-dropdown-panel-background);
+	border: 1px solid var(--ck-color-dropdown-panel-border);
+	bottom: 0;
+	height: fit-content;
+	max-width: var(--ck-dropdown-menu-menu-panel-max-width);
+
+	/* Reset balloon styling */
+	&::after,
+	&::before {
+		display: none;
+	}
+
+	/* Corner border radius consistent with the button. */
+	&.ck-balloon-panel_es,
+	&.ck-balloon-panel_se {
+		border-top-left-radius: 0;
+	}
+
+	&.ck-balloon-panel_ws,
+	&.ck-balloon-panel_sw {
+		border-top-right-radius: 0;
+	}
+
+	&.ck-balloon-panel_en,
+	&.ck-balloon-panel_ne {
+		border-bottom-left-radius: 0;
+	}
+
+	&.ck-balloon-panel_wn,
+	&.ck-balloon-panel_nw {
+		border-bottom-right-radius: 0;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}

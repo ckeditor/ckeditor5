@@ -34,4 +34,11 @@ export default class Strikethrough extends Plugin {
 	public static get pluginName() {
 		return 'Strikethrough' as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
 }

@@ -310,7 +310,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
-			authorization: ckboxUtils.getToken().value
+			authorization: ( await ckboxUtils.getToken() ).value
 		} );
 		const status = response.metadata!.metadataProcessingStatus;
 
@@ -395,6 +395,7 @@ export default class CKBoxImageEditCommand extends Command {
 			writer.setSelection( element, 'on' );
 
 			editor.execute( 'insertImage', {
+				imageType: element.is( 'element', 'imageInline' ) ? 'imageInline' : null,
 				source: {
 					src: imageFallbackUrl,
 					sources: imageSources,

@@ -60,6 +60,14 @@ describe( 'LegacyTodoListEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( LegacyTodoListEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( LegacyTodoListEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should load ListEditing', () => {
 		expect( LegacyTodoListEditing.requires ).to.have.members( [ LegacyListEditing ] );
 	} );
@@ -1146,8 +1154,8 @@ describe( 'LegacyTodoListEditing', () => {
 					} );
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			afterEach( async () => {
+				await editor.destroy();
 			} );
 
 			testArrowKey();
@@ -1189,8 +1197,8 @@ describe( 'LegacyTodoListEditing', () => {
 					} );
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			afterEach( async () => {
+				await editor.destroy();
 			} );
 
 			testArrowKey();

@@ -297,6 +297,12 @@ export default class ColorPickerView extends View {
 	public isValid(): boolean {
 		const { t } = this.locale!;
 
+		// If the input is hidden, it's always valid, because there is no way to select
+		// invalid color value using diagram color picker.
+		if ( this._config.hideInput ) {
+			return true;
+		}
+
 		this.resetValidationStatus();
 
 		// One error per field is enough.

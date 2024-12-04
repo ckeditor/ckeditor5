@@ -74,11 +74,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	font-size: smaller;
 }
 
-.ck.ck-list {
-	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
-	margin-left: 0;
-}
-
 .demo-row {
 	width: 100%;
 	display: -ms-flexbox;
@@ -142,6 +137,12 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	font-weight: bold;
 	font-size: 16px;
 	padding: 0;
+	margin: 0;
+}
+
+/* See https://github.com/ckeditor/ckeditor5/issues/494 */
+/* See https://github.com/ckeditor/ckeditor5/issues/16935 */
+.formatted .ck.ck-list {
 	margin: 0;
 }
 
@@ -239,7 +240,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 /* https://github.com/ckeditor/ckeditor5/issues/899 */
 .live-snippet .ck-dropdown .ck.ck-list {
 	margin: 0;
-	padding: 0;
 }
 
 /* https://github.com/ckeditor/ckeditor5/pull/1060 */

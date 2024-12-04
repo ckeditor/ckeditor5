@@ -82,6 +82,42 @@ describe( 'ClassicEditorUIView', () => {
 			} );
 		} );
 
+		describe( '#editable', () => {
+			it( 'creates an editing root with the default aria-label', () => {
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+			} );
+
+			it( 'creates an editing root with the configured aria-label (string format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new ClassicEditorUIView( locale, editingView, {
+					label: 'Foo'
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (object format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new ClassicEditorUIView( locale, editingView, {
+					label: {
+						main: 'Foo'
+					}
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+		} );
+
 		describe( '#menuBarView', () => {
 			it( 'is not created', () => {
 				expect( view.menuBarView ).to.be.undefined;

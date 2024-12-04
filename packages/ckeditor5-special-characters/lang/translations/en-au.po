@@ -1,18 +1,12 @@
 # Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: English (Australia) (https://app.transifex.com/ckeditor/teams/11143/en_AU/)\n"
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,6 +14,10 @@ msgstr ""
 msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
 msgid "Special characters"
 msgstr "Special characters"
+
+msgctxt "A label for a special character dropdown with symbol categories."
+msgid "Category"
+msgstr ""
 
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
@@ -1072,7 +1070,3 @@ msgstr "Paragraph sign"
 msgctxt "A label for the \"reversed paragraph sign\" symbol."
 msgid "Reversed paragraph sign"
 msgstr "Reversed paragraph sign"
-
-msgctxt "A label for a tooltip showing when the user hovers over the plugin icon."
-msgid "Character categories"
-msgstr "Character categories"

@@ -1,18 +1,12 @@
 # Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Hindi (https://app.transifex.com/ckeditor/teams/11143/hi/)\n"
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -100,6 +94,10 @@ msgstr "कंप्यूटर से इमेज बदलें"
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "Upload failed"
+
+msgctxt "The title of the notification displayed when there is no permission to upload assets."
+msgid "You have no image upload permissions."
+msgstr "आपके पास तस्वीर को अपलोड करने की अनुमति नहीं है."
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

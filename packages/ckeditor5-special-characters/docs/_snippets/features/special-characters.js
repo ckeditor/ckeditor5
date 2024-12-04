@@ -44,14 +44,16 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Special characters' ),
+			target: window.findToolbarItem(
+				editor.ui.view.toolbar, item => item.label && item.label === 'Special characters'
+			),
 			text: 'Click to insert special characters.',
 			editor
 		} );

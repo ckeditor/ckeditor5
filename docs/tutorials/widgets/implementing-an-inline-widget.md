@@ -9,15 +9,17 @@ meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 In this tutorial, you will learn how to implement an inline widget. You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document.
 
 <info-box warning>
-	**Please be advised that we are currently working on the official implementation of this feature!**
+	**We have an official implementation of this feature!**
 
-	The official feature will be much more robust than the solution presented here, and will offer many configuration options. If you plan to implement a custom placeholder feature based on this tutorial, we strongly advise waiting for the official solution. In case of any questions, feel free to [contact us](https://ckeditor.com/contact/).
+	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options. 
 </info-box>
 
 First, you will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
 
+If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+
 <info-box>
-	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+	If you want to use this tutorial with CDN, follow the steps in the [Adapt this tutorial to CDN](#adapt-this-tutorial-to-cdn) section.
 </info-box>
 
 ## Before you start
@@ -26,17 +28,19 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 ## Bootstrapping the project
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to start the editor.
-
-The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the starter-files directory, run the `npm install` command, and you can start coding right away.
+The easiest way to get started is to grab the starter project using the commands below.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/inline-widget/starter-files
+npx -y degit ckeditor/ckeditor5-tutorials-examples/inline-widget/starter-files inline-widget
+cd inline-widget
 
 npm install
 npm run dev
 ```
+
+This will create a new directory called `inline-widget` with the necessary files. The `npm install` command will install all the dependencies, and `npm run dev` will start the development server.
+
+The editor with some basic plugins is created in the `main.js` file.
 
 First, let's define the `Placeholder` plugin. The project should have a structure shown below:
 
@@ -107,27 +111,13 @@ Finally, you need to load the `Placeholder` plugin in your `main.js` file:
 ```js
 // main.js
 
-import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
 import Placeholder from './placeholder/placeholder';
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( { editor: 'editor' } );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
 	} );
 ```
 
@@ -523,34 +513,15 @@ Add the dropdown to the toolbar:
 ```js
 // main.js
 
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Essentials,
-	Heading,
-	List,
-	Paragraph
-} from 'ckeditor5';
-
 import Placeholder from './placeholder/placeholder';
-
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 
 		// Insert the "placeholder" dropdown into the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]
-	} )
-	.then( editor => {
-		// This code runs after the editor initialization.
-		// ...
-	} )
-	.catch( error => {
-		// Error handling if something goes wrong during initialization.
-		// ...
 	} );
 ```
 
@@ -624,6 +595,7 @@ The plugin is now ready to accept the configuration. Check how this works by add
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Widget, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ],
 		placeholderConfig: {
@@ -649,9 +621,57 @@ You can see the placeholder widget implementation in action in the editor below.
 If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/final-project) available.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/inline-widget/final-project
+npx -y degit ckeditor/ckeditor5-tutorials-examples/inline-widget/final-project final-project
+cd final-project
 
 npm install
 npm run dev
 ```
+
+## Adapt this tutorial to CDN
+
+If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
+
+First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 Framework – tutorial CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello world!</p>
+		</div>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+
+		<script type="module" src="/main.js"></script>
+	</body>
+</html>
+```
+
+The CSS file contains the editor and content styles. Consequentially, you do not need to import styles into your JavaScript file.
+
+```js
+// Before:
+import 'ckeditor5/ckeditor5.css';
+
+// After:
+// No need to import the styles.
+```
+
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR`. You can use it in your project to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
+
+```js
+// Before:
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+
+// After:
+const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
+```
+
+After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.

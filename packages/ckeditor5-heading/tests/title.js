@@ -47,6 +47,14 @@ describe( 'Title', () => {
 		expect( Title.pluginName ).to.equal( 'Title' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Title.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Title.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.isRegistered( 'title' ) ).to.equal( true );
 		expect( model.schema.isBlock( 'title' ) ).to.equal( true );

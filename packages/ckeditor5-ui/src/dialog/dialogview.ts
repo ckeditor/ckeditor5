@@ -24,8 +24,6 @@ import FormHeaderView from '../formheader/formheaderview.js';
 import ButtonView from '../button/buttonview.js';
 import { type ButtonExecuteEvent } from '../button/button.js';
 import FocusCycler, { isViewWithFocusCycler,
-	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent,
 	type FocusableView,
 	isFocusable
 }
@@ -268,6 +266,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 						class: [
 							'ck',
 							'ck-dialog',
+							bind.if( 'isModal', 'ck-dialog_modal' ),
 							bind.to( 'className' )
 						],
 						role: 'dialog',
@@ -291,8 +290,12 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 		super.render();
 
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<DialogViewCloseEvent>( 'close', { source: 'escKeyPress' } );
-			cancel();
+			// Do not react to the Esc key if the event has already been handled and defaultPrevented
+			// by some logic of the dialog guest (child) view (https://github.com/ckeditor/ckeditor5/issues/17343).
+			if ( !data.defaultPrevented ) {
+				this.fire<DialogViewCloseEvent>( 'close', { source: 'escKeyPress' } );
+				cancel();
+			}
 		} );
 
 		// Support for dragging the modal.
@@ -342,7 +345,8 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	 * Returns the element that should be used as a drag handle.
 	 */
 	public override get dragHandleElement(): HTMLElement | null {
-		if ( this.headerView ) {
+		// Modals should not be draggable.
+		if ( this.headerView && !this.isModal ) {
 			return this.headerView.element;
 		} else {
 			return null;
@@ -618,10 +622,35 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	}
 
 	/**
-	 * Calculates the viewport rect.
+	 * Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
+	 *
+	 * TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
 	 */
-	private _getViewportRect() {
-		return getConstrainedViewportRect( this._getViewportOffset() );
+	private _getViewportRect(): Rect {
+		const viewportRect = new Rect( global.window );
+
+		// Modals should not be restricted by the viewport offsets as they are always displayed on top of the page.
+		if ( this.isModal ) {
+			return viewportRect;
+		}
+
+		const viewportOffset = {
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0,
+			...this._getViewportOffset()
+		};
+
+		viewportRect.top += viewportOffset.top!;
+		viewportRect.height -= viewportOffset.top!;
+		viewportRect.bottom -= viewportOffset.bottom!;
+		viewportRect.height -= viewportOffset.bottom!;
+		viewportRect.left += viewportOffset.left!;
+		viewportRect.right -= viewportOffset.right!;
+		viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
+
+		return viewportRect;
 	}
 
 	/**
@@ -652,23 +681,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			this.focusTracker.add( focusable.element! );
 
 			if ( isViewWithFocusCycler( focusable ) ) {
-				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
-					this._focusCycler.focusNext();
-
-					// Stop the event propagation only if there are more focusables.
-					if ( this._focusCycler.next !== this._focusCycler.focusables.get( this._focusCycler.current! ) ) {
-						evt.stop();
-					}
-				} );
-
-				this.listenTo<FocusCyclerBackwardCycleEvent>( focusable.focusCycler, 'backwardCycle', evt => {
-					this._focusCycler.focusPrevious();
-
-					// Stop the event propagation only if there are more focusables.
-					if ( this._focusCycler.previous !== this._focusCycler.focusables.get( this._focusCycler.current! ) ) {
-						evt.stop();
-					}
-				} );
+				this._focusCycler.chain( focusable.focusCycler );
 			}
 		} );
 	}
@@ -708,21 +721,3 @@ export type DialogViewCloseEvent = {
  * @eventName ~DialogView#moveTo
  */
 export type DialogViewMoveToEvent = DecoratedMethodEvent<DialogView, 'moveTo'>;
-
-// Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
-// TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
-function getConstrainedViewportRect( viewportOffset: EditorUI[ 'viewportOffset' ] ): Rect {
-	viewportOffset = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffset );
-
-	const viewportRect = new Rect( global.window );
-
-	viewportRect.top += viewportOffset.top!;
-	viewportRect.height -= viewportOffset.top!;
-	viewportRect.bottom -= viewportOffset.bottom!;
-	viewportRect.height -= viewportOffset.bottom!;
-	viewportRect.left += viewportOffset.left!;
-	viewportRect.right -= viewportOffset.right!;
-	viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
-
-	return viewportRect;
-}

@@ -571,6 +571,13 @@ describe( 'view test utils', () => {
 			expect( parsed2.id ).to.be.undefined;
 		} );
 
+		it( 'should correctly parse whitespaces around custom inline object elements', () => {
+			const parsed = parse( '<p>Foo <inlineObj></inlineObj> bar</p>', { inlineObjectElements: [ 'inlineObj' ] } );
+
+			expect( parsed.getChild( 0 ).data ).to.equal( 'Foo ' );
+			expect( parsed.getChild( 2 ).data ).to.equal( ' bar' );
+		} );
+
 		it( 'should paste nested elements and texts', () => {
 			const parsed = parse( '<container:p>foo<b view-priority="12">bar<i view-priority="25">qux</i></b></container:p>' );
 			expect( parsed.isSimilar( new ContainerElement( viewDocument, 'p' ) ) ).to.be.true;

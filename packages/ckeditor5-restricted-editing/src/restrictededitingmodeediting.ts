@@ -75,6 +75,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -135,6 +142,17 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
+
+		// Remove existing restricted editing markers when setting new data to prevent marker resurrection.
+		// Without this, markers from removed content would be incorrectly restored due to the resurrection mechanism.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/9646#issuecomment-843064995
+		editor.data.on( 'set', () => {
+			editor.model.change( writer => {
+				for ( const marker of editor.model.markers.getMarkersGroup( 'restrictedEditingException' ) ) {
+					writer.removeMarker( marker.name );
+				}
+			} );
+		}, { priority: 'high' } );
 	}
 
 	/**

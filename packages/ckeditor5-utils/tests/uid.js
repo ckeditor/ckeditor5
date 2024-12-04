@@ -7,6 +7,10 @@ import uid from '../src/uid.js';
 
 describe( 'utils', () => {
 	describe( 'uid', () => {
+		afterEach( () => {
+			sinon.restore();
+		} );
+
 		it( 'should return different ids', () => {
 			const id1 = uid();
 			const id2 = uid();
@@ -21,6 +25,14 @@ describe( 'utils', () => {
 			expect( id1 ).to.match( uuidRegex );
 			expect( id2 ).to.match( uuidRegex );
 			expect( id3 ).to.match( uuidRegex );
+		} );
+
+		it( 'should not use Math.random()', () => {
+			const spy = sinon.spy( Math, 'random' );
+
+			uid();
+
+			expect( spy.notCalled ).to.be.true;
 		} );
 	} );
 } );

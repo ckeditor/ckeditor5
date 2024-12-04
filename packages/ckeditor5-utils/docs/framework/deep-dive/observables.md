@@ -11,6 +11,7 @@ Observables are common building blocks of the {@link framework/index CKEditor&nb
 
 Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~Observable} into it:
 
+<code-switcher>
 ```js
 import { ObservableMixin, mix } from 'ckeditor5';
 
@@ -21,6 +22,7 @@ class AnyClass {
 
 mix( AnyClass, ObservableMixin );
 ```
+</code-switcher>
 
 Observables are useful when it comes to managing the state of the application, which can be dynamic and, more often than not, centralized and shared between components of the application. One observable can also propagate its state (or its part) to another using [property bindings](#property-bindings).
 

@@ -8,7 +8,7 @@
  */
 
 import { ObservableMixin, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { MatcherPattern, MatcherObjectPattern } from 'ckeditor5/src/engine.js';
+import type { MatcherObjectPattern } from 'ckeditor5/src/engine.js';
 import type { NormalizedLinkDecoratorManualDefinition } from '../utils.js';
 
 /**

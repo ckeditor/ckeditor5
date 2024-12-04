@@ -10,7 +10,7 @@ order: 30
 # (Legacy) React rich text editor component
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 React integration, please refer to the newest version of the {@link getting-started/integrations/react CKEditor&nbsp;5 integration} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 React integration, please refer to the newest version of the {@link getting-started/integrations/react-default-npm CKEditor&nbsp;5 integration} guide.
 </info-box>
 
 <p>
@@ -248,19 +248,6 @@ export default App;
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
-<info-box>
-	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
-
-	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
-	* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-react)
-	* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-react)
-	* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
-
-	It is not mandatory to build applications on top of the above samples, however, they should help you get started.
-</info-box>
-
-Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
-
 ## Integrating a build from the online builder
 
 This guide assumes that you have created a zip archive with the editor built using the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
@@ -438,7 +425,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 ```bash
 yarn add \
 	raw-loader@4 \
-	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-dev-utils@43 \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
 	@ckeditor/ckeditor5-editor-classic \

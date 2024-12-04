@@ -27,6 +27,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import Writer from '@ckeditor/ckeditor5-engine/src/model/writer.js';
 import { downcastImageAttribute } from '../../src/image/converters.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -90,6 +91,14 @@ describe( 'ImageUploadEditing', () => {
 		adapterMocks = [];
 
 		return editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageUploadEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageUploadEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should register proper schema rules when both ImageBlock and ImageInline are enabled', () => {
@@ -242,6 +251,29 @@ describe( 'ImageUploadEditing', () => {
 			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
 			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]`
 		);
+	} );
+
+	it( 'should display notification when no permission to upload from computer.', done => {
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const notification = editor.plugins.get( Notification );
+
+		notification.on( 'show:warning', ( evt, data ) => {
+			tryExpect( done, () => {
+				expect( data.message ).to.equal( 'You have no image upload permissions.' );
+				evt.stop();
+			} );
+		}, { priority: 'high' } );
+
+		uploadImageCommand.set( 'isAccessAllowed', false );
+
+		setModelData( model, '[]' );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
 	it( 'should insert image when is pasted on allowed position when UploadImageCommand is enabled', () => {
@@ -1142,14 +1174,19 @@ describe( 'ImageUploadEditing', () => {
 
 		const expectedModel =
 			'<paragraph>bar</paragraph>' +
-			'<paragraph><imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline></paragraph>' +
-			'<paragraph><imageInline src="" uploadId="#loader2_id" uploadStatus="reading"></imageInline></paragraph>' +
-			'<paragraph><imageInline src="" uploadId="#loader3_id" uploadStatus="reading"></imageInline>[]foo</paragraph>';
+			'<paragraph>' +
+				'<imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline>' +
+				'<imageInline src="" uploadId="#loader2_id" uploadStatus="reading"></imageInline>' +
+				'<imageInline src="" uploadId="#loader3_id" uploadStatus="reading"></imageInline>' +
+				'[]foo' +
+			'</paragraph>';
 		const expectedFinalModel =
 			'<paragraph>bar</paragraph>' +
-			'<paragraph><imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline></paragraph>' +
-			'<paragraph><imageInline src="" uploadId="#loader2_id" uploadStatus="reading"></imageInline></paragraph>' +
-			'<paragraph>[]foo</paragraph>';
+			'<paragraph>' +
+				'<imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline>' +
+				'<imageInline src="" uploadId="#loader2_id" uploadStatus="reading"></imageInline>' +
+				'[]foo' +
+			'</paragraph>';
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -1217,7 +1254,9 @@ describe( 'ImageUploadEditing', () => {
 
 		expectData(
 			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
-			'<paragraph><imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline>baz[]foo</paragraph>',
+			'<paragraph><imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline></paragraph>' +
+			'<paragraph>baz[]foo</paragraph>',
+			'<paragraph></paragraph>' +
 			'<paragraph>baz[]foo</paragraph>',
 			content,
 			err => {
@@ -1511,6 +1550,33 @@ describe( 'ImageUploadEditing', () => {
 					done();
 				} );
 			} );
+		} );
+
+		it( 'should not remove image when it is already in graveyard', done => {
+			const notification = editor.plugins.get( Notification );
+			const file = createNativeFileMock();
+
+			notification.on( 'show:warning', evt => {
+				evt.stop();
+			}, { priority: 'high' } );
+
+			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
+			editor.execute( 'uploadImage', { file } );
+
+			const image = doc.getRoot().getChild( 0 ).getChild( 0 );
+
+			editor.execute( 'undo' );
+
+			const removeMock = sinon.spy( Writer.prototype, 'remove' );
+
+			model.document.once( 'change', () => {
+				tryExpect( done, () => {
+					expect( image.root.rootName ).to.equal( '$graveyard' );
+					sinon.assert.notCalled( removeMock );
+				} );
+			} );
+
+			loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
 		} );
 	} );
 

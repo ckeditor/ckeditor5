@@ -24,6 +24,7 @@ import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import CKBoxEditing from '../src/ckboxediting.js';
+import CKBoxImageEditing from '../src/ckboximageedit/ckboximageeditediting.js';
 import CKBoxCommand from '../src/ckboxcommand.js';
 import CKBoxUploadAdapter from '../src/ckboxuploadadapter.js';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
@@ -58,6 +59,14 @@ describe( 'CKBoxEditing', () => {
 
 	it( 'should have proper name', () => {
 		expect( CKBoxEditing.pluginName ).to.equal( 'CKBoxEditing' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be loaded', () => {
@@ -1831,6 +1840,126 @@ describe( 'CKBoxEditing', () => {
 
 		expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
 	} );
+
+	describe( 'permissions', () => {
+		let sinonXHR;
+		const CKBOX_API_URL = 'https://upload.example.com';
+		const CKBOX_TOKEN_URL = 'http://cs.example.com';
+
+		beforeEach( () => {
+			sinonXHR = testUtils.sinon.useFakeServer();
+			sinonXHR.autoRespond = true;
+			sinonXHR.respondImmediately = true;
+		} );
+
+		afterEach( () => {
+			sinonXHR.restore();
+		} );
+
+		it( 'should not disable image upload command if access allowed', async () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': true
+					}
+				} )
+			] );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+			expect( uploadImageCommand.isEnabled ).to.be.true;
+			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+
+			await editor.destroy();
+		} );
+
+		it( 'should disable image upload command if access not allowed', async () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': false
+					}
+				} )
+			] );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+			expect( uploadImageCommand.isEnabled ).to.be.false;
+			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+
+			await editor.destroy();
+		} );
+
+		it( 'should not disable image upload command if access allowed ( CKBox loaded first )', async () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': true
+					}
+				} )
+			] );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			}, true );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+			expect( uploadImageCommand.isEnabled ).to.be.true;
+			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+
+			await editor.destroy();
+		} );
+
+		it( 'should disable image upload command if access not allowed ( CKBox loaded first )', async () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': false
+					}
+				} )
+			] );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			}, true );
+
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
+
+			expect( uploadImageCommand.isEnabled ).to.be.false;
+			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+
+			await editor.destroy();
+		} );
+	} );
 } );
 
 function createTestEditor( config = {}, loadCKBoxFirst = false ) {
@@ -1845,7 +1974,8 @@ function createTestEditor( config = {}, loadCKBoxFirst = false ) {
 		ImageUploadEditing,
 		ImageUploadProgress,
 		CloudServices,
-		CKBoxUploadAdapter
+		CKBoxUploadAdapter,
+		CKBoxImageEditing
 	];
 
 	if ( loadCKBoxFirst ) {

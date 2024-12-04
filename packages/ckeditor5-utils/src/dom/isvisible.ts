@@ -7,6 +7,8 @@
  * @module utils/dom/isvisible
  */
 
+import isText from './istext.js';
+
 /**
  * Checks whether the element is visible to the user in DOM:
  *
@@ -17,6 +19,18 @@
  * **Note**: This helper does not check whether the element is hidden by cropping, overflow, etc..
  * To check that, use {@link module:utils/dom/rect~Rect} instead.
  */
-export default function isVisible( element: HTMLElement | null | undefined ): boolean {
-	return !!( element && element.getClientRects && element.getClientRects().length );
+export default function isVisible( element: Text | HTMLElement | null | undefined ): boolean {
+	if ( !element ) {
+		return false;
+	}
+
+	if ( isText( element ) ) {
+		return isVisible( element.parentElement );
+	}
+
+	if ( element.getClientRects ) {
+		return !!( element.getClientRects().length );
+	}
+
+	return false;
 }

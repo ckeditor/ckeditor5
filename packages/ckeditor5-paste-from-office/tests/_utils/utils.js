@@ -81,7 +81,9 @@ export function generateTests( config ) {
 
 	describe( config.type, () => {
 		describe( config.input, () => {
-			const editorConfig = config.editorConfig || {};
+			const editorConfig = typeof config.editorConfig == 'function' ?
+				config.editorConfig :
+				() => Promise.resolve( config.editorConfig || {} );
 
 			for ( const group of Object.keys( groups ) ) {
 				const skip = config.skip && config.skip[ group ] || [];
@@ -152,16 +154,12 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 	describe( title, () => {
 		let editor;
 
-		beforeEach( () => {
-			return VirtualTestEditor
-				.create( editorConfig )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( await editorConfig() );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
@@ -207,16 +205,12 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 		let element, editor;
 		let data = {};
 
-		before( () => {
+		before( async () => {
 			element = document.createElement( 'div' );
 
 			document.body.appendChild( element );
 
-			return ClassicTestEditor
-				.create( element, editorConfig )
-				.then( editorInstance => {
-					editor = editorInstance;
-				} );
+			editor = await ClassicTestEditor.create( element, await editorConfig() );
 		} );
 
 		beforeEach( () => {

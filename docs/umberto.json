@@ -3,7 +3,7 @@
 	"slug": "ckeditor5",
 	"hooks": {
 		"beforeHexo": [
-			"../scripts/docs/build-content-styles.js"
+			"../scripts/docs/build-content-styles.mjs"
 		]
 	},
 	"reportIssueWidget": {
@@ -83,18 +83,21 @@
 		"builds/guides/development/plugins.html": "framework/architecture/plugins.html",
 		"builds/guides/faq.html": "framework/how-tos.html",
 		"builds/guides/integration/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
-		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
+		"builds/guides/integration/advanced-setup.html#creating-super-builds": "getting-started/legacy/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "getting-started/setup/editor-lifecycle.html",
 		"builds/guides/integration/configuration.html": "installationlegacy-/getting-started/configuration.html",
 		"builds/guides/integration/content-styles.html": "getting-started/setup/css.html",
 		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
 		"builds/guides/integration/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
-		"builds/guides/integration/frameworks/angular.html": "getting-started/installation/angular.html",
+		"builds/guides/integration/frameworks/angular.html": "getting-started/installation/cloud/angular.html",
+		"getting-started/installation/angular.html": "getting-started/installation/cloud/angular.html",
 		"builds/guides/integration/frameworks/css.html": "getting-started/installation/css.html",
-		"builds/guides/integration/frameworks/react.html": "getting-started/installation/react/react.html",
-		"builds/guides/integration/frameworks/vuejs-v2.html": "getting-started/installation/vuejs-v2.html",
-		"builds/guides/integration/frameworks/vuejs-v3.html": "getting-started/installation/vuejs-v3.html",
-		"builds/guides/integration/frameworks/vuejs.html": "getting-started/installation/vuejs-v3.html",
+		"builds/guides/integration/frameworks/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
+		"builds/guides/integration/frameworks/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
+		"getting-started/installation/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
+		"builds/guides/integration/frameworks/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
+		"getting-started/installation/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
+		"builds/guides/integration/frameworks/vuejs.html": "getting-started/installation/cloud/vuejs-v3.html",
 		"builds/guides/integration/installation.html": "installation/legacy-getting-started/quick-start.html",
 		"builds/guides/integration/saving-data.html": "getting-started/setup/getting-and-setting-data.html",
 		"installation/integrations/drupal.html": "getting-started/installation/drupal-real-time-collaboration.html",
@@ -146,7 +149,7 @@
 		"features/collaboration/real-time-collaboration/real-time-collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/real-time-collaboration/real-time-collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
-		"features/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/easy-image.html": "features/images/image-upload/image-upload.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/export-pdf.html": "features/converters/export-pdf.html",
 		"features/export-word.html": "features/converters/export-word.html",
@@ -160,7 +163,7 @@
 		"features/images/overview.html": "features/images/images-overview.html",
 		"features/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/image-upload.html": "features/images/image-upload/image-upload.html",
-		"features/image-upload/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/image-upload/easy-image.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
@@ -258,20 +261,20 @@
 		"installation/advanced/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
 		"installation/advanced/plugins.html": "framework/architecture/plugins.html",
 		"installation/advanced/saving-data.html": "getting-started/setup/getting-and-setting-data.html",
-		"installation/frameworks/angular.html": "getting-started/installation/angular.html",
+		"installation/frameworks/angular.html": "getting-started/installation/cloud/angular.html",
 		"installation/frameworks/css.html": "getting-started/installation/css.html",
 		"installation/frameworks/index.html": "getting-started/installation/overview.html",
 		"installation/frameworks/overview.html": "getting-started/installation/overview.html",
 		"installation/frameworks/react.html": "getting-started/installation/react.html",
-		"installation/frameworks/vuejs-v2.html": "getting-started/installation/vuejs-v2.html",
-		"installation/frameworks/vuejs-v3.html": "getting-started/installation/vuejs-v3.html",
+		"installation/frameworks/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
+		"installation/frameworks/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
 		"installation/getting-started/basic-api.html": "getting-started/setup/editor-lifecycle.html",
 		"installation/getting-started/frameworks/css.html": "getting-started/installation/css.html",
-		"installation/getting-started/frameworks/angular.html": "getting-started/installation/angular.html",
+		"installation/getting-started/frameworks/angular.html": "getting-started/installation/cloud/angular.html",
 		"installation/getting-started/frameworks/overview.html": "getting-started/installation/overview.html",
 		"installation/getting-started/frameworks/react.html": "getting-started/installation/react.html",
-		"installation/getting-started/frameworks/vuejs-v2.html": "getting-started/installation/vuejs-v2.html",
-		"installation/getting-started/frameworks/vuejs-v3.html": "getting-started/installation/vuejs-v3.html",
+		"installation/getting-started/frameworks/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
+		"installation/getting-started/frameworks/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
 		"installation/getting-started/installing-plugins.html": "getting-started/setup/configuration.html",
 		"installation/getting-started/maintenance.html": "updating/maintaining.html",
 		"installation/getting-started/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
@@ -282,9 +285,9 @@
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/legacy-getting-started/extending-features.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
-		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
-		"builds/guides/support/license-and-legal.html": "support/license-and-legal.html",
-		"support/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
+		"builds/guides/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
+		"builds/guides/getting-started/licensing/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
+		"support/managing-ckeditor-logo.html": "getting-started/licensing/managing-ckeditor-logo.html",
 		"support/faq.html": "examples/how-tos.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
 		"updating/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
@@ -310,23 +313,27 @@
 		"installation/getting-started/configuration.html": "getting-started/setup/configuration.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
 		"installation/index.html": "getting-started/index.html",
-		"installation/getting-started/quick-start.html": "getting-started/installation/quick-start.html",
+		"installation/getting-started/quick-start.html": "getting-started/index.html",
+		"getting-started/installation/quick-start.html": "getting-started/index.html",
 		"installation/getting-started/predefined-builds.html": "getting-started/legacy/installation-methods/predefined-builds.html",
 		"installation/getting-started/quick-start-other.html": "getting-started/legacy/installation-methods/quick-start-other.html",
 		"installation/getting-started/getting-and-setting-data.html": "getting-started/setup/getting-and-setting-data.html",
 		"installation/getting-started/api-and-events.html": "getting-started/legacy/installation-methods/api-and-events.html",
 		"installation/getting-started/extending-features.html": "getting-started/legacy/installation-methods/extending-features.html",
 		"installation/integrations/overview.html": "getting-started/index.html#ckeditor-5-framework-integrations",
-		"installation/integrations/angular.html": "getting-started/installation/angular.html",
-		"installation/integrations/react.html": "getting-started/installation/react/react.html",
-		"installation/integrations/react/react.html": "getting-started/installation/react/react.html",
-		"installation/integrations/react/react-multiroot.html": "getting-started/installation/react/react-multiroot.html",
-		"installation/integrations/vuejs-v2.html": "getting-started/installation/vuejs-v2.html",
-		"installation/integrations/vuejs-v3.html": "getting-started/installation/vuejs-v3.html",
-		"installation/integrations/laravel.html": "getting-started/installation/laravel.html",
-		"installation/integrations/dotnet.html": "getting-started/installation/dotnet.html",
+		"installation/integrations/angular.html": "getting-started/installation/cloud/angular.html",
+		"installation/integrations/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
+		"installation/integrations/react/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
+		"installation/integrations/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html",
+		"installation/integrations/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
+		"installation/integrations/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
+		"installation/integrations/laravel.html": "getting-started/installation/cloud/laravel.html",
+		"getting-started/installation/laravel.html": "getting-started/installation/cloud/laravel.html",
+		"installation/integrations/dotnet.html": "getting-started/installation/cloud/dotnet.html",
+		"getting-started/installation/dotnet.html": "getting-started/installation/cloud/dotnet.html",
 		"installation/integrations/css.html": "getting-started/installation/css.html",
-		"installation/integrations/next-js.html": "getting-started/installation/next-js.html",
+		"installation/integrations/next-js.html": "getting-started/installation/cloud/next-js.html",
+		"getting-started/installation/next-js.html": "getting-started/installation/cloud/next-js.html",
 		"installation/integrations/other.html": "getting-started/index.html#ckeditor-5-framework-integrations",
 		"installation/plugins/plugins.html": "framework/architecture/plugins.html",
 		"installation/plugins/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
@@ -356,20 +363,28 @@
 		"tutorials/widgets/implementing-an-inline-widget.html": "framework/tutorials/widgets/implementing-an-inline-widget.html",
 		"tutorials/widgets/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
 		"tutorials/widgets/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
-		"support/licensing/license-and-legal.html": "support/license-and-legal.html",
-		"support/licensing/license-key-and-activation.html": "getting-started/setup/license-key-and-activation.html",
-		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
+		"support/licensing/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
+		"support/licensing/license-key-and-activation.html": "getting-started/licensing/license-key-and-activation.html",
+		"getting-started/setup/license-key-and-activation.html": "getting-started/licensing/license-key-and-activation.html",
+		"getting-started/setup/managing-ckeditor-logo.html": "getting-started/licensing/managing-ckeditor-logo.html",
 		"support/reporting-issues.html": "support/index.html#reporting-issues",
+		"support/license-and-legal": "getting-started/licensing/license-and-legal",
 		"examples/experiments/mermaid.html": "features/mermaid.html",
-		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar.html",
 		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
 		"features/toolbar/menubar.html": "getting-started/setup/menubar.html",
 		"examples/builds-custom/bottom-toolbar-editor.html": "examples/framework/bottom-toolbar-editor.html",
-		"examples/how-tos.html": "framework/how-tos.html"
+		"examples/how-tos.html": "framework/how-tos.html",
+		"support/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
+		"features/productivity-pack.html": "features/index.html",
+		"features/images/image-upload/easy-image.html": "features/images/image-upload/image-upload.html",
+		"getting-started/installation/react/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
+		"getting-started/installation/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html",
+		"examples/framework/content-placeholder.html": "features/merge-fields.html"
 	},
 	"scripts": {
-		"snippet-adapter": "../scripts/docs/snippetadapter",
-		"import-path": "../scripts/docs/getrealimportpath"
+		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
+		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
@@ -401,6 +416,11 @@
 			}
 		]
 	},
+	"vwo": {
+		"config": {
+			"trackingId": "854367"
+		}
+	},
 	"googleanalytics": {
 		"domains": [
 			"ckeditor5.github.io"
@@ -426,10 +446,34 @@
 					"order": 30,
 					"categories": [
 						{
-							"name": "React",
-							"id": "react",
-							"slug": "react",
-							"order": 30
+							"name": "Cloud (CDN)",
+							"id": "cloud",
+							"slug": "cloud",
+							"order": 10,
+							"categories": [
+								{
+									"name": "React",
+									"id": "react-cdn",
+									"slug": "react",
+									"folded": true,
+									"order": 30
+								}
+							]
+						},
+						{
+							"name": "Self-hosted (npm/ZIP)",
+							"id": "self-hosted",
+							"slug": "self-hosted",
+							"order": 20,
+							"categories": [
+								{
+									"name": "React",
+									"id": "react-npm",
+									"slug": "react",
+									"folded": true,
+									"order": 30
+								}
+							]
 						}
 					]
 				},
@@ -438,6 +482,12 @@
 					"id": "setup",
 					"slug": "setup",
 					"order": 40
+				},
+				{
+					"name": "Licensing",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 50
 				},
 				{
 					"name": "Legacy installation methods",
@@ -755,16 +805,22 @@
 			"slug": "updating",
 			"categories": [
 				{
+					"name": "Migrations from npm to CDN",
+					"id": "migrations",
+					"slug": "migrations",
+					"order": 10
+				},
+				{
 					"name": "New installation methods",
 					"id": "nim-migration",
 					"slug": "nim-migration",
-					"order": 10
+					"order": 20
 				},
 				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
 					"slug": "ckeditor4",
-					"order": 20
+					"order": 30
 				},
 				{
 					"name": "Update guides",
@@ -778,15 +834,7 @@
 			"name": "Support",
 			"id": "support",
 			"navigationIncludeIndex": true,
-			"slug": "support",
-			"categories": [
-				{
-					"name": "Licensing and activation",
-					"id": "licensing",
-					"slug": "licensing",
-					"order": 20
-				}
-			]
+			"slug": "support"
 		}
 	]
 }

@@ -1,18 +1,12 @@
 # Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Finnish (https://app.transifex.com/ckeditor/teams/11143/fi/)\n"
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,10 +14,6 @@ msgstr ""
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
 msgstr "Rikas tekstieditori"
-
-msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
-msgid "Editor editing area: %0"
-msgstr "Editorin muokkausalue: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
@@ -52,6 +42,10 @@ msgstr "Editorin työkalupalkki"
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
 msgstr "Pudotusvalikon työkalupalkki"
+
+msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
+msgid "Dropdown menu"
+msgstr "Pudotusvalikko"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

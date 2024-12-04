@@ -206,6 +206,8 @@ export function dataViewToModelCodeBlockInsertion(
 			writer.setAttribute( 'language', defaultLanguageName, codeBlock );
 		}
 
+		// Convert children before inserting the code block element
+		// to make sure that code block won't be splitted by any block.
 		conversionApi.convertChildren( viewCodeElement, codeBlock );
 
 		// Let's try to insert code block.

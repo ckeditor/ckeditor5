@@ -16,6 +16,7 @@ version: 2.1
 
 setup: true
 
+# List of parameters must be synchronized between configuration files.
 parameters:
   isNightly:
     type: boolean
@@ -38,6 +39,7 @@ commands:
 jobs:
   generate_configuration:
     machine: true
+    resource_class: large
     parameters:
       isNightly:
         type: boolean
@@ -49,7 +51,7 @@ jobs:
           command: yarn install
       - run:
           name: Generate a new configuration to check all packages in the repository
-          command: node scripts/ci/generate-circleci-configuration.js
+          command: node scripts/ci/generate-circleci-configuration.mjs
       - continuation/continue:
           configuration_path: .circleci/config-tests.yml
 

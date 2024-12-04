@@ -1,13 +1,14 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component | CKEditor 5 documentation
-category: installation
+meta-title: Angular rich text editor component (npm) | CKEditor 5 Documentation
+meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
+category: self-hosted
 order: 30
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component
+# Angular rich text editor component (npm)
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -17,85 +18,11 @@ order: 30
 
 Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
 
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
-
-## Supported Angular versions
-
-Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
-
-<table>
-  <thead>
-	<tr>
-	 <th>CKEditor&nbsp;5&nbsp;version</th>
-	 <th>Angular&nbsp;version</th>
-	 <th>Details</th>
-	</tr>
-  </thead>
-  <tbody>
-	<tr>
-	 <td colspan="3">Actively supported versions</td>
-	</tr>
-	<tr>
-	 <td><code>^6</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td colspan="3">Past releases (no longer maintained)</td>
-	</tr>
-	<tr>
-	 <td><code>^5</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
-	</tr>
-	<tr>
-	 <td><code>^5</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
-	</tr>
-	<tr>
-	 <td><code>^4</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^3</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Requires Node.js in version 14 or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^2</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
-	</tr>
-	<tr>
-	 <td><code>^1</code></td>
-	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-	 <td>Angular versions are no longer maintained.</td>
-	</tr>
-  </tbody>
-</table>
-
-All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
+{@snippet getting-started/use-builder}
 
 ## Quick start
 
-### Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor 5 in your Angular application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs!
-
-### Setting up the project
-
-This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
-
-### Installing from npm
+This guide assumes you already have an Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
 
 First, install the CKEditor 5 packages:
 
@@ -114,9 +41,69 @@ Then, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https:/
 npm install @ckeditor/ckeditor5-angular
 ```
 
-The following setup differs depending on the type of component you use.
+The following setup differs depending on the type of components you use.
 
-#### NGModule components
+### Standalone components
+
+Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
+
+Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The example below shows how to use the component with open-source and premium plugins.
+
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
+```ts
+// app.component.ts
+
+import { Component, ViewEncapsulation } from '@angular/core';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+	encapsulation: ViewEncapsulation.None,
+	imports: [ CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	title = 'angular';
+
+	public Editor = ClassicEditor;
+	public config = {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
+	}
+}
+```
+
+Depending on the plugins used (open source only or premium too), you may need to import the first or both CSS files. Angular, by default, scopes styles to a particular component. Because of that, the editor may not detect attached styles. You must set the encapsulation option to `ViewEncapsulation.None` to turn this scoping off.
+
+```css
+/* app.component.css */
+
+@import 'ckeditor5/ckeditor5.css';
+@import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+```
+
+Then, use the `<ckeditor>` tag in the template to run the rich text editor:
+
+```html
+<!-- app.component.html -->
+
+<ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
+```
+
+### NGModule components
 
 If you want to use NGModule components, add the `CKEditorModule` to the `imports` array. It will make the CKEditor&nbsp;5 component available in your Angular application.
 
@@ -130,13 +117,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { AppComponent } from './app.component';
 
 @NgModule( {
-	declarations: [
-		AppComponent
-	],
-	imports: [
-		BrowserModule,
-		CKEditorModule
-	],
+	declarations: [ AppComponent ],
+	imports: [ BrowserModule, CKEditorModule ],
 	providers: [],
 	bootstrap: [ AppComponent ]
 } )
@@ -145,85 +127,50 @@ export class AppModule { }
 
 Then, import the editor in your Angular component and assign it to a `public` property to make it accessible from the template. The below example shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```ts
 // app.component.ts
 
-import { Component } from '@angular/core';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
 	templateUrl: './app.component.html',
-	styleUrls: [ './app.component.css' ]
+	styleUrls: [ './app.component.css' ],
+	encapsulation: ViewEncapsulation.None
 } )
 export class AppComponent {
 	title = 'angular';
 
 	public Editor = ClassicEditor;
 	public config = {
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: {
-			// Mention configuration
-		}
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
+```
+
+Depending on the plugins you used, you may need to import the first or both CSS files. Angular, by default, scope styles to a particular component. Because of that, the editor may not detect attached styles. You must set the encapsulation option to `ViewEncapsulation.None` to turn this scoping off.
+
+```css
+/* app.component.css */
+
+@import 'ckeditor5/ckeditor5.css';
+@import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
-
-```html
-<!-- app.component.html -->
-
-<ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
-```
-
-#### Standalone components
-
-Standalone components provide a simplified way to build Angular applications. They are enabled in Angular 17 by default. Standalone components aim to simplify the setup and reduce the need for `NGModules`. That is why you do not need such a module in this case.
-
-Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`.
-
-```ts
-import { Component } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
-
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-
-@Component( {
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	imports: [ CKEditorModule ],
-	standalone: true
-} )
-export class AppComponent {
-	title = 'angular';
-
-	public Editor = ClassicEditor;
-	public config = {
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		plugins: [
-			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: {
-			// Mention configuration
-		}
-	}
-}
-```
-
-Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 ```html
 <!-- app.component.html -->
@@ -568,15 +515,15 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 ```ts
 // app.component.ts
 
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
-
-import 'ckeditor5/ckeditor5.css';
+import { DecoupledEditor, Essentials, Italic, Paragraph, Bold } from 'ckeditor5';
 
 @Component( {
 	selector: 'app-root',
 	templateUrl: './app.component.html',
+	styleUrls: [ './app.component.css' ],
+	encapsulation: ViewEncapsulation.None
 	imports: [ CKEditorModule ],
 	standalone: true
 } )
@@ -585,7 +532,8 @@ export class AppComponent {
 
 	public Editor = DecoupledEditor;
 	public config = {
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Bold, Essentials, Italic, Paragraph ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	}
 	public onReady( editor: DecoupledEditor ): void {
@@ -598,6 +546,14 @@ export class AppComponent {
 		);
 	}
 }
+```
+
+Import the needed CSS style sheet:
+
+```css
+/* app.component.css */
+
+@import 'ckeditor5/ckeditor5.css';
 ```
 
 And then, link the method in the template:
@@ -623,10 +579,12 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 CKEditor 5 supports multiple UI languages, and so does the official Angular component. Follow the instructions below to translate CKEditor 5 in your Angular application.
 
-Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the translations array of the `config` property.
+Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
 
 ```ts
-import { Component } from '@angular/core';
+// app.component.ts
+
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor } from 'ckeditor5';
 // More imports...
@@ -634,11 +592,11 @@ import { ClassicEditor } from 'ckeditor5';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// style sheets imports...
-
 @Component( {
 	selector: 'app-root',
 	templateUrl: './app.component.html',
+	styleUrls: [ './app.component.css' ],
+	encapsulation: ViewEncapsulation.None
 	imports: [ CKEditorModule ],
 	standalone: true
 } )
@@ -646,12 +604,160 @@ export class AppComponent {
 	title = 'angular';
 	public Editor = ClassicEditor;
 	public config = {
+		// ... Other configuration options ...
 		translations: [ coreTranslations, premiumFeaturesTranslations ]
 	}
 }
 ```
 
 For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+<info-box warning>
+There is a known issue related to the localization in Angular 17. Read more in the [known issues section](#known-issues) below.
+</info-box>
+
+## Known issues
+
+### Module resolution
+
+The `moduleResolution` option of the TypeScript configuration determines the algorithm for finding and resolving modules from `node_modules`. In Angular 17, the option is set to `node` by default. This option prevents type declaration for editor translations from being correctly loaded. To fix it, you have several options:
+
+* You can set the `moduleResolution` option to `bundler`. It is the recommended setting in TypeScript 5.0+ for applications that use a bundler. And it is a recommended way of fixing this problem. You can check other solutions below for lower TypeScript versions.
+* You can tell the TypeScript compiler to suppress the problem using the `// @ts-expect-error` comment above the imported translations.
+* You can update Angular to version 18, where the `moduleResolution` option is set to `bundler`  by default.
+* You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the configuration.
+
+### Jest testing
+
+You can use Jest as a test runner in Angular apps. Unfortunately, Jest does not use a real browser. Instead, it runs tests in Node.js that uses JSDOM. JSDOM is not a complete DOM implementation, and while it is sufficient for standard apps, it cannot polyfill all the DOM APIs that CKEditor&nbsp;5 requires.
+
+For testing CKEditor&nbsp;5, it is recommended to use testing frameworks that utilize a real browser and provide a complete DOM implementation. Some popular options include:
+
+* [Vitest](https://vitest.dev/)
+* [Playwright](https://playwright.dev/)
+* [Cypress](https://www.cypress.io/)
+
+These frameworks offer better support for testing CKEditor&nbsp;5 and provide a more accurate representation of how the editor behaves in a real browser environment.
+
+If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
+
+```javascript
+beforeAll( () => {
+	window.scrollTo = jest.fn();
+
+	window.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+
+	for ( const key of [ 'InputEvent', 'KeyboardEvent' ] ) {
+		window[ key ].prototype.getTargetRanges = () => {
+			const range = new StaticRange( {
+				startContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				startOffset: 0,
+				endContainer: document.body.querySelector( '.ck-editor__editable p' ),
+				endOffset: 0
+			} );
+
+			return [ range ];
+		};
+	}
+
+	const getClientRects = () => ({
+		item: () => null,
+		length: 0,
+		[Symbol.iterator]: function* () {}
+	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
+} );
+```
+
+These mocks should be placed before the tests that use CKEditor&nbsp;5. They are imperfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
+
+## Supported Angular versions
+
+Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
+
+<table>
+  <thead>
+	<tr>
+	 <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
+	 <th>Angular&nbsp;version</th>
+	 <th>Details</th>
+	</tr>
+  </thead>
+  <tbody>
+	<tr>
+	 <td colspan="3">Actively supported versions</td>
+	</tr>
+	<tr>
+	 <td><code>^9</code></td>
+	 <td><code>16+</code></td>
+	 <td>Migration to TypeScript&nbsp;5. Declaration files are not backward compatible. Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0">43</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td colspan="3">Past releases (no longer maintained)</td>
+	</tr>
+	<tr>
+	 <td><code>^8</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^7</code></td>
+	 <td><code>13+</code></td>
+	 <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^6</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^5</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	</tr>
+	<tr>
+	 <td><code>^5</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	</tr>
+	<tr>
+	 <td><code>^4</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^3</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Requires Node.js in version 14 or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^2</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
+	</tr>
+	<tr>
+	 <td><code>^1</code></td>
+	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
+	 <td>Angular versions no longer maintained.</td>
+	</tr>
+  </tbody>
+</table>
+
+All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
 ## Contributing and reporting issues
 

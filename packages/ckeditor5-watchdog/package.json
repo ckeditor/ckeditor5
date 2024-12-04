@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "42.0.0",
+  "version": "44.0.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
@@ -15,17 +15,17 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "42.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "42.0.0",
-    "@ckeditor/ckeditor5-editor-multi-root": "42.0.0",
-    "@ckeditor/ckeditor5-paragraph": "42.0.0",
-    "@ckeditor/ckeditor5-utils": "42.0.0",
-    "@ckeditor/ckeditor5-clipboard": "42.0.0",
-    "ckeditor5": "42.0.0",
+    "@ckeditor/ckeditor5-core": "44.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "44.0.0",
+    "@ckeditor/ckeditor5-editor-multi-root": "44.0.0",
+    "@ckeditor/ckeditor5-paragraph": "44.0.0",
+    "@ckeditor/ckeditor5-utils": "44.0.0",
+    "@ckeditor/ckeditor5-clipboard": "44.0.0",
+    "ckeditor5": "44.0.0",
     "typescript": "5.0.4"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -44,6 +44,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

@@ -15,6 +15,7 @@ This guide goes through the process of implementing a custom, multi-root editor.
 
 The `*Editor` class is the main class of each editor type. It initializes the whole editor and its UI parts. The custom creator class should extend the {@link module:core/editor/editor~Editor base `Editor` class}. For a multi-root editor, it may look like below:
 
+<code-switcher>
 ```js
 import { Editor, getDataFromElement, setDataInElement } from 'ckeditor5';
 
@@ -111,11 +112,13 @@ class MultirootEditor extends Editor {
 	}
 }
 ```
+</code-switcher>
 
 ## EditorUI class
 
 The `*EditorUI` class is the main UI class that initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:ui/editorui/editorui~EditorUI base `EditorUI` class} like below:
 
+<code-switcher>
 ```js
 import { EditorUI, enablePlaceholder } from 'ckeditor5';
 
@@ -289,11 +292,13 @@ class MultirootEditorUI extends EditorUI {
 	}
 }
 ```
+</code-switcher>
 
 ## EditorUIView class
 
 Finally, the `*EditorUIView` class is responsible for registering and handling all editable elements and for creating the editor toolbar. The custom `*EditorUIView` class should extend the {@link module:ui/editorui/editoruiview~EditorUIView base `EditorUIView` class}:
 
+<code-switcher>
 ```js
 import { EditorUIView, InlineEditableUIView, Template, ToolbarView } from 'ckeditor5';
 
@@ -365,6 +370,7 @@ class MultirootEditorUIView extends EditorUIView {
 	}
 }
 ```
+</code-switcher>
 
 ## Initializing custom editor instance
 
@@ -420,6 +426,7 @@ MultirootEditor
 		footerleft: document.querySelector( '#footer-left' ),
 		footerright: document.querySelector( '#footer-right' )
 	}, {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
 			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',

@@ -34,6 +34,13 @@ export default class DocumentList extends Plugin {
 		return 'DocumentList' as const;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
 	constructor( editor: Editor ) {
 		super( editor );
 

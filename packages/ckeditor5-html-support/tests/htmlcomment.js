@@ -34,6 +34,14 @@ describe( 'HtmlComment', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HtmlComment.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HtmlComment.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loadable using its plugin name', () => {
 		expect( editor.plugins.get( 'HtmlComment' ) ).to.be.instanceOf( HtmlComment );
 	} );

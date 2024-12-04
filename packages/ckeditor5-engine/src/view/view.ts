@@ -279,7 +279,12 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 			if ( name === 'class' ) {
 				this._writer.addClass( value.split( ' ' ), viewRoot );
 			} else {
-				this._writer.setAttribute( name, value, viewRoot );
+				// There is a chance that some attributes have already been set on the view root before attaching
+				// the DOM root and should be preserved. This is a similar case to the "class" attribute except
+				// this time there is no workaround using a some low-level API.
+				if ( !viewRoot.hasAttribute( name ) ) {
+					this._writer.setAttribute( name, value, viewRoot );
+				}
 			}
 		}
 

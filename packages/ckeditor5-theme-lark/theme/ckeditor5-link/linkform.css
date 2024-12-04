@@ -47,7 +47,7 @@
 
 	/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */
 	& .ck.ck-list {
-		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
+		margin: 0 var(--ck-spacing-large);
 
 		& .ck-button.ck-switchbutton {
 			padding: 0;

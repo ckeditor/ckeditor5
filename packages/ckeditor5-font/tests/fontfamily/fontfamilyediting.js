@@ -25,12 +25,20 @@ describe( 'FontFamilyEditing', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
 		expect( FontFamilyEditing.pluginName ).to.equal( 'FontFamilyEditing' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FontFamilyEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FontFamilyEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should set proper schema rules', () => {

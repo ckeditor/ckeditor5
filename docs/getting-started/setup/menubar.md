@@ -2,6 +2,7 @@
 title: Menu bar
 category: setup
 meta-title: Menu bar | CKEditor 5 Documentation
+meta-description: Handling the CKEditor 5 menu bar.
 modified_at: 2024-05-13
 order: 50
 classes: main__content--no-toc
@@ -26,15 +27,16 @@ You can easily remove some presets or add more items, including menu items for c
 
 ## Enabling the menu bar
 
-The menu bar is currently available in the {@link module:editor-classic/classiceditor~ClassicEditor Classic editor}, {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}, and {@link module:editor-multi-root/multirooteditor~MultiRootEditor Multi-root editor}.
+The menu bar is available in all editor types. Usage will vary depending on used editor type.
 
-### Classic editor
+### Classic editor and Inline editor
 
-The menu bar is disabled by default. To make it available in your editor, set the `config.menuBar.isVisible` property to `true`. This will turn on the menu bar with a default set of features. The menu bar is located right above the editor toolbar.
+The menu bar is disabled by default. To make it available in your editor, set the {@link module:ui/menubar/menubarview~MenuBarConfig `config.menuBar.isVisible`} property to `true`. This will turn on the menu bar with a default set of features. The menu bar is located right above the editor toolbar.
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 		menuBar: {
 			isVisible: true
@@ -42,9 +44,9 @@ ClassicEditor
 	} );
 ```
 
-### Decoupled editor
+### Other editor types
 
-When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.menuBarView.element` property.
+When using the Decoupled, Balloon or Multi-root editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the {@link module:ui/editorui/editoruiview~EditorUIView#menuBarView `editor.ui.view.menuBarView.element`} property.
 
 ```html
 	<div id="menuBarContainer"></div>
@@ -54,6 +56,7 @@ When using the Decoupled editor, you will need to insert the menu bar in a desir
 ```js
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
 	.then( editor => {
@@ -68,6 +71,51 @@ The menu bar can be configured using the {@link module:core/editor/editorconfig~
 <info-box warning>
 	Before adding a feature to the menu bar, make sure the plugin for that feature is added in the editor configuration.
 </info-box>
+
+## Adding custom buttons to the menu bar
+
+To add custom buttons or other components to the menu bar, follow these steps:
+
+1. Create a new UI component using {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`}. Define its behavior and appearance.
+1. Use {@link module:ui/editorui/editorui~EditorUI#extendMenuBar `editor.ui.extendMenuBar()`} method to add your component to the menu bar at a desired position.
+
+Here's an example of a custom plugin that adds a button to the menu bar inside the "Format" menu, after the "Bold" button:
+
+<code-switcher>
+```js
+import { Plugin, ButtonView } from 'ckeditor5';
+
+class MyCustomPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		// Register the toolbar button.
+		editor.ui.componentFactory.add( 'menuBar:myCustomButton', locale => {
+			const view = new ButtonView(locale);
+
+			view.set( {
+				label: 'My Custom Button',
+				withText: true,
+				tooltip: true
+			} );
+
+			// Execute a command when the button is clicked.
+			view.on( 'execute', () => {
+				editor.execute('myCustomCommand');
+			} );
+
+			return view;
+		} );
+
+		// Add your component in the preferred position.
+		editor.ui.extendMenuBar( {
+			item: 'menuBar:myCustomButton',
+			position: 'after:menuBar:bold'
+		} );
+    }
+}
+```
+</code-switcher>
 
 ## Contribute
 

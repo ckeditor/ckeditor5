@@ -39,3 +39,11 @@ listDropdownCollection.add(
 * It should have two distinct fields: action button and arrow.
 * Click on action button should be logged in console.
 * Click on arrow button should open panel and should be logged in console.
+
+## Menu Dropdown
+
+* It should focus first item when dropdown button is pressed.
+* It should have a "Top A" button and a few nested menus on the top level.
+* It should close and log the button ID when a "leaf" button is pressed.
+* It should have keyboard navigation (arrows, enter).
+* Arrow left on top level should close the panel.

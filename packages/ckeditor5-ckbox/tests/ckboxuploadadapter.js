@@ -86,6 +86,14 @@ describe( 'CKBoxUploadAdapter', () => {
 		expect( CKBoxUploadAdapter.pluginName ).to.equal( 'CKBoxUploadAdapter' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxUploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxUploadAdapter.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require its dependencies', () => {
 		expect( CKBoxUploadAdapter.requires ).to.deep.equal( [
 			'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing
@@ -996,7 +1004,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				for ( const { testName, workspaceId, tokenClaims } of testData ) {
 					it( testName, async () => {
 						TokenMock.initialToken = createToken( tokenClaims );
-						ckboxUtils._token.refreshToken();
+						( await ckboxUtils._token ).refreshToken();
 
 						sinonXHR.respondWith( 'GET', /\/categories/, [
 							200,
@@ -1035,9 +1043,9 @@ describe( 'CKBoxUploadAdapter', () => {
 			} );
 
 			describe( 'defaultUploadWorkspaceId is defined', () => {
-				it( 'should use the default workspace', () => {
+				it( 'should use the default workspace', async () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
-					ckboxUtils._token.refreshToken();
+					( await ckboxUtils._token ).refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1075,9 +1083,9 @@ describe( 'CKBoxUploadAdapter', () => {
 						} );
 				} );
 
-				it( 'should use the default workspace when the user is superadmin', () => {
+				it( 'should use the default workspace when the user is superadmin', async () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { role: 'superadmin' } } } );
-					ckboxUtils._token.refreshToken();
+					( await ckboxUtils._token ).refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1115,11 +1123,11 @@ describe( 'CKBoxUploadAdapter', () => {
 						} );
 				} );
 
-				it( 'should throw an error when default workspace is not listed in the token', () => {
+				it( 'should throw an error when default workspace is not listed in the token', async () => {
 					sinon.stub( console, 'error' );
 
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
-					ckboxUtils._token.refreshToken();
+					( await ckboxUtils._token ).refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,

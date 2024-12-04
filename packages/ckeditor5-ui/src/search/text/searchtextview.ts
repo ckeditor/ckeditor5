@@ -216,7 +216,7 @@ export default class SearchTextView<
 		const stopPropagation = ( data: Event ) => data.stopPropagation();
 
 		for ( const focusableChild of this.focusableChildren ) {
-			this.focusTracker.add( focusableChild.element as Element );
+			this.focusTracker.add( focusableChild.element as HTMLElement );
 		}
 
 		// Start listening for the keystrokes coming from #element.
@@ -244,6 +244,7 @@ export default class SearchTextView<
 	public reset(): void {
 		this.queryView.reset();
 		this.search( '' );
+		this.filteredView.element!.scrollTo( 0, 0 );
 	}
 
 	/**

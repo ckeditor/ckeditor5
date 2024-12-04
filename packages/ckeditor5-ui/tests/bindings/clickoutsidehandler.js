@@ -40,6 +40,40 @@ describe( 'clickOutsideHandler', () => {
 		document.body.removeChild( shadowRootContainer );
 	} );
 
+	describe( 'listenerOptions', () => {
+		it( 'should forward listenerOptions parameter', () => {
+			const listenerOptions = { passive: true };
+			const emitter = Object.create( DomEmitterMixin );
+
+			const listenToSpy = sinon.spy( emitter, 'listenTo' );
+
+			clickOutsideHandler( {
+				emitter,
+				activator,
+				contextElements: [ contextElement1 ],
+				callback: actionSpy,
+				listenerOptions
+			} );
+
+			sinon.assert.calledWithMatch( listenToSpy.firstCall, document, 'mousedown', sinon.match.func, listenerOptions );
+		} );
+
+		it( 'should not forward listenerOptions parameter if not provided', () => {
+			const emitter = Object.create( DomEmitterMixin );
+
+			const listenToSpy = sinon.spy( emitter, 'listenTo' );
+
+			clickOutsideHandler( {
+				emitter,
+				activator,
+				contextElements: [ contextElement1 ],
+				callback: actionSpy
+			} );
+
+			sinon.assert.calledWithMatch( listenToSpy.firstCall, document, 'mousedown', sinon.match.func );
+		} );
+	} );
+
 	describe( 'static list of context elements', () => {
 		beforeEach( () => {
 			clickOutsideHandler( {

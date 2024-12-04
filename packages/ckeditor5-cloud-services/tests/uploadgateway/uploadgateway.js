@@ -11,8 +11,17 @@ import Token from '../../src/token/token.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'UploadGateway', () => {
-	const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
-	const token = new Token( 'url', { initValue: tokenInitValue, autoRefresh: false } );
+	let token;
+
+	beforeEach( () => {
+		const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+
+		token = new Token( 'url', { initValue: tokenInitValue, autoRefresh: false } );
+	} );
+
+	afterEach( () => {
+		token.destroy();
+	} );
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no token provided', () => {

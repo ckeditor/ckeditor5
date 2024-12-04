@@ -16,7 +16,7 @@ ClassicEditor
 				'undo', 'redo', '|', 'heading',
 				'|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'bookmark', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
@@ -78,7 +78,8 @@ ClassicEditor
 			}
 		},
 		placeholder: 'Paste the content here to test the feature.',
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;

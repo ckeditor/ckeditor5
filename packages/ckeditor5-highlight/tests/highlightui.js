@@ -69,6 +69,14 @@ describe( 'HighlightUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HighlightUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HighlightUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'highlight toolbar dropdown', () => {
 		let dropdown;
 

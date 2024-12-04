@@ -56,6 +56,13 @@ export default class Title extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ 'Paragraph' ] as const;
 	}

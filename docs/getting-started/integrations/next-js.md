@@ -1,29 +1,21 @@
 ---
 menu-title: Next.js
-meta-title: Integration with Next.js | CKEditor 5 documentation
-meta-description: Learn how to integrate the rich text editor - CKEditor 5 - with the Next.js framework using the App Router or Pages Router routing strategies.
-category: installation
+meta-title: Integration with Next.js using npm | CKEditor 5 Documentation
+meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and npm.
+category: self-hosted
 order: 40
 modified_at: 2023-11-14
 ---
 
-# Integrate CKEditor 5 with Next.js
+# Integrate CKEditor 5 with Next.js using npm
 
 [Next.js](https://nextjs.org/) is a React meta-framework that helps create full-stack web applications. It offers different rendering strategies like server-side rendering (SSR), client-side rendering (CSR), or static site generation (SSG). Additionally, it provides file-based routing, automatic code splitting, and other handy features out of the box.
 
 Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
 
-CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app), and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}.
+CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app), and the official {@link getting-started/integrations/react-default-npm CKEditor&nbsp;5 React component}.
 
-## Using CKEditor&nbsp;5 Builder
-
-The easiest way to use CKEditor&nbsp;5 in your Next.js application is configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your project. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
-
-* the features you need,
-* the preferred framework (React, Angular, Vue or Vanilla JS),
-* the preferred distribution method.
-
-You get ready-to-use code tailored to your needs! You can take the output from the builder, specifically the npm React snippet, and follow the npm path below. Just replace the content of the `components/custom-editor.js` file. The snippet may contain client-side hooks, so don't forget about adding the `'use client'` directive in the case of the App Router.
+{@snippet getting-started/use-builder}
 
 ## Setting up the project
 
@@ -52,13 +44,22 @@ Next, you will use the installed dependencies in a React component. Create a new
 
 App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of a file, above your imports. You do not need the directive if you use the Pages Router.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```jsx
 // components/custom-editor.js
 'use client' // only in App Router
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
@@ -68,16 +69,9 @@ function CustomEditor() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [
-					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
-				mention: { 
-					// Mention configuration
-				},
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ],
 				initialData: '<p>Hello from CKEditor 5 in React!</p>'
 			} }
 		/>
@@ -114,4 +108,15 @@ You can run your project now. If you chose `create-next-app`, type `npm run dev`
 If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
 </info-box>
 
-Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
+Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
+
+## How to?
+
+### Using the editor with collaboration plugins
+
+We provide several **ready-to-use integrations** featuring collaborative editing in Next.js applications:
+
+* [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-next)
+* [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-next)
+
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.

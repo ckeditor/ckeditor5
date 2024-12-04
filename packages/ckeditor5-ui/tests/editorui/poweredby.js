@@ -7,16 +7,17 @@
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
+
 import EditorUI from '../../src/editorui/editorui.js';
 import { BalloonPanelView } from '../../src/index.js';
 import View from '../../src/view.js';
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -57,7 +58,7 @@ describe( 'PoweredBy', () => {
 
 	describe( 'constructor()', () => {
 		describe( 'balloon creation', () => {
-			it( 'should not throw if there is no view in EditorUI', () => {
+			it( 'should not throw if there is no view in EditorUI', done => {
 				expect( () => {
 					const editor = new Editor();
 
@@ -70,8 +71,9 @@ describe( 'PoweredBy', () => {
 					editor.ui.focusTracker.add( element );
 					element.focus();
 
-					editor.destroy();
+					editor.fire( 'ready' );
 					editor.ui.destroy();
+					editor.destroy().then( () => done() );
 				} ).to.not.throw();
 			} );
 
@@ -83,12 +85,42 @@ describe( 'PoweredBy', () => {
 				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
 
-			it( 'should not create the balloon when a valid license key is configured', async () => {
+			it( 'should create the balloon when license is `GPL`', async () => {
 				const editor = await createEditor( element, {
-					// eslint-disable-next-line max-len
-					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14
-					// eslint-disable-next-line max-len
-					licenseKey: 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbXRvb2Vhc2V0bXBzbGl1cm9ybG1pZG10b29lYXNldG1wc2xpdXJvcmxtaWRtLU1qQTBOREEyTVRJPQ=='
+					licenseKey: 'GPL'
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				await editor.destroy();
+			} );
+
+			it( 'should create the balloon when license is invalid', async () => {
+				const showErrorStub = sinon.stub( ClassicTestEditor.prototype, '_showLicenseError' );
+
+				const editor = await createEditor( element, {
+					licenseKey: '<YOUR_LICENSE_KEY>'
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				await editor.destroy();
+
+				showErrorStub.restore();
+			} );
+
+			it( 'should not create the balloon when a white-label license key is configured', async () => {
+				const { licenseKey } = generateKey( { whiteLabel: true } );
+				const editor = await createEditor( element, {
+					licenseKey
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
@@ -100,17 +132,30 @@ describe( 'PoweredBy', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should create the balloon when a valid license key is configured and `forceVisible` is set to true', async () => {
+			it( 'should create the balloon when a white-label license key is configured and `forceVisible` is set to true', async () => {
+				const { licenseKey } = generateKey( { whiteLabel: true } );
 				const editor = await createEditor( element, {
-					// eslint-disable-next-line max-len
-					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14
-					// eslint-disable-next-line max-len
-					licenseKey: 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbXRvb2Vhc2V0bXBzbGl1cm9ybG1pZG10b29lYXNldG1wc2xpdXJvcmxtaWRtLU1qQTBOREEyTVRJPQ==',
+					licenseKey,
 					ui: {
 						poweredBy: {
 							forceVisible: true
 						}
 					}
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				await editor.destroy();
+			} );
+
+			it( 'should create the balloon when a non-white-label license key is configured', async () => {
+				const { licenseKey } = generateKey();
+				const editor = await createEditor( element, {
+					licenseKey
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
@@ -347,7 +392,7 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should have a link that opens in a new tab', () => {
-				const link = 'https://ckeditor.com/?utm_source=ckeditor&utm_medium=referral' +
+				const link = 'https://ckeditor.com/powered-by-ckeditor/?utm_source=ckeditor&utm_medium=referral' +
 					'&utm_campaign=701Dn000000hVgmIAE_powered_by_ckeditor_logo';
 				expect( view.element.firstChild.tagName ).to.equal( 'A' );
 				expect( view.element.firstChild.href ).to.equal( link );
@@ -429,45 +474,45 @@ describe( 'PoweredBy', () => {
 				focusEditor( editor );
 			} );
 
-			it( 'should unpin the balloon', () => {
+			it( 'should unpin the balloon', async () => {
 				const unpinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'unpin' );
 
-				editor.destroy();
+				await editor.destroy();
 
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
-			it( 'should destroy the balloon', () => {
+			it( 'should destroy the balloon', async () => {
 				const destroySpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'destroy' );
 
-				editor.destroy();
+				await editor.destroy();
 
 				sinon.assert.called( destroySpy );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
 			} );
 
-			it( 'should cancel any throttled show to avoid post-destroy timed errors', () => {
+			it( 'should cancel any throttled show to avoid post-destroy timed errors', async () => {
 				const spy = testUtils.sinon.spy( editor.ui.poweredBy._showBalloonThrottled, 'cancel' );
 
-				editor.destroy();
+				await editor.destroy();
 
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
 
 		describe( 'if there was no balloon', () => {
-			it( 'should not throw', () => {
+			it( 'should not throw', done => {
 				expect( () => {
-					editor.destroy();
+					editor.destroy().then( () => done() );
 				} ).to.not.throw();
 			} );
 		} );
 
-		it( 'should destroy the emitter listeners', () => {
+		it( 'should destroy the emitter listeners', done => {
 			const spy = testUtils.sinon.spy( editor.ui.poweredBy, 'stopListening' );
 
-			editor.destroy();
+			editor.destroy().then( () => done() );
 
 			sinon.assert.calledOnce( spy );
 		} );

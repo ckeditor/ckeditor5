@@ -8,6 +8,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
+import HeadingElementSupport from '../../src/integrations/heading.js';
 
 /* global document */
 
@@ -53,6 +54,14 @@ describe( 'HeadingElementSupport', () => {
 			} ] );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( HeadingElementSupport.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( HeadingElementSupport.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should be named', () => {
 			expect( editor.plugins.has( 'HeadingElementSupport' ) ).to.be.true;
 		} );
@@ -82,7 +91,10 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
+					allowIn: [ '$root', '$container' ],
 					allowChildren: [
+						'paragraph',
+						'htmlP',
 						'htmlH1',
 						'htmlH2',
 						'htmlH3',
@@ -93,6 +105,30 @@ describe( 'HeadingElementSupport', () => {
 						'heading2',
 						'otherHeading'
 					],
+					isBlock: false
+				},
+				isBlock: true
+			} ] );
+		} );
+
+		it( 'should add heading models as allowed children of htmlSummary', () => {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'summary' ) ) ).to.deep.equal( [ {
+				model: 'htmlSummary',
+				view: 'summary',
+				modelSchema: {
+					allowChildren: [
+						'htmlH1',
+						'htmlH2',
+						'htmlH3',
+						'htmlH4',
+						'htmlH5',
+						'htmlH6',
+						'$text',
+						'heading1',
+						'heading2',
+						'otherHeading'
+					],
+					allowIn: 'htmlDetails',
 					isBlock: false
 				},
 				isBlock: true
@@ -487,7 +523,10 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
+					allowIn: [ '$root', '$container' ],
 					allowChildren: [
+						'paragraph',
+						'htmlP',
 						'htmlH1',
 						'htmlH2',
 						'htmlH3',

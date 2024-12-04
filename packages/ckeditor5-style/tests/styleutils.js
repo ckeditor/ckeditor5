@@ -38,6 +38,14 @@ describe( 'StyleUtils', () => {
 		expect( StyleUtils.pluginName ).to.equal( 'StyleUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StyleUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StyleUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'normalizeConfig()', () => {
 		it( 'should output empty lists for inline and block styles if there is no styles configured', () => {
 			const styleDefinitions = styleUtils.normalizeConfig( dataSchema );

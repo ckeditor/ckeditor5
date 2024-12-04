@@ -15,7 +15,7 @@ import type Document from './document.js';
 import type DocumentFragment from './documentfragment.js';
 import type Element from './element.js';
 
-import { CKEditorError, compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
+import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Model node. Most basic structure of model tree.
@@ -64,6 +64,20 @@ export default abstract class Node extends TypeCheckable {
 	private _attrs: Map<string, unknown>;
 
 	/**
+	 * Index of this node in its parent or `null` if the node has no parent.
+	 *
+	 * @internal
+	 */
+	public _index: number | null = null;
+
+	/**
+	 * Offset at which this node starts in its parent or `null` if the node has no parent.
+	 *
+	 * @internal
+	 */
+	public _startOffset: number | null = null;
+
+	/**
 	 * Creates a model node.
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
@@ -85,66 +99,42 @@ export default abstract class Node extends TypeCheckable {
 
 	/**
 	 * Index of this node in its parent or `null` if the node has no parent.
-	 *
-	 * Accessing this property throws an error if this node's parent element does not contain it.
-	 * This means that model tree got broken.
 	 */
 	public get index(): number | null {
-		let pos;
-
-		if ( !this.parent ) {
-			return null;
-		}
-
-		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent', this );
-		}
-
-		return pos;
+		return this._index;
 	}
 
 	/**
 	 * Offset at which this node starts in its parent. It is equal to the sum of {@link #offsetSize offsetSize}
 	 * of all its previous siblings. Equals to `null` if node has no parent.
-	 *
-	 * Accessing this property throws an error if this node's parent element does not contain it.
-	 * This means that model tree got broken.
 	 */
 	public get startOffset(): number | null {
-		let pos;
-
-		if ( !this.parent ) {
-			return null;
-		}
-
-		if ( ( pos = this.parent.getChildStartOffset( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent', this );
-		}
-
-		return pos;
+		return this._startOffset;
 	}
 
 	/**
-	 * Offset size of this node. Represents how much "offset space" is occupied by the node in it's parent.
-	 * It is important for {@link module:engine/model/position~Position position}. When node has `offsetSize` greater than `1`, position
-	 * can be placed between that node start and end. `offsetSize` greater than `1` is for nodes that represents more
-	 * than one entity, i.e. {@link module:engine/model/text~Text text node}.
+	 * Offset size of this node.
+	 *
+	 * Represents how much "offset space" is occupied by the node in its parent. It is important for
+	 * {@link module:engine/model/position~Position position}. When node has `offsetSize` greater than `1`, position can be placed between
+	 * that node start and end. `offsetSize` greater than `1` is for nodes that represents more than one entity, i.e.
+	 * a {@link module:engine/model/text~Text text node}.
 	 */
 	public get offsetSize(): number {
 		return 1;
 	}
 
 	/**
-	 * Offset at which this node ends in it's parent. It is equal to the sum of this node's
+	 * Offset at which this node ends in its parent. It is equal to the sum of this node's
 	 * {@link module:engine/model/node~Node#startOffset start offset} and {@link #offsetSize offset size}.
 	 * Equals to `null` if the node has no parent.
 	 */
 	public get endOffset(): number | null {
-		if ( !this.parent ) {
+		if ( this.startOffset === null ) {
 			return null;
 		}
 
-		return this.startOffset! + this.offsetSize;
+		return this.startOffset + this.offsetSize;
 	}
 
 	/**
@@ -387,7 +377,7 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Removes this node from it's parent.
+	 * Removes this node from its parent.
 	 *
 	 * @internal
 	 * @see module:engine/model/writer~Writer#remove
@@ -447,12 +437,6 @@ export default abstract class Node extends TypeCheckable {
 Node.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'model:node';
 };
-
-/**
- * The node's parent does not contain this node.
- *
- * @error model-node-not-found-in-parent
- */
 
 /**
  * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.

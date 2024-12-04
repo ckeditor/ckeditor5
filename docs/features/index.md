@@ -79,18 +79,6 @@ The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can 
 
 {@img assets/img/features-output.png 800 CKEditor&nbsp;5 output features.}
 
-### Productivity pack
-
-The {@link features/productivity-pack productivity pack} is a set of exclusive premium features available to holders of a CKEditor&nbsp;5 commercial license.
-
-The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon ckeditor5-collaboration/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}.
-
-{@link features/document-outline Document outline} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} make navigating large documents much easier.
-
-{@link features/format-painter Format painter} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets the users style their content in a blaze while the {@link features/case-change case change feature} {@icon ckeditor5-collaboration/theme/icons/case-change.svg Case change} lets them apply the title case to selected sentences or turn whole paragraphs into uppercase.
-
-Productivity pack also includes the {@link features/paste-from-office-enhanced enhanced paste from Office} plugin with far greater formatting support.
-
 ### Other productivity features
 
 The {@link features/ai-assistant-overview AI Assistant} {@icon ckeditor5-collaboration/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the existing content to match your needs, or even come up with a completely new one!
@@ -105,7 +93,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 ### Customizable user experience
 
-Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your preset or remove them with the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
+Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your preset or remove them with the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
@@ -126,20 +114,12 @@ If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link upda
 We present each rich-text editor feature on a separate page. It includes one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
 
 <info-box>
-	**In most feature demos the number of features enabled is limited** to make the exposed piece of functionality stand out more, as shown in the screenshots above. But in your CKEditor&nbsp;5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. You can achieve this by using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	**In most feature demos the number of features enabled is limited** to make the exposed piece of functionality stand out more, as shown in the screenshots above. But in your CKEditor&nbsp;5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. You can achieve this by using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
-
-## Why does the editor filter out content (styles, classes, elements)
-
-CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that the editor needs to convert every piece of loaded content to that model and then render it back to the view.
-
-Each kind of content must be handled by some feature. For example, the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
-
-If you load some content unknown to any editor feature, the editor will drop it. If you want the editor to handle all the HTML5 elements, you need to write plugins to support them or use the {@link features/general-html-support General HTML Support (GHS)} feature. Once you do that, CKEditor&nbsp;5 will not filter anything out.
 
 ## Looking for more
 
-The examples mentioned here do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory. They are mentioned, for example, in the keyboard shortcuts guide.
+The examples mentioned here do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. Some end-user features are quite self-explanatory. They are mentioned, for example, in the keyboard shortcuts guide.
 
 CKEditor&nbsp;5 is in active development and we add new features to it all the time. We also work on expanding and improving the existing ones. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
 

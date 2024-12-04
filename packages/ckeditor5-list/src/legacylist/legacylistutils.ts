@@ -28,6 +28,13 @@ export default class LegacyListUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Checks whether the given list-style-type is supported by numbered or bulleted list.
 	 */
 	public getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {

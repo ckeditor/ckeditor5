@@ -40,6 +40,14 @@ describe( 'AccessibilityHelp', () => {
 		expect( AccessibilityHelp.pluginName ).to.equal( 'AccessibilityHelp' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AccessibilityHelp.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AccessibilityHelp.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should have #contentView', () => {
 			expect( plugin.contentView ).to.be.null;
@@ -132,7 +140,23 @@ describe( 'AccessibilityHelp', () => {
 				const viewRoot = editor.editing.view.document.getRoot( 'main' );
 				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-				expect( ariaLabel ).to.equal( 'Editor editing area: main. Press Alt+0 for help.' );
+				expect( ariaLabel ).to.equal( 'Rich Text Editor. Editing area: main. Press Alt+0 for help.' );
+			} );
+
+			it( 'should inject a label into a root with no aria-label', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [
+						AccessibilityHelp
+					],
+					label: ''
+				} );
+
+				const viewRoot = editor.editing.view.document.getRoot( 'main' );
+				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
+
+				expect( ariaLabel ).to.equal( 'Press Alt+0 for help.' );
+
+				await editor.destroy();
 			} );
 
 			it( 'should work for multiple roots (MultiRootEditor)', async () => {

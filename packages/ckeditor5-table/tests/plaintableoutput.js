@@ -43,6 +43,14 @@ describe( 'PlainTableOutput', () => {
 		expect( PlainTableOutput.pluginName ).to.equal( 'PlainTableOutput' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( PlainTableOutput.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( PlainTableOutput.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should create tbody section', () => {
@@ -176,7 +184,7 @@ describe( 'PlainTableOutput', () => {
 					'</table>'
 				);
 
-				testEditor.destroy();
+				await testEditor.destroy();
 			} );
 
 			it( 'should be overridable', () => {
@@ -450,7 +458,7 @@ describe( 'PlainTableOutput', () => {
 					'</figure>'
 				);
 
-				testEditor.destroy();
+				await testEditor.destroy();
 			} );
 
 			// See: https://github.com/ckeditor/ckeditor5/issues/11394
@@ -482,7 +490,7 @@ describe( 'PlainTableOutput', () => {
 					'</figure>'
 				);
 
-				testEditor.destroy();
+				await testEditor.destroy();
 			} );
 
 			function createEmptyTable() {

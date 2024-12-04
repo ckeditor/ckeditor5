@@ -62,6 +62,14 @@ describe( 'ImageStyleUI', () => {
 		expect( ImageStyleUI.pluginName ).to.equal( 'ImageStyleUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageStyleUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageStyleUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should require ImageStyleEditing plugin', () => {
 		expect( ImageStyleUI.requires ).to.deep.equal( [ ImageStyleEditing ] );
 	} );

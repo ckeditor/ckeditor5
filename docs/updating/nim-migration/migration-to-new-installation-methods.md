@@ -87,7 +87,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
 		language: 'en'
@@ -120,7 +120,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		translations: [
 			coreTranslations,
 			premiumFeaturesTranslations
@@ -160,11 +160,39 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		translations: [
 			coreTranslations,
 			premiumFeaturesTranslations
 		]
+	} );
+</script>
+```
+
+In some environments, you may not be able to use the import maps or JavaScript modules. In such cases, you can use the UMD builds instead. These register global variables that you can use in your scripts. This is the same setup as above, but using the UMD builds:
+
+```html
+<!-- Style sheets -->
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+
+<!-- Scripts -->
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+
+<!-- Translations -->
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/pl.umd.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/translations/pl.umd.js"></script>
+
+<script>
+const { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } = CKEDITOR;
+const { FormatPainter, SlashCommand } = CKEDITOR_PREMIUM_FEATURES;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
+		toolbar: [ /* ... */ ],
+		licenseKey: '<YOUR_LICENSE_KEY>'
 	} );
 </script>
 ```

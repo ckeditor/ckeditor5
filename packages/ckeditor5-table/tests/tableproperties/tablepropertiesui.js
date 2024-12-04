@@ -66,6 +66,14 @@ describe( 'table properties', () => {
 			expect( TablePropertiesUI.pluginName ).to.equal( 'TablePropertiesUI' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TablePropertiesUI.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TablePropertiesUI.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'should load ContextualBalloon', () => {
 			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 		} );
@@ -669,9 +677,9 @@ describe( 'table properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 					expect( tablePropertiesView ).to.include( {
-						borderStyle: 'none',
-						borderColor: '',
-						borderWidth: '',
+						borderStyle: 'double',
+						borderColor: 'hsl(0, 0%, 70%)',
+						borderWidth: '1px',
 						backgroundColor: '',
 						width: '',
 						height: '',

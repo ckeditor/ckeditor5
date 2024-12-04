@@ -41,7 +41,6 @@ export {
 export { default as CKEditorError, logError, logWarning } from './ckeditorerror.js';
 
 export { default as ElementReplacer } from './elementreplacer.js';
-
 export { default as abortableDebounce, type AbortableFunc } from './abortabledebounce.js';
 export { default as count } from './count.js';
 export { default as compareArrays } from './comparearrays.js';
@@ -54,6 +53,7 @@ export { default as global } from './dom/global.js';
 export { default as getAncestors } from './dom/getancestors.js';
 export { default as getDataFromElement } from './dom/getdatafromelement.js';
 export { default as getBorderWidths } from './dom/getborderwidths.js';
+export { default as getRangeFromMouseEvent } from './dom/getrangefrommouseevent.js';
 export { default as isText } from './dom/istext.js';
 export { default as Rect, type RectSource } from './dom/rect.js';
 export { default as ResizeObserver } from './dom/resizeobserver.js';
@@ -80,8 +80,8 @@ export {
 	type CollectionRemoveEvent
 } from './collection.js';
 export { default as first } from './first.js';
-export { default as FocusTracker } from './focustracker.js';
-export { default as KeystrokeHandler } from './keystrokehandler.js';
+export { default as FocusTracker, type ViewWithFocusTracker, isViewWithFocusTracker } from './focustracker.js';
+export { default as KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
 export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
 export { default as toMap } from './tomap.js';
 export { default as priorities, type PriorityString } from './priorities.js';
@@ -91,8 +91,9 @@ export { default as spliceArray } from './splicearray.js';
 
 export { default as uid } from './uid.js';
 export { default as delay, type DelayedFunc } from './delay.js';
-export { default as verifyLicense } from './verifylicense.js';
 export { default as wait } from './wait.js';
+export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
+export { default as crc32, type CRCData } from './crc32.js';
 
 export * from './unicode.js';
 

@@ -8,7 +8,6 @@
  */
 
 import {
-	UpcastWriter,
 	type DowncastAttributeEvent,
 	type DowncastWriter,
 	type EditingController,
@@ -48,7 +47,7 @@ import {
 	isListItemView
 } from './utils/view.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker.js';
+import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
@@ -197,7 +196,7 @@ export function reconvertItemsOnDataChange(
 		const visited = new Set();
 		const stack: Array<ListItemAttributesMap> = [];
 
-		for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+		for ( const { node, previous } of new SiblingListBlocksIterator( listHead ) ) {
 			if ( visited.has( node ) ) {
 				continue;
 			}

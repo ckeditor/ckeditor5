@@ -41,7 +41,7 @@ export default class EditableUIView extends View {
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 */
-	private _editableElement: HTMLElement | null | undefined;
+	protected _editableElement: HTMLElement | null | undefined;
 
 	/**
 	 * Whether an external {@link #_editableElement} was passed into the constructor, which also means

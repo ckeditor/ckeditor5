@@ -32,7 +32,6 @@
 	& > .ck.ck-button {
 		display: block;
 		width: 100%;
-		padding: var(--ck-list-button-padding);
 
 		@mixin ck-dir ltr {
 			text-align: left;

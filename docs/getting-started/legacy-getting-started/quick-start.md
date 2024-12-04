@@ -9,7 +9,7 @@ modified_at: 2022-06-27
 # (Legacy) Quick start
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/integrations-cdn/quick-start CKEditor&nbsp;5 Quick Start} guide.
 </info-box>
 
 ## Introduction
@@ -32,7 +32,7 @@ Let us run a classic editor build as an example. In your HTML page add an elemen
 Load the classic editor build (here a [CDN](https://cdn.ckeditor.com/) location is used).
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 ```
 
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method to display the editor.
@@ -57,7 +57,7 @@ A full web page with embedded CKEditor&nbsp;5 from this example would look like 
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Classic editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Classic editor</h1>
@@ -95,7 +95,7 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 
 In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link getting-started/legacy-getting-started/predefined-builds#available-builds available builds documentation}.
 
-Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the `removePlugins` configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link getting-started/setup/license-key-and-activation License key and activation} guide. Observe the configuration below to see this implemented.
+Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the `removePlugins` configuration option and adjust the toolbar configuration. There are also some plugins that require a license to run. You can learn more about obtaining and activating license keys in the {@link getting-started/licensing/license-key-and-activation License key and activation} guide. Observe the configuration below to see this implemented.
 
 ### Sample implementation
 
@@ -131,10 +131,10 @@ In this example, you remove the premium collaboration features and several other
 			The "super-build" of CKEditor&nbsp;5 served via CDN contains a large set of plugins and multiple editor types.
 			See https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
 		-->
-		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
 		<!--
 			Uncomment to load the Spanish translation
-			<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/translations/es.js"></script>
+			<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/translations/es.js"></script>
 		-->
 		<script>
 			// This sample still does not showcase all CKEditor&nbsp;5 features (!)
@@ -279,7 +279,7 @@ In this example, you remove the premium collaboration features and several other
 					// Careful, with the Mathtype plugin CKEditor will not load when loading this sample
 					// from a local file system (file://) - load this site via HTTP server if you enable MathType.
 					'MathType',
-					// The following features are part of the Productivity Pack and require additional license.
+					// The following features require additional license.
 					'SlashCommand',
 					'Template',
 					'DocumentOutline',
@@ -306,10 +306,10 @@ While the superbuild is designed to provide as many of them as possible, some of
 
 ## Running a full-featured editor with Premium features
 
-If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes, and revision history, sign up for a [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes, and revision history, sign up for a [14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
 
 After you sign up, in the customer dashboard you will find the full code snippet to run the editor with premium features with all the necessary configurations.
 
 ## Adjusting plugins included in the CKEditor&nbsp;5 superbuild
 
-You may turn off any features available in the superbuild using the `removePlugins` configuration option. For a full list of features currently available in the superbuild, consult the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Removing certain features may make the editor unusable.
+You may turn off any features available in the superbuild using the `removePlugins` configuration option. For a full list of features currently available in the superbuild, consult the {@link getting-started/legacy-getting-started/predefined-builds#plugins-included-in-the-predefined-builds predefined editor builds} guide. Removing certain features may make the editor unusable.

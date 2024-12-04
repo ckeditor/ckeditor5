@@ -85,6 +85,13 @@ export default class PictureEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
 		const editor = this.editor;
 

@@ -60,14 +60,15 @@ ClassicEditor
 					}
 				}
 			]
-		}
+		},
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert media' ),
+				item => item?.label === 'Insert media' ),
 			text: 'Click to embed media.',
 			editor
 		} );
@@ -83,8 +84,8 @@ const metaElement = document.createElement( 'meta' );
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
 	'request-failure': [ 'vimeo.com', 'facebook.com' ],
-	'response-failure': [ 'vimeo.com', 'facebook.com' ],
-	'console-error': [ '<svg> attribute preserveAspectRatio', 'vimeo.com', 'facebook.com', 'ErrorUtils' ]
+	'response-failure': [ 'vimeo.com', 'facebook.com', 'challenges.cloudflare.com' ],
+	'console-error': [ '<svg> attribute preserveAspectRatio', 'vimeo.com', 'facebook.com', 'ErrorUtils', 'transparent NaN' ]
 } );
 
 document.head.appendChild( metaElement );

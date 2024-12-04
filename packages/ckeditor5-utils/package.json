@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "42.0.0",
+  "version": "44.0.0",
   "description": "Miscellaneous utilities used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,21 +12,22 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "lodash-es": "4.17.21"
+    "lodash-es": "4.17.21",
+    "@ckeditor/ckeditor5-ui": "44.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "42.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "42.0.0",
-    "@ckeditor/ckeditor5-core": "42.0.0",
-    "@ckeditor/ckeditor5-engine": "42.0.0",
-    "@types/lodash-es": "^4.17.6",
+    "@ckeditor/ckeditor5-build-classic": "44.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "44.0.0",
+    "@ckeditor/ckeditor5-core": "44.0.0",
+    "@ckeditor/ckeditor5-engine": "44.0.0",
+    "@types/lodash-es": "^4.17.12",
     "typescript": "5.0.4"
   },
   "depcheckIgnore": [
     "typescript"
   ],
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -45,6 +46,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

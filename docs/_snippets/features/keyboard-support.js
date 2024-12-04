@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, open, console, LICENSE_KEY */
+/* globals window, document, console, LICENSE_KEY */
 
 // Keep the guide listing updated with each change.
 
@@ -59,14 +59,8 @@ import { Template } from '@ckeditor/ckeditor5-template';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
 
-// Additional protection for internal license keys CF#2555.
-window.open.closed = 1;
-
 // import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Allow using internal license keys in this sample. See CF#2555.
-open.closed = 1;
 
 // Templates icons.
 import articleImageRightIcon from '../../assets/img/article-image-right.svg';
@@ -220,12 +214,16 @@ ClassicEditor
 			fileName: 'export-word-demo.docx',
 			appID: 'cke5-docs',
 			converterOptions: {
-				format: 'B4',
-				margin_top: '20mm',
-				margin_bottom: '20mm',
-				margin_right: '12mm',
-				margin_left: '12mm',
-				page_orientation: 'portrait'
+				document: {
+					size: 'A4',
+					orientation: 'portrait',
+					margin: {
+						top: '20mm',
+						bottom: '20mm',
+						right: '12mm',
+						left: '12mm'
+					}
+				}
 			},
 			tokenUrl: false
 		},

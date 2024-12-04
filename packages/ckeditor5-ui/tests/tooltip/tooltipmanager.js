@@ -873,7 +873,7 @@ describe( 'TooltipManager', () => {
 				// ResizeObserver is asynchronous.
 				await wait( 100 );
 
-				sinon.assert.calledOnce( unpinSpy );
+				sinon.assert.called( unpinSpy );
 			} );
 
 			it( 'should unpin if the element that it was attached was hidden in CSS', async () => {
@@ -897,7 +897,7 @@ describe( 'TooltipManager', () => {
 				// ResizeObserver is asynchronous.
 				await wait( 100 );
 
-				sinon.assert.calledOnce( unpinSpy );
+				sinon.assert.called( unpinSpy );
 			} );
 		} );
 

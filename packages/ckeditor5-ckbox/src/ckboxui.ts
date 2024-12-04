@@ -33,6 +33,13 @@ export default class CKBoxUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
 		const editor = this.editor;
 
@@ -64,7 +71,6 @@ export default class CKBoxUI extends Plugin {
 		const locale = editor.locale;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const command = editor.commands.get( 'ckbox' )!;
-		const t = locale.t;
 
 		view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
@@ -151,6 +157,8 @@ export default class CKBoxUI extends Plugin {
 	 * Creates a button for images management for the menu bar.
 	 */
 	private _createImageMenuBarButton( type: 'insertOnly' | 'insertNested' ): MenuBarMenuListItemButtonView {
+		// Use t() stored in a variable with a different name to reuse existing translations from another package.
+		const translateVariableKey = this.editor.locale.t;
 		const t = this.editor.locale.t;
 		const button = this._createButton( MenuBarMenuListItemButtonView );
 
@@ -159,7 +167,7 @@ export default class CKBoxUI extends Plugin {
 
 		switch ( type ) {
 			case 'insertOnly':
-				button.label = t( 'Image' );
+				button.label = translateVariableKey( 'Image' );
 				break;
 			case 'insertNested':
 				button.label = t( 'With file manager' );

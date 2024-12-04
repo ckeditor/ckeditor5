@@ -1707,6 +1707,62 @@ describe( 'Differ', () => {
 				expectChanges( [] );
 			} );
 		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/16819
+		it( 'on element with very long text should have batched instructions together during generating diff from changes', () => {
+			const MAX_PUSH_CALL_STACK_ARGS = 1500;
+
+			const p = root.getChild( 0 );
+			const veryLongString = 'a'.repeat( 300 );
+
+			model.change( () => {
+				insert( veryLongString, Position._createAt( p, 0 ) );
+			} );
+
+			const pushSpy = sinon.spy( Array.prototype, 'push' );
+
+			model.change( writer => {
+				writer.setAttribute( attributeKey, true, writer.createRangeIn( p ) );
+			} );
+
+			// Let's check if appended instructions has been batched together in single `.push()` call.
+			const instructionsDiff = pushSpy.args.find( args => (
+				args.length >= 300 &&
+					args.length < MAX_PUSH_CALL_STACK_ARGS &&
+					args.every( ch => ch === 'a' )
+			) );
+
+			expect( instructionsDiff ).not.to.be.undefined;
+			pushSpy.restore();
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/16819
+		it( 'on element with very long text should not have batched instructions together during generating diff from changes ' +
+				'that are larger than max push call stack args count', () => {
+			const MAX_PUSH_CALL_STACK_ARGS = 1500;
+
+			const p = root.getChild( 0 );
+			const veryLongString = 'a'.repeat( MAX_PUSH_CALL_STACK_ARGS + 10 );
+
+			model.change( () => {
+				insert( veryLongString, Position._createAt( p, 0 ) );
+			} );
+
+			const pushSpy = sinon.spy( Array.prototype, 'push' );
+
+			model.change( writer => {
+				writer.setAttribute( attributeKey, true, writer.createRangeIn( p ) );
+			} );
+
+			// Let's check if appended instructions has been NOT batched together in single `.push()` call.
+			const instructionsDiff = pushSpy.args.find( args => (
+				args.length > MAX_PUSH_CALL_STACK_ARGS &&
+				args.every( ch => ch === 'a' )
+			) );
+
+			expect( instructionsDiff ).to.be.undefined;
+			pushSpy.restore();
+		} );
 	} );
 
 	describe( 'split', () => {

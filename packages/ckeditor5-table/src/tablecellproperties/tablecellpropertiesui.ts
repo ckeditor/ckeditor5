@@ -32,7 +32,7 @@ import { getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
-import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
+import { getNormalizedDefaultCellProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
 import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
 import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
@@ -103,6 +103,13 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -119,7 +126,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._defaultTableCellProperties = getNormalizedDefaultProperties(
+		this._defaultTableCellProperties = getNormalizedDefaultCellProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
 			{
 				includeVerticalAlignmentProperty: true,

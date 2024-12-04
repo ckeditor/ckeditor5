@@ -56,6 +56,14 @@ describe( 'SpecialCharacters', () => {
 		expect( SpecialCharacters.pluginName ).to.equal( 'SpecialCharacters' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SpecialCharacters.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SpecialCharacters.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'specialCharacters' );
@@ -80,6 +88,7 @@ describe( 'SpecialCharacters', () => {
 		it( 'should get basic properties', () => {
 			expect( button.label ).to.equal( 'Special characters' );
 			expect( button.icon ).to.equal( specialCharactersIcon );
+			expect( button.isToggleable ).to.be.true;
 		} );
 
 		it( 'should bind #isEnabled to the command', () => {

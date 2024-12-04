@@ -121,13 +121,11 @@ a.ck.ck-button {
 		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button__icon {
 			@mixin ck-dir ltr {
-				margin-left: calc(-1 * var(--ck-spacing-small));
-				margin-right: var(--ck-spacing-small);
+				margin-right: var(--ck-spacing-medium);
 			}
 
 			@mixin ck-dir rtl {
-				margin-right: calc(-1 * var(--ck-spacing-small));
-				margin-left: var(--ck-spacing-small);
+				margin-left: var(--ck-spacing-medium);
 			}
 		}
 	}

@@ -49,6 +49,10 @@ describe( 'InlineEditor', () => {
 			editor = new InlineEditor( editorElement );
 		} );
 
+		it( 'it\'s possible to extract editor name from editor instance', () => {
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'InlineEditor' );
+		} );
+
 		it( 'creates the UI using BoxedEditorUI classes', () => {
 			expect( editor.ui ).to.be.instanceof( InlineEditorUI );
 			expect( editor.ui.view ).to.be.instanceof( InlineEditorUIView );
@@ -146,8 +150,10 @@ describe( 'InlineEditor', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			if ( editor.state !== 'destroyed' ) {
+				await editor.destroy();
+			}
 		} );
 
 		it( 'creates an instance which inherits from the InlineEditor', () => {
@@ -191,7 +197,7 @@ describe( 'InlineEditor', () => {
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 
-				editor.destroy();
+				return editor.destroy();
 			} );
 		} );
 
@@ -283,6 +289,106 @@ describe( 'InlineEditor', () => {
 				)
 				.then( done )
 				.catch( done );
+		} );
+
+		describe( 'configurable editor label (aria-label)', () => {
+			it( 'should be set to the defaut value if not configured', () => {
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Rich Text Editor. Editing area: main'
+				);
+			} );
+
+			it( 'should support the string format', async () => {
+				await editor.destroy();
+
+				editor = await InlineEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					label: 'Custom label'
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Custom label'
+				);
+			} );
+
+			it( 'should support object format', async () => {
+				await editor.destroy();
+
+				editor = await InlineEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					label: {
+						main: 'Custom label'
+					}
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Custom label'
+				);
+			} );
+
+			it( 'should keep an existing value from the source DOM element', async () => {
+				await editor.destroy();
+
+				editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
+				editor = await InlineEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ]
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Keep value' ).to.equal(
+					'Pre-existing value'
+				);
+
+				await editor.destroy();
+
+				expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+			} );
+
+			it( 'should override the existing value from the source DOM element', async () => {
+				await editor.destroy();
+
+				editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
+				editor = await InlineEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					label: 'Custom label'
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					'Custom label'
+				);
+
+				await editor.destroy();
+
+				expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+			} );
+
+			it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
+				await editor.destroy();
+
+				editor = await InlineEditor.create( '<p>Initial data</p>', {
+					plugins: [ Paragraph, Bold ]
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					'Rich Text Editor. Editing area: main'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should set custom label when creating an editor from initial data rather than a DOM element', async () => {
+				await editor.destroy();
+
+				editor = await InlineEditor.create( '<p>Initial data</p>', {
+					plugins: [ Paragraph, Bold ],
+					label: 'Custom label'
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					'Custom label'
+				);
+
+				await editor.destroy();
+			} );
 		} );
 	} );
 

@@ -62,12 +62,20 @@ describe( 'TableCaptionEditing', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
 		expect( TableCaptionEditing.pluginName ).to.equal( 'TableCaptionEditing' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableCaptionEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableCaptionEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should set proper schema rules', () => {

@@ -4,8 +4,9 @@
  */
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { canBeCodeBlock } from '../src/utils.js';
+import { canBeCodeBlock, getTextNodeAtLineStart } from '../src/utils.js';
 
 describe( 'CodeBlock - utils', () => {
 	describe( 'canBecomeCodeBlock()', () => {
@@ -86,5 +87,135 @@ describe( 'CodeBlock - utils', () => {
 
 			expect( testResult ).to.be.true;
 		} );
+	} );
+
+	describe( 'getTextNodeAtLineStart()', () => {
+		let model;
+
+		beforeEach( () => {
+			model = new Model();
+			model.document.createRoot();
+
+			// Simplified schema.
+			model.schema.register( 'codeBlock', { inheritAllFrom: '$block' } );
+			model.schema.register( 'element', { inheritAllFrom: '$inlineObject', allowIn: 'codeBlock' } );
+			model.schema.register( 'softBreak', { inheritAllFrom: '$inlineObject', allowIn: 'codeBlock' } );
+		} );
+
+		// Tests examples taken from `getTextNodeAtLineStart()` API docs.
+		test(
+			'<codeBlock>[]</codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock>[]foobar</codeBlock>',
+			'<codeBlock>[foobar]</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foobar[]</codeBlock>',
+			'<codeBlock>[foobar]</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo[]bar</codeBlock>',
+			'<codeBlock>[foobar]</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo[]<softBreak></softBreak>bar</codeBlock>',
+			'<codeBlock>[foo]<softBreak></softBreak>bar</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak>bar[]</codeBlock>',
+			'<codeBlock>foo<softBreak></softBreak>[bar]</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak>b[]ar</codeBlock>',
+			'<codeBlock>foo<softBreak></softBreak>[bar]</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak>[]bar</codeBlock>',
+			'<codeBlock>foo<softBreak></softBreak>[bar]</codeBlock>'
+		);
+
+		test(
+			'<codeBlock>[]<element></element></codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock><element></element>[]</codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock>foo[]<element></element></codeBlock>',
+			'<codeBlock>[foo]<element></element></codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo<element></element>[]</codeBlock>',
+			'<codeBlock>[foo]<element></element></codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo<element></element>bar[]</codeBlock>',
+			'<codeBlock>[foo]<element></element>bar</codeBlock>'
+		);
+
+		test(
+			'<codeBlock><element></element>bar[]</codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak>[]<softBreak></softBreak></codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak>[]<element></element></codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak><element></element>[]</codeBlock>',
+			null
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak>bar<element></element>[]</codeBlock>',
+			'<codeBlock>foo<softBreak></softBreak>[bar]<element></element></codeBlock>'
+		);
+
+		test(
+			'<codeBlock>foo<softBreak></softBreak><element></element>ba[]r</codeBlock>',
+			null
+		);
+
+		function test( input, output ) {
+			it( input, () => {
+				setData( model, input );
+
+				const textNode = getTextNodeAtLineStart( model.document.selection.getFirstPosition(), model );
+
+				if ( textNode ) {
+					model.change( writer => {
+						writer.setSelection( textNode, 'on' );
+					} );
+				}
+
+				if ( output ) {
+					expect( getData( model ) ).to.equal( output );
+				} else {
+					expect( textNode ).to.be.null;
+				}
+			} );
+		}
 	} );
 } );

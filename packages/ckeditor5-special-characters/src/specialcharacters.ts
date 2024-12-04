@@ -64,6 +64,13 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -247,7 +254,7 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Creates a button for for menu bar that will show special characetrs dialog.
+	 * Creates a button for toolbar and menu bar that will show special characters dialog.
 	 */
 	private _createDialogButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
@@ -259,7 +266,8 @@ export default class SpecialCharacters extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Special characters' ),
-			icon: specialCharactersIcon
+			icon: specialCharactersIcon,
+			isToggleable: true
 		} );
 
 		buttonView.bind( 'isOn' ).to( dialogPlugin, 'id', id => id === 'specialCharacters' );

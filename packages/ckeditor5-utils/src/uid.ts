@@ -26,19 +26,7 @@ const HEX_NUMBERS = new Array( 256 ).fill( '' )
  */
 export default function uid(): string {
 	// Let's create some positive random 32bit integers first.
-	//
-	// 1. Math.random() is a float between 0 and 1.
-	// 2. 0x100000000 is 2^32 = 4294967296.
-	// 3. >>> 0 enforces integer (in JS all numbers are floating point).
-	//
-	// For instance:
-	//		Math.random() * 0x100000000 = 3366450031.853859
-	// but
-	//		Math.random() * 0x100000000 >>> 0 = 3366450031.
-	const r1 = Math.random() * 0x100000000 >>> 0;
-	const r2 = Math.random() * 0x100000000 >>> 0;
-	const r3 = Math.random() * 0x100000000 >>> 0;
-	const r4 = Math.random() * 0x100000000 >>> 0;
+	const [ r1, r2, r3, r4 ] = crypto.getRandomValues( new Uint32Array( 4 ) );
 
 	// Make sure that id does not start with number.
 	return 'e' +

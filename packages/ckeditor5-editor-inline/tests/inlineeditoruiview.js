@@ -18,6 +18,7 @@ import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js'
 const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { MenuBarView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
@@ -107,12 +108,78 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.editable.isRendered ).to.be.false;
 			} );
 
-			it( 'is given an accessible aria label', () => {
+			it( 'creates an editing root with the default aria-label', () => {
 				view.render();
 
 				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
 
 				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (string format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new InlineEditorUIView( locale, editingView, undefined, {
+					label: 'Foo'
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (object format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new InlineEditorUIView( locale, editingView, undefined, {
+					label: {
+						main: 'Foo'
+					}
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is not created', () => {
+				expect( view.menuBarView ).to.be.undefined;
+			} );
+		} );
+	} );
+
+	describe( 'with menu bar', () => {
+		let viewWithMenuBar;
+		testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			viewWithMenuBar = new InlineEditorUIView( locale, editingView, undefined, { useMenuBar: true } );
+			viewWithMenuBar.editable.name = editingViewRoot.rootName;
+			viewWithMenuBar.render();
+		} );
+
+		afterEach( () => {
+			viewWithMenuBar.destroy();
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is created', () => {
+				expect( viewWithMenuBar.menuBarView ).to.be.instanceof( MenuBarView );
+			} );
+
+			it( 'is given a locale object', () => {
+				expect( viewWithMenuBar.menuBarView.locale ).to.equal( locale );
+			} );
+
+			it( 'is put into the "panel.content" collection', () => {
+				expect( viewWithMenuBar.panel.content.get( 0 ) ).to.equal( viewWithMenuBar.menuBarView );
+				expect( viewWithMenuBar.panel.content.get( 1 ) ).to.equal( viewWithMenuBar.toolbar );
 			} );
 		} );
 	} );

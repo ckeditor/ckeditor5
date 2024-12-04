@@ -6,7 +6,7 @@
 
 category: framework-architecture
 menu-title: Plugins in CKEditor 5
-meta-title: Plugins in CKEditor 5 | CKEditor 5 documentation
+meta-title: Plugins in CKEditor 5 | CKEditor 5 Documentation
 toc-limit: 1
 order: 10
 ---
@@ -108,5 +108,5 @@ The data used to generate the following tables comes from the package metadata. 
 	}
 </style>
 
-{@exec ../scripts/docs/features-html-output/build-features-html-output.js}
+{@exec ../scripts/docs/features-html-output/build-features-html-output.cjs}
 

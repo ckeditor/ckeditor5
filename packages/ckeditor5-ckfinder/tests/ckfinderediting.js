@@ -44,6 +44,14 @@ describe( 'CKFinderEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKFinderEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKFinderEditing.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CKFinderEditing ) ).to.be.instanceOf( CKFinderEditing );
 	} );

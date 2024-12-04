@@ -26,7 +26,7 @@ import CloudServicesUploadAdapter from './cloudservicesuploadadapter.js';
  * * {@link module:image/image~Image},
  * * {@link module:image/imageupload~ImageUpload},
  *
- * See the {@glink features/images/image-upload/easy-image "Easy Image integration" guide} to learn how to configure
+ * See the [Easy Image Quick Start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to learn how to configure
  * and use this feature.
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about
@@ -42,6 +42,13 @@ export default class EasyImage extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'EasyImage' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**

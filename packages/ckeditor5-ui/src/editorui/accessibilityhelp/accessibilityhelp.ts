@@ -52,6 +52,13 @@ export default class AccessibilityHelp extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
@@ -130,7 +137,9 @@ export default class AccessibilityHelp extends Plugin {
 
 		function addAriaLabelTextToRoot( writer: DowncastWriter, viewRoot: ViewRootEditableElement ) {
 			const currentAriaLabel = viewRoot.getAttribute( 'aria-label' );
-			const newAriaLabel = `${ currentAriaLabel }. ${ t( 'Press %0 for help.', [ getEnvKeystrokeText( 'Alt+0' ) ] ) }`;
+			const newAriaLabel = [ currentAriaLabel, t( 'Press %0 for help.', [ getEnvKeystrokeText( 'Alt+0' ) ] ) ]
+				.filter( segment => segment )
+				.join( '. ' );
 
 			writer.setAttribute( 'aria-label', newAriaLabel, viewRoot );
 		}

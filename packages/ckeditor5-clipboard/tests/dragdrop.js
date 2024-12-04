@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, Event */
+/* globals window, document, console, Event */
 
 import ClipboardPipeline from '../src/clipboardpipeline.js';
 import DragDrop from '../src/dragdrop.js';
@@ -41,6 +41,14 @@ describe( 'Drag and Drop', () => {
 
 	it( 'has proper name', () => {
 		expect( DragDrop.pluginName ).to.equal( 'DragDrop' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DragDrop.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DragDrop.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be disabled on Android', async () => {
@@ -2432,11 +2440,82 @@ describe( 'Drag and Drop', () => {
 		} );
 	} );
 
+	describe( '_updatePreview', () => {
+		let targetElement, dragDrop, warnStub;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				useInlineRoot: true,
+				plugins: [ DragDrop, PastePlainText, Paragraph, Bold ]
+			} );
+
+			dragDrop = editor.plugins.get( DragDrop );
+
+			targetElement = document.createElement( 'div' );
+			warnStub = sinon.stub( console, 'warn' );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+
+			editorElement.remove();
+			targetElement.remove();
+			warnStub.restore();
+		} );
+
+		it( 'should not append unsafe html tags from malformed data transfer object to the preview', () => {
+			dragDrop._updatePreview( {
+				target: targetElement,
+				clientX: 10,
+				dataTransfer: createDataTransfer( {
+					'text/html': [
+						'<script>console.log("hello");</script>',
+						'<strong>Test</strong>',
+						'<style>body { color: red; }</style>'
+					].join( ' ' )
+				} )
+			} );
+
+			expect( dragDrop._previewContainer.querySelector( 'script' ) ).to.be.null;
+			expect( dragDrop._previewContainer.querySelector( 'style' ) ).to.be.null;
+			expect( dragDrop._previewContainer.querySelector( 'strong' ) ).not.to.be.null;
+		} );
+
+		it( 'should not append unsafe attributes to the preview', () => {
+			dragDrop._updatePreview( {
+				target: targetElement,
+				clientX: 10,
+				dataTransfer: createDataTransfer( {
+					'text/html': '<strong onclick="alert(\'abc\')">Test</strong>'
+				} )
+			} );
+
+			const insertedElement = dragDrop._previewContainer.querySelector( 'strong' );
+
+			expect( insertedElement.getAttribute( 'onclick' ) ).to.be.null;
+
+			sinon.assert.calledOnce( warnStub );
+			sinon.assert.calledWithExactly( warnStub,
+				sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+				{
+					domElement: insertedElement,
+					key: 'onclick',
+					value: 'alert(\'abc\')'
+				},
+				sinon.match.string // Link to the documentation
+			);
+		} );
+	} );
+
 	function fireDragStart( dataTransferMock, preventDefault = () => {}, domTarget ) {
 		const eventData = prepareEventData( model.document.selection.getLastPosition(), domTarget );
 
 		viewDocument.fire( 'mousedown', {
-			...eventData
+			...eventData,
+			preventDefault
 		} );
 
 		viewDocument.fire( 'dragstart', {

@@ -114,7 +114,7 @@ export default class ListWalker {
 	public* [ Symbol.iterator ](): Iterator<ListElement> {
 		const nestedItems: Array<ListElement> = [];
 
-		for ( const { node } of iterateSiblingListBlocks( this._getStartNode(), this._isForward ? 'forward' : 'backward' ) ) {
+		for ( const { node } of new SiblingListBlocksIterator( this._getStartNode(), this._isForward ? 'forward' : 'backward' ) ) {
 			const indent = node.getAttribute( 'listIndent' );
 
 			// Leaving a nested list.
@@ -191,47 +191,68 @@ export default class ListWalker {
 
 /**
  * Iterates sibling list blocks starting from the given node.
- *
- * @internal
- * @param node The model node.
- * @param direction Iteration direction.
- * @returns The object with `node` and `previous` {@link module:engine/model/element~Element blocks}.
  */
-export function* iterateSiblingListBlocks(
-	node: Node | null,
-	direction: 'forward' | 'backward' = 'forward'
-): IterableIterator<ListIteratorValue> {
-	const isForward = direction == 'forward';
-	const previousNodesByIndent: Array<ListElement> = []; // Last seen nodes of lower indented lists.
-	let previous = null;
+export class SiblingListBlocksIterator implements IterableIterator<ListIteratorValue> {
+	private _node: Node | null;
+	private _isForward: boolean;
+	private _previousNodesByIndent: Array<ListElement> = [];
+	private _previous: ListElement | null = null;
+	private _previousNodeIndent: number | null = null;
 
-	while ( isListItemBlock( node ) ) {
-		let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
+	/**
+	 * @param node The model node.
+	 * @param direction Iteration direction.
+	 */
+	constructor(
+		node: Node | null,
+		direction: 'forward' | 'backward' = 'forward'
+	) {
+		this._node = node;
+		this._isForward = direction === 'forward';
+	}
 
-		if ( previous ) {
-			const nodeIndent = node.getAttribute( 'listIndent' );
-			const previousNodeIndent = previous.getAttribute( 'listIndent' );
+	public [ Symbol.iterator ](): IterableIterator<ListIteratorValue> {
+		return this;
+	}
+
+	public next(): IteratorResult<ListIteratorValue> {
+		if ( !isListItemBlock( this._node ) ) {
+			return { done: true, value: undefined };
+		}
+
+		const nodeIndent = this._node.getAttribute( 'listIndent' );
+		let previousNodeInList: ListElement | null = null;
+
+		if ( this._previous ) {
+			const previousNodeIndent = this._previousNodeIndent!;
 
 			// Let's find previous node for the same indent.
 			// We're going to need that when we get back to previous indent.
 			if ( nodeIndent > previousNodeIndent ) {
-				previousNodesByIndent[ previousNodeIndent ] = previous;
+				this._previousNodesByIndent[ previousNodeIndent ] = this._previous;
 			}
 			// Restore the one for given indent.
 			else if ( nodeIndent < previousNodeIndent ) {
-				previousNodeInList = previousNodesByIndent[ nodeIndent ];
-				previousNodesByIndent.length = nodeIndent;
+				previousNodeInList = this._previousNodesByIndent[ nodeIndent ] || null;
+				this._previousNodesByIndent.length = nodeIndent;
 			}
 			// Same indent.
 			else {
-				previousNodeInList = previous;
+				previousNodeInList = this._previous;
 			}
 		}
 
-		yield { node, previous, previousNodeInList };
+		const value = {
+			node: this._node,
+			previous: this._previous,
+			previousNodeInList
+		};
 
-		previous = node;
-		node = isForward ? node.nextSibling : node.previousSibling;
+		this._previous = this._node as ListElement;
+		this._previousNodeIndent = nodeIndent;
+		this._node = this._isForward ? this._node.nextSibling : this._node.previousSibling;
+
+		return { value, done: false };
 	}
 }
 
@@ -256,12 +277,12 @@ export class ListBlocksIterable {
 	 * Iterates over all blocks of a list.
 	 */
 	public [ Symbol.iterator ](): Iterator<ListIteratorValue> {
-		return iterateSiblingListBlocks( this._listHead, 'forward' );
+		return new SiblingListBlocksIterator( this._listHead );
 	}
 }
 
 /**
- * Object returned by `iterateSiblingListBlocks()` when traversing a list.
+ * Object returned by `SiblingListBlocksIterator` when traversing a list.
  *
  * @internal
  */

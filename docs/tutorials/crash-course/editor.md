@@ -11,16 +11,23 @@ modified_at: 2023-08-16
 
 ## Test environment
 
-For the purposes of this tutorial, we have created a repository with the minimal setup required to use the editor. To follow along:
+For this tutorial, we have created a minimal setup required to use the editor. To follow along, run the commands below:
 
-1. Clone [this repository](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/crash-course).
-2. Run the `npm install` command to install the dependencies.
-3. Run the `npm run dev` command to start the project.
-4. Open the URL displayed in your terminal.
+```bash
+npx -y degit ckeditor/ckeditor5-tutorials-examples/crash-course crash-course
+cd crash-course
 
-If everything went well, you should see a "Hello world!" text displayed on the page.
+npm install
+npm run dev
+```
+
+Open the URL displayed in your terminal. If everything went well, you should see a "Hello world!" text displayed on the page.
 
 We encourage you to follow the steps in the tutorial and type the code yourself to build the muscle and mental memory.
+
+<info-box>
+	If you want to use this tutorial with CDN, follow the steps in the [Adapt this tutorial to CDN](#adapt-this-tutorial-to-cdn) section.
+</info-box>
 
 ## Creating an editor
 
@@ -71,6 +78,7 @@ The `Essentials` plugin adds the `Undo` and `Redo` operations. Let's add them to
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph
@@ -89,6 +97,8 @@ const editor = await ClassicEditor.create( element, {
 After refreshing the page, the editor should have two buttons at the top. If you type something into the editor and click the "back arrow" button, your changes should be removed. Clicking the "forward arrow" button should restore those changes.
 
 The configuration object we have just updated controls the features, appearance, and behavior of the editor. If you want to change any aspect of the editor, it is most likely through this object.
+
+The `licenseKey` option is needed for the editor to run. You can learn more about it in the {@link getting-started/licensing/license-key-and-activation License key and activation} guide.
 
 ## Editor methods
 
@@ -151,6 +161,54 @@ editor.destroy();
 ```
 
 The editor and its contents should disappear. **This method returns a promise, so you need to `await` it** if you want to execute more logic after the editor is destroyed.
+
+## Adapt this tutorial to CDN
+
+If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
+
+First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 Framework – tutorial CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello world!</p>
+		</div>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+
+		<script type="module" src="/main.js"></script>
+	</body>
+</html>
+```
+
+The CSS file contains the editor and content styles. Therefore, you do not need to import styles into your JavaScript file.
+
+```js
+// Before:
+import 'ckeditor5/ckeditor5.css';
+
+// After:
+// No need to import the styles.
+```
+
+The script tag loads the editor from the CDN. It exposes the global variable `CKEDITOR`. You can use it in your project to access the editor class and plugins. That is why you must change the import statements to destructuring in the JavaScript files:
+
+```js
+// Before:
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+
+// After:
+const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
+```
+
+After following these steps and running the `npm run dev` command, you should be able to open the editor in the browser.
 
 ## What's next
 

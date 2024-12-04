@@ -532,6 +532,16 @@ describe( 'SearchTextView', () => {
 
 			sinon.assert.calledOnceWithExactly( spy, '' );
 		} );
+
+		it( 'resets the list scroll', () => {
+			const list = view.filteredView;
+			const spy = sinon.spy( list.element, 'scrollTo' );
+
+			view.reset();
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, 0, 0 );
+		} );
 	} );
 
 	describe( 'search()', () => {

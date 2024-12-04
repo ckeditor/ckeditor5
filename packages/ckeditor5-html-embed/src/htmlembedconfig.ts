@@ -38,7 +38,7 @@ export interface HtmlEmbedConfig {
 	showPreviews?: boolean;
 
 	/**
-	 * Callback used to sanitize the HTML provided by the user when generating previews of it in the editor.
+	 * Callback used to sanitize the HTML provided by the user in HTML embed widget when it is previewed inside the editor.
 	 *
 	 * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
 	 *

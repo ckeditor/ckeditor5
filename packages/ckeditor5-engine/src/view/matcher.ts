@@ -8,9 +8,6 @@
  */
 
 import type Element from './element.js';
-
-import { isPlainObject } from 'lodash-es';
-
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -389,27 +386,35 @@ function matchPatterns(
  */
 function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
 	if ( Array.isArray( patterns ) ) {
-		return patterns.map( ( pattern: any ) => {
-			if ( isPlainObject( pattern ) ) {
-				if ( pattern.key === undefined || pattern.value === undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-missing-key-or-value', pattern );
-				}
-
-				return [ pattern.key, pattern.value ];
+		return patterns.map( pattern => {
+			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
+				return [ pattern, true ];
 			}
 
-			// Assume the pattern is either String or RegExp.
-			return [ pattern, true ];
+			if ( pattern.key === undefined || pattern.value === undefined ) {
+				// Documented at the end of matcher.js.
+				logWarning( 'matcher-pattern-missing-key-or-value', pattern );
+			}
+
+			return [ pattern.key, pattern.value ];
 		} );
 	}
 
-	if ( isPlainObject( patterns ) ) {
-		return Object.entries( patterns );
+	if ( typeof patterns !== 'object' || patterns instanceof RegExp ) {
+		return [ [ patterns, true ] ];
 	}
 
-	// Other cases (true, string or regexp).
-	return [ [ patterns as any, true ] ];
+	// Below we do what Object.entries() does, but faster.
+	const normalizedPatterns: Array<[ string, true | string | RegExp ]> = [];
+
+	for ( const key in patterns ) {
+		// Replace with Object.hasOwn() when we upgrade to es2022.
+		if ( Object.prototype.hasOwnProperty.call( patterns, key ) ) {
+			normalizedPatterns.push( [ key, patterns[ key ] ] );
+		}
+	}
+
+	return normalizedPatterns;
 }
 
 /**
@@ -461,14 +466,14 @@ function matchAttributes(
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
 	// for backward compatibility.
-	if ( isPlainObject( patterns ) ) {
-		if ( ( patterns as any ).style !== undefined ) {
+	if ( typeof patterns === 'object' && !( patterns instanceof RegExp ) && !Array.isArray( patterns ) ) {
+		if ( patterns.style !== undefined ) {
 			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns );
 		}
-		if ( ( patterns as any ).class !== undefined ) {
+		if ( patterns.class !== undefined ) {
 			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns );
 		}
 	} else {
 		attributeKeys.delete( 'style' );

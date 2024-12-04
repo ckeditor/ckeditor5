@@ -37,7 +37,7 @@ describe( 'Bug ckeditor5#11925', () => {
 			editor.model.change( writer => {
 				writer.setSelection( selection );
 			} );
-		}, /model-nodelist-offset-out-of-bound/ );
+		}, /document-selection-wrong-position/ );
 
 		expect( () => {
 			editor.model.change( writer => {

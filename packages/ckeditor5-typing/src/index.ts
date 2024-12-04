@@ -14,6 +14,7 @@ export { default as Delete } from './delete.js';
 export { default as TextWatcher } from './textwatcher.js';
 export { default as TwoStepCaretMovement } from './twostepcaretmovement.js';
 export { default as TextTransformation } from './texttransformation.js';
+export type { TextTransformationConfig } from './typingconfig.js';
 
 export { default as inlineHighlight } from './utils/inlinehighlight.js';
 export { default as findAttributeRange, findAttributeRangeBound } from './utils/findattributerange.js';

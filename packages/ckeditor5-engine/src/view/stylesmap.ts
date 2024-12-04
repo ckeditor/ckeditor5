@@ -22,6 +22,16 @@ export default class StylesMap {
 	private _styles: Styles;
 
 	/**
+	 * Cached list of style names for faster access.
+	 */
+	private _cachedStyleNames: Array<string> | null = null;
+
+	/**
+	 * Cached list of expanded style names for faster access.
+	 */
+	private _cachedExpandedStyleNames: Array<string> | null = null;
+
+	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
 	 */
 	private readonly _styleProcessor: StylesProcessor;
@@ -196,6 +206,9 @@ export default class StylesMap {
 	public set( styles: Styles ): void;
 
 	public set( nameOrObject: string | Styles, valueOrObject?: StyleValue ): void {
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
+
 		if ( isObject( nameOrObject ) ) {
 			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
 				this._styleProcessor.toNormalizedForm( key, value, this._styles );
@@ -234,6 +247,9 @@ export default class StylesMap {
 	 * @param name Style name.
 	 */
 	public remove( name: string ): void {
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
+
 		const path = toPath( name );
 
 		unset( this._styles, path );
@@ -406,12 +422,14 @@ export default class StylesMap {
 		}
 
 		if ( expand ) {
-			return this._styleProcessor.getStyleNames( this._styles );
+			this._cachedExpandedStyleNames = this._cachedExpandedStyleNames || this._styleProcessor.getStyleNames( this._styles );
+
+			return this._cachedExpandedStyleNames;
 		}
 
-		const entries = this.getStylesEntries();
+		this._cachedStyleNames = this._cachedStyleNames || this.getStylesEntries().map( ( [ key ] ) => key );
 
-		return entries.map( ( [ key ] ) => key );
+		return this._cachedStyleNames;
 	}
 
 	/**
@@ -419,6 +437,8 @@ export default class StylesMap {
 	 */
 	public clear(): void {
 		this._styles = {};
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
 	}
 
 	/**
@@ -624,23 +644,22 @@ export class StylesProcessor {
 	 * @param styles Object holding normalized styles.
 	 */
 	public getStyleNames( styles: Styles ): Array<string> {
+		const styleNamesKeysSet = new Set<string>();
+
 		// Find all extractable styles that have a value.
-		const expandedStyleNames = Array.from( this._consumables.keys() ).filter( name => {
+		for ( const name of this._consumables.keys() ) {
 			const style = this.getNormalized( name, styles );
 
-			if ( style && typeof style == 'object' ) {
-				return Object.keys( style ).length;
+			if ( style && ( typeof style != 'object' || Object.keys( style ).length ) ) {
+				styleNamesKeysSet.add( name );
 			}
-
-			return style;
-		} );
+		}
 
 		// For simple styles (for example `color`) we don't have a map of those styles
 		// but they are 1 to 1 with normalized object keys.
-		const styleNamesKeysSet = new Set( [
-			...expandedStyleNames,
-			...Object.keys( styles )
-		] );
+		for ( const name of Object.keys( styles ) ) {
+			styleNamesKeysSet.add( name );
+		}
 
 		return Array.from( styleNamesKeysSet );
 	}

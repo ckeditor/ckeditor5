@@ -44,7 +44,7 @@ describe( 'ColorPickerView', () => {
 
 			view.color = 'red';
 
-			expect( view.color ).to.equal( 'hsl( 0, 100%, 50% )' );
+			expect( view.color ).to.equal( 'hsl(0, 100%, 50%)' );
 
 			view.destroy();
 		} );
@@ -277,15 +277,15 @@ describe( 'ColorPickerView', () => {
 				describe( 'wrong color format', () => {
 					testColorUpdateFromInput( {
 						name: 'rgb',
-						inputValue: 'rgb( 100, 100, 100 )',
-						expectedInput: 'rgb( 100, 100, 100 )',
+						inputValue: 'rgb(100, 100, 100)',
+						expectedInput: 'rgb(100, 100, 100)',
 						expectedColorProperty: '#000000'
 					} );
 
 					testColorUpdateFromInput( {
 						name: 'hsl',
-						inputValue: 'hsl( 30, 75%, 60 % )',
-						expectedInput: 'hsl( 30, 75%, 60 % )',
+						inputValue: 'hsl(30, 75%, 60 %)',
+						expectedInput: 'hsl(30, 75%, 60 %)',
 						expectedColorProperty: '#000000'
 					} );
 
@@ -372,6 +372,36 @@ describe( 'ColorPickerView', () => {
 		} );
 	} );
 
+	describe( 'isValid()', () => {
+		let hexInputElement;
+
+		beforeEach( () => {
+			hexInputElement = view.hexInputRow.inputView.fieldView.element;
+		} );
+
+		it( 'should return true for a valid color', () => {
+			hexInputElement.value = '#000';
+
+			expect( view.isValid() ).to.be.true;
+		} );
+
+		it( 'should return false for an invalid color', () => {
+			hexInputElement.value = 'Foo Bar';
+
+			expect( view.isValid() ).to.be.false;
+		} );
+
+		it( 'should return true if the hex input is not shown', () => {
+			const view = new ColorPickerView( locale, { format: 'hex', hideInput: true } );
+
+			view.render();
+
+			expect( view.isValid() ).to.be.true;
+
+			view.destroy();
+		} );
+	} );
+
 	describe( 'color property', () => {
 		it( 'should be initialized with a proper value', () => {
 			expect( view.color ).to.be.equal( '' );
@@ -389,7 +419,7 @@ describe( 'ColorPickerView', () => {
 
 		describe( 'output format integration', () => {
 			it( 'respects rgb output format', () => {
-				testOutputFormat( 'rgb', '#001000', 'rgb( 0, 16, 0 )' );
+				testOutputFormat( 'rgb', '#001000', 'rgb(0, 16, 0)' );
 			} );
 
 			it( 'respects hex output format', () => {
@@ -397,19 +427,19 @@ describe( 'ColorPickerView', () => {
 			} );
 
 			it( 'respects hsl output format', () => {
-				testOutputFormat( 'hsl', '#3D9BFF', 'hsl( 211, 100%, 62% )' );
+				testOutputFormat( 'hsl', '#3D9BFF', 'hsl(211, 100%, 62%)' );
 			} );
 
 			it( 'respects hwb output format', () => {
-				testOutputFormat( 'hwb', '#5cb291', 'hwb( 157, 36, 30 )' );
+				testOutputFormat( 'hwb', '#5cb291', 'hwb(157, 36, 30)' );
 			} );
 
 			it( 'respects lab output format', () => {
-				testOutputFormat( 'lab', '#bfe972', 'lab( 87% -32 53 )' );
+				testOutputFormat( 'lab', '#bfe972', 'lab(87% -32 53)' );
 			} );
 
 			it( 'respects lch output format', () => {
-				testOutputFormat( 'lch', '#be0909', 'lch( 40% 81 39 )' );
+				testOutputFormat( 'lch', '#be0909', 'lch(40% 81 39)' );
 			} );
 
 			function testOutputFormat( format, inputColor, outputColor ) {

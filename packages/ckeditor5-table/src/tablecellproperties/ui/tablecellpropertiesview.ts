@@ -22,9 +22,7 @@ import {
 	ViewCollection,
 	type FocusableView,
 	type NormalizedColorOption,
-	type ColorPickerConfig,
-	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui.js';
 import {
 	KeystrokeHandler,
@@ -384,15 +382,7 @@ export default class TableCellPropertiesView extends View {
 
 		// Maintain continuous focus cycling over views that have focusable children and focus cyclers themselves.
 		[ this.borderColorInput, this.backgroundInput ].forEach( view => {
-			view.fieldView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-				this._focusCycler.focusNext();
-				evt.stop();
-			} );
-
-			view.fieldView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-				this._focusCycler.focusPrevious();
-				evt.stop();
-			} );
+			this._focusCycler.chain( view.fieldView.focusCycler );
 		} );
 
 		[
