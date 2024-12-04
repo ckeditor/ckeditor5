@@ -41,15 +41,15 @@ export default class EmojiMention extends Plugin {
 	}
 
 	/**
-		 * @inheritDoc
-		 */
+	 * @inheritDoc
+	 */
 	public static get pluginName() {
 		return 'EmojiMention' as const;
 	}
 
 	/**
-		 * @inheritDoc
-		 */
+	 * @inheritDoc
+	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
 	}
