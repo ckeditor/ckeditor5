@@ -5,16 +5,14 @@
 
 /* global document, console */
 
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import Emoji from '../src/emoji.js';
-import EmojiLibraryIntegration from '../src/emojilibraryintegration.js';
-import EmojiMentionIntegration from '../src/emojimentionintegration.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Emoji, EmojiMention } from '../src/index.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-describe( 'EmojiMentionIntegration', () => {
+describe( 'EmojiMention', () => {
 	let editor, editorElement, consoleLogStub, consoleWarnStub;
 
 	beforeEach( async () => {
@@ -27,9 +25,9 @@ describe( 'EmojiMentionIntegration', () => {
 		editor = await ClassicEditor.create( editorElement, {
 			plugins: [
 				Emoji,
-				Paragraph,
+				Mention,
 				Essentials,
-				Mention
+				Paragraph
 			]
 		} );
 	} );
@@ -44,21 +42,21 @@ describe( 'EmojiMentionIntegration', () => {
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( EmojiMentionIntegration.pluginName ).to.equal( 'EmojiMentionIntegration' );
+		expect( EmojiMention.pluginName ).to.equal( 'EmojiMention' );
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMentionIntegration.requires ).to.deep.equal( [
-			EmojiLibraryIntegration
+		expect( EmojiMention.requires ).to.deep.equal( [
+			'Mention'
 		] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiMentionIntegration.isOfficialPlugin ).to.be.true;
+		expect( EmojiMention.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiMentionIntegration.isPremiumPlugin ).to.be.false;
+		expect( EmojiMention.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should pass correct config for mention plugin', () => {
@@ -243,11 +241,75 @@ describe( 'EmojiMentionIntegration', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
 			const range = editor.model.document.selection.getFirstRange();
-			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:' } } );
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' } } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
-			expect( consoleLogStub.firstCall.args[ 0 ] ).to.equal( 'SHOWING EMOJI WINDOW' );
+			expect( document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'input#search' ).value ).to.equal( 'flag_poland' );
+		} );
+	} );
+
+	describe( 'queryEmoji()', () => {
+		let queryEmoji;
+
+		beforeEach( () => {
+			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+		} );
+
+		it( 'should be a function', () => {
+			expect( queryEmoji ).to.be.instanceOf( Function );
+		} );
+
+		it( 'should return nothing when querying a single character', () => {
+			return queryEmoji( 'a' ).then( queryResult => {
+				expect( queryResult ).to.deep.equal( [] );
+			} );
+		} );
+
+		it( 'should query single emoji properly properly', () => {
+			return queryEmoji( 'flag_poland' ).then( queryResult => {
+				expect( queryResult ).to.deep.equal( [
+					{ id: 'emoji:flag_poland:', text: '🇵🇱' },
+					{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' }
+				] );
+			} );
+		} );
+
+		it( 'should query multiple emojis properly properly', () => {
+			return queryEmoji( 'face' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 6 );
+
+				queryResult.forEach( item => {
+					expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
+
+					if ( item.id !== 'emoji:__SHOW_ALL_EMOJI__:' ) {
+						expect( typeof item.text ).to.equal( 'string' );
+					}
+				} );
+
+				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( true );
+			} );
+		} );
+
+		it( 'should not include the show all emoji button when EmojiPicker plugin is not available', async () => {
+			await editor.destroy();
+
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ]
+			} );
+
+			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+
+			return queryEmoji( 'face' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 6 );
+
+				queryResult.forEach( item => {
+					expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
+					expect( typeof item.text ).to.equal( 'string' );
+				} );
+
+				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( false );
+			} );
 		} );
 	} );
 } );

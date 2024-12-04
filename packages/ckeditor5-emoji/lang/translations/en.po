@@ -11,6 +11,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
+msgctxt "Label of the button that inserts an emoji."
+msgid "Emoji"
+msgstr "Emoji"
+
 msgctxt "Button appearing at the end of the list of results of emoji search."
 msgid "Show all emoji..."
 msgstr "Show all emoji..."

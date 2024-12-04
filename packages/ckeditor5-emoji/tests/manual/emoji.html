@@ -1,7 +1,9 @@
 <head>
-	<meta http-equiv="Content-Security-Policy" content="object-src 'self' blob">
+	<!-- Required to fetch emoji database from https://cdn.jsdelivr.net -->
+	<meta http-equiv="Content-Security-Policy"
+		content="connect-src 'self' https://cksource.com http://*.cke-cs.com https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json;">
 </head>
 
 <div id="editor">
-	<p>This is <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+	<p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
 </div>

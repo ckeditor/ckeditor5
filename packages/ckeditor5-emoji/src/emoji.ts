@@ -8,21 +8,23 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { Typing } from 'ckeditor5/src/typing.js';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import EmojiMentionIntegration from './emojimentionintegration.js';
-
-import '../theme/emoji.css';
+import EmojiMention from './emojimention.js';
+import EmojiPicker from './emojipicker.js';
 
 /**
- * The emoji feature.
+ * The emoji plugin.
+ *
+ * This is a "glue" plugin which loads the following plugins:
+ *
+ * * {@link module:emoji/emojimention~EmojiMention},
+ * * {@link module:emoji/emojipicker~EmojiPicker},
  */
 export default class Emoji extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Typing, Mention, EmojiMentionIntegration ] as const;
+		return [ EmojiMention, EmojiPicker ] as const;
 	}
 
 	/**

@@ -8,9 +8,9 @@
  */
 
 export { default as Emoji } from './emoji.js';
-export { default as EmojiMentionIntegration } from './emojimentionintegration.js';
-export { default as EmojiLibraryIntegration } from './emojilibraryintegration.js';
+export { default as EmojiMention } from './emojimention.js';
+export { default as EmojiPicker } from './emojipicker.js';
 
-export type { EmojiConfig } from './emojieditorconfig.js';
+export type { EmojiConfig } from './emojiconfig.js';
 
 import './augmentation.js';
