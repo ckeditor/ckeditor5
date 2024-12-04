@@ -36,6 +36,27 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static get requires() {
+		return [ 'Mention' ] as const;
+	}
+
+	/**
+		 * @inheritDoc
+		 */
+	public static get pluginName() {
+		return 'EmojiMention' as const;
+	}
+
+	/**
+		 * @inheritDoc
+		 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -67,27 +88,6 @@ export default class EmojiMention extends Plugin {
 
 		this._setupMentionConfiguration( mentionFeedsConfigs );
 		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get requires() {
-		return [ 'Mention' ] as const;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get pluginName() {
-		return 'EmojiMention' as const;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static override get isOfficialPlugin(): true {
-		return true;
 	}
 
 	/**

@@ -62,8 +62,8 @@ export default class EmojiPicker extends Plugin {
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this._emojiView = this._createEmojiView();
 
-		this.editor.ui.componentFactory.add( 'emoji', () => this._createButton( ButtonView ) );
-		this.editor.ui.componentFactory.add( 'menuBar:emoji', () => this._createButton( MenuBarMenuListItemButtonView ) );
+		this.editor.ui.componentFactory.add( 'emoji', () => createButton( this, ButtonView ) );
+		this.editor.ui.componentFactory.add( 'menuBar:emoji', () => createButton( this, MenuBarMenuListItemButtonView ) );
 	}
 
 	/**
@@ -103,28 +103,6 @@ export default class EmojiPicker extends Plugin {
 		return {
 			target
 		};
-	}
-
-	/**
-	 * Creates a (toolbar or menu bar) button for the emoji picker feature.
-	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
-		const button = new ButtonClass( this.editor.locale ) as InstanceType<T>;
-
-		button.set( {
-			label: this.editor.t( 'Emoji' ),
-			icon: icons.cog // TODO: update the icon when ready. See https://github.com/ckeditor/ckeditor5/issues/17378
-		} );
-
-		if ( button instanceof ButtonView ) {
-			button.set( {
-				tooltip: true
-			} );
-		}
-
-		button.on( 'execute', () => this.showUI() );
-
-		return button;
 	}
 
 	/**
@@ -201,4 +179,29 @@ class EmojiView extends View {
 	public focus(): void {
 		this._getInputElement().focus();
 	}
+}
+
+/**
+ * Creates a (toolbar or menu bar) button for the emoji picker feature.
+ */
+function createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
+	emojiPicker: EmojiPicker,
+	ButtonClass: T
+): InstanceType<T> {
+	const button = new ButtonClass( emojiPicker.editor.locale ) as InstanceType<T>;
+
+	button.set( {
+		label: emojiPicker.editor.t( 'Emoji' ),
+		icon: icons.cog // TODO: update the icon when ready. See https://github.com/ckeditor/ckeditor5/issues/17378
+	} );
+
+	if ( button instanceof ButtonView ) {
+		button.set( {
+			tooltip: true
+		} );
+	}
+
+	button.on( 'execute', () => emojiPicker.showUI() );
+
+	return button;
 }
