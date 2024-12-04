@@ -76,11 +76,11 @@ export default class EmojiMention extends Plugin {
 
 		if ( markerAlreadyUsed ) {
 			/**
-				 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
-				 *
-				 * @error emoji-config-marker-already-used
-				 * @param {string} marker Used marker.
-				 */
+			 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
+			 *
+			 * @error emoji-config-marker-already-used
+			 * @param {string} marker Used marker.
+			 */
 			logWarning( 'emoji-config-marker-already-used', { marker: this._mentionMarker } );
 
 			return;
@@ -154,8 +154,6 @@ export default class EmojiMention extends Plugin {
 				shouldShowEmojiView = true;
 
 				textToInsert = '';
-
-				// TODO: showUI() called from here does not focus properly.
 			}
 
 			this.editor.model.change( writer => {
@@ -163,7 +161,9 @@ export default class EmojiMention extends Plugin {
 			} );
 
 			if ( shouldShowEmojiView ) {
-				this.editor.plugins.get( EmojiPicker ).showUI( eventData.mention.text );
+				setTimeout( () => {
+					this.editor.plugins.get( EmojiPicker ).showUI( eventData.mention.text );
+				} );
 			}
 
 			event.stop();

@@ -77,7 +77,9 @@ export default class EmojiPicker extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		this._emojiView.focus();
+		this._emojiView.focusInputElement();
+
+		this._emojiView.attachListeners();
 
 		if ( initialSearchValue ) {
 			this._emojiView.updateSearchValue( initialSearchValue );
@@ -88,6 +90,7 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI() {
+		this._emojiView.removeListeners();
 		this._balloon.remove( this._emojiView );
 
 		this.editor.editing.view.focus();
@@ -122,11 +125,6 @@ export default class EmojiPicker extends Plugin {
 			this._hideUI();
 		} );
 
-		// Close the dialog while focus is in the editor.
-		editor.keystrokes.set( 'Esc', () => {
-			this._hideUI();
-		} );
-
 		// Close the dialog while focus is in it.
 		emojiView.emojiElement.addEventListener( 'keydown', event => {
 			if ( event.key === 'Escape' ) {
@@ -148,6 +146,7 @@ export default class EmojiPicker extends Plugin {
 
 class EmojiView extends View {
 	public emojiElement: HTMLElement;
+	private declare _lastFavoriteEmoji: HTMLElement;
 
 	constructor( editor: Editor ) {
 		super( editor.locale );
@@ -165,10 +164,6 @@ class EmojiView extends View {
 		} );
 	}
 
-	private _getInputElement(): HTMLInputElement {
-		return this.emojiElement.shadowRoot!.querySelector( 'input#search' )!;
-	}
-
 	public updateSearchValue( newValue: string ): void {
 		const inputElement = this._getInputElement();
 
@@ -176,9 +171,65 @@ class EmojiView extends View {
 		inputElement.dispatchEvent( new Event( 'input' ) );
 	}
 
-	public focus(): void {
+	public focusInputElement(): void {
 		this._getInputElement().focus();
 	}
+
+	public attachListeners(): void {
+		const observer = new MutationObserver( mutationList => {
+			this._lastFavoriteEmoji = Array.from( mutationList[ 0 ].addedNodes ).pop() as HTMLElement;
+
+			this._lastFavoriteEmoji.addEventListener( 'keydown', this._lastFocusableItemListener );
+			this._getInputElement().addEventListener( 'keydown', this._firstFocusableItemListener );
+
+			observer.disconnect();
+		} );
+
+		const favoriteEmojisSection = this.emojiElement.shadowRoot!.querySelector( '.favorites.emoji-menu' )!;
+
+		observer.observe( favoriteEmojisSection, { childList: true } );
+	}
+
+	public removeListeners(): void {
+		this._lastFavoriteEmoji.removeEventListener( 'keydown', this._lastFocusableItemListener );
+		this._getInputElement().removeEventListener( 'keydown', this._firstFocusableItemListener );
+	}
+
+	private _getInputElement(): HTMLInputElement {
+		return this.emojiElement.shadowRoot!.querySelector( 'input#search' )!;
+	}
+
+	private _firstFocusableItemListener = ( event: Event ) => {
+		const keyboardEvent = event as KeyboardEvent;
+
+		if ( keyboardEvent.key !== 'Tab' ) {
+			return;
+		}
+
+		if ( !keyboardEvent.shiftKey ) {
+			return;
+		}
+
+		this._lastFavoriteEmoji.focus();
+
+		event.preventDefault();
+	};
+
+	private _lastFocusableItemListener = ( event: Event ) => {
+		const keyboardEvent = event as KeyboardEvent;
+
+		if ( keyboardEvent.key !== 'Tab' ) {
+			return;
+		}
+
+		if ( keyboardEvent.shiftKey ) {
+			return;
+		}
+
+		this.focusInputElement();
+
+		event.preventDefault();
+	};
 }
 
 /**
