@@ -1,0 +1,56 @@
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
+msgid "Bookmark"
+msgstr "Penanda"
+
+msgctxt "The button in the bookmark insert form."
+msgid "Insert"
+msgstr "Sisipkan"
+
+msgctxt "The button in the bookmark update form."
+msgid "Update"
+msgstr "PErbarui"
+
+msgctxt "Button opening the Bookmark editing balloon."
+msgid "Edit bookmark"
+msgstr "Edit penanda"
+
+msgctxt "Toolbar button tooltip for bookmark remove button."
+msgid "Remove bookmark"
+msgstr "Hapus penanda"
+
+msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
+msgid "Bookmark name"
+msgstr "Nama penanda"
+
+msgctxt "The description of bookmark input in the bookmark insert form."
+msgid "Enter the bookmark name without spaces."
+msgstr "Masukkan nama penanda tanpa spasi."
+
+msgctxt "The error message. Displayed when the bookmark name is empty."
+msgid "Bookmark must not be empty."
+msgstr "Penanda tidak boleh kosong."
+
+msgctxt "The error message. Displayed when provided name includes spaces."
+msgid "Bookmark name cannot contain space characters."
+msgstr "Nama penanda tidak boleh mengandung spasi."
+
+msgctxt "The error message. Displayed when provided name already exists."
+msgid "Bookmark name already exists."
+msgstr "Nama penanda sudah ada."
+
+msgctxt "The label for the bookmark widget."
+msgid "bookmark widget"
+msgstr "widget penanda"

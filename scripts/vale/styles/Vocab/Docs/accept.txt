@@ -87,6 +87,7 @@ monorepo
 (?i)multiline
 [Nn]amespace
 namespacing
+NGModule
 npm
 numberedList
 Nuxt
@@ -143,6 +144,7 @@ uploadImage
 (?i)uploader
 (?i)upvote
 upvoting
+[utils]
 (?i)viewport
 Vite
 Vue

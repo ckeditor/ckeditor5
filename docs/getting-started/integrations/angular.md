@@ -1,6 +1,6 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component (npm) | CKEditor 5 documentation
+meta-title: Angular rich text editor component (npm) | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
 category: self-hosted
 order: 30
@@ -49,13 +49,22 @@ Standalone components provide a simplified way to build Angular applications. Th
 
 Instead, add the `CKEditorModule` to the imports in your app component. The component needs the `standalone` option set to `true`. The example below shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -71,11 +80,8 @@ export class AppComponent {
 	public Editor = ClassicEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -121,12 +127,21 @@ export class AppModule { }
 
 Then, import the editor in your Angular component and assign it to a `public` property to make it accessible from the template. The below example shows how to use the component with open-source and premium plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 
 @Component( {
 	selector: 'app-root',
@@ -140,11 +155,8 @@ export class AppComponent {
 	public Editor = ClassicEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-		// mention: {
-		//     Mention configuration
-		// }
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
 }
 ```
@@ -505,7 +517,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+import { DecoupledEditor, Essentials, Italic, Paragraph, Bold } from 'ckeditor5';
 
 @Component( {
 	selector: 'app-root',
@@ -521,7 +533,7 @@ export class AppComponent {
 	public Editor = DecoupledEditor;
 	public config = {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+		plugins: [ Bold, Essentials, Italic, Paragraph ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	}
 	public onReady( editor: DecoupledEditor ): void {
@@ -556,8 +568,10 @@ And then, link the method in the template:
 
 We provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
 
-* [CKEditor&nbsp;5 with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
-* [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-angular)
+* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
+* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
+* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
@@ -611,7 +625,7 @@ The `moduleResolution` option of the TypeScript configuration determines the alg
 * You can set the `moduleResolution` option to `bundler`. It is the recommended setting in TypeScript 5.0+ for applications that use a bundler. And it is a recommended way of fixing this problem. You can check other solutions below for lower TypeScript versions.
 * You can tell the TypeScript compiler to suppress the problem using the `// @ts-expect-error` comment above the imported translations.
 * You can update Angular to version 18, where the `moduleResolution` option is set to `bundler`  by default.
-* You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the config.
+* You can import translations directly from our CDN, like: `import ‘https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/translations/es.umd.js’;`. This way, the editor will load the translations automatically, so you do not need to pass them manually into the configuration.
 
 ### Jest testing
 
@@ -672,10 +686,6 @@ beforeAll( () => {
 These mocks should be placed before the tests that use CKEditor&nbsp;5. They are imperfect and may not cover all the cases, but they should be sufficient for basic initialization and rendering editor. Keep in mind that they are not a replacement for proper browser testing.
 
 ## Supported Angular versions
-
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
 
 Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
 

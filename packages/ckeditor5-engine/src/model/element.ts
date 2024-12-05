@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -224,7 +224,7 @@ export default class Element extends Node {
 	 * element will be cloned without any child.
 	 */
 	public override _clone( deep = false ): Element {
-		const children = deep ? Array.from( this._children ).map( node => node._clone( true ) ) : undefined;
+		const children = deep ? cloneNodes( this._children ) : undefined;
 
 		return new Element( this.name, this.getAttributes(), children );
 	}
@@ -282,6 +282,25 @@ export default class Element extends Node {
 		}
 
 		return nodes;
+	}
+
+	/**
+	 * Removes children nodes provided as an array and sets
+	 * the {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 *
+	 * These nodes do not need to be direct siblings.
+	 *
+	 * This method is faster than removing nodes one by one, as it recalculates offsets only once.
+	 *
+	 * @internal
+	 * @param nodes Array of nodes.
+	 */
+	public _removeChildrenArray( nodes: Array<Node> ): void {
+		this._children._removeNodesArray( nodes );
+
+		for ( const node of nodes ) {
+			( node as any ).parent = null;
+		}
 	}
 
 	/**
@@ -398,17 +417,27 @@ function normalize( nodes: string | Item | Iterable<string | Item> ): Array<Node
 		nodes = [ nodes ];
 	}
 
-	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes )
-		.map( node => {
-			if ( typeof node == 'string' ) {
-				return new Text( node );
-			}
+	const normalizedNodes: Array<Node> = [];
 
-			if ( node instanceof TextProxy ) {
-				return new Text( node.data, node.getAttributes() );
-			}
+	for ( const node of nodes ) {
+		if ( typeof node == 'string' ) {
+			normalizedNodes.push( new Text( node ) );
+		} else if ( node instanceof TextProxy ) {
+			normalizedNodes.push( new Text( node.data, node.getAttributes() ) );
+		} else {
+			normalizedNodes.push( node );
+		}
+	}
 
-			return node;
-		} );
+	return normalizedNodes;
+}
+
+function cloneNodes( nodes: NodeList ): Array<Node> {
+	const clonedNodes: Array<Node> = [];
+
+	for ( const node of nodes ) {
+		clonedNodes.push( node._clone( true ) );
+	}
+
+	return clonedNodes;
 }
