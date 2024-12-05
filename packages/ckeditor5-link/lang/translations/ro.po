@@ -58,3 +58,7 @@ msgstr "Crearea unui link"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "Ieșire dintr-un link"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "Derulează până la țintă"

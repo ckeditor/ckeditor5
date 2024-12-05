@@ -1,7 +1,8 @@
 ---
 category: setup
 meta-title: Content Security Policy | CKEditor 5 Documentation
-meta-description: Learn about the CKEditor 5 Content Security Policy.
+meta-description: Learn about the CKEditor 5 Content Security Policy (CSP).
+menu-title: Content Security Policy (CSP)
 order: 110
 ---
 

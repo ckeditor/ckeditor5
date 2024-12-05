@@ -58,3 +58,7 @@ msgstr "リンクを作成する"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "リンクの外に移動する"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "ターゲットまでスクロール"
