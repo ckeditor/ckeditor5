@@ -27,7 +27,7 @@ import {
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
 
-import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import { Collection, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
@@ -35,7 +35,6 @@ import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.
 import LinkProviderItemsView from './ui/linkprovideritemsview.js';
 import LinkPropertiesView from './ui/linkpropertiesview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
-import LinkEditing from './linkediting.js';
 
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
@@ -80,6 +79,13 @@ export default class LinkUI extends Plugin {
 	public linkProviderItemsView: LinkProviderItemsView | null = null;
 
 	/**
+	 * The collection of the link providers.
+	 */
+	public linksProviders: Collection<LinksProvider> = new Collection( {
+		idProperty: 'label'
+	} );
+
+	/**
 	 * The form view displaying properties link settings.
 	 */
 	public propertiesView: LinkPropertiesView & ViewWithCssTransitionDisabler | null = null;
@@ -104,7 +110,7 @@ export default class LinkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon, LinkEditing ] as const;
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**
@@ -133,7 +139,6 @@ export default class LinkUI extends Plugin {
 		editor.editing.view.addObserver( ClickObserver );
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
-		this.formView = this._createFormView();
 
 		// Create toolbar buttons.
 		this._registerComponents();
@@ -213,9 +218,7 @@ export default class LinkUI extends Plugin {
 	 * opens a list of links provided by the registered provider.
 	 */
 	public registerLinksListProvider( provider: LinksProvider ): void {
-		this.formView!.providersListChildren.add(
-			this._createLinksListProviderButton( provider )
-		);
+		this.linksProviders.add( provider );
 	}
 
 	/**
@@ -225,6 +228,7 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
 		this.toolbarView = this._createToolbarView();
+		this.formView = this._createFormView();
 
 		if ( linkCommand.manualDecorators.length ) {
 			this.propertiesView = this._createPropertiesView();
@@ -338,6 +342,11 @@ export default class LinkUI extends Plugin {
 			this._closeFormView();
 			cancel();
 		} );
+
+		// Watch adding new link providers and add them to the buttons list.
+		formView.providersListChildren.bindTo( this.linksProviders ).using(
+			provider => this._createLinksListProviderButton( provider )
+		);
 
 		return formView;
 	}
