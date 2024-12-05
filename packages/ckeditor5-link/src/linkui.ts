@@ -414,13 +414,13 @@ export default class LinkUI extends Plugin {
 	private _createLinkProviderListView(): Array<ButtonView> {
 		const items = this.selectedLinksProvider!.getItems();
 
-		return items.map( ( { label, href, icon } ) => {
+		return items.map( ( { label, href, icon, tooltip } ) => {
 			const buttonView = new ButtonView();
 
 			buttonView.set( {
 				label,
 				icon,
-				tooltip: false,
+				tooltip,
 				withText: true
 			} );
 
@@ -1341,13 +1341,15 @@ export type LinksProviderItem = {
 	id: string;
 
 	/**
-	 * Label displayed for the item.
+	 * Label that serves two purposes:
+	 *
+	 * 	* As a text for the item on the list.
+	 * 	* As a text for the preview when the item is selected.
 	 */
 	label: string;
 
 	/**
-	 * Optional tooltip when hover the item on the list or in the preview.
-	 * It indicates the action that will be performed after clicking the item.
+	 * Optional tooltip shown in places described for the `label` property.
 	 */
 	tooltip?: string;
 
