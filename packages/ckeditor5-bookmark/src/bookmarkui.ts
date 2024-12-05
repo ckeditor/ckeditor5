@@ -251,7 +251,10 @@ export default class BookmarkUI extends Plugin {
 				id: bookmarkId,
 				label: bookmarkId,
 				href: `#${ bookmarkId }`,
-				icon: icons.bookmark
+				icon: icons.bookmark,
+				preview: {
+					tooltip: t( 'Scroll to bookmark' )
+				}
 			} ) );
 
 		const onNavigateToLink = ( { id }: LinksProviderItem ) => this._scrollToBookmark( id );

@@ -404,13 +404,13 @@ export default class LinkUI extends Plugin {
 	 * Creates a sorted array of buttons with link names.
 	 */
 	private _createLinkProviderListView( provider: LinksProvider ): Array<ButtonView> {
-		return provider.getItems().map( ( { label, href, icon, tooltip } ) => {
+		return provider.getItems().map( ( { label, href, icon } ) => {
 			const buttonView = new ButtonView();
 
 			buttonView.set( {
 				label,
 				icon,
-				tooltip,
+				tooltip: false,
 				withText: true
 			} );
 
@@ -575,7 +575,7 @@ export default class LinkUI extends Plugin {
 			} );
 
 			button.bind( 'tooltip' ).to( this, 'selectedLinksProviderLink', provider => {
-				const tooltip = provider ? provider.item.tooltip : null;
+				const { tooltip } = ( provider && provider.item.preview ) || {};
 
 				return tooltip || t( 'Open link in new tab' );
 			} );
@@ -1387,11 +1387,6 @@ export type LinksProviderItem = {
 	label: string;
 
 	/**
-	 * Optional tooltip shown in places described for the `label` property.
-	 */
-	tooltip?: string;
-
-	/**
 	 * Optional icon displayed for the item.
 	 */
 	icon?: string;
@@ -1400,6 +1395,17 @@ export type LinksProviderItem = {
 	 * Value (URL) that will be used when the item is selected.
 	 */
 	href: string;
+
+	/**
+	 * Optional attributes that will be used during rendering of link preview toolbar.
+	 */
+	preview?: {
+
+		/**
+		 * Optional tooltip shown when the item preview is hovered.
+		 */
+		tooltip?: string;
+	};
 };
 
 /**
