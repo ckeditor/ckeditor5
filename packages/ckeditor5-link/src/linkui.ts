@@ -32,9 +32,11 @@ import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
-import LinkBookmarksView from './ui/linkbookmarksview.js';
+import LinkProviderItemsView from './ui/linkprovideritemsview.js';
 import LinkPropertiesView from './ui/linkpropertiesview.js';
 import LinkButtonView from './ui/linkbuttonview.js';
+import LinkEditing from './linkediting.js';
+
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
 
@@ -75,7 +77,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * The view displaying bookmarks list.
 	 */
-	public bookmarksView: LinkBookmarksView | null = null;
+	public linkProviderItemsView: LinkProviderItemsView | null = null;
 
 	/**
 	 * The form view displaying properties link settings.
@@ -102,7 +104,7 @@ export default class LinkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon ] as const;
+		return [ ContextualBalloon, LinkEditing ] as const;
 	}
 
 	/**
@@ -131,6 +133,7 @@ export default class LinkUI extends Plugin {
 		editor.editing.view.addObserver( ClickObserver );
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
+		this.formView = this._createFormView();
 
 		// Create toolbar buttons.
 		this._registerComponents();
@@ -200,9 +203,19 @@ export default class LinkUI extends Plugin {
 			this.toolbarView.destroy();
 		}
 
-		if ( this.bookmarksView ) {
-			this.bookmarksView.destroy();
+		if ( this.linkProviderItemsView ) {
+			this.linkProviderItemsView.destroy();
 		}
+	}
+
+	/**
+	 * Registers a link provider. It appends a button to the link toolbar that
+	 * opens a list of links provided by the registered provider.
+	 */
+	public registerLinksListProvider( provider: LinksProvider ): void {
+		this.formView!.providersListChildren.add(
+			this._createLinksListProviderButton( provider )
+		);
 	}
 
 	/**
@@ -212,15 +225,9 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
 		this.toolbarView = this._createToolbarView();
-		this.formView = this._createFormView();
 
 		if ( linkCommand.manualDecorators.length ) {
 			this.propertiesView = this._createPropertiesView();
-		}
-
-		if ( this.editor.plugins.has( 'BookmarkEditing' ) ) {
-			this.bookmarksView = this._createBookmarksView();
-			this.formView.providersListChildren.add( this._createBookmarksButton() );
 		}
 
 		// Attach lifecycle actions to the the balloon.
@@ -338,31 +345,28 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Creates a sorted array of buttons with bookmark names.
 	 */
-	private _createBookmarksListView(): Array<ButtonView> {
+	private _createLinkProviderListView( provider: LinksProvider ): Array<ButtonView> {
 		const editor = this.editor;
-		const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-		const bookmarksNames = Array.from( bookmarkEditing.getAllBookmarkNames() );
+		const items = provider.getItems();
 
-		bookmarksNames.sort( ( a, b ) => a.localeCompare( b ) );
-
-		return bookmarksNames.map( bookmarkName => {
+		return items.map( ( { label, value, icon } ) => {
 			const buttonView = new ButtonView();
 
 			buttonView.set( {
-				label: bookmarkName,
+				label,
+				icon,
 				tooltip: false,
-				icon: icons.bookmarkMedium,
 				withText: true
 			} );
 
 			buttonView.on( 'execute', () => {
 				this.formView!.resetFormStatus();
-				this.formView!.urlInputView.fieldView.value = '#' + bookmarkName;
+				this.formView!.urlInputView.fieldView.value = value;
 
 				// Set focus to the editing view to prevent from losing it while current view is removed.
 				editor.editing.view.focus();
 
-				this._removeBookmarksView();
+				this._removeLinksProviderView();
 
 				// Set the focus to the URL input field.
 				this.formView!.focus();
@@ -373,18 +377,23 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Creates a view for bookmarks.
+	 * Creates a view for links provider.
 	 */
-	private _createBookmarksView(): LinkBookmarksView {
+	private _createLinkProviderItemsView( provider: LinksProvider ): LinkProviderItemsView {
 		const editor = this.editor;
-		const view = new LinkBookmarksView( editor.locale );
+		const t = editor.locale.t;
+
+		const view = new LinkProviderItemsView( editor.locale );
+
+		view.set( 'emptyListPlaceholder', provider.emptyListPlaceholder || t( 'No links available' ) );
+		view.set( 'headerLabel', provider.label );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
 			// Set focus to the editing view to prevent from losing it while current view is removed.
 			editor.editing.view.focus();
 
-			this._removeBookmarksView();
+			this._removeLinksProviderView();
 
 			// Set the focus to the URL input field.
 			this.formView!.focus();
@@ -588,17 +597,16 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Creates a bookmarks button view.
 	 */
-	private _createBookmarksButton(): LinkButtonView {
+	private _createLinksListProviderButton( linkProvider: LinksProvider ): LinkButtonView {
 		const locale = this.editor.locale!;
-		const t = locale.t;
 		const bookmarksButton = new LinkButtonView( locale );
 
 		bookmarksButton.set( {
-			label: t( 'Bookmarks' )
+			label: linkProvider.label
 		} );
 
 		this.listenTo( bookmarksButton, 'execute', () => {
-			this._addBookmarksView();
+			this._showLinksProviderView( linkProvider );
 		} );
 
 		return bookmarksButton;
@@ -791,21 +799,33 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Adds the {@link #bookmarksView} to the {@link #_balloon}.
+	 * Shows the view with links provided by the given provider.
 	 */
-	private _addBookmarksView(): void {
+	private _showLinksProviderView( provider: LinksProvider ): void {
+		if ( this.linkProviderItemsView ) {
+			this._removeLinksProviderView();
+		}
+
+		this.linkProviderItemsView = this._createLinkProviderItemsView( provider );
+		this._addLinkProviderItemsView( provider );
+	}
+
+	/**
+	 * Adds the {@link #linkProviderItemsView} to the {@link #_balloon}.
+	 */
+	private _addLinkProviderItemsView( provider: LinksProvider ): void {
 		// Clear the collection of bookmarks.
-		this.bookmarksView!.listChildren.clear();
+		this.linkProviderItemsView!.listChildren.clear();
 
 		// Add bookmarks to the collection.
-		this.bookmarksView!.listChildren.addMany( this._createBookmarksListView() );
+		this.linkProviderItemsView!.listChildren.addMany( this._createLinkProviderListView( provider ) );
 
 		this._balloon.add( {
-			view: this.bookmarksView!,
+			view: this.linkProviderItemsView!,
 			position: this._getBalloonPositionData()
 		} );
 
-		this.bookmarksView!.focus();
+		this.linkProviderItemsView!.focus();
 	}
 
 	/**
@@ -834,11 +854,11 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Removes the {@link #bookmarksView} from the {@link #_balloon}.
+	 * Removes the {@link #linkProviderItemsView} from the {@link #_balloon}.
 	 */
-	private _removeBookmarksView(): void {
-		if ( this._areBookmarksInPanel ) {
-			this._balloon.remove( this.bookmarksView! );
+	private _removeLinksProviderView(): void {
+		if ( this._isLinksListInPanel ) {
+			this._balloon.remove( this.linkProviderItemsView! );
 		}
 	}
 
@@ -933,7 +953,7 @@ export default class LinkUI extends Plugin {
 		}
 
 		// If the bookmarks view is visible, remove it because it can be on top of the stack.
-		this._removeBookmarksView();
+		this._removeLinksProviderView();
 
 		// If the properties form view is visible, remove it because it can be on top of the stack.
 		this._removePropertiesView();
@@ -1013,10 +1033,10 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #bookmarksView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #linkProviderItemsView} is in the {@link #_balloon}.
 	 */
-	private get _areBookmarksInPanel(): boolean {
-		return !!this.bookmarksView && this._balloon.hasView( this.bookmarksView );
+	private get _isLinksListInPanel(): boolean {
+		return !!this.linkProviderItemsView && this._balloon.hasView( this.linkProviderItemsView );
 	}
 
 	/**
@@ -1058,27 +1078,27 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #bookmarksView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #linkProviderItemsView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 */
-	private get _areBookmarksVisible(): boolean {
-		return !!this.bookmarksView && this._balloon.visibleView === this.bookmarksView;
+	private get _isLinksListVisible(): boolean {
+		return !!this.linkProviderItemsView && this._balloon.visibleView === this.linkProviderItemsView;
 	}
 
 	/**
-	 * Returns `true` when {@link #propertiesView}, {@link #toolbarView}, {@link #bookmarksView}
+	 * Returns `true` when {@link #propertiesView}, {@link #toolbarView}, {@link #linkProviderItemsView}
 	 * or {@link #formView} is in the {@link #_balloon}.
 	 */
 	private get _isUIInPanel(): boolean {
-		return this._arePropertiesInPanel || this._areBookmarksInPanel || this._isFormInPanel || this._isToolbarInPanel;
+		return this._arePropertiesInPanel || this._isLinksListInPanel || this._isFormInPanel || this._isToolbarInPanel;
 	}
 
 	/**
-	 * Returns `true` when {@link #propertiesView}, {@link #bookmarksView}, {@link #toolbarView}
+	 * Returns `true` when {@link #propertiesView}, {@link #linkProviderItemsView}, {@link #toolbarView}
 	 * or {@link #formView} is in the {@link #_balloon} and it is currently visible.
 	 */
 	private get _isUIVisible(): boolean {
-		return this._isPropertiesVisible || this._areBookmarksVisible || this._isFormVisible || this._isToolbarVisible;
+		return this._isPropertiesVisible || this._isLinksListInPanel || this._isFormVisible || this._isToolbarVisible;
 	}
 
 	/**
@@ -1234,6 +1254,57 @@ export default class LinkUI extends Plugin {
 		}
 	}
 }
+
+/**
+ * Link list item that represents a single link in the provider's list.
+ */
+export type LinksProviderItem = {
+
+	/**
+	 * Label displayed for the item.
+	 */
+	label: string;
+
+	/**
+	 * Optional icon displayed for the item.
+	 */
+	icon?: string;
+
+	/**
+	 * Value (URL) that will be used when the item is selected.
+	 */
+	value: string;
+};
+
+/**
+ * Interface for a provider that provides a list of links to be displayed in the link form view.
+ */
+export type LinksProvider = {
+
+	/**
+	 * Label that serves two purposes:
+	 *
+	 * 	* As a text for the button that opens this link list from within link form view.
+	 * 	* As a text for the header when the list of links from this provider is displayed.
+	 */
+	label: string;
+
+	/**
+	 * Message to be displayed when there are no items in the list.
+	 * It's optional and if not provided, a default message will be displayed.
+	 */
+	emptyListPlaceholder?: string;
+
+	/**
+	 * Weight used for ordering providers in the list. Higher weight means the provider will be displayed lower in the list.
+	 */
+	weight: number;
+
+	/**
+	 * Callback for retrieving an array of items (this should not be a collection as it could change while form is open).
+	 */
+	getItems(): Array<LinksProviderItem>;
+};
 
 /**
  * Returns a link element if there's one among the ancestors of the provided `Position`.

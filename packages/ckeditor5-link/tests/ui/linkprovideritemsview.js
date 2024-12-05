@@ -21,24 +21,24 @@ import {
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import LinkBookmarksView from '../../src/ui/linkbookmarksview.js';
+import LinkProviderItemsView from '../../src/ui/linkprovideritemsview.js';
 
 const mockLocale = { t: val => val };
 
-describe( 'LinkBookmarksView', () => {
-	let view, bookmarksButtonsArrayMock;
+describe( 'LinkProviderItemsView', () => {
+	let view, linksButtonsArrayMock;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new LinkBookmarksView( mockLocale );
+		view = new LinkProviderItemsView( mockLocale );
 		view.render();
 		document.body.appendChild( view.element );
 
-		bookmarksButtonsArrayMock = [
-			createButton( 'Mocked bookmark button 1' ),
-			createButton( 'Mocked bookmark button 2' ),
-			createButton( 'Mocked bookmark button 3' )
+		linksButtonsArrayMock = [
+			createButton( 'Mocked link button 1' ),
+			createButton( 'Mocked link button 2' ),
+			createButton( 'Mocked link button 3' )
 		];
 	} );
 
@@ -52,7 +52,7 @@ describe( 'LinkBookmarksView', () => {
 			expect( view.element.tagName.toLowerCase() ).to.equal( 'div' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link__bookmarks' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-link__links' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -84,7 +84,7 @@ describe( 'LinkBookmarksView', () => {
 		it( 'should create #hasItems instance and set it to `false`', () => {
 			expect( view.hasItems ).to.be.equal( false );
 
-			view.listChildren.addMany( bookmarksButtonsArrayMock );
+			view.listChildren.addMany( linksButtonsArrayMock );
 
 			expect( view.hasItems ).to.be.equal( true );
 
@@ -118,8 +118,6 @@ describe( 'LinkBookmarksView', () => {
 			expect( emptyListInformation.element.tagName.toLowerCase() ).to.equal( 'p' );
 			expect( emptyListInformation.element.classList.contains( 'ck' ) ).to.true;
 			expect( emptyListInformation.element.classList.contains( 'ck-link__empty-list-info' ) ).to.true;
-
-			expect( emptyListInformation.template.children[ 0 ].text[ 0 ] ).to.equal( 'No bookmarks available.' );
 		} );
 	} );
 
@@ -140,6 +138,18 @@ describe( 'LinkBookmarksView', () => {
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
+
+		it( 'should bind the #headerLabel to headerView.label', () => {
+			view.headerLabel = 'Mocked header label';
+
+			expect( view.children.get( 0 ).label ).to.equal( 'Mocked header label' );
+		} );
+
+		it( 'should bind the #emptyListInformation to emptyListInformation', () => {
+			view.emptyListPlaceholder = 'Mocked empty list information';
+
+			expect( view.emptyListInformation.element.innerText ).to.equal( 'Mocked empty list information' );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -151,7 +161,7 @@ describe( 'LinkBookmarksView', () => {
 		} );
 
 		it( 'should register child views #element in #focusTracker', () => {
-			const view = new LinkBookmarksView( mockLocale );
+			const view = new LinkProviderItemsView( mockLocale );
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
 			view.render();
@@ -163,7 +173,7 @@ describe( 'LinkBookmarksView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new LinkBookmarksView( mockLocale );
+			const view = new LinkProviderItemsView( mockLocale );
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
@@ -180,11 +190,11 @@ describe( 'LinkBookmarksView', () => {
 			testUtils.createSinonSandbox();
 
 			beforeEach( () => {
-				view = new LinkBookmarksView( mockLocale );
+				view = new LinkProviderItemsView( mockLocale );
 				view.render();
 				document.body.appendChild( view.element );
 
-				view.listChildren.addMany( bookmarksButtonsArrayMock );
+				view.listChildren.addMany( linksButtonsArrayMock );
 			} );
 
 			afterEach( () => {
@@ -254,7 +264,7 @@ describe( 'LinkBookmarksView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the back button when bookmarks list is empty', () => {
+		it( 'focuses the back button when links list is empty', () => {
 			const backButtonSpy = sinon.spy( view.backButtonView, 'focus' );
 
 			view.focus();
@@ -262,10 +272,10 @@ describe( 'LinkBookmarksView', () => {
 			sinon.assert.calledOnce( backButtonSpy );
 		} );
 
-		it( 'focuses the back button when bookmarks list is not empty', () => {
+		it( 'focuses the back button when links list is not empty', () => {
 			const backButtonSpy = sinon.spy( view.backButtonView, 'focus' );
 
-			view.listChildren.addMany( bookmarksButtonsArrayMock );
+			view.listChildren.addMany( linksButtonsArrayMock );
 
 			const listItemSpy = sinon.spy( view.listChildren.first, 'focus' );
 

@@ -22,6 +22,7 @@ import BookmarkEditing from '../src/bookmarkediting.js';
 import BookmarkUI from '../src/bookmarkui.js';
 
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
+import { LinkUI } from '@ckeditor/ckeditor5-link';
 
 const bookmarkIcon = icons.bookmark;
 
@@ -55,7 +56,7 @@ describe( 'BookmarkUI', () => {
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( BookmarkUI.requires ).to.deep.equal( [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ] );
+		expect( BookmarkUI.requires ).to.deep.equal( [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository, LinkUI ] );
 	} );
 
 	it( 'should be correctly named', () => {

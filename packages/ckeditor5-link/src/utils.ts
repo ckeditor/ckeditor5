@@ -21,7 +21,6 @@ import type {
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
-import type { BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
@@ -210,9 +209,7 @@ export function isScrollableToTarget( editor: Editor, link: string | undefined )
 		return false;
 	}
 
-	const bookmarkEditing: BookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-	return !!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
+	return true;
 }
 
 /**
@@ -222,13 +219,6 @@ export function scrollToTarget( editor: Editor, link: string ): boolean {
 	if ( !isScrollableToTarget( editor, link ) ) {
 		return false;
 	}
-
-	const bookmarkEditing: BookmarkEditing = editor.plugins.get( 'BookmarkEditing' )!;
-	const modelBookmark = bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
-
-	editor.model.change( writer => {
-		writer.setSelection( modelBookmark!, 'on' );
-	} );
 
 	editor.editing.view.scrollToTheSelection( {
 		alignToTop: true,

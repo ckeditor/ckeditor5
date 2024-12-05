@@ -25,13 +25,11 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
-import { icons } from '@ckeditor/ckeditor5-core';
 
 import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkButtonView from '../src/ui/linkbuttonview.js';
-import LinkBookmarksView from '../src/ui/linkbookmarksview.js';
 import LinkPreviewButtonView from '../src/ui/linkpreviewbuttonview.js';
 import LinkPropertiesView from '../src/ui/linkpropertiesview.js';
 import ManualDecorator from '../src/utils/manualdecorator.js';
@@ -1257,7 +1255,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature._showUI();
 
-				expect( linkUIFeature.bookmarksView ).to.be.equal( null );
+				expect( linkUIFeature.linkProviderItemsView ).to.be.equal( null );
 			} );
 		} );
 	} );
@@ -2894,7 +2892,7 @@ describe( 'LinkUI', () => {
 } );
 
 describe( 'LinkUI with Bookmark', () => {
-	let editor, linkUIFeature, balloon, editorElement, bookmarksView;
+	let editor, linkUIFeature, balloon, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -2937,161 +2935,11 @@ describe( 'LinkUI with Bookmark', () => {
 		expect( linkUIFeature.formView ).to.be.instanceOf( LinkFormView );
 		expect( button ).to.be.instanceOf( LinkButtonView );
 
-		expect( linkUIFeature._areBookmarksVisible ).to.be.false;
+		expect( linkUIFeature._isLinksListVisible ).to.be.false;
 
 		button.fire( 'execute' );
 
-		expect( linkUIFeature._areBookmarksVisible ).to.be.true;
-	} );
-
-	describe( '_createBookmarksView()', () => {
-		it( 'should create #bookmarksView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-
-			expect( linkUIFeature.bookmarksView ).to.be.instanceOf( LinkBookmarksView );
-		} );
-	} );
-
-	describe( '_createBookmarksListView()', () => {
-		describe( 'with bookmarks data', () => {
-			let bookmarksView;
-
-			beforeEach( () => {
-				setModelData( editor.model,
-					'<paragraph>f[o]o' +
-						'<bookmark bookmarkId="zzz"></bookmark>' +
-						'<bookmark bookmarkId="aaa"></bookmark>' +
-						'<bookmark bookmarkId="ccc"></bookmark>' +
-					'</paragraph>'
-				);
-
-				linkUIFeature._showUI();
-				linkUIFeature._addBookmarksView();
-
-				bookmarksView = linkUIFeature.bookmarksView;
-			} );
-
-			it( 'should create a sorted list of bookmarks buttons', () => {
-				expect( bookmarksView.listChildren.length ).to.equal( 3 );
-
-				expect( bookmarksView.listChildren.get( 0 ) ).is.instanceOf( ButtonView );
-				expect( bookmarksView.listChildren.get( 1 ) ).is.instanceOf( ButtonView );
-				expect( bookmarksView.listChildren.get( 2 ) ).is.instanceOf( ButtonView );
-
-				expect( bookmarksView.listChildren.get( 0 ).icon ).to.equal( icons.bookmarkMedium );
-				expect( bookmarksView.listChildren.get( 1 ).icon ).to.equal( icons.bookmarkMedium );
-				expect( bookmarksView.listChildren.get( 2 ).icon ).to.equal( icons.bookmarkMedium );
-
-				expect( bookmarksView.listChildren.get( 0 ).label ).to.equal( 'aaa' );
-				expect( bookmarksView.listChildren.get( 1 ).label ).to.equal( 'ccc' );
-				expect( bookmarksView.listChildren.get( 2 ).label ).to.equal( 'zzz' );
-			} );
-
-			it( 'should execute action after click the bookmark button', () => {
-				// First button from the list with bookmark name 'aaa'.
-				const bookmarkButton = bookmarksView.listChildren.get( 0 );
-				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
-
-				bookmarkButton.fire( 'execute' );
-
-				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
-				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
-				expect( focusSpy.calledOnce ).to.be.true;
-			} );
-
-			it( 'should clear the error message that appears on first attempt of submit the form ' +
-					'when next action is executed after clicking the bookmark button', () => {
-				linkUIFeature._createViews();
-				const formView = linkUIFeature.formView;
-				formView.render();
-
-				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
-				linkUIFeature._showUI();
-
-				formView.fire( 'submit' );
-
-				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
-				// First button from the list with bookmark name 'aaa'.
-				const bookmarkButton = bookmarksView.listChildren.get( 0 );
-				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
-
-				bookmarkButton.fire( 'execute' );
-
-				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
-				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
-				expect( focusSpy.calledOnce ).to.be.true;
-
-				expect( formView.urlInputView.errorText ).to.be.null;
-			} );
-		} );
-	} );
-
-	describe( 'bookmarks view', () => {
-		it( 'can be opened by clicking the bookmarks button', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-
-			const formView = linkUIFeature.formView;
-			const button = formView
-				.template.children[ 0 ]
-				.last // ul
-				.template.children[ 0 ]
-				.get( 0 ) // li
-				.template.children[ 0 ]
-				.get( 0 ); // button
-
-			button.fire( 'execute' );
-			bookmarksView = linkUIFeature.bookmarksView;
-
-			expect( balloon.visibleView ).to.equal( bookmarksView );
-		} );
-
-		it( 'can be closed by clicking the back button', () => {
-			const spy = sinon.spy();
-
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-			linkUIFeature.listenTo( linkUIFeature.bookmarksView, 'cancel', spy );
-			linkUIFeature._addBookmarksView();
-
-			linkUIFeature.bookmarksView.backButtonView.fire( 'execute' );
-
-			sinon.assert.calledOnce( spy );
-			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
-		} );
-
-		it( 'can be closed by clicking the "esc" button', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-			linkUIFeature._addBookmarksView();
-
-			linkUIFeature.bookmarksView.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
-		} );
-
-		it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
-			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
-
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-			linkUIFeature._addBookmarksView();
-
-			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
-
-			sinon.assert.calledWithExactly( spy );
-			expect( linkUIFeature._balloon.visibleView ).to.be.null;
-		} );
+		expect( linkUIFeature._isLinksListVisible ).to.be.true;
 	} );
 
 	describe( 'the "linkPreview" toolbar button', () => {
@@ -3131,82 +2979,6 @@ describe( 'LinkUI with Bookmark', () => {
 
 			linkCommand.value = 'foo';
 			expect( button.isEnabled ).to.be.true;
-		} );
-
-		it( 'should use tooltip text depending on the command value', () => {
-			const linkCommand = editor.commands.get( 'link' );
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
-
-			linkCommand.value = 'foo';
-			expect( button.tooltip ).to.equal( 'Open link in new tab' );
-
-			linkCommand.value = '#foo';
-			expect( button.tooltip ).to.equal( 'Open link in new tab' );
-
-			linkCommand.value = '#abc';
-			expect( button.tooltip ).to.equal( 'Scroll to target' );
-		} );
-
-		it( 'should use icon for bookmarks', () => {
-			const linkCommand = editor.commands.get( 'link' );
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
-
-			linkCommand.value = 'foo';
-			expect( button.icon ).to.equal( undefined );
-
-			linkCommand.value = '#foo';
-			expect( button.icon ).to.equal( undefined );
-
-			linkCommand.value = '#abc';
-			expect( button.icon ).to.equal( icons.bookmarkSmall );
-		} );
-
-		it( 'should bind label', () => {
-			const linkCommand = editor.commands.get( 'link' );
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
-
-			linkCommand.value = 'foo';
-			expect( button.label ).to.equal( 'foo' );
-
-			linkCommand.value = '#foo';
-			expect( button.label ).to.equal( '#foo' );
-
-			linkCommand.value = '#abc';
-			expect( button.label ).to.equal( 'abc' );
-		} );
-
-		it( 'should trigger scroll if target is in the same document', () => {
-			const cancelSpy = sinon.spy();
-			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-
-			setModelData( editor.model, '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
-
-			button.fire( 'navigate', '#abc', cancelSpy );
-
-			sinon.assert.calledOnce( cancelSpy );
-			sinon.assert.calledOnce( scrollStub );
-
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[<bookmark bookmarkId="abc"></bookmark>]</paragraph>' );
-		} );
-
-		it( 'should not trigger scroll if target is not a known bookmark', () => {
-			const cancelSpy = sinon.spy();
-			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-
-			setModelData( editor.model, '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
-
-			button.fire( 'navigate', '#foo', cancelSpy );
-
-			sinon.assert.notCalled( cancelSpy );
-			sinon.assert.notCalled( scrollStub );
-
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
 		} );
 	} );
 } );
