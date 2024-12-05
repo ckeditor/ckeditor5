@@ -265,11 +265,11 @@ export default class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Scrolls the editor to the bookmark with the given name.
+	 * Scrolls the editor to the bookmark with the given id.
 	 */
-	private _scrollToBookmark( name: string ) {
+	private _scrollToBookmark( id: string ) {
 		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
-		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( name );
+		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( id );
 
 		if ( !bookmarkElement ) {
 			return false;
