@@ -182,11 +182,7 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 		return false;
 	}
 
-	// Anything but uiElement(s) counts as content.
-	const hasContent = Array.from( element.getChildren() )
-		.some( element => !element.is( 'uiElement' ) );
-
-	if ( hasContent ) {
+	if ( hasContent( element ) ) {
 		return false;
 	}
 
@@ -210,6 +206,19 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 
 	// If document is focused and the element is empty but the selection is not anchored inside it.
 	return !!selectionAnchor && selectionAnchor.parent !== element;
+}
+
+/**
+ * Anything but uiElement(s) counts as content.
+ */
+function hasContent( element: Element ): boolean {
+	for ( const child of element.getChildren() ) {
+		if ( !child.is( 'uiElement' ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**
