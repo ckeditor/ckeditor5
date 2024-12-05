@@ -105,7 +105,7 @@ export default class LinkUI extends Plugin {
 	 * @observable
 	 * @readonly
 	 */
-	declare public selectedLinksProvider: LinksProvider | undefined;
+	declare public selectedLinksProvider: LinksProvider | null;
 
 	/**
 	 * Holds the {@link #_selectedLinksProvider selected provider} item from it's `items`.
@@ -113,7 +113,7 @@ export default class LinkUI extends Plugin {
 	 * @observable
 	 * @readonly
 	 */
-	declare public selectedLinksProviderLink: LinksProviderItem | undefined;
+	declare public selectedLinksProviderLink: LinksProviderItem | null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -149,8 +149,8 @@ export default class LinkUI extends Plugin {
 		const t = this.editor.t;
 
 		this.set( 'selectedLinkableText', undefined );
-		this.set( 'selectedLinksProvider', undefined );
-		this.set( 'selectedLinksProviderLink', undefined );
+		this.set( 'selectedLinksProvider', null );
+		this.set( 'selectedLinksProviderLink', null );
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -269,10 +269,16 @@ export default class LinkUI extends Plugin {
 			linkCommand, 'value',
 			( selectedLinksProvider, href ) => {
 				if ( !selectedLinksProvider || href === undefined ) {
-					return undefined;
+					return null;
 				}
 
-				return selectedLinksProvider.getItems().find( item => item.href === href );
+				const foundLink = selectedLinksProvider.getItems().find( item => item.href === href );
+
+				if ( foundLink ) {
+					return foundLink;
+				}
+
+				return null;
 			}
 		);
 	}
@@ -578,11 +584,11 @@ export default class LinkUI extends Plugin {
 				}
 			} );
 
-			button.bind( 'icon' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, preview ) => {
+			button.bind( 'icon' ).to( this, 'selectedLinksProviderLink', preview => {
 				return preview && preview.icon;
 			} );
 
-			button.bind( 'tooltip' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, preview ) => {
+			button.bind( 'tooltip' ).to( this, 'selectedLinksProviderLink', preview => {
 				const tooltip = preview ? preview.tooltip : null;
 
 				return tooltip || t( 'Open link in new tab' );
@@ -935,6 +941,8 @@ export default class LinkUI extends Plugin {
 		if ( this._isLinksListInPanel ) {
 			this._balloon.remove( this.linkProviderItemsView! );
 		}
+
+		this.selectedLinksProvider = null;
 	}
 
 	/**
