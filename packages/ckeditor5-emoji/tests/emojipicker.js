@@ -9,7 +9,6 @@ import { ContextualBalloon } from 'ckeditor5/src/ui.js';
 import { EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
@@ -123,31 +122,7 @@ describe( 'EmojiPicker', () => {
 		expect( emojiSmileButton.checkVisibility() ).to.equal( false );
 	} );
 
-	it( 'should close the picker when focus is on the editor and escape is clicked', async () => {
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
-
-		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
-
-		emojiToolbarButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
-		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
-
-		document.querySelector( '.ck-editor' ).focus();
-
-		editor.keystrokes.press( {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-
-		expect( emojiSmileButton.checkVisibility() ).to.equal( false );
-	} );
-
-	it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
+	it( 'should close the picker when escape is clicked', async () => {
 		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );

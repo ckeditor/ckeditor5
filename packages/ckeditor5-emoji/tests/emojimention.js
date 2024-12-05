@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, console */
+/* global document, console, setTimeout */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Emoji, EmojiMention } from '../src/index.js';
@@ -235,7 +235,7 @@ describe( 'EmojiMention', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 		} );
 
-		it( 'overrides the mention command execution when triggering show all emoji button', () => {
+		it( 'overrides the mention command execution when triggering show all emoji button', async () => {
 			setModelData( editor.model, '<paragraph>Hello world![]</paragraph>' );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
@@ -244,6 +244,8 @@ describe( 'EmojiMention', () => {
 			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' } } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
+
+			await new Promise( resolve => setTimeout( resolve ) );
 
 			expect( document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'input#search' ).value ).to.equal( 'flag_poland' );
 		} );
