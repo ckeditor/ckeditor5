@@ -566,6 +566,8 @@ export default class LinkUI extends Plugin {
 				if ( !href ) {
 					return t( 'This link has no URL' );
 				}
+
+				return href;
 			} );
 
 			button.bind( 'icon' ).to( this, 'selectedLinksProviderLink', provider => {
