@@ -42,7 +42,9 @@ function dist( path ) {
 		 * We don't want to repeat this in other steps.
 		 */
 		clean: true,
-		declarations: true,
+
+		// Temporarily disabled to avoid problems caused by duplicate declarations.
+		// declarations: true,
 		translations: 'packages/**/*.po'
 	} );
 

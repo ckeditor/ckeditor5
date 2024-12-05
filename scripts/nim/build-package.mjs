@@ -28,7 +28,8 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 		],
 		clean: true,
 		sourceMap: true,
-		declarations: true,
+		// Temporarily disabled to avoid problems caused by duplicate declarations.
+		// declarations: true,
 		translations: '**/*.po'
 	} );
 } )();

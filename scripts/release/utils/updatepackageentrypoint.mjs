@@ -19,14 +19,51 @@ export default async function updatePackageEntryPoint( packagePath ) {
 
 	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const pkgJson = await fs.readJson( packageJsonPath );
-	const { main } = pkgJson;
+	const main = pkgJson.main.replace( /\.ts$/, '.js' );
+	const types = pkgJson.main.replace( /\.ts$/, '.d.ts' );
+	const files = pkgJson.files || [];
 
-	if ( !main ) {
-		return;
+	pkgJson.main = main;
+	pkgJson.types = types;
+
+	pkgJson.exports = {
+		'.': {
+			types: './' + types,
+			import: './' + main
+		},
+		'./dist/*': {
+			/**
+			 * To avoid problems caused by having two different copies of the declaration
+			 * files, the new installation methods will temporarily use those from the
+			 * old installation methods. Once the old methods are removed, the declaration
+			 * files will be moved to the `dist` directory.
+			 */
+			types: './' + types,
+			import: './dist/*'
+		},
+		'./src/*': {
+			types: './' + types,
+			import: './src/*'
+		}
+	};
+
+	if ( files.includes( 'build' ) ) {
+		pkgJson.exports[ './build/*' ] = './build/*';
 	}
 
-	pkgJson.main = main.replace( /\.ts$/, '.js' );
-	pkgJson.types = main.replace( /\.ts$/, '.d.ts' );
+	if ( files.includes( 'lang' ) ) {
+		pkgJson.exports[ './lang/*' ] = './lang/*';
+	}
+
+	if ( files.includes( 'theme' ) ) {
+		pkgJson.exports[ './theme/*' ] = './theme/*';
+	}
+
+	if ( files.includes( 'ckeditor5-metadata.json' ) ) {
+		pkgJson.exports[ './ckeditor5-metadata.json' ] = './ckeditor5-metadata.json';
+	}
+
+	pkgJson.exports[ './package.json' ] = './package.json';
 
 	return fs.writeJson( packageJsonPath, pkgJson );
 
