@@ -380,7 +380,7 @@ export default class LinkEditing extends Plugin {
 }
 
 /**
- * A function that opens a link in a new browser tab.
+ * A function that handles opening links. It may be used to define custom link handlers.
  *
  * @returns `true` if the link was opened successfully.
  */
