@@ -124,7 +124,7 @@ export default class LinkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon ] as const;
+		return [ ContextualBalloon, 'LinkEditing' ] as const;
 	}
 
 	/**
@@ -234,8 +234,14 @@ export default class LinkUI extends Plugin {
 	 * opens a list of links provided by the registered provider.
 	 */
 	public registerLinksListProvider( provider: LinksProvider ): void {
-		this.linksProviders.add( provider );
+		// The higher order, the later the provider is inserted.
+		const insertIndex = this.linksProviders
+			.filter( existing => ( existing.order || 0 ) <= ( provider.order || 0 ) )
+			.length;
 
+		this.linksProviders.add( provider, insertIndex );
+
+		// Handle opening of the provider links using document editing.
 		if ( provider.onNavigateToLink && this.editor.plugins.has( 'LinkEditing' ) ) {
 			const linkEditing = this.editor.plugins.get( 'LinkEditing' );
 
@@ -1377,8 +1383,10 @@ export type LinksProvider = {
 
 	/**
 	 * Weight used for ordering providers in the list. Higher weight means the provider will be displayed lower in the list.
+	 *
+	 * @default 0
 	 */
-	weight: number;
+	order?: number;
 
 	/**
 	 * Callback for retrieving an array of items (this should not be a collection as it could change while form is open).

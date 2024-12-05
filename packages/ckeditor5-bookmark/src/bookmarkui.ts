@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
-import { type LinksProviderItem, LinkUI } from '@ckeditor/ckeditor5-link';
+import { type LinksProviderItem } from '@ckeditor/ckeditor5-link';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -61,7 +61,7 @@ export default class BookmarkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository, LinkUI ] as const;
+		return [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ] as const;
 	}
 
 	/**
@@ -87,7 +87,9 @@ export default class BookmarkUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		// Register the link provider in link plugin to display the link form.
-		this._registerLinkProvider();
+		if ( editor.plugins.has( 'LinkUI' ) ) {
+			this._registerLinkProvider();
+		}
 
 		// Create toolbar buttons.
 		this._registerComponents();
@@ -239,7 +241,7 @@ export default class BookmarkUI extends Plugin {
 	 */
 	private _registerLinkProvider() {
 		const t = this.editor.locale.t;
-		const linksUI = this.editor.plugins.get( LinkUI )!;
+		const linksUI = this.editor.plugins.get( 'LinkUI' )!;
 		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
 
 		const getItems = () => Array
@@ -257,7 +259,6 @@ export default class BookmarkUI extends Plugin {
 		linksUI.registerLinksListProvider( {
 			label: t( 'Bookmarks' ),
 			emptyListPlaceholder: t( 'No bookmarks available.' ),
-			weight: 0,
 			getItems,
 			onNavigateToLink
 		} );
