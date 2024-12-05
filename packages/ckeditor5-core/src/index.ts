@@ -58,6 +58,7 @@ import image from './../theme/icons/image.svg';
 import imageUpload from './../theme/icons/image-upload.svg';
 import imageAssetManager from './../theme/icons/image-asset-manager.svg';
 import imageUrl from './../theme/icons/image-url.svg';
+import settings from './../theme/icons/settings.svg';
 
 import alignBottom from './../theme/icons/align-bottom.svg';
 import alignMiddle from './../theme/icons/align-middle.svg';
@@ -124,6 +125,8 @@ import remove from './../theme/icons/remove.svg';
 
 import bookmark from './../theme/icons/bookmark.svg';
 import bookmarkInline from './../theme/icons/bookmark_inline.svg';
+import bookmarkSmall from './../theme/icons/bookmark_small.svg';
+import bookmarkMedium from './../theme/icons/bookmark_medium.svg';
 
 export const icons = {
 	bold,
@@ -147,6 +150,7 @@ export const icons = {
 	paragraph,
 	plus,
 	text,
+	settings,
 
 	alignBottom,
 	alignMiddle,
@@ -206,7 +210,9 @@ export const icons = {
 	remove,
 
 	bookmark,
-	bookmarkInline
+	bookmarkInline,
+	bookmarkSmall,
+	bookmarkMedium
 };
 
 import './augmentation.js';

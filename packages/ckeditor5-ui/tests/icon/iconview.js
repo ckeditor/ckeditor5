@@ -5,6 +5,7 @@
 
 import IconView from '../../src/icon/iconview.js';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'IconView', () => {
 	let view;
@@ -116,6 +117,12 @@ describe( 'IconView', () => {
 
 				sinon.assert.notCalled( innerHTMLSpy.set );
 				sinon.assert.calledTwice( removeChildSpy );
+			} );
+
+			it( 'should throw an error on invalid SVG', () => {
+				expect( () => {
+					view.content = 'foo';
+				} ).to.throw( CKEditorError, 'ui-iconview-invalid-svg' );
 			} );
 
 			describe( 'preservation of presentational attributes on the <svg> element', () => {

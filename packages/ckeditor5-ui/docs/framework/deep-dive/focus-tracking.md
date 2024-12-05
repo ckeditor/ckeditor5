@@ -663,11 +663,11 @@ And here are the steps of the scenario:
 1. The editor is not focused (the focus is somewhere else on the web page).
 2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:link/ui/linkactionsview~LinkActionsView link actions view} also pops up.
 3. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#previewButtonView link preview} in the balloon (a child of {@link module:link/ui/linkactionsview~LinkActionsView}).
-4. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#editButtonView "Edit link" button}.
+4. The <kbd>→</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#editButtonView "Edit link" button}.
 5. The <kbd>Space</kbd> key is used to execute the "Edit link" button. The focus moves to the {@link module:link/ui/linkformview~LinkFormView#urlInputView input} in the {@link module:link/ui/linkformview~LinkFormView}.
-6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Save" button}.
-7. The <kbd>Tab</kbd> key is used to move from the "Save" button to the {@link module:link/ui/linkformview~LinkFormView#cancelButtonView "Cancel" button}.
-8. The <kbd>Space</kbd> key is used to execute the "Cancel" button and close the editing form.
+6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Update" button}.
+7. The <kbd>Tab</kbd> key is used to move from the "Update" button to the {@link features/bookmarks "Bookmarks" button}.
+8. The <kbd>Esc</kbd> key is used to close the editing form.
 9. The <kbd>Esc</kbd> key is used to close the link balloon and go back to the editable.
 
 There are 3 focus tracker instances at play in the scenario:
