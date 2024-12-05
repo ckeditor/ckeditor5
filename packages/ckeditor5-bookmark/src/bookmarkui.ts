@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
-import { LinkUI } from '@ckeditor/ckeditor5-link';
+import { type LinksProviderItem, LinkUI } from '@ckeditor/ckeditor5-link';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -238,27 +238,49 @@ export default class BookmarkUI extends Plugin {
 	 * the list of the bookmarks from the link form.
 	 */
 	private _registerLinkProvider() {
-		const { plugins } = this.editor;
-
 		const t = this.editor.locale.t;
-		const linksUI = plugins.get( LinkUI )!;
-		const bookmarkEditing = plugins.get( BookmarkEditing );
+		const linksUI = this.editor.plugins.get( LinkUI )!;
+		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
 
 		const getItems = () =>
 			Array
 				.from( bookmarkEditing.getAllBookmarkNames() )
 				.sort( ( a, b ) => a.localeCompare( b ) )
-				.map( bookmarkId => ( {
+				.map( ( bookmarkId ): LinksProviderItem => ( {
+					id: bookmarkId,
 					label: bookmarkId,
-					value: `#${ bookmarkId }`,
+					href: `#${ bookmarkId }`,
 					icon: icons.bookmark
 				} ) );
+
+		const onNavigateToLink = ( { id }: LinksProviderItem ) => {
+			this._scrollToBookmark( id );
+			return false;
+		};
 
 		linksUI.registerLinksListProvider( {
 			label: t( 'Bookmarks' ),
 			emptyListPlaceholder: t( 'No bookmarks available.' ),
 			weight: 0,
-			getItems
+			getItems,
+			onNavigateToLink
+		} );
+	}
+
+	/**
+	 * Scrolls the editor to the bookmark with the given name.
+	 */
+	private _scrollToBookmark( name: string ) {
+		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
+		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( name )!;
+
+		this.editor.model.change( writer => {
+			writer.setSelection( bookmarkElement!, 'on' );
+		} );
+
+		this.editor.editing.view.scrollToTheSelection( {
+			alignToTop: true,
+			forceScroll: true
 		} );
 	}
 

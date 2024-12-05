@@ -19,7 +19,6 @@ import type {
 	Range
 } from 'ckeditor5/src/engine.js';
 
-import type { Editor } from 'ckeditor5/src/core.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 
 import type {
@@ -195,37 +194,6 @@ export function linkHasProtocol( link: string ): boolean {
  */
 export function openLink( link: string ): void {
 	window.open( link, '_blank', 'noopener' );
-}
-
-/**
- * Returns `true` when link can be handled internally in the editor without using native browser link handlers.
- */
-export function isScrollableToTarget( editor: Editor, link: string | undefined ): boolean {
-	if ( !editor.plugins.has( 'BookmarkEditing' ) ) {
-		return false;
-	}
-
-	if ( !link || !link.startsWith( '#' ) ) {
-		return false;
-	}
-
-	return true;
-}
-
-/**
- * Scrolls the view to the desired bookmark.
- */
-export function scrollToTarget( editor: Editor, link: string ): boolean {
-	if ( !isScrollableToTarget( editor, link ) ) {
-		return false;
-	}
-
-	editor.editing.view.scrollToTheSelection( {
-		alignToTop: true,
-		forceScroll: true
-	} );
-
-	return true;
 }
 
 /**

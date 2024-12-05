@@ -43,8 +43,6 @@ import {
 	addLinkProtocolIfApplicable,
 	ensureSafeUrl,
 	isLinkElement,
-	isScrollableToTarget,
-	scrollToTarget,
 	extractTextFromLinkRange,
 	LINK_KEYSTROKE
 } from './utils.js';
@@ -74,7 +72,7 @@ export default class LinkUI extends Plugin {
 	public formView: LinkFormView & ViewWithCssTransitionDisabler | null = null;
 
 	/**
-	 * The view displaying bookmarks list.
+	 * The view displaying links list.
 	 */
 	public linkProviderItemsView: LinkProviderItemsView | null = null;
 
@@ -82,7 +80,7 @@ export default class LinkUI extends Plugin {
 	 * The collection of the link providers.
 	 */
 	public linksProviders: Collection<LinksProvider> = new Collection( {
-		idProperty: 'label'
+		idProperty: 'id'
 	} );
 
 	/**
@@ -100,6 +98,22 @@ export default class LinkUI extends Plugin {
 	 * @readonly
 	 */
 	declare public selectedLinkableText: string | undefined;
+
+	/**
+	 * Currently selected links provider preview.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public selectedLinksProvider: LinksProvider | undefined;
+
+	/**
+	 * Holds the {@link #_selectedLinksProvider selected provider} item from it's `items`.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public selectedLinksProviderLink: LinksProviderItem | undefined;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -135,6 +149,8 @@ export default class LinkUI extends Plugin {
 		const t = this.editor.t;
 
 		this.set( 'selectedLinkableText', undefined );
+		this.set( 'selectedLinksProvider', undefined );
+		this.set( 'selectedLinksProviderLink', undefined );
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -219,6 +235,40 @@ export default class LinkUI extends Plugin {
 	 */
 	public registerLinksListProvider( provider: LinksProvider ): void {
 		this.linksProviders.add( provider );
+
+		if ( provider.onNavigateToLink && this.editor.plugins.has( 'LinkEditing' ) ) {
+			const linkEditing = this.editor.plugins.get( 'LinkEditing' );
+
+			linkEditing._registerLinkOpener( href => {
+				const item = provider.getItems().find( item => item.href === href );
+
+				if ( item ) {
+					provider.onNavigateToLink!( item );
+					return true;
+				}
+
+				return false;
+			} );
+		}
+	}
+
+	/**
+	 * Binds selected provider links to the link command value.
+	 */
+	private _bindSelectedProviderLinksWatchers() {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
+		this.bind( 'selectedLinksProviderLink' ).to(
+			this, 'selectedLinksProvider',
+			linkCommand, 'value',
+			( selectedLinksProvider, href ) => {
+				if ( !selectedLinksProvider || href === undefined ) {
+					return undefined;
+				}
+
+				return selectedLinksProvider.getItems().find( item => item.href === href );
+			}
+		);
 	}
 
 	/**
@@ -236,6 +286,7 @@ export default class LinkUI extends Plugin {
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
+		this._bindSelectedProviderLinksWatchers();
 	}
 
 	/**
@@ -352,13 +403,12 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Creates a sorted array of buttons with bookmark names.
+	 * Creates a sorted array of buttons with link names.
 	 */
-	private _createLinkProviderListView( provider: LinksProvider ): Array<ButtonView> {
-		const editor = this.editor;
-		const items = provider.getItems();
+	private _createLinkProviderListView(): Array<ButtonView> {
+		const items = this.selectedLinksProvider!.getItems();
 
-		return items.map( ( { label, value, icon } ) => {
+		return items.map( ( { label, href, icon } ) => {
 			const buttonView = new ButtonView();
 
 			buttonView.set( {
@@ -370,10 +420,10 @@ export default class LinkUI extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				this.formView!.resetFormStatus();
-				this.formView!.urlInputView.fieldView.value = value;
+				this.formView!.urlInputView.fieldView.value = href;
 
 				// Set focus to the editing view to prevent from losing it while current view is removed.
-				editor.editing.view.focus();
+				this.editor.editing.view.focus();
 
 				this._removeLinksProviderView();
 
@@ -388,14 +438,15 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Creates a view for links provider.
 	 */
-	private _createLinkProviderItemsView( provider: LinksProvider ): LinkProviderItemsView {
+	private _createLinkProviderItemsView(): LinkProviderItemsView {
 		const editor = this.editor;
 		const t = editor.locale.t;
 
 		const view = new LinkProviderItemsView( editor.locale );
+		const { emptyListPlaceholder, label } = this.selectedLinksProvider!;
 
-		view.set( 'emptyListPlaceholder', provider.emptyListPlaceholder || t( 'No links available' ) );
-		view.set( 'headerLabel', provider.label );
+		view.set( 'emptyListPlaceholder', emptyListPlaceholder || t( 'No links available' ) );
+		view.set( 'headerLabel', label );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
@@ -505,30 +556,37 @@ export default class LinkUI extends Plugin {
 			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 			const t = locale.t;
 
+			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+
 			button.bind( 'href' ).to( linkCommand, 'value', href => {
 				return href && ensureSafeUrl( href, allowedProtocols );
 			} );
 
-			button.bind( 'label' ).to( linkCommand, 'value', href => {
+			button.bind( 'label' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, preview ) => {
+				if ( preview ) {
+					return preview.label;
+				}
+
 				if ( !href ) {
 					return t( 'This link has no URL' );
 				}
-
-				return isScrollableToTarget( editor, href ) ? href.slice( 1 ) : href;
 			} );
 
-			button.bind( 'icon' ).to( linkCommand, 'value', href => {
-				return href && isScrollableToTarget( editor, href ) ? icons.bookmarkSmall : undefined;
+			button.bind( 'icon' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, preview ) => {
+				return preview && preview.icon;
 			} );
 
-			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+			button.bind( 'tooltip' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, preview ) => {
+				const tooltip = preview ? preview.tooltip : null;
 
-			button.bind( 'tooltip' ).to( linkCommand, 'value',
-				url => isScrollableToTarget( editor, url ) ? t( 'Scroll to target' ) : t( 'Open link in new tab' )
-			);
+				return tooltip || t( 'Open link in new tab' );
+			} );
 
 			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
-				if ( scrollToTarget( editor, href ) ) {
+				const { onNavigateToLink } = this.selectedLinksProvider || {};
+				const { selectedLinksProviderLink } = this;
+
+				if ( onNavigateToLink && onNavigateToLink( selectedLinksProviderLink! ) ) {
 					cancel();
 				}
 			} );
@@ -604,21 +662,21 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Creates a bookmarks button view.
+	 * Creates a links button view.
 	 */
 	private _createLinksListProviderButton( linkProvider: LinksProvider ): LinkButtonView {
 		const locale = this.editor.locale!;
-		const bookmarksButton = new LinkButtonView( locale );
+		const linksButton = new LinkButtonView( locale );
 
-		bookmarksButton.set( {
+		linksButton.set( {
 			label: linkProvider.label
 		} );
 
-		this.listenTo( bookmarksButton, 'execute', () => {
+		this.listenTo( linksButton, 'execute', () => {
 			this._showLinksProviderView( linkProvider );
 		} );
 
-		return bookmarksButton;
+		return linksButton;
 	}
 
 	/**
@@ -815,19 +873,21 @@ export default class LinkUI extends Plugin {
 			this._removeLinksProviderView();
 		}
 
-		this.linkProviderItemsView = this._createLinkProviderItemsView( provider );
-		this._addLinkProviderItemsView( provider );
+		this.selectedLinksProvider = provider;
+		this.linkProviderItemsView = this._createLinkProviderItemsView();
+
+		this._addLinkProviderItemsView();
 	}
 
 	/**
 	 * Adds the {@link #linkProviderItemsView} to the {@link #_balloon}.
 	 */
-	private _addLinkProviderItemsView( provider: LinksProvider ): void {
-		// Clear the collection of bookmarks.
+	private _addLinkProviderItemsView(): void {
+		// Clear the collection of links.
 		this.linkProviderItemsView!.listChildren.clear();
 
-		// Add bookmarks to the collection.
-		this.linkProviderItemsView!.listChildren.addMany( this._createLinkProviderListView( provider ) );
+		// Add links to the collection.
+		this.linkProviderItemsView!.listChildren.addMany( this._createLinkProviderListView() );
 
 		this._balloon.add( {
 			view: this.linkProviderItemsView!,
@@ -961,7 +1021,7 @@ export default class LinkUI extends Plugin {
 			editor.editing.view.focus();
 		}
 
-		// If the bookmarks view is visible, remove it because it can be on top of the stack.
+		// If the links view is visible, remove it because it can be on top of the stack.
 		this._removeLinksProviderView();
 
 		// If the properties form view is visible, remove it because it can be on top of the stack.
@@ -1270,9 +1330,20 @@ export default class LinkUI extends Plugin {
 export type LinksProviderItem = {
 
 	/**
+	 * Unique identifier of the item. Avoids collection malfunction when there are links with the same labels.
+	 */
+	id: string;
+
+	/**
 	 * Label displayed for the item.
 	 */
 	label: string;
+
+	/**
+	 * Optional tooltip when hover the item on the list or in the preview.
+	 * It indicates the action that will be performed after clicking the item.
+	 */
+	tooltip?: string;
 
 	/**
 	 * Optional icon displayed for the item.
@@ -1282,7 +1353,7 @@ export type LinksProviderItem = {
 	/**
 	 * Value (URL) that will be used when the item is selected.
 	 */
-	value: string;
+	href: string;
 };
 
 /**
@@ -1313,6 +1384,14 @@ export type LinksProvider = {
 	 * Callback for retrieving an array of items (this should not be a collection as it could change while form is open).
 	 */
 	getItems(): Array<LinksProviderItem>;
+
+	/**
+	 * Callback called when user clicked the link in the list.
+	 *
+	 * @param item Item that was clicked.
+	 * @returns `true` if the link was handled by the provider, `false` otherwise. It'll prevent the default action if `true`.
+	 */
+	onNavigateToLink?( item: LinksProviderItem ): boolean;
 };
 
 /**
