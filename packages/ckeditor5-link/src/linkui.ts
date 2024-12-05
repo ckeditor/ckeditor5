@@ -200,7 +200,7 @@ export default class LinkUI extends Plugin {
 			const linkEditing = editor.plugins.get( 'LinkEditing' );
 
 			linkEditing._registerLinkOpener( href => {
-				const match = this._getLinkProviderItemByHref( href );
+				const match = this._getLinkProviderLinkByHref( href );
 
 				if ( !match ) {
 					return false;
@@ -265,7 +265,7 @@ export default class LinkUI extends Plugin {
 				return null;
 			}
 
-			return this._getLinkProviderItemByHref( href );
+			return this._getLinkProviderLinkByHref( href );
 		} );
 	}
 
@@ -1276,33 +1276,12 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns the link provider item for the selected link.
-	 *
-	 * @returns Link provider item or `null` if not found.
-	 */
-	private _getSelectedLinkProviderItem() {
-		const selectedLink = this._getSelectedLinkElement();
-
-		if ( !selectedLink ) {
-			return null;
-		}
-
-		const href = selectedLink.getAttribute( 'href' );
-
-		if ( !href ) {
-			return null;
-		}
-
-		return this._getLinkProviderItemByHref( href );
-	}
-
-	/**
-	 * Returns a link provider item by its URL.
+	 * Returns a provider by its URL.
 	 *
 	 * @param href URL of the link.
 	 * @returns Link provider and item or `null` if not found.
 	 */
-	private _getLinkProviderItemByHref( href: string ): { provider: LinksProvider; item: LinksProviderItem } | null {
+	private _getLinkProviderLinkByHref( href: string ): { provider: LinksProvider; item: LinksProviderItem } | null {
 		if ( !href ) {
 			return null;
 		}
