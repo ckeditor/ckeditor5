@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-env node */
@@ -558,7 +558,7 @@ function getPackageDependenciesPaths() {
 		absolute: true
 	};
 
-	return globSync( [ 'packages/*/node_modules', 'external/*/packages/*/node_modules' ], globOptions )
+	return globSync( [ 'packages/*/node_modules', 'external/ckeditor5-commercial/packages/*/node_modules' ], globOptions )
 		.map( p => upath.normalize( p ) );
 }
 

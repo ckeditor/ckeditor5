@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document,Event */
@@ -367,7 +367,7 @@ describe( 'ColorSelectorView', () => {
 
 			const colorPicker = colorSelectorView.colorPickerFragmentView.colorPickerView;
 
-			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl( 0, 100%, 20% )' );
+			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl(0, 100%, 20%)' );
 			expect( colorPicker._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660000' );
 		} );
 
@@ -378,7 +378,7 @@ describe( 'ColorSelectorView', () => {
 
 			const colorPicker = colorSelectorView.colorPickerFragmentView.colorPickerView;
 
-			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl( 310, 100%, 20% )' );
+			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl(310, 100%, 20%)' );
 			expect( colorPicker._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660055' );
 		} );
 

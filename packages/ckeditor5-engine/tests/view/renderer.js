@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
@@ -185,6 +185,19 @@ describe( 'Renderer', () => {
 
 			expect( domRoot.getAttribute( 'class' ) ).to.equal( 'foo' );
 			expect( domRoot.getAttribute( 'id' ) ).to.be.not.ok;
+
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+		} );
+
+		it( 'should remove all attributes', () => {
+			domRoot.setAttribute( 'style', 'border:1px solid red' );
+			domRoot.setAttribute( 'class', 'bar' );
+
+			renderer.markToSync( 'attributes', viewRoot );
+			renderer.render();
+
+			expect( domRoot.getAttribute( 'class' ) ).to.be.not.ok;
+			expect( domRoot.getAttribute( 'style' ) ).to.be.not.ok;
 
 			expect( renderer.markedAttributes.size ).to.equal( 0 );
 		} );

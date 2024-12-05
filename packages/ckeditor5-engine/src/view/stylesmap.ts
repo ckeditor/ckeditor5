@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -20,6 +20,16 @@ export default class StylesMap {
 	 * When no style processor rules are defined it acts as simple key-value storage.
 	 */
 	private _styles: Styles;
+
+	/**
+	 * Cached list of style names for faster access.
+	 */
+	private _cachedStyleNames: Array<string> | null = null;
+
+	/**
+	 * Cached list of expanded style names for faster access.
+	 */
+	private _cachedExpandedStyleNames: Array<string> | null = null;
 
 	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
@@ -196,6 +206,9 @@ export default class StylesMap {
 	public set( styles: Styles ): void;
 
 	public set( nameOrObject: string | Styles, valueOrObject?: StyleValue ): void {
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
+
 		if ( isObject( nameOrObject ) ) {
 			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
 				this._styleProcessor.toNormalizedForm( key, value, this._styles );
@@ -234,6 +247,9 @@ export default class StylesMap {
 	 * @param name Style name.
 	 */
 	public remove( name: string ): void {
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
+
 		const path = toPath( name );
 
 		unset( this._styles, path );
@@ -406,12 +422,14 @@ export default class StylesMap {
 		}
 
 		if ( expand ) {
-			return this._styleProcessor.getStyleNames( this._styles );
+			this._cachedExpandedStyleNames = this._cachedExpandedStyleNames || this._styleProcessor.getStyleNames( this._styles );
+
+			return this._cachedExpandedStyleNames;
 		}
 
-		const entries = this.getStylesEntries();
+		this._cachedStyleNames = this._cachedStyleNames || this.getStylesEntries().map( ( [ key ] ) => key );
 
-		return entries.map( ( [ key ] ) => key );
+		return this._cachedStyleNames;
 	}
 
 	/**
@@ -419,6 +437,8 @@ export default class StylesMap {
 	 */
 	public clear(): void {
 		this._styles = {};
+		this._cachedStyleNames = null;
+		this._cachedExpandedStyleNames = null;
 	}
 
 	/**

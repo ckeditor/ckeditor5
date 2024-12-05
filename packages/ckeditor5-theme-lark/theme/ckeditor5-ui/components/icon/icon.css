@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 :root {
@@ -17,9 +17,6 @@
 
 	/* Inherit cursor style (#5). */
 	cursor: inherit;
-
-	/* This will prevent blurry icons on Firefox. See #340. */
-	will-change: transform;
 
 	& * {
 		/* Inherit cursor style (#5). */

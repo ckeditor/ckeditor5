@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, console, Response, globalThis, URL */
@@ -320,7 +320,7 @@ describe( 'Editor - license check', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( {} );
-				} ).to.throw( CKEditorError, 'editor-license-key-missing' );
+				} ).to.throw( CKEditorError, 'license-key-missing' );
 
 				window.CKEDITOR_GLOBAL_LICENSE_KEY = 'GPL';
 			} );
@@ -685,12 +685,12 @@ describe( 'Editor - license check', () => {
 			{ reason: 'invalid', error: 'invalid-license-key' },
 			{ reason: 'expired', error: 'license-key-expired' },
 			{ reason: 'domainLimit', error: 'license-key-domain-limit' },
-			{ reason: 'featureNotAllowed', error: 'license-key-feature-not-allowed', pluginName: 'PluginABC' },
+			{ reason: 'featureNotAllowed', error: 'license-key-plugin-not-allowed', pluginName: 'PluginABC' },
 			{ reason: 'evaluationLimit', error: 'license-key-evaluation-limit' },
 			{ reason: 'trialLimit', error: 'license-key-trial-limit' },
 			{ reason: 'developmentLimit', error: 'license-key-development-limit' },
 			{ reason: 'usageLimit', error: 'license-key-usage-limit' },
-			{ reason: 'distributionChannel', error: 'license-key-distribution-channel' }
+			{ reason: 'distributionChannel', error: 'license-key-invalid-distribution-channel' }
 		];
 
 		for ( const testCase of testCases ) {
@@ -702,7 +702,7 @@ describe( 'Editor - license check', () => {
 
 				editor._showLicenseError( reason, pluginName );
 
-				expectToThrowCKEditorError( () => clock.tick( 1 ), error, editor, expectedData );
+				expectToThrowCKEditorError( () => clock.tick( 1 ), error, undefined, expectedData );
 			} );
 		}
 
@@ -806,7 +806,7 @@ describe( 'Editor - license check', () => {
 
 		it( 'should be possible to set integrations usage data using helper passed in the event without raising error', () => {
 			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
-				setUsageData( 'integrations.foo', 123 );
+				setUsageData( 'integration.foo', 123 );
 			} );
 
 			editor.fire( 'ready' );
@@ -815,7 +815,7 @@ describe( 'Editor - license check', () => {
 				sinon.match.string,
 				sinon.match( {
 					editor: {
-						integrations: {
+						integration: {
 							foo: 123
 						}
 					}
