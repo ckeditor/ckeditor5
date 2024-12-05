@@ -941,8 +941,6 @@ export default class LinkUI extends Plugin {
 		if ( this._isLinksListInPanel ) {
 			this._balloon.remove( this.linkProviderItemsView! );
 		}
-
-		this.selectedLinksProvider = null;
 	}
 
 	/**
