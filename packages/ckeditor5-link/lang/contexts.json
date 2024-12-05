@@ -13,7 +13,5 @@
 	"Downloadable": "The label of the switch button that controls whether the edited link refers to downloadable resource.",
 	"Create link": "Keystroke description for assistive technologies: keystroke for creating a link.",
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link.",
-	"Bookmarks": "Title for a feature displaying a list of bookmarks.",
-	"No bookmarks available.": "A message displayed instead of a list of bookmarks if it is empty.",
 	"Displayed text": "The label of the input field for the displayed text of the link."
 }
