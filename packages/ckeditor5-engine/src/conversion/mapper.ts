@@ -13,10 +13,11 @@ import ModelRange from '../model/range.js';
 import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
 
-import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type ViewDocumentFragment from '../view/documentfragment.js';
 import type ViewElement from '../view/element.js';
+import type ViewText from '../view/text.js';
 import type ModelElement from '../model/element.js';
 import type ModelDocumentFragment from '../model/documentfragment.js';
 import type ViewNode from '../view/node.js';
@@ -82,6 +83,11 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * has been removed, moved or renamed).
 	 */
 	private _unboundMarkerNames = new Set<string>();
+
+	/**
+	 * Manages dynamic cache for the `Mapper` to improve the performance.
+	 */
+	private _cache: MapperCache = new MapperCache();
 
 	/**
 	 * Creates an instance of the mapper.
@@ -172,7 +178,12 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		if ( options.defer ) {
 			this._deferredBindingRemovals.set( viewElement, viewElement.root );
 		} else {
-			this._viewToModelMapping.delete( viewElement );
+			const wasFound = this._viewToModelMapping.delete( viewElement );
+
+			if ( wasFound ) {
+				// Stop tracking after the element is no longer mapped.
+				this._cache.stopTracking( viewElement );
+			}
 
 			if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
 				this._modelToViewMapping.delete( modelElement );
@@ -197,7 +208,12 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		this._modelToViewMapping.delete( modelElement );
 
 		if ( this._viewToModelMapping.get( viewElement ) == modelElement ) {
-			this._viewToModelMapping.delete( viewElement );
+			const wasFound = this._viewToModelMapping.delete( viewElement );
+
+			if ( wasFound ) {
+				// Stop tracking after the element is no longer mapped.
+				this._cache.stopTracking( viewElement );
+			}
 		}
 	}
 
@@ -426,6 +442,10 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
+	 * **This method is deprecated and will be removed in one of the future CKEditor 5 releases.**
+	 *
+	 * **Using this method will turn off `Mapper` caching system and may degrade performance when operating on bigger documents.**
+	 *
 	 * Registers a callback that evaluates the length in the model of a view element with the given name.
 	 *
 	 * The callback is fired with one argument, which is a view element instance. The callback is expected to return
@@ -455,6 +475,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param viewElementName Name of view element for which callback is registered.
 	 * @param lengthCallback Function return a length of view element instance in model.
+	 * @deprecated
 	 */
 	public registerViewToModelLength(
 		viewElementName: string,
@@ -469,7 +490,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param viewPosition Position for which a mapped ancestor should be found.
 	 */
-	public findMappedViewAncestor( viewPosition: ViewPosition ): ViewElement {
+	public findMappedViewAncestor( viewPosition: ViewPosition ): ViewElement | ViewDocumentFragment {
 		let parent: any = viewPosition.parent;
 
 		while ( !this._viewToModelMapping.has( parent ) ) {
@@ -503,7 +524,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	private _toModelOffset(
 		viewParent: ViewElement,
 		viewOffset: number,
-		viewBlock: ViewElement
+		viewBlock: ViewElement | ViewDocumentFragment
 	): number {
 		if ( viewBlock != viewParent ) {
 			// See example.
@@ -584,64 +605,110 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Finds the position in the view node (or in its children) with the expected model offset.
+	 * Finds the position in a view element or view document fragment node (or in its children) with the expected model offset.
 	 *
-	 * Example:
+	 * If the passed `viewContainer` is bound to model, `Mapper` will use caching mechanism to improve performance.
 	 *
-	 * ```
-	 * <p>fo<b>bar</b>bom</p> -> expected offset: 4
-	 *
-	 * findPositionIn( p, 4 ):
-	 * <p>|fo<b>bar</b>bom</p> -> expected offset: 4, actual offset: 0
-	 * <p>fo|<b>bar</b>bom</p> -> expected offset: 4, actual offset: 2
-	 * <p>fo<b>bar</b>|bom</p> -> expected offset: 4, actual offset: 5 -> we are too far
-	 *
-	 * findPositionIn( b, 4 - ( 5 - 3 ) ):
-	 * <p>fo<b>|bar</b>bom</p> -> expected offset: 2, actual offset: 0
-	 * <p>fo<b>bar|</b>bom</p> -> expected offset: 2, actual offset: 3 -> we are too far
-	 *
-	 * findPositionIn( bar, 2 - ( 3 - 3 ) ):
-	 * We are in the text node so we can simple find the offset.
-	 * <p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
-	 * ```
-	 *
-	 * @param viewParent Tree view element in which we are looking for the position.
-	 * @param expectedOffset Expected offset.
+	 * @param viewContainer Tree view element in which we are looking for the position.
+	 * @param modelOffset Expected offset.
 	 * @returns Found position.
 	 */
-	public findPositionIn( viewParent: ViewNode | ViewDocumentFragment, expectedOffset: number ): ViewPosition {
-		// Last scanned view node.
-		let viewNode: ViewNode;
-		// Length of the last scanned view node.
-		let lastLength = 0;
+	public findPositionIn( viewContainer: ViewElement | ViewDocumentFragment, modelOffset: number ): ViewPosition {
+		if ( modelOffset === 0 ) {
+			// Quickly return if asked for a position at the beginning of the container. No need to fire complex mechanisms to find it.
+			return this._moveViewPositionToTextNode( new ViewPosition( viewContainer, 0 ) );
+		}
 
-		let modelOffset = 0;
-		let viewOffset = 0;
+		// Use cache only if there are no custom view-to-model length callbacks and only for bound elements.
+		// View-to-model length callbacks are deprecated and should be removed in one of the following releases.
+		// Then it will be possible to simplify some logic inside `Mapper`.
+		// Note: we could consider requiring `viewContainer` to be a mapped item.
+		const useCache = this._viewToModelLengthCallbacks.size == 0 && this._viewToModelMapping.has( viewContainer );
+
+		if ( useCache ) {
+			const cacheItem = this._cache.get( viewContainer, modelOffset );
+
+			return this._findPositionStartingFrom( cacheItem.viewPosition, cacheItem.modelOffset, modelOffset, viewContainer, true );
+		} else {
+			return this._findPositionStartingFrom( new ViewPosition( viewContainer, 0 ), 0, modelOffset, viewContainer, false );
+		}
+	}
+
+	/**
+	 * Performs most of the logic for `Mapper#findPositionIn()`.
+	 *
+	 * It allows to start looking for the requested model offset from a given starting position, to enable caching. Using the cache,
+	 * you can set the starting point and skip all the calculations that were already previously done.
+	 *
+	 * This method uses recursion to find positions inside deep structures. Example:
+	 *
+	 * ```
+	 * <p>fo<b>bar</b>bom</p>  -> target offset: 4
+	 * <p>|fo<b>bar</b>bom</p> -> target offset: 4, traversed offset: 0
+	 * <p>fo|<b>bar</b>bom</p> -> target offset: 4, traversed offset: 2
+	 * <p>fo<b>bar</b>|bom</p> -> target offset: 4, traversed offset: 5 -> we are too far, look recursively in <b>.
+	 *
+	 * <p>fo<b>|bar</b>bom</p> -> target offset: 4, traversed offset: 2
+	 * <p>fo<b>bar|</b>bom</p> -> target offset: 4, traversed offset: 5 -> we are too far, look inside "bar".
+	 *
+	 * <p>fo<b>ba|r</b>bom</p> -> target offset: 4, traversed offset: 2 -> position is inside text node at offset 4-2 = 2.
+	 * ```
+	 *
+	 * @param startViewPosition View position to start looking from.
+	 * @param startModelOffset Model offset related to `startViewPosition`.
+	 * @param targetModelOffset Target model offset to find.
+	 * @param viewContainer Mapped ancestor of `startViewPosition`. `startModelOffset` is the offset inside a model element or model
+	 * document fragment mapped to `viewContainer`.
+	 * @param useCache Whether `Mapper` should cache positions while traversing the view tree looking for `expectedModelOffset`.
+	 * @returns View position mapped to `targetModelOffset`.
+	 */
+	private _findPositionStartingFrom(
+		startViewPosition: ViewPosition,
+		startModelOffset: number,
+		targetModelOffset: number,
+		viewContainer: ViewElement | ViewDocumentFragment,
+		useCache: boolean
+	): ViewPosition {
+		let viewParent = startViewPosition.parent as ViewElement | ViewText | ViewDocumentFragment;
+		let viewIndex = startViewPosition.offset;
 
 		// In the text node it is simple: the offset in the model equals the offset in the text.
 		if ( viewParent.is( '$text' ) ) {
-			return new ViewPosition( viewParent, expectedOffset );
+			return new ViewPosition( viewParent, targetModelOffset - startModelOffset );
 		}
 
-		// In other cases we add lengths of child nodes to find the proper offset.
+		// Last scanned view node.
+		let viewNode: ViewNode;
+		// Total model offset of the view nodes that were visited so far.
+		let traversedModelOffset = startModelOffset;
+		// Model length of the last traversed view node.
+		let lastLength = 0;
 
-		// If it is smaller we add the length.
-		while ( modelOffset < expectedOffset ) {
-			viewNode = ( viewParent as ViewElement | ViewDocumentFragment ).getChild( viewOffset )!;
+		while ( traversedModelOffset < targetModelOffset ) {
+			viewNode = viewParent.getChild( viewIndex )!;
 			lastLength = this.getModelLength( viewNode );
-			modelOffset += lastLength;
-			viewOffset++;
+			traversedModelOffset += lastLength;
+			viewIndex++;
+
+			if ( useCache ) {
+				this._cache.save( viewParent, viewIndex, viewContainer, traversedModelOffset );
+			}
 		}
 
-		// If it equals we found the position.
-		if ( modelOffset == expectedOffset ) {
-			return this._moveViewPositionToTextNode( new ViewPosition( viewParent, viewOffset ) );
+		if ( traversedModelOffset == targetModelOffset ) {
+			// If it equals we found the position.
+			return this._moveViewPositionToTextNode( new ViewPosition( viewParent, viewIndex ) );
 		}
-		// If it is higher we need to enter last child.
 		else {
-			// ( modelOffset - lastLength ) is the offset to the child we enter,
-			// so we subtract it from the expected offset to fine the offset in the child.
-			return this.findPositionIn( viewNode!, expectedOffset - ( modelOffset - lastLength ) );
+			// If it is higher we overstepped with the last traversed view node.
+			// We need to "enter" it, and look for the view position / model offset inside the last visited view node.
+			return this._findPositionStartingFrom(
+				new ViewPosition( viewNode!, 0 ),
+				traversedModelOffset - lastLength,
+				targetModelOffset,
+				viewContainer,
+				useCache
+			);
 		}
 	}
 
@@ -672,6 +739,405 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 
 		// Otherwise, just return the given position.
 		return viewPosition;
+	}
+}
+
+/**
+ * Cache mechanism for {@link module:engine/conversion/mapper~Mapper Mapper}.
+ *
+ * `MapperCache` improves performance for model-to-view position mapping, which is the main `Mapper` task. Asking for a mapping is much
+ * more frequent than actually performing changes, and even if the change happens, we can still partially keep the cache. This makes
+ * caching a useful strategy for `Mapper`.
+ *
+ * `MapperCache` will store some data for view elements or view document fragments that are mapped by the `Mapper`. These view items
+ * are "tracked" by the `MapperCache`. For such view items, we will keep entries of model offsets inside their mapped counterpart. For
+ * the cached model offsets, we will keep a view position that is inside the tracked item. This allows us to either get the mapping
+ * instantly, or at least in less steps than when calculating it from the beginning.
+ *
+ * Important problem related to caching is invalidating the cache. The cache must be invalidated each time the tracked view item changes.
+ * Additionally, we should invalidate as small part of the cache as possible. Since all the logic is encapsulated inside `MapperCache`,
+ * the `MapperCache` listens to view items {@link module:engine/view/node~ViewNodeChangeEvent `change` event} and reacts to it.
+ * Then, it invalidates just the part of the cache that is "after" the changed part of the view.
+ *
+ * As mentioned, `MapperCache` currently is used only for model-to-view position mapping as it was much bigger problem than view-to-model
+ * mapping. However, it should be possible to use it also for view-to-model.
+ *
+ * The main assumptions regarding `MapperCache` are:
+ *
+ * * it is an internal tool, used by `Mapper`, transparent to the outside (no additional effort when developing a plugin or a converter),
+ * * it stores all the necessary data internally, which makes it easier to disable or debug,
+ * * it is optimized for initial downcast process (long insertions), which is crucial for editor init and data save,
+ * * it does not save all possible positions for memory considerations, although it is a possible improvement, which may have increase
+ *   performance, as well as simplify some parts of the `MapperCache` logic.
+ */
+class MapperCache extends /* #__PURE__ */ EmitterMixin() {
+	/**
+	 * For every view element or document fragment tracked by `MapperCache`, it holds currently cached data, or more precisely,
+	 * model offset to view position mappings. See also {@link ~MappingCache MappingCache} and {@link ~CacheItem CacheItem}.
+	 *
+	 * If an item is tracked by `MapperCache` it has an entry in this structure, so this structure can be used to check which items
+	 * are tracked by `MapperCache`. When an item is no longer tracked, it is removed from this structure.
+	 *
+	 * Although `MappingCache` and `CacheItem` structures allows for caching any model offsets and view positions, we only cache
+	 * values for model offsets that are after a view node. So, in essence, positions inside text nodes are not cached. However, it takes
+	 * from one to at most a few steps, to get from a cached position to a position that is inside a view text node.
+	 *
+	 * Additionally, only one item per `modelOffset` is cached. There can be several view nodes that "end" at the same `modelOffset`.
+	 * In this case, we favour positions that are closer to the mapped item. For example
+	 *
+	 * * for model: `<paragraph>Some <$text bold=true italic=true>formatted</$text> text.</paragraph>`,
+	 * * and view: `<p>Some <em><strong>formatted</strong></em> text.</p>`,
+	 *
+	 * for model offset `14` (after "d"), we store view position after `<em>` element (i.e. view position: at `<p>`, offset `2`).
+	 */
+	private _cachedMapping = new WeakMap<ViewElement | ViewDocumentFragment, MappingCache>();
+
+	/**
+	 * For a given view node, which position was cached, it holds an index to an item in the cache list of this view node tracked
+	 * ancestor. The item pointed by index has view position and model offset that are after the given node.
+	 *
+	 * This allows for fast mapping view nodes to certain {@link ~MappingCache#cacheList `MappingCache#cacheList`} items and for faster
+	 * cache invalidation.
+	 *
+	 * For example, consider view: `<p>Some <strong>bold</strong> text.</p>`, where `<p>` is a view element tracked by `MapperCache`.
+	 * If all `<p>` children were visited by `MapperCache`, then `<p>` cache list would have four items, related to following model offsets:
+	 * `0`, `5`, `9`, `15`. Then, view node `"Some "` would have index `1`, `<strong>` index `2`, and `" text." index `3`.
+	 *
+	 * Note that the value is always greater than `0`. The first item is always for model offset `0` (and view offset `0`), and obviously,
+	 * there are no view nodes before this position.
+	 *
+	 * These values are not cleared manually at any point, but due to how the caching mechanism works, they don't need to, as there
+	 * is no risk of an outdated value being used. Explanation below.
+	 *
+	 * Index for a node is set when there's no cache for the mapped ancestor, and we traverse the parent, and we go "over" the node.
+	 *
+	 * Index for a node is used when the cache is cleared for the mapped ancestor, to speed this process. The index is used to quickly
+	 * access offset value by checking a value inside an array (cache list), at that index.
+	 *
+	 * If index for a node is outdated, we will end up checking incorrect index in cache list and this will lead to an error. But this
+	 * cannot happen. Let's consider a node that is inside a mapped ancestor and for which we cached the index (e.g. 7) at some point.
+	 *
+	 * 1. If another node is put or removed after the node, this does not affect offsets or caching, and nothing happens.
+	 *
+	 * 2. If another node is put or removed before the node, we shrink the cache list array appropriately, so it includes only the nodes
+	 * that are before the just inserted or removed node. E.g. if we inserted a node which is a fifth node in the mapped ancestor,
+	 * cache list for this ancestor will now be only four items long. When we will try to use cached index 7, we will see that it no longer
+	 * exists in the cache list which will tell us that this cached index is outdated.
+	 *
+	 * 3. If the node is moved to a different mapped ancestor, we still keep the cached index (as we never clear it manually). But as the
+	 * node is inserted into that ancestor, as described, we clear the cache list for the ancestor. So again, when we will use the index,
+	 * we will see that the cache list is shorter and the index is outdated.
+	 *
+	 * 4. The only way to expand cache list is to iterate over nodes when performing the mapping, if the cache is not available. In the
+	 * same process, we will overwrite the cached index to a proper value.
+	 */
+	private _nodeToCacheListIndex = new WeakMap<ViewNode, number>();
+
+	/**
+	 * Saves cache for the given data.
+	 *
+	 * More precisely, for given `modelOffset` inside a model element mapped to `viewContainer`, it saves that mapped view position is
+	 * in `viewParent` at offset `viewOffset`.
+	 *
+	 * `viewParent` is `viewContainer`, or is a non-mapped descendant of `viewContainer`.
+	 *
+	 * @param viewParent
+	 * @param viewOffset
+	 * @param viewContainer
+	 * @param modelOffset
+	 */
+	public save(
+		viewParent: ViewElement | ViewDocumentFragment,
+		viewOffset: number,
+		viewContainer: ViewElement | ViewDocumentFragment,
+		modelOffset: number
+	): void {
+		// Get current cache for the tracked ancestor.
+		const cache = this._cachedMapping.get( viewContainer )!;
+		// See if there is already a cache defined for `modelOffset`.
+		const cacheItem = cache.cacheMap.get( modelOffset );
+
+		if ( modelOffset <= cache.maxModelOffset && cacheItem ) {
+			// We have a valid cache, and we already cached this offset. Don't overwrite the cache.
+			//
+			// This assumes that `Mapper` works in a way that we first cache the parent and only then cache children, as we prefer position
+			// after the parent ("closer" to the tracked ancestor). It might be safer to check which position is preferred (newly saved or
+			// the one currently in cache) but it would require additional processing. For now, `Mapper#_findPositionIn()` and
+			// `Mapper#getModelLength()` are implemented so that parents are cached before their children.
+			//
+			// So, don't create new cache if one already exists. Instead, only save `_nodeToCacheListIndex` value for the related view node.
+			if ( viewOffset > 0 ) {
+				const viewChild = viewParent.getChild( viewOffset - 1 )!;
+
+				// Figure out what index to save with `viewChild`.
+				// We have a `cacheItem` for the `modelOffset`, so we can get a `viewPosition` from there. Before that position, there
+				// must be a node. That node must have an index set. This will be the index we will want to use.
+				const index = this._nodeToCacheListIndex.get( cacheItem.viewPosition.nodeBefore! )!;
+
+				this._nodeToCacheListIndex.set( viewChild, index );
+			}
+
+			return;
+		}
+
+		const viewPosition = new ViewPosition( viewParent, viewOffset );
+		const newCacheItem = { viewPosition, modelOffset };
+
+		// Extend the valid cache range.
+		cache.maxModelOffset = modelOffset > cache.maxModelOffset ? modelOffset : cache.maxModelOffset;
+
+		// Save the new cache item to the `cacheMap`.
+		cache.cacheMap.set( modelOffset, newCacheItem );
+
+		// Save the new cache item to the `cacheList`.
+		let i = cache.cacheList.length - 1;
+
+		// Mostly, we cache elements at the end of `cacheList` and the loop does not execute even once. But when we recursively visit nodes
+		// in `Mapper#_findPositionIn()`, then we will first cache the parent, and then it's children, and they will not be added at the
+		// end of `cacheList`. This is why we need to find correct index to insert them.
+		while ( i >= 0 && cache.cacheList[ i ].modelOffset > modelOffset ) {
+			i--;
+		}
+
+		cache.cacheList.splice( i + 1, 0, newCacheItem );
+
+		if ( viewOffset > 0 ) {
+			const viewChild = viewParent.getChild( viewOffset - 1 )!;
+			// There was an idea to also cache `viewContainer` here but, it could lead to wrong results. If we wanted to cache
+			// `viewContainer`, we probably would need to clear `this._nodeToCacheListIndex` when cache is cleared.
+			// Also, there was no gain from caching this value, the results were almost the same (statistical error).
+			this._nodeToCacheListIndex.set( viewChild, i + 1 );
+		}
+	}
+
+	/**
+	 * For given `modelOffset` inside a model element mapped to `viewContainer`, it returns the closest
+	 * {@link ~CacheItem cache item (view position and related model offset)} to the requested model offset one.
+	 *
+	 * It can be the exact, requested mapping, or it can be mapping that is the closest starting point to look for the requested mapping.
+	 *
+	 * `viewContainer` must be a view element or document fragment that is mapped by the {@link ~Mapper Mapper}.
+	 *
+	 * If `viewContainer` is not yet tracked by the `MapperCache`, it will be automatically tracked after calling this method.
+	 *
+	 * @param viewContainer
+	 * @param modelOffset
+	 */
+	public get( viewContainer: ViewElement | ViewDocumentFragment, modelOffset: number ): CacheItem {
+		const cache = this._cachedMapping.get( viewContainer );
+
+		if ( cache ) {
+			if ( modelOffset > cache.maxModelOffset ) {
+				return cache.cacheList[ cache.cacheList.length - 1 ];
+			} else {
+				const cacheItem = cache.cacheMap.get( modelOffset );
+
+				if ( cacheItem ) {
+					return cacheItem;
+				} else {
+					return this._findInCacheList( cache.cacheList, modelOffset );
+				}
+			}
+		} else {
+			return this.startTracking( viewContainer );
+		}
+	}
+
+	/**
+	 * Starts tracking given `viewContainer`, which must be mapped to a model element or model document fragment.
+	 *
+	 * Note, that this method is automatically called by {@link ~MapperCache#get `MapperCache#get()`} and there is no need to call it
+	 * manually.
+	 *
+	 * This method initializes the cache for `viewContainer` and adds callbacks for
+	 * {@link module:engine/view/node~ViewNodeChangeEvent `change` event} fired by `viewContainer`. `MapperCache` listens to `change` event
+	 * on the tracked elements to invalidate the stored cache.
+	 *
+	 * @param viewContainer
+	 */
+	public startTracking( viewContainer: ViewElement | ViewDocumentFragment ): CacheItem {
+		const viewPosition = new ViewPosition( viewContainer, 0 );
+		const initialCacheItem = { viewPosition, modelOffset: 0 };
+		const initialCache: MappingCache = {
+			maxModelOffset: 0,
+			cacheList: [ initialCacheItem ],
+			cacheMap: new Map( [ [ 0, initialCacheItem ] ] )
+		};
+
+		this._cachedMapping.set( viewContainer, initialCache );
+
+		// Listen to changes in tracked view containers in order to invalidate the cache.
+		//
+		// Possible performance improvement. This event bubbles, so if there are multiple tracked (mapped) elements that are ancestors
+		// then this will be unnecessarily fired for each ancestor. This could be rewritten to listen only to roots and document fragments.
+		this.listenTo( viewContainer, 'change:children', ( evt, viewNode, data ) => {
+			this._invalidateCacheOnChildrenChange( viewNode as ViewElement | ViewDocumentFragment, ( data as any ).index as number );
+		} );
+
+		this.listenTo( viewContainer, 'change:text', ( evt, viewNode ) => {
+			// Text node has changed. Clear all the cache starting from before this text node.
+			this._clearCacheBefore( viewNode as ViewText );
+		} );
+
+		return initialCacheItem;
+	}
+
+	/**
+	 * Stops tracking given `viewContainer`.
+	 *
+	 * It removes the cached data and stops listening to {@link module:engine/view/node~ViewNodeChangeEvent `change` event} on the
+	 * `viewContainer`.
+	 *
+	 * @param viewContainer
+	 */
+	public stopTracking( viewContainer: ViewElement | ViewDocumentFragment ): void {
+		this.stopListening( viewContainer );
+
+		this._cachedMapping.delete( viewContainer );
+	}
+
+	/**
+	 * Invalidates cache after a change happens inside `viewParent` on given `index`.
+	 *
+	 * @param viewParent
+	 * @param index
+	 */
+	private _invalidateCacheOnChildrenChange( viewParent: ViewElement | ViewDocumentFragment, index: number ) {
+		if ( index == 0 ) {
+			// Change at the beginning of the parent.
+			if ( this._cachedMapping.has( viewParent ) ) {
+				// If this is a tracked element, clear all cache.
+				this._clearCacheAll( viewParent );
+			} else {
+				// If this is not a tracked element, remove cache starting from before this element.
+				this._clearCacheBefore( viewParent as ViewElement );
+			}
+		} else {
+			// Change in the middle of the parent. Get a view node that's before the change.
+			const lastValidNode = viewParent.getChild( index - 1 )!;
+
+			// Then, clear all cache starting from before this view node.
+			//
+			// Possible performance improvement. We could have had `_clearCacheAfter( lastValidNode )` instead.
+			// If the `lastValidNode` is the last unchanged node, then we could clear everything AFTER it, not before.
+			// However, with the current setup, it didn't work properly and the actual gain wasn't that big on the tested data.
+			// The problem was with following example: <p>Foo<em><strong>Xyz</strong></em>Bar</p>.
+			// In this example we cache position after <em>, i.e. view position `<p>` 2 is saved with model offset 6.
+			// Now, if we add some text in `<em>`, we won't validate this cached item even though it gets outdated.
+			// So, if there's a need to have `_clearCacheAfter()`, we need to solve the above case first.
+			//
+			this._clearCacheBefore( lastValidNode );
+		}
+	}
+
+	/**
+	 * Clears all the cache for given tracked `viewContainer`.
+	 *
+	 * @param viewContainer
+	 */
+	private _clearCacheAll( viewContainer: ViewElement | ViewDocumentFragment ) {
+		const cache = this._cachedMapping.get( viewContainer )!;
+
+		if ( cache.maxModelOffset > 0 ) {
+			cache.maxModelOffset = 0;
+			cache.cacheList.length = 1;
+			cache.cacheMap.clear();
+			cache.cacheMap.set( 0, cache.cacheList[ 0 ] );
+		}
+	}
+
+	/**
+	 * Clears all the stored cache starting before given `viewNode`. The `viewNode` can be any node that is inside a tracked view element
+	 * or view document fragment.
+	 *
+	 * @param viewNode
+	 */
+	private _clearCacheBefore( viewNode: ViewNode ): void {
+		// To quickly invalidate the cache, we base on the cache list index stored with the node. See docs for `this._nodeToCacheListIndex`.
+		const cacheListIndex = this._nodeToCacheListIndex.get( viewNode );
+
+		// If there is no index stored, it means that this `viewNode` has not been cached yet.
+		if ( cacheListIndex === undefined ) {
+			// If the node is not cached, maybe it's parent is. We will try to invalidate the cache starting from before the parent.
+			// Note, that there always must be a parent if we got here.
+			const viewParent = viewNode.parent as ViewElement;
+
+			if ( !this._cachedMapping.has( viewParent ) ) {
+				// If the parent is a non-tracked element, try clearing the cache starting before it.
+				// This situation may happen e.g. if structure like `<p><strong><em>Foo</em></strong>...` was stepped over in
+				// `Mapper#_findPositionIn()` and the children are not cached yet, but the `<strong>` element is. If something changes
+				// inside this structure, make sure to invalidate all the cache after `<strong>`.
+				return this._clearCacheBefore( viewParent );
+			} else {
+				// If the parent is a tracked element, then it means there's no cache to clear (nothing after the element has been cached).
+				return;
+			}
+		}
+
+		// Note: there was a consideration to save the `viewContainer` value together with `cacheListIndex` value.
+		// However, it is like it is on purpose. We want to find *current* mapped ancestor for the `viewNode`.
+		// This is an essential step to verify if the cache is still up-to-date.
+		// Actually, we could save `viewContainer` and compare it to current tracked ancestor to quickly invalidate.
+		// But this kinda happens with our flow and other assumptions around caching list index anyway.
+		let viewContainer = viewNode.parent!;
+
+		while ( !this._cachedMapping.has( viewContainer ) ) {
+			viewContainer = viewContainer.parent!;
+		}
+
+		this._clearCacheFromIndex( viewContainer, cacheListIndex );
+	}
+
+	/**
+	 * Clears all the cache in the cache list related to given `viewContainer`, starting from `index` (inclusive).
+	 *
+	 * @param viewContainer
+	 * @param index
+	 */
+	private _clearCacheFromIndex( viewContainer: ViewElement | ViewDocumentFragment, index: number ) {
+		// Cache is always available here because we initialize it just before adding a listener that fires `_clearCacheFromIndex()`.
+		const cache = this._cachedMapping.get( viewContainer )!;
+		const cacheItem = cache.cacheList[ index - 1 ];
+
+		if ( !cacheItem ) {
+			return;
+		}
+
+		cache.maxModelOffset = cacheItem.modelOffset;
+
+		const clearedItems = cache.cacheList.splice( index );
+
+		for ( const item of clearedItems ) {
+			cache.cacheMap.delete( item.modelOffset );
+		}
+	}
+
+	/**
+	 * Finds a cache item in the given cache list, which `modelOffset` is closest (but smaller or equal) to given `offset`.
+	 *
+	 * Since `cacheList` is a sorted array, this uses binary search to retrieve the item quickly.
+	 *
+	 * @param cacheList
+	 * @param offset
+	 */
+	private _findInCacheList( cacheList: Array<CacheItem>, offset: number ): CacheItem {
+		let start = 0;
+		let end = cacheList.length - 1;
+		let index = ( end - start ) >> 1;
+		let item = cacheList[ index ];
+
+		while ( start < end ) {
+			if ( item.modelOffset < offset ) {
+				start = index + 1;
+			} else {
+				end = index - 1;
+			}
+
+			index = start + ( ( end - start ) >> 1 );
+			item = cacheList[ index ];
+		}
+
+		return item.modelOffset <= offset ? item : cacheList[ index - 1 ];
 	}
 }
 
@@ -833,4 +1299,57 @@ export type MapperViewToModelPositionEventData = {
 	 * The view position.
 	 */
 	viewPosition: ViewPosition;
+};
+
+/**
+ * Holds cache data for model to view mappings for a view element or view document fragment.
+ *
+ * {@link ~MapperCache MapperCache} keeps a `MappingCache` item for each tracked view element or document fragment (which essentially means
+ * one `MappingCache` for each model element or a model document fragment).
+ */
+type MappingCache = {
+	/**
+	 * Maximum model offset for which this item holds a valid cache.
+	 *
+	 * If there is a request for mapping for a model offset above this value, the view position needs to be calculated.
+	 */
+	maxModelOffset: number,
+
+	/**
+	 * List of cached {@link ~CacheItem cache items} for this mapped view/model element. The list is sorted by
+	 * {@link ~CacheItem#modelOffset `CacheItem#modelOffset`} values. This makes it faster to search for the closest mapped model offset.
+	 *
+	 * For example, if the cache stores values for model offsets: `0`, `20` and `33`, and there is a mapping request for offset `26`,
+	 * we can quickly find cached value for offset `20` and continue calculating offset from there.
+	 *
+	 * Note, that there is only one entry in `cacheList` for given `modelOffset` value.
+	 */
+	cacheList: Array<CacheItem>,
+
+	/**
+	 * Map of cached {@link ~CacheItem cache items} for this mapped view/model element. The keys are `modelOffset`s
+	 * (as defined in `CacheItem`) and values are the `CacheItem` objects.
+	 *
+	 * This is a different representation of `cacheList`, and it is used for different purposes. Since it is a map, it is very fast to
+	 * retrieve data for exact `modelOffset`s which were already cached before. But a sorted list is better for finding the closest item
+	 * if exact item is not found. Also, it is faster to clear "all entries after model offset X" for `cacheList`.
+	 */
+	cacheMap: Map<number, CacheItem>
+};
+
+/**
+ * Informs that given `viewPosition` corresponds to given `modelOffset` (with the assumption that the model offset is in a model element
+ * mapped to the `viewPosition` parent or its ancestor).
+ *
+ * For example, for model `<paragraph>Some <$text bold=true>bold</$text> text</paragraph>` and view `<p>Some <strong>bold</strong> text</p>`
+ * and assuming `<paragraph>` and `<p>` are mapped, following `CacheItem`s are possible:
+ *
+ * * `viewPosition` = `<p>`, 1; `modelOffset` = 5
+ * * `viewPosition` = `<strong>, 1; `modelOffset` = 9
+ * * `viewPosition` = `"bold"`, 2; `modelOffset` = 7
+ * * `viewPosition` = `" text"`, 0; `modelOffset` = 7
+ */
+type CacheItem = {
+	viewPosition: ViewPosition,
+	modelOffset: number
 };
