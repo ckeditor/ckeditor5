@@ -4,7 +4,7 @@ menu-title: Usage-based billing
 meta-title: Usage-based billing | CKEditor 5 Documentation
 meta-description: Learn how usage-based billing works in CKEditor 5.
 order: 20
-modified_at: 2024-10-28
+modified_at: 2024-11-20
 ---
 
 # Usage-based billing
@@ -18,7 +18,7 @@ Under the Usage-based billing (UBB) model, your costs are based on how frequentl
 	* You have a Custom plan that allows self-hosting.
 </info-box>
 
-## Key Terms
+## Key terms
 
 Familiarizing yourself with these key terms related to usage-based billing will help you choose the right pricing plan for your needs:
 
@@ -59,6 +59,8 @@ When the editor is ready, a license check request is sent to our server, along w
 
 The server’s response confirms whether the license is valid. If invalid, the editor will switch to read-only mode.
 
+**Note:** Remember to set correct {@link getting-started/setup/csp Content Security Policy (CSP)} rules to enable usage metering.
+
 ## How usage-based billing works
 
 Each pricing plan includes a specific number of editor loads. If you exceed this limit, you can either upgrade to a higher plan or pay for additional editor loads in blocks of 1,000.
@@ -82,7 +84,7 @@ If you use our CKEditor Free plan and exceed your allocated editor loads without
 
 ### Trial period usage
 
-During your 14-day trial, you enjoy unlimited editor loads.
+During your 14-day trial, you have unlimited editor loads and can test both distribution methods: cloud and self-hosted. However, once the trial ends, you must use the method included in your selected plan. For instance, if you tested npm (self-hosted) but are on a cloud plan, you will need to either {@link updating/index#migration-to-cdn migrate your implementation to use cloud} or [contact our sales team](https://ckeditor.com/contact/) to switch to a self-hosted plan.
 
 ### Managing your usage
 
@@ -94,6 +96,6 @@ We advise linking the email address associated with your plan to a group alias, 
 
 ### Plan upgrades
 
-If you are on the Essential plan and reach 5,000 editor loads, you will not be automatically upgraded to the Professional plan. Instead, you will be charged a standard charging rate for each additional block of 1,000 editor loads. To avoid these charges, regularly review your editor load count and consider upgrading your plan if needed. Plan upgrades are available anytime in the `Customer portal` → `Subscription management`.
+If you are on the Essential plan and reach 5,000 editor loads, you will not be automatically upgraded to the Professional plan. Instead, you will be charged a standard charging rate for each additional block of 1,000 editor loads. To avoid these charges, regularly review your editor load count and consider upgrading your plan if needed. Plan upgrades are available anytime in the `Customer Portal` → `Subscription management`.
 
 For plan upgrades, we charge prorated value immediately to enable all needed features after the upgrade.

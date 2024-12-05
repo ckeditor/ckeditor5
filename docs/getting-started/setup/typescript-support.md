@@ -3,7 +3,7 @@ category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 Documentation
 meta-description: Handle setup, integrations, and development of CKEditor 5 features with TypeScript.
-modified_at: 2024-06-25
+modified_at: 2024-11-20
 order: 100
 ---
 
@@ -62,7 +62,7 @@ First, import the injection script as an NPM package and use it in your TypeScri
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
 
 const { CKEditor, CKEditorPremiumFeatures } = await loadCKEditorCloud({
-	version: '45.0.0',
+	version: '{@var ckeditor5-version}',
 
 	// Optional configuration:
 	premium: true,

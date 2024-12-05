@@ -58,3 +58,7 @@ msgstr "Napravi vezu"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "Idi sa veze"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "Pomeraj do ciljne veze"
