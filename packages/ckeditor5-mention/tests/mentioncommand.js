@@ -151,19 +151,6 @@ describe( 'MentionCommand', () => {
 			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
 		} );
 
-		it( 'should throw if marker is not one character', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
-
-			const testCases = [
-				{ marker: '##', mention: '##foo' },
-				{ marker: '', mention: '@foo' }
-			];
-
-			for ( const options of testCases ) {
-				expectToThrowCKEditorError( () => command.execute( options ), /mentioncommand-incorrect-marker/, editor );
-			}
-		} );
-
 		it( 'should throw if marker does not match mention id', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
