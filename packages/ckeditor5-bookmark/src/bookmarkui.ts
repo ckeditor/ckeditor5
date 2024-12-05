@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
-import { type LinksProviderItem } from '@ckeditor/ckeditor5-link';
+import type { LinksProviderItem } from '@ckeditor/ckeditor5-link';
 import {
 	ButtonView,
 	ContextualBalloon,

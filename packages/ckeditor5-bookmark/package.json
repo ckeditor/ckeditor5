@@ -17,7 +17,8 @@
     "@ckeditor/ckeditor5-core": "44.0.0",
     "@ckeditor/ckeditor5-widget": "44.0.0",
     "@ckeditor/ckeditor5-utils": "44.0.0",
-    "@ckeditor/ckeditor5-ui": "44.0.0"
+    "@ckeditor/ckeditor5-ui": "44.0.0",
+    "@ckeditor/ckeditor5-link": "44.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-engine": "44.0.0",
@@ -32,7 +33,6 @@
     "@ckeditor/ckeditor5-heading": "44.0.0",
     "@ckeditor/ckeditor5-html-support": "44.0.0",
     "@ckeditor/ckeditor5-image": "44.0.0",
-    "@ckeditor/ckeditor5-link": "44.0.0",
     "@ckeditor/ckeditor5-list": "44.0.0",
     "@ckeditor/ckeditor5-editor-multi-root": "44.0.0",
     "@ckeditor/ckeditor5-paragraph": "44.0.0",
