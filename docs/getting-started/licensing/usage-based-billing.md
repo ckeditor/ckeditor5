@@ -59,6 +59,8 @@ When the editor is ready, a license check request is sent to our server, along w
 
 The server’s response confirms whether the license is valid. If invalid, the editor will switch to read-only mode.
 
+**Note:** Remember to set correct {@link getting-started/setup/csp Content Security Policy (CSP)} rules to enable usage metering.
+
 ## How usage-based billing works
 
 Each pricing plan includes a specific number of editor loads. If you exceed this limit, you can either upgrade to a higher plan or pay for additional editor loads in blocks of 1,000.

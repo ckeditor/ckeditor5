@@ -42,7 +42,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'style', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'insertImage', 'insertTable', 'highlight', 'codeBlock',
+				'-', 'link', 'insertImage', 'insertTable', 'highlight',
 				'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
