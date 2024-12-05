@@ -242,21 +242,17 @@ export default class BookmarkUI extends Plugin {
 		const linksUI = this.editor.plugins.get( LinkUI )!;
 		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
 
-		const getItems = () =>
-			Array
-				.from( bookmarkEditing.getAllBookmarkNames() )
-				.sort( ( a, b ) => a.localeCompare( b ) )
-				.map( ( bookmarkId ): LinksProviderItem => ( {
-					id: bookmarkId,
-					label: bookmarkId,
-					href: `#${ bookmarkId }`,
-					icon: icons.bookmark
-				} ) );
+		const getItems = () => Array
+			.from( bookmarkEditing.getAllBookmarkNames() )
+			.sort( ( a, b ) => a.localeCompare( b ) )
+			.map( ( bookmarkId ): LinksProviderItem => ( {
+				id: bookmarkId,
+				label: bookmarkId,
+				href: `#${ bookmarkId }`,
+				icon: icons.bookmark
+			} ) );
 
-		const onNavigateToLink = ( { id }: LinksProviderItem ) => {
-			this._scrollToBookmark( id );
-			return false;
-		};
+		const onNavigateToLink = ( { id }: LinksProviderItem ) => this._scrollToBookmark( id );
 
 		linksUI.registerLinksListProvider( {
 			label: t( 'Bookmarks' ),
@@ -272,7 +268,11 @@ export default class BookmarkUI extends Plugin {
 	 */
 	private _scrollToBookmark( name: string ) {
 		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
-		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( name )!;
+		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( name );
+
+		if ( !bookmarkElement ) {
+			return false;
+		}
 
 		this.editor.model.change( writer => {
 			writer.setSelection( bookmarkElement!, 'on' );
@@ -282,6 +282,8 @@ export default class BookmarkUI extends Plugin {
 			alignToTop: true,
 			forceScroll: true
 		} );
+
+		return true;
 	}
 
 	/**
