@@ -100,20 +100,12 @@ export default class LinkUI extends Plugin {
 	declare public selectedLinkableText: string | undefined;
 
 	/**
-	 * Currently selected links provider preview.
+	 * Holds the selected link element that has `href` matching one of the registered link in the link providers.
 	 *
 	 * @observable
 	 * @readonly
 	 */
-	declare public selectedLinksProvider: LinksProvider | null;
-
-	/**
-	 * Holds the {@link #_selectedLinksProvider selected provider} item from it's `items`.
-	 *
-	 * @observable
-	 * @readonly
-	 */
-	declare public selectedLinksProviderLink: LinksProviderItem | null;
+	declare public selectedLinksProviderLink: { item: LinksProviderItem; provider: LinksProvider } | null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -149,7 +141,6 @@ export default class LinkUI extends Plugin {
 		const t = this.editor.t;
 
 		this.set( 'selectedLinkableText', undefined );
-		this.set( 'selectedLinksProvider', null );
 		this.set( 'selectedLinksProviderLink', null );
 
 		editor.editing.view.addObserver( ClickObserver );
@@ -203,6 +194,27 @@ export default class LinkUI extends Plugin {
 				}
 			]
 		} );
+
+		// Handle opening of the provider links using document editing.
+		if ( editor.plugins.has( 'LinkEditing' ) ) {
+			const linkEditing = editor.plugins.get( 'LinkEditing' );
+
+			linkEditing._registerLinkOpener( href => {
+				const match = this._getLinkProviderItemByHref( href );
+
+				if ( !match ) {
+					return false;
+				}
+
+				const { item, provider } = match;
+
+				if ( provider.onNavigateToLink ) {
+					return provider.onNavigateToLink( item );
+				}
+
+				return false;
+			} );
+		}
 	}
 
 	/**
@@ -240,22 +252,6 @@ export default class LinkUI extends Plugin {
 			.length;
 
 		this.linksProviders.add( provider, insertIndex );
-
-		// Handle opening of the provider links using document editing.
-		if ( provider.onNavigateToLink && this.editor.plugins.has( 'LinkEditing' ) ) {
-			const linkEditing = this.editor.plugins.get( 'LinkEditing' );
-
-			linkEditing._registerLinkOpener( href => {
-				const item = provider.getItems().find( item => item.href === href );
-
-				if ( item ) {
-					provider.onNavigateToLink!( item );
-					return true;
-				}
-
-				return false;
-			} );
-		}
 	}
 
 	/**
@@ -264,23 +260,13 @@ export default class LinkUI extends Plugin {
 	private _bindSelectedProviderLinksWatchers() {
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
-		this.bind( 'selectedLinksProviderLink' ).to(
-			this, 'selectedLinksProvider',
-			linkCommand, 'value',
-			( selectedLinksProvider, href ) => {
-				if ( !selectedLinksProvider || href === undefined ) {
-					return null;
-				}
-
-				const foundLink = selectedLinksProvider.getItems().find( item => item.href === href );
-
-				if ( foundLink ) {
-					return foundLink;
-				}
-
+		this.bind( 'selectedLinksProviderLink' ).to( linkCommand, 'value', href => {
+			if ( href === undefined ) {
 				return null;
 			}
-		);
+
+			return this._getLinkProviderItemByHref( href );
+		} );
 	}
 
 	/**
@@ -417,10 +403,8 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Creates a sorted array of buttons with link names.
 	 */
-	private _createLinkProviderListView(): Array<ButtonView> {
-		const items = this.selectedLinksProvider!.getItems();
-
-		return items.map( ( { label, href, icon, tooltip } ) => {
+	private _createLinkProviderListView( provider: LinksProvider ): Array<ButtonView> {
+		return provider.getItems().map( ( { label, href, icon, tooltip } ) => {
 			const buttonView = new ButtonView();
 
 			buttonView.set( {
@@ -450,12 +434,12 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Creates a view for links provider.
 	 */
-	private _createLinkProviderItemsView(): LinkProviderItemsView {
+	private _createLinkProviderItemsView( provider: LinksProvider ): LinkProviderItemsView {
 		const editor = this.editor;
 		const t = editor.locale.t;
 
 		const view = new LinkProviderItemsView( editor.locale );
-		const { emptyListPlaceholder, label } = this.selectedLinksProvider!;
+		const { emptyListPlaceholder, label } = provider;
 
 		view.set( 'emptyListPlaceholder', emptyListPlaceholder || t( 'No links available' ) );
 		view.set( 'headerLabel', label );
@@ -574,9 +558,9 @@ export default class LinkUI extends Plugin {
 				return href && ensureSafeUrl( href, allowedProtocols );
 			} );
 
-			button.bind( 'label' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, preview ) => {
-				if ( preview ) {
-					return preview.label;
+			button.bind( 'label' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, provider ) => {
+				if ( provider ) {
+					return provider.item.label;
 				}
 
 				if ( !href ) {
@@ -584,21 +568,25 @@ export default class LinkUI extends Plugin {
 				}
 			} );
 
-			button.bind( 'icon' ).to( this, 'selectedLinksProviderLink', preview => {
-				return preview && preview.icon;
+			button.bind( 'icon' ).to( this, 'selectedLinksProviderLink', provider => {
+				return provider && provider.item.icon;
 			} );
 
-			button.bind( 'tooltip' ).to( this, 'selectedLinksProviderLink', preview => {
-				const tooltip = preview ? preview.tooltip : null;
+			button.bind( 'tooltip' ).to( this, 'selectedLinksProviderLink', provider => {
+				const tooltip = provider ? provider.item.tooltip : null;
 
 				return tooltip || t( 'Open link in new tab' );
 			} );
 
 			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
-				const { onNavigateToLink } = this.selectedLinksProvider || {};
-				const { selectedLinksProviderLink } = this;
+				if ( !this.selectedLinksProviderLink ) {
+					return;
+				}
 
-				if ( onNavigateToLink && onNavigateToLink( selectedLinksProviderLink! ) ) {
+				const { provider, item } = this.selectedLinksProviderLink!;
+				const { onNavigateToLink } = provider;
+
+				if ( onNavigateToLink && onNavigateToLink( item! ) ) {
 					cancel();
 				}
 			} );
@@ -885,21 +873,20 @@ export default class LinkUI extends Plugin {
 			this._removeLinksProviderView();
 		}
 
-		this.selectedLinksProvider = provider;
-		this.linkProviderItemsView = this._createLinkProviderItemsView();
+		this.linkProviderItemsView = this._createLinkProviderItemsView( provider );
 
-		this._addLinkProviderItemsView();
+		this._addLinkProviderItemsView( provider );
 	}
 
 	/**
 	 * Adds the {@link #linkProviderItemsView} to the {@link #_balloon}.
 	 */
-	private _addLinkProviderItemsView(): void {
+	private _addLinkProviderItemsView( provider: LinksProvider ): void {
 		// Clear the collection of links.
 		this.linkProviderItemsView!.listChildren.clear();
 
 		// Add links to the collection.
-		this.linkProviderItemsView!.listChildren.addMany( this._createLinkProviderListView() );
+		this.linkProviderItemsView!.listChildren.addMany( this._createLinkProviderListView( provider ) );
 
 		this._balloon.add( {
 			view: this.linkProviderItemsView!,
@@ -1284,6 +1271,49 @@ export default class LinkUI extends Plugin {
 		const linkRange = editing.mapper.toModelRange( viewLinkRange );
 
 		return extractTextFromLinkRange( linkRange );
+	}
+
+	/**
+	 * Returns the link provider item for the selected link.
+	 *
+	 * @returns Link provider item or `null` if not found.
+	 */
+	private _getSelectedLinkProviderItem() {
+		const selectedLink = this._getSelectedLinkElement();
+
+		if ( !selectedLink ) {
+			return null;
+		}
+
+		const href = selectedLink.getAttribute( 'href' );
+
+		if ( !href ) {
+			return null;
+		}
+
+		return this._getLinkProviderItemByHref( href );
+	}
+
+	/**
+	 * Returns a link provider item by its URL.
+	 *
+	 * @param href URL of the link.
+	 * @returns Link provider and item or `null` if not found.
+	 */
+	private _getLinkProviderItemByHref( href: string ): { provider: LinksProvider; item: LinksProviderItem } | null {
+		if ( !href ) {
+			return null;
+		}
+
+		for ( const provider of this.linksProviders ) {
+			const item = provider.getItems().find( item => item.href === href );
+
+			if ( item ) {
+				return { provider, item };
+			}
+		}
+
+		return null;
 	}
 
 	/**
