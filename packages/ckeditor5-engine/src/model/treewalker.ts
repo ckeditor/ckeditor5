@@ -183,6 +183,11 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 		}
 	}
 
+	public jumpTo( position: Position ): void {
+		this._position = position;
+		this._visitedParent = position.parent;
+	}
+
 	/**
 	 * Gets the next tree walker's value.
 	 */
