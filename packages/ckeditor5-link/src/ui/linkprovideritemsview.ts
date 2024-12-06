@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/ui/linkslistview
+ * @module link/ui/linkprovideritemsview
  */
 
 import {
@@ -44,7 +44,7 @@ export default class LinkProviderItemsView extends View {
 	 *
 	 * @observable
 	 */
-	declare public headerLabel: string;
+	declare public title: string;
 
 	/**
 	 * The text displayed when no links are available.
@@ -119,7 +119,7 @@ export default class LinkProviderItemsView extends View {
 			this.emptyListInformation
 		] );
 
-		this.set( 'headerLabel', '' );
+		this.set( 'title', '' );
 		this.set( 'emptyListPlaceholder', '' );
 		this.set( 'hasItems', false );
 
@@ -257,11 +257,9 @@ export default class LinkProviderItemsView extends View {
 	 * Creates a header view for the form.
 	 */
 	private _createHeaderView(): FormHeaderView {
-		const header = new FormHeaderView( this.locale, {
-			label: this.headerLabel
-		} );
+		const header = new FormHeaderView( this.locale );
 
-		header.bind( 'label' ).to( this, 'headerLabel' );
+		header.bind( 'label' ).to( this, 'title' );
 		header.children.add( this.backButtonView, 0 );
 
 		return header;

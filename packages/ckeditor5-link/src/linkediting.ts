@@ -60,8 +60,6 @@ const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
 export default class LinkEditing extends Plugin {
 	/**
 	 * A list of functions that handles opening links. If any of them returns `true`, the link is considered as opened.
-	 *
-	 * @internal
 	 */
 	private readonly _linkOpeners: Array<LinkOpener> = [];
 

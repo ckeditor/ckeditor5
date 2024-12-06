@@ -251,19 +251,20 @@ export default class BookmarkUI extends Plugin {
 				id: bookmarkId,
 				label: bookmarkId,
 				href: `#${ bookmarkId }`,
-				icon: icons.bookmark,
+				icon: icons.bookmarkMedium,
 				preview: {
-					tooltip: t( 'Scroll to bookmark' )
+					tooltip: t( 'Scroll to bookmark' ),
+					icon: icons.bookmarkSmall
 				}
 			} ) );
 
-		const onNavigateToLink = ( { id }: LinksProviderItem ) => this._scrollToBookmark( id );
+		const navigate = ( { id }: LinksProviderItem ) => this._scrollToBookmark( id );
 
 		linksUI.registerLinksListProvider( {
 			label: t( 'Bookmarks' ),
 			emptyListPlaceholder: t( 'No bookmarks available.' ),
 			getItems,
-			onNavigateToLink
+			navigate
 		} );
 	}
 

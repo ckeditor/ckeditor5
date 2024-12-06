@@ -139,8 +139,8 @@ describe( 'LinkProviderItemsView', () => {
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
 
-		it( 'should bind the #headerLabel to headerView.label', () => {
-			view.headerLabel = 'Mocked header label';
+		it( 'should bind the #title to headerView.label', () => {
+			view.title = 'Mocked header label';
 
 			expect( view.children.get( 0 ).label ).to.equal( 'Mocked header label' );
 		} );

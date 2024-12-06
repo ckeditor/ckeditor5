@@ -30,6 +30,8 @@ import {
 import { Collection, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
+import LinkEditing from './linkediting.js';
+
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
 import LinkProviderItemsView from './ui/linkprovideritemsview.js';
@@ -77,13 +79,6 @@ export default class LinkUI extends Plugin {
 	public linkProviderItemsView: LinkProviderItemsView | null = null;
 
 	/**
-	 * The collection of the link providers.
-	 */
-	public linksProviders: Collection<LinksProvider> = new Collection( {
-		idProperty: 'id'
-	} );
-
-	/**
 	 * The form view displaying properties link settings.
 	 */
 	public propertiesView: LinkPropertiesView & ViewWithCssTransitionDisabler | null = null;
@@ -113,10 +108,15 @@ export default class LinkUI extends Plugin {
 	private _balloon!: ContextualBalloon;
 
 	/**
+	 * The collection of the link providers.
+	 */
+	private _linksProviders: Collection<LinksProvider> = new Collection();
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon, 'LinkEditing' ] as const;
+		return [ ContextualBalloon, LinkEditing ] as const;
 	}
 
 	/**
@@ -149,6 +149,7 @@ export default class LinkUI extends Plugin {
 
 		// Create toolbar buttons.
 		this._registerComponents();
+		this._registerEditingOpeners();
 		this._enableBalloonActivators();
 
 		// Renders a fake visual selection marker on an expanded selection.
@@ -194,27 +195,6 @@ export default class LinkUI extends Plugin {
 				}
 			]
 		} );
-
-		// Handle opening of the provider links using document editing.
-		if ( editor.plugins.has( 'LinkEditing' ) ) {
-			const linkEditing = editor.plugins.get( 'LinkEditing' );
-
-			linkEditing._registerLinkOpener( href => {
-				const match = this._getLinkProviderLinkByHref( href );
-
-				if ( !match ) {
-					return false;
-				}
-
-				const { item, provider } = match;
-
-				if ( provider.onNavigateToLink ) {
-					return provider.onNavigateToLink( item );
-				}
-
-				return false;
-			} );
-		}
 	}
 
 	/**
@@ -242,16 +222,15 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Registers a link provider. It appends a button to the link toolbar that
-	 * opens a list of links provided by the registered provider.
+	 * Registers list of buttons below the link form view that
+	 * open a list of links provided by the clicked provider.
 	 */
 	public registerLinksListProvider( provider: LinksProvider ): void {
-		// The higher order, the later the provider is inserted.
-		const insertIndex = this.linksProviders
+		const insertIndex = this._linksProviders
 			.filter( existing => ( existing.order || 0 ) <= ( provider.order || 0 ) )
 			.length;
 
-		this.linksProviders.add( provider, insertIndex );
+		this._linksProviders.add( provider, insertIndex );
 	}
 
 	/**
@@ -393,7 +372,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Watch adding new link providers and add them to the buttons list.
-		formView.providersListChildren.bindTo( this.linksProviders ).using(
+		formView.providersListChildren.bindTo( this._linksProviders ).using(
 			provider => this._createLinksListProviderButton( provider )
 		);
 
@@ -441,8 +420,8 @@ export default class LinkUI extends Plugin {
 		const view = new LinkProviderItemsView( editor.locale );
 		const { emptyListPlaceholder, label } = provider;
 
-		view.set( 'emptyListPlaceholder', emptyListPlaceholder || t( 'No links available' ) );
-		view.set( 'headerLabel', label );
+		view.emptyListPlaceholder = emptyListPlaceholder || t( 'No links available' );
+		view.title = label;
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
@@ -521,6 +500,29 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * Registers listeners used in editing plugin, used to open links.
+	 */
+	private _registerEditingOpeners() {
+		const linkEditing = this.editor.plugins.get( LinkEditing );
+
+		linkEditing._registerLinkOpener( href => {
+			const match = this._getLinkProviderLinkByHref( href );
+
+			if ( !match ) {
+				return false;
+			}
+
+			const { item, provider } = match;
+
+			if ( provider.navigate ) {
+				return provider.navigate( item );
+			}
+
+			return false;
+		} );
+	}
+
+	/**
 	 * Registers components in the ComponentFactory.
 	 */
 	private _registerComponents(): void {
@@ -586,9 +588,9 @@ export default class LinkUI extends Plugin {
 				}
 
 				const { provider, item } = this.selectedLinksProviderLink!;
-				const { onNavigateToLink } = provider;
+				const { navigate } = provider;
 
-				if ( onNavigateToLink && onNavigateToLink( item! ) ) {
+				if ( navigate && navigate( item! ) ) {
 					cancel();
 				}
 			} );
@@ -1286,7 +1288,7 @@ export default class LinkUI extends Plugin {
 			return null;
 		}
 
-		for ( const provider of this.linksProviders ) {
+		for ( const provider of this._linksProviders ) {
 			const item = provider.getItems().find( item => item.href === href );
 
 			if ( item ) {
@@ -1384,6 +1386,11 @@ export type LinksProviderItem = {
 		 * Optional tooltip shown when the item preview is hovered.
 		 */
 		tooltip?: string;
+
+		/**
+		 * Optional icon displayed for the item. If not passed, the `icon` from the item will be used.
+		 */
+		icon?: string;
 	};
 };
 
@@ -1424,7 +1431,7 @@ export type LinksProvider = {
 	 * @param item Item that was clicked.
 	 * @returns `true` if the link was handled by the provider, `false` otherwise. It'll prevent the default action if `true`.
 	 */
-	onNavigateToLink?( item: LinksProviderItem ): boolean;
+	navigate?( item: LinksProviderItem ): boolean;
 };
 
 /**
