@@ -137,9 +137,9 @@ export function reconvertItemsOnDataChange(
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
-		const itemToListHead = new Map<ListElement, ListElement>();
-		const visited = new Set<Element>();
+		const itemToListHead = new Set<ListElement>();
 		const changedItems = new Set<Node>();
+		const visited = new Set<Element>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {

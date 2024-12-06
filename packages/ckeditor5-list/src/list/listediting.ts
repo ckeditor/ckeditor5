@@ -756,7 +756,7 @@ function modelChangePostFixer(
 ) {
 	const changes = model.document.differ.getChanges();
 	const visited = new Set<Element>();
-	const itemToListHead = new Map<ListElement, ListElement>();
+	const itemToListHead = new Set<ListElement>();
 	const multiBlock = listEditing.editor.config.get( 'list.multiBlock' );
 
 	let applied = false;

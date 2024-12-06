@@ -21,7 +21,7 @@ import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } fro
  */
 export function findAndAddListHeadToMap(
 	position: Position,
-	itemToListHead: Map<ListElement, ListElement>,
+	itemToListHead: Set<ListElement>,
 	visited: Set<Element>
 ): void {
 	const previousNode = position.nodeBefore;
@@ -30,7 +30,7 @@ export function findAndAddListHeadToMap(
 		const item = position.nodeAfter;
 
 		if ( isListItemBlock( item ) ) {
-			itemToListHead.set( item, item );
+			itemToListHead.add( item );
 		}
 	} else {
 		let listHead = previousNode;
@@ -50,12 +50,12 @@ export function findAndAddListHeadToMap(
 
 			visited.add( listHead );
 
-			if ( itemToListHead.has( listHead ) ) {
+			if ( itemToListHead.has( previousNode ) ) {
 				return;
 			}
 		}
 
-		itemToListHead.set( previousNode, listHead );
+		itemToListHead.add( listHead );
 	}
 }
 
