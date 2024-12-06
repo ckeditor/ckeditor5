@@ -51,11 +51,11 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		pkgJson.exports[ './build/*' ] = './build/*';
 	}
 
-	if ( checkPathExists( path.join( packagePath, 'lang' ) ) ) {
+	if ( await checkPathExists( path.join( packagePath, 'lang' ) ) ) {
 		pkgJson.exports[ './lang/*' ] = './lang/*';
 	}
 
-	if ( checkPathExists( path.join( packagePath, 'theme' ) ) ) {
+	if ( await checkPathExists( path.join( packagePath, 'theme' ) ) ) {
 		pkgJson.exports[ './theme/*' ] = './theme/*';
 	}
 
@@ -85,6 +85,10 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		return checkPathExists( path.join( packagePath, 'tsconfig.json' ) );
 	}
 
+	/**
+	 * @param {String} file
+	 * @returns {Promise.<Boolean>}
+	 */
 	function checkPathExists( file ) {
 		return fs.access( file, fs.constants.F_OK )
 			.then( () => true )
