@@ -924,8 +924,16 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'expired' ) {
 				/**
-				 * Your license key has expired. Please renew your license on the
+				 * Your license key has expired.
+				 *
+				 * If you used the Free Trial, you either need to switch to
+				 * [open-source license](https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-and-legal.html),
+				 * or acquire one of our [commercial plans](https://ckeditor.com/pricing/) if you wish to keep using the Premium Features.
+				 *
+				 * If you already had one of our Cloud plans, please renew your license in the
 				 * [Customer Portal](https://portal.ckeditor.com).
+				 *
+				 * If you had a Custom plan, please [contact support](https://ckeditor.com/contact/)
 				 *
 				 * @error license-key-expired
 				 */
@@ -1010,6 +1018,16 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * Your license does not allow the current distribution channel.
 				 *
+				 * These are the available distribution channels:
+				 * * Self-hosted - the editor is installed via npm or from a ZIP package
+				 * * Cloud - the editor is run from CDN
+				 *
+				 * The licenses available include:
+				 * * GPL license for open-source users
+				 * * Cloud plans (managed via the Customer Portal)
+				 * * Custom plans (sales-assited)
+				 *
+				 * The relation between distribution channels and licenses works as follows:
 				 * * With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
 				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
 				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
@@ -1017,6 +1035,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
+				 * Should you need to migrate your installation from npm to CDN, please refer to our
+				 * [dedicated migration guides](https://ckeditor.com/docs/ckeditor5/latest/updating/migrations/vanilla-js.html).
 				 *
 				 * @error license-key-invalid-distribution-channel
 				 */
