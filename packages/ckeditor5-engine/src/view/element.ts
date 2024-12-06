@@ -17,6 +17,7 @@ import { default as StylesMap, type Styles, type StyleValue } from './stylesmap.
 import type Document from './document.js';
 import type Item from './item.js';
 import TokenList from './tokenlist.js';
+import type { NormalizedConsumables } from '../conversion/viewconsumable.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -391,6 +392,29 @@ export default class Element extends Node {
 		}
 
 		return match;
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _getConsumables(): NormalizedConsumables {
+		const attributes: Array<[string, string?]> = [];
+
+		for ( const [ key, value ] of this._attrs ) {
+			if ( typeof value == 'string' ) {
+				attributes.push( [ key ] );
+			} else {
+				for ( const prop of value._getConsumables() ) {
+					attributes.push( [ key, prop ] );
+				}
+			}
+		}
+
+		return {
+			name: true,
+			attributes
+		};
 	}
 
 	/**
@@ -1083,6 +1107,8 @@ export interface ElementAttributeValue {
 	isMatching( other: this ): boolean;
 
 	mergeFrom( other: this ): void;
+
+	_getConsumables(): Array<string>;
 
 	_getTokensMatch(
 		attributeKey: string,

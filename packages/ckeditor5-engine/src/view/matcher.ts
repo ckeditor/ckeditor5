@@ -164,7 +164,7 @@ export default class Matcher {
 	private _isElementMatching( element: Element, pattern: MatcherFunctionPattern | MatcherObjectPattern ): Match | null {
 		// If pattern is provided as function - return result of that function;
 		if ( typeof pattern == 'function' ) {
-			return pattern( element );
+			return pattern( element ); // TODO this might be a problem for unified match. Maybe we should unify output here?
 		}
 
 		const match: Match = {};
@@ -183,8 +183,7 @@ export default class Matcher {
 			const attributesMatch = matchAttributes( pattern.attributes, element );
 
 			if ( attributesMatch ) {
-				// TODO temporary
-				match.attributes = attributesMatch.map( item => item[ 0 ] );
+				match.attributes = attributesMatch;
 			} else {
 				return null;
 			}
@@ -192,11 +191,11 @@ export default class Matcher {
 
 		// Check element's classes.
 		if ( pattern.classes ) {
+			// TODO maybe pass output array as a parameter to avoid concats
 			const classesMatch = matchClasses( pattern.classes, element );
 
 			if ( classesMatch ) {
-				// TODO temporary
-				match.classes = classesMatch.map( item => item[ 1 ] );
+				match.attributes = match.attributes ? match.attributes.concat( classesMatch ) : classesMatch;
 			} else {
 				return null;
 			}
@@ -207,8 +206,7 @@ export default class Matcher {
 			const stylesMatch = matchStyles( pattern.styles, element );
 
 			if ( stylesMatch ) {
-				// TODO temporary
-				match.styles = stylesMatch.map( item => item[ 1 ] );
+				match.attributes = match.attributes ? match.attributes.concat( stylesMatch ) : stylesMatch;
 			} else {
 				return null;
 			}
@@ -709,18 +707,9 @@ export interface Match {
 
 	/**
 	 * Array with matched attribute names.
+	 * Or unified match result (combined attributes, classes and styles).
 	 */
-	attributes?: Array<string>;
-
-	/**
-	 * Array with matched class names.
-	 */
-	classes?: Array<string>;
-
-	/**
-	 * Array with matched style names.
-	 */
-	styles?: Array<string>;
+	attributes?: Array<[string, string?]>;
 }
 
 /**
