@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals console, window, document */
@@ -42,7 +42,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'style', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'insertImage', 'insertTable', 'highlight', 'codeBlock',
+				'-', 'link', 'insertImage', 'insertTable', 'highlight',
 				'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
