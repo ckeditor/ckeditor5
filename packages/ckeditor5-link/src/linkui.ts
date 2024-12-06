@@ -1135,14 +1135,6 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when {@link #linkProviderItemsView} is in the {@link #_balloon} and it is
-	 * currently visible.
-	 */
-	private get _isLinksListVisible(): boolean {
-		return !!this.linkProviderItemsView && this._balloon.visibleView === this.linkProviderItemsView;
-	}
-
-	/**
 	 * Returns `true` when {@link #propertiesView}, {@link #toolbarView}, {@link #linkProviderItemsView}
 	 * or {@link #formView} is in the {@link #_balloon}.
 	 */

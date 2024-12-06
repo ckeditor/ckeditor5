@@ -3235,5 +3235,165 @@ describe( 'LinkUI', () => {
 				expect( navigate ).not.to.be.called;
 			} );
 		} );
+
+		describe( 'links view', () => {
+			beforeEach( () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [
+						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium },
+						{ href: 'https://example.org', label: 'Example', icon: icons.bookmarkSmall },
+						{ href: 'https://example.com/2', label: 'Example 2', icon: icons.bookmarkSmall },
+						{ href: 'https://example.com/3', label: 'Example 3', icon: icons.bookmarkSmall }
+					]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => [
+						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium }
+					]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Buz',
+					getItems: () => []
+				} );
+			} );
+
+			it( 'can be opened by clicking the link toolbar button', () => {
+				linkUIFeature._showUI();
+
+				clickNthLinksProvider( 0 );
+
+				expect( balloon.visibleView ).to.equal( linkUIFeature.linkProviderItemsView );
+			} );
+
+			it( 'can be closed by clicking the back button', () => {
+				const spy = sinon.spy();
+
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				linkUIFeature.listenTo( linkUIFeature.linkProviderItemsView, 'cancel', spy );
+				backToLinksProviders();
+
+				sinon.assert.calledOnce( spy );
+				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+			} );
+
+			it( 'can be closed by clicking the "esc" button', () => {
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				linkUIFeature.linkProviderItemsView.keystrokes.press( {
+					keyCode: keyCodes.esc,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+			} );
+
+			it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
+				const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
+
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+				sinon.assert.calledWithExactly( spy );
+				expect( linkUIFeature._balloon.visibleView ).to.be.null;
+			} );
+
+			it( 'opening provider should show items from the provider', () => {
+				linkUIFeature._showUI();
+
+				// First provider with 4 items
+				clickNthLinksProvider( 0 );
+				expect( linkUIFeature.linkProviderItemsView.listChildren.length ).to.equal( 4 );
+				expectedShownItems( [ 'CKEditor', 'Example', 'Example 2', 'Example 3' ] );
+				backToLinksProviders();
+
+				// Second provider with 1 item
+				clickNthLinksProvider( 1 );
+				expect( linkUIFeature.linkProviderItemsView.listChildren.length ).to.equal( 1 );
+				expectedShownItems( [ 'CKEditor' ] );
+				backToLinksProviders();
+
+				// Third provider with 0 items
+				clickNthLinksProvider( 2 );
+				expect( linkUIFeature.linkProviderItemsView.listChildren.length ).to.equal( 0 );
+			} );
+
+			it( 'should execute action after clicking link item', () => {
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				const linkButton = linkUIFeature.linkProviderItemsView.listChildren.get( 0 );
+				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( 'https://ckeditor.com' );
+				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
+				expect( focusSpy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should clear the error message that appears on first attempt of submit the form ' +
+				'when next action is executed after clicking the link button', () => {
+				linkUIFeature._createViews();
+
+				const { formView } = linkUIFeature;
+
+				formView.render();
+				linkUIFeature._showUI();
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
+
+				clickNthLinksProvider( 0 );
+
+				const bookmarkButton = linkUIFeature.linkProviderItemsView.listChildren.get( 0 );
+				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
+
+				bookmarkButton.fire( 'execute' );
+
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( 'https://ckeditor.com' );
+				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
+				expect( focusSpy.calledOnce ).to.be.true;
+
+				expect( formView.urlInputView.errorText ).to.be.null;
+			} );
+
+			function expectedShownItems( expectedLabels ) {
+				const labels = Array
+					.from( linkUIFeature.linkProviderItemsView.listChildren )
+					.map( child => child.label );
+
+				expect( labels ).to.be.deep.equal( expectedLabels );
+			}
+
+			function backToLinksProviders() {
+				linkUIFeature.linkProviderItemsView.backButtonView.fire( 'execute' );
+			}
+
+			function clickNthLinksProvider( nth ) {
+				const providersList = linkUIFeature.formView
+					.template.children[ 0 ]
+					.find( child => child.template.attributes.class.includes( 'ck-link__providers-list' ) );
+
+				expect( providersList ).not.to.be.undefined;
+
+				const button = providersList
+					.template.children[ 0 ]
+					.get( nth ) // li
+					.template.children[ 0 ]
+					.get( 0 ); // button
+
+				button.fire( 'execute' );
+			}
+		} );
 	} );
 } );
