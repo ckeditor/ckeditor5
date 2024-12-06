@@ -457,6 +457,75 @@ describe( 'LinkUI', () => {
 
 			expect( labels ).to.be.deep.equal( [ 'Foo', 'Bar', 'Buz' ] );
 		} );
+
+		it( 'should register link providers in proper order if order passed', () => {
+			linkUIFeature.registerLinksListProvider( {
+				order: 2,
+				label: 'Foo',
+				getItems: () => []
+			} );
+
+			linkUIFeature.registerLinksListProvider( {
+				order: -1,
+				label: 'Bar',
+				getItems: () => []
+			} );
+
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Buz',
+				getItems: () => []
+			} );
+
+			linkUIFeature._showUI();
+
+			linkUIFeature.registerLinksListProvider( {
+				order: -3,
+				label: 'FooBar',
+				getItems: () => []
+			} );
+
+			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 4 );
+
+			const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
+
+			expect( labels ).to.be.deep.equal( [ 'FooBar', 'Bar', 'Buz', 'Foo' ] );
+		} );
+	} );
+
+	describe( '_getLinkProviderLinkByHref()', () => {
+		it( 'should return link object from provider that contains given href', () => {
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Foo',
+				getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+			} );
+
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Bar',
+				getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+			} );
+
+			const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
+
+			expect( link.item ).to.be.deep.equal( { href: 'bar' } );
+			expect( link.provider.label ).to.be.equal( 'Foo' );
+			expect( link.provider.getItems ).to.be.instanceOf( Function );
+		} );
+
+		it( 'should return null if no link with given href was found', () => {
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Foo',
+				getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+			} );
+
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Bar',
+				getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+			} );
+
+			const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
+
+			expect( link ).to.be.null;
+		} );
 	} );
 
 	describe( '_showUI()', () => {
