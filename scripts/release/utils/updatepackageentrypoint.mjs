@@ -51,11 +51,11 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		pkgJson.exports[ './build/*' ] = './build/*';
 	}
 
-	if ( files.includes( 'lang' ) ) {
+	if ( checkPathExists( packagePath, 'lang' ) ) {
 		pkgJson.exports[ './lang/*' ] = './lang/*';
 	}
 
-	if ( files.includes( 'theme' ) ) {
+	if ( checkPathExists( packagePath, 'theme' ) ) {
 		pkgJson.exports[ './theme/*' ] = './theme/*';
 	}
 
@@ -82,10 +82,10 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		}
 
 		// Otherwise, let's check if the package contains a `tsconfig.json` file.
-		return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
+		return checkPathExists( path.join( packagePath, 'tsconfig.json' ) );
 	}
 
-	function checkFileExists( file ) {
+	function checkPathExists( file ) {
 		return fs.access( file, fs.constants.F_OK )
 			.then( () => true )
 			.catch( () => false );
