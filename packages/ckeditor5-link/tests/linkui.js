@@ -401,6 +401,64 @@ describe( 'LinkUI', () => {
 		} );
 	} );
 
+	describe( 'registerLinksListProvider()', () => {
+		it( 'should not crash the editor when called before showing the form', () => {
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Foo',
+				getItems: () => []
+			} );
+		} );
+
+		it( 'should show links provider that were registered before showing form', () => {
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Foo',
+				getItems: () => []
+			} );
+
+			linkUIFeature._showUI();
+
+			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
+			expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Foo' );
+		} );
+
+		it( 'should show link provider that were registered after showing form', () => {
+			linkUIFeature._showUI();
+
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Bar',
+				getItems: () => []
+			} );
+
+			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
+			expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Bar' );
+		} );
+
+		it( 'should be possible to register multiple link providers', () => {
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Foo',
+				getItems: () => []
+			} );
+
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Bar',
+				getItems: () => []
+			} );
+
+			linkUIFeature._showUI();
+
+			linkUIFeature.registerLinksListProvider( {
+				label: 'Buz',
+				getItems: () => []
+			} );
+
+			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 3 );
+
+			const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
+
+			expect( labels ).to.be.deep.equal( [ 'Foo', 'Bar', 'Buz' ] );
+		} );
+	} );
+
 	describe( '_showUI()', () => {
 		let balloonAddSpy;
 
