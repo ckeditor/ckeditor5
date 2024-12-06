@@ -27,7 +27,7 @@ import {
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
 
-import { Collection, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { Collection, type ObservableChangeEvent, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkEditing from './linkediting.js';
@@ -95,14 +95,6 @@ export default class LinkUI extends Plugin {
 	declare public selectedLinkableText: string | undefined;
 
 	/**
-	 * Holds the selected link element that has `href` matching one of the registered link in the link providers.
-	 *
-	 * @observable
-	 * @readonly
-	 */
-	declare public selectedLinksProviderLink: { item: LinksProviderItem; provider: LinksProvider } | null;
-
-	/**
 	 * The contextual balloon plugin instance.
 	 */
 	private _balloon!: ContextualBalloon;
@@ -141,7 +133,6 @@ export default class LinkUI extends Plugin {
 		const t = this.editor.t;
 
 		this.set( 'selectedLinkableText', undefined );
-		this.set( 'selectedLinksProviderLink', null );
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -234,21 +225,6 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Binds selected provider links to the link command value.
-	 */
-	private _bindSelectedProviderLinksWatchers() {
-		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
-
-		this.bind( 'selectedLinksProviderLink' ).to( linkCommand, 'value', href => {
-			if ( href === undefined ) {
-				return null;
-			}
-
-			return this._getLinkProviderLinkByHref( href );
-		} );
-	}
-
-	/**
 	 * Creates views.
 	 */
 	private _createViews() {
@@ -263,7 +239,6 @@ export default class LinkUI extends Plugin {
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
-		this._bindSelectedProviderLinksWatchers();
 	}
 
 	/**
@@ -560,34 +535,37 @@ export default class LinkUI extends Plugin {
 				return href && ensureSafeUrl( href, allowedProtocols );
 			} );
 
-			button.bind( 'label' ).to( linkCommand, 'value', this, 'selectedLinksProviderLink', ( href, provider ) => {
-				if ( provider ) {
-					return provider.item.label;
-				}
-
+			this.listenTo<ObservableChangeEvent<string | undefined>>( linkCommand, 'change:value', ( evt, name, href ) => {
 				if ( !href ) {
-					return t( 'This link has no URL' );
-				}
-
-				return href;
-			} );
-
-			button.bind( 'icon' ).to( this, 'selectedLinksProviderLink', provider => {
-				return provider && provider.item.icon;
-			} );
-
-			button.bind( 'tooltip' ).to( this, 'selectedLinksProviderLink', provider => {
-				const { tooltip } = ( provider && provider.item.preview ) || {};
-
-				return tooltip || t( 'Open link in new tab' );
-			} );
-
-			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
-				if ( !this.selectedLinksProviderLink ) {
+					button.label = t( 'This link has no URL' );
+					button.icon = undefined;
+					button.tooltip = '';
 					return;
 				}
 
-				const { provider, item } = this.selectedLinksProviderLink!;
+				const selectedLinksProviderLink = this._getLinkProviderLinkByHref( href );
+
+				if ( selectedLinksProviderLink ) {
+					const { label, icon, preview = {} } = selectedLinksProviderLink.item;
+
+					button.label = label;
+					button.icon = preview.icon || icon;
+					button.tooltip = preview.tooltip || false;
+				} else {
+					button.label = href;
+					button.icon = undefined;
+					button.tooltip = t( 'Open link in new tab' );
+				}
+			} );
+
+			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
+				const selectedLinksProviderLink = this._getLinkProviderLinkByHref( href );
+
+				if ( !selectedLinksProviderLink ) {
+					return;
+				}
+
+				const { provider, item } = selectedLinksProviderLink!;
 				const { navigate } = provider;
 
 				if ( navigate && navigate( item! ) ) {
