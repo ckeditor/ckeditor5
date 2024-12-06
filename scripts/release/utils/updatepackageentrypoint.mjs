@@ -51,11 +51,11 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		pkgJson.exports[ './build/*' ] = './build/*';
 	}
 
-	if ( checkPathExists( packagePath, 'lang' ) ) {
+	if ( checkPathExists( path.join( packagePath, 'lang' ) ) ) {
 		pkgJson.exports[ './lang/*' ] = './lang/*';
 	}
 
-	if ( checkPathExists( packagePath, 'theme' ) ) {
+	if ( checkPathExists( path.join( packagePath, 'theme' ) ) ) {
 		pkgJson.exports[ './theme/*' ] = './theme/*';
 	}
 
