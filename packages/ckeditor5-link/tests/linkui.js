@@ -34,6 +34,7 @@ import ManualDecorator from '../src/utils/manualdecorator.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'LinkUI', () => {
 	let editor, model, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement, propertiesView;
@@ -236,6 +237,18 @@ describe( 'LinkUI', () => {
 
 				linkCommand.value = '#foo';
 				expect( button.icon ).to.equal( undefined );
+			} );
+
+			it( 'should reset button labels when command is empty', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.icon ).to.equal( undefined );
+
+				linkCommand.value = '';
+				expect( button.icon ).to.equal( undefined );
+				expect( button.label ).to.be.undefined;
+				expect( button.tooltip ).to.equal( 'Open link in new tab' );
 			} );
 		} );
 
@@ -2965,7 +2978,49 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
-		describe( 'link providers editing integration', () => {
+		describe( '_getLinkProviderLinkByHref()', () => {
+			it( 'should return null if no link provided', () => {
+				const link = linkUIFeature._getLinkProviderLinkByHref();
+
+				expect( link ).to.be.null;
+			} );
+
+			it( 'should return link object from provider that contains given href', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+				} );
+
+				const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
+
+				expect( link.item ).to.be.deep.equal( { href: 'bar' } );
+				expect( link.provider.label ).to.be.equal( 'Foo' );
+				expect( link.provider.getItems ).to.be.instanceOf( Function );
+			} );
+
+			it( 'should return null if no link with given href was found', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+				} );
+
+				const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
+
+				expect( link ).to.be.null;
+			} );
+		} );
+
+		describe( 'editing integration', () => {
 			let windowOpenStub;
 
 			beforeEach( async () => {
@@ -3036,6 +3091,18 @@ describe( 'LinkUI', () => {
 				expect( windowOpenStub ).to.be.called;
 			} );
 
+			it( 'should use default navigate to href if no navigate callback was provided', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'https://example.org' } ]
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( windowOpenStub ).to.be.calledWith( 'https://example.org', '_blank' );
+			} );
+
 			function fireClickEvent( options, tagName = 'a' ) {
 				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
 
@@ -3047,39 +3114,125 @@ describe( 'LinkUI', () => {
 			}
 		} );
 
-		describe( '_getLinkProviderLinkByHref()', () => {
-			it( 'should return link object from provider that contains given href', () => {
-				linkUIFeature.registerLinksListProvider( {
-					label: 'Foo',
-					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
-				} );
+		describe( 'link preview', () => {
+			let button;
 
-				linkUIFeature.registerLinksListProvider( {
-					label: 'Bar',
-					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
-				} );
-
-				const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
-
-				expect( link.item ).to.be.deep.equal( { href: 'bar' } );
-				expect( link.provider.label ).to.be.equal( 'Foo' );
-				expect( link.provider.getItems ).to.be.instanceOf( Function );
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'linkPreview' );
 			} );
 
-			it( 'should return null if no link with given href was found', () => {
+			afterEach( () => {
+				button.destroy();
+			} );
+
+			it( 'should set fallback label and icon if selected link was not found in link providers', () => {
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.isEnabled ).to.be.true;
+				expect( button.isVisible ).to.be.true;
+				expect( button.label ).to.equal( 'https://ckeditor.com' );
+				expect( button.icon ).to.be.undefined;
+			} );
+
+			it( 'should set label and icon from link provider if selected link was found', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+					getItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					]
 				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.isEnabled ).to.be.true;
+				expect( button.isVisible ).to.be.true;
+				expect( button.label ).to.equal( 'CKEditor' );
+				expect( button.tooltip ).to.be.false;
+				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
+			} );
+
+			it( 'should prefer to use preview tooltip and icon if present', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium,
+							preview: {
+								tooltip: 'Tooltip',
+								icon: icons.bookmarkSmall
+							}
+						}
+					]
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.tooltip ).to.be.equal( 'Tooltip' );
+				expect( button.icon ).to.be.equal( icons.bookmarkSmall );
+			} );
+
+			it( 'should stop the event and execute navigate (that returns true)', () => {
+				const cancelCheckSpy = sinon.spy();
+				const navigate = sinon.stub().returns( true );
 
 				linkUIFeature.registerLinksListProvider( {
-					label: 'Bar',
-					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+					label: 'Foo',
+					getItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					],
+					navigate
 				} );
 
-				const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
+				linkUIFeature.listenTo( button, 'navigate', cancelCheckSpy );
 
-				expect( link ).to.be.null;
+				button.href = 'https://ckeditor.com';
+				button.render();
+				button.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( cancelCheckSpy ).not.to.be.called;
+				expect( navigate ).to.be.calledOnce;
+
+				sinon.assert.calledWith( navigate, sinon.match( {
+					href: 'https://ckeditor.com',
+					label: 'CKEditor',
+					icon: icons.bookmarkMedium
+				} ) );
+			} );
+
+			it( 'should not stop the event if link was not found in providers', () => {
+				const cancelCheckSpy = sinon.spy();
+				const navigate = sinon.stub().returns( false );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					],
+					navigate
+				} );
+
+				button.on( 'navigate', cancelCheckSpy );
+
+				button.href = 'https://example.org';
+				button.render();
+				button.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( cancelCheckSpy ).to.be.called;
+				expect( navigate ).not.to.be.called;
 			} );
 		} );
 	} );

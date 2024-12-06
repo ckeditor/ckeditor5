@@ -537,9 +537,9 @@ export default class LinkUI extends Plugin {
 
 			const setHref = ( href: string | undefined ) => {
 				if ( !href ) {
-					button.label = t( 'This link has no URL' );
+					button.label = undefined;
 					button.icon = undefined;
-					button.tooltip = '';
+					button.tooltip = t( 'Open link in new tab' );
 					return;
 				}
 
@@ -575,6 +575,7 @@ export default class LinkUI extends Plugin {
 				const { navigate } = provider;
 
 				if ( navigate && navigate( item! ) ) {
+					evt.stop();
 					cancel();
 				}
 			} );
