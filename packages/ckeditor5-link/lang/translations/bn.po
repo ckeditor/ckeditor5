@@ -60,3 +60,7 @@ msgstr "লিঙ্ক তৈরি করুন"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "কোনো লিঙ্কের বাইরে সরান"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "টার্গেটে স্ক্রল করুন"

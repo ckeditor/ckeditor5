@@ -4,7 +4,7 @@ order: 10
 meta-title: License key and activation | CKEditor 5 Documentation
 meta-description: Managing your license keys and activating the editor.
 menu-title: License key and activation
-modified_at: 2024-10-28
+modified_at: 2024-11-20
 ---
 
 # License key and activation
@@ -45,7 +45,8 @@ Trial allows testing both self-hosted and cloud distributions. When the trial fi
 
 CKEditor&nbsp;5 (without the premium features listed above) can be used in an open-source, GPL-compliant setup with:
 
-* a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a license key and free editor loads.
+* a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a unique license key and free editor loads.
+* legacy GPL accounts in our Customer Portal. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 * without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 
 In both cases, the editor will {@link getting-started/licensing/managing-ckeditor-logo display a small “Powered by CKEditor” logo} in the editor area.
@@ -99,14 +100,14 @@ A token URL and other authentication methods will be assigned to this specific e
 
 ### Trial license key
 
-This key grants access to **all features**. It is valid for **14 days**. It does not consume editor loads, but editor is limited functionally (for example: session time, number of changes). It is **perfect for evaluating the platform** and all its features. It can be used only for evaluation purposes.
+This key grants access to **all features.** It is valid for **14 days.** It limits the editor's functionality (like session time or number of changes). It is perfect for evaluating the platform and all its features. The key exists only for evaluation purposes.
 
 * **Features**: Grants access to all features and add-ons.
 * **Duration**: Valid for 14 days.
-* **Functionality**: The editor is limited functionally, such as session time and the number of changes allowed.
+* **Functionality**: The editor has limited functionality regarding session time and the number of changes allowed.
 * **Intended use**: Ideal for evaluating the platform and all its features.
 * **Usage limitation**: Can only be used for evaluation purposes and not for production.
-* **Editor loads**: Does not consume editor loads.
+* **Editor loads**: It does not consume editor loads, regardless of the plan type.
 
 You can sign up for the [CKEditor Premium Features 14-day free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor.
 
@@ -121,17 +122,19 @@ This key grants access to your subscription features. It does not consume editor
 	* The editor will show a banner informing it was launched for development purposes.
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.
-* **Editor loads**: Does not consume editor loads.
+* **Editor loads**: It does not consume editor loads, regardless of the plan type.
 
 ### Production license key
 
-This key grants access to your subscription features without imposing any limitations. It **consumes editor loads** (after the 14 days trial period ends).
+This key grants access to your subscription features without imposing any operational limitations.
 
 * **Features**: Grants access to subscription features.
 * **Functionality**: The editor functions without any restrictions.
 * **Intended use**: Meant for production environments where the software is actively used by end-users.
 * **Usage limitation**: None specified.
-* **Editor loads**: Consumes editor loads.
+* **Editor loads**: Depending on your plan type:
+    * It consumes editor loads if you are on our usage-based billing plans.
+	* It does not consume editor loads if you are not on a plan with usage-based billing.
 
 ### Evaluation license key
 

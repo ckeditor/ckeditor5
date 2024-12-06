@@ -58,3 +58,7 @@ msgstr "링크 생성"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "링크 밖으로 이동"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "대상으로 스크롤"

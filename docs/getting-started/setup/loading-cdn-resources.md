@@ -3,7 +3,7 @@ category: setup
 meta-title: Loading CDN resources | CKEditor 5 Documentation
 meta-description: Learn how to load CKEditor 5 resources from CDN.
 order: 130
-modified_at: 2024-09-10
+modified_at: 2024-11-20
 ---
 
 # Loading CDN resources
@@ -62,7 +62,7 @@ The `loadCKEditorCloud` function (and `useCKEditorCloud` functions which are sma
 
 * `version` (required) &ndash; The version of CKEditor&nbsp;5 and premium features (if `premium` option is set to `true`) to load.
 * `translations` (optional) &ndash; An array of language codes to load translations for.
-* `premium` (optional) &ndash; A boolean value that indicates whether to load premium plugins. <sup>[1]</sup>
+* `premium` (optional) &ndash; A Boolean value that indicates whether to load premium plugins. <sup>[1]</sup>
 * `ckbox` (optional) &ndash; Configuration for loading CKBox integration. <sup>[1]</sup>
 * `plugins` (optional) &ndash; Configuration for loading additional plugins. The object should have the global plugin name as keys and the plugin configuration as values. <sup>[1]</sup>
 * `injectedHtmlElementsAttributes` (optional) &ndash; An object with attributes that will be added to the `<script>` and `<link>` tags that are injected into the page. This can be used to add attributes like `integrity` or `crossorigin` to the tags. By default, it is set to `{ crossorigin: 'anonymous' }`.

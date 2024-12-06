@@ -58,3 +58,7 @@ msgstr "قمْ بإنشاء رابط"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "ابتعدْ عن الرابط"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "انتقل إلى الهدف"
