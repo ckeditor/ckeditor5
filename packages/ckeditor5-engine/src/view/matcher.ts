@@ -167,7 +167,12 @@ export default class Matcher {
 		if ( typeof pattern == 'function' ) {
 			const match = pattern( element );
 
-			return match && normalizeConsumables( match );
+			// In some places we use Matcher with callback pattern that returns boolean.
+			if ( !match || typeof match != 'object' ) {
+				return match;
+			}
+
+			return normalizeConsumables( match );
 		}
 
 		const match: Match = {};

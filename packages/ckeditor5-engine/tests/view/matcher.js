@@ -853,10 +853,9 @@ describe( 'Matcher', () => {
 		} );
 
 		it( 'should allow to use function as a pattern', () => {
-			const match = { name: true };
 			const pattern = element => {
 				if ( element.name === 'div' && element.childCount > 0 ) {
-					return match;
+					return { name: true };
 				}
 
 				return null;
@@ -869,7 +868,22 @@ describe( 'Matcher', () => {
 			const result = matcher.match( el2 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el2 );
-			expect( result ).to.have.property( 'match' ).that.equal( match );
+			expect( result ).to.have.property( 'match' ).that.deep.equal( { name: true, attributes: [] } );
+		} );
+
+		it( 'should allow to use function as a pattern (non-standard boolean return)', () => {
+			const pattern = element => {
+				return element.name === 'div' && element.childCount > 0;
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'div', null, [ el1 ] );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			const result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'match' ).to.be.true;
 		} );
 
 		it( 'should return first matched element', () => {
