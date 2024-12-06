@@ -1188,18 +1188,6 @@ describe( 'LinkEditing', () => {
 				expect( stub.notCalled ).to.be.true;
 				expect( eventPreventDefault.calledOnce ).to.be.false;
 			} );
-
-			function fireClickEvent( options, editor, view, tagName = 'a' ) {
-				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
-
-				eventPreventDefault = sinon.spy();
-
-				view.document.fire( 'click', {
-					domTarget: linkElement,
-					domEvent: options,
-					preventDefault: eventPreventDefault
-				} );
-			}
 		} );
 
 		describe( 'using keyboard', () => {
@@ -1292,20 +1280,157 @@ describe( 'LinkEditing', () => {
 					expect( eventPreventDefault.calledOnce ).to.be.true;
 				} );
 			} );
-
-			function fireEnterPressedEvent( options, view ) {
-				view.document.fire( 'keydown', {
-					keyCode: keyCodes.enter,
-					domEvent: {
-						keyCode: keyCodes.enter,
-						preventDefault: () => {},
-						target: document.body,
-						...options
-					},
-					...options
-				} );
-			}
 		} );
+
+		describe( 'custom link custom openers', () => {
+			let editing;
+
+			beforeEach( () => {
+				editing = editor.plugins.get( LinkEditing );
+				env.isMac = false;
+			} );
+
+			describe( 'using mouse', () => {
+				it( 'should use default opener if there are no custom openers', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+
+				it( 'should not open link with custom opener that returns false', () => {
+					const opener = sinon.stub().returns( false );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).to.be.called;
+				} );
+
+				it( 'should open link with custom opener that returns true', () => {
+					const opener = sinon.stub().returns( true );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+
+				it( 'should pick the first opener that returns true', () => {
+					const openers = [
+						sinon.stub().returns( false ),
+						sinon.stub().returns( true ),
+						sinon.stub().returns( true )
+					];
+
+					for ( const opener of openers ) {
+						editing._registerLinkOpener( opener );
+					}
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( openers[ 0 ] ).to.be.calledOnce;
+					expect( openers[ 1 ] ).to.be.calledOnce;
+					expect( openers[ 2 ] ).not.to.be.called;
+
+					expect( openers[ 0 ].calledBefore( openers[ 1 ] ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+			} );
+
+			describe( 'using keyboard', () => {
+				it( 'should use default opener if there are no custom openers', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+
+				it( 'should not open link with custom opener that returns false', () => {
+					const opener = sinon.stub().returns( false );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).to.be.called;
+				} );
+
+				it( 'should open link with custom opener that returns true', () => {
+					const opener = sinon.stub().returns( true );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+
+				it( 'should pick the first opener that returns true', () => {
+					const openers = [
+						sinon.stub().returns( false ),
+						sinon.stub().returns( true ),
+						sinon.stub().returns( true )
+					];
+
+					for ( const opener of openers ) {
+						editing._registerLinkOpener( opener );
+					}
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( openers[ 0 ] ).to.be.calledOnce;
+					expect( openers[ 1 ] ).to.be.calledOnce;
+					expect( openers[ 2 ] ).not.to.be.called;
+
+					expect( openers[ 0 ].calledBefore( openers[ 1 ] ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+			} );
+		} );
+
+		function fireClickEvent( options, editor, view, tagName = 'a' ) {
+			const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+			eventPreventDefault = sinon.spy();
+
+			view.document.fire( 'click', {
+				domTarget: linkElement,
+				domEvent: options,
+				preventDefault: eventPreventDefault
+			} );
+		}
+
+		function fireEnterPressedEvent( options, view ) {
+			view.document.fire( 'keydown', {
+				keyCode: keyCodes.enter,
+				domEvent: {
+					keyCode: keyCodes.enter,
+					preventDefault: () => {},
+					target: document.body,
+					...options
+				},
+				...options
+			} );
+		}
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/1016
