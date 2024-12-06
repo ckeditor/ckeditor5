@@ -9,6 +9,7 @@
 
 import type Element from './element.js';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
+import { normalizeConsumables, type Consumables } from '../conversion/viewconsumable.js';
 
 /**
  * View matcher class.
@@ -164,7 +165,9 @@ export default class Matcher {
 	private _isElementMatching( element: Element, pattern: MatcherFunctionPattern | MatcherObjectPattern ): Match | null {
 		// If pattern is provided as function - return result of that function;
 		if ( typeof pattern == 'function' ) {
-			return pattern( element ); // TODO this might be a problem for unified match. Maybe we should unify output here?
+			const match = pattern( element );
+
+			return match && normalizeConsumables( match );
 		}
 
 		const match: Match = {};
@@ -667,7 +670,7 @@ export type MatcherPattern = string | RegExp | MatcherFunctionPattern | MatcherO
 /**
  * A function describing `MatcherPattern`. See {@link ~MatcherPattern} for examples and other options.
  */
-export type MatcherFunctionPattern = ( element: Element ) => Match | null;
+export type MatcherFunctionPattern = ( element: Element ) => Match | Consumables | null;
 
 /**
  * An object describing `MatcherPattern`. See {@link ~MatcherPattern} for examples and other options.

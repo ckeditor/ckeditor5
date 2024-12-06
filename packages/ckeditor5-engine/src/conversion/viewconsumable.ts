@@ -635,7 +635,7 @@ export class ViewElementConsumables {
 /**
  * TODO
  */
-function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
+export function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
 	const attributes: Array<[string, string?]> = [];
 
 	if ( 'attributes' in consumables && consumables.attributes ) {
