@@ -549,8 +549,14 @@ export default class LinkUI extends Plugin {
 					const { label, icon, preview = {} } = selectedLinksProviderLink.item;
 
 					button.label = label;
-					button.icon = preview.icon || icon;
 					button.tooltip = preview.tooltip || false;
+
+					// Hide icon if it's set to `null`.
+					if ( preview.icon === null ) {
+						button.icon = undefined;
+					} else {
+						button.icon = preview.icon || icon;
+					}
 				} else {
 					button.label = href;
 					button.icon = undefined;
@@ -1365,9 +1371,12 @@ export type LinksProviderItem = {
 		tooltip?: string;
 
 		/**
-		 * Optional icon displayed for the item. If not passed, the `icon` from the item will be used.
+		 * Optional icon displayed for the item.
+		 *
+		 * 	* If not passed, the `icon` from the item will be used.
+		 * 	* If null, no icon will be displayed.
 		 */
-		icon?: string;
+		icon?: string | null;
 	};
 };
 

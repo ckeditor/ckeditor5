@@ -3177,6 +3177,28 @@ describe( 'LinkUI', () => {
 				expect( button.icon ).to.be.equal( icons.bookmarkSmall );
 			} );
 
+			it( 'should not show any icon if preview if preview icon is null', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium,
+							preview: {
+								tooltip: 'Tooltip',
+								icon: null
+							}
+						}
+					]
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.tooltip ).to.be.equal( 'Tooltip' );
+				expect( button.icon ).to.be.undefined;
+			} );
+
 			it( 'should stop the event and execute navigate (that returns true)', () => {
 				const cancelCheckSpy = sinon.spy();
 				const navigate = sinon.stub().returns( true );
