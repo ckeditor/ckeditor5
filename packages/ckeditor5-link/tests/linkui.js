@@ -2873,212 +2873,214 @@ describe( 'LinkUI', () => {
 		} );
 	} );
 
-	describe( 'registerLinksListProvider()', () => {
-		it( 'should not crash the editor when called before showing the form', () => {
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => []
+	describe( 'Links Providers', () => {
+		describe( 'registerLinksListProvider()', () => {
+			it( 'should not crash the editor when called before showing the form', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => []
+				} );
+			} );
+
+			it( 'should show links provider that were registered before showing form', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => []
+				} );
+
+				linkUIFeature._showUI();
+
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
+				expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Foo' );
+			} );
+
+			it( 'should show link provider that were registered after showing form', () => {
+				linkUIFeature._showUI();
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => []
+				} );
+
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
+				expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Bar' );
+			} );
+
+			it( 'should be possible to register multiple link providers', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => []
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => []
+				} );
+
+				linkUIFeature._showUI();
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Buz',
+					getItems: () => []
+				} );
+
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 3 );
+
+				const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
+
+				expect( labels ).to.be.deep.equal( [ 'Foo', 'Bar', 'Buz' ] );
+			} );
+
+			it( 'should register link providers in proper order if order passed', () => {
+				linkUIFeature.registerLinksListProvider( {
+					order: 2,
+					label: 'Foo',
+					getItems: () => []
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					order: -1,
+					label: 'Bar',
+					getItems: () => []
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Buz',
+					getItems: () => []
+				} );
+
+				linkUIFeature._showUI();
+
+				linkUIFeature.registerLinksListProvider( {
+					order: -3,
+					label: 'FooBar',
+					getItems: () => []
+				} );
+
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 4 );
+
+				const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
+
+				expect( labels ).to.be.deep.equal( [ 'FooBar', 'Bar', 'Buz', 'Foo' ] );
 			} );
 		} );
 
-		it( 'should show links provider that were registered before showing form', () => {
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => []
+		describe( 'link providers editing integration', () => {
+			let windowOpenStub;
+
+			beforeEach( async () => {
+				await editor.destroy();
+
+				windowOpenStub = sinon.stub( window, 'open' );
+				editor = await ClassicEditor.create( editorElement, {
+					plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					toolbar: [ 'link' ]
+				} );
+
+				env.isMac = false;
+				model = editor.model;
+				linkUIFeature = editor.plugins.get( LinkUI );
 			} );
 
-			linkUIFeature._showUI();
+			afterEach( async () => {
+				windowOpenStub.restore();
 
-			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
-			expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Foo' );
+				await editor.destroy();
+			} );
+
+			it( 'should register custom opener that lookups in links provider items and calls navigate (returning true)', () => {
+				const navigate = sinon.stub().returns( true );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'https://ckeditor.com' } ],
+					navigate
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( navigate ).to.be.calledOnce;
+				expect( windowOpenStub ).not.to.be.called;
+			} );
+
+			it( 'should register custom opener that lookups in links provider items and calls navigate (returning false)', () => {
+				const navigate = sinon.stub().returns( false );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'https://ckeditor.com' } ],
+					navigate
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( navigate ).to.be.calledOnce;
+				expect( windowOpenStub ).to.be.called;
+			} );
+
+			it( 'should not crash if link was not found in provider', () => {
+				const navigate = sinon.stub().returns( false );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'https://ckeditor.com' } ],
+					navigate
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( navigate ).not.to.be.called;
+				expect( windowOpenStub ).to.be.called;
+			} );
+
+			function fireClickEvent( options, tagName = 'a' ) {
+				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+				editor.editing.view.document.fire( 'click', {
+					domTarget: linkElement,
+					domEvent: options,
+					preventDefault: () => {}
+				} );
+			}
 		} );
 
-		it( 'should show link provider that were registered after showing form', () => {
-			linkUIFeature._showUI();
+		describe( '_getLinkProviderLinkByHref()', () => {
+			it( 'should return link object from provider that contains given href', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+				} );
 
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Bar',
-				getItems: () => []
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+				} );
+
+				const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
+
+				expect( link.item ).to.be.deep.equal( { href: 'bar' } );
+				expect( link.provider.label ).to.be.equal( 'Foo' );
+				expect( link.provider.getItems ).to.be.instanceOf( Function );
 			} );
 
-			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
-			expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Bar' );
-		} );
+			it( 'should return null if no link with given href was found', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+				} );
 
-		it( 'should be possible to register multiple link providers', () => {
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => []
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+				} );
+
+				const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
+
+				expect( link ).to.be.null;
 			} );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Bar',
-				getItems: () => []
-			} );
-
-			linkUIFeature._showUI();
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Buz',
-				getItems: () => []
-			} );
-
-			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 3 );
-
-			const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
-
-			expect( labels ).to.be.deep.equal( [ 'Foo', 'Bar', 'Buz' ] );
-		} );
-
-		it( 'should register link providers in proper order if order passed', () => {
-			linkUIFeature.registerLinksListProvider( {
-				order: 2,
-				label: 'Foo',
-				getItems: () => []
-			} );
-
-			linkUIFeature.registerLinksListProvider( {
-				order: -1,
-				label: 'Bar',
-				getItems: () => []
-			} );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Buz',
-				getItems: () => []
-			} );
-
-			linkUIFeature._showUI();
-
-			linkUIFeature.registerLinksListProvider( {
-				order: -3,
-				label: 'FooBar',
-				getItems: () => []
-			} );
-
-			expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 4 );
-
-			const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
-
-			expect( labels ).to.be.deep.equal( [ 'FooBar', 'Bar', 'Buz', 'Foo' ] );
-		} );
-	} );
-
-	describe( 'link providers editing integration', () => {
-		let windowOpenStub;
-
-		beforeEach( async () => {
-			await editor.destroy();
-
-			windowOpenStub = sinon.stub( window, 'open' );
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ],
-				toolbar: [ 'link' ]
-			} );
-
-			env.isMac = false;
-			model = editor.model;
-			linkUIFeature = editor.plugins.get( LinkUI );
-		} );
-
-		afterEach( async () => {
-			windowOpenStub.restore();
-
-			await editor.destroy();
-		} );
-
-		it( 'should register custom opener that lookups in links provider items and calls navigate (returning true)', () => {
-			const navigate = sinon.stub().returns( true );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => [ { href: 'https://ckeditor.com' } ],
-				navigate
-			} );
-
-			setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
-			fireClickEvent( { metaKey: false, ctrlKey: true } );
-
-			expect( navigate ).to.be.calledOnce;
-			expect( windowOpenStub ).not.to.be.called;
-		} );
-
-		it( 'should register custom opener that lookups in links provider items and calls navigate (returning false)', () => {
-			const navigate = sinon.stub().returns( false );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => [ { href: 'https://ckeditor.com' } ],
-				navigate
-			} );
-
-			setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
-			fireClickEvent( { metaKey: false, ctrlKey: true } );
-
-			expect( navigate ).to.be.calledOnce;
-			expect( windowOpenStub ).to.be.called;
-		} );
-
-		it( 'should not crash if link was not found in provider', () => {
-			const navigate = sinon.stub().returns( false );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => [ { href: 'https://ckeditor.com' } ],
-				navigate
-			} );
-
-			setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
-			fireClickEvent( { metaKey: false, ctrlKey: true } );
-
-			expect( navigate ).not.to.be.called;
-			expect( windowOpenStub ).to.be.called;
-		} );
-
-		function fireClickEvent( options, tagName = 'a' ) {
-			const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
-
-			editor.editing.view.document.fire( 'click', {
-				domTarget: linkElement,
-				domEvent: options,
-				preventDefault: () => {}
-			} );
-		}
-	} );
-
-	describe( '_getLinkProviderLinkByHref()', () => {
-		it( 'should return link object from provider that contains given href', () => {
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
-			} );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Bar',
-				getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
-			} );
-
-			const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
-
-			expect( link.item ).to.be.deep.equal( { href: 'bar' } );
-			expect( link.provider.label ).to.be.equal( 'Foo' );
-			expect( link.provider.getItems ).to.be.instanceOf( Function );
-		} );
-
-		it( 'should return null if no link with given href was found', () => {
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Foo',
-				getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
-			} );
-
-			linkUIFeature.registerLinksListProvider( {
-				label: 'Bar',
-				getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
-			} );
-
-			const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
-
-			expect( link ).to.be.null;
 		} );
 	} );
 } );

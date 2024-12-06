@@ -535,7 +535,7 @@ export default class LinkUI extends Plugin {
 				return href && ensureSafeUrl( href, allowedProtocols );
 			} );
 
-			this.listenTo<ObservableChangeEvent<string | undefined>>( linkCommand, 'change:value', ( evt, name, href ) => {
+			const setHref = ( href: string | undefined ) => {
 				if ( !href ) {
 					button.label = t( 'This link has no URL' );
 					button.icon = undefined;
@@ -556,6 +556,12 @@ export default class LinkUI extends Plugin {
 					button.icon = undefined;
 					button.tooltip = t( 'Open link in new tab' );
 				}
+			};
+
+			setHref( linkCommand.value );
+
+			this.listenTo<ObservableChangeEvent<string | undefined>>( linkCommand, 'change:value', ( evt, name, href ) => {
+				setHref( href );
 			} );
 
 			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
