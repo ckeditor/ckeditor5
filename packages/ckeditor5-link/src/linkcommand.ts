@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
-import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
+import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
 import { LivePosition, type Range } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
@@ -200,7 +200,28 @@ export default class LinkCommand extends Command {
 
 				// Only if needed.
 				if ( newText != linkText ) {
-					return model.insertContent( writer.createText( newText ), range );
+					const changes = findChanges( linkText, newText );
+					let insertsLength = 0;
+
+					for ( const { offset, actual, expected } of changes ) {
+						const updatedOffset = offset + insertsLength;
+						const subRange = writer.createRange(
+							range.start.getShiftedBy( updatedOffset ),
+							range.start.getShiftedBy( updatedOffset + actual.length )
+						);
+
+						// Collect formatting attributes from replaced text.
+						const textNode = getLinkPartTextNode( subRange, range )!;
+						const attributes = textNode.getAttributes();
+						const formattingAttributes = Array.from( attributes )
+							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
+
+						// Replace text with formatting.
+						model.insertContent( writer.createText( expected, formattingAttributes ), subRange );
+						insertsLength += expected.length; // Sum of all previous inserts.
+					}
+
+					return writer.createRange( range.start, range.start.getShiftedBy( newText.length ) );
 				}
 			};
 
@@ -341,5 +362,65 @@ export default class LinkCommand extends Command {
 		}
 
 		return true;
+	}
+}
+
+/**
+ * TODO
+ */
+function findChanges( oldText: string, newText: string ) {
+	const changes = diff( oldText, newText );
+	const counter = { equal: 0, insert: 0, delete: 0 };
+	const result = [];
+
+	let actualSlice = '';
+	let expectedSlice = '';
+
+	for ( const action of [ ...changes, null ] ) {
+		if ( action == 'insert' ) {
+			expectedSlice += newText[ counter.equal + counter.insert ];
+		}
+		else if ( action == 'delete' ) {
+			actualSlice += oldText[ counter.equal + counter.delete ];
+		}
+		else if ( actualSlice.length || expectedSlice.length ) {
+			// Save change and reset stored slices on 'equal' or end.
+			result.push( {
+				offset: counter.equal,
+				actual: actualSlice,
+				expected: expectedSlice
+			} );
+
+			actualSlice = '';
+			expectedSlice = '';
+		}
+
+		if ( action ) {
+			counter[ action ]++;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * TODO
+ */
+function getLinkPartTextNode( range: Range, linkRange: Range ) {
+	if ( !range.isCollapsed ) {
+		return first( range.getItems() );
+	}
+
+	const position = range.start;
+
+	if ( position.textNode ) {
+		return position.textNode;
+	}
+
+	// If the range is at the start of a link range then prefer node inside a link range.
+	if ( position.isEqual( linkRange.start ) ) {
+		return position.nodeAfter || position.nodeBefore;
+	} else {
+		return position.nodeBefore || position.nodeAfter;
 	}
 }
