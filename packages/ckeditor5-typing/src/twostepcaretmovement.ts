@@ -490,18 +490,17 @@ export default class TwoStepCaretMovement extends Plugin {
 
 		// This event should be fired before selection on mobile devices.
 		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', () => {
+			clicked = false;
 			touched = true;
 		} );
 
 		// Track mouse click event.
 		// Keep in mind that it's often called after the selection change on iOS devices.
-		// To avoid setting `clicked = true` after the selection change event, we ignore this event
-		// if the touch event was detected before selection. It does not happen on Android.
+		// On the Android devices, it's called before the selection change.
+		// That's why we watch `touchstart` event on mobile and set `touched` flag, as it's fired before the selection change.
 		// See more: https://github.com/ckeditor/ckeditor5/issues/17171
 		this.listenTo<ViewDocumentMouseDownEvent>( document, 'mousedown', () => {
-			if ( !touched ) {
-				clicked = true;
-			}
+			clicked = true;
 		} );
 
 		// When the selection has changed...
