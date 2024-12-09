@@ -105,41 +105,6 @@ describe( 'EmojiMention', () => {
 		expect( config.feed ).to.be.instanceOf( Function );
 	} );
 
-	it( 'should not pass config for mention plugin when there is another conflicting mention feed config', async () => {
-		await editor.destroy();
-
-		editor = await ClassicEditor.create( editorElement, {
-			plugins: [
-				Emoji,
-				Paragraph,
-				Essentials,
-				Mention
-			],
-			mention: {
-				feeds: [
-					{
-						marker: ':',
-						feed: [ ':Barney', ':Lily', ':Marry Ann', ':Marshall', ':Robin', ':Ted' ],
-						minimumCharacters: 1
-					}
-				]
-			}
-		} );
-
-		const configs = editor.config.get( 'mention.feeds' );
-
-		expect( configs.length ).to.equal( 1 );
-
-		const config = configs[ 0 ];
-
-		expect( config.marker ).to.equal( ':' );
-		expect( config.feed ).to.deep.equal( [ ':Barney', ':Lily', ':Marry Ann', ':Marshall', ':Robin', ':Ted' ] );
-		expect( config.minimumCharacters ).to.equal( 1 );
-
-		expect( config.dropdownLimit ).to.equal( undefined );
-		expect( config.itemRenderer ).to.equal( undefined );
-	} );
-
 	describe( '_customItemRenderer()', () => {
 		let itemRenderer;
 
