@@ -1031,7 +1031,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * * With the 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
 				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
 				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
-				 *   or a ZIP package (self-hosted) or Cloud (CDN)
+				 *   or a ZIP package (self-hosted) or Cloud (CDN).
 				 *
 				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
