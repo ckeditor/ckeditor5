@@ -1677,7 +1677,7 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 				}
 			}
 
-			viewWriter.removeAttribute( oldAttribute.key, value as any, viewElement ); // TODO any
+			viewWriter.removeAttribute( oldAttribute.key, value as ArrayOrItem<string>, viewElement );
 		}
 
 		// Then set the new attribute.

@@ -149,6 +149,26 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
+	 * Clones provided element with priority.
+	 *
+	 * @internal
+	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns Clone of this element.
+	 */
+	public override _clone( deep: boolean = false ): this {
+		const cloned = super._clone( deep );
+
+		// Clone priority too.
+		cloned._priority = this._priority;
+
+		// And id too.
+		cloned._id = this._id;
+
+		return cloned;
+	}
+
+	/**
 	 * TODO
 	 */
 	protected override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
@@ -170,26 +190,6 @@ export default class AttributeElement extends Element {
 		}
 
 		return super._hasAttributesMatching( otherElement );
-	}
-
-	/**
-	 * Clones provided element with priority.
-	 *
-	 * @internal
-	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any children.
-	 * @returns Clone of this element.
-	 */
-	public override _clone( deep: boolean = false ): this {
-		const cloned = super._clone( deep );
-
-		// Clone priority too.
-		cloned._priority = this._priority;
-
-		// And id too.
-		cloned._id = this._id;
-
-		return cloned;
 	}
 }
 

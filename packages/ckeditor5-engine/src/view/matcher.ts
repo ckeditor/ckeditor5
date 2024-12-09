@@ -186,38 +186,25 @@ export default class Matcher {
 			}
 		}
 
-		// Check element's attributes.
-		if ( pattern.attributes ) {
-			const attributesMatch = matchAttributes( pattern.attributes, element );
+		const attributesMatch: Array<[ string, string? ]> = [];
 
-			if ( attributesMatch ) {
-				match.attributes = attributesMatch;
-			} else {
-				return null;
-			}
+		// Check element's attributes.
+		if ( pattern.attributes && !matchAttributes( pattern.attributes, element, attributesMatch ) ) {
+			return null;
 		}
 
 		// Check element's classes.
-		if ( pattern.classes ) {
-			// TODO maybe pass output array as a parameter to avoid concats
-			const classesMatch = matchClasses( pattern.classes, element );
-
-			if ( classesMatch ) {
-				match.attributes = match.attributes ? match.attributes.concat( classesMatch ) : classesMatch;
-			} else {
-				return null;
-			}
+		if ( pattern.classes && !matchClasses( pattern.classes, element, attributesMatch ) ) {
+			return null;
 		}
 
 		// Check element's styles.
-		if ( pattern.styles ) {
-			const stylesMatch = matchStyles( pattern.styles, element );
+		if ( pattern.styles && !matchStyles( pattern.styles, element, attributesMatch ) ) {
+			return null;
+		}
 
-			if ( stylesMatch ) {
-				match.attributes = match.attributes ? match.attributes.concat( stylesMatch ) : stylesMatch;
-			} else {
-				return null;
-			}
+		if ( attributesMatch.length ) {
+			match.attributes = attributesMatch;
 		}
 
 		return match;
@@ -374,8 +361,9 @@ function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array
  */
 function matchAttributes(
 	patterns: AttributePatterns,
-	element: Element
-): Array<[ string, string? ]> | undefined {
+	element: Element,
+	match: Array<[ string, string? ]>
+): boolean {
 	let excludeAttributes;
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
@@ -393,7 +381,7 @@ function matchAttributes(
 		excludeAttributes = [ 'class', 'style' ];
 	}
 
-	return element._getAttributesMatch( normalizePatterns( patterns ), excludeAttributes );
+	return element._collectAttributesMatch( normalizePatterns( patterns ), match, excludeAttributes );
 }
 
 /**
@@ -403,8 +391,12 @@ function matchAttributes(
  * @param element Element which classes will be tested.
  * @returns Returns array with matched class names or `null` if no classes were matched.
  */
-function matchClasses( patterns: ClassPatterns, element: Element ): Array<[ string, string ]> | undefined {
-	return element._getAttributesMatch( normalizePatterns( patterns, 'class' ) ) as Array<[ string, string ]> | undefined;
+function matchClasses(
+	patterns: ClassPatterns,
+	element: Element,
+	match: Array<[ string, string? ]>
+): boolean {
+	return element._collectAttributesMatch( normalizePatterns( patterns, 'class' ), match );
 }
 
 /**
@@ -415,8 +407,12 @@ function matchClasses( patterns: ClassPatterns, element: Element ): Array<[ stri
  * @param element Element which styles will be tested.
  * @returns Returns array with matched style names or `null` if no styles were matched.
  */
-function matchStyles( patterns: StylePatterns, element: Element ): Array<[ string, string ]> | undefined {
-	return element._getAttributesMatch( normalizePatterns( patterns, 'style' ) ) as Array<[ string, string ]> | undefined;
+function matchStyles(
+	patterns: StylePatterns,
+	element: Element,
+	match: Array<[ string, string? ]>
+): boolean {
+	return element._collectAttributesMatch( normalizePatterns( patterns, 'style' ), match );
 }
 
 /**
