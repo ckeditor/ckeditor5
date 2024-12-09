@@ -927,13 +927,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * Your license key has expired.
 				 *
 				 * If you used the Free Trial, you either need to switch to
-				 * [open-source license](https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-and-legal.html),
-				 * or acquire one of our [commercial plans](https://ckeditor.com/pricing/) if you wish to keep using the Premium Features.
+				 * [open-source license](https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-and-legal.html), or
+				 * in case of commercial plan, change the trial key to production or development.
+				 * Switching from Trial, you also need to align the editor configuration to the features available in your plan.
 				 *
-				 * If you already had one of our Cloud plans, please renew your license in the
+				 * If you already had one of our Cloud or Custom plans, please renew your license in the
 				 * [Customer Portal](https://portal.ckeditor.com).
-				 *
-				 * If you had a Custom plan, please [contact support](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-expired
 				 */
@@ -1024,8 +1023,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *
 				 * The licenses available include:
 				 * * GPL license for open-source users.
-				 * * Cloud plans (managed via the Customer Portal)
-				 * * Custom plans (sales-assited)
+				 * * Commercial plans (Cloud or sales-assisted).
 				 *
 				 * The relation between distribution channels and licenses works as follows:
 				 * * With the 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
