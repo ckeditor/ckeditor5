@@ -720,6 +720,24 @@ describe( 'TreeWalker', () => {
 			} );
 		} );
 	} );
+
+	describe( 'jumpTo', () => {
+		it( 'should jump to the given position', () => {
+			const walker = new TreeWalker( {
+				startPosition: Position._createAt( paragraph, 0 )
+			} );
+
+			walker.jumpTo( new Position( paragraph, [ 2 ] ) );
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+
+			walker.next();
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 3 );
+		} );
+	} );
 } );
 
 function expectValue( value, expected, options ) {
