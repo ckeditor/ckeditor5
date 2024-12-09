@@ -933,7 +933,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * If you already had one of our Cloud plans, please renew your license in the
 				 * [Customer Portal](https://portal.ckeditor.com).
 				 *
-				 * If you had a Custom plan, please [contact support](https://ckeditor.com/contact/)
+				 * If you had a Custom plan, please [contact support](https://ckeditor.com/contact/).
 				 *
 				 * @error license-key-expired
 				 */
