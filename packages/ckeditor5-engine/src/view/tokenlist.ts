@@ -193,8 +193,8 @@ export default class TokenList implements ElementAttributeValue {
 	 * @internal
 	 */
 	public _isMatching( other: TokenList ): boolean {
-		for ( const name of other.keys() ) {
-			if ( !this.has( name ) ) {
+		for ( const name of other._set.keys() ) {
+			if ( !this._set.has( name ) ) {
 				return false;
 			}
 		}

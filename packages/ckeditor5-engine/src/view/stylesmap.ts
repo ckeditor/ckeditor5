@@ -578,7 +578,7 @@ export default class StylesMap implements ElementAttributeValue {
 	 * @internal
 	 */
 	public _mergeFrom( other: StylesMap ): void {
-		for ( const prop of other.keys() ) {
+		for ( const prop of other.getStyleNames() ) {
 			if ( !this.has( prop ) ) {
 				this.set( prop, other.getAsString( prop )! );
 			}
