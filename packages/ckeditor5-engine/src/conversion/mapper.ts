@@ -181,7 +181,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 			const wasFound = this._viewToModelMapping.delete( viewElement );
 
 			if ( wasFound ) {
-				// Stop tracking after the element is no longer mapped.
+				// Stop tracking after the element is no longer mapped. We want to track all mapped elements and only mapped elements.
 				this._cache.stopTracking( viewElement );
 			}
 
@@ -211,7 +211,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 			const wasFound = this._viewToModelMapping.delete( viewElement );
 
 			if ( wasFound ) {
-				// Stop tracking after the element is no longer mapped.
+				// Stop tracking after the element is no longer mapped. We want to track all mapped elements and only mapped elements.
 				this._cache.stopTracking( viewElement );
 			}
 		}
@@ -795,43 +795,19 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	private _cachedMapping = new WeakMap<ViewElement | ViewDocumentFragment, MappingCache>();
 
 	/**
-	 * For a given view node, which position was cached, it holds an index to an item in the cache list of this view node tracked
-	 * ancestor. The item pointed by index has view position and model offset that are after the given node.
+	 * When `MapperCache` {@link ~MapperCache#save saves} view position -> model offset mapping, a
+	 * {@link ~CacheItem `CacheItem`} is inserted into certain {@link ~MappingCache#cacheList `MappingCache#cacheList`} at some index.
+	 * Additionally, we store that index with the view node that is before the cached view position.
 	 *
-	 * This allows for fast mapping view nodes to certain {@link ~MappingCache#cacheList `MappingCache#cacheList`} items and for faster
-	 * cache invalidation.
+	 * This allows to quickly get a {@link ~MappingCache#cacheList cache list} item related to certain view node, and hence,
+	 * for fast cache invalidation.
 	 *
 	 * For example, consider view: `<p>Some <strong>bold</strong> text.</p>`, where `<p>` is a view element tracked by `MapperCache`.
 	 * If all `<p>` children were visited by `MapperCache`, then `<p>` cache list would have four items, related to following model offsets:
 	 * `0`, `5`, `9`, `15`. Then, view node `"Some "` would have index `1`, `<strong>` index `2`, and `" text." index `3`.
 	 *
-	 * Note that the value is always greater than `0`. The first item is always for model offset `0` (and view offset `0`), and obviously,
-	 * there are no view nodes before this position.
-	 *
-	 * These values are not cleared manually at any point, but due to how the caching mechanism works, they don't need to, as there
-	 * is no risk of an outdated value being used. Explanation below.
-	 *
-	 * Index for a node is set when there's no cache for the mapped ancestor, and we traverse the parent, and we go "over" the node.
-	 *
-	 * Index for a node is used when the cache is cleared for the mapped ancestor, to speed this process. The index is used to quickly
-	 * access offset value by checking a value inside an array (cache list), at that index.
-	 *
-	 * If index for a node is outdated, we will end up checking incorrect index in cache list and this will lead to an error. But this
-	 * cannot happen. Let's consider a node that is inside a mapped ancestor and for which we cached the index (e.g. 7) at some point.
-	 *
-	 * 1. If another node is put or removed after the node, this does not affect offsets or caching, and nothing happens.
-	 *
-	 * 2. If another node is put or removed before the node, we shrink the cache list array appropriately, so it includes only the nodes
-	 * that are before the just inserted or removed node. E.g. if we inserted a node which is a fifth node in the mapped ancestor,
-	 * cache list for this ancestor will now be only four items long. When we will try to use cached index 7, we will see that it no longer
-	 * exists in the cache list which will tell us that this cached index is outdated.
-	 *
-	 * 3. If the node is moved to a different mapped ancestor, we still keep the cached index (as we never clear it manually). But as the
-	 * node is inserted into that ancestor, as described, we clear the cache list for the ancestor. So again, when we will use the index,
-	 * we will see that the cache list is shorter and the index is outdated.
-	 *
-	 * 4. The only way to expand cache list is to iterate over nodes when performing the mapping, if the cache is not available. In the
-	 * same process, we will overwrite the cached index to a proper value.
+	 * Note that the index related with a node is always greater than `0`. The first item in cache list is always for model offset `0`
+	 * (and view offset `0`), and it is not related to any node.
 	 */
 	private _nodeToCacheListIndex = new WeakMap<ViewNode, number>();
 
@@ -927,22 +903,50 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	public get( viewContainer: ViewElement | ViewDocumentFragment, modelOffset: number ): CacheItem {
 		const cache = this._cachedMapping.get( viewContainer );
+		let result: CacheItem;
 
 		if ( cache ) {
 			if ( modelOffset > cache.maxModelOffset ) {
-				return cache.cacheList[ cache.cacheList.length - 1 ];
+				result = cache.cacheList[ cache.cacheList.length - 1 ];
 			} else {
 				const cacheItem = cache.cacheMap.get( modelOffset );
 
 				if ( cacheItem ) {
-					return cacheItem;
+					result = cacheItem;
 				} else {
-					return this._findInCacheList( cache.cacheList, modelOffset );
+					result = this._findInCacheList( cache.cacheList, modelOffset );
 				}
 			}
 		} else {
-			return this.startTracking( viewContainer );
+			result = this.startTracking( viewContainer );
 		}
+
+		result.viewPosition = this._hoistViewPosition( result.viewPosition );
+
+		return result;
+	}
+
+	/**
+	 * Moves a view position to a preferred location.
+	 *
+	 * The view position is moved up from a non-tracked view element as long as it remains at the end of its current parent. Example:
+	 *
+	 * ```
+	 * <p>This is <strong>some <em>formatted^</em></strong> text.</p> -> <p>This is <strong>some <em>formatted</em></strong>^ text.</p>
+	 * ```
+	 *
+	 * @param viewPosition
+	 * @private
+	 */
+	private _hoistViewPosition( viewPosition: ViewPosition ): ViewPosition {
+		while ( viewPosition.parent.parent && !this._cachedMapping.has( viewPosition.parent as any ) && viewPosition.isAtEnd ) {
+			const parent = viewPosition.parent.parent;
+			const offset = parent.getChildIndex( viewPosition.parent ) + 1;
+
+			viewPosition = new ViewPosition( parent, offset );
+		}
+
+		return viewPosition;
 	}
 
 	/**
@@ -1107,10 +1111,15 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 
 		cache.maxModelOffset = cacheItem.modelOffset;
 
+		// Remove from cache all `CacheItem`s that are "after" the index to clear from.
 		const clearedItems = cache.cacheList.splice( index );
 
+		// For each removed item, make sure to also remove it from `cacheMap` and clear related entry in `_nodeToCacheListIndex`.
 		for ( const item of clearedItems ) {
 			cache.cacheMap.delete( item.modelOffset );
+
+			const viewNode = item.viewPosition.nodeBefore!;
+			this._nodeToCacheListIndex.delete( viewNode );
 		}
 	}
 
