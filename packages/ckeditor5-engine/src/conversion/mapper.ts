@@ -669,7 +669,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		viewContainer: ViewElement | ViewDocumentFragment,
 		useCache: boolean
 	): ViewPosition {
-		const viewParent = startViewPosition.parent as ViewElement | ViewText | ViewDocumentFragment;
+		let viewParent = startViewPosition.parent as ViewElement | ViewText | ViewDocumentFragment;
 		let viewOffset = startViewPosition.offset;
 
 		// In the text node it is simple: the offset in the model equals the offset in the text.
@@ -678,14 +678,36 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		}
 
 		// Last scanned view node.
-		let viewNode: ViewNode;
+		let viewNode: ViewNode | undefined;
 		// Total model offset of the view nodes that were visited so far.
 		let traversedModelOffset = startModelOffset;
 		// Model length of the last traversed view node.
 		let lastLength = 0;
 
 		while ( traversedModelOffset < targetModelOffset ) {
-			viewNode = viewParent.getChild( viewOffset )!;
+			viewNode = viewParent.getChild( viewOffset );
+
+			if ( !viewNode ) {
+				// If we still haven't reached the model offset, but we reached end of this `viewParent`, then we need to "leave" this
+				// element and "go up", looking further for the target model offset. This can happen when cached model offset is "deeper"
+				// but target model offset is "higher" in the view tree.
+				//
+				// Example: `<p>Foo<strong><em>Bar</em>^Baz</strong>Xyz</p>`
+				//
+				// Consider `^` is last cached position, when the `targetModelOffset` is `12`. In such case, we need to "go up" from
+				// `<strong>` and continue traversing in `<p>`.
+				//
+				if ( viewParent == viewContainer ) {
+					// TODO
+					throw 'Reached end';
+				} else {
+					viewOffset = viewParent.parent!.getChildIndex( viewParent as ViewElement );
+					viewParent = viewParent.parent!;
+
+					continue;
+				}
+			}
+
 			lastLength = this.getModelLength( viewNode );
 			traversedModelOffset += lastLength;
 			viewOffset++;
@@ -697,7 +719,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 				// Since `MapperCache#save` does not overwrite already cached model offsets, this way the cached position is set to
 				// a correct location, that is the closest to the mapped `viewContainer`.
 				//
-				// However, in some cases, we still need to "hoist" the cached position (see `MapperCache#_hoistViewPosition`).
+				// However, in some cases, we still need to "hoist" the cached position (see `MapperCache#_hoistViewPosition()`).
 				this._cache.save( viewParent, viewOffset, viewContainer, traversedModelOffset );
 			}
 		}
@@ -705,8 +727,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		if ( traversedModelOffset == targetModelOffset ) {
 			// If it equals we found the position.
 			return this._moveViewPositionToTextNode( new ViewPosition( viewParent, viewOffset ) );
-		}
-		else {
+		} else {
 			// If it is higher we overstepped with the last traversed view node.
 			// We need to "enter" it, and look for the view position / model offset inside the last visited view node.
 			return this._findPositionStartingFrom(
@@ -923,9 +944,12 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 			result = this.startTracking( viewContainer );
 		}
 
-		result.viewPosition = this._hoistViewPosition( result.viewPosition );
+		const viewPosition = this._hoistViewPosition( result.viewPosition );
 
-		return result;
+		return {
+			modelOffset: result.modelOffset,
+			viewPosition
+		};
 	}
 
 	/**
