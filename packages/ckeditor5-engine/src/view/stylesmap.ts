@@ -473,56 +473,30 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Returns normalized styles entries for further processing.
 	 */
-	public canMergeFrom( other: StylesMap ): boolean {
-		for ( const key of other.getStyleNames() ) {
-			if ( this.has( key ) && this.getAsString( key ) !== other.getAsString( key ) ) {
-				return false;
-			}
+	public getStylesEntries(): Array<PropertyDescriptor> {
+		const parsed: Array<PropertyDescriptor> = [];
+
+		const keys = Object.keys( this._styles );
+
+		for ( const key of keys ) {
+			parsed.push( ...this._styleProcessor.getReducedForm( key, this._styles ) );
 		}
 
-		return true;
-	}
-
-	/**
-	 * TODO
-	 */
-	public isMatching( other: StylesMap ): boolean {
-		for ( const key of other.getStyleNames() ) {
-			if ( !this.has( key ) || this.getAsString( key ) !== other.getAsString( key ) ) {
-				return false;
-			}
-		}
-
-		return true;
+		return parsed;
 	}
 
 	/**
 	 * TODO
 	 * @internal
 	 */
-	public _getConsumables( name?: string ): Array<string> {
-		const result = [];
+	public _clone(): this {
+		const clone = new ( this.constructor as any )( this._styleProcessor );
 
-		if ( name ) {
-			result.push( name );
+		clone.set( this.getNormalized() );
 
-			for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
-				result.push( relatedName );
-			}
-		}
-		else {
-			for ( const name of this.getStyleNames() ) {
-				for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
-					result.push( relatedName );
-				}
-
-				result.push( name );
-			}
-		}
-
-		return result;
+		return clone;
 	}
 
 	/**
@@ -560,8 +534,50 @@ export default class StylesMap implements ElementAttributeValue {
 
 	/**
 	 * TODO
+	 * @internal
 	 */
-	public mergeFrom( other: StylesMap ): void {
+	public _getConsumables( name?: string ): Array<string> {
+		const result = [];
+
+		if ( name ) {
+			result.push( name );
+
+			for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
+				result.push( relatedName );
+			}
+		}
+		else {
+			for ( const name of this.getStyleNames() ) {
+				for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
+					result.push( relatedName );
+				}
+
+				result.push( name );
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _canMergeFrom( other: StylesMap ): boolean {
+		for ( const key of other.getStyleNames() ) {
+			if ( this.has( key ) && this.getAsString( key ) !== other.getAsString( key ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _mergeFrom( other: StylesMap ): void {
 		for ( const prop of other.keys() ) {
 			if ( !this.has( prop ) ) {
 				this.set( prop, other.getAsString( prop )! );
@@ -570,30 +586,17 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * Returns normalized styles entries for further processing.
-	 */
-	public getStylesEntries(): Array<PropertyDescriptor> {
-		const parsed: Array<PropertyDescriptor> = [];
-
-		const keys = Object.keys( this._styles );
-
-		for ( const key of keys ) {
-			parsed.push( ...this._styleProcessor.getReducedForm( key, this._styles ) );
-		}
-
-		return parsed;
-	}
-
-	/**
 	 * TODO
 	 * @internal
 	 */
-	public _clone(): this {
-		const clone = new ( this.constructor as any )( this._styleProcessor );
+	public _isMatching( other: StylesMap ): boolean {
+		for ( const key of other.getStyleNames() ) {
+			if ( !this.has( key ) || this.getAsString( key ) !== other.getAsString( key ) ) {
+				return false;
+			}
+		}
 
-		clone.set( this.getNormalized() );
-
-		return clone;
+		return true;
 	}
 
 	/**

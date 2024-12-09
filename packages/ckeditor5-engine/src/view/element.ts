@@ -289,150 +289,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
-	 */
-	protected _canMergeAttributesFrom( otherElement: Element ): boolean {
-		if ( this.name != otherElement.name ) {
-			return false;
-		}
-
-		for ( const [ key, otherValue ] of otherElement._attrs ) {
-			const value = this._attrs.get( key );
-
-			if ( value === undefined ) {
-				continue;
-			}
-
-			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
-				if ( value !== otherValue ) {
-					return false;
-				}
-			}
-			else if ( !value.canMergeFrom( otherValue ) ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * TODO
-	 */
-	protected _hasAttributesMatching( otherElement: Element ): boolean {
-		if ( this.name != otherElement.name ) {
-			return false;
-		}
-
-		for ( const [ key, otherValue ] of otherElement._attrs ) {
-			const value = this._attrs.get( key );
-
-			if ( value === undefined ) {
-				return false;
-			}
-
-			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
-				if ( value !== otherValue ) {
-					return false;
-				}
-			}
-			else if ( !value.isMatching( otherValue ) ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * TODO
-	 * @internal
-	 */
-	public _getAttributesMatch(
-		patterns: Array<NormalizedPropertyPattern>,
-		exclude?: Array<string>
-	): Array<[ string, string? ]> | undefined {
-		const match: Array<[ string, string? ]> = [];
-
-		for ( const [ patternKey, patternToken, patternValue ] of patterns ) {
-			let hasKey = false;
-			let hasValue = false;
-
-			for ( const [ key, value ] of this._attrs ) {
-				if ( exclude && exclude.includes( key ) || !isPatternMatched( patternKey, key ) ) {
-					continue;
-				}
-
-				hasKey = true;
-
-				if ( typeof value == 'string' ) {
-					if ( isPatternMatched( patternToken, value ) ) {
-						match.push( [ key ] );
-						hasValue = true;
-					}
-					else if ( !( patternKey instanceof RegExp ) ) {
-						return undefined;
-					}
-				} else {
-					const tokenMatch = value._getTokensMatch( key, patternToken, patternValue || true );
-
-					if ( tokenMatch ) {
-						match.push( ...tokenMatch );
-						hasValue = true;
-					}
-					else if ( !( patternKey instanceof RegExp ) ) {
-						return undefined;
-					}
-				}
-			}
-
-			if ( !hasKey || !hasValue ) {
-				return undefined;
-			}
-		}
-
-		return match;
-	}
-
-	/**
-	 * TODO
-	 * @internal
-	 */
-	public _getConsumables( key?: string, token?: string ): NormalizedConsumables {
-		const attributes: Array<[string, string?]> = [];
-
-		if ( key ) {
-			const value = this._attrs.get( key );
-
-			if ( value !== undefined ) {
-				if ( typeof value == 'string' ) {
-					attributes.push( [ key ] );
-				}
-				else {
-					for ( const prop of value._getConsumables( token ) ) {
-						attributes.push( [ key, prop ] );
-					}
-				}
-			}
-		} else {
-			for ( const [ key, value ] of this._attrs ) {
-				if ( typeof value == 'string' ) {
-					attributes.push( [ key ] );
-				} else {
-					for ( const prop of value._getConsumables() ) {
-						attributes.push( [ key, prop ] );
-					}
-				}
-			}
-		}
-
-		return {
-			name: !key,
-			attributes
-		};
-	}
-
-	/**
 	 * Returns true if class is present.
 	 * If more then one class is provided - returns true only when all classes are present.
 	 *
@@ -925,6 +781,122 @@ export default class Element extends Node {
 
 	/**
 	 * TODO
+	 * @internal
+	 */
+	public _getAttributesMatch(
+		patterns: Array<NormalizedPropertyPattern>,
+		exclude?: Array<string>
+	): Array<[ string, string? ]> | undefined {
+		const match: Array<[ string, string? ]> = [];
+
+		for ( const [ patternKey, patternToken, patternValue ] of patterns ) {
+			let hasKey = false;
+			let hasValue = false;
+
+			for ( const [ key, value ] of this._attrs ) {
+				if ( exclude && exclude.includes( key ) || !isPatternMatched( patternKey, key ) ) {
+					continue;
+				}
+
+				hasKey = true;
+
+				if ( typeof value == 'string' ) {
+					if ( isPatternMatched( patternToken, value ) ) {
+						match.push( [ key ] );
+						hasValue = true;
+					}
+					else if ( !( patternKey instanceof RegExp ) ) {
+						return undefined;
+					}
+				} else {
+					const tokenMatch = value._getTokensMatch( key, patternToken, patternValue || true );
+
+					if ( tokenMatch ) {
+						match.push( ...tokenMatch );
+						hasValue = true;
+					}
+					else if ( !( patternKey instanceof RegExp ) ) {
+						return undefined;
+					}
+				}
+			}
+
+			if ( !hasKey || !hasValue ) {
+				return undefined;
+			}
+		}
+
+		return match;
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _getConsumables( key?: string, token?: string ): NormalizedConsumables {
+		const attributes: Array<[string, string?]> = [];
+
+		if ( key ) {
+			const value = this._attrs.get( key );
+
+			if ( value !== undefined ) {
+				if ( typeof value == 'string' ) {
+					attributes.push( [ key ] );
+				}
+				else {
+					for ( const prop of value._getConsumables( token ) ) {
+						attributes.push( [ key, prop ] );
+					}
+				}
+			}
+		} else {
+			for ( const [ key, value ] of this._attrs ) {
+				if ( typeof value == 'string' ) {
+					attributes.push( [ key ] );
+				} else {
+					for ( const prop of value._getConsumables() ) {
+						attributes.push( [ key, prop ] );
+					}
+				}
+			}
+		}
+
+		return {
+			name: !key,
+			attributes
+		};
+	}
+
+	/**
+	 * TODO
+	 */
+	protected _canMergeAttributesFrom( otherElement: Element ): boolean {
+		if ( this.name != otherElement.name ) {
+			return false;
+		}
+
+		for ( const [ key, otherValue ] of otherElement._attrs ) {
+			const value = this._attrs.get( key );
+
+			if ( value === undefined ) {
+				continue;
+			}
+
+			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
+				if ( value !== otherValue ) {
+					return false;
+				}
+			}
+			else if ( !value._canMergeFrom( otherValue ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
 	 * Wraps one AttributeElement into another by
 	 * merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
 	 * element to element being wrapped.
@@ -947,7 +919,35 @@ export default class Element extends Node {
 				this._setAttribute( key, otherValue );
 			}
 			else {
-				value.mergeFrom( otherValue );
+				value._mergeFrom( otherValue );
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	protected _hasAttributesMatching( otherElement: Element ): boolean {
+		if ( this.name != otherElement.name ) {
+			return false;
+		}
+
+		for ( const [ key, otherValue ] of otherElement._attrs ) {
+			const value = this._attrs.get( key );
+
+			if ( value === undefined ) {
+				return false;
+			}
+
+			if ( typeof value == 'string' || typeof otherValue == 'string' ) {
+				if ( value !== otherValue ) {
+					return false;
+				}
+			}
+			else if ( !value._isMatching( otherValue ) ) {
+				return false;
 			}
 		}
 
@@ -1100,30 +1100,24 @@ export interface ElementAttributeValue {
 
 	get size(): number;
 
-	setTo( value: string ): this;
-
 	has( name: string ): boolean;
 
 	keys(): Array<string>;
+
+	setTo( value: string ): this;
 
 	set( name: string, value: StyleValue ): void;
 	set( stylesOrTokens: Styles | ArrayOrItem<string> ): void;
 
 	remove( tokens: ArrayOrItem<string> ): void;
 
-	toString(): string;
-
 	clear(): void;
+
+	toString(): string;
 
 	isSimilar( other: this ): boolean;
 
-	canMergeFrom( other: this ): boolean;
-
-	isMatching( other: this ): boolean;
-
-	mergeFrom( other: this ): void;
-
-	_getConsumables( name?: string ): Array<string>;
+	_clone(): this;
 
 	_getTokensMatch(
 		attributeKey: string,
@@ -1131,7 +1125,13 @@ export interface ElementAttributeValue {
 		patternValue?: true | string | RegExp
 	): Array<[ string, string ]> | undefined;
 
-	_clone(): this;
+	_getConsumables( name?: string ): Array<string>;
+
+	_canMergeFrom( other: this ): boolean;
+
+	_mergeFrom( other: this ): void;
+
+	_isMatching( other: this ): boolean;
 }
 
 /**

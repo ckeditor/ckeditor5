@@ -36,6 +36,20 @@ export default class TokenList implements ElementAttributeValue {
 	/**
 	 * TODO
 	 */
+	public has( name: string ): boolean {
+		return this._set.has( name );
+	}
+
+	/**
+	 * TODO
+	 */
+	public keys(): Array<string> {
+		return Array.from( this._set.keys() );
+	}
+
+	/**
+	 * TODO
+	 */
 	public setTo( value: string ): this {
 		this.clear();
 
@@ -44,13 +58,6 @@ export default class TokenList implements ElementAttributeValue {
 		}
 
 		return this;
-	}
-
-	/**
-	 * TODO
-	 */
-	public has( name: string ): boolean {
-		return this._set.has( name );
 	}
 
 	/**
@@ -72,32 +79,17 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
-	 */
-	public toString(): string {
-		return Array.from( this._set ).join( ' ' );
-	}
-
-	/**
-	 * TODO
-	 */
-	public keys(): Array<string> {
-		return Array.from( this._set.keys() );
-	}
-
-	/**
-	 * TODO
-	 * @internal
-	 */
-	public _getConsumables( name?: string ): Array<string> {
-		return name ? [ name ] : this.keys();
-	}
-
-	/**
 	 * Removes all styles.
 	 */
 	public clear(): void {
 		this._set.clear();
+	}
+
+	/**
+	 * TODO
+	 */
+	public toString(): string {
+		return Array.from( this._set ).join( ' ' );
 	}
 
 	/**
@@ -119,36 +111,18 @@ export default class TokenList implements ElementAttributeValue {
 
 	/**
 	 * TODO
+	 * @internal
 	 */
-	public canMergeFrom(): boolean {
-		return true;
+	public _clone(): this {
+		const clone = new ( this.constructor as any )();
+
+		clone._set = new Set( this._set );
+
+		return clone;
 	}
 
 	/**
 	 * TODO
-	 */
-	public mergeFrom( other: TokenList ): void {
-		for ( const token of other._set.keys() ) {
-			if ( !this._set.has( token ) ) {
-				this._set.add( token );
-			}
-		}
-	}
-
-	/**
-	 * TODO
-	 */
-	public isMatching( other: TokenList ): boolean {
-		for ( const name of other.keys() ) {
-			if ( !this.has( name ) ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * @internal
 	 */
 	public _getTokensMatch(
@@ -190,11 +164,41 @@ export default class TokenList implements ElementAttributeValue {
 	 * TODO
 	 * @internal
 	 */
-	public _clone(): this {
-		const clone = new ( this.constructor as any )();
+	public _getConsumables( name?: string ): Array<string> {
+		return name ? [ name ] : this.keys();
+	}
 
-		clone._set = new Set( this._set );
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _canMergeFrom(): boolean {
+		return true;
+	}
 
-		return clone;
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _mergeFrom( other: TokenList ): void {
+		for ( const token of other._set.keys() ) {
+			if ( !this._set.has( token ) ) {
+				this._set.add( token );
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _isMatching( other: TokenList ): boolean {
+		for ( const name of other.keys() ) {
+			if ( !this.has( name ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
