@@ -180,6 +180,11 @@ export default class EmojiMention extends Plugin {
 				return [];
 			}
 
+			// If the first character is space, do not display any feeds.
+			if ( searchQuery[ 0 ] === ' ' ) {
+				return [];
+			}
+
 			const emojis = await this._emojiDatabase.getEmojiBySearchQuery( searchQuery )
 				.then( queryResult => {
 					return ( queryResult as Array<NativeEmoji> ).map( emoji => {

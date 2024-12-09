@@ -311,5 +311,33 @@ describe( 'EmojiMention', () => {
 				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( false );
 			} );
 		} );
+
+		it( 'should not return any feeds when the first character of the search query is empty space', async () => {
+			await editor.destroy();
+
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ]
+			} );
+
+			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+
+			return queryEmoji( ' face' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should not return any feeds when the two first characters of the search query are empty space', async () => {
+			await editor.destroy();
+
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ]
+			} );
+
+			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+
+			return queryEmoji( '  face' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 0 );
+			} );
+		} );
 	} );
 } );
