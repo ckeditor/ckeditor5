@@ -43,23 +43,4 @@ export interface EmojiConfig {
 	 * ```
 	 */
 	dropdownLimit?: number;
-
-	/**
-	 * Marker used to start typing emoji.
-	 *
-	 * ```ts
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Emoji, ... ],
-	 *				emoji: {
-	 *					marker: ':'
-	 *					// More of editor configuration.
-	 * 					// ...
-	 * 				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
-	 * ```
-	 */
-	marker?: string;
 }

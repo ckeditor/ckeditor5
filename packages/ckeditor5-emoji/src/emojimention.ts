@@ -20,6 +20,7 @@ import {
 
 const EMOJI_PREFIX = 'emoji';
 const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
+const EMOJI_MENTION_MARKER = ':';
 
 /**
  * The emoji mention plugin.
@@ -28,7 +29,6 @@ const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
  */
 export default class EmojiMention extends Plugin {
 	private _emojiDropdownLimit: number;
-	private _mentionMarker: string;
 	private _showAllEmojiId: string;
 	private _emojiDatabase: Database;
 	declare private _hasEmojiPicker: boolean;
@@ -61,27 +61,24 @@ export default class EmojiMention extends Plugin {
 		super( editor );
 
 		this.editor.config.define( 'emoji', {
-			dropdownLimit: 6,
-			marker: ':'
+			dropdownLimit: 6
 		} );
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
-		this._mentionMarker = editor.config.get( 'emoji.marker' )!;
-
 		this._showAllEmojiId = formatEmojiId( SHOW_ALL_EMOJI );
 		this._emojiDatabase = new Database();
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
-		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === this._mentionMarker );
+		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
 
 		if ( markerAlreadyUsed ) {
 			/**
-				 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
-				 *
-				 * @error emoji-config-marker-already-used
-				 * @param {string} marker Used marker.
-				 */
-			logWarning( 'emoji-config-marker-already-used', { marker: this._mentionMarker } );
+			 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
+			 *
+			 * @error emoji-config-marker-already-used
+			 * @param {string} marker Used marker.
+			 */
+			logWarning( 'emoji-config-marker-already-used', { marker: EMOJI_MENTION_MARKER } );
 
 			return;
 		}
@@ -102,7 +99,7 @@ export default class EmojiMention extends Plugin {
 	 */
 	private _setupMentionConfiguration( mentionFeedsConfigs: Array<MentionFeed> ): void {
 		const emojiMentionFeedConfig = {
-			marker: this._mentionMarker,
+			marker: EMOJI_MENTION_MARKER,
 			dropdownLimit: this._emojiDropdownLimit,
 			itemRenderer: this._getCustomItemRendererFn( this.editor.t ),
 			feed: this._getQueryEmojiFn()
