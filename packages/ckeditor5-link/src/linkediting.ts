@@ -169,6 +169,21 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
+	 * Handles opening links. If any of the registered link openers returns `true`,
+	 * the link is considered to be opened and no further action is taken.
+	 *
+	 * @returns `true` if the link was opened using one of the registered link openers.
+	 */
+	public _openLink( url: string ): boolean {
+		if ( this._linkOpeners.some( opener => opener( url ) ) ) {
+			return true;
+		}
+
+		openLink( url );
+		return false;
+	}
+
+	/**
 	 * Processes an array of configured {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators}
 	 * and registers a {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher}
 	 * for each one of them. Downcast dispatchers are obtained using the
@@ -277,12 +292,6 @@ export default class LinkEditing extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		const handleLinkOpening = ( url: string ): void => {
-			if ( !this._linkOpeners.some( opener => opener( url ) ) ) {
-				openLink( url );
-			}
-		};
-
 		this.listenTo<ViewDocumentClickEvent>( viewDocument, 'click', ( evt, data ) => {
 			const shouldOpen = env.isMac ? data.domEvent.metaKey : data.domEvent.ctrlKey;
 
@@ -309,7 +318,7 @@ export default class LinkEditing extends Plugin {
 			evt.stop();
 			data.preventDefault();
 
-			handleLinkOpening( url );
+			this._openLink( url );
 		}, { context: '$capture' } );
 
 		// Open link on Alt+Enter.
@@ -324,7 +333,7 @@ export default class LinkEditing extends Plugin {
 
 			evt.stop();
 
-			handleLinkOpening( url );
+			this._openLink( url );
 		} );
 	}
 

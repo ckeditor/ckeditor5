@@ -526,6 +526,7 @@ export default class LinkUI extends Plugin {
 		editor.ui.componentFactory.add( 'linkPreview', locale => {
 			const button = new LinkPreviewButtonView( locale );
 			const allowedProtocols = editor.config.get( 'link.allowedProtocols' )!;
+			const linkEditing = editor.plugins.get( LinkEditing );
 			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 			const t = locale.t;
 
@@ -571,16 +572,7 @@ export default class LinkUI extends Plugin {
 			} );
 
 			this.listenTo<LinkPreviewButtonNavigateEvent>( button, 'navigate', ( evt, href, cancel ) => {
-				const selectedLinksProviderLink = this._getLinkProviderLinkByHref( href );
-
-				if ( !selectedLinksProviderLink ) {
-					return;
-				}
-
-				const { provider, item } = selectedLinksProviderLink!;
-				const { navigate } = provider;
-
-				if ( navigate && navigate( item! ) ) {
+				if ( linkEditing._openLink( href ) ) {
 					evt.stop();
 					cancel();
 				}
