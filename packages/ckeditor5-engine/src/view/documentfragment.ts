@@ -17,7 +17,6 @@ import type { default as Document, ChangeType } from './document.js';
 
 import type Item from './item.js';
 import type Node from './node.js';
-import { ViewNodeChangeEvent } from "./node.js";
 
 /**
  * Document fragment.
