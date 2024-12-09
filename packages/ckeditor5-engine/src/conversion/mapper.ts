@@ -20,7 +20,7 @@ import type ViewElement from '../view/element.js';
 import type ViewText from '../view/text.js';
 import type ModelElement from '../model/element.js';
 import type ModelDocumentFragment from '../model/documentfragment.js';
-import type ViewNode from '../view/node.js';
+import type { default as ViewNode, ViewNodeChangeChildrenEvent, ViewNodeChangeEvent } from '../view/node.js';
 
 /**
  * Maps elements, positions and markers between the {@link module:engine/view/document~Document view} and
@@ -990,13 +990,13 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 		//
 		// Possible performance improvement. This event bubbles, so if there are multiple tracked (mapped) elements that are ancestors
 		// then this will be unnecessarily fired for each ancestor. This could be rewritten to listen only to roots and document fragments.
-		this.listenTo( viewContainer, 'change:children', ( evt, viewNode, data ) => {
-			this._invalidateCacheOnChildrenChange( viewNode as ViewElement | ViewDocumentFragment, ( data as any ).index as number );
+		this.listenTo<ViewNodeChangeChildrenEvent>( viewContainer, 'change:children', ( evt, viewNode, data ) => {
+			this._invalidateCacheOnChildrenChange( viewNode, data.index );
 		} );
 
-		this.listenTo( viewContainer, 'change:text', ( evt, viewNode ) => {
+		this.listenTo<ViewNodeChangeEvent>( viewContainer, 'change:text', ( evt, viewNode ) => {
 			// Text node has changed. Clear all the cache starting from before this text node.
-			this._clearCacheStartingBefore( viewNode as ViewText );
+			this._clearCacheStartingBefore( viewNode );
 		} );
 
 		return initialCacheItem;

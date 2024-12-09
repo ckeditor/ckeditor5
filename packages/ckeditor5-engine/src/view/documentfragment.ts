@@ -222,7 +222,7 @@ export default class DocumentFragment extends /* #__PURE__ */ EmitterMixin( Type
 	 * @param data Additional data.
 	 * @fires change
 	 */
-	public _fireChange( type: ChangeType, node: Node | DocumentFragment, data?: unknown ): void {
+	public _fireChange( type: ChangeType, node: Node | DocumentFragment, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );
 	}
 

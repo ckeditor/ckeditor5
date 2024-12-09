@@ -260,8 +260,12 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @param data Additional data.
 	 * @fires change
 	 */
-	public _fireChange( type: ChangeType, node: Node, data?: unknown ): void {
-		this.fire<ViewNodeChangeEvent>( `change:${ type }`, node, data );
+	public _fireChange( type: ChangeType, node: Node, data?: { index: number } ): void {
+		if ( type == 'children' ) {
+			this.fire( 'change:children', node, data! );
+		} else {
+			this.fire( `change:${ type }`, node );
+		}
 
 		if ( this.parent ) {
 			this.parent._fireChange( type, node, data );
@@ -305,20 +309,33 @@ Node.prototype.is = function( type: string ): boolean {
 };
 
 /**
- * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or text changes.
+ * Fired when node attributes or text changes.
  *
- * Change event is bubbled – it is fired on all ancestors.
+ * This event is bubbled – it is fired on all ancestors of the changed node.
  *
- * All change events as the first parameter receive the node that has changed (the node for which children, attributes or text changed).
- *
- * If `change:children` event is fired, there is an additional second parameter, which is an object with additional data related to change.
+ * The first parameter and only parameter is the node that has changed (the node for which attributes or text changed).
  *
  * @eventName ~Node#change
- * @eventName ~Node#change:children
- * @eventName ~Node#change:attributes
  * @eventName ~Node#change:text
+ * @eventName ~Node#change:attributes
  */
 export type ViewNodeChangeEvent = {
-	name: 'change' | `change:${ ChangeType }`;
-	args: [ changedNode: Node, data?: unknown ];
+	name: 'change:text' | 'change:attributes';
+	args: [ changedNode: Node ];
+};
+
+/**
+ * Fired when the list of {@link module:engine/view/element~Element element's} children changes (i.e. a child is added to or removed from
+ * an element). If multiple children are added or removed, there is only one event.
+ *
+ * This event is bubbled – it is fired on all ancestors of the changed element.
+ *
+ * The first parameter is the element that has changed (the element for which children list changed).
+ * The second parameter is an object with `index` property, which informs on which index the change happened.
+ *
+ * @eventName ~Node#change:children
+ */
+export type ViewNodeChangeChildrenEvent = {
+	name: 'change:children';
+	args: [ changedNode: Element | DocumentFragment, data: { index: number } ];
 };
