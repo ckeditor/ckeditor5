@@ -43,6 +43,7 @@
 @import "./ckeditor5-ui/components/panel/balloonrotator.css";
 @import "./ckeditor5-ui/components/panel/fakepanel.css";
 @import "./ckeditor5-ui/components/panel/stickypanel.css";
+@import "./ckeditor5-ui/components/form/form.css";
 @import "./ckeditor5-ui/components/responsive-form/responsiveform.css";
 @import "./ckeditor5-ui/components/search/search.css";
 @import "./ckeditor5-ui/components/spinner/spinner.css";
@@ -90,7 +91,6 @@
 @import "./ckeditor5-style/stylegroup.css";
 @import "./ckeditor5-style/stylepanel.css";
 @import "./ckeditor5-table/colorinput.css";
-@import "./ckeditor5-table/form.css";
 @import "./ckeditor5-table/formrow.css";
 @import "./ckeditor5-table/inserttable.css";
 @import "./ckeditor5-table/tablecellproperties.css";
