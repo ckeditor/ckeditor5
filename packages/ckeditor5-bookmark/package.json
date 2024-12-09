@@ -15,12 +15,12 @@
   "dependencies": {
     "ckeditor5": "44.0.0",
     "@ckeditor/ckeditor5-core": "44.0.0",
-    "@ckeditor/ckeditor5-engine": "44.0.0",
     "@ckeditor/ckeditor5-widget": "44.0.0",
     "@ckeditor/ckeditor5-utils": "44.0.0",
     "@ckeditor/ckeditor5-ui": "44.0.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-engine": "44.0.0",
     "@ckeditor/ckeditor5-basic-styles": "44.0.0",
     "@ckeditor/ckeditor5-block-quote": "44.0.0",
     "@ckeditor/ckeditor5-cloud-services": "44.0.0",

@@ -5,6 +5,8 @@
 
 /* global window */
 
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
@@ -12,6 +14,10 @@ import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containereleme
 import Text from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+
 import {
 	createLinkElement,
 	isLinkElement,
@@ -20,7 +26,10 @@ import {
 	isLinkableElement,
 	isEmail,
 	addLinkProtocolIfApplicable,
-	openLink
+	openLink,
+	isScrollableToTarget,
+	scrollToTarget,
+	extractTextFromLinkRange
 } from '../src/utils.js';
 
 describe( 'utils', () => {
@@ -368,6 +377,175 @@ describe( 'utils', () => {
 			expect( stub.calledOnce ).to.be.true;
 			expect( stub.calledOn( window ) ).to.be.true;
 			expect( stub.calledWith( url, '_blank', 'noopener' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'isScrollableToTarget()', () => {
+		it( 'should return false if the BookmarkEditing feature is not loaded', async () => {
+			const editor = await VirtualTestEditor.create( {} );
+
+			expect( isScrollableToTarget( editor, 'http://ckeditor.com' ) ).to.be.false;
+
+			await editor.destroy();
+		} );
+
+		describe( 'with the BookmarkEditing feature loaded', () => {
+			let editor;
+
+			beforeEach( async () => {
+				function BookmarkEditingMock() {
+					this.getElementForBookmarkId = id => id === 'foo';
+				}
+
+				BookmarkEditingMock.pluginName = 'BookmarkEditing';
+
+				editor = await VirtualTestEditor.create( { plugins: [ BookmarkEditingMock ] } );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should return false if url is not provided', () => {
+				expect( isScrollableToTarget( editor, '' ) ).to.be.false;
+			} );
+
+			it( 'should return false if url does not start with the hash', () => {
+				expect( isScrollableToTarget( editor, 'http://ckeditor.com#foo' ) ).to.be.false;
+			} );
+
+			it( 'should return false if the BookmarkEditing#getElementForBookmarkId() returns false', () => {
+				expect( isScrollableToTarget( editor, '#bar' ) ).to.be.false;
+			} );
+
+			it( 'should return true if the BookmarkEditing#getElementForBookmarkId() returns true', () => {
+				expect( isScrollableToTarget( editor, '#foo' ) ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'scrollToTarget()', () => {
+		it( 'should not scroll and return false if the BookmarkEditing feature is not loaded', async () => {
+			const editor = await VirtualTestEditor.create( {} );
+			const scrollToTheSelectionSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			expect( scrollToTarget( editor, 'http://ckeditor.com' ) ).to.be.false;
+			sinon.assert.notCalled( scrollToTheSelectionSpy );
+
+			scrollToTheSelectionSpy.restore();
+			await editor.destroy();
+		} );
+
+		describe( 'with the BookmarkEditing feature loaded', () => {
+			let editor, scrollToTheSelectionStub, setSelectionStub;
+
+			beforeEach( async () => {
+				function BookmarkEditingMock() {
+					this.getElementForBookmarkId = id => id === 'foo';
+				}
+
+				BookmarkEditingMock.pluginName = 'BookmarkEditing';
+
+				editor = await VirtualTestEditor.create( { plugins: [ BookmarkEditingMock ] } );
+				scrollToTheSelectionStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+				setSelectionStub = sinon.stub( editor.model.document.selection, '_setTo' );
+			} );
+
+			afterEach( async () => {
+				scrollToTheSelectionStub.restore();
+				setSelectionStub.restore();
+				await editor.destroy();
+			} );
+
+			it( 'should not scroll and return false if url is not provided', () => {
+				expect( scrollToTarget( editor, '' ) ).to.be.false;
+				sinon.assert.notCalled( scrollToTheSelectionStub );
+			} );
+
+			it( 'should not scroll and return false if url does not start with the hash', () => {
+				expect( scrollToTarget( editor, 'http://ckeditor.com#foo' ) ).to.be.false;
+				sinon.assert.notCalled( scrollToTheSelectionStub );
+			} );
+
+			it( 'should not scroll and return false if the BookmarkEditing#getElementForBookmarkId() returns false', () => {
+				expect( scrollToTarget( editor, '#bar' ) ).to.be.false;
+				sinon.assert.notCalled( scrollToTheSelectionStub );
+			} );
+
+			it( 'should scroll and return true if the BookmarkEditing#getElementForBookmarkId() returns true', () => {
+				expect( scrollToTarget( editor, '#foo' ) ).to.be.true;
+				sinon.assert.calledOnce( scrollToTheSelectionStub );
+			} );
+		} );
+	} );
+
+	describe( 'extractTextFromLinkRange()', () => {
+		let editor;
+
+		beforeEach( async () => {
+			function InlineWidget( editor ) {
+				editor.model.schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+				editor.conversion.elementToElement( {
+					view: { name: 'span', class: 'foo' },
+					model: 'inlineWidget'
+				} );
+			}
+
+			editor = await ModelTestEditor.create( {
+				plugins: [ Paragraph, InlineWidget, BoldEditing ]
+			} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should extract text from range', () => {
+			setModelData( editor.model, '<paragraph>foo[bar]baz</paragraph>' );
+
+			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
+
+			expect( text ).to.equal( 'bar' );
+		} );
+
+		it( 'should extract text from range even when split into multiple text nodes with different style', () => {
+			setModelData( editor.model,
+				'<paragraph>' +
+					'abc[fo' +
+					'<$text bold="true">ob</$text>' +
+					'ar]def' +
+				'</paragraph>'
+			);
+
+			expect( editor.model.document.getRoot().getChild( 0 ).childCount ).to.equal( 3 );
+
+			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
+
+			expect( text ).to.equal( 'foobar' );
+		} );
+
+		it( 'should return undefined if range includes an inline object', () => {
+			setModelData( editor.model, '<paragraph>foo[ba<inlineWidget></inlineWidget>r]baz</paragraph>' );
+
+			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
+
+			expect( text ).to.be.undefined;
+		} );
+
+		it( 'should return undefined if range is on an inline object', () => {
+			setModelData( editor.model, '<paragraph>fooba[<inlineWidget></inlineWidget>]rbaz</paragraph>' );
+
+			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
+
+			expect( text ).to.be.undefined;
+		} );
+
+		it( 'should return undefined if range is spanning multiple blocks', () => {
+			setModelData( editor.model, '<paragraph>f[oo</paragraph><paragraph>ba]z</paragraph>' );
+
+			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
+
+			expect( text ).to.be.undefined;
 		} );
 	} );
 } );

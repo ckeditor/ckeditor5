@@ -26,7 +26,8 @@ ClassicEditor
 					attributes: {
 						target: '_blank',
 						rel: 'noopener noreferrer'
-					}
+					},
+					defaultValue: true
 				},
 				isDownloadable: {
 					mode: 'manual',

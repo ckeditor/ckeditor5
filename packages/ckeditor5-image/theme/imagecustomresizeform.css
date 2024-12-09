@@ -5,29 +5,25 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-image-custom-resize-form {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: flex-start;
+.ck.ck-image-custom-resize__panel {
+	/* Form */
+	& .ck-responsive-form.ck-image-custom-resize__form {
+		display: flex;
+		flex-direction: column;
 
-	& .ck-labeled-field-view {
-		display: inline-block;
-	}
+		/* "Size" input field and the "Save" button */
+		& .ck-input-and-submit {
+			display: flex;
+			align-items: flex-start;
 
-	& .ck-label {
-		display: none;
-	}
+			& > .ck-labeled-field-view {
+				flex-grow: 1;
+			}
 
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
-
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
-		}
-
-		& .ck-button {
-			flex-basis: 50%;
+			@mixin ck-media-phone {
+				flex-direction: column;
+				align-items: stretch;
+			}
 		}
 	}
 }

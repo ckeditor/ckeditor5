@@ -6,11 +6,11 @@ category: features
 
 {@snippet features/build-link-source}
 
-The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically turn into working links.
+The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically become working links.
 
 ## Demo
 
-Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking a link opens a contextual toolbar. The toolbar lets you edit existing links {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} or unlink them {@icon @ckeditor/ckeditor5-link/theme/icons/unlink.svg Unlink} with a click.
+Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking a link opens a contextual toolbar. The toolbar lets you edit existing links {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link}, change their properties {@icon @ckeditor/ckeditor5-core/theme/icons/settings.svg Link properties}, or unlink them {@icon @ckeditor/ckeditor5-link/theme/icons/unlink.svg Unlink} with a click.
 
 {@snippet features/link}
 
@@ -20,13 +20,13 @@ Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg
 
 ## Typing around links
 
-CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of links to make editing easier for the users.
+CKEditor&nbsp;5 allows typing at the inner and outer link boundaries to make editing simpler for the users.
 
 **To type inside a link**, move the caret to its (start or end) boundary. As long as the link remains highlighted (by default: blue), typing and applying formatting happens within its boundaries:
 
 {@img assets/img/typing-inside.gif 770 The animation shows typing inside the link in CKEditor&nbsp;5 rich text editor.}
 
-**To type before or after a link**, move the caret to its boundary, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) away from the link once. The link is no longer highlighted and whatever text you type or formatting you apply will not be inside the link:
+**To type before or after a link**, move the caret to its boundary, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) away from the link once. The link stops from being highlighted, and whatever text you type or formatting apply will not be inside the link:
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
 
@@ -75,7 +75,7 @@ There are two types of link decorators you can use:
 
 ### Demo
 
-In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
+In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and check its properties {@icon @ckeditor/ckeditor5-core/theme/icons/settings.svg Link properties} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
 
 {@snippet features/linkdecorators}
 
@@ -233,7 +233,7 @@ ClassicEditor
 ```
 
 <info-box warning>
-	Please keep in mind that you customize this list at your own risk &ndash; adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
+	Please remember that you customize this list at your own risk &ndash; adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
 </info-box>
 
 #### Adding attributes to links based on predefined rules (automatic decorators)
@@ -310,7 +310,7 @@ The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically 
 To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	You can always revert autolinking by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>).
+	You can always revert autolinking by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>) or the backspace (<kbd>⌫</kbd>) button.
 </info-box>
 
 {@snippet features/autolink}

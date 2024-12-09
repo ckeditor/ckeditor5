@@ -15,7 +15,8 @@ import type {
 	Schema,
 	ViewAttributeElement,
 	ViewNode,
-	ViewDocumentFragment
+	ViewDocumentFragment,
+	Range
 } from 'ckeditor5/src/engine.js';
 
 import type { Editor } from 'ckeditor5/src/core.js';
@@ -27,8 +28,6 @@ import type {
 	LinkDecoratorDefinition,
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
-
-import type { LinkActionsViewOptions } from './ui/linkactionsview.js';
 
 import { upperFirst } from 'lodash-es';
 
@@ -200,44 +199,62 @@ export function openLink( link: string ): void {
 }
 
 /**
- * Creates the bookmark callbacks for handling link opening experience.
+ * Returns `true` when link can be handled internally in the editor without using native browser link handlers.
  */
-export function createBookmarkCallbacks( editor: Editor ): LinkActionsViewOptions {
-	const bookmarkEditing: BookmarkEditing | null = editor.plugins.has( 'BookmarkEditing' ) ?
-		editor.plugins.get( 'BookmarkEditing' ) :
-		null;
-
-	/**
-	 * Returns `true` when bookmark `id` matches the hash from `link`.
-	 */
-	function isScrollableToTarget( link: string | undefined ): boolean {
-		return !!link &&
-			link.startsWith( '#' ) &&
-			!!bookmarkEditing &&
-			!!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
+export function isScrollableToTarget( editor: Editor, link: string | undefined ): boolean {
+	if ( !editor.plugins.has( 'BookmarkEditing' ) ) {
+		return false;
 	}
 
-	/**
-	 * Scrolls the view to the desired bookmark or open a link in new window.
-	 */
-	function scrollToTarget( link: string ): void {
-		const bookmarkId = link.slice( 1 );
-		const modelBookmark = bookmarkEditing!.getElementForBookmarkId( bookmarkId );
-
-		editor.model.change( writer => {
-			writer.setSelection( modelBookmark!, 'on' );
-		} );
-
-		editor.editing.view.scrollToTheSelection( {
-			alignToTop: true,
-			forceScroll: true
-		} );
+	if ( !link || !link.startsWith( '#' ) ) {
+		return false;
 	}
 
-	return {
-		isScrollableToTarget,
-		scrollToTarget
-	};
+	const bookmarkEditing: BookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+	return !!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
+}
+
+/**
+ * Scrolls the view to the desired bookmark.
+ */
+export function scrollToTarget( editor: Editor, link: string ): boolean {
+	if ( !isScrollableToTarget( editor, link ) ) {
+		return false;
+	}
+
+	const bookmarkEditing: BookmarkEditing = editor.plugins.get( 'BookmarkEditing' )!;
+	const modelBookmark = bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
+
+	editor.model.change( writer => {
+		writer.setSelection( modelBookmark!, 'on' );
+	} );
+
+	editor.editing.view.scrollToTheSelection( {
+		alignToTop: true,
+		forceScroll: true
+	} );
+
+	return true;
+}
+
+/**
+ * Returns a text of a link range.
+ *
+ * If the returned value is `undefined`, it means that the range contains elements other than text nodes.
+ */
+export function extractTextFromLinkRange( range: Range ): string | undefined {
+	let text = '';
+
+	for ( const item of range.getItems() ) {
+		if ( !item.is( '$text' ) && !item.is( '$textProxy' ) ) {
+			return;
+		}
+
+		text += item.data;
+	}
+
+	return text;
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };

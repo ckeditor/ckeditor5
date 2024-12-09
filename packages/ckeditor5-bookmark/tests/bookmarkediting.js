@@ -73,6 +73,10 @@ describe( 'BookmarkEditing', () => {
 		expect( BookmarkEditing.isPremiumPlugin ).to.be.false;
 	} );
 
+	it( 'should register default bookmark toolbar config', () => {
+		expect( editor.config.get( 'bookmark.toolbar' ) ).to.deep.equal( [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ] );
+	} );
+
 	describe( 'init', () => {
 		it( 'adds an "insertBookmark" command', () => {
 			expect( editor.commands.get( 'insertBookmark' ) ).to.be.instanceOf( InsertBookmarkCommand );
@@ -387,6 +391,8 @@ describe( 'BookmarkEditing', () => {
 
 			expect( bookmarkWidget.getFillerOffset ).is.a( 'function' );
 			expect( bookmarkWidget.getFillerOffset() ).to.equal( null );
+
+			expect( bookmarkWidget.getCustomProperty( 'bookmark' ) ).to.be.true;
 		} );
 
 		it( 'should not add any filler', () => {
@@ -1153,6 +1159,45 @@ describe( 'BookmarkEditing', () => {
 			);
 
 			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).is.null;
+		} );
+	} );
+
+	describe( 'getAllBookmarkNames', () => {
+		it( 'should return all bookmark names', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="baz"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getAllBookmarkNames() ).is.instanceof( Set );
+			expect( bookmarkEditing.getAllBookmarkNames() ).is.deep.equal( new Set( [ 'foo', 'bar', 'baz' ] ) );
+		} );
+
+		it( 'should return all unique bookmark names', () => {
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+
+			editor.setData(
+				'<p>' +
+					'<a id="foo"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>' +
+				'<p>' +
+					'<a id="bar"></a>' +
+				'</p>'
+			);
+
+			expect( bookmarkEditing.getAllBookmarkNames() ).is.deep.equal( new Set( [ 'foo', 'bar' ] ) );
 		} );
 	} );
 

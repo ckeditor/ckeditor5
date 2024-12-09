@@ -56,6 +56,8 @@
 
 /* Plugins */
 @import "./ckeditor5-bookmark/bookmark.css";
+@import "./ckeditor5-bookmark/bookmarkform.css";
+@import "./ckeditor5-bookmark/bookmarktoolbar.css";
 @import "./ckeditor5-clipboard/clipboard.css";
 @import "./ckeditor5-code-block/codeblock.css";
 @import "./ckeditor5-engine/placeholder.css";
@@ -68,10 +70,13 @@
 @import "./ckeditor5-image/imageuploadicon.css";
 @import "./ckeditor5-image/imageuploadloader.css";
 @import "./ckeditor5-image/imageuploadprogress.css";
+@import "./ckeditor5-image/textalternativeform.css";
+@import "./ckeditor5-image/imagecustomresizeform.css";
 @import "./ckeditor5-link/link.css";
-@import "./ckeditor5-link/linkactions.css";
+@import "./ckeditor5-link/linktoolbar.css";
 @import "./ckeditor5-link/linkform.css";
 @import "./ckeditor5-link/linkimage.css";
+@import "./ckeditor5-link/linkbookmarks.css";
 @import "./ckeditor5-list/listproperties.css";
 @import "./ckeditor5-list/liststyles.css";
 @import "./ckeditor5-media-embed/mediaembedediting.css";
