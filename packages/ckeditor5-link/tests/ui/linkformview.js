@@ -83,7 +83,7 @@ describe( 'LinkFormView', () => {
 				 * 		div
 				 * 			urlInputView
 				 * 			saveButtonView
-				 * 	bookmarksButton
+				 * 	linksButton
 				 */
 
 			it( 'has url input view', () => {
