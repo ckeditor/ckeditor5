@@ -8,7 +8,7 @@
  */
 
 import { Database } from 'emoji-picker-element';
-import { type LocaleTranslate } from 'ckeditor5/src/utils.js';
+import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiPicker from './emojipicker.js';
 import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
@@ -69,6 +69,19 @@ export default class EmojiMention extends Plugin {
 		this._emojiDatabase = new Database();
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
+		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
+
+		if ( markerAlreadyUsed ) {
+			/**
+			 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
+			 *
+			 * @error emoji-config-marker-already-used
+			 * @param {string} marker Used marker.
+			 */
+			logWarning( 'emoji-config-marker-already-used', { marker: EMOJI_MENTION_MARKER } );
+
+			return;
+		}
 
 		this._setupMentionConfiguration( mentionFeedsConfigs );
 		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
