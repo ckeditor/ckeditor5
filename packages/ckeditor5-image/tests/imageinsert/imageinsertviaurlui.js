@@ -274,7 +274,10 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 			describe( 'menu bar button', () => {
 				beforeEach( () => {
-					button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+					const menu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+					const submenuList = menu.panelView.children.get( 0 );
+
+					button = submenuList.items.get( 0 ).children.get( 0 );
 				} );
 
 				testButton( MenuBarMenuListItemButtonView, 'Image' );
