@@ -502,15 +502,24 @@ export default class StylesMap implements ElementAttributeValue {
 	 * TODO
 	 * @internal
 	 */
-	public _getConsumables(): Array<string> {
+	public _getConsumables( name?: string ): Array<string> {
 		const result = [];
 
-		for ( const name of this.getStyleNames() ) {
+		if ( name ) {
+			result.push( name );
+
 			for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
 				result.push( relatedName );
 			}
+		}
+		else {
+			for ( const name of this.getStyleNames() ) {
+				for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
+					result.push( relatedName );
+				}
 
-			result.push( name );
+				result.push( name );
+			}
 		}
 
 		return result;

@@ -89,8 +89,8 @@ export default class TokenList implements ElementAttributeValue {
 	 * TODO
 	 * @internal
 	 */
-	public _getConsumables(): Array<string> {
-		return this.keys();
+	public _getConsumables( name?: string ): Array<string> {
+		return name ? [ name ] : this.keys();
 	}
 
 	/**

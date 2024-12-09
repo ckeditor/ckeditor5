@@ -398,21 +398,36 @@ export default class Element extends Node {
 	 * TODO
 	 * @internal
 	 */
-	public _getConsumables(): NormalizedConsumables {
+	public _getConsumables( key?: string, token?: string ): NormalizedConsumables {
 		const attributes: Array<[string, string?]> = [];
 
-		for ( const [ key, value ] of this._attrs ) {
-			if ( typeof value == 'string' ) {
-				attributes.push( [ key ] );
-			} else {
-				for ( const prop of value._getConsumables() ) {
-					attributes.push( [ key, prop ] );
+		if ( key ) {
+			const value = this._attrs.get( key );
+
+			if ( value !== undefined ) {
+				if ( typeof value == 'string' ) {
+					attributes.push( [ key ] );
+				}
+				else {
+					for ( const prop of value._getConsumables( token ) ) {
+						attributes.push( [ key, prop ] );
+					}
+				}
+			}
+		} else {
+			for ( const [ key, value ] of this._attrs ) {
+				if ( typeof value == 'string' ) {
+					attributes.push( [ key ] );
+				} else {
+					for ( const prop of value._getConsumables() ) {
+						attributes.push( [ key, prop ] );
+					}
 				}
 			}
 		}
 
 		return {
-			name: true,
+			name: !key,
 			attributes
 		};
 	}
@@ -1108,7 +1123,7 @@ export interface ElementAttributeValue {
 
 	mergeFrom( other: this ): void;
 
-	_getConsumables(): Array<string>;
+	_getConsumables( name?: string ): Array<string>;
 
 	_getTokensMatch(
 		attributeKey: string,

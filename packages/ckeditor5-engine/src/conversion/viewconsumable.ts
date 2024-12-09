@@ -115,7 +115,7 @@ export default class ViewConsumable {
 
 		// For elements create new ViewElementConsumables or update already existing one.
 		if ( !this._consumables.has( element ) ) {
-			elementConsumables = new ViewElementConsumables( element );
+			elementConsumables = new ViewElementConsumables( element as Element );
 			this._consumables.set( element, elementConsumables );
 		} else {
 			elementConsumables = this._consumables.get( element ) as any;
@@ -352,7 +352,7 @@ export interface NormalizedConsumables {
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
  */
 export class ViewElementConsumables {
-	public readonly element: Node | DocumentFragment;
+	public readonly element: Element;
 
 	/**
 	 * Flag indicating if name of the element can be consumed.
@@ -370,7 +370,7 @@ export class ViewElementConsumables {
 	 *
 	 * @param from View node or document fragment from which `ViewElementConsumables` is being created.
 	 */
-	constructor( from: Node | DocumentFragment ) {
+	constructor( from: Element ) {
 		this.element = from;
 	}
 
@@ -552,23 +552,18 @@ export class ViewElementConsumables {
 
 			// Plain not-consumed attribute.
 			if ( typeof value == 'boolean' ) {
-				this._attributes.set( name, false );
-				continue;
+				for ( const [ toConsume ] of this.element._getConsumables( name, token ).attributes ) {
+					this._attributes.set( toConsume, false );
+				}
 			}
-
-			if ( !token ) {
+			else if ( !token ) {
 				// Tokenized attribute but token is not specified so consume all tokens.
 				for ( const token of value.keys() ) {
 					value.set( token, false );
 				}
 			} else {
-				value.set( token, false );
-
-				// TODO find better way for:
-				if ( name == 'style' ) {
-					for ( const toConsume of this.element.document.stylesProcessor.getRelatedStyles( token ) ) {
-						value.set( toConsume, false );
-					}
+				for ( const [ , toConsume ] of this.element._getConsumables( name, token ).attributes ) {
+					value.set( toConsume!, false );
 				}
 			}
 		}
