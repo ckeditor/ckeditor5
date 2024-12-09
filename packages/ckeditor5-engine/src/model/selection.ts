@@ -667,11 +667,25 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 				yield startBlock as any;
 			}
 
-			for ( const value of range.getWalker() ) {
+			const treewalker = range.getWalker();
+
+			for ( const value of treewalker ) {
 				const block = value.item;
 
 				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
 					yield block as Element;
+				} else if ( block.is( 'model:element' ) && block.root.document!.model.schema.isBlock( block ) ) {
+					if ( value.type == 'elementEnd' ) {
+						treewalker.jumpTo( value.nextPosition );
+					} else {
+						const position = treewalker.position.clone();
+
+						position.offset = block.maxOffset;
+
+						if ( range.containsPosition( position ) ) {
+							treewalker.jumpTo( position );
+						}
+					}
 				}
 			}
 
