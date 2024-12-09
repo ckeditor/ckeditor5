@@ -23,8 +23,6 @@ import type {
 	UpcastConversionApi
 } from 'ckeditor5/src/engine.js';
 
-import type { LinksProviderItem } from '@ckeditor/ckeditor5-link';
-
 import InsertBookmarkCommand from './insertbookmarkcommand.js';
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
@@ -79,11 +77,6 @@ export default class BookmarkEditing extends Plugin {
 		this.listenTo<DocumentChangeEvent>( editor.model.document, 'change:data', () => {
 			this._trackBookmarkElements();
 		} );
-
-		// Register the link provider in link plugin to display the link form.
-		if ( editor.plugins.has( 'LinkUI' ) ) {
-			this._registerLinkProvider();
-		}
 	}
 
 	/**
@@ -104,62 +97,6 @@ export default class BookmarkEditing extends Plugin {
 	 */
 	public getAllBookmarkNames(): Set<string> {
 		return new Set( this._bookmarkElements.values() );
-	}
-
-	/**
-	 * Creates link form menu list entry, so it'll be possible to access
-	 * the list of the bookmarks from the link form.
-	 */
-	private _registerLinkProvider() {
-		const t = this.editor.locale.t;
-		const linksUI = this.editor.plugins.get( 'LinkUI' )!;
-		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
-
-		const getItems = () => Array
-			.from( bookmarkEditing.getAllBookmarkNames() )
-			.sort( ( a, b ) => a.localeCompare( b ) )
-			.map( ( bookmarkId ): LinksProviderItem => ( {
-				id: bookmarkId,
-				label: bookmarkId,
-				href: `#${ bookmarkId }`,
-				icon: icons.bookmarkMedium,
-				preview: {
-					tooltip: t( 'Scroll to bookmark' ),
-					icon: icons.bookmarkSmall
-				}
-			} ) );
-
-		const navigate = ( { id }: LinksProviderItem ) => this._scrollToBookmark( id );
-
-		linksUI.registerLinksListProvider( {
-			label: t( 'Bookmarks' ),
-			emptyListPlaceholder: t( 'No bookmarks available.' ),
-			getItems,
-			navigate
-		} );
-	}
-
-	/**
-	 * Scrolls the editor to the bookmark with the given id.
-	 */
-	private _scrollToBookmark( id: string ) {
-		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
-		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( id );
-
-		if ( !bookmarkElement ) {
-			return false;
-		}
-
-		this.editor.model.change( writer => {
-			writer.setSelection( bookmarkElement!, 'on' );
-		} );
-
-		this.editor.editing.view.scrollToTheSelection( {
-			alignToTop: true,
-			forceScroll: true
-		} );
-
-		return true;
 	}
 
 	/**
