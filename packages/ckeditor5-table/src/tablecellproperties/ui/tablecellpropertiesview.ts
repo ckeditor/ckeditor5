@@ -42,7 +42,8 @@ import FormRowView from '../../ui/formrowview.js';
 import type ColorInputView from '../../ui/colorinputview.js';
 import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 
-import '../../../theme/form.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
 
