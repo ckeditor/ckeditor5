@@ -926,10 +926,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * Your license key has expired.
 				 *
-				 * If you used the Free Trial, you either need to switch to
+				 * If you used our free trial, you either need to switch to
 				 * [open-source license](https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-and-legal.html), or
-				 * in case of commercial plan, change the trial key to production or development.
-				 * Switching from Trial, you also need to align the editor configuration to the features available in your plan.
+				 * in case of a commercial plan, change the trial key to production key or development key.
+				 * Switching from trial, you also need to align the editor configuration to the features available in your plan.
 				 *
 				 * If you already had one of our Cloud or Custom plans, please renew your license in the
 				 * [Customer Portal](https://portal.ckeditor.com).
