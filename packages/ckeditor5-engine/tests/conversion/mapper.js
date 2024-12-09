@@ -876,7 +876,7 @@ describe( 'Mapper', () => {
 	} );
 } );
 
-describe.only( 'MapperCache', () => {
+describe( 'MapperCache', () => {
 	let cache, viewContainer, viewDocument, viewTextAb, viewSpan, viewEm, viewTextCd, viewTextEf, viewTextGh;
 
 	beforeEach( () => {
@@ -893,9 +893,9 @@ describe.only( 'MapperCache', () => {
 		viewContainer = new ViewElement( viewDocument, 'p', null, [ viewTextAb, viewSpan, viewTextGh ] );
 	} );
 
-	describe( 'get()', () => {
+	describe( 'getClosest()', () => {
 		it( 'should start tracking and return position at the start of element if element was not tracked before', () => {
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 6 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 6 );
 
 			expect( viewPosition.parent ).to.equal( viewContainer );
 			expect( viewPosition.offset ).to.equal( 0 );
@@ -906,7 +906,7 @@ describe.only( 'MapperCache', () => {
 			cache.startTracking( viewContainer );
 			cache.save( viewContainer, 2, viewContainer, 6 );
 
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 6 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 6 );
 
 			expect( viewPosition.parent ).to.equal( viewContainer );
 			expect( viewPosition.offset ).to.equal( 2 );
@@ -917,7 +917,7 @@ describe.only( 'MapperCache', () => {
 			cache.startTracking( viewContainer );
 			cache.save( viewEm, 0, viewContainer, 4 );
 
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 4 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 4 );
 
 			expect( viewPosition.parent ).to.equal( viewEm );
 			expect( viewPosition.offset ).to.equal( 0 );
@@ -928,7 +928,7 @@ describe.only( 'MapperCache', () => {
 			cache.startTracking( viewContainer );
 			cache.save( viewContainer, 2, viewContainer, 6 );
 
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 8 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 8 );
 
 			expect( viewPosition.parent ).to.equal( viewContainer );
 			expect( viewPosition.offset ).to.equal( 2 );
@@ -939,7 +939,7 @@ describe.only( 'MapperCache', () => {
 			cache.startTracking( viewContainer );
 			cache.save( viewEm, 0, viewContainer, 4 );
 
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 8 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 8 );
 
 			expect( viewPosition.parent ).to.equal( viewEm );
 			expect( viewPosition.offset ).to.equal( 0 );
@@ -969,7 +969,7 @@ describe.only( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewSpan, 2, viewContainer, 6 );
 
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 6 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 6 );
 
 			expect( viewPosition.parent ).to.equal( viewContainer );
 			expect( viewPosition.offset ).to.equal( 2 );
@@ -983,7 +983,7 @@ describe.only( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.stopTracking( viewContainer );
 
-			const { viewPosition, modelOffset } = cache.get( viewContainer, 2 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 2 );
 
 			expect( viewPosition.parent ).to.equal( viewContainer );
 			expect( viewPosition.offset ).to.equal( 0 );
@@ -1190,7 +1190,7 @@ describe.only( 'MapperCache', () => {
 	} );
 
 	function check( modelOffsetToCheck, expectedViewParent, expectedViewOffset, expectedModelOffset ) {
-		const { viewPosition, modelOffset } = cache.get( viewContainer, modelOffsetToCheck );
+		const { viewPosition, modelOffset } = cache.getClosest( viewContainer, modelOffsetToCheck );
 
 		expect( viewPosition.parent ).to.equal( expectedViewParent );
 		expect( viewPosition.offset ).to.equal( expectedViewOffset );
