@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Mapper from '../../src/conversion/mapper.js';
-import { MapperCache } from '../../src/conversion/mapper.js';
+import Mapper, { MapperCache } from '../../src/conversion/mapper.js';
 
 import ModelElement from '../../src/model/element.js';
 import ModelRootElement from '../../src/model/rootelement.js';

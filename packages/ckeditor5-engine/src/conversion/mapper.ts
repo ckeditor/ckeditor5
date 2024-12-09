@@ -13,7 +13,7 @@ import ModelRange from '../model/range.js';
 import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
 
-import { CKEditorError, EmitterMixin, EventInfo } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type ViewDocumentFragment from '../view/documentfragment.js';
 import type ViewElement from '../view/element.js';
@@ -669,7 +669,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		viewContainer: ViewElement | ViewDocumentFragment,
 		useCache: boolean
 	): ViewPosition {
-		let viewParent = startViewPosition.parent as ViewElement | ViewText | ViewDocumentFragment;
+		const viewParent = startViewPosition.parent as ViewElement | ViewText | ViewDocumentFragment;
 		let viewOffset = startViewPosition.offset;
 
 		// In the text node it is simple: the offset in the model equals the offset in the text.
@@ -1064,7 +1064,7 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 * or view document fragment.
 	 */
 	private _clearCacheStartingBefore( viewNode: ViewNode ): void {
-		// To quickly invalidateclearCacheBefore the cache, we base on the cache list index stored with the node. See docs for `this._nodeToCacheListIndex`.
+		// To quickly invalidate the cache, we base on the cache list index stored with the node. See docs for `this._nodeToCacheListIndex`.
 		const cacheListIndex = this._nodeToCacheListIndex.get( viewNode );
 
 		// If there is no index stored, it means that this `viewNode` has not been cached yet.
@@ -1322,12 +1322,13 @@ export type MapperViewToModelPositionEventData = {
  * one `MappingCache` for each model element or a model document fragment).
  */
 type MappingCache = {
+
 	/**
 	 * Maximum model offset for which this item holds a valid cache.
 	 *
 	 * If there is a request for mapping for a model offset above this value, the view position needs to be calculated.
 	 */
-	maxModelOffset: number,
+	maxModelOffset: number;
 
 	/**
 	 * List of cached {@link ~CacheItem cache items} for this mapped view/model element. The list is sorted by
@@ -1338,7 +1339,7 @@ type MappingCache = {
 	 *
 	 * Note, that there is only one entry in `cacheList` for given `modelOffset` value.
 	 */
-	cacheList: Array<CacheItem>,
+	cacheList: Array<CacheItem>;
 
 	/**
 	 * Map of cached {@link ~CacheItem cache items} for this mapped view/model element. The keys are `modelOffset`s
@@ -1348,7 +1349,7 @@ type MappingCache = {
 	 * retrieve data for exact `modelOffset`s which were already cached before. But a sorted list is better for finding the closest item
 	 * if exact item is not found. Also, it is faster to clear "all entries after model offset X" for `cacheList`.
 	 */
-	cacheMap: Map<number, CacheItem>
+	cacheMap: Map<number, CacheItem>;
 };
 
 /**
@@ -1365,6 +1366,6 @@ type MappingCache = {
  * * `viewPosition` = `<p>`, 2; `modelOffset` = 9
  */
 type CacheItem = {
-	viewPosition: ViewPosition,
-	modelOffset: number
+	viewPosition: ViewPosition;
+	modelOffset: number;
 };
