@@ -1028,7 +1028,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * * Custom plans (sales-assited)
 				 *
 				 * The relation between distribution channels and licenses works as follows:
-				 * * With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
+				 * * With the 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
 				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
 				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
 				 *   or a ZIP package (self-hosted) or Cloud (CDN)
