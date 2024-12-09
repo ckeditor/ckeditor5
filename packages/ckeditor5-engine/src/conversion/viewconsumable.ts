@@ -101,7 +101,7 @@ export default class ViewConsumable {
 	): void;
 
 	public add(
-		element: Node | DocumentFragment,
+		element: Text | Element | DocumentFragment,
 		consumables?: Consumables | NormalizedConsumables
 	): void {
 		let elementConsumables: ViewElementConsumables;
@@ -115,10 +115,10 @@ export default class ViewConsumable {
 
 		// For elements create new ViewElementConsumables or update already existing one.
 		if ( !this._consumables.has( element ) ) {
-			elementConsumables = new ViewElementConsumables( element as Element );
+			elementConsumables = new ViewElementConsumables( element );
 			this._consumables.set( element, elementConsumables );
 		} else {
-			elementConsumables = this._consumables.get( element ) as any;
+			elementConsumables = this._consumables.get( element ) as ViewElementConsumables;
 		}
 
 		// TODO normalization is not used if we use only our input
@@ -205,20 +205,25 @@ export default class ViewConsumable {
 	 * otherwise returns `false`.
 	 */
 	public consume( element: Node | DocumentFragment, consumables?: Consumables | Match ): boolean {
-		// TODO avoid double normalization
-		if ( this.test( element, consumables ) ) {
-			if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
-				// For text nodes and document fragments set value to false.
-				this._consumables.set( element, false );
-			} else {
-				// For elements - consume consumables object.
-				( this._consumables.get( element ) as ViewElementConsumables ).consume( normalizeConsumables( consumables! ) );
+		if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
+			if ( !this.test( element, consumables ) ) {
+				return false;
 			}
+
+			// For text nodes and document fragments set value to false.
+			this._consumables.set( element, false );
 
 			return true;
 		}
 
-		return false;
+		// For elements - consume consumables object.
+		const elementConsumables = this._consumables.get( element );
+
+		if ( elementConsumables === undefined ) {
+			return false;
+		}
+
+		return ( elementConsumables as ViewElementConsumables ).consume( normalizeConsumables( consumables! ) );
 	}
 
 	/**
@@ -319,7 +324,7 @@ export interface Consumables {
 	name?: boolean;
 
 	/**
-	 * Attribute name or array of attribute names. TODO
+	 * Attribute name or array of attribute names.
 	 */
 	attributes?: string | Array<string>;
 
@@ -542,13 +547,17 @@ export class ViewElementConsumables {
 	 * @param consumables.classes Class name or array of class names to consume.
 	 * @param consumables.styles Style name or array of style names to consume.
 	 */
-	public consume( consumables: NormalizedConsumables ): void {
+	public consume( consumables: NormalizedConsumables ): boolean {
+		if ( !this.test( consumables ) ) {
+			return false;
+		}
+
 		if ( consumables.name ) {
 			this._canConsumeName = false;
 		}
 
 		for ( const [ name, token ] of consumables.attributes ) {
-			const value = this._attributes.get( name )!; // TODO test locally so `!` would not be needed
+			const value = this._attributes.get( name )!;
 
 			// Plain not-consumed attribute.
 			if ( typeof value == 'boolean' ) {
@@ -567,6 +576,8 @@ export class ViewElementConsumables {
 				}
 			}
 		}
+
+		return true;
 	}
 
 	/**
