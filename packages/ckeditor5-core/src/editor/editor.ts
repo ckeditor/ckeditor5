@@ -1023,7 +1023,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * * Cloud - the editor is run from CDN
 				 *
 				 * The licenses available include:
-				 * * GPL license for open-source users
+				 * * GPL license for open-source users.
 				 * * Cloud plans (managed via the Customer Portal)
 				 * * Custom plans (sales-assited)
 				 *
