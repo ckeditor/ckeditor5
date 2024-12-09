@@ -837,8 +837,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 		// See if there is already a cache defined for `modelOffset`.
 		const cacheItem = cache.cacheMap.get( modelOffset );
 
-		if ( modelOffset <= cache.maxModelOffset && cacheItem ) {
-			// We have a valid cache, and we already cached this offset. Don't overwrite the cache.
+		if ( cacheItem ) {
+			// We already cached this offset. Don't overwrite the cache.
 			//
 			// This assumes that `Mapper` works in a way that we first cache the parent and only then cache children, as we prefer position
 			// after the parent ("closer" to the tracked ancestor). It might be safer to check which position is preferred (newly saved or
