@@ -167,6 +167,30 @@ export default class AttributeElement extends Element {
 
 		return cloned;
 	}
+
+	/**
+	 * TODO
+	 */
+	protected override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
+		// Can't merge if any of elements have an id or a difference of priority.
+		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
+			return false;
+		}
+
+		return super._canMergeAttributesFrom( otherElement );
+	}
+
+	/**
+	 * TODO
+	 */
+	protected override _hasAttributesMatching( otherElement: AttributeElement ): boolean {
+		// TODO Can't merge if any of elements have an id or a difference of priority.
+		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
+			return false;
+		}
+
+		return super._hasAttributesMatching( otherElement );
+	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
