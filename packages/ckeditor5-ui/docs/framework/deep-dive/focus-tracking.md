@@ -661,9 +661,9 @@ Take a look at the following scenario where both mouse and keyboard are used to 
 And here are the steps of the scenario:
 
 1. The editor is not focused (the focus is somewhere else on the web page).
-2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:link/ui/linkactionsview~LinkActionsView link actions view} also pops up.
-3. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#previewButtonView link preview} in the balloon (a child of {@link module:link/ui/linkactionsview~LinkActionsView}).
-4. The <kbd>→</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#editButtonView "Edit link" button}.
+2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:ui/toolbar/toolbarview~ToolbarView link actions view} also pops up.
+3. The <kbd>Tab</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView link preview} in the balloon (a child of {@link module:ui/toolbar/toolbarview~ToolbarView}).
+4. The <kbd>→</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView "Edit link" button}.
 5. The <kbd>Space</kbd> key is used to execute the "Edit link" button. The focus moves to the {@link module:link/ui/linkformview~LinkFormView#urlInputView input} in the {@link module:link/ui/linkformview~LinkFormView}.
 6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Update" button}.
 7. The <kbd>Tab</kbd> key is used to move from the "Update" button to the {@link features/bookmarks "Bookmarks" button}.
@@ -673,7 +673,7 @@ And here are the steps of the scenario:
 There are 3 focus tracker instances at play in the scenario:
 
 1. The {@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`} (the ["global" focus tracker](#a-note-about-the-global-focus-tracker)),
-2. The {@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`},
+2. The {@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `LinkActionsView#focusTracker`},
 3. The {@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}.
 
 Let's see how they react to the user actions (states were recorded **after** each step):
@@ -683,7 +683,7 @@ Let's see how they react to the user actions (states were recorded **after** eac
 		<tr>
 			<th rowspan="2">Step</th>
 			<th colspan="2">{@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`}</th>
-			<th colspan="2">{@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`}</th>
+			<th colspan="2">{@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `LinkActionsView#focusTracker`}</th>
 			<th colspan="2">{@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}</th>
 		</tr>
 		<tr>
