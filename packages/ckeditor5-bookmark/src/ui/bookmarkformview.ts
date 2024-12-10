@@ -10,6 +10,7 @@
 import {
 	ButtonView,
 	FocusCycler,
+	FormRowView,
 	LabeledFieldView,
 	View,
 	ViewCollection,
@@ -105,10 +106,17 @@ export default class BookmarkFormView extends View {
 		// Create input fields.
 		this.idInputView = this._createIdInput();
 
-		this.children = this.createCollection( [
-			this._createHeaderView(),
-			this._createFormView()
-		] );
+		this.children = this.createCollection( [ this._createHeaderView() ] );
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.idInputView,
+				this.saveButtonView
+			],
+			class: [
+				'ck-form__row_with-submit',
+				'ck-form__row_large-top-padding'
+			]
+		} ) );
 
 		// Close the panel on esc key press when the **form has focus**.
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
@@ -136,7 +144,6 @@ export default class BookmarkFormView extends View {
 				class: [
 					'ck',
 					'ck-form',
-					'ck-form_default-width',
 					'ck-bookmark-form',
 					'ck-responsive-form'
 				],
@@ -223,33 +230,6 @@ export default class BookmarkFormView extends View {
 	 */
 	public resetFormStatus(): void {
 		this.idInputView.errorText = null;
-	}
-
-	/**
-	 * Creates a form view for the bookmark form.
-	 */
-	private _createFormView(): View {
-		const form = new View( this.locale );
-
-		form.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-form__row',
-					'ck-form__row_with-submit',
-					'ck-form__row_large-top-padding'
-				]
-			},
-
-			children: [
-				this.idInputView,
-				this.saveButtonView
-			]
-		} );
-
-		return form;
 	}
 
 	/**

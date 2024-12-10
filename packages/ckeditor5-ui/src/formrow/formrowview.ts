@@ -4,22 +4,18 @@
  */
 
 /**
- * @module table/ui/formrowview
+ * @module ui/formrow/formrowview
  */
 
-import { View, type LabelView, type ViewCollection } from 'ckeditor5/src/ui.js';
-import type { Locale } from 'ckeditor5/src/utils.js';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import type LabelView from '../label/labelview.js';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/formrow.css';
+import '../../theme/components/formrow/formrow.css';
 
 /**
- * The class representing a single row in a complex form,
- * used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}.
- *
- * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table),
- * it will become a component in ckeditor5-ui.
- *
- * @internal
+ * The class representing a single row in a form,
  */
 export default class FormRowView extends View {
 	/**
@@ -27,7 +23,7 @@ export default class FormRowView extends View {
 	 *
 	 * @observable
 	 */
-	public declare class: string | null;
+	public declare class: string | Array<string> | null;
 
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
@@ -61,12 +57,12 @@ export default class FormRowView extends View {
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
+	constructor( locale: Locale, options: { children?: Array<View>; class?: string | Array<string>; labelView?: LabelView } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.set( 'class', options.class || null );
+		this.set( 'class', Array.isArray( options.class ) ? options.class.join( ' ' ) : options.class || null );
 		this.children = this.createCollection();
 
 		if ( options.children ) {

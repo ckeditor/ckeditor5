@@ -22,12 +22,6 @@
 	}
 
 	& .ck.ck-form__row {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: flex-start;
-		padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
-
 		&.ck-form__row_large-top-padding {
 			padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
 		}
