@@ -105,6 +105,16 @@ describe( 'ImageResizeEditing', () => {
 				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '100px' );
 			} );
 
+			it( 'it should prefer the width from the figure element over the width from the image element', () => {
+				editor.setData(
+					'<figure class="image" style="width:100px;">' +
+						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:200px;">` +
+					'</figure>'
+				);
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '100px' );
+			} );
+
 			it( 'upcasts 50% width correctly', () => {
 				editor.setData( `<figure class="image" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
