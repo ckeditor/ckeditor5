@@ -54,7 +54,9 @@ export default class TokenList implements ElementAttributeValue {
 		this.clear();
 
 		for ( const token of value.split( /\s+/ ) ) {
-			this._set.add( token );
+			if ( token ) {
+				this._set.add( token );
+			}
 		}
 
 		return this;
@@ -65,7 +67,9 @@ export default class TokenList implements ElementAttributeValue {
 	 */
 	public set( tokens: ArrayOrItem<string> ): void {
 		for ( const token of toArray( tokens ) ) {
-			this._set.add( token );
+			if ( token ) {
+				this._set.add( token );
+			}
 		}
 	}
 

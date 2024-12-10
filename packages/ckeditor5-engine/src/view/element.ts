@@ -636,6 +636,11 @@ export default class Element extends Node {
 			} else {
 				currentValue.set( typeof value == 'string' ? value.split( /\s+/ ) : value as ArrayOrItem<string> );
 			}
+
+			// Do not store empty style or class attribute.
+			if ( currentValue.isEmpty ) {
+				this._attrs.delete( key );
+			}
 		}
 		else {
 			this._attrs.set( key, String( value ) );

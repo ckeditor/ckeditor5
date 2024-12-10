@@ -508,6 +508,24 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
+		it( 'should allow attributes (empty attributes match)', () => {
+			dataFilter.allowElement( 'section' );
+			dataFilter.allowAttributes( {
+				name: 'section'
+			} );
+
+			editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<section><p>foobar</p></section>'
+			);
+		} );
+
 		it( 'should allow attributes (styles)', () => {
 			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( {

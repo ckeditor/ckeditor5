@@ -834,7 +834,7 @@ function matchAndConsumeAttributes(
 	const stylesProcessor = viewElement.document.stylesProcessor;
 
 	return matches.reduce( ( result, { match } ) => {
-		for ( const [ key, token ] of match.attributes! ) {
+		for ( const [ key, token ] of match.attributes || [] ) {
 			// Verify and consume styles.
 			if ( key == 'style' ) {
 				const style = token!;
