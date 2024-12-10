@@ -631,6 +631,9 @@ export function normalizeConsumables( consumables: Consumables | Match ): Normal
 	};
 }
 
+/**
+ * Normalizes a list of consumable attributes to a common tuple format.
+ */
 function normalizeConsumablePart(
 	attributes: Array<[string, string?]>,
 	items: string | Array<string> | Array<[string, string?]>,

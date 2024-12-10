@@ -212,10 +212,11 @@ export default class Matcher {
 }
 
 /**
- * TODO
+ * Returns true if the given `item` matches the pattern.
+ *
  * @internal
- * @param pattern A pattern representing a key we want to match.
- * @param item An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
+ * @param pattern A pattern representing a key/value we want to match.
+ * @param item An actual item key/value (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
  */
 export function isPatternMatched(
 	pattern: true | string | RegExp,
@@ -710,8 +711,8 @@ export interface Match {
 	name?: boolean;
 
 	/**
-	 * Array with matched attribute names.
-	 * Or unified match result (combined attributes, classes and styles).
+	 * Array of matching tuples: attribute name, and optional token for tokenized attributes.
+	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
 	 */
 	attributes?: Array<[string, string?]>;
 }

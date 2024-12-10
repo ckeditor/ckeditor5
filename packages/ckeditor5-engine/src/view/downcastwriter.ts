@@ -527,10 +527,13 @@ export default class DowncastWriter {
 	public setAttribute( key: string, value: unknown, element: Element ): void;
 
 	/**
-	 * Adds or overwrites the element's attribute with a specified key and value. TODO
+	 * Adds or overwrites the element's attribute with a specified key and value.
+	 * Note that for tokenized attributes it allows the `reset` parameter to specify if the previous
+	 * attribute value should be overwritten or a new token (class name, style property) should be added.
 	 *
 	 * ```ts
 	 * writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 * writer.setAttribute( 'class', 'foo', false, element );
 	 * ```
 	 *
 	 * @param key The attribute key.
@@ -552,7 +555,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Removes attribute from the element. TODO
+	 * Removes attribute from the element.
 	 *
 	 * ```ts
 	 * writer.removeAttribute( 'href', linkElement );
@@ -563,7 +566,8 @@ export default class DowncastWriter {
 	public removeAttribute( key: string, element: Element ): void;
 
 	/**
-	 * Removes attribute from the element. TODO
+	 * Removes specified tokens from an attribute value (for example class names, style properties).
+	 * If resulting attribute become empty, the whole attribute is removed.
 	 *
 	 * ```ts
 	 * writer.removeAttribute( 'class', 'foo', linkElement );
