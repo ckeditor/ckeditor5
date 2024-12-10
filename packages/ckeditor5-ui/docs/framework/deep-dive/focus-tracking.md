@@ -683,7 +683,7 @@ Let's see how they react to the user actions (states were recorded **after** eac
 		<tr>
 			<th rowspan="2">Step</th>
 			<th colspan="2">{@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`}</th>
-			<th colspan="2">{@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `LinkActionsView#focusTracker`}</th>
+			<th colspan="2">{@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `ToolbarView#focusTracker`}</th>
 			<th colspan="2">{@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}</th>
 		</tr>
 		<tr>
