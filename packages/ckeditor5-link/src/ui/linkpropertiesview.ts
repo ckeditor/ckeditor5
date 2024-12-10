@@ -168,6 +168,7 @@ export default class LinkPropertiesView extends View {
 
 		// TODO: maybe we should have a dedicated BackButtonView in the UI library.
 		backButton.set( {
+			class: 'ck-button-back',
 			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
