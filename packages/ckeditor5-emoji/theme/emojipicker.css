@@ -6,4 +6,16 @@
 /* stylelint-disable selector-type-no-unknown */
 emoji-picker.ck.ck-emoji-picker {
 	height: 400px;
+	--emoji-size: 1rem;
+	--border-size: 0;
+	--button-hover-background: var(--ck-color-button-default-hover-background);
+	--button-active-background: var(--ck-color-button-default-active-background);
+	--indicator-color: var(--ck-color-base-active);
+	--input-border-color: var(--ck-color-base-border);
+	--input-border-radius: var(--ck-border-radius);
+	--input-font-color: var(--ck-color-text);
+	--input-font-size: var(--ck-font-size-base);
+	--input-placeholder-color: var(--ck-color-input-disabled-text);
+	--outline-color: var(--ck-color-focus-border);
+	--outline-size: 1px;
 }
