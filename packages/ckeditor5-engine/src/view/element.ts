@@ -607,7 +607,7 @@ export default class Element extends Node {
 	 * @internal
 	 * @param key Attribute key.
 	 * @param value Attribute value.
-	 * @param reset TODO
+	 * @param reset Whether tokenized attribute should override the attribute value or just add a token.
 	 * @fires change
 	 */
 	public _setAttribute( key: string, value: unknown | Styles | [ string, StyleValue ], reset = true ): void {
@@ -780,8 +780,13 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
+	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tuples (attribute name, token).
+	 *
 	 * @internal
+	 * @param patterns An array of normalized patterns (tuples of 2 or 3 items depending on if tokenized attribute value match is needed).
+	 * @param match An array to populate with matching tuples.
+	 * @param exclude Array of attribute names to exclude from match.
+	 * @returns `true` if element matches all patterns. The matching tuples are pushed to the `match` array.
 	 */
 	public _collectAttributesMatch(
 		patterns: Array<NormalizedPropertyPattern>,
