@@ -661,8 +661,8 @@ Take a look at the following scenario where both mouse and keyboard are used to 
 And here are the steps of the scenario:
 
 1. The editor is not focused (the focus is somewhere else on the web page).
-2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:ui/toolbar/toolbarview~ToolbarView link actions view} also pops up.
-3. The <kbd>Tab</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView link preview} in the balloon (a child of {@link module:ui/toolbar/toolbarview~ToolbarView}).
+2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:ui/toolbar/toolbarview~ToolbarView toolbar view} also pops up.
+3. The <kbd>Tab</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView link preview} in the balloon.
 4. The <kbd>→</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView "Edit link" button}.
 5. The <kbd>Space</kbd> key is used to execute the "Edit link" button. The focus moves to the {@link module:link/ui/linkformview~LinkFormView#urlInputView input} in the {@link module:link/ui/linkformview~LinkFormView}.
 6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Update" button}.
@@ -673,7 +673,7 @@ And here are the steps of the scenario:
 There are 3 focus tracker instances at play in the scenario:
 
 1. The {@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`} (the ["global" focus tracker](#a-note-about-the-global-focus-tracker)),
-2. The {@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `LinkActionsView#focusTracker`},
+2. The {@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `ToolbarView#focusTracker`},
 3. The {@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}.
 
 Let's see how they react to the user actions (states were recorded **after** each step):
@@ -788,8 +788,8 @@ Let's see how they react to the user actions (states were recorded **after** eac
 	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (for example, from the editable to the balloon panel).
 	* It lacks precise information about the focus in the link UI because this is the responsibility of the focus tracker of the link UI layer.
 	* All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
-* You can see that the focus management is modular: `LinkActionsView` and `LinkFormView` only know about the focus as long as one of their children has it.
-* Focus trackers belonging to `LinkActionsView` and `LinkFormView` know precisely which element has focus. This is their region of interest and, unlike the global focus tracker of the editor, they need that information to allow navigation using the keyboard.
+* You can see that the focus management is modular: `ToolbarView` and `LinkFormView` only know about the focus as long as one of their children has it.
+* Focus trackers belonging to `ToolbarView` and `LinkFormView` know precisely which element has focus. This is their region of interest and, unlike the global focus tracker of the editor, they need that information to allow navigation using the keyboard.
 
 <style>
 .focus-tracking table {
