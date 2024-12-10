@@ -30,72 +30,61 @@ const createPredefinedLinksProvider = provider => class MyLinkProvider extends P
 
 const SocialLinksPlugin = createPredefinedLinksProvider( {
 	label: '🌐 Social links',
-	getItems: () => [
+	getListItems: () => [
 		{
 			id: 'facebook',
+			href: 'https://facebook.com',
 			label: '👥 Facebook',
 			icon: linkIcon,
-			href: 'https://facebook.com',
-			preview: {
-				icon: null
-			}
+			tooltip: 'Visit Facebook'
 		},
 		{
 			id: 'twitter',
+			href: 'https://twitter.com',
 			label: '🐦 Twitter',
 			icon: linkIcon,
-			href: 'https://twitter.com',
-			preview: {
-				icon: null
-			}
+			tooltip: 'Visit Twitter'
 		},
 		{
 			id: 'linkedin',
+			href: 'https://linkedin.com',
 			label: '💼 LinkedIn',
 			icon: linkIcon,
-			href: 'https://linkedin.com',
-			preview: {
-				icon: null
-			}
+			tooltip: 'Visit LinkedIn'
 		},
 		{
 			id: 'instagram',
+			href: 'https://instagram.com',
 			label: '📸 Instagram',
 			icon: linkIcon,
-			href: 'https://instagram.com',
-			preview: {
-				icon: null
-			}
+			tooltip: 'Visit Instagram'
 		}
 	]
 } );
 
 const ShopsLinksPlugin = createPredefinedLinksProvider( {
 	label: '🛍️ Shops links',
-	getItems: () => [
+	getListItems: () => [
 		{
 			id: 'amazon',
+			href: 'https://amazon.com',
 			label: '🛒 Amazon',
 			icon: linkIcon,
-			href: 'https://amazon.com',
-			preview: {
-				icon: null
-			}
+			tooltip: 'Shop on Amazon'
 		},
 		{
 			id: 'ebay',
+			href: 'https://ebay.com',
 			label: '🛍️ eBay',
 			icon: linkIcon,
-			href: 'https://ebay.com',
-			preview: {
-				icon: null
-			}
+			tooltip: 'Shop on eBay'
 		},
 		{
 			id: 'allegro',
+			href: 'https://allegro.com',
 			label: '🛒 Allegro',
 			icon: linkIcon,
-			href: 'https://allegro.com'
+			tooltip: 'Shop on Allegro'
 		}
 	],
 	navigate: item => {

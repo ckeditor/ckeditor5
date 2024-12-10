@@ -2948,18 +2948,21 @@ describe( 'LinkUI', () => {
 				linkUIFeature.registerLinksListProvider( {
 					order: 2,
 					label: 'Foo',
-					getItems: () => []
+					getItem: () => null,
+					getListItems: () => []
 				} );
 
 				linkUIFeature.registerLinksListProvider( {
 					order: -1,
 					label: 'Bar',
-					getItems: () => []
+					getItem: () => null,
+					getListItems: () => []
 				} );
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Buz',
-					getItems: () => []
+					getItem: () => null,
+					getListItems: () => []
 				} );
 
 				linkUIFeature._showUI();
@@ -2967,7 +2970,8 @@ describe( 'LinkUI', () => {
 				linkUIFeature.registerLinksListProvider( {
 					order: -3,
 					label: 'FooBar',
-					getItems: () => []
+					getItem: () => null,
+					getListItems: () => []
 				} );
 
 				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 4 );
@@ -2988,35 +2992,45 @@ describe( 'LinkUI', () => {
 			it( 'should return link object from provider that contains given href', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+					getItem: href => {
+						if ( href === 'bar' ) {
+							return { href: 'bar' };
+						}
+					}
 				} );
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Bar',
-					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+					getItem: () => ( { href: 'wrong-link' } )
 				} );
 
 				const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
 
 				expect( link.item ).to.be.deep.equal( { href: 'bar' } );
 				expect( link.provider.label ).to.be.equal( 'Foo' );
-				expect( link.provider.getItems ).to.be.instanceOf( Function );
 			} );
 
 			it( 'should return null if no link with given href was found', () => {
+				const getItemsStub = [
+					sinon.stub().returns( null ),
+					sinon.stub().returns( null )
+				];
+
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'foo' }, { href: 'bar' } ]
+					getItem: getItemsStub[ 0 ]
 				} );
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Bar',
-					getItems: () => [ { href: 'baz' }, { href: 'qux' } ]
+					getItem: getItemsStub[ 1 ]
 				} );
 
 				const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
 
 				expect( link ).to.be.null;
+				expect( getItemsStub[ 0 ] ).to.be.calledOnce;
+				expect( getItemsStub[ 1 ] ).to.be.calledOnce;
 			} );
 		} );
 
@@ -3048,7 +3062,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'https://ckeditor.com' } ],
+					getListItems: () => [ { href: 'https://ckeditor.com' } ],
 					navigate
 				} );
 
@@ -3056,6 +3070,8 @@ describe( 'LinkUI', () => {
 				fireClickEvent( { metaKey: false, ctrlKey: true } );
 
 				expect( navigate ).to.be.calledOnce;
+				expect( navigate ).to.be.calledWithMatch( { href: 'https://ckeditor.com' } );
+
 				expect( windowOpenStub ).not.to.be.called;
 			} );
 
@@ -3064,7 +3080,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'https://ckeditor.com' } ],
+					getListItems: () => [ { href: 'https://ckeditor.com' } ],
 					navigate
 				} );
 
@@ -3080,7 +3096,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'https://ckeditor.com' } ],
+					getListItems: () => [ { href: 'https://ckeditor.com' } ],
 					navigate
 				} );
 
@@ -3094,7 +3110,7 @@ describe( 'LinkUI', () => {
 			it( 'should use default navigate to href if no navigate callback was provided', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [ { href: 'https://example.org' } ]
+					getListItems: () => [ { href: 'https://example.org' } ]
 				} );
 
 				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
@@ -3137,7 +3153,7 @@ describe( 'LinkUI', () => {
 			it( 'should set label and icon from link provider if selected link was found', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [
+					getListItems: () => [
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
@@ -3155,48 +3171,58 @@ describe( 'LinkUI', () => {
 				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
 			} );
 
-			it( 'should prefer to use preview tooltip and icon if present', () => {
+			it( 'should prefer to use preview tooltip and icon from `getItem` if present', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [
+					getListItems: () => [
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium,
-							preview: {
-								tooltip: 'Tooltip',
-								icon: icons.bookmarkSmall
-							}
+							icon: icons.bookmarkMedium
 						}
-					]
+					],
+					getItem: href => {
+						if ( href === 'https://ckeditor.com' ) {
+							return {
+								label: 'CKEditor',
+								icon: icons.bookmarkMedium,
+								tooltip: 'Tooltip'
+							};
+						}
+					}
 				} );
 
 				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.tooltip ).to.be.equal( 'Tooltip' );
-				expect( button.icon ).to.be.equal( icons.bookmarkSmall );
+				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
 			} );
 
-			it( 'should not show any icon if preview if preview icon is null', () => {
+			it( 'should not show any icon if preview if icon is null in `getItem`', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [
+					getListItems: () => [
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium,
-							preview: {
-								tooltip: 'Tooltip',
-								icon: null
-							}
+							icon: icons.bookmarkMedium
 						}
-					]
+					],
+					getItem: href => {
+						if ( href === 'https://ckeditor.com' ) {
+							return {
+								label: 'CKEditor',
+								icon: null,
+								tooltip: 'Tooltip'
+							};
+						}
+					}
 				} );
 
 				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.tooltip ).to.be.equal( 'Tooltip' );
-				expect( button.icon ).to.be.undefined;
+				expect( button.icon ).to.be.null;
 			} );
 
 			it( 'should stop the event and execute navigate (that returns true)', () => {
@@ -3205,7 +3231,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [
+					getListItems: () => [
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
@@ -3237,7 +3263,7 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [
+					getListItems: () => [
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
@@ -3262,7 +3288,7 @@ describe( 'LinkUI', () => {
 			beforeEach( () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
-					getItems: () => [
+					getListItems: () => [
 						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium },
 						{ href: 'https://example.org', label: 'Example', icon: icons.bookmarkSmall },
 						{ href: 'https://example.com/2', label: 'Example 2', icon: icons.bookmarkSmall },
@@ -3272,14 +3298,14 @@ describe( 'LinkUI', () => {
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Bar',
-					getItems: () => [
+					getListItems: () => [
 						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium }
 					]
 				} );
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Buz',
-					getItems: () => []
+					getListItems: () => []
 				} );
 			} );
 

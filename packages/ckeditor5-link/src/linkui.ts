@@ -358,7 +358,7 @@ export default class LinkUI extends Plugin {
 	 * Creates a sorted array of buttons with link names.
 	 */
 	private _createLinkProviderListView( provider: LinksProvider ): Array<ButtonView> {
-		return provider.getItems().map( ( { label, href, icon } ) => {
+		return provider.getListItems().map( ( { href, label, icon } ) => {
 			const buttonView = new ButtonView();
 
 			buttonView.set( {
@@ -546,17 +546,11 @@ export default class LinkUI extends Plugin {
 				const selectedLinksProviderLink = this._getLinkProviderLinkByHref( href );
 
 				if ( selectedLinksProviderLink ) {
-					const { label, icon, preview = {} } = selectedLinksProviderLink.item;
+					const { label, tooltip, icon } = selectedLinksProviderLink.item;
 
 					button.label = label;
-					button.tooltip = preview.tooltip || false;
-
-					// Hide icon if it's set to `null`.
-					if ( preview.icon === null ) {
-						button.icon = undefined;
-					} else {
-						button.icon = preview.icon || icon;
-					}
+					button.tooltip = tooltip || false;
+					button.icon = icon;
 				} else {
 					button.label = href;
 					button.icon = undefined;
@@ -1266,13 +1260,15 @@ export default class LinkUI extends Plugin {
 	 * @param href URL of the link.
 	 * @returns Link provider and item or `null` if not found.
 	 */
-	private _getLinkProviderLinkByHref( href: string ): { provider: LinksProvider; item: LinksProviderItem } | null {
+	private _getLinkProviderLinkByHref( href: string ): { provider: LinksProvider; item: LinksProviderDetailedItem } | null {
 		if ( !href ) {
 			return null;
 		}
 
 		for ( const provider of this._linksProviders ) {
-			const item = provider.getItems().find( item => item.href === href );
+			const item = provider.getItem ?
+				provider.getItem( href ) :
+				provider.getListItems().find( item => item.href === href );
 
 			if ( item ) {
 				return { provider, item };
@@ -1334,8 +1330,9 @@ export default class LinkUI extends Plugin {
 
 /**
  * Link list item that represents a single link in the provider's list.
+ * It's displayed after the user clicks the button that opens the list in the link form view.
  */
-export type LinksProviderItem = {
+export type LinksProviderListItem = {
 
 	/**
 	 * Unique identifier of the item. Avoids collection malfunction when there are links with the same labels.
@@ -1343,10 +1340,12 @@ export type LinksProviderItem = {
 	id: string;
 
 	/**
-	 * Label that serves two purposes:
-	 *
-	 * 	* As a text for the item on the list.
-	 * 	* As a text for the preview when the item is selected.
+	 * URL of the link.
+	 */
+	href: string;
+
+	/**
+	 * Label that is used as a text for the list item.
 	 */
 	label: string;
 
@@ -1354,30 +1353,38 @@ export type LinksProviderItem = {
 	 * Optional icon displayed for the item.
 	 */
 	icon?: string;
+};
+
+/**
+ * Link list item with additional attributes that will be used when:
+ *
+ * 	* The item is selected and the preview of the item is displayed.
+ * 	* The user selects the item and the link is created.
+ * 	* The user navigates to the item using editing.
+ *
+ * It can be used to perform additional lookups in the database or to provide additional information about the link.
+ */
+export type LinksProviderDetailedItem = {
 
 	/**
-	 * Value (URL) that will be used when the item is selected.
+	 * URL of the link.
 	 */
 	href: string;
 
 	/**
-	 * Optional attributes that will be used during rendering of link preview toolbar.
+	 * Optional icon displayed when the user opens toolbar with the item preview.
 	 */
-	preview?: {
+	icon?: string;
 
-		/**
-		 * Optional tooltip shown when the item preview is hovered.
-		 */
-		tooltip?: string;
+	/**
+	 * Optional label shown in the link preview. If not passed then the `href` is used as the label.
+	 */
+	label?: string;
 
-		/**
-		 * Optional icon displayed for the item.
-		 *
-		 * 	* If not passed, the `icon` from the item will be used.
-		 * 	* If null, no icon will be displayed.
-		 */
-		icon?: string | null;
-	};
+	/**
+	 * Optional tooltip shown in the link preview.
+	 */
+	tooltip?: string;
 };
 
 /**
@@ -1407,9 +1414,16 @@ export type LinksProvider = {
 	order?: number;
 
 	/**
-	 * Callback for retrieving an array of items (this should not be a collection as it could change while form is open).
+	 * Callback for retrieving an static array of items which is being called every time the list is displayed.
+	 * It's not required to provide all links at once, it's possible to pass only slice of links.
 	 */
-	getItems(): Array<LinksProviderItem>;
+	getListItems(): Array<LinksProviderListItem>;
+
+	/**
+	 * Optional callback for retrieving an item by its URL.
+	 * If not provided the item from the list will be used.
+	 */
+	getItem?( href: string ): LinksProviderDetailedItem | null;
 
 	/**
 	 * Callback called when user clicked the link in the list.
@@ -1417,7 +1431,7 @@ export type LinksProvider = {
 	 * @param item Item that was clicked.
 	 * @returns `true` if the link was handled by the provider, `false` otherwise. It'll prevent the default action if `true`.
 	 */
-	navigate?( item: LinksProviderItem ): boolean;
+	navigate?( item: LinksProviderDetailedItem ): boolean;
 };
 
 /**

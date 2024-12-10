@@ -433,7 +433,8 @@ describe( 'BookmarkUI', () => {
 
 			expect( found.emptyListPlaceholder ).to.equal( t( 'No bookmarks available.' ) );
 			expect( found.navigate ).to.be.a( 'function' );
-			expect( found.getItems ).to.be.instanceOf( Function );
+			expect( found.getItem ).to.be.instanceOf( Function );
+			expect( found.getListItems ).to.be.instanceOf( Function );
 		} );
 
 		it( 'should be able to open "Bookmark" tab in the link panel even if the list is empty', () => {

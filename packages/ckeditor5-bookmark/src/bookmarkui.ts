@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
-import type { LinksProviderItem } from '@ckeditor/ckeditor5-link';
+import type { LinksProviderDetailedItem, LinksProviderListItem } from '@ckeditor/ckeditor5-link';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -244,36 +244,46 @@ export default class BookmarkUI extends Plugin {
 		const linksUI = this.editor.plugins.get( 'LinkUI' )!;
 		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
 
-		const getItems = () => Array
+		const getListItems = () => Array
 			.from( bookmarkEditing.getAllBookmarkNames() )
 			.sort( ( a, b ) => a.localeCompare( b ) )
-			.map( ( bookmarkId ): LinksProviderItem => ( {
+			.map( ( bookmarkId ): LinksProviderListItem => ( {
 				id: bookmarkId,
-				label: bookmarkId,
 				href: `#${ bookmarkId }`,
-				icon: icons.bookmarkMedium,
-				preview: {
-					tooltip: t( 'Scroll to bookmark' ),
-					icon: icons.bookmarkSmall
-				}
+				label: bookmarkId,
+				icon: icons.bookmarkMedium
 			} ) );
 
-		const navigate = ( { id }: LinksProviderItem ) => this._scrollToBookmark( id );
+		const getItem = ( href: string ): LinksProviderDetailedItem | null => {
+			const bookmark = [ ...bookmarkEditing.getAllBookmarkNames() ].find( item => `#${ item }` === href );
+
+			if ( !bookmark ) {
+				return null;
+			}
+
+			return {
+				href,
+				label: bookmark,
+				icon: icons.bookmarkSmall,
+				tooltip: t( 'Scroll to bookmark' )
+			};
+		};
 
 		linksUI.registerLinksListProvider( {
 			label: t( 'Bookmarks' ),
 			emptyListPlaceholder: t( 'No bookmarks available.' ),
-			getItems,
-			navigate
+			navigate: ( { href }: LinksProviderDetailedItem ) => this._scrollToBookmark( href ),
+			getListItems,
+			getItem
 		} );
 	}
 
 	/**
 	 * Scrolls the editor to the bookmark with the given id.
 	 */
-	private _scrollToBookmark( id: string ) {
+	private _scrollToBookmark( href: string ) {
 		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
-		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( id );
+		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) );
 
 		if ( !bookmarkElement ) {
 			return false;
