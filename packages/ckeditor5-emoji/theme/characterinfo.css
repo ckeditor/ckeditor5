@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* stylelint-disable selector-type-no-unknown */
-emoji-picker.ck.ck-emoji-picker {
-	height: 400px;
+.ck.ck-character-info {
+	display: flex;
+	justify-content: space-between;
 }
