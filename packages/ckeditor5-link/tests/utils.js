@@ -5,7 +5,6 @@
 
 /* global window */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
@@ -27,8 +26,6 @@ import {
 	isEmail,
 	addLinkProtocolIfApplicable,
 	openLink,
-	isScrollableToTarget,
-	scrollToTarget,
 	extractTextFromLinkRange
 } from '../src/utils.js';
 
@@ -377,105 +374,6 @@ describe( 'utils', () => {
 			expect( stub.calledOnce ).to.be.true;
 			expect( stub.calledOn( window ) ).to.be.true;
 			expect( stub.calledWith( url, '_blank', 'noopener' ) ).to.be.true;
-		} );
-	} );
-
-	describe( 'isScrollableToTarget()', () => {
-		it( 'should return false if the BookmarkEditing feature is not loaded', async () => {
-			const editor = await VirtualTestEditor.create( {} );
-
-			expect( isScrollableToTarget( editor, 'http://ckeditor.com' ) ).to.be.false;
-
-			await editor.destroy();
-		} );
-
-		describe( 'with the BookmarkEditing feature loaded', () => {
-			let editor;
-
-			beforeEach( async () => {
-				function BookmarkEditingMock() {
-					this.getElementForBookmarkId = id => id === 'foo';
-				}
-
-				BookmarkEditingMock.pluginName = 'BookmarkEditing';
-
-				editor = await VirtualTestEditor.create( { plugins: [ BookmarkEditingMock ] } );
-			} );
-
-			afterEach( async () => {
-				await editor.destroy();
-			} );
-
-			it( 'should return false if url is not provided', () => {
-				expect( isScrollableToTarget( editor, '' ) ).to.be.false;
-			} );
-
-			it( 'should return false if url does not start with the hash', () => {
-				expect( isScrollableToTarget( editor, 'http://ckeditor.com#foo' ) ).to.be.false;
-			} );
-
-			it( 'should return false if the BookmarkEditing#getElementForBookmarkId() returns false', () => {
-				expect( isScrollableToTarget( editor, '#bar' ) ).to.be.false;
-			} );
-
-			it( 'should return true if the BookmarkEditing#getElementForBookmarkId() returns true', () => {
-				expect( isScrollableToTarget( editor, '#foo' ) ).to.be.true;
-			} );
-		} );
-	} );
-
-	describe( 'scrollToTarget()', () => {
-		it( 'should not scroll and return false if the BookmarkEditing feature is not loaded', async () => {
-			const editor = await VirtualTestEditor.create( {} );
-			const scrollToTheSelectionSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
-
-			expect( scrollToTarget( editor, 'http://ckeditor.com' ) ).to.be.false;
-			sinon.assert.notCalled( scrollToTheSelectionSpy );
-
-			scrollToTheSelectionSpy.restore();
-			await editor.destroy();
-		} );
-
-		describe( 'with the BookmarkEditing feature loaded', () => {
-			let editor, scrollToTheSelectionStub, setSelectionStub;
-
-			beforeEach( async () => {
-				function BookmarkEditingMock() {
-					this.getElementForBookmarkId = id => id === 'foo';
-				}
-
-				BookmarkEditingMock.pluginName = 'BookmarkEditing';
-
-				editor = await VirtualTestEditor.create( { plugins: [ BookmarkEditingMock ] } );
-				scrollToTheSelectionStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-				setSelectionStub = sinon.stub( editor.model.document.selection, '_setTo' );
-			} );
-
-			afterEach( async () => {
-				scrollToTheSelectionStub.restore();
-				setSelectionStub.restore();
-				await editor.destroy();
-			} );
-
-			it( 'should not scroll and return false if url is not provided', () => {
-				expect( scrollToTarget( editor, '' ) ).to.be.false;
-				sinon.assert.notCalled( scrollToTheSelectionStub );
-			} );
-
-			it( 'should not scroll and return false if url does not start with the hash', () => {
-				expect( scrollToTarget( editor, 'http://ckeditor.com#foo' ) ).to.be.false;
-				sinon.assert.notCalled( scrollToTheSelectionStub );
-			} );
-
-			it( 'should not scroll and return false if the BookmarkEditing#getElementForBookmarkId() returns false', () => {
-				expect( scrollToTarget( editor, '#bar' ) ).to.be.false;
-				sinon.assert.notCalled( scrollToTheSelectionStub );
-			} );
-
-			it( 'should scroll and return true if the BookmarkEditing#getElementForBookmarkId() returns true', () => {
-				expect( scrollToTarget( editor, '#foo' ) ).to.be.true;
-				sinon.assert.calledOnce( scrollToTheSelectionStub );
-			} );
 		} );
 	} );
 

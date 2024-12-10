@@ -8,5 +8,8 @@
 	"Bookmark name cannot contain space characters.": "The error message. Displayed when provided name includes spaces.",
 	"Bookmark name already exists.": "The error message. Displayed when provided name already exists.",
 	"bookmark widget": "The label for the bookmark widget.",
-	"Bookmark toolbar": "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+	"Bookmark toolbar": "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget.",
+	"Bookmarks": "Title for a feature displaying a list of bookmarks.",
+	"No bookmarks available.": "A message displayed instead of a list of bookmarks if it is empty.",
+	"Scroll to bookmark": "Tooltip shown after hovering the bookmark link preview."
 }

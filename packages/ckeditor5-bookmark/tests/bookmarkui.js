@@ -8,6 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Link } from '@ckeditor/ckeditor5-link';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView, BalloonPanelView, LabelView } from '@ckeditor/ckeditor5-ui';
@@ -35,7 +36,7 @@ describe( 'BookmarkUI', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ BookmarkUI, BookmarkEditing, Essentials, Paragraph, BlockQuote ]
+			plugins: [ BookmarkUI, BookmarkEditing, Essentials, Paragraph, BlockQuote, Link ]
 		} );
 
 		bookmarkUIFeature = editor.plugins.get( BookmarkUI );
@@ -415,6 +416,168 @@ describe( 'BookmarkUI', () => {
 				expect( balloon.visibleView ).to.be.null;
 			} );
 		} );
+	} );
+
+	describe( 'link ui integration', () => {
+		let linkUI, t, linkCommand;
+
+		beforeEach( () => {
+			linkUI = editor.plugins.get( 'LinkUI' );
+			linkCommand = editor.commands.get( 'link' );
+
+			t = editor.locale.t;
+		} );
+
+		it( 'should register proper link provider', () => {
+			const found = linkUI._linksProviders.find( provider => provider.label === t( 'Bookmarks' ) );
+
+			expect( found.emptyListPlaceholder ).to.equal( t( 'No bookmarks available.' ) );
+			expect( found.navigate ).to.be.a( 'function' );
+			expect( found.getItem ).to.be.instanceOf( Function );
+			expect( found.getListItems ).to.be.instanceOf( Function );
+		} );
+
+		it( 'should be able to open "Bookmark" tab in the link panel even if the list is empty', () => {
+			linkUI._showUI();
+
+			const button = clickNthLinksProvider( 0 );
+
+			expect( button ).not.to.be.undefined;
+			expect( button.label ).to.equal( t( 'Bookmarks' ) );
+
+			expectedShownItems( [] );
+			expectShownEmptyPlaceholder( t( 'No bookmarks available.' ) );
+		} );
+
+		it( 'should be able to open "Bookmark" tab in the link panel with single item', () => {
+			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+			linkUI._showUI();
+			clickNthLinksProvider( 0 );
+
+			expectedShownItems( [
+				{ label: 'foo', icon: icons.bookmarkMedium }
+			] );
+		} );
+
+		it( 'should show bookmark items that are ordered alphabetically', () => {
+			setModelData( editor.model,
+				'<paragraph>f[o]o' +
+					'<bookmark bookmarkId="zzz"></bookmark>' +
+					'<bookmark bookmarkId="aaa"></bookmark>' +
+					'<bookmark bookmarkId="ccc"></bookmark>' +
+				'</paragraph>'
+			);
+
+			linkUI._showUI();
+			clickNthLinksProvider( 0 );
+
+			expectedShownItems( [
+				{ label: 'aaa', icon: icons.bookmarkMedium },
+				{ label: 'ccc', icon: icons.bookmarkMedium },
+				{ label: 'zzz', icon: icons.bookmarkMedium }
+			] );
+		} );
+
+		it( 'should show proper icon and tooltip in link preview button', () => {
+			setModelData( editor.model,
+				'<paragraph>f[o]o' +
+					'<bookmark bookmarkId="zzz"></bookmark>' +
+				'</paragraph>'
+			);
+
+			const button = editor.ui.componentFactory.create( 'linkPreview' );
+
+			linkCommand.value = '#zzz';
+
+			expect( button.icon ).to.equal( icons.bookmarkSmall );
+			expect( button.tooltip ).to.equal( t( 'Scroll to bookmark' ) );
+
+			button.destroy();
+
+			linkCommand.value = '#other_non_bookmark';
+
+			expect( button.icon ).not.to.be.equal( icons.bookmarkSmall );
+			expect( button.tooltip ).not.to.be.equal( t( 'Scroll to bookmark' ) );
+		} );
+
+		it( 'should scroll to the bookmark when the link preview button is clicked', () => {
+			setModelData( editor.model,
+				'<paragraph>f[o]o' +
+					'<bookmark bookmarkId="zzz"></bookmark>' +
+				'</paragraph>'
+			);
+
+			const button = editor.ui.componentFactory.create( 'linkPreview' );
+			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			linkCommand.value = '#zzz';
+			button.render();
+			button.element.dispatchEvent( new Event( 'click' ) );
+
+			const selectedElement = editor.model.document.selection.getSelectedElement();
+
+			expect( selectedElement.is( 'element', 'bookmark' ) ).to.be.true;
+			expect( selectedElement.getAttribute( 'bookmarkId' ) ).to.equal( 'zzz' );
+			expect( scrollStub.calledOnce ).to.be.true;
+		} );
+
+		it( 'should perform default browser action if tried to scroll to non-existing bookmark', () => {
+			setModelData( editor.model,
+				'<paragraph>f[o]o' +
+					'<bookmark bookmarkId="zzz"></bookmark>' +
+				'</paragraph>'
+			);
+
+			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
+			const button = editor.ui.componentFactory.create( 'linkPreview' );
+			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			// Let's assume that command somehow managed to be set to non-existing bookmark.
+			linkCommand.value = '#zzz';
+			sinon
+				.stub( bookmarkEditing, 'getElementForBookmarkId' )
+				.returns( null );
+
+			button.render();
+			button.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( scrollStub.calledOnce ).to.be.false;
+		} );
+
+		function clickNthLinksProvider( nth ) {
+			const providersList = linkUI.formView
+				.template.children[ 0 ]
+				.find( child => child.template.attributes.class.includes( 'ck-link__providers-list' ) );
+
+			expect( providersList ).not.to.be.undefined;
+
+			const button = providersList
+				.template.children[ 0 ]
+				.get( nth ) // li
+				.template.children[ 0 ]
+				.get( 0 ); // button
+
+			button.fire( 'execute' );
+			return button;
+		}
+
+		function expectShownEmptyPlaceholder( placeholder ) {
+			const emptyListInformation = linkUI.linkProviderItemsView.emptyListInformation;
+
+			expect( emptyListInformation.element.innerText ).to.equal( placeholder );
+		}
+
+		function expectedShownItems( expectedItems ) {
+			const items = Array
+				.from( linkUI.linkProviderItemsView.listChildren )
+				.map( child => ( {
+					label: child.label,
+					icon: child.icon
+				} ) );
+
+			expect( items ).to.be.deep.equal( expectedItems );
+		}
 	} );
 
 	describe( '_showFormView()', () => {

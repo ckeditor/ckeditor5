@@ -21,7 +21,6 @@ import Input from '@ckeditor/ckeditor5-typing/src/input.js';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
 import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -1049,101 +1048,37 @@ describe( 'LinkEditing', () => {
 				} );
 
 				describe( 'when href starts with `#`', () => {
-					describe( 'and Bookmark plugin is loaded', () => {
-						let view, editor, model, element;
+					let view, editor, model, element;
 
-						beforeEach( async () => {
-							element = document.createElement( 'div' );
-							document.body.appendChild( element );
+					beforeEach( async () => {
+						element = document.createElement( 'div' );
+						document.body.appendChild( element );
 
-							editor = await ClassicTestEditor.create( element, {
-								plugins: [ Paragraph, LinkEditing, Enter, Clipboard, ImageInline, Bookmark ]
-							} );
-
-							model = editor.model;
-							view = editor.editing.view;
+						editor = await ClassicTestEditor.create( element, {
+							plugins: [ Essentials, Paragraph, LinkEditing ]
 						} );
 
-						afterEach( () => {
-							element.remove();
-
-							return editor.destroy();
-						} );
-
-						it( 'should scroll to bookmark when bookmark `id` matches hash `url`', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>' +
-								'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
-
-							expect( stub.notCalled ).to.be.true;
-							expect( stub.calledOn( window ) ).to.be.false;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
-
-						it( 'should open link when bookmark `id` does not matches hash `url`', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>' +
-								'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
-
-							expect( stub.notCalled ).to.be.false;
-							expect( stub.calledOn( window ) ).to.be.true;
-							expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
-
-						it( 'should open link when there is none of them', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
-
-							expect( stub.notCalled ).to.be.false;
-							expect( stub.calledOn( window ) ).to.be.true;
-							expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
+						model = editor.model;
+						view = editor.editing.view;
 					} );
 
-					describe( 'and Bookmark plugin is not loaded', () => {
-						let view, editor, model, element;
+					afterEach( () => {
+						element.remove();
 
-						beforeEach( async () => {
-							element = document.createElement( 'div' );
-							document.body.appendChild( element );
+						return editor.destroy();
+					} );
 
-							editor = await ClassicTestEditor.create( element, {
-								plugins: [ Essentials, Paragraph, LinkEditing ]
-							} );
+					it( 'should open link', () => {
+						setModelData( model,
+							'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
+						);
 
-							model = editor.model;
-							view = editor.editing.view;
-						} );
+						fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
 
-						afterEach( () => {
-							element.remove();
-
-							return editor.destroy();
-						} );
-
-						it( 'should open link', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
-
-							expect( stub.notCalled ).to.be.false;
-							expect( stub.calledOn( window ) ).to.be.true;
-							expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
+						expect( stub.notCalled ).to.be.false;
+						expect( stub.calledOn( window ) ).to.be.true;
+						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
+						expect( eventPreventDefault.calledOnce ).to.be.true;
 					} );
 				} );
 			} );
@@ -1180,101 +1115,37 @@ describe( 'LinkEditing', () => {
 				} );
 
 				describe( 'href starts with `#`', () => {
-					describe( 'and Bookmark plugin is loaded', () => {
-						let view, editor, model, element;
+					let view, editor, model, element;
 
-						beforeEach( async () => {
-							element = document.createElement( 'div' );
-							document.body.appendChild( element );
+					beforeEach( async () => {
+						element = document.createElement( 'div' );
+						document.body.appendChild( element );
 
-							editor = await ClassicTestEditor.create( element, {
-								plugins: [ Paragraph, LinkEditing, Enter, Clipboard, ImageInline, Bookmark ]
-							} );
-
-							model = editor.model;
-							view = editor.editing.view;
+						editor = await ClassicTestEditor.create( element, {
+							plugins: [ Essentials, Paragraph, LinkEditing ]
 						} );
 
-						afterEach( () => {
-							element.remove();
-
-							return editor.destroy();
-						} );
-
-						it( 'should scroll to bookmark when bookmark `id` matches hash `url`', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>' +
-								'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
-
-							expect( stub.notCalled ).to.be.true;
-							expect( stub.calledOn( window ) ).to.be.false;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
-
-						it( 'should open link when bookmark `id` does not matches hash `url`', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>' +
-								'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
-
-							expect( stub.notCalled ).to.be.false;
-							expect( stub.calledOn( window ) ).to.be.true;
-							expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
-
-						it( 'should open link when there is none of them', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
-
-							expect( stub.notCalled ).to.be.false;
-							expect( stub.calledOn( window ) ).to.be.true;
-							expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
+						model = editor.model;
+						view = editor.editing.view;
 					} );
 
-					describe( 'and Bookmark plugin is not loaded', () => {
-						let view, editor, model, element;
+					afterEach( () => {
+						element.remove();
 
-						beforeEach( async () => {
-							element = document.createElement( 'div' );
-							document.body.appendChild( element );
+						return editor.destroy();
+					} );
 
-							editor = await ClassicTestEditor.create( element, {
-								plugins: [ Essentials, Paragraph, LinkEditing ]
-							} );
+					it( 'should open link', () => {
+						setModelData( model,
+							'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
+						);
 
-							model = editor.model;
-							view = editor.editing.view;
-						} );
+						fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-						afterEach( () => {
-							element.remove();
-
-							return editor.destroy();
-						} );
-
-						it( 'should open link', () => {
-							setModelData( model,
-								'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
-							);
-
-							fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
-
-							expect( stub.notCalled ).to.be.false;
-							expect( stub.calledOn( window ) ).to.be.true;
-							expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-							expect( eventPreventDefault.calledOnce ).to.be.true;
-						} );
+						expect( stub.notCalled ).to.be.false;
+						expect( stub.calledOn( window ) ).to.be.true;
+						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
+						expect( eventPreventDefault.calledOnce ).to.be.true;
 					} );
 				} );
 			} );
@@ -1317,18 +1188,6 @@ describe( 'LinkEditing', () => {
 				expect( stub.notCalled ).to.be.true;
 				expect( eventPreventDefault.calledOnce ).to.be.false;
 			} );
-
-			function fireClickEvent( options, editor, view, tagName = 'a' ) {
-				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
-
-				eventPreventDefault = sinon.spy();
-
-				view.document.fire( 'click', {
-					domTarget: linkElement,
-					domEvent: options,
-					preventDefault: eventPreventDefault
-				} );
-			}
 		} );
 
 		describe( 'using keyboard', () => {
@@ -1388,117 +1247,190 @@ describe( 'LinkEditing', () => {
 			} );
 
 			describe( 'when href starts with `#`', () => {
-				describe( 'and Bookmark plugin is loaded', () => {
-					let view, editor, model, element;
+				let view, editor, model, element;
 
-					beforeEach( async () => {
-						element = document.createElement( 'div' );
-						document.body.appendChild( element );
+				beforeEach( async () => {
+					element = document.createElement( 'div' );
+					document.body.appendChild( element );
 
-						editor = await ClassicTestEditor.create( element, {
-							plugins: [ Paragraph, LinkEditing, Enter, Clipboard, ImageInline, Bookmark ]
-						} );
-
-						model = editor.model;
-						view = editor.editing.view;
+					editor = await ClassicTestEditor.create( element, {
+						plugins: [ Essentials, Paragraph, LinkEditing ]
 					} );
 
-					afterEach( () => {
-						element.remove();
-
-						return editor.destroy();
-					} );
-
-					it( 'should scroll to bookmark when bookmark `id` matches hash `url`', () => {
-						setModelData( model,
-							'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>' +
-							'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
-						);
-
-						fireEnterPressedEvent( { altKey: true }, view );
-
-						expect( stub.notCalled ).to.be.true;
-						expect( stub.calledOn( window ) ).to.be.false;
-						expect( eventPreventDefault.calledOnce ).to.be.true;
-					} );
-
-					it( 'should open link when bookmark `id` does not matches hash `url`', () => {
-						setModelData( model,
-							'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>' +
-							'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
-						);
-
-						fireEnterPressedEvent( { altKey: true }, view );
-
-						expect( stub.notCalled ).to.be.false;
-						expect( stub.calledOn( window ) ).to.be.true;
-						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-						expect( eventPreventDefault.calledOnce ).to.be.true;
-					} );
-
-					it( 'should open link when there is none of them', () => {
-						setModelData( model,
-							'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
-						);
-
-						fireEnterPressedEvent( { altKey: true }, view );
-
-						expect( stub.notCalled ).to.be.false;
-						expect( stub.calledOn( window ) ).to.be.true;
-						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-						expect( eventPreventDefault.calledOnce ).to.be.true;
-					} );
+					model = editor.model;
+					view = editor.editing.view;
 				} );
 
-				describe( 'and Bookmark plugin is not loaded', () => {
-					let view, editor, model, element;
+				afterEach( () => {
+					element.remove();
 
-					beforeEach( async () => {
-						element = document.createElement( 'div' );
-						document.body.appendChild( element );
+					return editor.destroy();
+				} );
 
-						editor = await ClassicTestEditor.create( element, {
-							plugins: [ Essentials, Paragraph, LinkEditing ]
-						} );
+				it( 'should open link', () => {
+					setModelData( model,
+						'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
+					);
 
-						model = editor.model;
-						view = editor.editing.view;
-					} );
+					fireEnterPressedEvent( { altKey: true }, view );
 
-					afterEach( () => {
-						element.remove();
+					expect( stub.notCalled ).to.be.false;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.true;
+				} );
+			} );
+		} );
 
-						return editor.destroy();
-					} );
+		describe( 'custom link custom openers', () => {
+			let editing;
 
-					it( 'should open link', () => {
-						setModelData( model,
-							'<paragraph><$text linkHref="#foo">Bar[]</$text></paragraph>'
-						);
+			beforeEach( () => {
+				editing = editor.plugins.get( LinkEditing );
+				env.isMac = false;
+			} );
 
-						fireEnterPressedEvent( { altKey: true }, view );
+			describe( 'using mouse', () => {
+				it( 'should use default opener if there are no custom openers', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-						expect( stub.notCalled ).to.be.false;
-						expect( stub.calledOn( window ) ).to.be.true;
-						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-						expect( eventPreventDefault.calledOnce ).to.be.true;
-					} );
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+
+				it( 'should not open link with custom opener that returns false', () => {
+					const opener = sinon.stub().returns( false );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).to.be.called;
+				} );
+
+				it( 'should open link with custom opener that returns true', () => {
+					const opener = sinon.stub().returns( true );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+
+				it( 'should pick the first opener that returns true', () => {
+					const openers = [
+						sinon.stub().returns( false ),
+						sinon.stub().returns( true ),
+						sinon.stub().returns( true )
+					];
+
+					for ( const opener of openers ) {
+						editing._registerLinkOpener( opener );
+					}
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
+
+					expect( openers[ 0 ] ).to.be.calledOnce;
+					expect( openers[ 1 ] ).to.be.calledOnce;
+					expect( openers[ 2 ] ).not.to.be.called;
+
+					expect( openers[ 0 ].calledBefore( openers[ 1 ] ) ).to.be.true;
+					expect( stub ).not.to.be.called;
 				} );
 			} );
 
-			function fireEnterPressedEvent( options, view ) {
-				view.document.fire( 'keydown', {
-					keyCode: keyCodes.enter,
-					domEvent: {
-						keyCode: keyCodes.enter,
-						preventDefault: () => {},
-						target: document.body,
-						...options
-					},
-					...options
+			describe( 'using keyboard', () => {
+				it( 'should use default opener if there are no custom openers', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
 				} );
-			}
+
+				it( 'should not open link with custom opener that returns false', () => {
+					const opener = sinon.stub().returns( false );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).to.be.called;
+				} );
+
+				it( 'should open link with custom opener that returns true', () => {
+					const opener = sinon.stub().returns( true );
+
+					editing._registerLinkOpener( opener );
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( opener.calledOnce ).to.be.true;
+					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+
+				it( 'should pick the first opener that returns true', () => {
+					const openers = [
+						sinon.stub().returns( false ),
+						sinon.stub().returns( true ),
+						sinon.stub().returns( true )
+					];
+
+					for ( const opener of openers ) {
+						editing._registerLinkOpener( opener );
+					}
+
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+					fireEnterPressedEvent( { altKey: true }, view );
+
+					expect( openers[ 0 ] ).to.be.calledOnce;
+					expect( openers[ 1 ] ).to.be.calledOnce;
+					expect( openers[ 2 ] ).not.to.be.called;
+
+					expect( openers[ 0 ].calledBefore( openers[ 1 ] ) ).to.be.true;
+					expect( stub ).not.to.be.called;
+				} );
+			} );
 		} );
+
+		function fireClickEvent( options, editor, view, tagName = 'a' ) {
+			const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+			eventPreventDefault = sinon.spy();
+
+			view.document.fire( 'click', {
+				domTarget: linkElement,
+				domEvent: options,
+				preventDefault: eventPreventDefault
+			} );
+		}
+
+		function fireEnterPressedEvent( options, view ) {
+			view.document.fire( 'keydown', {
+				keyCode: keyCodes.enter,
+				domEvent: {
+					keyCode: keyCodes.enter,
+					preventDefault: () => {},
+					target: document.body,
+					...options
+				},
+				...options
+			} );
+		}
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/1016

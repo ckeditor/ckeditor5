@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
+/* globals document, window, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
@@ -12,7 +12,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -25,22 +24,20 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
-import { icons } from '@ckeditor/ckeditor5-core';
 
 import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
-import LinkButtonView from '../src/ui/linkbuttonview.js';
-import LinkBookmarksView from '../src/ui/linkbookmarksview.js';
 import LinkPreviewButtonView from '../src/ui/linkpreviewbuttonview.js';
 import LinkPropertiesView from '../src/ui/linkpropertiesview.js';
 import ManualDecorator from '../src/utils/manualdecorator.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 import linkIcon from '../theme/icons/link.svg';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'LinkUI', () => {
-	let editor, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement, propertiesView;
+	let editor, model, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement, propertiesView;
 
 	testUtils.createSinonSandbox();
 
@@ -52,6 +49,7 @@ describe( 'LinkUI', () => {
 			plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote, BoldEditing ]
 		} );
 
+		model = editor.model;
 		linkUIFeature = editor.plugins.get( LinkUI );
 		linkButton = editor.ui.componentFactory.create( 'link' );
 		balloon = editor.plugins.get( ContextualBalloon );
@@ -239,6 +237,18 @@ describe( 'LinkUI', () => {
 
 				linkCommand.value = '#foo';
 				expect( button.icon ).to.equal( undefined );
+			} );
+
+			it( 'should reset button labels when command is empty', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.icon ).to.equal( undefined );
+
+				linkCommand.value = '';
+				expect( button.icon ).to.equal( undefined );
+				expect( button.label ).to.be.undefined;
+				expect( button.tooltip ).to.equal( 'Open link in new tab' );
 			} );
 		} );
 
@@ -1243,22 +1253,6 @@ describe( 'LinkUI', () => {
 
 			expect( addSpy ).not.to.be.called;
 			expect( balloon.visibleView ).to.equal( propertiesView );
-		} );
-	} );
-
-	describe( '_createBookmarksView()', () => {
-		beforeEach( () => {
-			editor.editing.view.document.isFocused = true;
-		} );
-
-		describe( 'when Bookmark plugin is not loaded', () => {
-			it( 'should not create #advancedView', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-				linkUIFeature._showUI();
-
-				expect( linkUIFeature.bookmarksView ).to.be.equal( null );
-			} );
 		} );
 	} );
 
@@ -2891,322 +2885,563 @@ describe( 'LinkUI', () => {
 			expect( removeBalloonSpy ).to.be.calledWithExactly( linkUIFeature.propertiesView );
 		} );
 	} );
-} );
 
-describe( 'LinkUI with Bookmark', () => {
-	let editor, linkUIFeature, balloon, editorElement, bookmarksView;
+	describe( 'Links Providers', () => {
+		describe( 'registerLinksListProvider()', () => {
+			it( 'should not crash the editor when called before showing the form', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => []
+				} );
+			} );
 
-	testUtils.createSinonSandbox();
-
-	beforeEach( async () => {
-		editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
-
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote, Bookmark ]
-		} );
-
-		linkUIFeature = editor.plugins.get( LinkUI );
-		balloon = editor.plugins.get( ContextualBalloon );
-
-		// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-		testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
-		testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
-	} );
-
-	afterEach( () => {
-		editorElement.remove();
-
-		return editor.destroy();
-	} );
-
-	it( 'should create #formView with bookmarks button', () => {
-		setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-		linkUIFeature._showUI();
-
-		const formView = linkUIFeature.formView;
-		const button = formView
-			.template.children[ 0 ]
-			.last // ul
-			.template.children[ 0 ]
-			.get( 0 ) // li
-			.template.children[ 0 ]
-			.get( 0 ); // button
-
-		expect( linkUIFeature.formView ).to.be.instanceOf( LinkFormView );
-		expect( button ).to.be.instanceOf( LinkButtonView );
-
-		expect( linkUIFeature._areBookmarksVisible ).to.be.false;
-
-		button.fire( 'execute' );
-
-		expect( linkUIFeature._areBookmarksVisible ).to.be.true;
-	} );
-
-	describe( '_createBookmarksView()', () => {
-		it( 'should create #bookmarksView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-
-			expect( linkUIFeature.bookmarksView ).to.be.instanceOf( LinkBookmarksView );
-		} );
-	} );
-
-	describe( '_createBookmarksListView()', () => {
-		describe( 'with bookmarks data', () => {
-			let bookmarksView;
-
-			beforeEach( () => {
-				setModelData( editor.model,
-					'<paragraph>f[o]o' +
-						'<bookmark bookmarkId="zzz"></bookmark>' +
-						'<bookmark bookmarkId="aaa"></bookmark>' +
-						'<bookmark bookmarkId="ccc"></bookmark>' +
-					'</paragraph>'
-				);
+			it( 'should show links provider that were registered before showing form', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => []
+				} );
 
 				linkUIFeature._showUI();
-				linkUIFeature._addBookmarksView();
 
-				bookmarksView = linkUIFeature.bookmarksView;
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
+				expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Foo' );
 			} );
 
-			it( 'should create a sorted list of bookmarks buttons', () => {
-				expect( bookmarksView.listChildren.length ).to.equal( 3 );
+			it( 'should show link provider that were registered after showing form', () => {
+				linkUIFeature._showUI();
 
-				expect( bookmarksView.listChildren.get( 0 ) ).is.instanceOf( ButtonView );
-				expect( bookmarksView.listChildren.get( 1 ) ).is.instanceOf( ButtonView );
-				expect( bookmarksView.listChildren.get( 2 ) ).is.instanceOf( ButtonView );
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => []
+				} );
 
-				expect( bookmarksView.listChildren.get( 0 ).icon ).to.equal( icons.bookmarkMedium );
-				expect( bookmarksView.listChildren.get( 1 ).icon ).to.equal( icons.bookmarkMedium );
-				expect( bookmarksView.listChildren.get( 2 ).icon ).to.equal( icons.bookmarkMedium );
-
-				expect( bookmarksView.listChildren.get( 0 ).label ).to.equal( 'aaa' );
-				expect( bookmarksView.listChildren.get( 1 ).label ).to.equal( 'ccc' );
-				expect( bookmarksView.listChildren.get( 2 ).label ).to.equal( 'zzz' );
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 1 );
+				expect( linkUIFeature.formView.providersListChildren.first.label ).to.equal( 'Bar' );
 			} );
 
-			it( 'should execute action after click the bookmark button', () => {
-				// First button from the list with bookmark name 'aaa'.
-				const bookmarkButton = bookmarksView.listChildren.get( 0 );
+			it( 'should be possible to register multiple link providers', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItems: () => []
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItems: () => []
+				} );
+
+				linkUIFeature._showUI();
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Buz',
+					getItems: () => []
+				} );
+
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 3 );
+
+				const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
+
+				expect( labels ).to.be.deep.equal( [ 'Foo', 'Bar', 'Buz' ] );
+			} );
+
+			it( 'should register link providers in proper order if order passed', () => {
+				linkUIFeature.registerLinksListProvider( {
+					order: 2,
+					label: 'Foo',
+					getItem: () => null,
+					getListItems: () => []
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					order: -1,
+					label: 'Bar',
+					getItem: () => null,
+					getListItems: () => []
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Buz',
+					getItem: () => null,
+					getListItems: () => []
+				} );
+
+				linkUIFeature._showUI();
+
+				linkUIFeature.registerLinksListProvider( {
+					order: -3,
+					label: 'FooBar',
+					getItem: () => null,
+					getListItems: () => []
+				} );
+
+				expect( linkUIFeature.formView.providersListChildren.length ).to.equal( 4 );
+
+				const labels = Array.from( linkUIFeature.formView.providersListChildren ).map( child => child.label );
+
+				expect( labels ).to.be.deep.equal( [ 'FooBar', 'Bar', 'Buz', 'Foo' ] );
+			} );
+		} );
+
+		describe( '_getLinkProviderLinkByHref()', () => {
+			it( 'should return null if no link provided', () => {
+				const link = linkUIFeature._getLinkProviderLinkByHref();
+
+				expect( link ).to.be.null;
+			} );
+
+			it( 'should return link object from provider that contains given href', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItem: href => {
+						if ( href === 'bar' ) {
+							return { href: 'bar' };
+						}
+					}
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItem: () => ( { href: 'wrong-link' } )
+				} );
+
+				const link = linkUIFeature._getLinkProviderLinkByHref( 'bar' );
+
+				expect( link.item ).to.be.deep.equal( { href: 'bar' } );
+				expect( link.provider.label ).to.be.equal( 'Foo' );
+			} );
+
+			it( 'should return null if no link with given href was found', () => {
+				const getItemsStub = [
+					sinon.stub().returns( null ),
+					sinon.stub().returns( null )
+				];
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getItem: getItemsStub[ 0 ]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getItem: getItemsStub[ 1 ]
+				} );
+
+				const link = linkUIFeature._getLinkProviderLinkByHref( 'buz' );
+
+				expect( link ).to.be.null;
+				expect( getItemsStub[ 0 ] ).to.be.calledOnce;
+				expect( getItemsStub[ 1 ] ).to.be.calledOnce;
+			} );
+		} );
+
+		describe( 'editing integration', () => {
+			let windowOpenStub;
+
+			beforeEach( async () => {
+				await editor.destroy();
+
+				windowOpenStub = sinon.stub( window, 'open' );
+				editor = await ClassicEditor.create( editorElement, {
+					plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					toolbar: [ 'link' ]
+				} );
+
+				env.isMac = false;
+				model = editor.model;
+				linkUIFeature = editor.plugins.get( LinkUI );
+			} );
+
+			afterEach( async () => {
+				windowOpenStub.restore();
+
+				await editor.destroy();
+			} );
+
+			it( 'should register custom opener that lookups in links provider items and calls navigate (returning true)', () => {
+				const navigate = sinon.stub().returns( true );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [ { href: 'https://ckeditor.com' } ],
+					navigate
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( navigate ).to.be.calledOnce;
+				expect( navigate ).to.be.calledWithMatch( { href: 'https://ckeditor.com' } );
+
+				expect( windowOpenStub ).not.to.be.called;
+			} );
+
+			it( 'should register custom opener that lookups in links provider items and calls navigate (returning false)', () => {
+				const navigate = sinon.stub().returns( false );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [ { href: 'https://ckeditor.com' } ],
+					navigate
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( navigate ).to.be.calledOnce;
+				expect( windowOpenStub ).to.be.called;
+			} );
+
+			it( 'should not crash if link was not found in provider', () => {
+				const navigate = sinon.stub().returns( false );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [ { href: 'https://ckeditor.com' } ],
+					navigate
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( navigate ).not.to.be.called;
+				expect( windowOpenStub ).to.be.called;
+			} );
+
+			it( 'should use default navigate to href if no navigate callback was provided', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [ { href: 'https://example.org' } ]
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
+				fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+				expect( windowOpenStub ).to.be.calledWith( 'https://example.org', '_blank' );
+			} );
+
+			function fireClickEvent( options, tagName = 'a' ) {
+				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+				editor.editing.view.document.fire( 'click', {
+					domTarget: linkElement,
+					domEvent: options,
+					preventDefault: () => {}
+				} );
+			}
+		} );
+
+		describe( 'link preview', () => {
+			let button;
+
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'linkPreview' );
+			} );
+
+			afterEach( () => {
+				button.destroy();
+			} );
+
+			it( 'should set fallback label and icon if selected link was not found in link providers', () => {
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.isEnabled ).to.be.true;
+				expect( button.isVisible ).to.be.true;
+				expect( button.label ).to.equal( 'https://ckeditor.com' );
+				expect( button.icon ).to.be.undefined;
+			} );
+
+			it( 'should set label and icon from link provider if selected link was found', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					]
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.isEnabled ).to.be.true;
+				expect( button.isVisible ).to.be.true;
+				expect( button.label ).to.equal( 'CKEditor' );
+				expect( button.tooltip ).to.be.false;
+				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
+			} );
+
+			it( 'should prefer to use preview tooltip and icon from `getItem` if present', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					],
+					getItem: href => {
+						if ( href === 'https://ckeditor.com' ) {
+							return {
+								label: 'CKEditor',
+								icon: icons.bookmarkMedium,
+								tooltip: 'Tooltip'
+							};
+						}
+					}
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.tooltip ).to.be.equal( 'Tooltip' );
+				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
+			} );
+
+			it( 'should not show any icon if preview if icon is null in `getItem`', () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					],
+					getItem: href => {
+						if ( href === 'https://ckeditor.com' ) {
+							return {
+								label: 'CKEditor',
+								icon: null,
+								tooltip: 'Tooltip'
+							};
+						}
+					}
+				} );
+
+				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+
+				expect( button.tooltip ).to.be.equal( 'Tooltip' );
+				expect( button.icon ).to.be.null;
+			} );
+
+			it( 'should stop the event and execute navigate (that returns true)', () => {
+				const cancelCheckSpy = sinon.spy();
+				const navigate = sinon.stub().returns( true );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					],
+					navigate
+				} );
+
+				linkUIFeature.listenTo( button, 'navigate', cancelCheckSpy );
+
+				button.href = 'https://ckeditor.com';
+				button.render();
+				button.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( cancelCheckSpy ).not.to.be.called;
+				expect( navigate ).to.be.calledOnce;
+
+				sinon.assert.calledWith( navigate, sinon.match( {
+					href: 'https://ckeditor.com',
+					label: 'CKEditor',
+					icon: icons.bookmarkMedium
+				} ) );
+			} );
+
+			it( 'should not stop the event if link was not found in providers', () => {
+				const cancelCheckSpy = sinon.spy();
+				const navigate = sinon.stub().returns( false );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [
+						{
+							href: 'https://ckeditor.com',
+							label: 'CKEditor',
+							icon: icons.bookmarkMedium
+						}
+					],
+					navigate
+				} );
+
+				button.on( 'navigate', cancelCheckSpy );
+
+				button.href = 'https://example.org';
+				button.render();
+				button.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( cancelCheckSpy ).to.be.called;
+				expect( navigate ).not.to.be.called;
+			} );
+		} );
+
+		describe( 'links view', () => {
+			beforeEach( () => {
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Foo',
+					getListItems: () => [
+						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium },
+						{ href: 'https://example.org', label: 'Example', icon: icons.bookmarkSmall },
+						{ href: 'https://example.com/2', label: 'Example 2', icon: icons.bookmarkSmall },
+						{ href: 'https://example.com/3', label: 'Example 3', icon: icons.bookmarkSmall }
+					]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Bar',
+					getListItems: () => [
+						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium }
+					]
+				} );
+
+				linkUIFeature.registerLinksListProvider( {
+					label: 'Buz',
+					getListItems: () => []
+				} );
+			} );
+
+			it( 'can be opened by clicking the link toolbar button', () => {
+				linkUIFeature._showUI();
+
+				clickNthLinksProvider( 0 );
+
+				expect( balloon.visibleView ).to.equal( linkUIFeature.linkProviderItemsView );
+			} );
+
+			it( 'can be closed by clicking the back button', () => {
+				const spy = sinon.spy();
+
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				linkUIFeature.listenTo( linkUIFeature.linkProviderItemsView, 'cancel', spy );
+				backToLinksProviders();
+
+				sinon.assert.calledOnce( spy );
+				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+			} );
+
+			it( 'can be closed by clicking the "esc" button', () => {
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				linkUIFeature.linkProviderItemsView.keystrokes.press( {
+					keyCode: keyCodes.esc,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
+			} );
+
+			it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
+				const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
+
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+				sinon.assert.calledWithExactly( spy );
+				expect( linkUIFeature._balloon.visibleView ).to.be.null;
+			} );
+
+			it( 'opening provider should show items from the provider', () => {
+				linkUIFeature._showUI();
+
+				// First provider with 4 items
+				clickNthLinksProvider( 0 );
+				expect( linkUIFeature.linkProviderItemsView.listChildren.length ).to.equal( 4 );
+				expectedShownItems( [ 'CKEditor', 'Example', 'Example 2', 'Example 3' ] );
+				backToLinksProviders();
+
+				// Second provider with 1 item
+				clickNthLinksProvider( 1 );
+				expect( linkUIFeature.linkProviderItemsView.listChildren.length ).to.equal( 1 );
+				expectedShownItems( [ 'CKEditor' ] );
+				backToLinksProviders();
+
+				// Third provider with 0 items
+				clickNthLinksProvider( 2 );
+				expect( linkUIFeature.linkProviderItemsView.listChildren.length ).to.equal( 0 );
+			} );
+
+			it( 'should execute action after clicking link item', () => {
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				const linkButton = linkUIFeature.linkProviderItemsView.listChildren.get( 0 );
 				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
 
-				bookmarkButton.fire( 'execute' );
+				linkButton.fire( 'execute' );
 
-				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( 'https://ckeditor.com' );
 				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
 				expect( focusSpy.calledOnce ).to.be.true;
 			} );
 
 			it( 'should clear the error message that appears on first attempt of submit the form ' +
-					'when next action is executed after clicking the bookmark button', () => {
+				'when next action is executed after clicking the link button', () => {
 				linkUIFeature._createViews();
-				const formView = linkUIFeature.formView;
+
+				const { formView } = linkUIFeature;
+
 				formView.render();
-
-				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 				linkUIFeature._showUI();
-
 				formView.fire( 'submit' );
 
 				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
-				// First button from the list with bookmark name 'aaa'.
-				const bookmarkButton = bookmarksView.listChildren.get( 0 );
+
+				clickNthLinksProvider( 0 );
+
+				const bookmarkButton = linkUIFeature.linkProviderItemsView.listChildren.get( 0 );
 				const focusSpy = testUtils.sinon.spy( linkUIFeature.formView, 'focus' );
 
 				bookmarkButton.fire( 'execute' );
 
-				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( '#aaa' );
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( 'https://ckeditor.com' );
 				expect( linkUIFeature._balloon.visibleView ).to.be.equal( linkUIFeature.formView );
 				expect( focusSpy.calledOnce ).to.be.true;
 
 				expect( formView.urlInputView.errorText ).to.be.null;
 			} );
-		} );
-	} );
 
-	describe( 'bookmarks view', () => {
-		it( 'can be opened by clicking the bookmarks button', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			function expectedShownItems( expectedLabels ) {
+				const labels = Array
+					.from( linkUIFeature.linkProviderItemsView.listChildren )
+					.map( child => child.label );
 
-			linkUIFeature._showUI();
+				expect( labels ).to.be.deep.equal( expectedLabels );
+			}
 
-			const formView = linkUIFeature.formView;
-			const button = formView
-				.template.children[ 0 ]
-				.last // ul
-				.template.children[ 0 ]
-				.get( 0 ) // li
-				.template.children[ 0 ]
-				.get( 0 ); // button
+			function backToLinksProviders() {
+				linkUIFeature.linkProviderItemsView.backButtonView.fire( 'execute' );
+			}
 
-			button.fire( 'execute' );
-			bookmarksView = linkUIFeature.bookmarksView;
+			function clickNthLinksProvider( nth ) {
+				const providersList = linkUIFeature.formView
+					.template.children[ 0 ]
+					.find( child => child.template.attributes.class.includes( 'ck-link__providers-list' ) );
 
-			expect( balloon.visibleView ).to.equal( bookmarksView );
-		} );
+				expect( providersList ).not.to.be.undefined;
 
-		it( 'can be closed by clicking the back button', () => {
-			const spy = sinon.spy();
+				const button = providersList
+					.template.children[ 0 ]
+					.get( nth ) // li
+					.template.children[ 0 ]
+					.get( 0 ); // button
 
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-			linkUIFeature.listenTo( linkUIFeature.bookmarksView, 'cancel', spy );
-			linkUIFeature._addBookmarksView();
-
-			linkUIFeature.bookmarksView.backButtonView.fire( 'execute' );
-
-			sinon.assert.calledOnce( spy );
-			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
-		} );
-
-		it( 'can be closed by clicking the "esc" button', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-			linkUIFeature._addBookmarksView();
-
-			linkUIFeature.bookmarksView.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
-		} );
-
-		it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
-			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
-
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-			linkUIFeature._addBookmarksView();
-
-			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
-
-			sinon.assert.calledWithExactly( spy );
-			expect( linkUIFeature._balloon.visibleView ).to.be.null;
-		} );
-	} );
-
-	describe( 'the "linkPreview" toolbar button', () => {
-		let button;
-
-		beforeEach( () => {
-			button = editor.ui.componentFactory.create( 'linkPreview' );
-		} );
-
-		it( 'should be a LinkPreviewButtonView instance', () => {
-			expect( button ).to.be.instanceOf( LinkPreviewButtonView );
-		} );
-
-		it( 'should bind "href" to link command value', () => {
-			const linkCommand = editor.commands.get( 'link' );
-
-			linkCommand.value = 'foo';
-			expect( button.href ).to.equal( 'foo' );
-
-			linkCommand.value = 'bar';
-			expect( button.href ).to.equal( 'bar' );
-		} );
-
-		it( 'should not use unsafe href', () => {
-			const linkCommand = editor.commands.get( 'link' );
-
-			linkCommand.value = 'javascript:alert(1)';
-
-			expect( button.href ).to.equal( '#' );
-		} );
-
-		it( 'should be enabled when command has a value', () => {
-			const linkCommand = editor.commands.get( 'link' );
-
-			linkCommand.value = null;
-			expect( button.isEnabled ).to.be.false;
-
-			linkCommand.value = 'foo';
-			expect( button.isEnabled ).to.be.true;
-		} );
-
-		it( 'should use tooltip text depending on the command value', () => {
-			const linkCommand = editor.commands.get( 'link' );
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
-
-			linkCommand.value = 'foo';
-			expect( button.tooltip ).to.equal( 'Open link in new tab' );
-
-			linkCommand.value = '#foo';
-			expect( button.tooltip ).to.equal( 'Open link in new tab' );
-
-			linkCommand.value = '#abc';
-			expect( button.tooltip ).to.equal( 'Scroll to target' );
-		} );
-
-		it( 'should use icon for bookmarks', () => {
-			const linkCommand = editor.commands.get( 'link' );
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
-
-			linkCommand.value = 'foo';
-			expect( button.icon ).to.equal( undefined );
-
-			linkCommand.value = '#foo';
-			expect( button.icon ).to.equal( undefined );
-
-			linkCommand.value = '#abc';
-			expect( button.icon ).to.equal( icons.bookmarkSmall );
-		} );
-
-		it( 'should bind label', () => {
-			const linkCommand = editor.commands.get( 'link' );
-			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
-
-			sinon.stub( bookmarkEditing, 'getElementForBookmarkId' ).callsFake( id => id === 'abc' );
-
-			linkCommand.value = 'foo';
-			expect( button.label ).to.equal( 'foo' );
-
-			linkCommand.value = '#foo';
-			expect( button.label ).to.equal( '#foo' );
-
-			linkCommand.value = '#abc';
-			expect( button.label ).to.equal( 'abc' );
-		} );
-
-		it( 'should trigger scroll if target is in the same document', () => {
-			const cancelSpy = sinon.spy();
-			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-
-			setModelData( editor.model, '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
-
-			button.fire( 'navigate', '#abc', cancelSpy );
-
-			sinon.assert.calledOnce( cancelSpy );
-			sinon.assert.calledOnce( scrollStub );
-
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[<bookmark bookmarkId="abc"></bookmark>]</paragraph>' );
-		} );
-
-		it( 'should not trigger scroll if target is not a known bookmark', () => {
-			const cancelSpy = sinon.spy();
-			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-
-			setModelData( editor.model, '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
-
-			button.fire( 'navigate', '#foo', cancelSpy );
-
-			sinon.assert.notCalled( cancelSpy );
-			sinon.assert.notCalled( scrollStub );
-
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[foo]<bookmark bookmarkId="abc"></bookmark></paragraph>' );
+				button.fire( 'execute' );
+			}
 		} );
 	} );
 } );

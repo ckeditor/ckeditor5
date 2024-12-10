@@ -8,8 +8,8 @@
 	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
 }
 
-.ck.ck-link__panel.ck-link__bookmarks {
-	& > .ck-list__bookmark-items {
+.ck.ck-link__panel.ck-link__links {
+	& > .ck-list__links-items {
 		max-height: min( var(--ck-link-list-view-max-height), 40vh );
 
 		& .ck-button {
