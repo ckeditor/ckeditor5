@@ -189,6 +189,13 @@ describe( 'IconView', () => {
 				expect( view.element.children[ 1 ].style.fill ).to.equal( 'red' );
 			} );
 		} );
+
+		describe( 'aria-hidden', () => {
+			it( 'should be added on icon creation', () => {
+				expect( view.element.tagName ).to.equal( 'svg' );
+				expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
+			} );
+		} );
 	} );
 } );
 

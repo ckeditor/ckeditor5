@@ -236,8 +236,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.iconView = new IconView();
 		this.iconView.extendTemplate( {
 			attributes: {
-				class: 'ck-button__icon',
-				'aria-hidden': true
+				class: 'ck-button__icon'
 			}
 		} );
 
