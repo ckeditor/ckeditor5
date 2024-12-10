@@ -43,7 +43,8 @@
 		}
 	}
 
-	& .ck.ck-input-text {
+	& .ck.ck-input-text,
+	& .ck.ck-input-number {
 		min-width: 100%;
 		width: 0;
 	}
