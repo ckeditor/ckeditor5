@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
+import type { LinksProviderDetailedItem, LinksProviderListItem } from '@ckeditor/ckeditor5-link';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -84,6 +85,11 @@ export default class BookmarkUI extends Plugin {
 		const editor = this.editor;
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
+
+		// Register the link provider in link plugin to display the link form.
+		if ( editor.plugins.has( 'LinkUI' ) ) {
+			this._registerLinkProvider();
+		}
 
 		// Create toolbar buttons.
 		this._registerComponents();
@@ -227,6 +233,72 @@ export default class BookmarkUI extends Plugin {
 		} );
 
 		return formView;
+	}
+
+	/**
+	 * Creates link form menu list entry, so it'll be possible to access
+	 * the list of the bookmarks from the link form.
+	 */
+	private _registerLinkProvider() {
+		const t = this.editor.locale.t;
+		const linksUI = this.editor.plugins.get( 'LinkUI' )!;
+		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
+
+		const getListItems = () => Array
+			.from( bookmarkEditing.getAllBookmarkNames() )
+			.sort( ( a, b ) => a.localeCompare( b ) )
+			.map( ( bookmarkId ): LinksProviderListItem => ( {
+				id: bookmarkId,
+				href: `#${ bookmarkId }`,
+				label: bookmarkId,
+				icon: icons.bookmarkMedium
+			} ) );
+
+		const getItem = ( href: string ): LinksProviderDetailedItem | null => {
+			const bookmark = [ ...bookmarkEditing.getAllBookmarkNames() ].find( item => `#${ item }` === href );
+
+			if ( !bookmark ) {
+				return null;
+			}
+
+			return {
+				href,
+				label: bookmark,
+				icon: icons.bookmarkSmall,
+				tooltip: t( 'Scroll to bookmark' )
+			};
+		};
+
+		linksUI.registerLinksListProvider( {
+			label: t( 'Bookmarks' ),
+			emptyListPlaceholder: t( 'No bookmarks available.' ),
+			navigate: ( { href }: LinksProviderDetailedItem ) => this._scrollToBookmark( href ),
+			getListItems,
+			getItem
+		} );
+	}
+
+	/**
+	 * Scrolls the editor to the bookmark with the given id.
+	 */
+	private _scrollToBookmark( href: string ) {
+		const bookmarkEditing = this.editor.plugins.get( BookmarkEditing );
+		const bookmarkElement = bookmarkEditing.getElementForBookmarkId( href.slice( 1 ) );
+
+		if ( !bookmarkElement ) {
+			return false;
+		}
+
+		this.editor.model.change( writer => {
+			writer.setSelection( bookmarkElement!, 'on' );
+		} );
+
+		this.editor.editing.view.scrollToTheSelection( {
+			alignToTop: true,
+			forceScroll: true
+		} );
+
+		return true;
 	}
 
 	/**

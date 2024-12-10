@@ -85,7 +85,7 @@ describe( 'LinkFormView', () => {
 				 * 	formRow
 				 * 		urlInputView
 				 * 		saveButtonView
-				 * 	bookmarksButton
+				 * 	linksButton
 				 */
 
 			it( 'has url input view', () => {

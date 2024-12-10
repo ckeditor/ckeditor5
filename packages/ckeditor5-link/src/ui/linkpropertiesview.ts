@@ -25,6 +25,8 @@ import {
 } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
 
+import '../../theme/linkproperties.css';
+
 /**
  * The link properties view controller class.
  *
@@ -103,7 +105,10 @@ export default class LinkPropertiesView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel', 'ck-link__properties' ],
+				class: [
+					'ck',
+					'ck-link-properties'
+				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'

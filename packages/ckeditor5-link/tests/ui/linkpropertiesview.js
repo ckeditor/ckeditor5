@@ -99,7 +99,7 @@ describe( 'LinkPropertiesView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName.toLowerCase() ).to.equal( 'div' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-link-properties' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
