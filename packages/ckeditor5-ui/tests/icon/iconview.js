@@ -35,15 +35,12 @@ describe( 'IconView', () => {
 			expect( view.isVisible ).to.be.true;
 		} );
 
-		it( 'sets #aria-hidden', () => {
-			expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
-		} );
-
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'svg' );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-icon' ) ).to.be.true;
 			expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '0 0 20 20' );
+			expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
 		} );
 	} );
 
