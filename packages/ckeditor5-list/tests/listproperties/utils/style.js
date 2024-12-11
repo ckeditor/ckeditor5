@@ -6,7 +6,8 @@
 import {
 	getListTypeFromListStyleType,
 	getTypeAttributeFromListStyleType,
-	getListStyleTypeFromTypeAttribute
+	getListStyleTypeFromTypeAttribute,
+	getListStyleAliases
 } from '../../../src/listproperties/utils/style.js';
 
 describe( 'ListProperties - utils - style', () => {
@@ -69,6 +70,38 @@ describe( 'ListProperties - utils - style', () => {
 			it( 'should return null for unknown attribute value', () => {
 				expect( getListStyleTypeFromTypeAttribute( 'Q' ) ).to.be.null;
 			} );
+		} );
+	} );
+
+	describe( 'getListStyleAliases()', () => {
+		it( 'should return empty array for null input', () => {
+			expect( getListStyleAliases( null ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should return empty array for non-aliased styles', () => {
+			expect( getListStyleAliases( 'decimal' ) ).to.deep.equal( [] );
+			expect( getListStyleAliases( 'disc' ) ).to.deep.equal( [] );
+			expect( getListStyleAliases( 'circle' ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should return proper aliases for lower-latin', () => {
+			expect( getListStyleAliases( 'lower-latin' ) ).to.deep.equal( [ 'lower-alpha' ] );
+		} );
+
+		it( 'should return proper aliases for lower-alpha', () => {
+			expect( getListStyleAliases( 'lower-alpha' ) ).to.deep.equal( [ 'lower-latin' ] );
+		} );
+
+		it( 'should return proper aliases for upper-latin', () => {
+			expect( getListStyleAliases( 'upper-latin' ) ).to.deep.equal( [ 'upper-alpha' ] );
+		} );
+
+		it( 'should return proper aliases for upper-alpha', () => {
+			expect( getListStyleAliases( 'upper-alpha' ) ).to.deep.equal( [ 'upper-latin' ] );
+		} );
+
+		it( 'should return empty array for unknown style', () => {
+			expect( getListStyleAliases( 'not-existing-style' ) ).to.deep.equal( [] );
 		} );
 	} );
 } );

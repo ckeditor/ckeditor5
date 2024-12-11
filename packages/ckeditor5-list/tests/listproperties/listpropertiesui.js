@@ -857,6 +857,38 @@ describe( 'ListPropertiesUI', () => {
 							expect( styleButtonView.isOn ).to.be.false;
 						} );
 
+						it( 'should properly handle lower-latin -> lower-alpha style alias', () => {
+							// "lower-latin" button
+							const lowerLatinStyleButton = stylesView.children.get( 4 );
+
+							expect( lowerLatinStyleButton.isOn ).to.be.false;
+
+							listStyleCommand.value = 'foo';
+							expect( lowerLatinStyleButton.isOn ).to.be.false;
+
+							listStyleCommand.value = 'lower-latin';
+							expect( lowerLatinStyleButton.isOn ).to.be.true;
+
+							listStyleCommand.value = 'lower-alpha';
+							expect( lowerLatinStyleButton.isOn ).to.be.true;
+						} );
+
+						it( 'should properly handle upper-latin -> upper-alpha style alias', () => {
+							// "upper-latin" button
+							const lowerLatinStyleButton = stylesView.children.get( 5 );
+
+							expect( lowerLatinStyleButton.isOn ).to.be.false;
+
+							listStyleCommand.value = 'foo';
+							expect( lowerLatinStyleButton.isOn ).to.be.false;
+
+							listStyleCommand.value = 'upper-latin';
+							expect( lowerLatinStyleButton.isOn ).to.be.true;
+
+							listStyleCommand.value = 'upper-alpha';
+							expect( lowerLatinStyleButton.isOn ).to.be.true;
+						} );
+
 						it( 'should apply the new style if none was set', () => {
 							setData( model, '<listItem listType="numbered" listIndent="0">[]foo</listItem>' );
 
