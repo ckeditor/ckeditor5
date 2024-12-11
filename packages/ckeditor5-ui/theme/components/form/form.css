@@ -43,7 +43,6 @@
 
 	/* Default `ck-responsive-form` customization when it lies next to `ck-form` class */
 	&.ck-responsive-form {
-		/* stylelint-disable no-descending-specificity */
 		& .ck.ck-form__row {
 			&.ck-form__row_with-submit {
 				@mixin ck-media-phone {
