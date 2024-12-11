@@ -681,7 +681,9 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 					block.is( 'model:element' ) &&
 					block.root.document!.model.schema.isBlock( block )
 				) {
-					treewalker.jumpTo( Position._createAt( block, 'end' ) );
+					treewalker.position.offset = block.maxOffset;
+
+					treewalker.jumpTo( treewalker.position );
 				}
 			}
 
