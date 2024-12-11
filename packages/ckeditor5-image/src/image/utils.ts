@@ -34,7 +34,7 @@ import type ImageUtils from '../imageutils.js';
  */
 export function createInlineImageViewElement( writer: DowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'span', { class: 'image-inline' },
-		writer.createEmptyElement( 'img' )
+		writer.createEmptyElement( 'img', { loading: 'lazy' } )
 	);
 }
 
@@ -51,7 +51,7 @@ export function createInlineImageViewElement( writer: DowncastWriter ): ViewCont
  */
 export function createBlockImageViewElement( writer: DowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'figure', { class: 'image' }, [
-		writer.createEmptyElement( 'img' ),
+		writer.createEmptyElement( 'img', { loading: 'lazy' } ),
 		writer.createSlot( 'children' )
 	] );
 }
