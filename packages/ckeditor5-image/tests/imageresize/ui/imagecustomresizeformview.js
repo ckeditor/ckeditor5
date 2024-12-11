@@ -28,7 +28,9 @@ describe( 'ImageCustomResizeFormView', () => {
 			view.render();
 
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-image-custom-resize__panel' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-image-custom-resize-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 

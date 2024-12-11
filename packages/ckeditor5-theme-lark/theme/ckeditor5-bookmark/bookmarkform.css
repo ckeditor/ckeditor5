@@ -6,72 +6,15 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
-	--ck-bookmark-panel-width: 340px;
+	--ck-bookmark-form-width: 340px;
 }
 
 @mixin ck-media-phone {
 	:root {
-		--ck-bookmark-panel-width: 300px;
+		--ck-bookmark-form-width: 300px;
 	}
 }
 
-.ck.ck-bookmark__panel {
-	width: var(--ck-bookmark-panel-width);
-
-	&:focus {
-		outline: none;
-	}
-
-	/* Header */
-	& .ck-form__header {
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-
-		/* Back button is hidden */
-		&:has(.ck-button-back.ck-hidden) {
-			padding-inline-start: var(--ck-spacing-large);
-			padding-inline-end: var(--ck-spacing-large);
-		}
-
-		& > .ck-button-back {
-			margin-inline-end: var(--ck-spacing-small);
-		}
-	}
-
-	/* Form */
-	& .ck-responsive-form.ck-bookmark__form {
-		width: 100%;
-
-		/* "Size" input field and the "Save" button */
-		& .ck-input-and-submit {
-			margin: 0;
-
-			@mixin ck-media-phone {
-				margin: var(--ck-spacing-large) var(--ck-spacing-medium) var(--ck-spacing-medium) var(--ck-spacing-medium);
-			}
-
-			& > .ck-labeled-field-view {
-				& input {
-					width: 100%;
-					/* To overwrite default min-width value to prevent inputs from growing and and stick out beyond the panel. */
-					min-width: 100%;
-				}
-			}
-
-			& > .ck-button {
-				padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-large);
-				margin-inline-start: var(--ck-spacing-medium);
-			}
-
-			@mixin ck-media-phone {
-				& > .ck {
-					margin: 0;
-				}
-
-				& .ck-button {
-					margin-top: var(--ck-spacing-large);
-					justify-content: center;
-				}
-			}
-		}
-	}
+.ck.ck-bookmark-form {
+	width: var(--ck-bookmark-form-width);
 }

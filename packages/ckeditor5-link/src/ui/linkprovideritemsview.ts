@@ -160,7 +160,10 @@ export default class LinkProviderItemsView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel', 'ck-link__links' ],
+				class: [
+					'ck',
+					'ck-link-providers'
+				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
@@ -219,7 +222,7 @@ export default class LinkProviderItemsView extends View {
 		listView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-list__links-items'
+					'ck-link-providers__list'
 				]
 			}
 		} );
@@ -243,6 +246,7 @@ export default class LinkProviderItemsView extends View {
 		const backButton = new ButtonView( this.locale );
 
 		backButton.set( {
+			class: 'ck-button-back',
 			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-link__panel.ck-link__links {
-	& > .ck-list__links-items {
+.ck.ck-link-providers {
+	& > .ck-link-providers__list {
 		overflow-x: hidden;
 		overflow-y: auto;
 		overscroll-behavior: contain;

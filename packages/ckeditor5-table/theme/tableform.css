@@ -31,6 +31,12 @@
 				flex-grow: 0;
 			}
 		}
+
+		/* Ignore labels that work as fieldset legends */
+		/* Fallback for table dimension operator */
+		& > *:not(.ck-label, .ck-table-form__dimension-operator) {
+			flex-grow: 1;
+		}
 	}
 
 	& .ck.ck-labeled-field-view {

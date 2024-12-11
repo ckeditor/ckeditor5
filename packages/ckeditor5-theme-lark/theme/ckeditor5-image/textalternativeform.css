@@ -6,66 +6,17 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
-	--ck-text-alternative-panel-width: 340px;
+	--ck-text-alternative-form-width: 340px;
 }
 
 @mixin ck-media-phone {
 	:root {
-		--ck-text-alternative-panel-width: 300px;
+		--ck-text-alternative-form-width: 300px;
 	}
 }
 
-.ck.ck-text-alternative__panel {
-	width: var(--ck-text-alternative-panel-width);
-
-	&:focus {
-		outline: none;
-	}
-
-	/* Header */
-	& .ck-form__header {
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-
-		& > .ck:not(:first-child) {
-			margin-inline-start: var(--ck-spacing-small);
-		}
-	}
-
-	/* Form */
-	& .ck-responsive-form.ck-text-alternative__form {
-		width: 100%;
-
-		/* "Text alternative" input field and the "Save" button */
-		& .ck-input-and-submit {
-			margin: 0;
-
-			@mixin ck-media-phone {
-				margin: var(--ck-spacing-large) var(--ck-spacing-medium) var(--ck-spacing-medium) var(--ck-spacing-medium);
-			}
-
-			& > .ck-labeled-field-view {
-				& input {
-					width: 100%;
-					/* To overwrite default min-width value to prevent inputs from growing and and stick out beyond the panel. */
-					min-width: 100%;
-				}
-			}
-
-			& > .ck-button {
-				padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-large);
-				margin-inline-start: var(--ck-spacing-medium);
-			}
-
-			@mixin ck-media-phone {
-				& > .ck {
-					margin: 0;
-				}
-
-				& .ck-button {
-					margin-top: var(--ck-spacing-large);
-					justify-content: center;
-				}
-			}
-		}
+.ck.ck-text-alternative-form {
+	&.ck-responsive-form {
+		width: var(--ck-text-alternative-form-width);
 	}
 }

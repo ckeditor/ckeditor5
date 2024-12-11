@@ -51,8 +51,7 @@ describe( 'LinkProviderItemsView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName.toLowerCase() ).to.equal( 'div' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link__links' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-link-providers' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
