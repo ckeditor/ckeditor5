@@ -140,6 +140,26 @@ describe( 'EmojiMention', () => {
 		expect( config.itemRenderer ).to.equal( undefined );
 	} );
 
+	it( 'should not pass config for mention plugin when there is another conflicting merge fields config', async () => {
+		await editor.destroy();
+
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [
+				Emoji,
+				Paragraph,
+				Essentials,
+				Mention
+			],
+			mergeFields: {
+				prefix: ':'
+			}
+		} );
+
+		const configs = editor.config.get( 'mention.feeds' );
+
+		expect( configs.length ).to.equal( 0 );
+	} );
+
 	describe( '_customItemRenderer()', () => {
 		let itemRenderer;
 
