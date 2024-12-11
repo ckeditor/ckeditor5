@@ -30,6 +30,7 @@ import type LegacyListReversedCommand from '../legacylistproperties/legacylistre
 import type ListReversedCommand from '../listproperties/listreversedcommand.js';
 
 import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
+import { getListStyleAliases } from './utils/style.js';
 import { type ListPropertiesStyleListType } from '../listconfig.js';
 
 import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
@@ -300,7 +301,7 @@ function getStyleButtonCreator( {
 		button.set( { label, icon, tooltip } );
 
 		listStyleCommand.on( 'change:value', () => {
-			button.isOn = listStyleCommand.value === type;
+			button.isOn = listStyleCommand.value === type || getListStyleAliases( listStyleCommand.value ).includes( type );
 		} );
 
 		button.on( 'execute', () => {

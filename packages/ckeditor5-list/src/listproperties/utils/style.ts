@@ -61,3 +61,26 @@ export function getListStyleTypeFromTypeAttribute( value: string ): string | nul
 export function getTypeAttributeFromListStyleType( value: string ): string | null {
 	return LIST_STYLE_TO_TYPE_ATTRIBUTE[ value ] || null;
 }
+
+/**
+ * Returns a list of list styles that are aliases of the given list style.
+ * For example:
+ *
+ * 	* `lower-alpha` is an alias of `lower-latin`
+ * 	* `upper-alpha` is an alias of `upper-latin`
+ *
+ * See more: https://www.w3.org/TR/1998/PR-CSS2-19980324/lists.html#list-props
+ *
+ * @param listStyle The list style to get aliases for. E.g. `lower-alpha`. If `null`, an empty array is returned.
+ * @returns A list of list styles that are aliases of the given list style (excluding the given list style).
+ */
+export function getListStyleAliases( listStyle: string | null ): Array<string> {
+	switch ( listStyle ) {
+		case 'lower-latin': return [ 'lower-alpha' ];
+		case 'lower-alpha': return [ 'lower-latin' ];
+		case 'upper-latin': return [ 'upper-alpha' ];
+		case 'upper-alpha': return [ 'upper-latin' ];
+		default:
+			return [];
+	}
+}
