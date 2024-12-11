@@ -69,11 +69,13 @@ export default class EmojiMention extends Plugin {
 		this._emojiDatabase = new Database();
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
+		const mergeFieldsPrefix = this.editor.config.get( 'mergeFields.prefix' )! as string;
 		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
+		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
-		if ( markerAlreadyUsed ) {
+		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
 			/**
-			 * The `marker` in the `emoji` config is already used by other mention plugin configuration.
+			 * The `marker` in the `emoji` config is already used by other plugin configuration.
 			 *
 			 * @error emoji-config-marker-already-used
 			 * @param {string} marker Used marker.
