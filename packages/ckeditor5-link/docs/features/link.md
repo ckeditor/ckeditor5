@@ -30,8 +30,6 @@ CKEditor&nbsp;5 allows typing at the inner and outer link boundaries to make edi
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
 
-<!-- Add bookmars section once linking experience lands -->
-
 ## Installation
 
 <info-box info>
@@ -319,15 +317,15 @@ To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>
 
 ### Demo
 
-The link feature integrates with bookmarks, providing a smooth linking experience. Link providers allow adding predefined lists of links (similar to bookmarks). If you have any links you would like to use frequently in your content, you can register them in the Link plugin using a custom method. These links will be available in the link UI form for easy access.
+The link feature integrates with {@link features/bookmarks bookmarks}, providing a smooth linking experience. Link providers allow adding predefined lists of links (similar to bookmarks). You can register any links you would like to use frequently in your content in the Link plugin using a custom method. These links will be available in the link UI form for easy access.
 
 {@snippet features/link-providers}
 
 ### Configuration
 
-To define the list of links available in the link UI, you can use the `getListItems()` function in the link provider. Opening the group in the link UI calls the function every time. The function should return an array of objects, each representing a link.
+To define a list of links available in the link UI, you can use the `getListItems()` function in the link provider. Opening the group in the link UI calls the function every time. The function should return an array of objects, each representing a link.
 
-The `getItem()` function can resolve the link. Opening the link preview or navigating to the link from the editing view calls the function. It should return an object with the `href`, `icon`, `label`, and `tooltip`. The properties are assigned to the link preview. It is useful when only part of the list items are shown in the list view (for example, in pagination), and the user interacts with a link that is not visible in the list view but is available in the editing.
+The `getItem()` function can resolve the link. Opening the link preview or navigating to the link from the editing view calls the function. It should return an object with the `href`, `icon`, `label`, and `tooltip` parameters. The properties are assigned to the link preview. It is useful when only part of the list items are shown in the list view (for example, in pagination), and the user interacts with a link that is not visible in the list view but is available in the editing.
 
 ```js
 class SocialLinksPlugin extends Plugin {
