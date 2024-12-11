@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import {
@@ -42,9 +42,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 1 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -61,9 +62,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 2 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -80,9 +82,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -100,11 +103,12 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			itemToListHead.set( fragment.getChild( 2 ), fragment.getChild( 1 ) );
+			itemToListHead.add( fragment.getChild( 1 ) );
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -122,11 +126,12 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			itemToListHead.set( fragment.getChild( 2 ), fragment.getChild( 1 ) );
+			itemToListHead.add( fragment.getChild( 1 ) );
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -144,9 +149,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -165,9 +171,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 5 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -187,9 +194,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
