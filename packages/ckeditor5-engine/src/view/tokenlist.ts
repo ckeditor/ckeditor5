@@ -11,11 +11,11 @@ import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import type { ElementAttributeValue } from './element.js';
 
 /**
- * TODO
+ * Token list. Allows handling (adding, removing, retrieving) a set of tokens (for example class names).
  */
 export default class TokenList implements ElementAttributeValue {
 	/**
-	 * TODO
+	 * The set of tokens.
 	 */
 	private _set = new Set<string>();
 
@@ -34,21 +34,21 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Checks if a given token is set.
 	 */
 	public has( name: string ): boolean {
 		return this._set.has( name );
 	}
 
 	/**
-	 * TODO
+	 * Returns all tokens.
 	 */
 	public keys(): Array<string> {
 		return Array.from( this._set.keys() );
 	}
 
 	/**
-	 * TODO
+	 * Resets the value to the given one.
 	 */
 	public setTo( value: string ): this {
 		this.clear();
@@ -63,7 +63,7 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Sets a given token without affecting other tokens.
 	 */
 	public set( tokens: ArrayOrItem<string> ): void {
 		for ( const token of toArray( tokens ) ) {
@@ -74,7 +74,7 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Removes given token.
 	 */
 	public remove( tokens: ArrayOrItem<string> ): void {
 		for ( const token of toArray( tokens ) ) {
@@ -83,21 +83,21 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * Removes all styles.
+	 * Removes all tokens.
 	 */
 	public clear(): void {
 		this._set.clear();
 	}
 
 	/**
-	 * TODO
+	 * Returns a normalized tokens string.
 	 */
 	public toString(): string {
 		return Array.from( this._set ).join( ' ' );
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if both attributes have the same tokens.
 	 */
 	public isSimilar( other: TokenList ): boolean {
 		if ( this.size !== other.size ) {
@@ -114,7 +114,8 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Clones the attribute value.
+	 *
 	 * @internal
 	 */
 	public _clone(): this {
@@ -126,8 +127,12 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tokens.
+	 *
 	 * @internal
+	 * @param attributeKey The attribute name.
+	 * @param patternToken The matched token name pattern.
+	 * @returns An array of tuples [ attributeKey, token ].
 	 */
 	public _getTokensMatch(
 		attributeKey: string,
@@ -165,7 +170,10 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Returns a list of consumables for the attribute.
+	 *
+	 * Could be filtered by the given token name.
+	 *
 	 * @internal
 	 */
 	public _getConsumables( name?: string ): Array<string> {
@@ -173,7 +181,12 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link module:engine/view/element~Element#_canMergeAttributesFrom} to verify if the given attribute
+	 * can be merged without conflicts into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
 	 * @internal
 	 */
 	public _canMergeFrom(): boolean {
@@ -181,7 +194,11 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
 	 * @internal
 	 */
 	public _mergeFrom( other: TokenList ): void {
@@ -193,7 +210,12 @@ export default class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link module:engine/view/element~Element#_canSubtractAttributesOf} to verify if the given attribute
+	 * can be fully subtracted from the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 *
 	 * @internal
 	 */
 	public _isMatching( other: TokenList ): boolean {

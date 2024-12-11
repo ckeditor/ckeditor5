@@ -653,6 +653,7 @@ export default class Element extends Node {
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeAttribute
 	 * @internal
 	 * @param key Attribute key.
+	 * @param tokens Attribute value tokens to remove. The whole attribute is removed if not specified.
 	 * @returns Returns true if an attribute existed and has been removed.
 	 * @fires change
 	 */
@@ -840,8 +841,14 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
+	 * Used by the {@link module:engine/conversion/viewconsumable~ViewConsumable} to collect the
+	 * {@link module:engine/conversion/viewconsumable~NormalizedConsumables} for the element.
+	 *
+	 * When `key` and `token` parameters are provided the output is filtered for the specified attribute and it's tokens and related tokens.
+	 *
 	 * @internal
+	 * @param key Attribute name.
+	 * @param token Reference token to collect all related tokens.
 	 */
 	public _getConsumables( key?: string, token?: string ): NormalizedConsumables {
 		const attributes: Array<[string, string?]> = [];
@@ -878,7 +885,9 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link #_mergeAttributesFrom} to verify if the given element can be merged without conflicts into the element.
+	 *
+	 * Note that this method is extended by the {@link module:engine/view/attributeelement~AttributeElement} implementation.
 	 */
 	protected _canMergeAttributesFrom( otherElement: Element ): boolean {
 		if ( this.name != otherElement.name ) {
@@ -906,10 +915,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
-	 * Wraps one AttributeElement into another by
-	 * merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
-	 * element to element being wrapped.
+	 * Merges attributes of a given element into the element if there are no conflicts.
+	 * This includes also tokenized attributes like style and class.
+	 *
+	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
 	 *
 	 * @internal
 	 * @returns Returns `true` if elements are merged.
@@ -937,9 +947,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link #_subtractAttributesOf} to verify if the given element attributes can be fully subtracted from the element.
+	 *
+	 * Note that this method is extended by the {@link module:engine/view/attributeelement~AttributeElement} implementation.
 	 */
-	protected _hasAttributesMatching( otherElement: Element ): boolean {
+	protected _canSubtractAttributesOf( otherElement: Element ): boolean {
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
@@ -965,16 +977,18 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * TODO
-	 * Unwraps AttributeElement from another by removing
-	 * corresponding attributes, classes and styles. All attributes, classes and styles from wrapper should be present
-	 * inside element being unwrapped.
+	 * Removes (subtracts) corresponding attributes of the given element from the element.
+	 * This includes also tokenized attributes like style and class.
+	 * All attributes, classes and styles from given element should be present inside the element being unwrapped.
+	 *
+	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
 	 *
 	 * @internal
 	 * @returns Returns `true` if elements are unwrapped.
 	 */
 	public _subtractAttributesOf( otherElement: Element ): boolean {
-		if ( !this._hasAttributesMatching( otherElement ) ) {
+		if ( !this._canSubtractAttributesOf( otherElement ) ) {
 			return false;
 		}
 
@@ -1103,44 +1117,114 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 };
 
 /**
- * TODO
+ * Common interface for a {@link module:engine/view/tokenlist~TokenList} and {@link module:engine/view/stylesmap~StylesMap}.
  */
 export interface ElementAttributeValue {
+
+	/**
+	 * Returns `true` if attribute has no value set.
+	 */
 	get isEmpty(): boolean;
 
+	/**
+	 * Number of tokens (styles, classes or other tokens) defined.
+	 */
 	get size(): number;
 
+	/**
+	 * Checks if a given token (style, class, token) is set.
+	 */
 	has( name: string ): boolean;
 
+	/**
+	 * Returns all tokens (styles, classes, other tokens).
+	 */
 	keys(): Array<string>;
 
+	/**
+	 * Resets the value to the given one.
+	 */
 	setTo( value: string ): this;
 
+	/**
+	 * Sets a given style property and value.
+	 */
 	set( name: string, value: StyleValue ): void;
+
+	/**
+	 * Sets a given token (for style also a record of properties).
+	 */
 	set( stylesOrTokens: Styles | ArrayOrItem<string> ): void;
 
+	/**
+	 * Removes given token (style, class, other token).
+	 */
 	remove( tokens: ArrayOrItem<string> ): void;
 
+	/**
+	 * Removes all tokens.
+	 */
 	clear(): void;
 
+	/**
+	 * Returns a normalized tokens string (styles, classes, etc.).
+	 */
 	toString(): string;
 
+	/**
+	 * Returns `true` if both attributes have the same content.
+	 */
 	isSimilar( other: this ): boolean;
 
+	/**
+	 * Clones the attribute value.
+	 */
 	_clone(): this;
 
+	/**
+	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tokens.
+	 *
+	 * @param attributeKey The attribute name.
+	 * @param patternToken The matched token name pattern.
+	 * @param patternValue The matched token value pattern.
+	 * @returns An array of tuples [ attributeKey, token ].
+	 */
 	_getTokensMatch(
 		attributeKey: string,
 		patternToken: true | string | RegExp,
 		patternValue?: true | string | RegExp
 	): Array<[ string, string ]> | undefined;
 
+	/**
+	 * Returns a list of consumables for the attribute. This includes related tokens
+	 * (for example other forms of notation of the same style property).
+	 *
+	 * Could be filtered by the given token name (class name, style property, etc.).
+	 */
 	_getConsumables( name?: string ): Array<string>;
 
+	/**
+	 * Used by {@link ~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without conflicts into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 */
 	_canMergeFrom( other: this ): boolean;
 
+	/**
+	 * Used by {@link ~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 */
 	_mergeFrom( other: this ): void;
 
+	/**
+	 * Used by {@link ~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully subtracted from the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 */
 	_isMatching( other: this ): boolean;
 }
 
@@ -1178,12 +1262,15 @@ function normalize( document: Document, nodes: string | Item | Iterable<string |
 }
 
 /**
- * TODO
+ * Returns `true` if an attribute on a given element should be handled as a TokenList.
  */
 function usesTokenList( elementName: string, key: string ): boolean {
 	return key == 'class' || elementName == 'a' && key == 'rel';
 }
 
+/**
+ * Returns `true` if an attribute on a given element should be handled as a StylesMap.
+ */
 function usesStylesMap( elementName: string, key: string ): boolean {
 	return key == 'style';
 }

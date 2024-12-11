@@ -440,7 +440,7 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Alias for {@link #getStyleNames}.
 	 */
 	public keys(): Array<string> {
 		return this.getStyleNames();
@@ -456,7 +456,7 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if both attributes have the same styles.
 	 */
 	public isSimilar( other: StylesMap ): boolean {
 		if ( this.size !== other.size ) {
@@ -488,7 +488,8 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Clones the attribute value.
+	 *
 	 * @internal
 	 */
 	public _clone(): this {
@@ -500,8 +501,13 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching styles.
+	 *
 	 * @internal
+	 * @param attributeKey The attribute name.
+	 * @param patternToken The matched style name pattern.
+	 * @param patternValue The matched style value pattern.
+	 * @returns An array of tuples [ attributeKey, style name ].
 	 */
 	public _getTokensMatch(
 		attributeKey: string,
@@ -533,7 +539,10 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Returns a list of consumables for the attribute. This includes related styles.
+	 *
+	 * Could be filtered by the given style name.
+	 *
 	 * @internal
 	 */
 	public _getConsumables( name?: string ): Array<string> {
@@ -560,7 +569,12 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link module:engine/view/element~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without
+	 * conflicts into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
 	 * @internal
 	 */
 	public _canMergeFrom( other: StylesMap ): boolean {
@@ -574,7 +588,11 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
 	 * @internal
 	 */
 	public _mergeFrom( other: StylesMap ): void {
@@ -586,7 +604,12 @@ export default class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * TODO
+	 * Used by {@link module:engine/view/element~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully
+	 * subtracted from the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 *
 	 * @internal
 	 */
 	public _isMatching( other: StylesMap ): boolean {
