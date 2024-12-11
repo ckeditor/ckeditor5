@@ -184,6 +184,16 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
+	 * Moves {@link #position} to provided position.
+	 *
+	 * @param position Position to jump to
+	 */
+	public jumpTo( position: Position ): void {
+		this._position = position;
+		this._visitedParent = position.parent;
+	}
+
+	/**
 	 * Gets the next tree walker's value.
 	 */
 	public next(): IteratorResult<TreeWalkerValue> {
