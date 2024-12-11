@@ -143,7 +143,11 @@ export default class ImageResizeButtons extends Plugin {
 			} else {
 				const optionValueWithUnit = value ? value + this._resizeUnit : null;
 
-				button.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( optionValueWithUnit ) );
+				button.bind( 'isOn' ).to(
+					command, 'value',
+					command, 'isEnabled',
+					getIsOnButtonCallback( optionValueWithUnit )
+				);
 
 				this.listenTo( button, 'execute', () => {
 					editor.execute( 'resizeImage', { width: optionValueWithUnit } );
@@ -303,7 +307,11 @@ export default class ImageResizeButtons extends Plugin {
 
 				const allDropdownValues = map( optionsWithSerializedValues, 'valueWithUnits' );
 
-				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnCustomButtonCallback( allDropdownValues ) );
+				definition.model.bind( 'isOn' ).to(
+					command, 'value',
+					command, 'isEnabled',
+					getIsOnCustomButtonCallback( allDropdownValues )
+				);
 			} else {
 				definition = {
 					type: 'button',
@@ -317,7 +325,11 @@ export default class ImageResizeButtons extends Plugin {
 					} )
 				};
 
-				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( option.valueWithUnits ) );
+				definition.model.bind( 'isOn' ).to(
+					command, 'value',
+					command, 'isEnabled',
+					getIsOnButtonCallback( option.valueWithUnits )
+				);
 			}
 
 			definition.model.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -338,9 +350,14 @@ function isCustomImageResizeOption( option: ImageResizeOption ) {
 /**
  * A helper function for setting the `isOn` state of buttons in value bindings.
  */
-function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown ) => boolean {
-	return ( commandValue: unknown ): boolean => {
-		const objectCommandValue = commandValue as null | { width: string | null };
+function getIsOnButtonCallback( value: string | null ) {
+	return ( commandValue: ResizeImageCommand['value'], isEnabled: boolean ): boolean => {
+		const objectCommandValue = commandValue as null | undefined | { width: string | null };
+
+		if ( objectCommandValue === undefined || !isEnabled ) {
+			return false;
+		}
+
 		if ( value === null && objectCommandValue === value ) {
 			return true;
 		}
@@ -352,8 +369,8 @@ function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown 
 /**
  * A helper function for setting the `isOn` state of custom size button in value bindings.
  */
-function getIsOnCustomButtonCallback( allDropdownValues: Array<string | null> ): ( commandValue: unknown ) => boolean {
-	return ( commandValue: unknown ): boolean => !allDropdownValues.some(
-		dropdownValue => getIsOnButtonCallback( dropdownValue )( commandValue )
+function getIsOnCustomButtonCallback( allDropdownValues: Array<string | null> ) {
+	return ( commandValue: ResizeImageCommand['value'], isEnabled: boolean ): boolean => !allDropdownValues.some(
+		dropdownValue => getIsOnButtonCallback( dropdownValue )( commandValue, isEnabled )
 	);
 }

@@ -11,7 +11,7 @@
 
 import View from '../view.js';
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/icon/icon.css';
 
@@ -156,7 +156,17 @@ export default class IconView extends View {
 	private _updateXMLContent() {
 		if ( this.content ) {
 			const parsed = new DOMParser().parseFromString( this.content.trim(), 'image/svg+xml' );
-			const svg = parsed.querySelector( 'svg' )!;
+			const svg = parsed.querySelector( 'svg' );
+
+			if ( !svg ) {
+				/**
+				 * The provided icon content is not a valid SVG.
+				 *
+				 * @error ui-iconview-invalid-svg
+				 */
+				throw new CKEditorError( 'ui-iconview-invalid-svg', this );
+			}
+
 			const viewBox = svg.getAttribute( 'viewBox' );
 
 			if ( viewBox ) {
