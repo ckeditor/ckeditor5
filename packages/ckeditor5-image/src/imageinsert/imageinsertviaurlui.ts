@@ -196,6 +196,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 				{
 					label: t( 'Accept' ),
 					class: 'ck-button-action',
+					type: 'submit',
 					withText: true,
 					onExecute: () => this._handleSave()
 				}

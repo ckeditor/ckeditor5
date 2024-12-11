@@ -260,7 +260,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			},
 			children: [
 				{
-					tag: 'div',
+					tag: 'form',
 					attributes: {
 						tabindex: '-1',
 						class: [
