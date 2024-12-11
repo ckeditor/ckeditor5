@@ -99,7 +99,7 @@ export default class LinkProviderItemsView extends View {
 	private readonly _focusCycler: FocusCycler;
 
 	/**
-	 * Creates an instance of the {@link module:link/ui/linklinksview~LinkBookmarksView} class.
+	 * Creates an instance of the {@link module:link/ui/linkprovideritemsview~LinkProviderItemsView} class.
 	 *
 	 * Also see {@link #render}.
 	 *
@@ -288,9 +288,9 @@ export default class LinkProviderItemsView extends View {
 }
 
 /**
- * Fired when the links view is canceled, for example with a click on {@link ~LinkBookmarksView#backButtonView}.
+ * Fired when the links view is canceled, for example with a click on {@link ~LinkProviderItemsView#backButtonView}.
  *
- * @eventName ~LinkBookmarksView#cancel
+ * @eventName ~LinkProviderItemsView#cancel
  */
 export type CancelEvent = {
 	name: 'cancel';
