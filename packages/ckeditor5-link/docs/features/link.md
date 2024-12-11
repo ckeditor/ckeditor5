@@ -319,15 +319,15 @@ To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>
 
 ### Demo
 
-The link feature integrates with bookmarks, providing a smooth linking experience. Link providers allow adding predefined lists of links (similar to bookmarks). If you have any links that you would like to use frequently in your content, you can register them in the Link plugin using a custom method. These links will be available in the link UI form for easy access.
+The link feature integrates with bookmarks, providing a smooth linking experience. Link providers allow adding predefined lists of links (similar to bookmarks). If you have any links you would like to use frequently in your content, you can register them in the Link plugin using a custom method. These links will be available in the link UI form for easy access.
 
 {@snippet features/link-providers}
 
 ### Configuration
 
-To define the list of links available in the link UI, you can use the `getListItems()` function in the link provider. This function is called every time the links group is opened in the link UI. The function should return an array of objects, each representing a link.
+To define the list of links available in the link UI, you can use the `getListItems()` function in the link provider. Opening the group in the link UI calls the function every time. The function should return an array of objects, each representing a link.
 
-To resolve the link, the `getItem()` function can be used. This function is called when the user opens the link preview or navigates to the link from the editing view. It should return an object with the `href`, `icon`, `label`, and `tooltip` that are assigned to the link preview. This is useful when only part of the list items are shown in the list view (e.g., when the list is paginated) and the user interacts with a link that is not visible in the list view but is available in the editing.
+The `getItem()` function can resolve the link. Opening the link preview or navigating to the link from the editing view calls the function. It should return an object with the `href`, `icon`, `label`, and `tooltip`. The properties are assigned to the link preview. It is useful when only part of the list items are shown in the list view (for example, in pagination), and the user interacts with a link that is not visible in the list view but is available in the editing.
 
 ```js
 class SocialLinksPlugin extends Plugin {
