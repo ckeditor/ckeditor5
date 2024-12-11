@@ -33,31 +33,37 @@ class SocialLinksPlugin extends Plugin {
 					id: 'facebook',
 					href: 'https://facebook.com',
 					label: 'Facebook',
-					icon: linkIcon,
-					tooltip: 'Visit Facebook'
+					icon: linkIcon
 				},
 				{
 					id: 'twitter',
 					href: 'https://twitter.com',
 					label: 'Twitter',
-					icon: linkIcon,
-					tooltip: 'Visit Twitter'
+					icon: linkIcon
 				},
 				{
 					id: 'linkedin',
 					href: 'https://linkedin.com',
 					label: 'LinkedIn',
-					icon: linkIcon,
-					tooltip: 'Visit LinkedIn'
+					icon: linkIcon
 				},
 				{
 					id: 'instagram',
 					href: 'https://instagram.com',
 					label: 'Instagram',
-					icon: linkIcon,
-					tooltip: 'Visit Instagram'
+					icon: linkIcon
 				}
-			]
+			],
+
+			// Optionally: You can customize your link preview by custom implementation of link getter.
+			getItem: href => {
+				return {
+					href,
+					icon: linkIcon,
+					label: 'My custom label in link preview',
+					tooltip: 'My custom tooltip in link preview'
+				};
+			}
 		} );
 	}
 }
