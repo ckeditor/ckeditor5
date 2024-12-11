@@ -315,6 +315,50 @@ To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>
 
 {@snippet features/autolink}
 
+## Link providers
+
+### Demo
+
+The link feature integrates with bookmarks, providing a smooth linking experience. Link providers allow adding predefined lists of links (similar to bookmarks). If you have any links that you would like to use frequently in your content, you can pass them in the configuration. The links will then be available during link creation.
+
+{@snippet features/link-providers}
+
+### Configuration
+
+To define the list of links available in the link UI, you can use the `getListItems()` function in the link provider. Then, you can pass the plugin with list items to the `plugins` array. To access any item in the list, you can use the `getItem()` function.
+
+```js
+class SocialLinksPlugin extends Plugin {
+	static get requires() {
+		return [ Link ];
+	}
+
+	async init() {
+		const linkUI = this.editor.plugins.get( LinkUI );
+
+		linkUI.registerLinksListProvider( {
+			label: 'Social links',
+			getListItems: () => [
+				{
+					id: 'facebook',
+					href: 'https://facebook.com',
+					label: 'Facebook',
+					icon: linkIcon,
+					tooltip: 'Visit Facebook'
+				},
+				{
+					id: 'twitter',
+					href: 'https://twitter.com',
+					label: 'Twitter',
+					icon: linkIcon,
+					tooltip: 'Visit Twitter'
+				}
+			]
+		} );
+	}
+}
+```
+
 ## Common API
 
 The {@link module:link/link~Link} plugin registers the UI button component (`'link'`) and the following commands:
