@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, setTimeout, atob, URL, Blob, HTMLCanvasElement, console, document */
@@ -820,7 +820,7 @@ describe( 'ImageUploadEditing', () => {
 		);
 
 		sinon.assert.notCalled( abortSpy );
-		sinon.assert.calledOnce( uploadCompleteSpy );
+		sinon.assert.calledTwice( uploadCompleteSpy );
 	} );
 
 	it( 'should abort if an image changed type and then was removed', async () => {
@@ -1580,6 +1580,183 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} );
 
+	describe( 'data downcast conversion of images with uploading state', () => {
+		it( 'should dump the `data-ck-upload-id` into the data', async () => {
+			const onDispatch = sinon.spy( ( evt, data, conversionApi ) => {
+				const wasConsumed = conversionApi.consumable.test( data.item, 'attribute:uploadId:imageInline' );
+
+				expect( wasConsumed ).to.be.true;
+			} );
+
+			editor.conversion.for( 'downcast' ).add( dispatcher =>
+				dispatcher.on( 'attribute:uploadId:imageInline', onDispatch, { priority: 'high' } )
+			);
+
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const file = createNativeFileMock();
+			editor.execute( 'uploadImage', { file } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+
+			await timeout( 50 );
+
+			const uploadId = adapterMocks[ 0 ].loader.id;
+
+			expect( getModelData( editor.model ) ).to.be.equal(
+				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
+			);
+
+			expect( onDispatch ).to.be.calledOnce;
+			expect( editor.getData() ).to.be.equal(
+				`<p><img data-ck-upload-id="${ uploadId }">foo</p>`
+			);
+		} );
+
+		it( 'should not crash if uploadId of down casted image is not found in loaders repository', async () => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const file = createNativeFileMock();
+			editor.execute( 'uploadImage', { file } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+
+			await timeout( 50 );
+
+			const uploadId = adapterMocks[ 0 ].loader.id;
+
+			sinon
+				.stub( fileRepository.loaders, 'get' )
+				.withArgs( uploadId )
+				.returns( null );
+
+			expect( getModelData( editor.model ) ).to.be.equal(
+				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
+			);
+
+			expect( editor.getData() ).to.be.equal( '<p><img>foo</p>' );
+		} );
+
+		it( 'should not downcast consumed uploadId image attribute', async () => {
+			editor.conversion.for( 'downcast' ).add( dispatcher =>
+				dispatcher.on( 'attribute:uploadId:imageInline', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:uploadId:imageInline' );
+				}, { priority: 'high' } )
+			);
+
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const file = createNativeFileMock();
+			editor.execute( 'uploadImage', { file } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+
+			await timeout( 50 );
+
+			const uploadId = adapterMocks[ 0 ].loader.id;
+
+			expect( getModelData( editor.model ) ).to.be.equal(
+				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
+			);
+
+			expect( editor.getData() ).to.be.equal( '<p><img>foo</p>' );
+		} );
+
+		it( 'should restore image from `_uploadedImages` if it was pasted from clipboard', async () => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const file = createNativeFileMock();
+			editor.execute( 'uploadImage', { file } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+
+			await timeout( 50 );
+
+			// Let's copy image in uploading state.
+			const uploadId = adapterMocks[ 0 ].loader.id;
+			expect( getModelData( editor.model ) ).to.be.equal(
+				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
+			);
+
+			// Lets check if content of clipboard is correct.
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( `<img data-ck-upload-id="${ uploadId }">` );
+
+			// Let's resolve uploading status and ensure that image is loaded.
+			await new Promise( res => {
+				model.document.once( 'change', res, { priority: 'lowest' } );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+			} );
+
+			expect( editor.getData() ).to.be.equal(
+				'<p><img src="/assets/sample.png" srcset="image-800.png 800w" sizes="100vw" width="800">foo</p>'
+			);
+
+			// Make sure it's no longer present in registry, so image upload is completed.
+			expect( fileRepository.loaders.get( uploadId ) ).to.be.null;
+
+			// Let's paste the image from clipboard, it has upload id, which should be stored in plugin cache.
+			setModelData( model, '<paragraph>hello[]</paragraph>' );
+
+			viewDocument.fire( 'paste', {
+				dataTransfer: mockDataTransfer( `<img data-ck-upload-id=${ uploadId } />` ),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			} );
+
+			expect( editor.getData() ).to.be.equal(
+				'<p>hello<img src="/assets/sample.png" srcset="image-800.png 800w" sizes="100vw" width="800"></p>'
+			);
+		} );
+	} );
+
+	describe( 'data upcast of `data-ck-upload-id` attribute', () => {
+		it( 'should upcast `data-ck-upload-id` attribute', () => {
+			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline uploadId="123"></imageInline></paragraph>'
+			);
+		} );
+
+		it( 'should not upcast empty `data-ck-upload-id` attribute', () => {
+			editor.setData( '<p><img data-ck-upload-id=""></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline></imageInline></paragraph>'
+			);
+		} );
+
+		it( 'should not upcast already consumed element', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher =>
+				dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { attributes: [ 'data-ck-upload-id' ] } );
+				}, { priority: 'high' } )
+			);
+
+			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline></imageInline></paragraph>'
+			);
+		} );
+
+		it( 'should upcast `uploadStatus` if image is present in registry', () => {
+			sinon.stub( fileRepository.loaders, 'get' ).withArgs( '123' ).returns( {
+				status: 'uploading',
+				data: {}
+			} );
+
+			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><imageInline uploadId="123" uploadStatus="uploading"></imageInline></paragraph>'
+			);
+		} );
+	} );
+
 	// Helper for validating clipboard and model data as a result of a paste operation. This function checks both clipboard
 	// data and model data synchronously (`expectedClipboardData`, `expectedModel`) and then the model data after `loader.file`
 	// promise is resolved (so model state after successful/failed file fetch attempt).
@@ -1712,4 +1889,18 @@ function base64ToBlob( base64Data ) {
 
 function timeout( ms ) {
 	return new Promise( res => setTimeout( res, ms ) );
+}
+
+function createDataTransfer() {
+	const store = new Map();
+
+	return {
+		setData( type, data ) {
+			store.set( type, data );
+		},
+
+		getData( type ) {
+			return store.get( type );
+		}
+	};
 }
