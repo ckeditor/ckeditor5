@@ -1257,7 +1257,7 @@ describe( 'TreeWalker', () => {
 			expect( walker.position.offset ).to.equal( 0 );
 		} );
 
-		it( 'cannot move position after the #_boundaryStartParent', () => {
+		it( 'cannot move position after the #_boundaryEndParent', () => {
 			const range = new Range(
 				new Position( paragraph, 0 ),
 				new Position( paragraph, 2 )
