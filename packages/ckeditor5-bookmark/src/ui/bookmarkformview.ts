@@ -363,7 +363,7 @@ export type BookmarkFormValidatorCallback = ( form: BookmarkFormView ) => string
 /**
  * Fired when the form view is canceled.
  *
- * @eventName ~BookmarkFormViewCancelEvent#cancel
+ * @eventName ~BookmarkFormView#cancel
  */
 export type BookmarkFormViewCancelEvent = {
 	name: 'cancel';
