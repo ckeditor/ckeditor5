@@ -310,12 +310,17 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all class names.
 	 */
-	public getClassNames(): Array<string> {
-		return this._classes ? this._classes.keys() : [];
+	public getClassNames(): IterableIterator<string> {
+		const array = this._classes ? this._classes.keys() : [];
+		const iterator = array[ Symbol.iterator ]();
+
+		return Object.assign( array, {
+			next: iterator.next.bind( iterator )
+		} );
 	}
 
 	/**
-	 * Returns style value for the given property mae.
+	 * Returns style value for the given property name.
 	 * If the style does not exist `undefined` is returned.
 	 *
 	 * **Note**: This method can work with normalized style names if
@@ -780,7 +785,8 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tuples (attribute name, token).
+	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tuples
+	 * (attribute name and optional token).
 	 *
 	 * @internal
 	 * @param patterns An array of normalized patterns (tuples of 2 or 3 items depending on if tokenized attribute value match is needed).

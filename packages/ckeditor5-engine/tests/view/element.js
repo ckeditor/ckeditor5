@@ -838,15 +838,32 @@ describe( 'Element', () => {
 		} );
 
 		describe( 'getClassNames', () => {
+			it( 'should return iterable with all class names', () => {
+				const names = [ 'one', 'two', 'three' ];
+
+				el._addClass( names );
+
+				const iterable = el.getClassNames();
+				let i = 0;
+
+				for ( const name of iterable ) {
+					expect( name ).to.equal( names[ i++ ] );
+				}
+			} );
+
+			// MathType uses legacy `element.getClassNames().next().value`.
 			it( 'should return iterator with all class names', () => {
 				const names = [ 'one', 'two', 'three' ];
+
 				el._addClass( names );
+
 				const iterator = el.getClassNames();
 				let i = 0;
 
-				for ( const name of iterator ) {
-					expect( name ).to.equal( names[ i++ ] );
-				}
+				expect( iterator.next() ).to.deep.equal( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).to.deep.equal( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).to.deep.equal( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).to.deep.equal( { value: undefined, done: true } );
 			} );
 		} );
 	} );
