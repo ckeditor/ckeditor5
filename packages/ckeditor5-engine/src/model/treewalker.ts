@@ -184,11 +184,23 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Moves {@link #position} to provided position.
+	 * Moves treewalker {@link #position} to provided `position`. Treewalker will
+	 * continue traversing from that position.
 	 *
-	 * @param position Position to jump to
+	 * If the provided position is before the start boundary, the position will be
+	 * set to the start boundary. If the provided position is after the end boundary,
+	 * the position will be set to the end boundary.
+	 * This is done to prevent the treewalker from traversing outside the boundaries.
+	 *
+	 * @param position Position to jump to.
 	 */
 	public jumpTo( position: Position ): void {
+		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
+			position = this.boundaries!.start;
+		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
+			position = this.boundaries!.end;
+		}
+
 		this._position = position;
 		this._visitedParent = position.parent;
 	}

@@ -737,6 +737,52 @@ describe( 'TreeWalker', () => {
 			expect( walker.position.parent ).to.equal( paragraph );
 			expect( walker.position.offset ).to.equal( 3 );
 		} );
+
+		it( 'cannot move position before the #_boundaryStartParent', () => {
+			const range = new Range(
+				new Position( paragraph, [ 2 ] ),
+				new Position( paragraph, [ 4 ] )
+			);
+			const walker = new TreeWalker( {
+				boundaries: range
+			} );
+
+			const positionBeforeAllowedRange = new Position( paragraph, [ 0 ] );
+
+			walker.jumpTo( positionBeforeAllowedRange );
+
+			// `jumpTo()` autocorrected the position to the first allowed position.
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+
+			walker.next();
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 3 );
+		} );
+
+		it( 'cannot move position after the #_boundaryStartParent', () => {
+			const range = new Range(
+				new Position( paragraph, [ 0 ] ),
+				new Position( paragraph, [ 2 ] )
+			);
+			const walker = new TreeWalker( {
+				boundaries: range
+			} );
+
+			const positionAfterAllowedRange = new Position( paragraph, [ 4 ] );
+
+			// `jumpTo()` autocorrected the position to the last allowed position.
+			walker.jumpTo( positionAfterAllowedRange );
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+
+			walker.next();
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+		} );
 	} );
 } );
 

@@ -674,18 +674,14 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
 					yield block as Element;
-				} else if ( block.is( 'model:element' ) && block.root.document!.model.schema.isBlock( block ) ) {
-					if ( value.type == 'elementEnd' ) {
-						treewalker.jumpTo( value.nextPosition );
-					} else {
-						const position = treewalker.position.clone();
-
-						position.offset = block.maxOffset;
-
-						if ( range.containsPosition( position ) ) {
-							treewalker.jumpTo( position );
-						}
-					}
+				}
+				// If element is block, we can skip its children and jump to the end of it.
+				else if (
+					value.type == 'elementStart' &&
+					block.is( 'model:element' ) &&
+					block.root.document!.model.schema.isBlock( block )
+				) {
+					treewalker.jumpTo( Position._createAt( block, 'end' ) );
 				}
 			}
 
