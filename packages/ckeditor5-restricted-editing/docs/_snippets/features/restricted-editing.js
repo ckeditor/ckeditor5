@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, document */
@@ -83,7 +83,8 @@ async function startStandardEditingMode() {
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		updateSourceElementOnDestroy: true
+		updateSourceElementOnDestroy: true,
+		licenseKey: 'GPL'
 	} );
 }
 
@@ -107,7 +108,8 @@ async function startRestrictedEditingMode() {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
-		updateSourceElementOnDestroy: true
+		updateSourceElementOnDestroy: true,
+		licenseKey: 'GPL'
 	} );
 }
 

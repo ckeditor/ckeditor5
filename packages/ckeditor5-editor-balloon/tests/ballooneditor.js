@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, console */
@@ -57,6 +57,10 @@ describe( 'BalloonEditor', () => {
 		afterEach( async () => {
 			editor.fire( 'ready' );
 			await editor.destroy();
+		} );
+
+		it( 'it\'s possible to extract editor name from editor instance', () => {
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'BalloonEditor' );
 		} );
 
 		it( 'pushes BalloonToolbar to the list of plugins', () => {

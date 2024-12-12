@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -26,7 +26,7 @@ import CloudServicesUploadAdapter from './cloudservicesuploadadapter.js';
  * * {@link module:image/image~Image},
  * * {@link module:image/imageupload~ImageUpload},
  *
- * See the {@glink features/images/image-upload/easy-image "Easy Image integration" guide} to learn how to configure
+ * See the [Easy Image Quick Start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to learn how to configure
  * and use this feature.
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about

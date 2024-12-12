@@ -1,6 +1,7 @@
 ---
 category: setup
-meta-title: Optimizing build size | CKEditor 5 documentation
+meta-title: Optimizing build size | CKEditor 5 Documentation
+meta-description: Learn how to optimize your CKEdiotr 5 build.
 order: 120
 modified_at: 2024-06-25
 ---
@@ -13,7 +14,7 @@ The build size optimization is only possible when using the npm build and module
 
 ## How to optimize the build size
 
-To optimize the build size, you only need to make a few changes to the way you import the editor, styles, and optionally the translations, compared to what was shown in the {@link getting-started/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
+To optimize the build size, you only need to make a few changes to the way you import the editor, styles, and optionally the translations, compared to what was shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
 
 ### Code imports
 
@@ -53,7 +54,7 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
-Such imports are neat because they are very readable and easy to follow. However, these style sheets contain all the styles for all the plugins and features. If you want to reduce the build size, you can import only the core styles alongside the styles for used plugins.
+Such imports are neat because they are easily readable and easy to follow. However, these style sheets contain all the styles for all the plugins and features. If you want to reduce the build size, you can import only the core styles alongside the styles for used plugins.
 
 First, import the core styles. They are all needed for the editor to work properly:
 
@@ -222,7 +223,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		CaseChange,
 		SlashCommand
 	],
-	licenseKey: '<LICENSE_KEY>', // Replace this with your license key.
+	licenseKey: '<YOUR_LICENSE_KEY>', // Replace this with your license key.
 	toolbar: {
 		items: [
 			'undo', 'redo',
@@ -380,7 +381,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		CaseChange,
 		SlashCommand
 	],
-	licenseKey: '<LICENSE_KEY>', // Replace this with your license key.
+	licenseKey: '<YOUR_LICENSE_KEY>', // Replace this with your license key.
 	toolbar: {
 		items: [
 			'undo', 'redo',
@@ -445,4 +446,4 @@ The build size of the project before and after the optimizations is as follows:
 | JavaScript gzipped 	| 343.56 kB           	| 288.84 kB          	| -15.93%     	|
 | CSS gzipped        	| 46.16 kB            	| 28.71 kB           	| -37.80%     	|
 
-Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `386.62 kB` (`72.17 kB` gzipped), which in effect gives us ~75-80% of the original size. These results will vary depending on the features you use.
+Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `386.62 kB` (`72.17 kB` gzipped), which in effect gives us ~75&ndash;80% of the original size. These results will vary depending on the features you use.

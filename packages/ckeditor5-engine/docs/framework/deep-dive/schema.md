@@ -109,7 +109,7 @@ schema.register( 'extendedParent', { inheritAllFrom: 'baseParent', disallowChild
 
 In this case, `extendedChild` will be allowed in `baseParent` (thanks to inheriting from `baseChild`) and in `extendedParent` (as it inherits `baseParent`).
 
-But `baseChild` will be allowed only in `baseParent`. Although `extendedParent` inherits all rules from `baseParent` it specifically disallows `baseChild` as the part of its definition.
+However, `baseChild` will be allowed only in `baseParent`. Although `extendedParent` inherits all rules from `baseParent`, it specifically disallows `baseChild` as part of its definition.
 
 Below is a different example, where instead `baseChild` is extended with `disallowIn` rule:
 
@@ -122,7 +122,7 @@ schema.register( 'extendedChild', { inheritAllFrom: 'baseChild' } );
 schema.extend( 'baseChild', { disallowIn: 'extendedParent' } );
 ```
 
-This changes how schema rules are resolved. `baseChild` will still be disallowed in `extendedParent` as before. But now, `extendedChild` will be disallowed in `extendedParent` as well. That's because it will inherit this rule from `baseChild`, and there is no other rule that would allow `extendedChild` in `extendedParent`. 
+This changes how schema rules are resolved. `baseChild` will still be disallowed in `extendedParent` as before. But now, `extendedChild` will be disallowed in `extendedParent` as well. That is because it will inherit this rule from `baseChild`, and there is no other rule that would allow `extendedChild` in `extendedParent`. 
 
 Of course, you can mix `allowIn` with `disallowChildren` as well as `allowChildren` with `disallowIn`.
 
@@ -687,7 +687,7 @@ Note that the callbacks take precedence over the rules defined through the decla
 
 ### Child checks (structure checks)
 
-Using {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} you can provide function callbacks in order to implement specific advanced rules for checking the model structure.
+Using {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} you can provide function callbacks to implement specific advanced rules for checking the model structure.
 
 You can provide callbacks that are fired only when a specific child is checked, or generic callbacks fired for all checks performed by the schema.
 
@@ -713,7 +713,7 @@ Note that a callback may return `true`, `false`, or no value (`undefined`). If `
 
 In some cases, you may need to define a generic listener that will be fired on every schema check.
 
-For instance, to disallow all block objects (e.g. tables) inside a block quotes, you can define following callback:
+For instance, to disallow all block objects (for example tables) inside a block quotes, you can define following callback:
 
 ```js
 schema.addChildCheck( ( context, childDefinition ) => {

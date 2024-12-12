@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals ClassicEditor, CKEditorPlugins, console, window, document */
@@ -53,7 +53,8 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		placeholder: 'Insert the new table with the default styles applied.'
+		placeholder: 'Insert the new table with the default styles applied.',
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editorDefaultStyles = editor;

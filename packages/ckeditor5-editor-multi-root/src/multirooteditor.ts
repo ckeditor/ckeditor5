@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -49,6 +49,13 @@ import {
  * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
  */
 export default class MultiRootEditor extends Editor {
+	/**
+	 * @inheritDoc
+	 */
+	public static override get editorName(): 'MultiRootEditor' {
+		return 'MultiRootEditor';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

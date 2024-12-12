@@ -1,6 +1,7 @@
 ---
 category: setup
-meta-title: Getting and setting data | CKEditor 5 documentation
+meta-title: Getting and setting data | CKEditor 5 Documentation
+meta-description: Deep-dive into handling data with CKEditor 5.
 order: 10
 ---
 
@@ -32,6 +33,7 @@ However, if you cannot alter the HTML or you load the data asynchronously using 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ],
 		initialData: '<p>Hello, world!</p>'
@@ -42,7 +44,7 @@ ClassicEditor
 
 The {@link module:core/editor/editorconfig~EditorConfig.initialData `initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
 
-If you are setting up the editor with integrations like {@link getting-started/integrations/react React}, consult the documentation for additional properties provided to initialize the data.
+If you are setting up the editor with integrations like {@link getting-started/integrations/react-default-npm React}, consult the documentation for additional properties provided to initialize the data.
 
 ## Getting the editor data with `getData()`
 
@@ -59,6 +61,7 @@ let editor;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ]
 	} )
@@ -102,6 +105,7 @@ This approach is **only available in the Classic editor**, and only if the edito
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Classic editor</title>
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 </head>
 <body>
 	<h1>Classic editor</h1>
@@ -111,25 +115,18 @@ This approach is **only available in the Classic editor**, and only if the edito
 		</textarea>
 		<p><input type="submit" value="Submit"></p>
 	</form>
-	<script type="importmap">
-		{
-			"imports": {
-				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
-			}
-		}
-	</script>
-	<script type="module">
-	  	import {
+	<script>
+	  	const {
 			ClassicEditor,
 			Essentials,
 			Paragraph,
 			Bold,
 			Italic
-		} from 'ckeditor5';
+		} = CKEDITOR;
 
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
+				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Essentials, Paragraph, Bold, Italic ],
 				toolbar: [ 'bold', 'italic' ]
 			} )
@@ -215,8 +212,8 @@ The example below shows how all these mechanisms can be used together to enable 
 </info-box>
 -->
 
+<code-switcher>
 ```js
-// Note: We need to build the editor from source.
 import { ClassicEditor, PendingActions } from 'ckeditor5';
 
 let isDirty = false;
@@ -313,6 +310,7 @@ function updateStatus( editor ) {
 	}
 }
 ```
+</code-switcher>
 
 How to understand this demo:
 

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -127,7 +127,7 @@ export default class FindAndReplaceUtils extends Plugin {
 	 * @returns The text content of the provided range.
 	 */
 	public rangeToText( range: Range ): string {
-		return Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+		return Array.from( range.getItems( { shallow: true } ) ).reduce( ( rangeText, node ) => {
 			// Trim text to a last occurrence of an inline element and update range start.
 			if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) ) {
 				// Editor has only one inline element defined in schema: `<softBreak>` which is treated as new line character in blocks.

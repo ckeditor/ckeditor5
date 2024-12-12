@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals ButtonView, View, document, ClassicEditor, Essentials, Bold, Italic, Underline, Dialog, Paragraph, Plugin, console, window */
@@ -75,7 +75,8 @@ class MinimalisticModal extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#ui-modal-editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, Underline, MinimalisticModal, Dialog ],
-		toolbar: [ 'bold', 'italic', 'underline', '|', 'showModal' ]
+		toolbar: [ 'bold', 'italic', 'underline', '|', 'showModal' ],
+		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.attachTourBalloon( {

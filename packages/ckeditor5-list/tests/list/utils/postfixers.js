@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import {
@@ -9,7 +9,7 @@ import {
 	fixListItemIds
 } from '../../../src/list/utils/postfixers.js';
 import {
-	iterateSiblingListBlocks
+	SiblingListBlocksIterator
 } from '../../../src/list/utils/listwalker.js';
 import stubUid from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
@@ -42,9 +42,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 1 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -61,9 +62,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 2 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -80,9 +82,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -100,11 +103,12 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			itemToListHead.set( fragment.getChild( 2 ), fragment.getChild( 1 ) );
+			itemToListHead.add( fragment.getChild( 1 ) );
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -122,11 +126,12 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			itemToListHead.set( fragment.getChild( 2 ), fragment.getChild( 1 ) );
+			itemToListHead.add( fragment.getChild( 1 ) );
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -144,9 +149,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -165,9 +171,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 5 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -187,9 +194,10 @@ describe( 'List - utils - postfixers', () => {
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
-			const itemToListHead = new Map();
+			const itemToListHead = new Set();
+			const visited = new Set();
 
-			findAndAddListHeadToMap( position, itemToListHead );
+			findAndAddListHeadToMap( position, itemToListHead, visited );
 
 			const heads = Array.from( itemToListHead.values() );
 
@@ -207,7 +215,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 1 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 1 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -226,7 +234,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -246,7 +254,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -266,7 +274,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -287,7 +295,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -312,7 +320,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -339,7 +347,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -365,7 +373,7 @@ describe( 'List - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 1 ).getChild( 0 ) ), writer );
+				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 1 ).getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
@@ -393,7 +401,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -415,7 +423,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -438,7 +446,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -461,7 +469,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -484,7 +492,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -508,7 +516,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -537,7 +545,7 @@ describe( 'List - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -567,7 +575,7 @@ describe( 'List - utils - postfixers', () => {
 			seenIds.add( 'b' );
 
 			model.change( writer => {
-				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
+				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -566,6 +566,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'insertInline',
  * 				items: [
  * 					'menuBar:link',
+ * 					'menuBar:bookmark',
  * 					'menuBar:comment',
  * 					'menuBar:insertMergeField'
  * 				]
@@ -823,6 +824,7 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'insertInline',
 				items: [
 					'menuBar:link',
+					'menuBar:bookmark',
 					'menuBar:comment',
 					'menuBar:insertMergeField'
 				]

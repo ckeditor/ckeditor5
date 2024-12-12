@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -371,7 +371,7 @@ export default class PluginCollection<TContext extends object>
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
 			 * provide each plugin through a reference (as a constructor function). Check out the examples in the
-			 * {@glink getting-started/installation/quick-start Quick start} guide.
+			 * {@glink getting-started/installation/cloud/quick-start Quick start} guide.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param plugin The name of the plugin which could not be loaded.

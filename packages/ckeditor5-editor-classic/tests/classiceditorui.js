@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, document, Event, console */
@@ -613,6 +613,32 @@ describe( 'ClassicEditorUI', () => {
 
 				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
 				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '5px' );
+			} );
+
+			it( 'should not move the dialog if it is a modal', async () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				dialogPlugin.show( {
+					label: 'Foo',
+					isModal: true,
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 100,
+					bottom: 50,
+					left: 0,
+					width: 100,
+					height: 50
+				} );
+
+				// Automatic positioning of the dialog on first show takes a while.
+				await wait( 20 );
+
+				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '15px' );
 			} );
 		} );
 	} );

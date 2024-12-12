@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import '@ckeditor/ckeditor5-theme-lark/theme/index.css';
@@ -11,6 +11,7 @@ export * from '@ckeditor/ckeditor5-autoformat';
 export * from '@ckeditor/ckeditor5-autosave';
 export * from '@ckeditor/ckeditor5-basic-styles';
 export * from '@ckeditor/ckeditor5-block-quote';
+export * from '@ckeditor/ckeditor5-bookmark';
 export * from '@ckeditor/ckeditor5-ckbox';
 export * from '@ckeditor/ckeditor5-ckfinder';
 export * from '@ckeditor/ckeditor5-clipboard';

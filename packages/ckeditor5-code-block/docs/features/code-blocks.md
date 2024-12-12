@@ -29,19 +29,25 @@ Each code block has a [specific programming language assigned](#configuring-code
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, CodeBlock } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ CodeBlock, /* ... */ ],
 		toolbar: [ 'codeBlock', /* ... */ ]
+		codeBlock: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring code block languages
 
@@ -56,6 +62,7 @@ It is possible to configure which languages are available to the users. You can 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
 				{ language: 'css', label: 'CSS' },
@@ -74,6 +81,7 @@ By default, the CSS class of the `<code>` element in the data and editing is gen
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
 				// Do not render the CSS class for the plain text code blocks.

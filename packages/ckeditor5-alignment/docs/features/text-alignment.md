@@ -26,19 +26,25 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Alignment } from 'ckeditor5';
 
 ClassicEditor.
 	create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL'.
 		plugins: [ Alignment, /* ... */ ],
 		toolbar: [ 'alignment', /* ... */ ]
+		alignment: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 ## Configuring alignment options
 
@@ -55,6 +61,7 @@ For example, the following editor will support two alignment options: to the lef
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		alignment: {
 			options: [ 'left', 'right' ]
 		},
@@ -81,6 +88,7 @@ The following configuration will set `.my-align-left` and `.my-align-right` to l
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		alignment: {
 			options: [
 				{ name: 'left', className: 'my-align-left' },
@@ -102,6 +110,7 @@ You can choose to use the alignment dropdown (`'alignment'`) or configure the to
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: [
 			'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
 		]

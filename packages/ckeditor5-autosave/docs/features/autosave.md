@@ -37,32 +37,27 @@ How to understand this demo:
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list.
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list.
 
 Assuming that you have implemented some form of the `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
 
+<code-switcher>
 ```js
 import { ClassicEditor, Autosave } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Autosave,
-
-			// ... other plugins.
-		],
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Autosave, /* ... */ ],
 
 		autosave: {
-			save( editor ) {
-				return saveData( editor.getData() );
-			}
-		},
-
-		// ... other configuration options.
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 The autosave feature listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event, throttles it, and executes the {@link module:autosave/autosave~AutosaveConfig#save `config.autosave.save()`} function.
 
@@ -82,12 +77,11 @@ One second is the default waiting time before the next save action if nothing ha
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		autosave: {
 			waitingTime: 5000, // in ms
 			save( editor ) {}
 		},
-
-		// ... other configuration options.
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -100,12 +94,7 @@ The demo example at the beginning of this guide shows a simple integration of th
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Autosave,
-
-			// ... other plugins.
-		],
-
+		// ... Other configuration options ...
 		autosave: {
 			save( editor ) {
 				return saveData( editor.getData() );

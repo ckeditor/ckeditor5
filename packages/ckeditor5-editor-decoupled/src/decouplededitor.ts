@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -41,6 +41,13 @@ import { isElement as _isElement } from 'lodash-es';
  * after the editor is initialized.
  */
 export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+	/**
+	 * @inheritDoc
+	 */
+	public static override get editorName(): 'DecoupledEditor' {
+		return 'DecoupledEditor';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

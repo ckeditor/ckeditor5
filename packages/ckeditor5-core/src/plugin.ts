@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -145,6 +145,7 @@ export default class Plugin extends /* #__PURE__ */ ObservableMixin() implements
 
 	/**
 	 * @inheritDoc
+	 * @internal
 	 */
 	public static get isOfficialPlugin(): boolean {
 		return false;
@@ -152,6 +153,7 @@ export default class Plugin extends /* #__PURE__ */ ObservableMixin() implements
 
 	/**
 	 * @inheritDoc
+	 * @internal
 	 */
 	public static get isPremiumPlugin(): boolean {
 		return false;
@@ -331,11 +333,15 @@ export interface PluginStaticMembers<TContext = Editor> {
 
 	/**
 	 * A flag which defines if a plugin is an official CKEditor 5 plugin.
+	 *
+	 * @internal
 	 */
 	readonly isOfficialPlugin?: boolean;
 
 	/**
 	 * A flag which defines if a plugin is a premium CKEditor 5 plugin.
+	 *
+	 * @internal
 	 */
 	readonly isPremiumPlugin?: boolean;
 }

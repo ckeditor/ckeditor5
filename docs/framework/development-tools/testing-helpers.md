@@ -18,6 +18,7 @@ They allow for "stringifying" the {@link framework/architecture/editing-engine#m
 
 For instance, to take a peek at the editor model, you could use the {@link module:engine/dev-utils/model~getData `getData()`} helper:
 
+<code-switcher>
 ```js
 import { _getModelData } from 'ckeditor5';
 
@@ -31,5 +32,6 @@ ClassicEditor
 		// -> '<paragraph>[]Hello <$text bold="true">world</$text>!</paragraph>'
 	} );
 ```
+</code-switcher>
 
 See the {@link module:engine/dev-utils/model~getData helper documentation} to learn more about useful options.

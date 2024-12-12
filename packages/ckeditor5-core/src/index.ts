@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -120,6 +120,11 @@ import outdent from './../theme/icons/outdent.svg';
 
 import table from './../theme/icons/table.svg';
 
+import remove from './../theme/icons/remove.svg';
+
+import bookmark from './../theme/icons/bookmark.svg';
+import bookmarkInline from './../theme/icons/bookmark_inline.svg';
+
 export const icons = {
 	bold,
 	cancel,
@@ -196,7 +201,12 @@ export const icons = {
 	indent,
 	outdent,
 
-	table
+	table,
+
+	remove,
+
+	bookmark,
+	bookmarkInline
 };
 
 import './augmentation.js';
