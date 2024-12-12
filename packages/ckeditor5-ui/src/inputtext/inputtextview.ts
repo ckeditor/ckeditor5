@@ -26,8 +26,7 @@ export default class InputTextView extends InputView {
 				type: 'text',
 				class: [
 					'ck-input-text'
-				],
-				required: true
+				]
 			}
 		} );
 	}

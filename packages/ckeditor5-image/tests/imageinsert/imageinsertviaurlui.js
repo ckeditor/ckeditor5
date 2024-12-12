@@ -120,6 +120,11 @@ describe( 'ImageInsertViaUrlUI', () => {
 			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
 		} );
 
+		it( 'has submittable form', () => {
+			expect( dialog.view.element.querySelector( 'form.ck-dialog' ) ).to.exist;
+			expect( acceptButton.type ).to.equal( 'submit' );
+		} );
+
 		it( 'should bind #isImageSelected', () => {
 			expect( urlView.isImageSelected ).to.be.false;
 
@@ -186,6 +191,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 		testSubmit( 'accept button', () => acceptButton.fire( 'execute' ) );
 
+		// Can not be checked by simulating enter click because of unit test limitations
 		testSubmit( 'form submit (enter key)', () => {
 			const form = dialog.view.contentView.children.get( 0 );
 
