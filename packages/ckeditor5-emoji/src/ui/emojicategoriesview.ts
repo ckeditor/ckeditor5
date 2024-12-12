@@ -164,9 +164,13 @@ export default class EmojiCategoriesView extends View {
 					buttonViewInnerLoop.element!.classList.remove( ACTIVE_CATEGORY_CLASS );
 				} );
 
-				const clickedButtonTooltip = ( event.target as HTMLElement ).dataset.ckeTooltipText;
+				let eventTarget = ( event.target as HTMLElement );
 
-				if ( buttonView.tooltip === clickedButtonTooltip ) {
+				if ( eventTarget.nodeName === 'SPAN' ) {
+					eventTarget = eventTarget.parentElement!;
+				}
+
+				if ( buttonView.tooltip === eventTarget.dataset.ckeTooltipText ) {
 					buttonView.element!.classList.add( ACTIVE_CATEGORY_CLASS );
 				}
 			} );
