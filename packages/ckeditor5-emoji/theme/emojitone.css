@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-emoji-input {
-	padding: 10px;
-	width: 100%;
-	/* margin: auto; */
+.ck.ck-emoji-tone {
+	button.ck.ck-button.ck-button_with-text {
+		width: fit-content;
 
-	& .ck-input {
-		width: 100%;
+		> span.ck.ck-button__label {
+			width: fit-content;
+		}
 	}
 }

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import '../../theme/emojisearchview.css';
-
 import { View, createLabeledInputText, LabeledFieldView, type InputView } from 'ckeditor5/src/ui.js';
 import { type Locale } from 'ckeditor5/src/utils.js';
 
@@ -58,6 +56,7 @@ export default class EmojiSearchView extends View {
 
 	public setSearchQuery( searchQuery: string ): void {
 		this._findInputView.fieldView.element!.value = searchQuery;
+		this._findInputView.fieldView.isEmpty = searchQuery.length ? false : true;
 	}
 }
 

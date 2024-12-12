@@ -13,6 +13,8 @@ import type EmojiGridView from './emojigridview.js';
 import type EmojiCategoriesView from './emojicategoriesview.js';
 import type EmojiSearchView from './emojisearchview.js';
 import type EmojiInfoView from './emojiinfoview.js';
+import type EmojiToneView from './emojitoneview.js';
+import type { DropdownPanelContent } from '../emojipicker.js';
 
 /**
  * A view that glues pieces of the special characters dropdown panel together:
@@ -48,6 +50,11 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	public searchView: EmojiSearchView;
 
 	/**
+	 * An instance of the `EmojiToneView`.
+	 */
+	public toneView: EmojiToneView;
+
+	/**
 	 * An instance of the `EmojiCategoriesView`.
 	 */
 	public categoriesView: EmojiCategoriesView;
@@ -65,19 +72,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * Creates an instance of the `EmojiPickerView`.
 	 */
-	constructor(
-		locale: Locale,
-		searchView: EmojiSearchView,
-		categoriesView: EmojiCategoriesView,
-		gridView: EmojiGridView,
-		infoView: EmojiInfoView
-	) {
+	constructor( locale: Locale, dropdownPanelContent: DropdownPanelContent ) {
 		super( locale );
 
-		this.searchView = searchView;
-		this.categoriesView = categoriesView;
-		this.gridView = gridView;
-		this.infoView = infoView;
+		this.searchView = dropdownPanelContent.searchView;
+		this.toneView = dropdownPanelContent.toneView;
+		this.categoriesView = dropdownPanelContent.categoriesView;
+		this.gridView = dropdownPanelContent.gridView;
+		this.infoView = dropdownPanelContent.infoView;
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
@@ -95,7 +97,16 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.setTemplate( {
 			tag: 'div',
 			children: [
-				this.searchView,
+				{
+					tag: 'div',
+					children: [
+						this.searchView,
+						this.toneView
+					],
+					attributes: {
+						class: [ 'ck', 'ck-search-tone-wrapper' ]
+					}
+				},
 				this.categoriesView,
 				this.gridView,
 				this.infoView
@@ -108,6 +119,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		} );
 
 		this.items.add( this.searchView );
+		this.items.add( this.toneView );
 		this.items.add( this.categoriesView );
 		this.items.add( this.gridView );
 	}
@@ -118,8 +130,8 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	public override render(): void {
 		super.render();
 
-		// TODO: categories should not be focusable when search query is active
 		this.focusTracker.add( this.searchView.element! );
+		this.focusTracker.add( this.toneView.element! );
 		this.focusTracker.add( this.categoriesView.element! );
 		this.focusTracker.add( this.gridView.element! );
 

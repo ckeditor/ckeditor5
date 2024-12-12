@@ -7,6 +7,10 @@
  * @module emoji/ui/specialcharacterscategoriesview
  */
 
+import '../../theme/emojicategories.css';
+
+const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
+
 import {
 	KeystrokeHandler,
 	FocusTracker,
@@ -130,7 +134,6 @@ export default class EmojiCategoriesView extends View {
 
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = true;
-			this._focusTracker.add( buttonView );
 		} );
 	}
 
@@ -143,7 +146,6 @@ export default class EmojiCategoriesView extends View {
 
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = false;
-			this._focusTracker.remove( buttonView );
 		} );
 	}
 
@@ -151,8 +153,22 @@ export default class EmojiCategoriesView extends View {
 		this._buttonViews.forEach( buttonView => {
 			this._focusTracker.add( buttonView );
 
-			buttonView.element!.addEventListener( 'click', () => {
+			if ( buttonView.tooltip === this.currentGroupName ) {
+				buttonView.element!.classList.add( ACTIVE_CATEGORY_CLASS );
+			}
+
+			buttonView.element!.addEventListener( 'click', event => {
 				this.currentGroupName = buttonView.tooltip as string;
+
+				this._buttonViews.forEach( buttonViewInnerLoop => {
+					buttonViewInnerLoop.element!.classList.remove( ACTIVE_CATEGORY_CLASS );
+				} );
+
+				const clickedButtonTooltip = ( event.target as HTMLElement ).dataset.ckeTooltipText;
+
+				if ( buttonView.tooltip === clickedButtonTooltip ) {
+					buttonView.element!.classList.add( ACTIVE_CATEGORY_CLASS );
+				}
 			} );
 		} );
 	}
