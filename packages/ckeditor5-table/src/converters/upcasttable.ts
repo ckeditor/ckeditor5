@@ -241,14 +241,26 @@ function scanTable( viewTable: ViewElement ) {
 			( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
 		);
 
+		// Keep tracking of the previous row columns to improve detection of heading rows.
+		let prevTrColumns: Array<ViewNode> | null = null;
+
 		for ( const tr of trs ) {
+			const trColumns = Array
+				.from( tr.getChildren() )
+				.filter( el => el.is( 'element', 'td' ) || el.is( 'element', 'th' ) );
+
 			// This <tr> is a child of a first <thead> element.
 			if (
 				( firstTheadElement && tableChild === firstTheadElement ) ||
 				(
 					tableChild.name === 'tbody' &&
-					Array.from( tr.getChildren() ).length &&
-					Array.from( tr.getChildren() ).every( e => e.is( 'element', 'th' ) )
+					trColumns.length > 0 &&
+					// These conditions handles the case when the first column is a <th> element and it's the only column in the row.
+					// This case is problematic because it's not clear if this row should be a heading row or not, as it may be result
+					// of the cell span from the previous row.
+					// Issue: https://github.com/ckeditor/ckeditor5/issues/17556
+					( prevTrColumns === null || trColumns.length === prevTrColumns.length ) &&
+					trColumns.every( e => e.is( 'element', 'th' ) )
 				)
 			) {
 				headingRows++;
@@ -263,6 +275,8 @@ function scanTable( viewTable: ViewElement ) {
 					headingColumns = headingCols;
 				}
 			}
+
+			prevTrColumns = trColumns;
 		}
 	}
 
