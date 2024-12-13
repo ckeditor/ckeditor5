@@ -698,10 +698,15 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 				// `<strong>` and continue traversing in `<p>`.
 				//
 				if ( viewParent == viewContainer ) {
-					// TODO
-					throw 'Reached end';
+					/**
+					 * A model position could not be mapped to the view because specified model offset was too big and could not be
+					 * found inside the mapped view element or view document fragment.
+					 *
+					 * @error mapping-model-offset-not-found
+					 */
+					throw new CKEditorError( 'mapping-model-offset-not-found', this, { modelOffset: targetModelOffset, viewContainer } );
 				} else {
-					viewOffset = viewParent.parent!.getChildIndex( viewParent as ViewElement );
+					viewOffset = viewParent.parent!.getChildIndex( viewParent as ViewElement ) + 1;
 					viewParent = viewParent.parent!;
 
 					continue;
@@ -920,6 +925,22 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 * `viewContainer` must be a view element or document fragment that is mapped by the {@link ~Mapper Mapper}.
 	 *
 	 * If `viewContainer` is not yet tracked by the `MapperCache`, it will be automatically tracked after calling this method.
+	 *
+	 * Note: this method will automatically "hoist" cached positions, i.e. it will return a position that is closest to the tracked element.
+	 *
+	 * For example, if `<p>` is tracked element, and `^` is cached position:
+	 *
+	 * ```
+	 * <p>This is <strong>some <em>heavily <u>formatted</u>^</em></strong> text.</p>
+	 * ```
+	 *
+	 * If this position would be returned, instead, a position directly in `<p>` would be returned:
+	 *
+	 * ```
+	 * <p>This is <strong>some <em>heavily <u>formatted</u></em></strong>^ text.</p>
+	 * ```
+	 *
+	 * Note, that `modelOffset` for both positions is the same.
 	 *
 	 * @param viewContainer Tracked view element or document fragment, which cache will be used.
 	 * @param modelOffset Model offset in a model element or document fragment, which is mapped to `viewContainer`.

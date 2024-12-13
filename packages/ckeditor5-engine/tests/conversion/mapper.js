@@ -468,6 +468,72 @@ describe( 'Mapper', () => {
 			it( 'should transform modelP 9', () => createToViewTest( modelP, 9, viewTextB, 1 ) );
 			it( 'should transform modelP 10', () => createToViewTest( modelP, 10, viewTextM, 0 ) );
 			it( 'should transform modelP 11', () => createToViewTest( modelP, 11, viewP, 5 ) );
+
+			// Below tests a particular code execution path that can happen only if cache for given mapped element ends deep (in view)
+			// in that element while we request mapping that reaches somewhere further in this model element.
+			it( 'should transform modelDiv 2 starting from nested cache', () => {
+				// We need to create a different model and view for this sample as the one used in other tests cannot reproduce this.
+				//
+				// View structure is:
+				//
+				// <p>
+				//   ├─ a
+				//   ├─ <b>
+				//   │   ├─ b
+				//   │   ├─ <u>
+				//   │   │   └─ c
+				//   │   ├─ <i>
+				//   │   │   └─ d
+				//   │   └─ e
+				//   └─ f
+				//
+				const modelP2 = new ModelElement( 'paragraph', {}, [
+					new ModelText( 'a' ),
+					new ModelText( 'b', { b: true } ),
+					new ModelText( 'c', { b: true, u: true } ),
+					new ModelText( 'd', { b: true, i: true } ),
+					new ModelText( 'e', { b: true } ),
+					new ModelText( 'f' )
+				] );
+
+				const viewTextA = new ViewText( viewDocument, 'a' );
+				const viewTextB = new ViewText( viewDocument, 'b' );
+				const viewTextC = new ViewText( viewDocument, 'c' );
+				const viewTextD = new ViewText( viewDocument, 'd' );
+				const viewTextE = new ViewText( viewDocument, 'e' );
+				const viewTextF = new ViewText( viewDocument, 'f' );
+
+				const viewU = new ViewElement( viewDocument, 'i', {}, [ viewTextC ] );
+				const viewI = new ViewElement( viewDocument, 'i', {}, [ viewTextD ] );
+				const viewB = new ViewElement( viewDocument, 'b', {}, [ viewTextB, viewU, viewI, viewTextE ] );
+
+				const viewP2 = new ViewElement( viewDocument, 'p', {}, [ viewTextA, viewB, viewTextF ] );
+
+				mapper.bindElements( modelP2, viewP2 );
+
+				// Since tests in this suite are artificial and the view and model is modified directly, the scenario is easier to simulate.
+				//
+				// First request some mappings to build whole cache.
+				//
+				mapper.toViewPosition( ModelPosition._createAt( modelP2, 1 ) );
+				mapper.toViewPosition( ModelPosition._createAt( modelP2, 2 ) );
+				mapper.toViewPosition( ModelPosition._createAt( modelP2, 3 ) );
+				mapper.toViewPosition( ModelPosition._createAt( modelP2, 4 ) );
+				mapper.toViewPosition( ModelPosition._createAt( modelP2, 5 ) );
+				mapper.toViewPosition( ModelPosition._createAt( modelP2, 6 ) );
+				//
+				// Then we will invalidate part of the cache by adding another letter to `<i>`.
+				//
+				modelP2._removeChildren( 3, 1 );
+				modelP2._insertChild( 3, new ModelText( 'dd', { b: true, i: true } ) );
+				viewTextD._data = 'dd';
+				//
+				// After invalidation the cache will end before `<i>`: `<p>a<b>b<u>c</u>|<i>dd</i>e</b>f</p>`
+				//
+				// Then, again request mapping for model offset at the end of `<paragraph>`.
+				// This way, `Mapper` will start looking side `viewU` and will have to "traverse up" into `<p>` after reaching end of `<b>`.
+				createToViewTest( modelP2, 7, viewTextF, 1 );
+			} );
 		} );
 
 		describe( 'toModelRange', () => {
@@ -492,6 +558,12 @@ describe( 'Mapper', () => {
 			} );
 		} );
 
+		it( 'should throw if model offset is to big and cannot be found in mapped view element', () => {
+			expect( () => {
+				mapper.findPositionIn( viewDiv, 5 );
+			} ).to.throw( CKEditorError, 'mapping-model-offset-not-found' );
+		} );
+
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
@@ -513,7 +585,7 @@ describe( 'Mapper', () => {
 			viewTextX, viewTextFOO, viewTextZZ, viewTextLABEL,
 			mapper;
 
-		before( () => {
+		beforeEach( () => {
 			// Tree Model:
 			//
 			// <div>                 ---> modelDiv
@@ -959,6 +1031,14 @@ describe( 'MapperCache', () => {
 			check( 5, viewSpan, 1, 4 );
 			check( 7, viewContainer, 2, 6 );
 			check( 9, viewContainer, 3, 8 );
+		} );
+
+		it( 'should hoist returned position', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewEm, 1, viewContainer, 6 );
+
+			check( 6, viewContainer, 2, 6 );
 		} );
 	} );
 
