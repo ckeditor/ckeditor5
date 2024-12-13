@@ -21,11 +21,11 @@ We still actively work in this area, so you may expect even more editor load and
 
 * **Comments enhancements**:
     * **Data export options**: We introduced the `showCommentHighlights` option in `editor.getData()`, that changes the comment marker conversion, allowing for styling comments in the output. Perfect for showing what was commented in [Export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html), for example.
-    * **Inline mode improvements**: We addressed a problem where comment annotations in inline mode did not close properly when clicking elsewhere in the content, enhancing user interaction.
+    * **Inline mode improvements**: We addressed a problem where comment annotations in inline mode did not close properly when clicking elsewhere in the content.
     * **Thread management**: We resolved an issue where creating a new thread was not interrupted when the corresponding marker was removed from the content, ensuring better stability during collaborative editing.
 * **Revision History update**:
     * **Restore functionality**: We disabled the ability to restore the current (edited and not saved) revision, as it was illogical and led to some non-obvious behaviors.
-* **Image handling**: We resolved an issue where images in the uploading state could be deleted when dragged and dropped within the editor. Keep dragging, even when it’s not there 🙈.
+* **Image handling**: We resolved an issue where images in the uploading state could be deleted when dragged and dropped within the editor. Keep dragging, even when it is not there 🙈.
 
 ### 🎄
 
@@ -33,7 +33,7 @@ As the holiday season approaches, we extend our warmest wishes to our community 
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: `spliceArray` now modifies the target array and doesn't accept a fourth (`count`) argument.
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: `spliceArray` now modifies the target array and does not accept a fourth (`count`) argument.
 
 ### Features
 
@@ -41,7 +41,7 @@ As the holiday season approaches, we extend our warmest wishes to our community 
 
 ### Bug fixes
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Resolved an issue where creating a new thread was not interrupted when the corresponding marker was removed from the content, i.e. by another user in real-time collaboration.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Resolved an issue where creating a new thread was not interrupted when the corresponding marker was removed from the content, for example, by another user in real-time collaboration.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: When adding a comment in inline mode, the comment annotation will now close properly if you click elsewhere in the content.
 * **[find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: It should be possible to search within content of inline widgets. Closes [#11162](https://github.com/ckeditor/ckeditor5/issues/11162). ([commit](https://github.com/ckeditor/ckeditor5/commit/f11133513d5dff837e71a4ba97b5b7d7ec7aa4e8))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Copying and pasting images in the uploading state is now possible. Closes [#16967](https://github.com/ckeditor/ckeditor5/issues/16967). ([commit](https://github.com/ckeditor/ckeditor5/commit/6c8c6bc8b4fb0a1b3a851258421f81fc8f41b312))
@@ -51,7 +51,7 @@ As the holiday season approaches, we extend our warmest wishes to our community 
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved performance of `NodeList#_insertNodes()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/fbf4a17f95bb48d8054c70e05012181edc766444))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved performance of the `Mapper#getModelLength()` method. ([commit](https://github.com/ckeditor/ckeditor5/commit/d5cb66c523bd007aff289e0c7ed94ef54e0a268e))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Performance improvements to `StylesMap` and `UpcastDispatcher#_removeEmptyElements`. ([commit](https://github.com/ckeditor/ckeditor5/commit/cce3ce9a46b003528f61d614327d53cf0c393b31))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved performance of `StylesMap` and `UpcastDispatcher#_removeEmptyElements`. ([commit](https://github.com/ckeditor/ckeditor5/commit/cce3ce9a46b003528f61d614327d53cf0c393b31))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Small performance optimizations. ([commit](https://github.com/ckeditor/ckeditor5/commit/48b66c2082cda039ed203531e28ab14497b66ed4))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Exported the `ensureSafeUrl()` function from the `@ckeditor/ckeditor5-link` package. ([commit](https://github.com/ckeditor/ckeditor5/commit/6e1d2898cda7ab518baaab77ef02360eb02a3284))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Use iterator instead of generator in `ListWalker` for better performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/7a49b806e860a26d1afd4615a9333425bc33ec82))
