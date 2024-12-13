@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-character-grid {
+.ck.ck-emoji-grid {
 	max-width: 100%;
 	max-height: 350px;
 
-	& .ck-character-grid__tiles {
+	& .ck-emoji-grid__tiles {
 		display: grid;
 	}
 }
 
-.ck.ck-character-nothing-found {
+.ck.ck-emoji-nothing-found {
 	margin: auto;
 	display: block;
 	width: fit-content;
 }
 
-.ck.ck-character-nothing-found.hidden {
+.ck.ck-emoji-nothing-found.hidden {
 	display: none;
 }

@@ -17,11 +17,7 @@ import type EmojiToneView from './emojitoneview.js';
 import type { DropdownPanelContent } from '../emojipicker.js';
 
 /**
- * A view that glues pieces of the special characters dropdown panel together:
- *
- * * the navigation view (allows selecting the category),
- * * the grid view (displays characters as a grid),
- * * and the info view (displays detailed info about a specific character).
+ * A view that glues pieces of the emoji dropdown panel together.
  */
 export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
@@ -70,7 +66,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	public infoView: EmojiInfoView;
 
 	/**
-	 * Creates an instance of the `EmojiPickerView`.
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale, dropdownPanelContent: DropdownPanelContent ) {
 		super( locale );

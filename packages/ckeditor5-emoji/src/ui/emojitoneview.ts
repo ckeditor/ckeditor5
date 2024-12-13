@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module emoji/ui/emojitoneview
+ */
+
 import '../../theme/emojitone.css';
 
 import {
@@ -33,11 +37,7 @@ export default class EmojiToneView extends View {
 	private _dropdownButton: DropdownButtonView;
 
 	/**
-	 * Creates an instance of the {@link module:emoji/ui/specialcharacterscategoriesview~EmojiCategoriesView}
-	 * class.
-	 *
-	 * @param locale The localization services instance.
-	 * @param groupNames The names of the character groups.
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale, defaultSkinTone: SkinToneId ) {
 		super( locale );

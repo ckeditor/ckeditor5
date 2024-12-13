@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module emoji/ui/emojisearchview
+ */
+
 import { View, createLabeledInputText, LabeledFieldView, type InputView } from 'ckeditor5/src/ui.js';
 import { type Locale } from 'ckeditor5/src/utils.js';
 
@@ -14,6 +18,9 @@ export default class EmojiSearchView extends View {
 	 */
 	public readonly _findInputView: LabeledFieldView<InputView>;
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale: Locale ) {
 		super( locale );
 
@@ -34,6 +41,11 @@ export default class EmojiSearchView extends View {
 		this._findInputView.focus();
 	}
 
+	public setSearchQuery( searchQuery: string ): void {
+		this._findInputView.fieldView.element!.value = searchQuery;
+		this._findInputView.fieldView.isEmpty = searchQuery.length ? false : true;
+	}
+
 	/**
 	 * Creates a labeled input view.
 	 *
@@ -52,11 +64,6 @@ export default class EmojiSearchView extends View {
 		labeledInput.label = label;
 
 		return labeledInput;
-	}
-
-	public setSearchQuery( searchQuery: string ): void {
-		this._findInputView.fieldView.element!.value = searchQuery;
-		this._findInputView.fieldView.isEmpty = searchQuery.length ? false : true;
 	}
 }
 

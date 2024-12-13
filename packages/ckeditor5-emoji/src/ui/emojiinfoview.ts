@@ -4,48 +4,50 @@
  */
 
 /**
- * @module emoji/ui/characterinfoview
+ * @module emoji/ui/emojiinfoview
  */
 
 import type { Locale } from 'ckeditor5/src/utils.js';
 import { View } from 'ckeditor5/src/ui.js';
 
-import '../../theme/characterinfo.css';
+import '../../theme/emojiinfo.css';
 
 /**
- * The view displaying detailed information about a special character glyph, e.g. upon
- * hovering it with a mouse.
+ * The view displaying detailed information about an emoji e.g. upon hovering it with a mouse.
  */
 export default class EmojiInfoView extends View<HTMLDivElement> {
 	/**
-	 * The character whose information is displayed by the view. For instance, "∑" or "¿".
+	 * The emoji whose information is displayed by the view.
 	 *
 	 * @observable
 	 */
-	declare public character: string | null;
+	declare public emoji: string | null;
 
 	/**
-	 * The name of the {@link #character}. For instance, "N-ary summation" or "Inverted question mark".
+	 * The name of the {@link #emoji}. For instance, "N-ary summation" or "Inverted question mark".
 	 *
 	 * @observable
 	 */
 	declare public name: string | null;
 
 	/**
-	 * The "Unicode string" of the {@link #character}. For instance "U+0061".
+	 * The "Unicode string" of the {@link #emoji}. For instance "U+0061".
 	 *
 	 * @observable
 	 */
 	declare public readonly code: string;
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.set( 'character', null );
+		this.set( 'emoji', null );
 		this.set( 'name', null );
-		this.bind( 'code' ).to( this, 'character', characterToUnicodeString );
+		this.bind( 'code' ).to( this, 'emoji', characterToUnicodeString );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -54,7 +56,7 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 					tag: 'span',
 					attributes: {
 						class: [
-							'ck-character-info__name'
+							'ck-emoji-info__name'
 						]
 					},
 					children: [
@@ -68,7 +70,7 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 					tag: 'span',
 					attributes: {
 						class: [
-							'ck-character-info__code'
+							'ck-emoji-info__code'
 						]
 					},
 					children: [
@@ -81,7 +83,7 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 			attributes: {
 				class: [
 					'ck',
-					'ck-character-info'
+					'ck-emoji-info'
 				]
 			}
 		} );
@@ -95,12 +97,12 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
  *
  * Returns an empty string when the character is `null`.
  */
-function characterToUnicodeString( character: string | null ): string {
-	if ( character === null ) {
+function characterToUnicodeString( emoji: string | null ): string {
+	if ( emoji === null ) {
 		return '';
 	}
 
-	const hexCode = character.codePointAt( 0 )!.toString( 16 );
+	const hexCode = emoji.codePointAt( 0 )!.toString( 16 );
 
 	return 'U+' + ( '0000' + hexCode ).slice( -4 );
 }

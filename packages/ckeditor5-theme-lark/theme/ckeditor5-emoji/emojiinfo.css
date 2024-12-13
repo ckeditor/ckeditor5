@@ -5,7 +5,7 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-character-info {
+.ck.ck-emoji-info {
 	padding: var(--ck-spacing-small) var(--ck-spacing-large);
 	border-top: 1px solid var(--ck-color-base-border);
 
@@ -14,13 +14,13 @@
 		font-size: var(--ck-font-size-small);
 	}
 
-	& .ck-character-info__name {
+	& .ck-emoji-info__name {
 		max-width: 280px;
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	& .ck-character-info__code {
+	& .ck-emoji-info__code {
 		opacity: .6;
 	}
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-character-info {
+.ck.ck-emoji-info {
 	display: flex;
 	justify-content: space-between;
 }

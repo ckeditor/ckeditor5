@@ -4,39 +4,26 @@
  */
 
 /**
- * @module emoji/ui/specialcharacterscategoriesview
+ * @module emoji/ui/emojicategoriesview
  */
 
 import '../../theme/emojicategories.css';
 
-const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
-
-import {
-	KeystrokeHandler,
-	FocusTracker,
-	type Locale
-} from 'ckeditor5/src/utils.js';
-
-import {
-	ButtonView,
-	View,
-	ViewCollection
-} from 'ckeditor5/src/ui.js';
+import { ButtonView, View, ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { EmojiGroup } from '../emojipicker.js';
 
+const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
+
 /**
- * A class representing the navigation part of the special characters UI. It is responsible
- * for describing the feature and allowing the user to select a particular character group.
+ * A class representing the navigation part of the emoji UI.
+ * It is responsible allowing the user to select a particular emoji category.
  */
 export default class EmojiCategoriesView extends View {
 	/**
-	 * Currently selected special characters group's name.
+	 * Currently selected emoji category name.
 	 */
-	declare public currentGroupName: string;
-
-	private _groupNames: Array<string>;
-
-	private _buttonViews: ViewCollection<ButtonView>;
+	declare public currentCategoryName: string;
 
 	/**
 	 * Tracks information about the DOM focus in the grid.
@@ -49,21 +36,19 @@ export default class EmojiCategoriesView extends View {
 	private readonly _keystrokeHandler: KeystrokeHandler;
 
 	private _areCategoriesEnabled: boolean;
+	private _categoryNames: Array<string>;
+	private _buttonViews: ViewCollection<ButtonView>;
 
 	/**
-	 * Creates an instance of the {@link module:emoji/ui/specialcharacterscategoriesview~EmojiCategoriesView}
-	 * class.
-	 *
-	 * @param locale The localization services instance.
-	 * @param groupNames The names of the character groups.
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale, emojiGroups: Array<EmojiGroup> ) {
 		super( locale );
 
 		this._areCategoriesEnabled = true;
 
-		this._groupNames = emojiGroups.map( emojiGroup => emojiGroup.title );
-		this.set( 'currentGroupName', this._groupNames[ 0 ] );
+		this._categoryNames = emojiGroups.map( emojiGroup => emojiGroup.title );
+		this.set( 'currentCategoryName', this._categoryNames[ 0 ] );
 
 		this._buttonViews = new ViewCollection( emojiGroups.map( emojiGroup => {
 			const buttonView = new ButtonView();
@@ -78,7 +63,7 @@ export default class EmojiCategoriesView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-character-categories' ]
+				class: [ 'ck', 'ck-emoji-categories' ]
 			},
 			children: this._buttonViews
 		} );
@@ -153,12 +138,12 @@ export default class EmojiCategoriesView extends View {
 		this._buttonViews.forEach( buttonView => {
 			this._focusTracker.add( buttonView );
 
-			if ( buttonView.tooltip === this.currentGroupName ) {
+			if ( buttonView.tooltip === this.currentCategoryName ) {
 				buttonView.element!.classList.add( ACTIVE_CATEGORY_CLASS );
 			}
 
 			buttonView.element!.addEventListener( 'click', event => {
-				this.currentGroupName = buttonView.tooltip as string;
+				this.currentCategoryName = buttonView.tooltip as string;
 
 				this._buttonViews.forEach( buttonViewInnerLoop => {
 					buttonViewInnerLoop.element!.classList.remove( ACTIVE_CATEGORY_CLASS );

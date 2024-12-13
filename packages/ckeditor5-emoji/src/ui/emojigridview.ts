@@ -4,31 +4,20 @@
  */
 
 /**
- * @module emoji/ui/charactergridview
+ * @module emoji/ui/emojigridview
  */
 
-import {
-	View,
-	ButtonView,
-	addKeyboardHandlingForGrid,
-	type ViewCollection
-} from 'ckeditor5/src/ui.js';
-import {
-	KeystrokeHandler,
-	FocusTracker,
-	global,
-	type Locale
-} from 'ckeditor5/src/utils.js';
+import '../../theme/emojigrid.css';
 
-import '../../theme/charactergrid.css';
+import { addKeyboardHandlingForGrid, ButtonView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 /**
- * A grid of character tiles. It allows browsing special characters and selecting the character to
- * be inserted into the content.
+ * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
  */
 export default class EmojiGridView extends View<HTMLDivElement> {
 	/**
-	 * A collection of the child tile views. Each tile represents a particular character.
+	 * A collection of the child tile views. Each tile represents a particular emoji.
 	 */
 	public readonly tiles: ViewCollection<ButtonView>;
 
@@ -43,9 +32,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * Creates an instance of a character grid containing tiles representing special characters.
-	 *
-	 * @param locale The localization services instance.
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
@@ -60,7 +47,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 					attributes: {
 						class: [
 							'ck',
-							'ck-character-grid__tiles'
+							'ck-emoji-grid__tiles'
 						]
 					},
 					children: this.tiles
@@ -70,7 +57,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 					attributes: {
 						class: [
 							'ck',
-							'ck-character-nothing-found',
+							'ck-emoji-nothing-found',
 							'hidden'
 						]
 					},
@@ -80,7 +67,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 			attributes: {
 				class: [
 					'ck',
-					'ck-character-grid'
+					'ck-emoji-grid'
 				]
 			}
 		} );
@@ -93,7 +80,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 			focusTracker: this.focusTracker,
 			gridItems: this.tiles,
 			numberOfColumns: () => global.window
-				.getComputedStyle( this.element!.firstChild as Element ) // Responsive .ck-character-grid__tiles
+				.getComputedStyle( this.element!.firstChild as Element ) // Responsive .ck-emoji-grid__tiles
 				.getPropertyValue( 'grid-template-columns' )
 				.split( ' ' )
 				.length,
@@ -104,20 +91,18 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	/**
 	 * Creates a new tile for the grid.
 	 *
-	 * @param character A human-readable character displayed as the label (e.g. "ε").
-	 * @param name The name of the character (e.g. "greek small letter epsilon").
+	 * @param emoji The emoji itself.
+	 * @param name The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
 	 */
-	public createTile( character: string, name: string ): ButtonView {
+	public createTile( emoji: string, name: string ): ButtonView {
 		const tile = new ButtonView( this.locale );
 
 		tile.set( {
-			label: character,
+			label: emoji,
 			withText: true,
-			class: 'ck-character-grid__tile'
+			class: 'ck-emoji-grid__tile'
 		} );
 
-		// Labels are vital for the users to understand what character they're looking at.
-		// For now we're using native title attribute for that, see #5817.
 		tile.extendTemplate( {
 			attributes: {
 				title: name
@@ -129,15 +114,15 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 		} );
 
 		tile.on( 'mouseover', () => {
-			this.fire<CharacterGridViewTileHoverEvent>( 'tileHover', { name, character } );
+			this.fire<EmojiGridViewTileHoverEvent>( 'tileHover', { name, emoji } );
 		} );
 
 		tile.on( 'focus', () => {
-			this.fire<CharacterGridViewTileFocusEvent>( 'tileFocus', { name, character } );
+			this.fire<EmojiGridViewTileFocusEvent>( 'tileFocus', { name, emoji } );
 		} );
 
 		tile.on( 'execute', () => {
-			this.fire<CharacterGridViewExecuteEvent>( 'execute', { name, character } );
+			this.fire<EmojiGridViewExecuteEvent>( 'execute', { name, emoji } );
 		} );
 
 		return tile;
@@ -154,7 +139,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 		}
 
 		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
-			const nothingFoundDiv = document.querySelector( '.ck.ck-character-nothing-found' )!;
+			const nothingFoundDiv = document.querySelector( '.ck.ck-emoji-nothing-found' )!;
 
 			if ( this.tiles.length === 0 ) {
 				nothingFoundDiv.classList.remove( 'hidden' );
@@ -201,9 +186,9 @@ export default class EmojiGridView extends View<HTMLDivElement> {
  * @eventName ~EmojiGridView#execute
  * @param data Additional information about the event.
  */
-export type CharacterGridViewExecuteEvent = {
+export type EmojiGridViewExecuteEvent = {
 	name: 'execute';
-	args: [ data: CharacterGridViewEventData ];
+	args: [ data: EmojiGridViewEventData ];
 };
 
 /**
@@ -213,9 +198,9 @@ export type CharacterGridViewExecuteEvent = {
  * @eventName ~EmojiGridView#tileHover
  * @param data Additional information about the event.
  */
-export type CharacterGridViewTileHoverEvent = {
+export type EmojiGridViewTileHoverEvent = {
 	name: 'tileHover';
-	args: [ data: CharacterGridViewEventData ];
+	args: [ data: EmojiGridViewEventData ];
 };
 
 /**
@@ -224,20 +209,20 @@ export type CharacterGridViewTileHoverEvent = {
  * @eventName ~EmojiGridView#tileFocus
  * @param data Additional information about the event.
  */
-export type CharacterGridViewTileFocusEvent = {
+export type EmojiGridViewTileFocusEvent = {
 	name: 'tileFocus';
-	args: [ data: CharacterGridViewEventData ];
+	args: [ data: EmojiGridViewEventData ];
 };
 
-export interface CharacterGridViewEventData {
+export interface EmojiGridViewEventData {
 
 	/**
-	 * The name of the tile that caused the event (e.g. "greek small letter epsilon").
+	 * The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
 	 */
 	name: string;
 
 	/**
-	 * A human-readable character displayed as the label (e.g. "ε").
+	 * The emoji itself.
 	 */
-	character: string;
+	emoji: string;
 }

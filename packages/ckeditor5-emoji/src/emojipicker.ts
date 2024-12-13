@@ -13,9 +13,9 @@ import { Database } from 'emoji-picker-element';
 import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import EmojiGridView, {
-	type CharacterGridViewExecuteEvent,
-	type CharacterGridViewTileFocusEvent,
-	type CharacterGridViewTileHoverEvent
+	type EmojiGridViewExecuteEvent,
+	type EmojiGridViewTileFocusEvent,
+	type EmojiGridViewTileHoverEvent
 } from './ui/emojigridview.js';
 import EmojiSearchView, { type EmojiSearchViewInputEvent } from './ui/emojisearchview.js';
 import EmojiCategoriesView from './ui/emojicategoriesview.js';
@@ -48,19 +48,10 @@ type EmojiItem = {
  * Introduces the `'emoji'` dropdown.
  */
 export default class EmojiPicker extends Plugin {
-	private _searchQuery: string | null;
-
-	private _emojiDatabase: Database;
-
 	/**
-	 * Registered characters. A pair of a character name and its symbol.
+	 * Registered emojis. A pair of an emoji name and all its available skin tone variants.
 	 */
-	private _characters: Map<string, Array<string>>;
-
-	/**
-	 * Registered groups. Each group contains a displayed label and a collection with symbol names.
-	 */
-	private _groups: Map<string, Group>;
+	private _emojis: Map<string, Array<string>>;
 
 	private _emojiGroups: Array<EmojiGroup>;
 
@@ -69,6 +60,10 @@ export default class EmojiPicker extends Plugin {
 	private _emojiPickerView: EmojiPickerView | null;
 
 	private _selectedSkinTone: SkinToneId;
+
+	private _searchQuery: string | null;
+
+	private _emojiDatabase: Database;
 
 	/**
 	 * @inheritDoc
@@ -97,15 +92,12 @@ export default class EmojiPicker extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._searchQuery = null;
-
-		this._characters = new Map();
-		this._groups = new Map();
+		this._emojis = new Map();
 		this._emojiGroups = [];
-
-		this._emojiDatabase = new Database();
 		this._emojiPickerView = null;
 		this._selectedSkinTone = 0;
+		this._searchQuery = null;
+		this._emojiDatabase = new Database();
 	}
 
 	/**
@@ -161,7 +153,7 @@ export default class EmojiPicker extends Plugin {
 					emojis.push( ...item.skins!.sort( ( a, b ) => a.tone - b.tone ).map( item => item.unicode ) );
 				}
 
-				this._characters.set( name, emojis );
+				this._emojis.set( name, emojis );
 
 				return { name, emojis };
 			} )
@@ -188,11 +180,12 @@ export default class EmojiPicker extends Plugin {
 			infoView
 		};
 
-		// Set the initial content of the special characters grid.
+		// Set the initial content of the emoji grid.
 		this._updateGrid( dropdownPanelContent ).then( () => {
 			this._balloon.updatePosition();
 		} );
 
+		// Update the grid of emojis when search query input changes.
 		searchView.on<EmojiSearchViewInputEvent>( 'input', ( evt, data ) => {
 			this._searchQuery = data.value;
 
@@ -201,39 +194,42 @@ export default class EmojiPicker extends Plugin {
 			} );
 		} );
 
-		gridView.on<CharacterGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
-			infoView.set( data );
-		} );
-
-		gridView.on<CharacterGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
-			infoView.set( data );
-		} );
-
-		// Update the grid of special characters when a user changed the character group.
-		categoriesView.on( 'change:currentGroupName', () => {
+		// Update the grid of emojis when selected category changes.
+		categoriesView.on( 'change:currentCategoryName', () => {
 			this._updateGrid( dropdownPanelContent );
 		} );
 
+		// Update the grid of emojis when selected skin tone changes.
 		toneView.on( 'change:selectedSkinTone', ( evt, propertyName, newValue ) => {
 			this._selectedSkinTone = newValue;
 
 			this._updateGrid( dropdownPanelContent );
 		} );
 
+		// Update the info view of emojis when a tile in the grid is hovered.
+		gridView.on<EmojiGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
+			infoView.set( data );
+		} );
+
+		// Update the info view of emojis when a tile in the grid is focused.
+		gridView.on<EmojiGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
+			infoView.set( data );
+		} );
+
 		return dropdownPanelContent;
 	}
 
 	/**
-	 * Updates the symbol grid depending on the currently selected character group.
+	 * Updates the symbol grid depending on the currently selected emoji category.
 	 */
 	private async _updateGrid( { gridView, categoriesView }: DropdownPanelContent ): Promise<void> {
 		// Updating the grid starts with removing all tiles belonging to the old group.
 		gridView.tiles.clear();
 
 		if ( !this._searchQuery || this._searchQuery.length < 2 ) {
-			const charactersForGroup = this.getCharactersForGroup( categoriesView.currentGroupName );
+			const emojisForCategory = this._getEmojisForCategory( categoriesView.currentCategoryName );
 
-			this._addTilesToGrid( gridView, charactersForGroup );
+			this._addTilesToGrid( gridView, emojisForCategory );
 			categoriesView.enableCategories();
 
 			return;
@@ -247,7 +243,7 @@ export default class EmojiPicker extends Plugin {
 				name = queriedEmoji.annotation;
 			}
 
-			const emojis = this._characters.get( name );
+			const emojis = this._emojis.get( name );
 
 			if ( !emojis ) {
 				return null;
@@ -260,17 +256,14 @@ export default class EmojiPicker extends Plugin {
 		categoriesView.disableCategories();
 	}
 
-	/**
-	 * Returns a collection of special characters symbol names (titles).
-	 */
-	public getCharactersForGroup( groupName: string ): Array<EmojiItem> {
+	private _getEmojisForCategory( groupName: string ): Array<EmojiItem> {
 		const group = this._emojiGroups.find( group => group.title === groupName )!;
 
 		return group.items;
 	}
 
-	private _addTilesToGrid( gridView: EmojiGridView, charactersForGroup: Array<EmojiItem> ) {
-		for ( const item of charactersForGroup ) {
+	private _addTilesToGrid( gridView: EmojiGridView, emojisForCategory: Array<EmojiItem> ) {
+		for ( const item of emojisForCategory ) {
 			const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis[ 0 ];
 
 			gridView.tiles.add( gridView.createTile( emoji, item.name ) );
@@ -278,32 +271,18 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Creates a button for toolbar and menu bar that will show special characters dialog.
+	 * Creates a button for toolbar and menu bar that will show the emoji dialog.
 	 */
 	private _createDialogButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
-		const editor = this.editor;
-		const locale = editor.locale;
-		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const command = editor.commands.get( 'insertText' )!;
-		const t = locale.t;
-		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
+		const buttonView = new ButtonClass( this.editor.locale ) as InstanceType<T>;
 
 		buttonView.set( {
-			label: t( 'Emoji' ),
+			label: this.editor.locale.t( 'Emoji' ),
 			icon: icons.cog,
 			isToggleable: true
 		} );
 
-		buttonView.bind( 'isOn' ).to( dialogPlugin, 'id', id => id === 'specialCharacters' );
-		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
 		buttonView.on( 'execute', () => {
-			if ( dialogPlugin.id === 'specialCharacters' ) {
-				dialogPlugin.hide();
-
-				return;
-			}
-
 			this.showUI();
 		} );
 
@@ -334,8 +313,8 @@ export default class EmojiPicker extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		dropdownPanelContent.gridView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
-			this.editor.execute( 'insertText', { text: data.character } );
+		dropdownPanelContent.gridView.on<EmojiGridViewExecuteEvent>( 'execute', ( evt, data ) => {
+			this.editor.execute( 'insertText', { text: data.emoji } );
 			this._hideUI();
 		} );
 
@@ -369,11 +348,6 @@ export default class EmojiPicker extends Plugin {
 			target
 		};
 	}
-}
-
-interface Group {
-	label: string;
-	items: Set<string>;
 }
 
 export interface DropdownPanelContent {
