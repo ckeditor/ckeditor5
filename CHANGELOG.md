@@ -1,7 +1,35 @@
 Changelog
 =========
 
-## [44.1.0](https://github.com/ckeditor/ckeditor5/compare/v44.0.0...v44.1.0) (December 13, 2024)
+## [44.1.0](https://github.com/ckeditor/ckeditor5/compare/v44.0.0...v44.1.0) (December 16, 2024)
+
+We are pleased to announce the latest CKEditor 5 release, focusing on performance enhancements and key bug fixes to improve your editing and collaboration experience.
+
+### Release Highlights
+
+#### ⚡ **Performance enhancements: Part 3**
+
+This release introduces another set of performance related improvements, focused on faster editor initialization for huge documents. The initialization time was lowered by further 15% to 45%, depending on the tested sample.
+
+The combined improvements introduced in recent releases amount to around 65%-80% lower loading time in total, which means 3-5x higher editor loading speed. As the gain is not linear, bigger documents see even better improvement (+10x speed).
+
+Moreover, all these improvements positively impact document save time (`editor.getData()`), which should help with autosave issues, among others.
+
+We still actively work in this area, so you may expect even more editor load and save efficiency improvements in the upcoming releases.
+
+#### 🔨**Bug Fixes and improvements**
+
+* **Comments enhancements**:
+    * **Data export options**: We introduced the `showCommentHighlights` option in `editor.getData()`, that changes the comment marker conversion, allowing for styling comments in the output. Perfect for showing what was commented in [Export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html), for example.
+    * **Inline mode improvements**: We addressed a problem where comment annotations in inline mode did not close properly when clicking elsewhere in the content, enhancing user interaction.
+    * **Thread management**: We resolved an issue where creating a new thread was not interrupted when the corresponding marker was removed from the content, ensuring better stability during collaborative editing.
+* **Revision History update**:
+    * **Restore functionality**: We disabled the ability to restore the current (edited and not saved) revision, as it was illogical and led to some non-obvious behaviors.
+* **Image handling**: We resolved an issue where images in the uploading state could be deleted when dragged and dropped within the editor. Keep dragging, even when it’s not there 🙈.
+
+### 🎄
+
+As the holiday season approaches, we extend our warmest wishes to our community and users. Thank you for your continued support, and we look forward to bringing you further enhancements and exciting features in the coming year.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -17,31 +45,20 @@ Changelog
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: When adding a comment in inline mode, the comment annotation will now close properly if you click elsewhere in the content.
 * **[find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: It should be possible to search within content of inline widgets. Closes [#11162](https://github.com/ckeditor/ckeditor5/issues/11162). ([commit](https://github.com/ckeditor/ckeditor5/commit/f11133513d5dff837e71a4ba97b5b7d7ec7aa4e8))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Copying and pasting images in the uploading state is now possible. Closes [#16967](https://github.com/ckeditor/ckeditor5/issues/16967). ([commit](https://github.com/ckeditor/ckeditor5/commit/6c8c6bc8b4fb0a1b3a851258421f81fc8f41b312))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: No longer add surrounding spaces to colors produced by hex inputs. Closes [#17386](https://github.com/ckeditor/ckeditor5/issues/17386). ([commit](https://github.com/ckeditor/ckeditor5/commit/e639cb6904b0459f239d84fedc2045b712019dd8))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Surrounding spaces are no longer added to colors produced by hex inputs. Closes [#17386](https://github.com/ckeditor/ckeditor5/issues/17386). ([commit](https://github.com/ckeditor/ckeditor5/commit/e639cb6904b0459f239d84fedc2045b712019dd8))
 
 ### Other changes
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improve performance of `_insertNodes`. ([commit](https://github.com/ckeditor/ckeditor5/commit/fbf4a17f95bb48d8054c70e05012181edc766444))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improve performance of the `getModelLength` method. ([commit](https://github.com/ckeditor/ckeditor5/commit/d5cb66c523bd007aff289e0c7ed94ef54e0a268e))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improve performance of the `getModelLength` method. ([commit](https://github.com/ckeditor/ckeditor5/commit/d5cb66c523bd007aff289e0c7ed94ef54e0a268e))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Performance improvements to StylesMap and `_removeEmptyElements`. ([commit](https://github.com/ckeditor/ckeditor5/commit/cce3ce9a46b003528f61d614327d53cf0c393b31))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved performance of `NodeList#_insertNodes()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/fbf4a17f95bb48d8054c70e05012181edc766444))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved performance of the `Mapper#getModelLength()` method. ([commit](https://github.com/ckeditor/ckeditor5/commit/d5cb66c523bd007aff289e0c7ed94ef54e0a268e))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Performance improvements to `StylesMap` and `UpcastDispatcher#_removeEmptyElements`. ([commit](https://github.com/ckeditor/ckeditor5/commit/cce3ce9a46b003528f61d614327d53cf0c393b31))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Small performance optimizations. ([commit](https://github.com/ckeditor/ckeditor5/commit/48b66c2082cda039ed203531e28ab14497b66ed4))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Exported `ensureSafeUrl` icons from ckeditor5-link package. ([commit](https://github.com/ckeditor/ckeditor5/commit/6e1d2898cda7ab518baaab77ef02360eb02a3284))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Use iterator instead of generator in ListWalker for better performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/7a49b806e860a26d1afd4615a9333425bc33ec82))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Exported the `ensureSafeUrl()` function from the `@ckeditor/ckeditor5-link` package. ([commit](https://github.com/ckeditor/ckeditor5/commit/6e1d2898cda7ab518baaab77ef02360eb02a3284))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Use iterator instead of generator in `ListWalker` for better performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/7a49b806e860a26d1afd4615a9333425bc33ec82))
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Disabled the ability to restore a currently edited (not saved) revision.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Icons (`IconView`) are no longer individually accessible by assistive technologies, improving overall accessibility. Closes [#17554](https://github.com/ckeditor/ckeditor5/issues/17554). ([commit](https://github.com/ckeditor/ckeditor5/commit/513f8d3f52b7ff3fdc80b89d4ca0cab06e65578a))
-
-  * fix: Add aria-hidden to icons inside ButtonView to prevent accessing them individually.
-
-  * fix(ui): Move aria-hidden from ButtonView to IconView. Prevent icons inside ButtonView from accessing them individually.
-
-  * fix(ui): Move test to existing describe block for IconView.
-
-  * fix(ui): Move test to existing describe block for IconView.
-
-  * Fix bookmarks tests
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Change the implementation of `spliceArray` to modify the target array for better performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/fbf4a17f95bb48d8054c70e05012181edc766444))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Performance optimizations of `getCallbacksForEvent` and `spliceArray`. ([commit](https://github.com/ckeditor/ckeditor5/commit/48b66c2082cda039ed203531e28ab14497b66ed4))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Change the implementation of `spliceArray()` to modify the target array for better performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/fbf4a17f95bb48d8054c70e05012181edc766444))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Performance optimizations of `getCallbacksForEvent()` and `spliceArray()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/48b66c2082cda039ed203531e28ab14497b66ed4))
 
 ### Released packages
 
