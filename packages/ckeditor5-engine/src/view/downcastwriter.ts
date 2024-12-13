@@ -31,7 +31,6 @@ import type { default as Element, ElementAttributes } from './element.js';
 import type DomConverter from './domconverter.js';
 import type Item from './item.js';
 import type { SlotFilter } from '../conversion/downcasthelpers.js';
-import type { Styles, StyleValue } from './stylesmap.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -538,12 +537,13 @@ export default class DowncastWriter {
 	 *
 	 * @param key The attribute key.
 	 * @param value The attribute value.
+	 * @param reset Whether tokenized attribute should override the attribute value or just add a token.
 	 */
-	public setAttribute( key: string, value: unknown | Styles | [ string, StyleValue ], reset: boolean, element: Element ): void;
+	public setAttribute( key: string, value: unknown, reset: boolean, element: Element ): void;
 
 	public setAttribute(
 		key: string,
-		value: unknown | Styles | [ string, StyleValue ],
+		value: unknown,
 		elementOrReset: Element | boolean,
 		element?: Element
 	): void {

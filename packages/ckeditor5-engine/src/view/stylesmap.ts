@@ -525,7 +525,6 @@ export default class StylesMap implements ElementAttributeValue {
 
 				const value = this.getAsString( styleName );
 
-				// TODO check if this is still valid comment.
 				// For now, the reducers are not returning the full tree of properties.
 				// Casting to string preserves the old behavior until the root cause is fixed.
 				// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.

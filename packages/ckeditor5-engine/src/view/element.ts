@@ -615,7 +615,7 @@ export default class Element extends Node {
 	 * @param reset Whether tokenized attribute should override the attribute value or just add a token.
 	 * @fires change
 	 */
-	public _setAttribute( key: string, value: unknown | Styles | [ string, StyleValue ], reset = true ): void {
+	public _setAttribute( key: string, value: unknown, reset = true ): void {
 		this._fireChange( 'attributes', this );
 
 		if ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) {
@@ -630,15 +630,17 @@ export default class Element extends Node {
 			}
 
 			if ( reset ) {
-				// TODO make sure that this is not an array
+				// If reset is set then value have to be a string to tokenize.
 				currentValue.setTo( String( value ) );
-			} else if ( usesStylesMap( this.name, key ) ) {
+			}
+			else if ( usesStylesMap( this.name, key ) ) {
 				if ( Array.isArray( value ) ) {
 					currentValue.set( value[ 0 ], value[ 1 ] );
 				} else {
-					currentValue.set( value as Styles ); // TODO this could be a string?
+					currentValue.set( value as Styles );
 				}
-			} else {
+			}
+			else { // TokenList.
 				currentValue.set( typeof value == 'string' ? value.split( /\s+/ ) : value as ArrayOrItem<string> );
 			}
 		}
