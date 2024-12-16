@@ -205,7 +205,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			position = this.boundaries!.end;
 		}
 
-		this._position = position;
+		this._position = position.clone();
 		this._visitedParent = position.parent;
 	}
 
