@@ -7,7 +7,7 @@
 
 /* Generic class that wraps each link balloon view. */
 .ck.ck-link-form {
-	& .ck-link__providers-list {
+	& .ck-link-form__providers-list {
 		display: flex;
 		flex-direction: column;
 

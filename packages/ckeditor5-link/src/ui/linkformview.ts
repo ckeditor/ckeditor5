@@ -305,7 +305,7 @@ export default class LinkFormView extends View {
 		providersListView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-link__providers-list'
+					'ck-link-form__providers-list'
 				]
 			}
 		} );

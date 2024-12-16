@@ -29,7 +29,7 @@
 		}
 	}
 
-	& .ck-link__providers-list {
+	& .ck-link-form__providers-list {
 		border-top: 1px solid var(--ck-color-base-border);
 
 		& .ck-link__button {

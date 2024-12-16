@@ -3430,7 +3430,7 @@ describe( 'LinkUI', () => {
 			function clickNthLinksProvider( nth ) {
 				const providersList = linkUIFeature.formView
 					.template.children[ 0 ]
-					.find( child => child.template.attributes.class.includes( 'ck-link__providers-list' ) );
+					.find( child => child.template.attributes.class.includes( 'ck-link-form__providers-list' ) );
 
 				expect( providersList ).not.to.be.undefined;
 
