@@ -241,8 +241,8 @@ function scanTable( viewTable: ViewElement ) {
 			( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
 		);
 
-		// Keep tracking of the previous row columns to improve detection of heading rows.
-		let prevTrColumns: Array<ViewNode> | null = null;
+		// Keep tracking of the previous row columns count to improve detection of heading rows.
+		let maxPrevColumns = null;
 
 		for ( const tr of trs ) {
 			const trColumns = Array
@@ -259,7 +259,7 @@ function scanTable( viewTable: ViewElement ) {
 					// This case is problematic because it's not clear if this row should be a heading row or not, as it may be result
 					// of the cell span from the previous row.
 					// Issue: https://github.com/ckeditor/ckeditor5/issues/17556
-					( prevTrColumns === null || trColumns.length === prevTrColumns.length ) &&
+					( maxPrevColumns === null || trColumns.length === maxPrevColumns ) &&
 					trColumns.every( e => e.is( 'element', 'th' ) )
 				)
 			) {
@@ -276,7 +276,10 @@ function scanTable( viewTable: ViewElement ) {
 				}
 			}
 
-			prevTrColumns = trColumns;
+			// We use the maximum number of columns to avoid false positives when detecting
+			// multiple `rowspans` with single column. Without it the lat row of `rowspan=3` would be detected as a heading row
+			// because it has only one column and the previous row has also only one column.
+			maxPrevColumns = Math.max( maxPrevColumns || -Infinity, trColumns.length );
 		}
 	}
 

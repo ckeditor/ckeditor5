@@ -701,7 +701,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'should not treat the row containing only th as a heading row if it follows colspan', () => {
+		it( 'should not treat the row containing only th as a heading row if it follows rowspan=2', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -744,6 +744,60 @@ describe( 'upcastTable()', () => {
 						'<tableCell><paragraph>30</paragraph></tableCell>' +
 						'<tableCell><paragraph>31</paragraph></tableCell>' +
 						'<tableCell><paragraph>32</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should not treat the row containing only th as a heading row if it is last row of rowspan=3', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<th>00</th>' +
+							'<td>01</td>' +
+							'<td>02</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>10</th>' +
+							'<td colspan="2" rowspan="3">11</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>20</th>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>30</th>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>40</th>' +
+							'<td>41</td>' +
+							'<td>42</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingColumns="1">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'<tableCell><paragraph>02</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'<tableCell colspan="2" rowspan="3"><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>20</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>30</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>40</paragraph></tableCell>' +
+						'<tableCell><paragraph>41</paragraph></tableCell>' +
+						'<tableCell><paragraph>42</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
