@@ -536,63 +536,6 @@ describe( 'ViewConsumable', () => {
 		} );
 	} );
 
-	// TODO changed format
-	describe.skip( 'consumablesFromElement', () => {
-		it( 'should create consumable object from element', () => {
-			const consumables = ViewConsumable.consumablesFromElement( el );
-
-			expect( consumables ).to.be.an( 'object' );
-			expect( consumables.name ).to.be.true;
-			expect( consumables.attributes ).to.be.an( 'array' );
-			expect( consumables.attributes.length ).to.equal( 0 );
-			expect( consumables.classes ).to.be.an( 'array' );
-			expect( consumables.classes.length ).to.equal( 0 );
-			expect( consumables.styles ).to.be.an( 'array' );
-			expect( consumables.styles.length ).to.equal( 0 );
-		} );
-
-		it( 'should add all attribute', () => {
-			el._setAttribute( 'title', 'foobar' );
-			el._setAttribute( 'href', 'https://ckeditor.com' );
-
-			const consumables = ViewConsumable.consumablesFromElement( el );
-			expect( consumables.attributes.length ).to.equal( 2 );
-			expect( consumables.attributes.indexOf( 'title' ) > -1 ).to.be.true;
-			expect( consumables.attributes.indexOf( 'href' ) > -1 ).to.be.true;
-			expect( consumables.classes.length ).to.equal( 0 );
-			expect( consumables.styles.length ).to.equal( 0 );
-			expect( consumables.name ).to.be.true;
-		} );
-
-		it( 'should add all classes', () => {
-			el._addClass( [ 'foo', 'bar', 'baz' ] );
-
-			const consumables = ViewConsumable.consumablesFromElement( el );
-			expect( consumables.classes.length ).to.equal( 3 );
-			expect( consumables.classes.indexOf( 'foo' ) > -1 ).to.be.true;
-			expect( consumables.classes.indexOf( 'bar' ) > -1 ).to.be.true;
-			expect( consumables.classes.indexOf( 'baz' ) > -1 ).to.be.true;
-			expect( consumables.attributes.length ).to.equal( 0 );
-			expect( consumables.styles.length ).to.equal( 0 );
-			expect( consumables.name ).to.be.true;
-		} );
-
-		it( 'should add all styles', () => {
-			el._setStyle( {
-				color: 'red',
-				position: 'absolute'
-			} );
-
-			const consumables = ViewConsumable.consumablesFromElement( el );
-			expect( consumables.styles.length ).to.equal( 2 );
-			expect( consumables.styles.indexOf( 'color' ) > -1 ).to.be.true;
-			expect( consumables.styles.indexOf( 'position' ) > -1 ).to.be.true;
-			expect( consumables.attributes.length ).to.equal( 0 );
-			expect( consumables.classes.length ).to.equal( 0 );
-			expect( consumables.name ).to.be.true;
-		} );
-	} );
-
 	describe( 'createFrom', () => {
 		it( 'should return new ViewConsumable instance', () => {
 			const newConsumable = ViewConsumable.createFrom( el );
@@ -626,15 +569,44 @@ describe( 'ViewConsumable', () => {
 			expect( newConsumable.test( child2, { name: true } ) ).to.be.true;
 			expect( newConsumable.test( child3, { name: true, styles: 'top', classes: [ 'qux', 'bar' ] } ) ).to.be.true;
 		} );
+
+		it( 'should add all attribute', () => {
+			el._setAttribute( 'title', 'foobar' );
+			el._setAttribute( 'href', 'https://ckeditor.com' );
+
+			const newConsumable = ViewConsumable.createFrom( el );
+
+			expect( newConsumable.test( el, { attributes: [ 'title', 'href' ] } ) ).to.be.true;
+			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
+		} );
+
+		it( 'should add all classes', () => {
+			el._addClass( [ 'foo', 'bar', 'baz' ] );
+
+			const newConsumable = ViewConsumable.createFrom( el );
+
+			expect( newConsumable.test( el, { classes: [ 'foo', 'bar', 'baz' ] } ) ).to.be.true;
+			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
+		} );
+
+		it( 'should add all styles', () => {
+			el._setStyle( {
+				color: 'red',
+				position: 'absolute'
+			} );
+
+			const newConsumable = ViewConsumable.createFrom( el );
+
+			expect( newConsumable.test( el, { styles: [ 'color', 'position' ] } ) ).to.be.true;
+			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'style shorthands handling', () => {
-		// TODO this is prepared by ViewConsumable.consumablesFromElement()
 		describe( 'add', () => {
 			it( 'should add padding shorthands', () => {
 				el._setStyle( 'margin', '10px' );
 				ViewConsumable.createFrom( el, viewConsumable );
-				// viewConsumable.add( el, { styles: [ 'margin' ] } );
 
 				expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.true;
 				expect( viewConsumable.test( el, { styles: 'margin-bottom' } ) ).to.be.true;
@@ -645,7 +617,6 @@ describe( 'ViewConsumable', () => {
 			it( 'should add margin shorthands', () => {
 				el._setStyle( 'padding', '10px' );
 				ViewConsumable.createFrom( el, viewConsumable );
-				// viewConsumable.add( el, { styles: [ 'padding' ] } );
 
 				expect( viewConsumable.test( el, { styles: 'padding-top' } ) ).to.be.true;
 				expect( viewConsumable.test( el, { styles: 'padding-bottom' } ) ).to.be.true;
@@ -656,7 +627,6 @@ describe( 'ViewConsumable', () => {
 			it( 'should add table shorthands', () => {
 				el._setStyle( 'border', '2px solid red' );
 				ViewConsumable.createFrom( el, viewConsumable );
-				// viewConsumable.add( el, { styles: [ 'border' ] } );
 
 				expect( viewConsumable.test( el, { styles: 'border-style' } ) ).to.be.true;
 				expect( viewConsumable.test( el, { styles: 'border-top-style' } ) ).to.be.true;
@@ -681,7 +651,6 @@ describe( 'ViewConsumable', () => {
 		it( 'should return false when testing style shorthand for consumed longhand', () => {
 			el._setStyle( 'margin', '10px' );
 			ViewConsumable.createFrom( el, viewConsumable );
-			// viewConsumable.add( el, { styles: [ 'margin' ] } );
 
 			expect( viewConsumable.test( el, { styles: 'margin' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.true;
@@ -701,7 +670,6 @@ describe( 'ViewConsumable', () => {
 		it( 'should return false when testing style shorthand for consumed shorthand', () => {
 			el._setStyle( 'margin', '10px' );
 			ViewConsumable.createFrom( el, viewConsumable );
-			// viewConsumable.add( el, { styles: [ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] } );
 
 			expect( viewConsumable.test( el, { styles: 'margin' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.true;
