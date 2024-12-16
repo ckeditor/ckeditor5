@@ -539,6 +539,16 @@ describe( 'Element', () => {
 				expect( el._attrs.get( 'class' ).has( 'qux' ) ).to.be.true;
 			} );
 
+			it( 'should not replace all existing classes if reset is set to false', () => {
+				el._setAttribute( 'class', 'foo bar baz', false );
+				el._setAttribute( 'class', 'qux', false );
+
+				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'baz' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'qux' ) ).to.be.true;
+			} );
+
 			it( 'should replace all styles', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'top', '10px' );
@@ -548,6 +558,33 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'top' ) ).to.be.false;
 				expect( el.hasStyle( 'margin-top' ) ).to.be.true;
 				expect( el.getStyle( 'margin-top' ) ).to.equal( '2em' );
+			} );
+
+			it( 'should not replace all styles if reset is set to false', () => {
+				el._setAttribute( 'style', [ 'color', 'red' ], false );
+				el._setAttribute( 'style', [ 'top', '10px' ], false );
+				el._setAttribute( 'style', [ 'margin-top', '2em' ], false );
+
+				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
+				expect( el.getStyle( 'top' ) ).to.equal( '10px' );
+				expect( el.getStyle( 'margin-top' ) ).to.equal( '2em' );
+			} );
+
+			it( 'should replace rel attribute if reset is set to false but not on `a` element', () => {
+				el._setAttribute( 'rel', 'foo', false );
+				el._setAttribute( 'rel', 'bar', false );
+				el._setAttribute( 'rel', 'baz', false );
+
+				expect( el.getAttribute( 'rel' ) ).to.equal( 'baz' );
+			} );
+
+			it( 'should not replace all rel attribute tokens if reset is set to false', () => {
+				el = new Element( document, 'a' );
+				el._setAttribute( 'rel', 'foo', false );
+				el._setAttribute( 'rel', 'bar', false );
+				el._setAttribute( 'rel', 'baz', false );
+
+				expect( el.getAttribute( 'rel' ) ).to.equal( 'foo bar baz' );
 			} );
 		} );
 
@@ -737,6 +774,22 @@ describe( 'Element', () => {
 				expect( removed2 ).to.be.false;
 			} );
 
+			it( 'should remove only specified class tokens', () => {
+				el._addClass( [ 'foo', 'bar' ] );
+
+				const removed1 = el._removeAttribute( 'class', 'foo' );
+				expect( el.hasAttribute( 'class' ) ).to.be.true;
+				expect( el.hasClass( 'foo' ) ).to.be.false;
+				expect( el.hasClass( 'bar' ) ).to.be.true;
+				expect( removed1 ).to.be.false;
+
+				const removed2 = el._removeAttribute( 'class', 'bar' );
+				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				expect( el.hasClass( 'foo' ) ).to.be.false;
+				expect( el.hasClass( 'bar' ) ).to.be.false;
+				expect( removed2 ).to.be.true;
+			} );
+
 			it( 'should remove style attribute', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'position', 'fixed' );
@@ -749,6 +802,211 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'position' ) ).to.be.false;
 				expect( removed1 ).to.be.true;
 				expect( removed2 ).to.be.false;
+			} );
+
+			it( 'should remove only specified style tokens', () => {
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'position', 'fixed' );
+
+				const removed1 = el._removeAttribute( 'style', 'color' );
+				expect( el.hasAttribute( 'style' ) ).to.be.true;
+				expect( el.hasStyle( 'color' ) ).to.be.false;
+				expect( el.hasStyle( 'position' ) ).to.be.true;
+				expect( removed1 ).to.be.false;
+
+				const removed2 = el._removeAttribute( 'style', 'position' );
+				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				expect( el.hasStyle( 'color' ) ).to.be.false;
+				expect( el.hasStyle( 'position' ) ).to.be.false;
+				expect( removed2 ).to.be.true;
+			} );
+
+			it( 'should remove only specified rel tokens', () => {
+				el = new Element( document, 'a', { rel: 'foo bar' } );
+
+				const removed1 = el._removeAttribute( 'rel', 'foo' );
+				expect( el.hasAttribute( 'rel' ) ).to.be.true;
+				expect( el.getAttribute( 'rel' ) ).to.equal( 'bar' );
+				expect( removed1 ).to.be.false;
+
+				const removed2 = el._removeAttribute( 'rel', 'bar' );
+				expect( el.hasAttribute( 'rel' ) ).to.be.false;
+				expect( removed2 ).to.be.true;
+			} );
+		} );
+
+		describe( '_collectAttributesMatch()', () => {
+			let match;
+
+			beforeEach( () => {
+				match = [];
+			} );
+
+			it( 'should match attributes when patternKey=true, patternToken=true, patternValue=true', () => {
+				el = new Element( document, 'p', { foo: 'bar', class: 'abc def', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ true, true, true ] ], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'foo' ],
+					[ 'class', 'abc' ],
+					[ 'class', 'def' ],
+					[ 'style', 'color' ],
+					[ 'style', 'position' ]
+				] );
+			} );
+
+			it( 'should ignore excluded attributes and match when patternKey=true, patternToken=true, patternValue=true', () => {
+				el = new Element( document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ true, true, true ] ], match, [ 'class', 'style' ] ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'foo' ],
+					[ 'xyz' ]
+				] );
+			} );
+
+			it( 'should match attributes when patternKey=string, patternToken=true, patternValue=true', () => {
+				el = new Element( document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'foo', true, true ] ], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'foo' ]
+				] );
+			} );
+
+			it( 'should match attributes when patternKey=string, patternToken=true, patternValue=true (multiple patterns)', () => {
+				el = new Element( document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [
+					[ 'foo', true, true ],
+					[ 'xyz', true, true ]
+				], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'foo' ],
+					[ 'xyz' ]
+				] );
+			} );
+
+			it( 'should match attributes when patternKey=regexp, patternToken=true', () => {
+				el = new Element( document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ /a|z/, true ] ], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'xyz' ],
+					[ 'class', 'abc' ],
+					[ 'class', 'def' ]
+				] );
+			} );
+
+			it( 'should match attributes when patternKey=string, patternToken=regexp', () => {
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'class', /^b/ ] ], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'class', 'bar' ],
+					[ 'class', 'baz' ]
+				] );
+			} );
+
+			it( 'should match attributes when patternKey=string, patternToken=string, patternValue=string', () => {
+				el = new Element( document, 'p', { style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'style', 'color', 'red' ] ], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'style', 'color' ]
+				] );
+			} );
+
+			it( 'should match attributes when patternKey=string, patternToken=string, patternValue=regexp', () => {
+				el = new Element( document, 'p', { style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'style', 'color', /^r/ ] ], match ) ).to.be.true;
+				expect( match ).to.deep.equal( [
+					[ 'style', 'color' ]
+				] );
+			} );
+
+			it( 'should not match attributes when patternKey=string, patternToken=string, patternValue=string', () => {
+				el = new Element( document, 'p', { style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'style', 'color', 'blue' ] ], match ) ).to.be.false;
+				expect( match ).to.deep.equal( [] );
+			} );
+
+			it( 'should not match attributes when patternKey=string, patternToken=string when not matching', () => {
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'class', 'abc' ], [ 'class', 'def' ] ], match ) ).to.be.false;
+				expect( match ).to.deep.equal( [] );
+			} );
+
+			it( 'should not match attributes when patternKey=string, patternToken=string when not matching plain value', () => {
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ 'foo', 'abc' ] ], match ) ).to.be.false;
+				expect( match ).to.deep.equal( [] );
+			} );
+
+			it( 'should not match attributes when patternKey=regexp, patternToken=true when not matching', () => {
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
+
+				expect( el._collectAttributesMatch( [ [ /^q/, true ] ], match ) ).to.be.false;
+				expect( match ).to.deep.equal( [] );
+			} );
+
+			it( 'should return true if there are no patterns provided', () => {
+				expect( el._collectAttributesMatch( [], match ) ).to.be.true;
+				expect( match.length ).to.equal( 0 );
+			} );
+		} );
+
+		describe( '_getConsumables()', () => {
+			it( 'should return all consumables', () => {
+				addMarginRules( document.stylesProcessor );
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
+
+				expect( el._getConsumables() ).to.deep.equal( {
+					name: true,
+					attributes: [
+						[ 'foo' ],
+						[ 'class', 'foo' ],
+						[ 'class', 'bar' ],
+						[ 'style', 'color' ],
+						[ 'style', 'margin-top' ],
+						[ 'style', 'margin-right' ],
+						[ 'style', 'margin-bottom' ],
+						[ 'style', 'margin-left' ],
+						[ 'style', 'margin' ]
+					]
+				} );
+			} );
+
+			it( 'should return filtered consumables', () => {
+				addMarginRules( document.stylesProcessor );
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
+
+				expect( el._getConsumables( 'foo' ) ).to.deep.equal( {
+					name: false,
+					attributes: [
+						[ 'foo' ]
+					]
+				} );
+			} );
+
+			it( 'should return filtered consumables with related values', () => {
+				addMarginRules( document.stylesProcessor );
+				el = new Element( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
+
+				expect( el._getConsumables( 'style', 'margin' ) ).to.deep.equal( {
+					name: false,
+					attributes: [
+						[ 'style', 'margin' ],
+						[ 'style', 'margin-top' ],
+						[ 'style', 'margin-right' ],
+						[ 'style', 'margin-bottom' ],
+						[ 'style', 'margin-left' ]
+					]
+				} );
 			} );
 		} );
 	} );
