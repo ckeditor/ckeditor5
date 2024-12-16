@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Element from '../../src/model/element.js';
@@ -224,6 +224,27 @@ describe( 'DocumentFragment', () => {
 
 			expect( removed.length ).to.equal( 1 );
 			expect( removed[ 0 ].data ).to.equal( 'foo' );
+		} );
+	} );
+
+	describe( '_removeChildrenArray', () => {
+		it( 'should remove children from the element', () => {
+			const _1 = new Text( '_1' );
+			const _2 = new Text( '_2' );
+			const _3 = new Text( '_3' );
+			const _4 = new Text( '_4' );
+			const _5 = new Text( '_5' );
+			const _6 = new Text( '_6' );
+
+			const frag = new DocumentFragment( [ _1, _2, _3, _4, _5, _6 ] );
+
+			frag._removeChildrenArray( [ _2, _3, _4 ] );
+
+			expect( frag.childCount ).to.equal( 3 );
+
+			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( '_1' );
+			expect( frag.getChild( 1 ) ).to.have.property( 'data' ).that.equals( '_5' );
+			expect( frag.getChild( 2 ) ).to.have.property( 'data' ).that.equals( '_6' );
 		} );
 	} );
 

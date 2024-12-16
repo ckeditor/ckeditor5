@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -227,25 +227,24 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 
 				// Handle event listener callbacks first.
 				if ( callbacks ) {
-					// Arguments passed to each callback.
-					const callbackArgs = [ eventInfo, ...args ];
-
 					// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
 					// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
 					// failed if callbacks were added to the queue before currently processed callback.
 					// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
 					// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
-					callbacks = Array.from( callbacks );
+					callbacks = callbacks.slice();
 
 					for ( let i = 0; i < callbacks.length; i++ ) {
-						callbacks[ i ].callback.apply( this, callbackArgs );
+						const fn = callbacks[ i ].callback;
+
+						fn.call( this, eventInfo, ...args );
 
 						// Remove the callback from future requests if off() has been called.
 						if ( eventInfo.off.called ) {
 							// Remove the called mark for the next calls.
 							delete eventInfo.off.called;
 
-							this._removeEventListener( event, callbacks[ i ].callback );
+							this._removeEventListener( event, fn );
 						}
 
 						// Do not execute next callbacks if stop() was called.
@@ -836,21 +835,25 @@ function getCallbacksListsForNamespace( source: EmitterInternal, eventName: stri
  * for callbacks for it's more generic version.
  */
 function getCallbacksForEvent( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ] | null {
-	let event;
-
-	if ( !source._events || !( event = source._events[ eventName ] ) || !event.callbacks.length ) {
-		// There are no callbacks registered for specified eventName.
-		// But this could be a specific-type event that is in a namespace.
-		if ( eventName.indexOf( ':' ) > -1 ) {
-			// If the eventName is specific, try to find callback lists for more generic event.
-			return getCallbacksForEvent( source, eventName.substr( 0, eventName.lastIndexOf( ':' ) ) );
-		} else {
-			// If this is a top-level generic event, return null;
-			return null;
-		}
+	if ( !source._events ) {
+		return null;
 	}
 
-	return event.callbacks;
+	let currentEventName = eventName;
+
+	do {
+		const event = source._events[ currentEventName ];
+
+		if ( event && event.callbacks && event.callbacks.length ) {
+			return event.callbacks;
+		}
+
+		const colonIndex = currentEventName.lastIndexOf( ':' );
+
+		currentEventName = colonIndex > -1 ? currentEventName.substring( 0, colonIndex ) : '';
+	} while ( currentEventName );
+
+	return null;
 }
 
 /**

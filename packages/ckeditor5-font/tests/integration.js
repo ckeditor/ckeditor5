@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, CustomEvent */
@@ -232,7 +232,7 @@ describe( 'Integration test Font', () => {
 
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl(150, 50%, 13%)">foo</$text>]</paragraph>' );
 		} );
 
 		it( 'should set colors in model in configured format', async () => {
@@ -266,7 +266,7 @@ describe( 'Integration test Font', () => {
 
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
 
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
+			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab(18% -17 7)">foo</$text>]</paragraph>' );
 
 			await editor.destroy();
 		} );
@@ -274,7 +274,7 @@ describe( 'Integration test Font', () => {
 		it( 'should properly discard changes', () => {
 			setModelData( model,
 				'<paragraph>' +
-					'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
+					'[<$text fontColor="hsl(50, 10%, 23%)">foo</$text><$text fontColor="hsl(150, 50%, 13%)">foo</$text>]' +
 				'</paragraph>'
 			);
 
@@ -282,12 +282,12 @@ describe( 'Integration test Font', () => {
 
 			dropdown.isOpen = true;
 			dropdown.colorSelectorView.fire( 'colorPicker:show' );
-			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.color = 'hsl( 100, 30%, 43% )';
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.color = 'hsl(100, 30%, 43%)';
 
 			dropdown.colorSelectorView.colorPickerFragmentView.cancelButtonView.fire( 'execute' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>' +
-			'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
+			'[<$text fontColor="hsl(50, 10%, 23%)">foo</$text><$text fontColor="hsl(150, 50%, 13%)">foo</$text>]' +
 			'</paragraph>' );
 		} );
 
