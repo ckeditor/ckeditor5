@@ -35,7 +35,6 @@ export default class EmojiCategoriesView extends View {
 	 */
 	private readonly _keystrokeHandler: KeystrokeHandler;
 
-	private _areCategoriesEnabled: boolean;
 	private _categoryNames: Array<string>;
 	private _buttonViews: ViewCollection<ButtonView>;
 
@@ -44,8 +43,6 @@ export default class EmojiCategoriesView extends View {
 	 */
 	constructor( locale: Locale, emojiGroups: Array<EmojiGroup> ) {
 		super( locale );
-
-		this._areCategoriesEnabled = true;
 
 		this._categoryNames = emojiGroups.map( emojiGroup => emojiGroup.title );
 		this.set( 'currentCategoryName', this._categoryNames[ 0 ] );
@@ -111,24 +108,12 @@ export default class EmojiCategoriesView extends View {
 	}
 
 	public enableCategories(): void {
-		if ( this._areCategoriesEnabled ) {
-			return;
-		}
-
-		this._areCategoriesEnabled = true;
-
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = true;
 		} );
 	}
 
 	public disableCategories(): void {
-		if ( !this._areCategoriesEnabled ) {
-			return;
-		}
-
-		this._areCategoriesEnabled = false;
-
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = false;
 		} );

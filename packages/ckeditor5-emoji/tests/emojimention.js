@@ -245,7 +245,8 @@ describe( 'EmojiMention', () => {
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
-			expect( document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'input#search' ).value ).to.equal( 'flag_poland' );
+			const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
+			expect( emojiSearchBar.value ).to.equal( 'flag_poland' );
 		} );
 	} );
 

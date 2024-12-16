@@ -34,7 +34,8 @@ export default class EmojiToneView extends View {
 		tooltip: string;
 	}>;
 
-	private _dropdownButton: DropdownButtonView;
+	private _mainDropdownButton: DropdownButtonView;
+	private _dropdownButtons: ViewCollection<ButtonView>;
 
 	/**
 	 * @inheritDoc
@@ -53,19 +54,19 @@ export default class EmojiToneView extends View {
 			{ id: 5, example: '👋🏿', tooltip: 'Dark skin tone' }
 		];
 
-		this._dropdownButton = new DropdownButtonView();
-		const dropdownView = createDropdown( locale, this._dropdownButton );
-		const dropdownButtons = new ViewCollection(
+		this._mainDropdownButton = new DropdownButtonView();
+		const dropdownView = createDropdown( locale, this._mainDropdownButton );
+		this._dropdownButtons = new ViewCollection(
 			this._skinTones.map( ( { id, example, tooltip } ) => this._createButton( locale, id, example, tooltip ) )
 		);
 
-		this._dropdownButton.withText = true;
-		this._dropdownButton.label = this._skinTones[ this.selectedSkinTone ].example;
-		this._dropdownButton.tooltip = 'Select skin tone';
+		this._mainDropdownButton.withText = true;
+		this._mainDropdownButton.label = this._skinTones[ this.selectedSkinTone ].example;
+		this._mainDropdownButton.tooltip = 'Select skin tone';
 
 		addToolbarToDropdown(
 			dropdownView,
-			dropdownButtons,
+			this._dropdownButtons,
 			{
 				isVertical: true,
 				ariaLabel: locale.t( 'Text alignment toolbar' )
@@ -82,7 +83,7 @@ export default class EmojiToneView extends View {
 	}
 
 	public focus(): void {
-		this._dropdownButton.focus();
+		this._mainDropdownButton.focus();
 	}
 
 	/**
@@ -102,7 +103,7 @@ export default class EmojiToneView extends View {
 		this.listenTo( buttonView, 'execute', () => {
 			this.selectedSkinTone = skinToneId;
 
-			this._dropdownButton.label = this._skinTones[ skinToneId ].example;
+			this._mainDropdownButton.label = this._skinTones[ skinToneId ].example;
 		} );
 
 		return buttonView;

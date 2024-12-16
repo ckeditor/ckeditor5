@@ -245,6 +245,8 @@ export default class EmojiPicker extends Plugin {
 
 			const emojis = this._emojis.get( name );
 
+			// Query might return some emojis which we chose not to add to our database.
+			/* istanbul ignore next -- @preserve */
 			if ( !emojis ) {
 				return null;
 			}
@@ -300,17 +302,24 @@ export default class EmojiPicker extends Plugin {
 		const dropdownPanelContent = this._createDropdownPanelContent( this.editor.locale );
 		this._emojiPickerView = new EmojiPickerView( this.editor.locale, dropdownPanelContent );
 
+		this._balloon.add( {
+			view: this._emojiPickerView,
+			position: this._getBalloonPositionData()
+		} );
+
+		// Close the dialog while focus is in it.
+		this._emojiPickerView.element!.addEventListener( 'keydown', event => {
+			if ( event.key === 'Escape' ) {
+				this._hideUI();
+			}
+		} );
+
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
 			emitter: this._emojiPickerView,
 			contextElements: [ this._balloon.view.element! ],
 			callback: () => this._hideUI(),
 			activator: () => this._balloon.visibleView === this._emojiPickerView
-		} );
-
-		this._balloon.add( {
-			view: this._emojiPickerView,
-			position: this._getBalloonPositionData()
 		} );
 
 		dropdownPanelContent.gridView.on<EmojiGridViewExecuteEvent>( 'execute', ( evt, data ) => {
