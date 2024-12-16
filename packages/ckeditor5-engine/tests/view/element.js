@@ -1009,6 +1009,140 @@ describe( 'Element', () => {
 				} );
 			} );
 		} );
+
+		describe( '_mergeAttributesFrom()', () => {
+			it( 'should not merge attributes of different name elements', () => {
+				const el = new Element( document, 'p' );
+				const other = new Element( document, 'h2' );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.false;
+			} );
+
+			it( 'should not merge attributes if plain attribute is conflicting', () => {
+				const el = new Element( document, 'span', { foo: 'a' } );
+				const other = new Element( document, 'span', { foo: 'b' } );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.false;
+			} );
+
+			it( 'should not merge attributes if style attribute is conflicting', () => {
+				const el = new Element( document, 'span', { style: 'color:red' } );
+				const other = new Element( document, 'span', { style: 'color:blue' } );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.false;
+			} );
+
+			it( 'should merge attributes if attribute is not set on target', () => {
+				const el = new Element( document, 'span', { foo: 'bar' } );
+				const other = new Element( document, 'span', { baz: '123' } );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.true;
+				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( el.getAttribute( 'baz' ) ).to.equal( '123' );
+			} );
+
+			it( 'should merge attributes if attribute is same on both', () => {
+				const el = new Element( document, 'span', { foo: 'bar' } );
+				const other = new Element( document, 'span', { foo: 'bar', abc: '123' } );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.true;
+				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( el.getAttribute( 'abc' ) ).to.equal( '123' );
+			} );
+
+			it( 'should merge attributes if class attribute is set on both', () => {
+				const el = new Element( document, 'span', { class: 'foo' } );
+				const other = new Element( document, 'span', { class: 'bar' } );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.true;
+				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
+			} );
+
+			it( 'should merge attributes if style attribute is set on both but not conflicting', () => {
+				const el = new Element( document, 'span', { style: 'color:red;' } );
+				const other = new Element( document, 'span', { style: 'margin:10px;' } );
+
+				expect( el._mergeAttributesFrom( other ) ).to.be.true;
+				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;margin:10px;' );
+			} );
+		} );
+
+		describe( '_subtractAttributesOf()', () => {
+			it( 'should not subtract attributes of different name elements', () => {
+				const el = new Element( document, 'p' );
+				const other = new Element( document, 'h2' );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.false;
+			} );
+
+			it( 'should not subtract attributes if there is no attribute to subtract', () => {
+				const el = new Element( document, 'span', { foo: 'bar' } );
+				const other = new Element( document, 'span', { baz: '123' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.false;
+			} );
+
+			it( 'should not subtract attributes if the value differs', () => {
+				const el = new Element( document, 'span', { foo: 'bar' } );
+				const other = new Element( document, 'span', { foo: '123' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.false;
+			} );
+
+			it( 'should not subtract attributes if the classes value differs', () => {
+				const el = new Element( document, 'span', { class: 'foo' } );
+				const other = new Element( document, 'span', { class: 'bar' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.false;
+			} );
+
+			it( 'should not subtract attributes if the style value differs', () => {
+				const el = new Element( document, 'span', { style: 'color:red' } );
+				const other = new Element( document, 'span', { style: 'color:blue' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.false;
+			} );
+
+			it( 'should subtract attributes if the value is same', () => {
+				const el = new Element( document, 'span', { foo: 'bar' } );
+				const other = new Element( document, 'span', { foo: 'bar' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.true;
+				expect( el.hasAttribute( 'foo' ) ).to.be.false;
+			} );
+
+			it( 'should subtract attributes if the classes value matches', () => {
+				const el = new Element( document, 'span', { class: 'foo bar' } );
+				const other = new Element( document, 'span', { class: 'bar' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.true;
+				expect( el.getAttribute( 'class' ) ).to.equal( 'foo' );
+			} );
+
+			it( 'should subtract attributes if the style value matches', () => {
+				const el = new Element( document, 'span', { style: 'color:red;position:absolute;' } );
+				const other = new Element( document, 'span', { style: 'color:red' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.true;
+				expect( el.getAttribute( 'style' ) ).to.equal( 'position:absolute;' );
+			} );
+
+			it( 'should remove classes attribute if all are subtracted', () => {
+				const el = new Element( document, 'span', { class: 'bar' } );
+				const other = new Element( document, 'span', { class: 'bar' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.true;
+				expect( el.hasAttribute( 'class' ) ).to.be.false;
+			} );
+
+			it( 'should remove style attribute if all are subtracted', () => {
+				const el = new Element( document, 'span', { style: 'color:red' } );
+				const other = new Element( document, 'span', { style: 'color:red' } );
+
+				expect( el._subtractAttributesOf( other ) ).to.be.true;
+				expect( el.hasAttribute( 'style' ) ).to.be.false;
+			} );
+		} );
 	} );
 
 	describe( 'classes manipulation methods', () => {
