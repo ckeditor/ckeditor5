@@ -525,8 +525,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				return;
 			}
 
-			if ( [ 'evaluation', 'trial', 'development' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' | 'development' = licensePayload.licenseType;
+			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
+				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
 
 				console.info(
 					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
@@ -540,6 +540,13 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				editor.on( 'destroy', () => {
 					clearTimeout( timerId );
 				} );
+			}
+
+			if ( licensePayload.licenseType === 'development' ) {
+				console.info(
+					'You are using the development version of CKEditor 5. ' +
+					'Make sure you will not use it in the production environment.'
+				);
 			}
 
 			if ( licensePayload.usageEndpoint ) {
@@ -986,17 +993,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-trial-limit' );
 			}
 
-			if ( reason == 'developmentLimit' ) {
-				/**
-				 * You have exceeded the operation limit for your development license key within the editor.
-				 * Please restart the editor to continue using it.
-				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
-				 *
-				 * @error license-key-development-limit
-				 */
-				throw new CKEditorError( 'license-key-development-limit' );
-			}
-
 			if ( reason == 'usageLimit' ) {
 				/**
 				 * You have reached the usage limit of your license key. This can occur in the following situations:
@@ -1103,7 +1099,6 @@ type LicenseErrorReason =
 	'featureNotAllowed' |
 	'evaluationLimit' |
 	'trialLimit' |
-	'developmentLimit' |
 	'usageLimit' |
 	'distributionChannel';
 

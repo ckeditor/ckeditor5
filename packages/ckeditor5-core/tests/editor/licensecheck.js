@@ -441,8 +441,8 @@ describe( 'Editor - license check', () => {
 
 				expect( editor.isReadOnly ).to.be.false;
 				sinon.assert.calledOnce( consoleInfoStub );
-				sinon.assert.calledWith( consoleInfoStub, 'You are using the development version of CKEditor 5 with ' +
-				'limited usage. Make sure you will not use it in the production environment.' );
+				sinon.assert.calledWith( consoleInfoStub, 'You are using the development version of CKEditor 5. ' +
+				'Make sure you will not use it in the production environment.' );
 			} );
 
 			it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
@@ -466,7 +466,7 @@ describe( 'Editor - license check', () => {
 				dateNow.restore();
 			} );
 
-			it( 'should block editor after 10 minutes (development license)', () => {
+			it( 'also should not block editor after 10 minutes (development license)', () => {
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'development'
 				} );
@@ -480,13 +480,13 @@ describe( 'Editor - license check', () => {
 
 				sinon.clock.tick( 600100 );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'developmentLimit' );
-				expect( editor.isReadOnly ).to.be.true;
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
 
 				dateNow.restore();
 			} );
 
-			it( 'should clear timer on editor destroy', done => {
+			it( 'should not interact with timers', done => {
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'development'
 				} );
@@ -497,7 +497,7 @@ describe( 'Editor - license check', () => {
 
 				editor.fire( 'ready' );
 				editor.on( 'destroy', () => {
-					sinon.assert.calledOnce( clearTimeoutSpy );
+					sinon.assert.notCalled( clearTimeoutSpy );
 					done();
 				} );
 
@@ -688,7 +688,6 @@ describe( 'Editor - license check', () => {
 			{ reason: 'featureNotAllowed', error: 'license-key-plugin-not-allowed', pluginName: 'PluginABC' },
 			{ reason: 'evaluationLimit', error: 'license-key-evaluation-limit' },
 			{ reason: 'trialLimit', error: 'license-key-trial-limit' },
-			{ reason: 'developmentLimit', error: 'license-key-development-limit' },
 			{ reason: 'usageLimit', error: 'license-key-usage-limit' },
 			{ reason: 'distributionChannel', error: 'license-key-invalid-distribution-channel' }
 		];
