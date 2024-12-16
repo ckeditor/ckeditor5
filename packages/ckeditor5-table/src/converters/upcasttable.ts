@@ -277,8 +277,8 @@ function scanTable( viewTable: ViewElement ) {
 			}
 
 			// We use the maximum number of columns to avoid false positives when detecting
-			// multiple `rowspans` with single column. Without it the lat row of `rowspan=3` would be detected as a heading row
-			// because it has only one column and the previous row has also only one column.
+			// multiple rows with single column within `rowspan`. Without it the last row of `rowspan=3`
+			// would be detected as a heading row because it has only one column (identical to the previous row).
 			maxPrevColumns = Math.max( maxPrevColumns || -Infinity, trColumns.length );
 		}
 	}
