@@ -186,6 +186,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 				t( 'Update image URL' ) :
 				t( 'Insert image via URL' ),
 			isModal: true,
+			isForm: true,
 			content: this._formView,
 			actionButtons: [
 				{

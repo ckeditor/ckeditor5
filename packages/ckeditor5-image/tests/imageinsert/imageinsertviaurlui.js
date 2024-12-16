@@ -191,7 +191,10 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 		testSubmit( 'accept button', () => acceptButton.fire( 'execute' ) );
 
-		// Can not be checked by simulating enter click because of unit test limitations
+		/**
+	 	* Browsers handle clicking Enter for form submitting by its own but unit test can not, it is known limitation.
+		* We fire a form submit event to simulate the behavior that occurs when pressing Enter in the browser.
+	 	*/
 		testSubmit( 'form submit (enter key)', () => {
 			const form = dialog.view.contentView.children.get( 0 );
 
