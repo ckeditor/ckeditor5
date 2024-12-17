@@ -15,6 +15,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.0.0",
     "@ckeditor/ckeditor5-mention": "44.0.0",
+    "@ckeditor/ckeditor5-typing": "44.0.0",
     "@ckeditor/ckeditor5-ui": "44.0.0",
     "@ckeditor/ckeditor5-utils": "44.0.0",
     "ckeditor5": "44.0.0",
