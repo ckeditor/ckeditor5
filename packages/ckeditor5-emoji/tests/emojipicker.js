@@ -5,28 +5,33 @@
 
 /* global document setTimeout Event KeyboardEvent */
 
-import { ContextualBalloon } from 'ckeditor5/src/ui.js';
+import { ContextualBalloon, Dialog } from 'ckeditor5/src/ui.js';
 import { EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 
 describe( 'EmojiPicker', () => {
-	let editor, editorElement;
+	let editor, editorElement, emojiPicker;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = await ClassicEditor.create( editorElement, {
-			plugins: [ EmojiPicker, Essentials, Paragraph ],
-			toolbar: [ 'emoji' ],
-			menuBar: {
-				isVisible: true
-			}
-		} );
+		await ClassicEditor
+			.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				toolbar: [ 'emoji' ],
+				menuBar: {
+					isVisible: true
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				emojiPicker = newEditor.plugins.get( EmojiPicker );
+			} );
 	} );
 
 	afterEach( async () => {
@@ -41,7 +46,7 @@ describe( 'EmojiPicker', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( EmojiPicker.requires ).to.deep.equal( [
-			ContextualBalloon
+			ContextualBalloon, Typing, Dialog
 		] );
 	} );
 
@@ -54,16 +59,11 @@ describe( 'EmojiPicker', () => {
 	} );
 
 	it( 'should open the picker when clicking the toolbar button', async () => {
-		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
+		clickEmojiToolbarButton();
 
-		emojiToolbarButton.click();
+		const emojiGrid = document.querySelector( '.ck-emoji-grid__tiles' );
 
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 500 ) );
-
-		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
-
-		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
+		expect( emojiGrid.checkVisibility() ).to.equal( true );
 	} );
 
 	it( 'should open the picker when clicking the menu bar button', async () => {
@@ -77,91 +77,137 @@ describe( 'EmojiPicker', () => {
 
 		emojiMenuBarButton.click();
 
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 500 ) );
+		const emojiGrid = document.querySelector( '.ck-emoji-grid__tiles' );
 
-		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
-
-		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
+		expect( emojiGrid.checkVisibility() ).to.equal( true );
 	} );
 
 	it( 'should insert an emoji after clicking on it in the picker', async () => {
 		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
-		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
+		clickEmojiToolbarButton();
 
-		emojiToolbarButton.click();
+		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
 
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 500 ) );
-
-		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
-
-		emojiSmileButton.click();
-
-		// Wait for the picker to act.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
+		firstEmojiInGrid.click();
 
 		expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 	} );
 
 	it( 'should close the picker when clicking outside of it', async () => {
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		clickEmojiToolbarButton();
 
-		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
-
-		emojiToolbarButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
-		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
+		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+		expect( firstEmojiInGrid.checkVisibility() ).to.equal( true );
 
 		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-		expect( emojiSmileButton.checkVisibility() ).to.equal( false );
-	} );
-
-	it( 'should close the picker when focus is on the editor and escape is clicked', async () => {
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
-
-		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
-
-		emojiToolbarButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const emojiSmileButton = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'button[title="grinning face"]' );
-		expect( emojiSmileButton.checkVisibility() ).to.equal( true );
-
-		document.querySelector( '.ck-editor' ).focus();
-
-		editor.keystrokes.press( {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-
-		expect( emojiSmileButton.checkVisibility() ).to.equal( false );
+		expect( firstEmojiInGrid.checkVisibility() ).to.equal( false );
 	} );
 
 	it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		clickEmojiToolbarButton();
 
-		const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
-
-		emojiToolbarButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const emojiSearchBar = document.querySelector( 'emoji-picker' ).shadowRoot.querySelector( 'input#search' );
+		const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
 		expect( emojiSearchBar.checkVisibility() ).to.equal( true );
 
 		emojiSearchBar.dispatchEvent( new KeyboardEvent( 'keydown', { bubbles: true, composed: true, key: 'Escape' } ) );
 
 		expect( emojiSearchBar.checkVisibility() ).to.equal( false );
 	} );
+
+	it( 'should update the grid when search query changes', async () => {
+		clickEmojiToolbarButton();
+
+		const originalFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
+
+		const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
+		emojiSearchBar.value = 'frown';
+		emojiSearchBar.dispatchEvent( new Event( 'input' ) );
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const newFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
+
+		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
+	} );
+
+	it( 'should update the grid when category changes', async () => {
+		clickEmojiToolbarButton();
+
+		const originalFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
+
+		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
+		secondCategoryButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const newFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
+
+		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
+	} );
+
+	it( 'should update the grid when skin tone changes', async () => {
+		clickEmojiToolbarButton();
+
+		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
+		secondCategoryButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const originalFirstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+		const originalFirstEmojiInGridTitle = originalFirstEmojiInGrid.title;
+		const originalFirstEmojiInGridText = originalFirstEmojiInGrid.innerText;
+
+		const skinToneDropdown = document.querySelector( '.ck-emoji-tone button' );
+		skinToneDropdown.click();
+
+		const lastSkinToneButton = Array.from( document.querySelectorAll( '.ck-emoji-tone .ck-dropdown__panel button' ) ).at( -1 );
+		lastSkinToneButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const newFirstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+		const newFirstEmojiInGridTitle = newFirstEmojiInGrid.title;
+		const newFirstEmojiInGridText = newFirstEmojiInGrid.innerText;
+
+		// Title stays the same as the emojis are the same.
+		expect( originalFirstEmojiInGridTitle ).to.equal( newFirstEmojiInGridTitle );
+		// Inner text changes as the emojis are different skin tone variants.
+		expect( originalFirstEmojiInGridText ).to.not.equal( newFirstEmojiInGridText );
+	} );
+
+	it( 'should show emoji info on the bottom panel when an emoji in the grid is hovered', async () => {
+		clickEmojiToolbarButton();
+
+		const spy = sinon.spy( emojiPicker._emojiPickerView.infoView, 'set' );
+
+		sinon.assert.notCalled( spy );
+
+		emojiPicker._emojiPickerView.gridView.fire( 'tileHover' );
+
+		sinon.assert.calledOnce( spy );
+	} );
+
+	it( 'should show emoji info on the bottom panel when an emoji in the grid is focused', async () => {
+		clickEmojiToolbarButton();
+
+		const spy = sinon.spy( emojiPicker._emojiPickerView.infoView, 'set' );
+
+		sinon.assert.notCalled( spy );
+
+		emojiPicker._emojiPickerView.gridView.fire( 'tileFocus' );
+
+		sinon.assert.calledOnce( spy );
+	} );
 } );
+
+function clickEmojiToolbarButton() {
+	const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
+
+	emojiToolbarButton.click();
+}

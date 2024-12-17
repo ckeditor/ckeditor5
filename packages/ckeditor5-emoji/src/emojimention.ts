@@ -153,8 +153,6 @@ export default class EmojiMention extends Plugin {
 				shouldShowEmojiView = true;
 
 				textToInsert = '';
-
-				// TODO: showUI() called from here does not focus properly.
 			}
 
 			this.editor.model.change( writer => {
