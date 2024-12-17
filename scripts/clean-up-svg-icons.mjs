@@ -51,7 +51,7 @@ const EXCLUDED_ICONS = [
 ];
 
 // A pattern to match all the icons.
-const ALL_ICONS_PATTERN = 'packages/**/theme/icons';
+const ALL_ICONS_PATTERN = 'packages/*/theme/icons';
 
 const { paths, verifyOnly } = parseArguments( process.argv.slice( 2 ) );
 
