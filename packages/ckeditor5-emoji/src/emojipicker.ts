@@ -31,17 +31,6 @@ import {
 } from 'ckeditor5/src/ui.js';
 import EmojiToneView, { type SkinToneId } from './ui/emojitoneview.js';
 
-export type EmojiGroup = {
-	title: string;
-	exampleEmoji: string;
-	items: Array<EmojiItem>;
-};
-
-type EmojiItem = {
-	name: string;
-	emojis: Array<string>;
-};
-
 /**
  * The emoji picker plugin.
  *
@@ -366,3 +355,14 @@ export interface DropdownPanelContent {
 	gridView: EmojiGridView;
 	infoView: EmojiInfoView;
 }
+
+export type EmojiGroup = {
+	title: string;
+	exampleEmoji: string;
+	items: Array<EmojiItem>;
+};
+
+type EmojiItem = {
+	name: string;
+	emojis: Array<string>;
+};
