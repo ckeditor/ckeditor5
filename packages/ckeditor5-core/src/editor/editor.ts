@@ -993,6 +993,17 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-trial-limit' );
 			}
 
+			if ( reason == 'developmentLimit' ) {
+				/**
+				 * You have exceeded the operation limit for your development license key within the editor.
+				 * Please restart the editor to continue using it.
+				 * {@glink getting-started/licensing/license-key-and-activation#license-key-types Read more about license key types}.
+				 *
+				 * @error license-key-development-limit
+				 */
+				throw new CKEditorError( 'license-key-development-limit' );
+			}
+
 			if ( reason == 'usageLimit' ) {
 				/**
 				 * You have reached the usage limit of your license key. This can occur in the following situations:
@@ -1100,6 +1111,7 @@ type LicenseErrorReason =
 	'evaluationLimit' |
 	'trialLimit' |
 	'usageLimit' |
+	'developmentLimit' |
 	'distributionChannel';
 
 /**
