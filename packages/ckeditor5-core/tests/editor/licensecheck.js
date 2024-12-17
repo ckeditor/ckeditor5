@@ -466,7 +466,7 @@ describe( 'Editor - license check', () => {
 				dateNow.restore();
 			} );
 
-			it( 'also should not block editor after 10 minutes (development license)', () => {
+			it( 'should not block editor after 10 minutes (development license)', () => {
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'development'
 				} );
