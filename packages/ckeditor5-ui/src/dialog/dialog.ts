@@ -282,7 +282,6 @@ export default class Dialog extends Plugin {
 		actionButtons,
 		className,
 		isModal,
-		isForm,
 		position,
 		onHide
 	}: DialogDefinition ) {
@@ -295,8 +294,7 @@ export default class Dialog extends Plugin {
 			getViewportOffset: () => {
 				return editor.ui.viewportOffset;
 			}
-		},
-		isForm );
+		} );
 
 		const view = this.view;
 
@@ -459,12 +457,6 @@ export interface DialogDefinition {
 	 * When set to `true`, the dialog will become a modal, that is, it will block the UI until it is closed.
 	 */
 	isModal?: boolean;
-
-	/**
-	 * When set to `true`, the dialog content will be wrapped in a <form> tag, allowing it to be closed by pressing Enter when a submit
-	 * button is present.
-	 */
-	isForm?: boolean;
 
 	/**
 	 * Available dialog positions. By default `DialogViewPosition.EDITOR_CENTER` is used for {@link #isModal non-modals}

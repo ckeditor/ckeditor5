@@ -208,8 +208,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 		}: {
 			getCurrentDomRoot: () => HTMLElement;
 			getViewportOffset: () => EditorUI[ 'viewportOffset' ];
-		},
-		isForm?: boolean
+		}
 	) {
 		super( locale );
 
@@ -261,7 +260,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			},
 			children: [
 				{
-					tag: isForm ? 'form' : 'div',
+					tag: 'div',
 					attributes: {
 						tabindex: '-1',
 						class: [

@@ -121,8 +121,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		} );
 
 		it( 'has submittable form', () => {
-			expect( dialog.view.element.querySelector( 'form.ck-dialog' ) ).to.exist;
-			expect( acceptButton.type ).to.equal( 'submit' );
+			expect( dialog.view.element.querySelector( 'form.ck-image-insert-url' ) ).to.exist;
 		} );
 
 		it( 'should bind #isImageSelected', () => {

@@ -186,7 +186,6 @@ export default class ImageInsertViaUrlUI extends Plugin {
 				t( 'Update image URL' ) :
 				t( 'Insert image via URL' ),
 			isModal: true,
-			isForm: true,
 			content: this._formView,
 			actionButtons: [
 				{
@@ -197,7 +196,6 @@ export default class ImageInsertViaUrlUI extends Plugin {
 				{
 					label: t( 'Accept' ),
 					class: 'ck-button-action',
-					type: 'submit',
 					withText: true,
 					onExecute: () => this._handleSave()
 				}

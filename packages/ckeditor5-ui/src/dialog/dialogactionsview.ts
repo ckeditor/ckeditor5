@@ -149,7 +149,7 @@ export default class DialogActionsView extends View {
  */
 export type DialogActionButtonDefinition =
 	Pick<Button, 'label'> &
-	Partial<Pick<Button, 'withText' | 'class' | 'icon' | 'type'>> &
+	Partial<Pick<Button, 'withText' | 'class' | 'icon'>> &
 	{
 		onExecute: Function;
 		onCreate?: ( button: ButtonView ) => void;
