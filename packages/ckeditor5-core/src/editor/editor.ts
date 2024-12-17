@@ -1110,8 +1110,8 @@ type LicenseErrorReason =
 	'featureNotAllowed' |
 	'evaluationLimit' |
 	'trialLimit' |
-	'usageLimit' |
 	'developmentLimit' |
+	'usageLimit' |
 	'distributionChannel';
 
 /**
