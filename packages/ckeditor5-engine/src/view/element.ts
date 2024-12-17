@@ -82,7 +82,7 @@ export default class Element extends Node {
 	/**
 	 * Set of classes associated with element instance.
 	 *
-	 * Note that this is just an alias for this._attrs.get( 'class' );
+	 * Note that this is just an alias for `this._attrs.get( 'class' );`
 	 */
 	private get _classes(): TokenList | undefined {
 		return this._attrs.get( 'class' ) as TokenList | undefined;
@@ -91,7 +91,7 @@ export default class Element extends Node {
 	/**
 	 * Normalized styles.
 	 *
-	 * Note that this is just an alias for this._attrs.get( 'style' );
+	 * Note that this is just an alias for `this._attrs.get( 'style' );`
 	 */
 	private get _styles(): StylesMap | undefined {
 		return this._attrs.get( 'style' ) as StylesMap | undefined;
