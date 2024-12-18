@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { LivePosition, type Range } from 'ckeditor5/src/engine.js';
+import { LivePosition, type Range, type Item } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -175,11 +175,11 @@ export default class LinkCommand extends Command {
 		}
 
 		model.change( writer => {
-			const updateLinkAttributes = ( range: Range ): void => {
-				writer.setAttribute( 'linkHref', href, range );
+			const updateLinkAttributes = ( itemOrRange: Item | Range ): void => {
+				writer.setAttribute( 'linkHref', href, itemOrRange );
 
-				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, range ) );
-				falsyManualDecorators.forEach( item => writer.removeAttribute( item, range ) );
+				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, itemOrRange ) );
+				falsyManualDecorators.forEach( item => writer.removeAttribute( item, itemOrRange ) );
 			};
 
 			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range | undefined => {
@@ -217,9 +217,17 @@ export default class LinkCommand extends Command {
 							.from( attributes )
 							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
 
+						// Create a new text node.
+						const newTextNode = writer.createText( expected, formattingAttributes );
+
+						// Set link attributes before inserting to document to avoid Differ attributes edge case.
+						updateLinkAttributes( newTextNode );
+
 						// Replace text with formatting.
-						model.insertContent( writer.createText( expected, formattingAttributes ), subRange );
-						insertsLength += expected.length; // Sum of all previous inserts.
+						model.insertContent( newTextNode, subRange );
+
+						// Sum of all previous inserts.
+						insertsLength += expected.length;
 					}
 
 					return writer.createRange( range.start, range.start.getShiftedBy( newText.length ) );
