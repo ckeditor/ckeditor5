@@ -24,6 +24,10 @@ describe( 'LinkCommand', () => {
 					allowAttributes: [ 'linkHref', 'bold' ]
 				} );
 
+				editor.model.schema.setAttributeProperties( 'bold', {
+					isFormatting: true
+				} );
+
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			} );
 	} );
@@ -628,6 +632,60 @@ describe( 'LinkCommand', () => {
 
 					expect( command.value ).to.equal( 'url' );
 				} );
+
+				describe( 'keep formatting attributes', () => {
+					it( 'should correctly replace selected text with keepping the text attributes', () => {
+						setData( model, 'foo[<$text bold="true" linkHref="url">textBar</$text>]baz' );
+
+						command.execute( 'url2', {}, 'abc' );
+
+						expect( getData( model ) ).to.equal( 'foo[<$text bold="true" linkHref="url2">abc</$text>]baz' );
+					} );
+
+					it( 'should keep formatting attributes in a partially replaced link text (changed link)', () => {
+						setData( model, 'f<$text linkHref="foo" bold="true">o[ob]a</$text>r' );
+
+						command.execute( 'url', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal(
+							'f<$text bold="true" linkHref="foo">o</$text>' +
+							'[<$text bold="true" linkHref="url">xyz</$text>]' +
+							'<$text bold="true" linkHref="foo">a</$text>r'
+						);
+					} );
+
+					it( 'should keep formatting attributes in a partially replaced link text (the same link)', () => {
+						setData( model, 'f<$text linkHref="foo" bold="true">o[ob]a</$text>r' );
+
+						command.execute( 'foo', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal( 'f<$text bold="true" linkHref="foo">o[xyz]a</$text>r' );
+					} );
+
+					it( 'should keep formatting attributes of a entirely deleted link text', () => {
+						setData( model, 'f<$text linkHref="foo" bold="true">[ooba]</$text>r' );
+
+						command.execute( 'url', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal( 'f[<$text bold="true" linkHref="url">xyz</$text>]r' );
+					} );
+
+					it( 'should not keep selection attributes if link is removed and selection starts on unformatted text', () => {
+						setData( model, 'f[oo<$text linkHref="foo" bold="true">ba</$text>]r' );
+
+						command.execute( 'url', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal( 'f[<$text linkHref="url">xyz</$text>]r' );
+					} );
+
+					it( 'should preserve the position of formatting attributes in complex text replacement', () => {
+						setData( model, '[<$text linkHref="url">Hello</$text> <$text bold="true" linkHref="url">World</$text>]' );
+
+						command.execute( 'url2', {}, 'Replacement Text' );
+
+						expect( getData( model ) ).to.equal( '[<$text linkHref="url2">Replacement text</$text>]' );
+					} );
+				} );
 			} );
 		} );
 
@@ -775,7 +833,7 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
-				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
+				setData( model, 'f<$text linkHref="url">o[]oba</</$text>r' );
 
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 

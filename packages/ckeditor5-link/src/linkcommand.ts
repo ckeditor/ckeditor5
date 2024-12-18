@@ -213,7 +213,8 @@ export default class LinkCommand extends Command {
 						// Collect formatting attributes from replaced text.
 						const textNode = getLinkPartTextNode( subRange, range )!;
 						const attributes = textNode.getAttributes();
-						const formattingAttributes = Array.from( attributes )
+						const formattingAttributes = Array
+							.from( attributes )
 							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
 
 						// Replace text with formatting.
@@ -310,6 +311,7 @@ export default class LinkCommand extends Command {
 					const linkHref = ( range.start.textNode || range.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
 
 					range = updateLinkTextIfNeeded( range, linkHref ) || range;
+
 					updateLinkAttributes( range );
 				}
 
@@ -366,25 +368,62 @@ export default class LinkCommand extends Command {
 }
 
 /**
- * TODO
+ * Compares two strings and returns an array of changes needed to transform one into another.
+ * Uses the diff utility to find the differences and groups them into chunks containing information
+ * about the offset and actual/expected content.
+ *
+ * @param oldText The original text to compare
+ * @param newText The new text to compare against
+ * @returns Array of change objects containing offset and actual/expected content
+ *
+ * @example
+ * findChanges( 'hello world', 'hi there' );
+ *
+ * Returns:
+ * [
+ * 	{
+ * 		"offset": 1,
+ * 		"actual": "ello",
+ * 		"expected": "i"
+ * 	},
+ * 	{
+ * 		"offset": 2,
+ * 		"actual": "wo",
+ * 		"expected": "the"
+ * 	},
+ * 	{
+ * 		"offset": 3,
+ * 		"actual": "ld",
+ * 		"expected": "e"
+ * 	}
+ * ]
  */
 function findChanges( oldText: string, newText: string ) {
+	// Get array of operations (insert/delete/equal) needed to transform oldText into newText
+	// Example: diff('abc', 'abxc') returns ['equal', 'equal', 'insert', 'equal']
 	const changes = diff( oldText, newText );
+
+	// Track position in both strings based on operation type
 	const counter = { equal: 0, insert: 0, delete: 0 };
 	const result = [];
 
+	// Accumulate consecutive changes into slices before creating change objects
 	let actualSlice = '';
 	let expectedSlice = '';
 
+	// Adding null as sentinel value to handle final accumulated changes
 	for ( const action of [ ...changes, null ] ) {
 		if ( action == 'insert' ) {
+			// Example: for 'abxc', at insert position, adds 'x' to expectedSlice
 			expectedSlice += newText[ counter.equal + counter.insert ];
 		}
 		else if ( action == 'delete' ) {
+			// Example: for 'abc' -> 'ac', at delete position, adds 'b' to actualSlice
 			actualSlice += oldText[ counter.equal + counter.delete ];
 		}
 		else if ( actualSlice.length || expectedSlice.length ) {
-			// Save change and reset stored slices on 'equal' or end.
+			// On 'equal' or end: bundle accumulated changes into a single change object
+			// Example: { offset: 2, actual: "", expected: "x" }
 			result.push( {
 				offset: counter.equal,
 				actual: actualSlice,
@@ -395,6 +434,7 @@ function findChanges( oldText: string, newText: string ) {
 			expectedSlice = '';
 		}
 
+		// Increment appropriate counter for the current operation
 		if ( action ) {
 			counter[ action ]++;
 		}
@@ -404,7 +444,11 @@ function findChanges( oldText: string, newText: string ) {
 }
 
 /**
- * TODO
+ * Returns text node withing the link range that should be updated.
+ *
+ * @param range Selection range
+ * @param linkRange Range of the entire link element
+ * @returns Text node for content updates
  */
 function getLinkPartTextNode( range: Range, linkRange: Range ) {
 	if ( !range.isCollapsed ) {
