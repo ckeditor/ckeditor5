@@ -13,7 +13,7 @@ import ModelRange from '../model/range.js';
 import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
 
-import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import type ViewDocumentFragment from '../view/documentfragment.js';
 import type ViewElement from '../view/element.js';
@@ -845,6 +845,37 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	private _nodeToCacheListIndex = new WeakMap<ViewNode, number>();
 
 	/**
+	 * Callback fired whenever there is a direct or indirect children change in tracked view element or tracked view document fragment.
+	 *
+	 * This is specified as a property to make it easier to set as an event callback and to later turn off that event.
+	 */
+	private _invalidateOnChildrenChangeCallback: GetCallback<ViewNodeChangeEvent>;
+
+	/**
+	 * Callback fired whenever a view text node directly or indirectly inside a tracked view element or tracked view document fragment
+	 * changes its text data.
+	 *
+	 * This is specified as a property to make it easier to set as an event callback and to later turn off that event.
+	 */
+	private _invalidateOnTextChangeCallback: GetCallback<ViewNodeChangeEvent>;
+
+	/**
+	 * Creates an instance of mapper cache.
+	 */
+	constructor() {
+		super();
+
+		this._invalidateOnChildrenChangeCallback = ( evt, viewNode, data ) => {
+			this._clearCacheInsideParent( viewNode as ViewElement | ViewDocumentFragment, data!.index );
+		};
+
+		this._invalidateOnTextChangeCallback = ( evt, viewNode ) => {
+			// Text node has changed. Clear all the cache starting from before this text node.
+			this._clearCacheStartingBefore( viewNode );
+		};
+	}
+
+	/**
 	 * Saves cache for given view position mapping <-> model offset mapping.
 	 *
 	 * @param viewParent View position parent.
@@ -1035,14 +1066,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 		//
 		// Possible performance improvement. This event bubbles, so if there are multiple tracked (mapped) elements that are ancestors
 		// then this will be unnecessarily fired for each ancestor. This could be rewritten to listen only to roots and document fragments.
-		this.listenTo<ViewNodeChangeEvent>( viewContainer, 'change:children', ( evt, viewNode, data ) => {
-			this._invalidateCacheOnChildrenChange( viewNode as ViewElement | ViewDocumentFragment, data!.index );
-		} );
-
-		this.listenTo<ViewNodeChangeEvent>( viewContainer, 'change:text', ( evt, viewNode ) => {
-			// Text node has changed. Clear all the cache starting from before this text node.
-			this._clearCacheStartingBefore( viewNode );
-		} );
+		viewContainer.on<ViewNodeChangeEvent>( 'change:children', this._invalidateOnChildrenChangeCallback );
+		viewContainer.on<ViewNodeChangeEvent>( 'change:text', this._invalidateOnTextChangeCallback );
 
 		return initialCacheItem;
 	}
@@ -1060,9 +1085,9 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Invalidates cache after a change happens inside `viewParent` on given `index`.
+	 * Invalidates cache inside `viewParent`, starting from given `index` in that parent.
 	 */
-	private _invalidateCacheOnChildrenChange( viewParent: ViewElement | ViewDocumentFragment, index: number ) {
+	private _clearCacheInsideParent( viewParent: ViewElement | ViewDocumentFragment, index: number ) {
 		if ( index == 0 ) {
 			// Change at the beginning of the parent.
 			if ( this._cachedMapping.has( viewParent ) ) {
