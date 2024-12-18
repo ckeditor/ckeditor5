@@ -1013,7 +1013,7 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Starts tracking given `viewContainer`, which must be mapped to a model element or model document fragment.
 	 *
-	 * Note, that this method is automatically called by {@link ~MapperCache#get `MapperCache#get()`} and there is no need to call it
+	 * Note, that this method is automatically called by {@link ~MapperCache#get `MapperCache#getClosest()`} and there is no need to call it
 	 * manually.
 	 *
 	 * This method initializes the cache for `viewContainer` and adds callbacks for
