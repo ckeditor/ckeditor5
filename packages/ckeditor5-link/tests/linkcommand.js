@@ -833,7 +833,7 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
-				setData( model, 'f<$text linkHref="url">o[]oba</</$text>r' );
+				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
 
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
