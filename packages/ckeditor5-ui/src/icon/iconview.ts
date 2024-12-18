@@ -123,7 +123,8 @@ export default class IconView extends View {
 					// (https://github.com/ckeditor/ckeditor5/issues/12599).
 					bind.if( 'isColorInherited', 'ck-icon_inherit-color' )
 				],
-				viewBox: bind.to( 'viewBox' )
+				viewBox: bind.to( 'viewBox' ),
+				'aria-hidden': true
 			}
 		} );
 	}

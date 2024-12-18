@@ -41,6 +41,7 @@ describe( 'IconView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-icon' ) ).to.be.true;
 			expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '0 0 20 20' );
+			expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
 		} );
 	} );
 
