@@ -67,6 +67,7 @@ export { default as EditorUIView } from './editorui/editoruiview.js';
 export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview.js';
 export { default as InlineEditableUIView } from './editableui/inline/inlineeditableuiview.js';
 
+export { default as FormRowView } from './formrow/formrowview.js';
 export { default as FormHeaderView } from './formheader/formheaderview.js';
 export {
 	default as FocusCycler,

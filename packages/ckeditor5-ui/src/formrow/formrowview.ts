@@ -4,22 +4,18 @@
  */
 
 /**
- * @module table/ui/formrowview
+ * @module ui/formrow/formrowview
  */
 
-import { View, type LabelView, type ViewCollection } from 'ckeditor5/src/ui.js';
-import type { Locale } from 'ckeditor5/src/utils.js';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import type LabelView from '../label/labelview.js';
+import { toArray, type ArrayOrItem, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/formrow.css';
+import '../../theme/components/formrow/formrow.css';
 
 /**
- * The class representing a single row in a complex form,
- * used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}.
- *
- * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table),
- * it will become a component in ckeditor5-ui.
- *
- * @internal
+ * The class representing a single row in a form,
  */
 export default class FormRowView extends View {
 	/**
@@ -27,7 +23,7 @@ export default class FormRowView extends View {
 	 *
 	 * @observable
 	 */
-	public declare class: string | null;
+	public declare class: Array<string>;
 
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
@@ -61,12 +57,16 @@ export default class FormRowView extends View {
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
+	constructor( locale: Locale, options: { children?: Array<View>; class?: ArrayOrItem<string>; labelView?: LabelView } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.set( 'class', options.class || null );
+		this.set( 'class', [
+			'ck',
+			'ck-form__row',
+			...toArray( options.class || [] )
+		] );
 		this.children = this.createCollection();
 
 		if ( options.children ) {
@@ -86,11 +86,7 @@ export default class FormRowView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [
-					'ck',
-					'ck-form__row',
-					bind.to( 'class' )
-				],
+				class: bind.to( 'class', classes => classes.join( ' ' ) ),
 				role: bind.to( '_role' ),
 				'aria-labelledby': bind.to( '_ariaLabelledBy' )
 			},

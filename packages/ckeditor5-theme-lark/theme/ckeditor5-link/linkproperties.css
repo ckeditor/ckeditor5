@@ -6,17 +6,15 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
-	--ck-image-custom-resize-form-width: 340px;
+	--ck-link-properties-width: 340px;
 }
 
 @mixin ck-media-phone {
 	:root {
-		--ck-image-custom-resize-form-width: 300px;
+		--ck-link-properties-width: 300px;
 	}
 }
 
-.ck.ck-image-custom-resize-form {
-	&.ck-responsive-form {
-		width: var(--ck-image-custom-resize-form-width);
-	}
+.ck.ck-link-properties {
+	width: var(--ck-link-properties-width);
 }

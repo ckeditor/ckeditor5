@@ -12,6 +12,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js'
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
 import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview.js';
+import FormRowView from '@ckeditor/ckeditor5-ui/src/formrow/formrowview.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -34,7 +35,9 @@ describe( 'BookmarkFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-bookmark__panel' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-bookmark-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -49,14 +52,15 @@ describe( 'BookmarkFormView', () => {
 			expect( view.children.get( 0 ) ).to.be.instanceOf( FormHeaderView );
 			expect( view.children.get( 1 ) ).to.be.instanceOf( View );
 
-			const formContentView = view.children.get( 1 );
+			const formRowView = view.children.get( 1 );
 
-			expect( formContentView.element.classList.contains( 'ck' ) ).to.true;
-			expect( formContentView.element.classList.contains( 'ck-bookmark__form' ) ).to.true;
-			expect( formContentView.element.classList.contains( 'ck-responsive-form' ) ).to.true;
-
-			expect( view.formChildren.get( 0 ).template.children[ 0 ] ).to.equal( view.idInputView );
-			expect( view.formChildren.get( 0 ).template.children[ 1 ] ).to.equal( view.saveButtonView );
+			expect( formRowView ).to.be.instanceOf( FormRowView );
+			expect( formRowView.element.classList.contains( 'ck' ) ).to.true;
+			expect( formRowView.element.classList.contains( 'ck-form__row' ) ).to.true;
+			expect( formRowView.element.classList.contains( 'ck-form__row_with-submit' ) ).to.true;
+			expect( formRowView.element.classList.contains( 'ck-form__row_large-top-padding' ) ).to.true;
+			expect( formRowView.children.get( 0 ) ).to.equal( view.idInputView );
+			expect( formRowView.children.get( 1 ) ).to.equal( view.saveButtonView );
 
 			const formHeaderView = view.children.get( 0 );
 

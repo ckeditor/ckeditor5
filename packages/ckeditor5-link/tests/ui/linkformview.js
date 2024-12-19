@@ -32,7 +32,9 @@ describe( 'LinkFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link__panel' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-link-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
@@ -78,27 +80,28 @@ describe( 'LinkFormView', () => {
 				 * 	header
 				 * 		backButtonView
 				 * 		label
-				 * 	div
+				 * 	formRow
 				 * 		displayedTextInputView
-				 * 		div
-				 * 			urlInputView
-				 * 			saveButtonView
+				 * 	formRow
+				 * 		urlInputView
+				 * 		saveButtonView
 				 * 	linksButton
 				 */
 
 			it( 'has url input view', () => {
-				const formChildren = view.template.children[ 0 ].get( 1 ).template.children[ 0 ];
+				const firstFormRow = view.template.children[ 0 ].get( 1 );
+				const secondFormRow = view.template.children[ 0 ].get( 2 );
 
-				expect( formChildren.get( 0 ) ).to.equal( view.displayedTextInputView );
-				expect( formChildren.get( 1 ).template.children[ 0 ] ).to.equal( view.urlInputView );
+				expect( firstFormRow.template.children[ 0 ].get( 0 ) ).to.equal( view.displayedTextInputView );
+				expect( secondFormRow.template.children[ 0 ].get( 0 ) ).to.equal( view.urlInputView );
 			} );
 
 			it( 'has button views', () => {
 				const headerChildren = view.template.children[ 0 ].get( 0 ).template.children[ 0 ];
-				const formChildren = view.template.children[ 0 ].get( 1 ).template.children[ 0 ];
+				const secondFormRow = view.template.children[ 0 ].get( 2 );
 
 				expect( headerChildren.get( 0 ) ).to.equal( view.backButtonView );
-				expect( formChildren.last.template.children[ 1 ] ).to.equal( view.saveButtonView );
+				expect( secondFormRow.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
 			} );
 
 			it( 'should `backButtonView` has correct label', () => {
@@ -307,7 +310,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'adds list view', () => {
-			const listView = view.template.children[ 0 ].get( 2 );
+			const listView = view.children.get( 3 );
 			const button = listView.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
 
 			expect( button ).to.be.instanceOf( LinkButtonView );
@@ -325,7 +328,7 @@ describe( 'LinkFormView', () => {
 			view.providersListChildren.add( button );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
-			const listView = view.template.children[ 0 ].get( 2 );
+			const listView = view.children.get( 3 );
 			const { element } = listView.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
 
 			view.render();

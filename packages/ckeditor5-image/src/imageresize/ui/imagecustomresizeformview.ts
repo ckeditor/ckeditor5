@@ -11,6 +11,7 @@ import {
 	ButtonView,
 	FocusCycler,
 	FormHeaderView,
+	FormRowView,
 	LabeledFieldView,
 	View,
 	ViewCollection,
@@ -28,6 +29,8 @@ import '../../../theme/imagecustomresizeform.css';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
 /**
  * The ImageCustomResizeFormView class.
@@ -69,11 +72,6 @@ export default class ImageCustomResizeFormView extends View {
 	public readonly children: ViewCollection;
 
 	/**
-	 * A collection of child views in the form.
-	 */
-	public readonly formChildren: ViewCollection;
-
-	/**
 	 * A collection of views which can be focused in the form.
 	 */
 	protected readonly _focusables: ViewCollection<FocusableView>;
@@ -104,12 +102,18 @@ export default class ImageCustomResizeFormView extends View {
 
 		// Create input fields.
 		this.labeledInput = this._createLabeledInputView();
-		this.formChildren = this._createFormChildren();
 
-		this.children = this.createCollection( [
-			this._createHeaderView(),
-			this._createFormView()
-		] );
+		this.children = this.createCollection( [ this._createHeaderView() ] );
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.labeledInput,
+				this.saveButtonView
+			],
+			class: [
+				'ck-form__row_with-submit',
+				'ck-form__row_large-top-padding'
+			]
+		} ) );
 
 		this._focusables = new ViewCollection();
 		this._validators = validators;
@@ -137,7 +141,12 @@ export default class ImageCustomResizeFormView extends View {
 			tag: 'form',
 
 			attributes: {
-				class: [ 'ck', 'ck-image-custom-resize__panel' ],
+				class: [
+					'ck',
+					'ck-form',
+					'ck-image-custom-resize-form',
+					'ck-responsive-form'
+				],
 
 				// https://github.com/ckeditor/ckeditor5-image/issues/40
 				tabindex: '-1'
@@ -185,53 +194,6 @@ export default class ImageCustomResizeFormView extends View {
 	}
 
 	/**
-	 * Creates a form view collection.
-	 */
-	private _createFormChildren(): ViewCollection {
-		const resizeInputAndSubmit = new View( this.locale );
-
-		resizeInputAndSubmit.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [ 'ck', 'ck-input-and-submit' ]
-			},
-
-			children: [
-				this.labeledInput,
-				this.saveButtonView
-			]
-		} );
-
-		return this.createCollection( [
-			resizeInputAndSubmit
-		] );
-	}
-
-	/**
-	 * Creates a form view for the image resize form.
-	 */
-	private _createFormView(): View {
-		const form = new View( this.locale );
-
-		form.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-image-custom-resize__form',
-					'ck-responsive-form'
-				]
-			},
-
-			children: this.formChildren
-		} );
-
-		return form;
-	}
-
-	/**
 	 * Creates a back button view that cancels the form.
 	 */
 	private _createBackButton(): ButtonView {
@@ -239,6 +201,7 @@ export default class ImageCustomResizeFormView extends View {
 		const backButton = new ButtonView( this.locale );
 
 		backButton.set( {
+			class: 'ck-button-back',
 			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
@@ -291,6 +254,7 @@ export default class ImageCustomResizeFormView extends View {
 		const labeledInput = new LabeledFieldView<InputNumberView>( this.locale, createLabeledInputNumber );
 
 		labeledInput.label = t( 'Resize image (in %0)', this.unit );
+		labeledInput.class = 'ck-labeled-field-view_full-width';
 		labeledInput.fieldView.set( {
 			step: 0.1
 		} );

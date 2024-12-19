@@ -3,13 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
 :root {
+	--ck-link-providers-width: 340px;
 	--ck-link-list-view-max-height: 240px;
 	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
 }
 
-.ck.ck-link__panel.ck-link__links {
-	& > .ck-list__links-items {
+@mixin ck-media-phone {
+	:root {
+		--ck-link-providers-width: 300px;
+	}
+}
+
+.ck.ck-link-providers {
+	width: var(--ck-link-providers-width);
+
+	& > .ck-link-providers__list {
 		max-height: min( var(--ck-link-list-view-max-height), 40vh );
 
 		& .ck-button {

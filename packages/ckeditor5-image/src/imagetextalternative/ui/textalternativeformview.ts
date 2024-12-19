@@ -10,14 +10,15 @@
 import {
 	ButtonView,
 	FocusCycler,
+	FormRowView,
+	FormHeaderView,
 	LabeledFieldView,
 	View,
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
 	type InputView,
-	type FocusableView,
-	FormHeaderView
+	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
@@ -27,6 +28,8 @@ import '../../../theme/textalternativeform.css';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
 /**
  * The TextAlternativeFormView class.
@@ -63,11 +66,6 @@ export default class TextAlternativeFormView extends View {
 	public readonly children: ViewCollection;
 
 	/**
-	 * A collection of child views in the form.
-	 */
-	public readonly formChildren: ViewCollection;
-
-	/**
 	 * A collection of views which can be focused in the form.
 	 */
 	protected readonly _focusables: ViewCollection<FocusableView>;
@@ -92,12 +90,20 @@ export default class TextAlternativeFormView extends View {
 
 		// Create input fields.
 		this.labeledInput = this._createLabeledInputView();
-		this.formChildren = this._createFormChildren();
 
 		this.children = this.createCollection( [
-			this._createHeaderView(),
-			this._createFormView()
+			this._createHeaderView()
 		] );
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.labeledInput,
+				this.saveButtonView
+			],
+			class: [
+				'ck-form__row_with-submit',
+				'ck-form__row_large-top-padding'
+			]
+		} ) );
 
 		this._focusables = new ViewCollection();
 
@@ -124,7 +130,12 @@ export default class TextAlternativeFormView extends View {
 			tag: 'form',
 
 			attributes: {
-				class: [ 'ck', 'ck-text-alternative__panel' ],
+				class: [
+					'ck',
+					'ck-form',
+					'ck-text-alternative-form',
+					'ck-responsive-form'
+				],
 
 				// https://github.com/ckeditor/ckeditor5-image/issues/40
 				tabindex: '-1'
@@ -172,53 +183,6 @@ export default class TextAlternativeFormView extends View {
 	}
 
 	/**
-	 * Creates a form child view collection.
-	 */
-	private _createFormChildren(): ViewCollection {
-		const textAlternativeInputAndSubmit = new View( this.locale );
-
-		textAlternativeInputAndSubmit.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [ 'ck', 'ck-input-and-submit' ]
-			},
-
-			children: [
-				this.labeledInput,
-				this.saveButtonView
-			]
-		} );
-
-		return this.createCollection( [
-			textAlternativeInputAndSubmit
-		] );
-	}
-
-	/**
-	 * Creates a form view for the image text alternative form.
-	 */
-	private _createFormView(): View {
-		const form = new View( this.locale );
-
-		form.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-text-alternative__form',
-					'ck-responsive-form'
-				]
-			},
-
-			children: this.formChildren
-		} );
-
-		return form;
-	}
-
-	/**
 	 * Creates a back button view that cancels the form.
 	 */
 	private _createBackButton(): ButtonView {
@@ -226,6 +190,7 @@ export default class TextAlternativeFormView extends View {
 		const backButton = new ButtonView( this.locale );
 
 		backButton.set( {
+			class: 'ck-button-back',
 			label: t( 'Back' ),
 			icon: icons.previousArrow,
 			tooltip: true
@@ -278,6 +243,7 @@ export default class TextAlternativeFormView extends View {
 		const labeledInput = new LabeledFieldView<InputView>( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Text alternative' );
+		labeledInput.class = 'ck-labeled-field-view_full-width';
 
 		return labeledInput;
 	}
