@@ -12,7 +12,7 @@ describe( 'DataController utils', () => {
 	let model, doc;
 
 	describe( 'getSelectedContent', () => {
-		it( 'should use parent batch', () => {
+		it( 'should not generate any document operations', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
@@ -20,10 +20,10 @@ describe( 'DataController utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'x[abc]x' );
 
-			model.change( writer => {
-				getSelectedContent( model, doc.selection );
-				expect( writer.batch.operations ).to.length( 1 );
-			} );
+			const version = model.document.version;
+			getSelectedContent( model, doc.selection );
+
+			expect( model.document.version ).to.equal( version );
 		} );
 
 		describe( 'in simple scenarios', () => {
