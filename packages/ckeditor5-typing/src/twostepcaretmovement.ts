@@ -292,10 +292,11 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Updates the document selection and the view according to the two–step caret movement state
 	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
-	 * @param data Data of the key press.
+	 * @internal
+	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement.
 	 */
-	private _handleForwardMovement( data: DomEventData ): boolean {
+	public _handleForwardMovement( eventData?: DomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -333,7 +334,9 @@ export default class TwoStepCaretMovement extends Plugin {
 		//		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
 		//
 		if ( isBetweenDifferentAttributes( position, attributes ) ) {
-			preventCaretMovement( data );
+			if ( eventData ) {
+				preventCaretMovement( eventData );
+			}
 
 			// CLEAR 2-SCM attributes if we are at the end of one 2-SCM and before
 			// the next one with a different value of the same attribute.
@@ -359,10 +362,11 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Updates the document selection and the view according to the two–step caret movement state
 	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
-	 * @param data Data of the key press.
+	 * @internal
+	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement
 	 */
-	private _handleBackwardMovement( data: DomEventData ): boolean {
+	public _handleBackwardMovement( eventData?: DomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -377,7 +381,10 @@ export default class TwoStepCaretMovement extends Plugin {
 		//		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
 		//
 		if ( this._isGravityOverridden ) {
-			preventCaretMovement( data );
+			if ( eventData ) {
+				preventCaretMovement( eventData );
+			}
+
 			this._restoreGravity();
 
 			// CLEAR 2-SCM attributes if we are at the end of one 2-SCM and before
@@ -400,7 +407,10 @@ export default class TwoStepCaretMovement extends Plugin {
 			//
 			if ( position.isAtStart ) {
 				if ( hasAnyAttribute( selection, attributes ) ) {
-					preventCaretMovement( data );
+					if ( eventData ) {
+						preventCaretMovement( eventData );
+					}
+
 					setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 					return true;
@@ -417,7 +427,10 @@ export default class TwoStepCaretMovement extends Plugin {
 				!hasAnyAttribute( selection, attributes ) &&
 				isBetweenDifferentAttributes( position, attributes, true )
 			) {
-				preventCaretMovement( data );
+				if ( eventData ) {
+					preventCaretMovement( eventData );
+				}
+
 				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 				return true;
@@ -443,7 +456,10 @@ export default class TwoStepCaretMovement extends Plugin {
 					!hasAnyAttribute( selection, attributes ) &&
 					isBetweenDifferentAttributes( position, attributes )
 				) {
-					preventCaretMovement( data );
+					if ( eventData ) {
+						preventCaretMovement( eventData );
+					}
+
 					setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 					return true;

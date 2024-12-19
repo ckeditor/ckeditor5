@@ -8,12 +8,13 @@ import LinkCommand from '../src/linkcommand.js';
 import ManualDecorator from '../src/utils/manualdecorator.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import AutomaticDecorators from '../src/utils/automaticdecorators.js';
+import LinkEditing from '../src/linkediting.js';
 
 describe( 'LinkCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
+		return ModelTestEditor.create( { plugins: [ LinkEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -846,7 +847,7 @@ describe( 'LinkCommand', () => {
 	describe( 'manual decorators', () => {
 		beforeEach( async () => {
 			await editor.destroy();
-			return ModelTestEditor.create()
+			return ModelTestEditor.create( { plugins: [ LinkEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = newEditor.model;

@@ -237,10 +237,15 @@ export default class LinkCommand extends Command {
 			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
 				writer.setSelection( linkRange.end );
 
-				// Remove the `linkHref` attribute and all link decorators from the selection.
-				// It stops adding a new content into the link element.
-				for ( const key of [ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ] ) {
-					writer.removeSelectionAttribute( key );
+				// TODO make it nicer
+				if ( this.editor.plugins.has( 'TwoStepCaretMovement' ) ) {
+					this.editor.plugins.get( 'TwoStepCaretMovement' )._handleForwardMovement();
+				} else {
+					// Remove the `linkHref` attribute and all link decorators from the selection.
+					// It stops adding a new content into the link element.
+					for ( const key of [ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ] ) {
+						writer.removeSelectionAttribute( key );
+					}
 				}
 			};
 
