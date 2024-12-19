@@ -10,6 +10,7 @@
 import {
 	ButtonView,
 	FocusCycler,
+	FormRowView,
 	LabeledFieldView,
 	View,
 	ViewCollection,
@@ -29,6 +30,9 @@ import { icons } from 'ckeditor5/src/core.js';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
+
 import '../../theme/bookmarkform.css';
 
 /**
@@ -68,11 +72,6 @@ export default class BookmarkFormView extends View {
 	public readonly children: ViewCollection;
 
 	/**
-	 * A collection of child views in the form.
-	 */
-	public readonly formChildren: ViewCollection;
-
-	/**
 	 * An array of form validators used by {@link #isValid}.
 	 */
 	private readonly _validators: Array<BookmarkFormValidatorCallback>;
@@ -106,12 +105,18 @@ export default class BookmarkFormView extends View {
 
 		// Create input fields.
 		this.idInputView = this._createIdInput();
-		this.formChildren = this._createFormChildren();
 
-		this.children = this.createCollection( [
-			this._createHeaderView(),
-			this._createFormView()
-		] );
+		this.children = this.createCollection( [ this._createHeaderView() ] );
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.idInputView,
+				this.saveButtonView
+			],
+			class: [
+				'ck-form__row_with-submit',
+				'ck-form__row_large-top-padding'
+			]
+		} ) );
 
 		// Close the panel on esc key press when the **form has focus**.
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
@@ -136,7 +141,12 @@ export default class BookmarkFormView extends View {
 			tag: 'form',
 
 			attributes: {
-				class: [ 'ck', 'ck-bookmark__panel' ],
+				class: [
+					'ck',
+					'ck-form',
+					'ck-bookmark-form',
+					'ck-responsive-form'
+				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
@@ -223,53 +233,6 @@ export default class BookmarkFormView extends View {
 	}
 
 	/**
-	 * Creates the view collection of the form.
-	 */
-	private _createFormChildren(): ViewCollection {
-		const bookmarkInputAndSubmit = new View( this.locale );
-
-		bookmarkInputAndSubmit.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [ 'ck', 'ck-input-and-submit' ]
-			},
-
-			children: [
-				this.idInputView,
-				this.saveButtonView
-			]
-		} );
-
-		return this.createCollection( [
-			bookmarkInputAndSubmit
-		] );
-	}
-
-	/**
-	 * Creates a form view for the bookmark form.
-	 */
-	private _createFormView(): View {
-		const form = new View( this.locale );
-
-		form.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-bookmark__form',
-					'ck-responsive-form'
-				]
-			},
-
-			children: this.formChildren
-		} );
-
-		return form;
-	}
-
-	/**
 	 * Creates a back button view that cancels the form.
 	 */
 	private _createBackButton(): ButtonView {
@@ -331,6 +294,7 @@ export default class BookmarkFormView extends View {
 
 		labeledInput.label = t( 'Bookmark name' );
 		labeledInput.infoText = t( 'Enter the bookmark name without spaces.' );
+		labeledInput.class = 'ck-labeled-field-view_full-width';
 
 		return labeledInput;
 	}

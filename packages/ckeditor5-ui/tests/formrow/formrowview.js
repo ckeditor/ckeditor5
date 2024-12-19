@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import FormRowView from '../../src/ui/formrowview.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import FormRowView from '../../src/formrow/formrowview.js';
+import View from '../../src/view.js';
+import ViewCollection from '../../src/viewcollection.js';
 
 describe( 'FormRowView', () => {
 	let view, locale;
@@ -46,6 +46,19 @@ describe( 'FormRowView', () => {
 				} );
 
 				expect( view.class ).to.equal( 'foo' );
+
+				view.destroy();
+			} );
+
+			it( 'should set view#class when array of classes were passed', () => {
+				const view = new FormRowView( locale, {
+					class: [
+						'foo',
+						'bar'
+					]
+				} );
+
+				expect( view.class ).to.equal( 'foo bar' );
 
 				view.destroy();
 			} );

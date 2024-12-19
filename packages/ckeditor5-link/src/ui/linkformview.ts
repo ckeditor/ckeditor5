@@ -14,6 +14,7 @@ import {
 	FocusCycler,
 	LabeledFieldView,
 	FormHeaderView,
+	FormRowView,
 	View,
 	ViewCollection,
 	createLabeledInputText,
@@ -31,6 +32,9 @@ import { icons } from 'ckeditor5/src/core.js';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
+
 import '../../theme/linkform.css';
 
 /**
@@ -71,11 +75,6 @@ export default class LinkFormView extends View {
 	 * A collection of child views.
 	 */
 	public readonly children: ViewCollection;
-
-	/**
-	 * A collection of child views in the form.
-	 */
-	public readonly formChildren: ViewCollection;
 
 	/**
 	 * A collection of child views in the providers list.
@@ -121,12 +120,12 @@ export default class LinkFormView extends View {
 		this.displayedTextInputView = this._createDisplayedTextInput();
 		this.urlInputView = this._createUrlInput();
 
-		this.formChildren = this._createFormChildren();
 		this.providersListChildren = this.createCollection();
 		this.children = this.createCollection( [
-			this._createHeaderView(),
-			this._createFormView()
+			this._createHeaderView()
 		] );
+
+		this._createFormChildren();
 
 		// Add providers list view to the children when the first item is added to the list.
 		// This is to avoid adding the list view when the form is empty.
@@ -152,7 +151,12 @@ export default class LinkFormView extends View {
 			tag: 'form',
 
 			attributes: {
-				class: [ 'ck', 'ck-link__panel' ],
+				class: [
+					'ck',
+					'ck-form',
+					'ck-link-form',
+					'ck-responsive-form'
+				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
@@ -293,29 +297,6 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates a form view for the link form.
-	 */
-	private _createFormView(): View {
-		const form = new View( this.locale );
-
-		form.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-link__form',
-					'ck-responsive-form'
-				]
-			},
-
-			children: this.formChildren
-		} );
-
-		return form;
-	}
-
-	/**
 	 * Creates a view for the providers list.
 	 */
 	private _createProvidersListView(): ListView {
@@ -324,7 +305,7 @@ export default class LinkFormView extends View {
 		providersListView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-link__providers-list'
+					'ck-link-form__providers-list'
 				]
 			}
 		} );
@@ -348,6 +329,7 @@ export default class LinkFormView extends View {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Displayed text' );
+		labeledInput.class = 'ck-labeled-field-view_full-width';
 
 		return labeledInput;
 	}
@@ -363,34 +345,35 @@ export default class LinkFormView extends View {
 
 		labeledInput.fieldView.inputMode = 'url';
 		labeledInput.label = t( 'Link URL' );
+		labeledInput.class = 'ck-labeled-field-view_full-width';
 
 		return labeledInput;
 	}
 
 	/**
 	 * Populates the {@link #children} collection of the form.
-	 *
-	 * @returns The children of link form view.
 	 */
-	private _createFormChildren(): ViewCollection {
-		const children = this.createCollection();
-		const linkInputAndSubmit = new View();
+	private _createFormChildren(): void {
+		this.children.add( new FormRowView( this.locale!, {
+			children: [
+				this.displayedTextInputView
+			],
+			class: [
+				'ck-form__row_large-top-padding'
+			]
+		} ) );
 
-		linkInputAndSubmit.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [ 'ck', 'ck-input-and-submit' ]
-			},
+		this.children.add( new FormRowView( this.locale!, {
 			children: [
 				this.urlInputView,
 				this.saveButtonView
+			],
+			class: [
+				'ck-form__row_with-submit',
+				'ck-form__row_large-top-padding',
+				'ck-form__row_large-bottom-padding'
 			]
-		} );
-
-		children.add( this.displayedTextInputView );
-		children.add( linkInputAndSubmit );
-
-		return children;
+		} ) );
 	}
 
 	/**
