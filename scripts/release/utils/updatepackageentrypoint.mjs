@@ -43,7 +43,11 @@ export default async function updatePackageEntryPoint( packagePath ) {
 			import: './dist/*',
 			default: './dist/*'
 		},
-		'./src/*': './src/*'
+		'./src/*': {
+			types: './src/*.d.ts',
+			import: './src/*',
+			default: './src/*'
+		}
 	};
 
 	if ( files.includes( 'build' ) ) {
