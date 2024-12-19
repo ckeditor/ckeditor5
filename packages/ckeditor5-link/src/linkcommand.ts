@@ -380,9 +380,10 @@ export default class LinkCommand extends Command {
  * Uses the diff utility to find the differences and groups them into chunks containing information
  * about the offset and actual/expected content.
  *
- * @param oldText The original text to compare
- * @param newText The new text to compare against
- * @returns Array of change objects containing offset and actual/expected content
+ * @internal
+ * @param oldText The original text to compare.
+ * @param newText The new text to compare against.
+ * @returns Array of change objects containing offset and actual/expected content.
  *
  * @example
  * findChanges( 'hello world', 'hi there' );
@@ -407,30 +408,30 @@ export default class LinkCommand extends Command {
  * ]
  */
 export function findChanges( oldText: string, newText: string ): Array<{ offset: number; actual: string; expected: string }> {
-	// Get array of operations (insert/delete/equal) needed to transform oldText into newText
+	// Get array of operations (insert/delete/equal) needed to transform oldText into newText.
 	// Example: diff('abc', 'abxc') returns ['equal', 'equal', 'insert', 'equal']
 	const changes = diff( oldText, newText );
 
-	// Track position in both strings based on operation type
+	// Track position in both strings based on operation type.
 	const counter = { equal: 0, insert: 0, delete: 0 };
 	const result = [];
 
-	// Accumulate consecutive changes into slices before creating change objects
+	// Accumulate consecutive changes into slices before creating change objects.
 	let actualSlice = '';
 	let expectedSlice = '';
 
-	// Adding null as sentinel value to handle final accumulated changes
+	// Adding null as sentinel value to handle final accumulated changes.
 	for ( const action of [ ...changes, null ] ) {
 		if ( action == 'insert' ) {
-			// Example: for 'abxc', at insert position, adds 'x' to expectedSlice
+			// Example: for 'abc' -> 'abxc', at insert position, adds 'x' to expectedSlice.
 			expectedSlice += newText[ counter.equal + counter.insert ];
 		}
 		else if ( action == 'delete' ) {
-			// Example: for 'abc' -> 'ac', at delete position, adds 'b' to actualSlice
+			// Example: for 'abc' -> 'ac', at delete position, adds 'b' to actualSlice.
 			actualSlice += oldText[ counter.equal + counter.delete ];
 		}
 		else if ( actualSlice.length || expectedSlice.length ) {
-			// On 'equal' or end: bundle accumulated changes into a single change object
+			// On 'equal' or end: bundle accumulated changes into a single change object.
 			// Example: { offset: 2, actual: "", expected: "x" }
 			result.push( {
 				offset: counter.equal,
@@ -442,7 +443,7 @@ export function findChanges( oldText: string, newText: string ): Array<{ offset:
 			expectedSlice = '';
 		}
 
-		// Increment appropriate counter for the current operation
+		// Increment appropriate counter for the current operation.
 		if ( action ) {
 			counter[ action ]++;
 		}
@@ -454,9 +455,10 @@ export function findChanges( oldText: string, newText: string ): Array<{ offset:
 /**
  * Returns text node withing the link range that should be updated.
  *
- * @param range Selection range
- * @param linkRange Range of the entire link element
- * @returns Text node for content updates
+ * @internal
+ * @param range Partial link range.
+ * @param linkRange Range of the entire link.
+ * @returns Text node.
  */
 export function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
 	if ( !range.isCollapsed ) {
