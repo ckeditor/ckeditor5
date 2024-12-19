@@ -29,7 +29,8 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	pkgJson.exports = {
 		'.': {
 			types: './' + types,
-			import: './' + main
+			import: './' + main,
+			default: './' + main
 		},
 		'./dist/*': {
 			/**
@@ -39,11 +40,13 @@ export default async function updatePackageEntryPoint( packagePath ) {
 			 * files will be moved to the `dist` directory.
 			 */
 			types: './' + types,
-			import: './dist/*'
+			import: './dist/*',
+			default: './dist/*'
 		},
 		'./src/*': {
-			types: './' + types,
-			import: './src/*'
+			types: './src/*.d.ts',
+			import: './src/*',
+			default: './src/*'
 		}
 	};
 
