@@ -5,28 +5,23 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-text-alternative-form {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
+.ck.ck-text-alternative__panel {
+	/* Form */
+	& .ck-responsive-form.ck-text-alternative__form {
+		display: flex;
+		flex-direction: column;
 
-	& .ck-labeled-field-view {
-		display: inline-block;
-	}
+		/* "Text alternative" input field and the "Save" button */
+		& .ck-input-and-submit {
+			display: flex;
 
-	& .ck-label {
-		display: none;
-	}
+			& > .ck-labeled-field-view {
+				flex-grow: 1;
+			}
 
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
-
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
-		}
-
-		& .ck-button {
-			flex-basis: 50%;
+			@mixin ck-media-phone {
+				flex-direction: column;
+			}
 		}
 	}
 }

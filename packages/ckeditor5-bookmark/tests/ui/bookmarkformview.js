@@ -34,16 +34,17 @@ describe( 'BookmarkFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-bookmark-view' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-bookmark__panel' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'should create child views', () => {
 			expect( view.idInputView ).to.be.instanceOf( View );
-			expect( view.buttonView ).to.be.instanceOf( View );
+			expect( view.saveButtonView ).to.be.instanceOf( View );
+			expect( view.backButtonView ).to.be.instanceOf( View );
 
-			expect( view.buttonView.element.classList.contains( 'ck-button-action' ) ).to.be.true;
-			expect( view.buttonView.element.classList.contains( 'ck-button-bold' ) ).to.be.true;
+			expect( view.saveButtonView.element.classList.contains( 'ck-button-action' ) ).to.be.true;
+			expect( view.saveButtonView.element.classList.contains( 'ck-button-bold' ) ).to.be.true;
 
 			expect( view.children.get( 0 ) ).to.be.instanceOf( FormHeaderView );
 			expect( view.children.get( 1 ) ).to.be.instanceOf( View );
@@ -51,11 +52,22 @@ describe( 'BookmarkFormView', () => {
 			const formContentView = view.children.get( 1 );
 
 			expect( formContentView.element.classList.contains( 'ck' ) ).to.true;
-			expect( formContentView.element.classList.contains( 'ck-bookmark-form' ) ).to.true;
+			expect( formContentView.element.classList.contains( 'ck-bookmark__form' ) ).to.true;
 			expect( formContentView.element.classList.contains( 'ck-responsive-form' ) ).to.true;
 
-			expect( formContentView.template.children[ 0 ].get( 0 ) ).to.equal( view.idInputView );
-			expect( formContentView.template.children[ 0 ].get( 1 ) ).to.equal( view.buttonView );
+			expect( view.formChildren.get( 0 ).template.children[ 0 ] ).to.equal( view.idInputView );
+			expect( view.formChildren.get( 0 ).template.children[ 1 ] ).to.equal( view.saveButtonView );
+
+			const formHeaderView = view.children.get( 0 );
+
+			expect( formHeaderView.element.classList.contains( 'ck' ) ).to.true;
+			expect( formHeaderView.element.classList.contains( 'ck-form__header' ) ).to.true;
+			expect( formHeaderView.children.get( 0 ) ).to.equal( view.backButtonView );
+		} );
+
+		it( 'should create back button view with proper classes', () => {
+			expect( view.backButtonView.element.classList.contains( 'ck-button' ) ).to.be.true;
+			expect( view.backButtonView.element.classList.contains( 'ck-button-back' ) ).to.be.true;
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -68,6 +80,14 @@ describe( 'BookmarkFormView', () => {
 
 		it( 'should create #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+		} );
+
+		it( 'should fire `cancel` event on backButtonView#execute', () => {
+			const spy = sinon.spy();
+			view.on( 'cancel', spy );
+			view.backButtonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should create #_focusables view collection', () => {
@@ -86,8 +106,9 @@ describe( 'BookmarkFormView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
+				view.backButtonView,
 				view.idInputView,
-				view.buttonView
+				view.saveButtonView
 			] );
 		} );
 
@@ -98,8 +119,9 @@ describe( 'BookmarkFormView', () => {
 
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.idInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.buttonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.backButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.idInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.saveButtonView.element );
 
 			view.destroy();
 		} );
@@ -128,7 +150,7 @@ describe( 'BookmarkFormView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.idInputView.element;
 
-				const spy = sinon.spy( view.buttonView, 'focus' );
+				const spy = sinon.spy( view.saveButtonView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -148,7 +170,7 @@ describe( 'BookmarkFormView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.idInputView.element;
 
-				const spy = sinon.spy( view.buttonView, 'focus' );
+				const spy = sinon.spy( view.backButtonView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
