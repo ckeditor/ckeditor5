@@ -31,7 +31,7 @@ export default class EmojiMention extends Plugin {
 	private _emojiDropdownLimit: number;
 	private _showAllEmojiId: string;
 	private _emojiDatabase: Database;
-	declare private _hasEmojiPicker: boolean;
+	declare private _emojiPickerPlugin: EmojiPicker | null;
 
 	/**
 	 * @inheritDoc
@@ -93,7 +93,7 @@ export default class EmojiMention extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this._hasEmojiPicker = this.editor.plugins.has( EmojiPicker );
+		this._emojiPickerPlugin = this.editor.plugins.has( EmojiPicker ) ? this.editor.plugins.get( EmojiPicker ) : null;
 	}
 
 	/**
@@ -147,7 +147,7 @@ export default class EmojiMention extends Plugin {
 			}
 
 			let textToInsert = eventData.mention.text;
-			let shouldShowEmojiView;
+			let shouldShowEmojiView = false;
 
 			if ( eventData.mention.id === this._showAllEmojiId ) {
 				shouldShowEmojiView = true;
@@ -160,7 +160,7 @@ export default class EmojiMention extends Plugin {
 			} );
 
 			if ( shouldShowEmojiView ) {
-				this.editor.plugins.get( EmojiPicker ).showUI( eventData.mention.text );
+				this._emojiPickerPlugin!.showUI( eventData.mention.text );
 			}
 
 			event.stop();
@@ -187,14 +187,25 @@ export default class EmojiMention extends Plugin {
 					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
 						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
-						return {
-							id: formatEmojiId( id ),
-							text: emoji.unicode
-						};
-					} );
+						let text: string | null = emoji.unicode;
+
+						if ( this._emojiPickerPlugin ) {
+							const emojiSkinToneMap = this._emojiPickerPlugin.emojis.get( emoji.annotation );
+
+							// Query might return some emojis which we chose not to add to our database.
+							/* istanbul ignore next -- @preserve */
+							if ( !emojiSkinToneMap ) {
+								text = null;
+							} else {
+								text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap[ 0 ];
+							}
+						}
+
+						return { text, id: formatEmojiId( id ) };
+					} ).filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
 				} );
 
-			return this._hasEmojiPicker ?
+			return this._emojiPickerPlugin ?
 				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: this._showAllEmojiId, text: searchQuery } ] :
 				emojis.slice( 0, this._emojiDropdownLimit );
 		};
