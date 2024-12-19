@@ -639,7 +639,7 @@ describe( 'LinkCommand', () => {
 				} );
 
 				describe( 'keep formatting attributes', () => {
-					it( 'should correctly replace selected text with keepping the text attributes', () => {
+					it( 'should correctly replace selected text with keeping the text attributes', () => {
 						setData( model, 'foo[<$text bold="true" linkHref="url">textBar</$text>]baz' );
 
 						command.execute( 'url2', {}, 'abc' );
@@ -838,6 +838,42 @@ describe( 'LinkCommand', () => {
 						'<$text italic="true" linkHref="url2">nt</$text>' +
 						'[]bar'
 					);
+				} );
+
+				it( 'should be possible to prepend single character to the display text of the link' +
+					'if the selection is in the middle', () => {
+					setData( model, '<$text linkHref="url" bold="true">Lin[]k text</$text>' );
+
+					command.execute( 'url', {}, 'LLink text' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">LLink text</$text>[]' );
+				} );
+
+				it( 'should be possible to prepend single character to the display text of the link' +
+					'if the selection is in the end', () => {
+					setData( model, '<$text linkHref="url" bold="true">Link text[]</$text>' );
+
+					command.execute( 'url', {}, 'LLink text' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">LLink text</$text>[]' );
+				} );
+
+				it( 'should be possible to append single character to the display text of the link' +
+					'if the selection is in the middle', () => {
+					setData( model, '<$text linkHref="url" bold="true">Lin[]k text</$text>' );
+
+					command.execute( 'url', {}, 'Link textL' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">Link textL</$text>[]' );
+				} );
+
+				it( 'should be possible to append single character to the display text of the link' +
+					'if the selection is in the start', () => {
+					setData( model, '<$text linkHref="url" bold="true">[]Link text</$text>' );
+
+					command.execute( 'url', {}, 'LLink text' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">LLink text</$text>[]' );
 				} );
 			} );
 
