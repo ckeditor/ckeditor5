@@ -8,10 +8,11 @@
 import { ContextualBalloon, Dialog } from 'ckeditor5/src/ui.js';
 import { EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { Typing } from '@ckeditor/ckeditor5-typing';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'EmojiPicker', () => {
 	let editor, editorElement, emojiPicker;
@@ -203,6 +204,245 @@ describe( 'EmojiPicker', () => {
 		emojiPicker._emojiPickerView.gridView.fire( 'tileFocus' );
 
 		sinon.assert.calledOnce( spy );
+	} );
+
+	describe( 'fake visual selection', () => {
+		describe( 'non-collapsed', () => {
+			it( 'should be displayed when a text fragment is selected', () => {
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const paragraph = editor.model.document.getRoot().getChild( 0 );
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( paragraph, 1 ),
+					editor.model.createPositionAt( paragraph, 2 )
+				);
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-emoji-selection">o</span>}o</p>' );
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+						'of the empty block in the multiline selection', () => {
+				setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( secondParagraph, 0 ),
+					editor.model.createPositionAt( secondParagraph, 3 )
+				);
+
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				expect( getViewData( editor.editing.view ) ).to.equal(
+					'<p>[</p><p><span class="ck-fake-emoji-selection">foo</span>]</p>'
+				);
+				expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
+			} );
+
+			it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+						'of the first block in the multiline selection', () => {
+				setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( secondParagraph, 0 ),
+					editor.model.createPositionAt( secondParagraph, 3 )
+				);
+
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				expect( getViewData( editor.editing.view ) ).to.equal(
+					'<p>foo{</p><p><span class="ck-fake-emoji-selection">bar</span>]</p>'
+				);
+				expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+			} );
+
+			it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
+				setModelData( editor.model, [
+					'<paragraph>foo[</paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph>bar</paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph>]baz</paragraph>'
+				].join( '' ) );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const firstNonEmptyElementInTheSelection = editor.model.document.getRoot().getChild( 3 );
+				const rangeEnd = editor.model.document.selection.getFirstRange().end;
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( firstNonEmptyElementInTheSelection, 0 ),
+					editor.model.createPositionAt( rangeEnd, 0 )
+				);
+
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				const expectedViewData = [
+					'<p>foo{</p>',
+					'<p></p>',
+					'<p></p>',
+					'<p><span class="ck-fake-emoji-selection">bar</span></p>',
+					'<p></p>',
+					'<p></p>',
+					'<p>}baz</p>'
+				].join( '' );
+
+				expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+				expect( editor.getData() ).to.equal( [
+					'<p>foo</p>',
+					'<p>&nbsp;</p><p>&nbsp;</p>',
+					'<p>bar</p>',
+					'<p>&nbsp;</p><p>&nbsp;</p>',
+					'<p>baz</p>'
+				].join( '' ) );
+			} );
+		} );
+
+		describe( 'collapsed', () => {
+			it( 'should be displayed on a collapsed selection', () => {
+				setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const paragraph = editor.model.document.getRoot().getChild( 0 );
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( paragraph, 1 ),
+					editor.model.createPositionAt( paragraph, 1 )
+				);
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				expect( getViewData( editor.editing.view ) ).to.equal(
+					'<p>f{}<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span>o</p>'
+				);
+				expect( editor.getData() ).to.equal( '<p>fo</p>' );
+			} );
+
+			it( 'should be displayed on selection focus when selection contains only one empty element ' +
+						'(selection focus is at the beginning of the first non-empty element)', () => {
+				setModelData( editor.model, [
+					'<paragraph>foo[</paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph>]bar</paragraph>'
+				].join( '' ) );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const focus = editor.model.document.selection.focus;
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( focus, 0 )
+				);
+
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				const expectedViewData = [
+					'<p>foo{</p>',
+					'<p></p>',
+					'<p>]<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span>bar</p>'
+				].join( '' );
+
+				expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+				expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+			} );
+
+			it( 'should be displayed on selection focus when selection contains few empty elements ' +
+						'(selection focus is at the beginning of the first non-empty element)', () => {
+				setModelData( editor.model, [
+					'<paragraph>foo[</paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph>]bar</paragraph>'
+				].join( '' ) );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const focus = editor.model.document.selection.focus;
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( focus, 0 )
+				);
+
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				const expectedViewData = [
+					'<p>foo{</p>',
+					'<p></p>',
+					'<p></p>',
+					'<p>]<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span>bar</p>'
+				].join( '' );
+
+				expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+				expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+			} );
+
+			it( 'should be displayed on selection focus when selection contains few empty elements ' +
+						'(selection focus is inside an empty element)', () => {
+				setModelData( editor.model, [
+					'<paragraph>foo[</paragraph>',
+					'<paragraph></paragraph>',
+					'<paragraph>]</paragraph>',
+					'<paragraph>bar</paragraph>'
+				].join( '' ) );
+
+				emojiPicker.showUI();
+
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.be.true;
+
+				const focus = editor.model.document.selection.focus;
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( focus, 0 )
+				);
+
+				const markerRange = editor.model.markers.get( 'emoji-picker' ).getRange();
+
+				expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+				const expectedViewData = [
+					'<p>foo{</p>',
+					'<p></p>',
+					'<p>]<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span></p>',
+					'<p>bar</p>'
+				].join( '' );
+
+				expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+				expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+			} );
+		} );
 	} );
 } );
 

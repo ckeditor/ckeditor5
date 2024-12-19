@@ -8,7 +8,7 @@
  */
 
 import '../theme/emojipicker.css';
-import { type Locale } from 'ckeditor5/src/utils.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
 import { Database } from 'emoji-picker-element';
 import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
@@ -30,6 +30,8 @@ import {
 	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
 import EmojiToneView, { type SkinToneId } from './ui/emojitoneview.js';
+
+const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
 
 /**
  * The emoji picker plugin.
@@ -122,6 +124,33 @@ export default class EmojiPicker extends Plugin {
 			this._getEmojiGroup( { databaseId: 8, title: 'Symbols', exampleEmoji: '🟢' } ),
 			this._getEmojiGroup( { databaseId: 9, title: 'Flags', exampleEmoji: '🏁' } )
 		] );
+
+		// Renders a fake visual selection marker on an expanded selection.
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+			model: VISUAL_SELECTION_MARKER_NAME,
+			view: {
+				classes: [ 'ck-fake-emoji-selection' ]
+			}
+		} );
+
+		// Renders a fake visual selection marker on a collapsed selection.
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: VISUAL_SELECTION_MARKER_NAME,
+			view: ( data, { writer } ) => {
+				if ( !data.markerRange.isCollapsed ) {
+					return null;
+				}
+
+				const markerElement = writer.createUIElement( 'span' );
+
+				writer.addClass(
+					[ 'ck-fake-emoji-selection', 'ck-fake-emoji-selection_collapsed' ],
+					markerElement
+				);
+
+				return markerElement;
+			}
+		} );
 	}
 
 	private async _getEmojiGroup( {
@@ -321,6 +350,8 @@ export default class EmojiPicker extends Plugin {
 		if ( this._searchQuery ) {
 			dropdownPanelContent.searchView.setSearchQuery( this._searchQuery );
 		}
+
+		this._showFakeVisualSelection();
 	}
 
 	/**
@@ -333,6 +364,8 @@ export default class EmojiPicker extends Plugin {
 
 		this.editor.editing.view.focus();
 		this._searchQuery = '';
+
+		this._hideFakeVisualSelection();
 	}
 
 	private _getBalloonPositionData() {
@@ -345,6 +378,51 @@ export default class EmojiPicker extends Plugin {
 		return {
 			target
 		};
+	}
+
+	/**
+	 * Displays a fake visual selection when the contextual balloon is displayed.
+	 *
+	 * This adds an 'emoji-picker' marker into the document that is rendered as a highlight on selected text fragment.
+	 */
+	private _showFakeVisualSelection(): void {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			const range = model.document.selection.getFirstRange()!;
+
+			if ( range.start.isAtEnd ) {
+				const startPosition = range.start.getLastMatchingPosition(
+					( { item } ) => !model.schema.isContent( item ),
+					{ boundaries: range }
+				);
+
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range: writer.createRange( startPosition, range.end )
+				} );
+			} else {
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
+	 */
+	private _hideFakeVisualSelection(): void {
+		const model = this.editor.model;
+
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			model.change( writer => {
+				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
+			} );
+		}
 	}
 }
 
