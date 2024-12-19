@@ -849,7 +849,10 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * This is specified as a property to make it easier to set as an event callback and to later turn off that event.
 	 */
-	private _invalidateOnChildrenChangeCallback: GetCallback<ViewNodeChangeEvent>;
+	private _invalidateOnChildrenChangeCallback: GetCallback<ViewNodeChangeEvent> = ( evt, viewNode, data ) => {
+		// View element or document fragment changed its children at `data.index`. Clear all cache starting from before that index.
+		this._clearCacheInsideParent( viewNode as ViewElement | ViewDocumentFragment, data!.index );
+	};
 
 	/**
 	 * Callback fired whenever a view text node directly or indirectly inside a tracked view element or tracked view document fragment
@@ -857,23 +860,10 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * This is specified as a property to make it easier to set as an event callback and to later turn off that event.
 	 */
-	private _invalidateOnTextChangeCallback: GetCallback<ViewNodeChangeEvent>;
-
-	/**
-	 * Creates an instance of mapper cache.
-	 */
-	constructor() {
-		super();
-
-		this._invalidateOnChildrenChangeCallback = ( evt, viewNode, data ) => {
-			this._clearCacheInsideParent( viewNode as ViewElement | ViewDocumentFragment, data!.index );
-		};
-
-		this._invalidateOnTextChangeCallback = ( evt, viewNode ) => {
-			// Text node has changed. Clear all the cache starting from before this text node.
-			this._clearCacheStartingBefore( viewNode );
-		};
-	}
+	private _invalidateOnTextChangeCallback: GetCallback<ViewNodeChangeEvent> = ( evt, viewNode ) => {
+		// Text node has changed. Clear all the cache starting from before this text node.
+		this._clearCacheStartingBefore( viewNode );
+	};
 
 	/**
 	 * Saves cache for given view position mapping <-> model offset mapping.
@@ -1044,8 +1034,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Starts tracking given `viewContainer`, which must be mapped to a model element or model document fragment.
 	 *
-	 * Note, that this method is automatically called by {@link ~MapperCache#get `MapperCache#getClosest()`} and there is no need to call it
-	 * manually.
+	 * Note, that this method is automatically called by {@link ~MapperCache#getClosest() `MapperCache#getClosest()`} and there is no need
+	 * to call it manually.
 	 *
 	 * This method initializes the cache for `viewContainer` and adds callbacks for
 	 * {@link module:engine/view/node~ViewNodeChangeEvent `change` event} fired by `viewContainer`. `MapperCache` listens to `change` event
@@ -1079,7 +1069,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 * `viewContainer`.
 	 */
 	public stopTracking( viewContainer: ViewElement | ViewDocumentFragment ): void {
-		this.stopListening( viewContainer );
+		viewContainer.off( 'change:children', this._invalidateOnChildrenChangeCallback );
+		viewContainer.off( 'change:text', this._invalidateOnTextChangeCallback );
 
 		this._cachedMapping.delete( viewContainer );
 	}
