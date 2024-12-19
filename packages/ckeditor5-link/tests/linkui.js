@@ -2439,7 +2439,7 @@ describe( 'LinkUI', () => {
 					'<paragraph>fo' +
 						'<$text linkHref="http://ckeditor.com">http://</$text>' +
 						'<$text bold="true" linkHref="http://ckeditor.com">ckeditor.com</$text>' +
-						'<$text bold="true">[]</$text>ar' +
+						'[]ar' +
 					'</paragraph>'
 				);
 			} );
@@ -2483,7 +2483,7 @@ describe( 'LinkUI', () => {
 					'<paragraph>' +
 						'fo<$text linkHref="http://cksource.com">CKS</$text>' +
 						'<$text bold="true" linkHref="http://cksource.com">ource</$text>' +
-						'<$text bold="true">[]</$text>ar' +
+						'[]ar' +
 					'</paragraph>'
 				);
 			} );

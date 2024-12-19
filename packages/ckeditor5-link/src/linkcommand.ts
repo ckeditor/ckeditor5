@@ -235,11 +235,18 @@ export default class LinkCommand extends Command {
 			};
 
 			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
+				const { plugins } = this.editor;
+
 				writer.setSelection( linkRange.end );
 
-				// TODO make it nicer
-				if ( this.editor.plugins.has( 'TwoStepCaretMovement' ) ) {
-					this.editor.plugins.get( 'TwoStepCaretMovement' )._handleForwardMovement();
+				if ( plugins.has( 'TwoStepCaretMovement' ) ) {
+					// After replacing the text of the link, we need to move the caret to the end of the link,
+					// override it's gravity to forward to prevent keeping e.g. bold attribute on the caret
+					// which was previously inside the link.
+					//
+					// If the plugin is not available, the caret will be placed at the end of the link and the
+					// bold attribute will be kept even if command moved caret outside the link.
+					plugins.get( 'TwoStepCaretMovement' )._handleForwardMovement();
 				} else {
 					// Remove the `linkHref` attribute and all link decorators from the selection.
 					// It stops adding a new content into the link element.

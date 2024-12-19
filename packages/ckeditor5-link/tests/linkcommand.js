@@ -768,15 +768,14 @@ describe( 'LinkCommand', () => {
 				expect( getData( model ) ).to.equal( 'fo<$text linkHref="url">xyz</$text>[]ar' );
 			} );
 
-			describe( 'maintain formatting', () => {
+			describe( 'keep formatting attributes (with TwoStepCaretMovement plugin available)', () => {
 				it( 'should maintain all formatting when changing only text inside a link', () => {
 					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
 
 					command.execute( 'url', {}, 'new text' );
 
 					expect( getData( model ) ).to.equal(
-						'foo<$text bold="true" italic="true" linkHref="url">new text</$text>' +
-						'<$text bold="true" italic="true">[]</$text>bar'
+						'foo<$text bold="true" italic="true" linkHref="url">new text</$text>[]bar'
 					);
 				} );
 
@@ -793,7 +792,7 @@ describe( 'LinkCommand', () => {
 					expect( getData( model ) ).to.equal(
 						'foo<$text bold="true" linkHref="url">new </$text>' +
 						'<$text italic="true" linkHref="url">text</$text>' +
-						'<$text italic="true">[]</$text>bar'
+						'[]bar'
 					);
 				} );
 
@@ -818,7 +817,7 @@ describe( 'LinkCommand', () => {
 					command.execute( 'url', {}, 'new' );
 
 					expect( getData( model ) ).to.equal(
-						'foo<$text bold="true" linkHref="url">new</$text><$text bold="true">[]</$text>bar'
+						'foo<$text bold="true" linkHref="url">new</$text>[]bar'
 					);
 				} );
 
@@ -837,7 +836,115 @@ describe( 'LinkCommand', () => {
 						'foo<$text bold="true">bo</$text>' +
 						'<$text bold="true" linkHref="url2">replaceme</$text>' +
 						'<$text italic="true" linkHref="url2">nt</$text>' +
-						'<$text italic="true">[]</$text>bar'
+						'[]bar'
+					);
+				} );
+			} );
+
+			describe( 'keep formatting attributes (without TwoStepCaretMovement plugin)', () => {
+				beforeEach( async () => {
+					await editor.destroy();
+
+					return ModelTestEditor.create()
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							command = new LinkCommand( editor );
+
+							model.schema.extend( '$text', {
+								allowIn: '$root',
+								allowAttributes: [ 'linkHref', 'bold', 'italic' ]
+							} );
+
+							editor.model.schema.setAttributeProperties( 'bold', {
+								isFormatting: true
+							} );
+
+							editor.model.schema.setAttributeProperties( 'italic', {
+								isFormatting: true
+							} );
+
+							model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should maintain all formatting when changing only text inside a link', () => {
+					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
+
+					command.execute( 'url', {}, 'new text' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" italic="true" linkHref="url">new text</$text>' +
+						'<$text bold="true" italic="true">[]</$text>bar'
+					);
+				} );
+
+				it( 'should preserve mixed formatting before and after link text change', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true" linkHref="url">bo[]ld</$text>' +
+						'<$text italic="true" linkHref="url">italic</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url', {}, 'new text' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" linkHref="url">new </$text>' +
+						'<$text italic="true" linkHref="url">text</$text>' +
+						'<$text italic="true">[]</$text>' +
+						'bar'
+					);
+				} );
+
+				it( 'should keep formatting attributes when changing URL but keeping the same text', () => {
+					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
+
+					command.execute( 'url2' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" italic="true" linkHref="url2">te[]xt</$text>bar'
+					);
+				} );
+
+				it( 'should properly handle adjacent text nodes with different formatting', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true" linkHref="url">bold</$text>' +
+						'<$text italic="true" linkHref="url">ita[]lic</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url', {}, 'new' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" linkHref="url">new</$text>' +
+						'<$text bold="true">[]</$text>' +
+						'bar'
+					);
+				} );
+
+				it( 'should update link range in text with mixed formatting attributes', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true">bo</$text>' +
+						'<$text bold="true" linkHref="url">ld []text</$text>' +
+						'<$text italic="true" linkHref="url">in link</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url2', {}, 'replacement' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true">bo</$text>' +
+						'<$text bold="true" linkHref="url2">replaceme</$text>' +
+						'<$text italic="true" linkHref="url2">nt</$text>' +
+						'<$text italic="true">[]</$text>' +
+						'bar'
 					);
 				} );
 			} );
