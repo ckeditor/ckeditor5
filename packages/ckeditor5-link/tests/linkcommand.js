@@ -683,7 +683,9 @@ describe( 'LinkCommand', () => {
 
 						command.execute( 'url2', {}, 'Replacement Text' );
 
-						expect( getData( model ) ).to.equal( '[<$text linkHref="url2">Replacement text</$text>]' );
+						expect( getData( model ) ).to.equal(
+							'[<$text linkHref="url2">Replacement </$text><$text bold="true" linkHref="url2">Text</$text>]'
+						);
 					} );
 				} );
 			} );
@@ -769,8 +771,8 @@ describe( 'LinkCommand', () => {
 			return ModelTestEditor.create()
 				.then( newEditor => {
 					editor = newEditor;
-					model = editor.model;
-					command = new LinkCommand( editor );
+					model = newEditor.model;
+					command = new LinkCommand( newEditor );
 
 					command.manualDecorators.add( new ManualDecorator( {
 						id: 'linkIsFoo',
