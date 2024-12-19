@@ -382,7 +382,7 @@ export default class LinkCommand extends Command {
  *
  * @internal
  * @param oldText The original text to compare.
- * @param newText The new text to compare against.
+ * @param newText  The new text to compare against.
  * @returns Array of change objects containing offset and actual/expected content.
  *
  * @example
