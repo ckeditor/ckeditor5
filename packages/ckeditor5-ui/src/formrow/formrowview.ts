@@ -10,7 +10,7 @@
 import View from '../view.js';
 import type ViewCollection from '../viewcollection.js';
 import type LabelView from '../label/labelview.js';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { toArray, type ArrayOrItem, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/formrow/formrow.css';
 
@@ -23,7 +23,7 @@ export default class FormRowView extends View {
 	 *
 	 * @observable
 	 */
-	public declare class: string | Array<string> | null;
+	public declare class: Array<string>;
 
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
@@ -57,12 +57,16 @@ export default class FormRowView extends View {
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<View>; class?: string | Array<string>; labelView?: LabelView } = {} ) {
+	constructor( locale: Locale, options: { children?: Array<View>; class?: ArrayOrItem<string>; labelView?: LabelView } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.set( 'class', Array.isArray( options.class ) ? options.class.join( ' ' ) : options.class || null );
+		this.set( 'class', [
+			'ck',
+			'ck-form__row',
+			...toArray( options.class || [] )
+		] );
 		this.children = this.createCollection();
 
 		if ( options.children ) {
@@ -82,11 +86,7 @@ export default class FormRowView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [
-					'ck',
-					'ck-form__row',
-					bind.to( 'class' )
-				],
+				class: bind.to( 'class', classes => classes.join( ' ' ) ),
 				role: bind.to( '_role' ),
 				'aria-labelledby': bind.to( '_ariaLabelledBy' )
 			},

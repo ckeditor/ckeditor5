@@ -31,7 +31,7 @@ describe( 'FormRowView', () => {
 		} );
 
 		it( 'should set view#class', () => {
-			expect( view.class ).to.be.null;
+			expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row' ] );
 		} );
 
 		it( 'should set the template', () => {
@@ -45,7 +45,7 @@ describe( 'FormRowView', () => {
 					class: 'foo'
 				} );
 
-				expect( view.class ).to.equal( 'foo' );
+				expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row', 'foo' ] );
 
 				view.destroy();
 			} );
@@ -58,7 +58,7 @@ describe( 'FormRowView', () => {
 					]
 				} );
 
-				expect( view.class ).to.equal( 'foo bar' );
+				expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row', 'foo', 'bar' ] );
 
 				view.destroy();
 			} );
@@ -94,8 +94,16 @@ describe( 'FormRowView', () => {
 
 		describe( 'template bindings', () => {
 			it( 'should bind #class to the template', () => {
-				view.class = 'foo';
+				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.true;
+
+				view.class = [ 'foo', 'bar' ];
+
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.false;
 			} );
 
 			it( 'should bind #children to the template', () => {
