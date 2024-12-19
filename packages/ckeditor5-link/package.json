@@ -26,7 +26,6 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "44.1.0",
     "@ckeditor/ckeditor5-block-quote": "44.1.0",
-    "@ckeditor/ckeditor5-bookmark": "44.1.0",
     "@ckeditor/ckeditor5-cloud-services": "44.1.0",
     "@ckeditor/ckeditor5-code-block": "44.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
