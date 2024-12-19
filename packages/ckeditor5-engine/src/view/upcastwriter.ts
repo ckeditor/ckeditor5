@@ -10,7 +10,7 @@
 import DocumentFragment from './documentfragment.js';
 import Element, { type ElementAttributes } from './element.js';
 import Text from './text.js';
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 import Position, { type PositionOffset } from './position.js';
 import Range from './range.js';
 import Selection, {

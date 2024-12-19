@@ -7,7 +7,7 @@
  * @module utils/config
  */
 
-import { isPlainObject, isElement, cloneDeepWith } from 'lodash-es';
+import { isPlainObject, isElement, cloneDeepWith } from 'es-toolkit/compat';
 
 /**
  * Handles a configuration dictionary.
