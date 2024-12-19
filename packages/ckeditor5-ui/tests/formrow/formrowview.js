@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import FormRowView from '../../src/ui/formrowview.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import FormRowView from '../../src/formrow/formrowview.js';
+import View from '../../src/view.js';
+import ViewCollection from '../../src/viewcollection.js';
 
 describe( 'FormRowView', () => {
 	let view, locale;
@@ -31,7 +31,7 @@ describe( 'FormRowView', () => {
 		} );
 
 		it( 'should set view#class', () => {
-			expect( view.class ).to.be.null;
+			expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row' ] );
 		} );
 
 		it( 'should set the template', () => {
@@ -45,7 +45,20 @@ describe( 'FormRowView', () => {
 					class: 'foo'
 				} );
 
-				expect( view.class ).to.equal( 'foo' );
+				expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row', 'foo' ] );
+
+				view.destroy();
+			} );
+
+			it( 'should set view#class when array of classes were passed', () => {
+				const view = new FormRowView( locale, {
+					class: [
+						'foo',
+						'bar'
+					]
+				} );
+
+				expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row', 'foo', 'bar' ] );
 
 				view.destroy();
 			} );
@@ -81,8 +94,16 @@ describe( 'FormRowView', () => {
 
 		describe( 'template bindings', () => {
 			it( 'should bind #class to the template', () => {
-				view.class = 'foo';
+				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.true;
+
+				view.class = [ 'foo', 'bar' ];
+
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.false;
 			} );
 
 			it( 'should bind #children to the template', () => {

@@ -107,12 +107,6 @@ export default class ImageCustomResizeUI extends Plugin {
 			this._hideForm( true );
 		} );
 
-		// Close the form on Esc key press.
-		this._form.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hideForm( true );
-			cancel();
-		} );
-
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this._form,
