@@ -9,8 +9,8 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
-import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
-import { LivePosition, type Range } from 'ckeditor5/src/engine.js';
+import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
+import { LivePosition, type Range, type Item } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -175,11 +175,11 @@ export default class LinkCommand extends Command {
 		}
 
 		model.change( writer => {
-			const updateLinkAttributes = ( range: Range ): void => {
-				writer.setAttribute( 'linkHref', href, range );
+			const updateLinkAttributes = ( itemOrRange: Item | Range ): void => {
+				writer.setAttribute( 'linkHref', href, itemOrRange );
 
-				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, range ) );
-				falsyManualDecorators.forEach( item => writer.removeAttribute( item, range ) );
+				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, itemOrRange ) );
+				falsyManualDecorators.forEach( item => writer.removeAttribute( item, itemOrRange ) );
 			};
 
 			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range | undefined => {
@@ -200,17 +200,59 @@ export default class LinkCommand extends Command {
 
 				// Only if needed.
 				if ( newText != linkText ) {
-					return model.insertContent( writer.createText( newText ), range );
+					const changes = findChanges( linkText, newText );
+					let insertsLength = 0;
+
+					for ( const { offset, actual, expected } of changes ) {
+						const updatedOffset = offset + insertsLength;
+						const subRange = writer.createRange(
+							range.start.getShiftedBy( updatedOffset ),
+							range.start.getShiftedBy( updatedOffset + actual.length )
+						);
+
+						// Collect formatting attributes from replaced text.
+						const textNode = getLinkPartTextNode( subRange, range )!;
+						const attributes = textNode.getAttributes();
+						const formattingAttributes = Array
+							.from( attributes )
+							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
+
+						// Create a new text node.
+						const newTextNode = writer.createText( expected, formattingAttributes );
+
+						// Set link attributes before inserting to document to avoid Differ attributes edge case.
+						updateLinkAttributes( newTextNode );
+
+						// Replace text with formatting.
+						model.insertContent( newTextNode, subRange );
+
+						// Sum of all previous inserts.
+						insertsLength += expected.length;
+					}
+
+					return writer.createRange( range.start, range.start.getShiftedBy( newText.length ) );
 				}
 			};
 
 			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
+				const { plugins } = this.editor;
+
 				writer.setSelection( linkRange.end );
 
-				// Remove the `linkHref` attribute and all link decorators from the selection.
-				// It stops adding a new content into the link element.
-				for ( const key of [ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ] ) {
-					writer.removeSelectionAttribute( key );
+				if ( plugins.has( 'TwoStepCaretMovement' ) ) {
+					// After replacing the text of the link, we need to move the caret to the end of the link,
+					// override it's gravity to forward to prevent keeping e.g. bold attribute on the caret
+					// which was previously inside the link.
+					//
+					// If the plugin is not available, the caret will be placed at the end of the link and the
+					// bold attribute will be kept even if command moved caret outside the link.
+					plugins.get( 'TwoStepCaretMovement' )._handleForwardMovement();
+				} else {
+					// Remove the `linkHref` attribute and all link decorators from the selection.
+					// It stops adding a new content into the link element.
+					for ( const key of [ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ] ) {
+						writer.removeSelectionAttribute( key );
+					}
 				}
 			};
 
@@ -289,6 +331,7 @@ export default class LinkCommand extends Command {
 					const linkHref = ( range.start.textNode || range.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
 
 					range = updateLinkTextIfNeeded( range, linkHref ) || range;
+
 					updateLinkAttributes( range );
 				}
 
@@ -341,5 +384,107 @@ export default class LinkCommand extends Command {
 		}
 
 		return true;
+	}
+}
+
+/**
+ * Compares two strings and returns an array of changes needed to transform one into another.
+ * Uses the diff utility to find the differences and groups them into chunks containing information
+ * about the offset and actual/expected content.
+ *
+ * @param oldText The original text to compare.
+ * @param newText The new text to compare against.
+ * @returns Array of change objects containing offset and actual/expected content.
+ *
+ * @example
+ * findChanges( 'hello world', 'hi there' );
+ *
+ * Returns:
+ * [
+ * 	{
+ * 		"offset": 1,
+ * 		"actual": "ello",
+ * 		"expected": "i"
+ * 	},
+ * 	{
+ * 		"offset": 2,
+ * 		"actual": "wo",
+ * 		"expected": "the"
+ * 	},
+ * 	{
+ * 		"offset": 3,
+ * 		"actual": "ld",
+ * 		"expected": "e"
+ * 	}
+ * ]
+ */
+function findChanges( oldText: string, newText: string ): Array<{ offset: number; actual: string; expected: string }> {
+	// Get array of operations (insert/delete/equal) needed to transform oldText into newText.
+	// Example: diff('abc', 'abxc') returns ['equal', 'equal', 'insert', 'equal']
+	const changes = diff( oldText, newText );
+
+	// Track position in both strings based on operation type.
+	const counter = { equal: 0, insert: 0, delete: 0 };
+	const result = [];
+
+	// Accumulate consecutive changes into slices before creating change objects.
+	let actualSlice = '';
+	let expectedSlice = '';
+
+	// Adding null as sentinel value to handle final accumulated changes.
+	for ( const action of [ ...changes, null ] ) {
+		if ( action == 'insert' ) {
+			// Example: for 'abc' -> 'abxc', at insert position, adds 'x' to expectedSlice.
+			expectedSlice += newText[ counter.equal + counter.insert ];
+		}
+		else if ( action == 'delete' ) {
+			// Example: for 'abc' -> 'ac', at delete position, adds 'b' to actualSlice.
+			actualSlice += oldText[ counter.equal + counter.delete ];
+		}
+		else if ( actualSlice.length || expectedSlice.length ) {
+			// On 'equal' or end: bundle accumulated changes into a single change object.
+			// Example: { offset: 2, actual: "", expected: "x" }
+			result.push( {
+				offset: counter.equal,
+				actual: actualSlice,
+				expected: expectedSlice
+			} );
+
+			actualSlice = '';
+			expectedSlice = '';
+		}
+
+		// Increment appropriate counter for the current operation.
+		if ( action ) {
+			counter[ action ]++;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * Returns text node withing the link range that should be updated.
+ *
+ * @param range Partial link range.
+ * @param linkRange Range of the entire link.
+ * @returns Text node.
+ */
+function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
+	if ( !range.isCollapsed ) {
+		return first( range.getItems() );
+	}
+
+	const position = range.start;
+
+	if ( position.textNode ) {
+		return position.textNode;
+	}
+
+	// If the range is at the start of a link range then prefer node inside a link range.
+	if ( !position.nodeBefore || position.isEqual( linkRange.start ) ) {
+		return position.nodeAfter;
+	} else {
+		return position.nodeBefore;
 	}
 }

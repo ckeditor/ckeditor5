@@ -2430,11 +2430,15 @@ describe( 'LinkUI', () => {
 				) ).to.be.true;
 
 				expect( getModelData( editor.model ) ).to.equal(
-					'<paragraph>fo<$text linkHref="http://ckeditor.com">http://ckeditor.com</$text>[]ar</paragraph>'
+					'<paragraph>fo' +
+						'<$text linkHref="http://ckeditor.com">http://</$text>' +
+						'<$text bold="true" linkHref="http://ckeditor.com">ckeditor.com</$text>' +
+						'[]ar' +
+					'</paragraph>'
 				);
 			} );
 
-			it( 'should populate form on open on collapsed selection in link with text matching href but styled' +
+			it( 'should populate form on open on collapsed selection in link with text matching href but styled ' +
 				'and update text', () => {
 				setModelData( editor.model,
 					'<paragraph>' +
@@ -2470,7 +2474,11 @@ describe( 'LinkUI', () => {
 				) ).to.be.true;
 
 				expect( getModelData( editor.model ) ).to.equal(
-					'<paragraph>fo<$text linkHref="http://cksource.com">CKSource</$text>[]ar</paragraph>'
+					'<paragraph>' +
+						'fo<$text linkHref="http://cksource.com">CKS</$text>' +
+						'<$text bold="true" linkHref="http://cksource.com">ource</$text>' +
+						'[]ar' +
+					'</paragraph>'
 				);
 			} );
 
