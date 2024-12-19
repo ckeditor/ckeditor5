@@ -66,6 +66,25 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
+		it( 'break inside element with attributes, styles, and classes - should break container element at given position', () => {
+			testBreakContainer(
+				'<container:div>' +
+					'<container:p class="abc" foo="bar" style="color:red">' +
+						'<attribute:b>foo</attribute:b>[]<attribute:u>bar</attribute:u>' +
+					'</container:p>' +
+				'</container:div>',
+
+				'<container:div>' +
+					'<container:p class="abc" foo="bar" style="color:red">' +
+						'<attribute:b>foo</attribute:b>' +
+					'</container:p>' +
+					'[]<container:p class="abc" foo="bar" style="color:red">' +
+						'<attribute:u>bar</attribute:u>' +
+					'</container:p>' +
+				'</container:div>'
+			);
+		} );
+
 		it( 'should throw if position parent is not container', () => {
 			const { selection } = parse( '<container:div>foo{}bar</container:div>' );
 
