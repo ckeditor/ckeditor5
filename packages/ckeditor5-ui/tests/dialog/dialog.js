@@ -272,6 +272,24 @@ describe( 'Dialog', () => {
 
 			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
 		} );
+
+		it( 'should not unlock scrolling on the document if modal was displayed by another plugin instance', () => {
+			const tempDialogPlugin = new Dialog( editor );
+
+			tempDialogPlugin._show( {
+				position: DialogViewPosition.EDITOR_CENTER,
+				isModal: true,
+				className: 'foo'
+			} );
+
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+
+			dialogPlugin.destroy();
+
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+
+			tempDialogPlugin.destroy();
+		} );
 	} );
 
 	describe( 'show()', () => {
