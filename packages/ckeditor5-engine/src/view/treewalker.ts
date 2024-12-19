@@ -160,6 +160,31 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	}
 
 	/**
+	 * Moves tree walker {@link #position} to provided `position`. Tree walker will
+	 * continue traversing from that position.
+	 *
+	 * Note: in contrary to {@link ~TreeWalker#skip}, this method does not iterate over the nodes along the way.
+	 * It simply sets the current tree walker position to a new one.
+	 * From the performance standpoint, it is better to use {@link ~TreeWalker#jumpTo} rather than {@link ~TreeWalker#skip}.
+	 *
+	 * If the provided position is before the start boundary, the position will be
+	 * set to the start boundary. If the provided position is after the end boundary,
+	 * the position will be set to the end boundary.
+	 * This is done to prevent the treewalker from traversing outside the boundaries.
+	 *
+	 * @param position Position to jump to.
+	 */
+	public jumpTo( position: Position ): void {
+		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
+			position = this.boundaries!.start;
+		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
+			position = this.boundaries!.end;
+		}
+
+		this._position = position.clone();
+	}
+
+	/**
 	 * Gets the next tree walker's value.
 	 *
 	 * @returns Object implementing iterator interface, returning
