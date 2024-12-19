@@ -16,7 +16,7 @@ import {
 import {
 	createDropdown,
 	addToolbarToDropdown,
-	ButtonView,
+	ListItemButtonView,
 
 	View,
 	ViewCollection,
@@ -35,7 +35,7 @@ export default class EmojiToneView extends View {
 	}>;
 
 	private _mainDropdownButton: DropdownButtonView;
-	private _dropdownButtons: ViewCollection<ButtonView>;
+	private _dropdownButtons: ViewCollection<ListItemButtonView>;
 
 	/**
 	 * @inheritDoc
@@ -69,6 +69,8 @@ export default class EmojiToneView extends View {
 			this._dropdownButtons,
 			{
 				isVertical: true,
+				isCompact: true,
+				enableActiveItemFocusOnDropdownOpen: true,
 				ariaLabel: locale.t( 'Text alignment toolbar' )
 			}
 		);
@@ -89,21 +91,25 @@ export default class EmojiToneView extends View {
 	/**
 	 * Helper method for creating the button view element.
 	 */
-	private _createButton( locale: Locale, skinToneId: SkinToneId, example: string, tooltip: string ): ButtonView {
-		const buttonView = new ButtonView( locale );
+	private _createButton( locale: Locale, buttonSkinToneId: SkinToneId, example: string, tooltip: string ): ListItemButtonView {
+		const buttonView = new ListItemButtonView( locale );
 
 		buttonView.set( {
 			label: example,
 			withText: true,
 			tooltip,
-			tooltipPosition: 'e'
+			tooltipPosition: 'e',
+			hasCheckSpace: true,
+			isToggleable: true
 		} );
+
+		buttonView.bind( 'isOn' ).to( this, 'selectedSkinTone', newSkinToneId => newSkinToneId === buttonSkinToneId );
 
 		// Execute command.
 		this.listenTo( buttonView, 'execute', () => {
-			this.selectedSkinTone = skinToneId;
+			this.selectedSkinTone = buttonSkinToneId;
 
-			this._mainDropdownButton.label = this._skinTones[ skinToneId ].example;
+			this._mainDropdownButton.label = this._skinTones[ buttonSkinToneId ].example;
 		} );
 
 		return buttonView;
