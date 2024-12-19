@@ -406,7 +406,7 @@ export default class LinkCommand extends Command {
  * 	}
  * ]
  */
-function findChanges( oldText: string, newText: string ) {
+export function findChanges( oldText: string, newText: string ): Array<{ offset: number; actual: string; expected: string }> {
 	// Get array of operations (insert/delete/equal) needed to transform oldText into newText
 	// Example: diff('abc', 'abxc') returns ['equal', 'equal', 'insert', 'equal']
 	const changes = diff( oldText, newText );
@@ -458,7 +458,7 @@ function findChanges( oldText: string, newText: string ) {
  * @param linkRange Range of the entire link element
  * @returns Text node for content updates
  */
-function getLinkPartTextNode( range: Range, linkRange: Range ) {
+export function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
 	if ( !range.isCollapsed ) {
 		return first( range.getItems() );
 	}
@@ -470,9 +470,9 @@ function getLinkPartTextNode( range: Range, linkRange: Range ) {
 	}
 
 	// If the range is at the start of a link range then prefer node inside a link range.
-	if ( position.isEqual( linkRange.start ) ) {
-		return position.nodeAfter || position.nodeBefore;
+	if ( !position.nodeBefore || position.isEqual( linkRange.start ) ) {
+		return position.nodeAfter;
 	} else {
-		return position.nodeBefore || position.nodeAfter;
+		return position.nodeBefore;
 	}
 }

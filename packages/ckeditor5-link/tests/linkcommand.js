@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { first } from '@ckeditor/ckeditor5-utils';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import LinkCommand from '../src/linkcommand.js';
+import LinkCommand, { findChanges, getLinkPartTextNode } from '../src/linkcommand.js';
 import ManualDecorator from '../src/utils/manualdecorator.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import AutomaticDecorators from '../src/utils/automaticdecorators.js';
@@ -1040,6 +1041,156 @@ describe( 'LinkCommand', () => {
 	describe( '#automaticDecorators', () => {
 		it( 'is defined', () => {
 			expect( command.automaticDecorators ).to.be.an.instanceOf( AutomaticDecorators );
+		} );
+	} );
+
+	describe( 'findChanges()', () => {
+		it( 'should detect single insertion', () => {
+			const changes = findChanges( 'abc', 'abxc' );
+			expect( changes ).to.deep.equal( [
+				{
+					offset: 2,
+					actual: '',
+					expected: 'x'
+				}
+			] );
+		} );
+
+		it( 'should detect single deletion', () => {
+			const changes = findChanges( 'abxc', 'abc' );
+			expect( changes ).to.deep.equal( [
+				{
+					offset: 2,
+					actual: 'x',
+					expected: ''
+				}
+			] );
+		} );
+
+		it( 'should detect multiple changes', () => {
+			const changes = findChanges( 'hello world', 'hi there' );
+			expect( changes ).to.deep.equal( [
+				{
+					offset: 1,
+					actual: 'ello',
+					expected: 'i'
+				},
+				{
+					offset: 2,
+					actual: 'wo',
+					expected: 'the'
+				},
+				{
+					offset: 3,
+					actual: 'ld',
+					expected: 'e'
+				}
+			] );
+		} );
+
+		it( 'should handle empty strings', () => {
+			const changes = findChanges( '', 'abc' );
+			expect( changes ).to.deep.equal( [
+				{
+					offset: 0,
+					actual: '',
+					expected: 'abc'
+				}
+			] );
+		} );
+	} );
+
+	describe( 'getLinkPartTextNode()', () => {
+		let root;
+
+		beforeEach( () => {
+			root = model.document.getRoot();
+		} );
+
+		it( 'should return first item from non-collapsed range', () => {
+			setData( model, '<$text linkHref="url">abcd</$text>' );
+
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 0 ] ),
+				model.createPositionFromPath( root, [ 3 ] )
+			);
+
+			const linkRange = model.createRange(
+				model.createPositionFromPath( root, [ 0 ] ),
+				model.createPositionFromPath( root, [ 4 ] )
+			);
+
+			const node = first( range.getItems() );
+
+			expect( getLinkPartTextNode( range, linkRange ).textNode ).to.equal( node.textNode );
+		} );
+
+		it( 'should return text node for collapsed selection', () => {
+			setData( model, '<$text linkHref="url">abcd</$text>' );
+
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 2 ] )
+			);
+
+			const linkRange = model.createRange(
+				model.createPositionFromPath( root, [ 0 ] ),
+				model.createPositionFromPath( root, [ 4 ] )
+			);
+
+			expect( getLinkPartTextNode( range, linkRange ).data ).to.equal( 'abcd' );
+		} );
+
+		it( 'should prefer node after when at link range start', () => {
+			setData( model, '<$text linkHref="url">abcd</$text>' );
+
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 0 ] )
+			);
+
+			const linkRange = model.createRange(
+				model.createPositionFromPath( root, [ 0 ] ),
+				model.createPositionFromPath( root, [ 4 ] )
+			);
+
+			expect( getLinkPartTextNode( range, linkRange ) ).to.equal( range.start.nodeAfter );
+		} );
+
+		it( 'should prefer node after if node before is blank', () => {
+			setData( model, '<paragraph>aa</paragraph><$text linkHref="url">abcd</$text>' );
+
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 0, 0 ] )
+			);
+
+			const linkRange = model.createRange(
+				model.createPositionFromPath( root, [ 1, 0 ] ),
+				model.createPositionFromPath( root, [ 1, 4 ] )
+			);
+
+			expect( range.start.nodeBefore ).to.be.null;
+			expect( getLinkPartTextNode( range, linkRange ) ).to.equal( range.start.nodeAfter );
+		} );
+
+		it( 'should prefer node before if node after is blank', () => {
+			setData( model, '<$text linkHref="url">abcd</$text>' );
+
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 4 ] )
+			);
+
+			const linkRange = model.createRange(
+				model.createPositionFromPath( root, [ 0 ] ),
+				model.createPositionFromPath( root, [ 4 ] )
+			);
+
+			const nodeBefore = range.start.nodeBefore;
+			const nodeAfter = range.start.nodeAfter;
+
+			expect( nodeAfter, 'nodeAfter should be null' ).to.be.null;
+			expect( nodeBefore, 'nodeBefore should exist' ).to.not.be.null;
+			expect( nodeBefore.data, 'nodeBefore should contain link text' ).to.equal( 'abcd' );
+
+			expect( getLinkPartTextNode( range, linkRange ) ).to.equal( nodeBefore );
 		} );
 	} );
 } );
