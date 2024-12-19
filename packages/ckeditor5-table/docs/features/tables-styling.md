@@ -190,14 +190,14 @@ const tableConfig = {
 				width: '550px',
 				height: '450px'
 			},
-			// The default styles for table cells in the editor.
-			// They should be synchronized with the content styles.
+		},
+		// The default styles for table cells in the editor.
+		// They should be synchronized with the content styles.
 		tableCellProperties: {
 			defaultProperties: {
 				horizontalAlignment: 'center',
 				verticalAlignment: 'bottom',
 				padding: '10px'
-			}
 			}
 		}
 	}
