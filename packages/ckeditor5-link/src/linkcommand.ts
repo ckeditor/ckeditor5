@@ -380,9 +380,8 @@ export default class LinkCommand extends Command {
  * Uses the diff utility to find the differences and groups them into chunks containing information
  * about the offset and actual/expected content.
  *
- * @internal
  * @param oldText The original text to compare.
- * @param newText  The new text to compare against.
+ * @param newText The new text to compare against.
  * @returns Array of change objects containing offset and actual/expected content.
  *
  * @example
@@ -407,7 +406,7 @@ export default class LinkCommand extends Command {
  * 	}
  * ]
  */
-export function findChanges( oldText: string, newText: string ): Array<{ offset: number; actual: string; expected: string }> {
+function findChanges( oldText: string, newText: string ): Array<{ offset: number; actual: string; expected: string }> {
 	// Get array of operations (insert/delete/equal) needed to transform oldText into newText.
 	// Example: diff('abc', 'abxc') returns ['equal', 'equal', 'insert', 'equal']
 	const changes = diff( oldText, newText );
@@ -455,12 +454,11 @@ export function findChanges( oldText: string, newText: string ): Array<{ offset:
 /**
  * Returns text node withing the link range that should be updated.
  *
- * @internal
  * @param range Partial link range.
  * @param linkRange Range of the entire link.
  * @returns Text node.
  */
-export function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
+function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
 	if ( !range.isCollapsed ) {
 		return first( range.getItems() );
 	}
