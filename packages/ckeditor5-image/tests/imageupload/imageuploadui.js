@@ -203,7 +203,9 @@ describe( 'ImageUploadUI', () => {
 		} );
 
 		it( 'should create FileDialogButtonView in insert image submenu - only integration', () => {
-			button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			button = submenu.panelView.children.first.items.first.children.first;
 
 			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
 			expect( button.withText ).to.be.true;

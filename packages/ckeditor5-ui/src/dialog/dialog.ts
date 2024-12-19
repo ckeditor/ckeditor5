@@ -12,6 +12,7 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { KeystrokeHandlerOptions } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
@@ -283,7 +284,8 @@ export default class Dialog extends Plugin {
 		className,
 		isModal,
 		position,
-		onHide
+		onHide,
+		keystrokeHandlerOptions
 	}: DialogDefinition ) {
 		const editor = this.editor;
 
@@ -293,7 +295,8 @@ export default class Dialog extends Plugin {
 			},
 			getViewportOffset: () => {
 				return editor.ui.viewportOffset;
-			}
+			},
+			keystrokeHandlerOptions
 		} );
 
 		const view = this.view;
@@ -476,6 +479,13 @@ export interface DialogDefinition {
 	 * It allows for cleaning up (for example, resetting) the dialog's {@link #content}.
 	 */
 	onHide?: ( dialog: Dialog ) => void;
+
+	/**
+	 * Options that will be passed to the {@link module:utils/keystrokehandler~KeystrokeHandler keystroke handler} of the dialog view.
+	 *
+	 * See {@link module:utils/keystrokehandler~KeystrokeHandlerOptions KeystrokeHandlerOptions} to learn more about the available options.
+	 */
+	keystrokeHandlerOptions?: KeystrokeHandlerOptions;
 }
 
 /**
