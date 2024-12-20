@@ -136,7 +136,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 		// Normalize the insertText data that includes new-line characters.
 		// https://github.com/ckeditor/ckeditor5/issues/2045.
-		if ( domEvent.inputType == 'insertText' && data && data.includes( '\n' ) ) {
+		if ( [ 'insertText', 'insertReplacementText' ].includes( domEvent.inputType ) && data && data.includes( '\n' ) ) {
 			// There might be a single new-line or double for new paragraph, but we translate
 			// it to paragraphs as it is our default action for enter handling.
 			const parts = data.split( /\n{1,2}/g );
@@ -159,15 +159,14 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 					partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
 				}
 
-				if ( i + 1 < parts.length ) {
-					this.fire( domEvent.type, domEvent, {
-						inputType: 'insertParagraph',
-						targetRanges: partTargetRanges
-					} );
+				// After a batch of paragraphs interleaved with text fire a dummy beforeinput just to flush the input queue.
+				this.fire( domEvent.type, domEvent, {
+					inputType: i + 1 < parts.length ? 'insertParagraph' : 'dummy',
+					targetRanges: partTargetRanges
+				} );
 
-					// Use the result view selection so following events will be added one after another.
-					partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
-				}
+				// Use the result view selection so following events will be added one after another.
+				partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
 			}
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
