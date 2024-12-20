@@ -126,8 +126,12 @@ export default class Batch implements BatchType {
 	 * @returns The added operation.
 	 */
 	public addOperation( operation: Operation ): Operation {
-		operation.batch = this;
-		this.operations.push( operation );
+		if ( operation.isDocumentOperation ) {
+			// Store only document operations in the batch.
+			// Non-document operations are temporary and should be discarded after they are applied.
+			operation.batch = this;
+			this.operations.push( operation );
+		}
 
 		return operation;
 	}
