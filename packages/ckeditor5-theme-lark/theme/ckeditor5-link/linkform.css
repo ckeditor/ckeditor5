@@ -8,6 +8,10 @@
 
 :root {
 	--ck-link-panel-width: 340px;
+	/* The height of the text inside the link providers list button. */
+	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+	/* The height of the link providers list item contained paddings. */
+	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small) + var(--ck-spacing-small));
 }
 
 @mixin ck-media-phone {
@@ -31,6 +35,15 @@
 
 	& .ck-link-form__providers-list {
 		border-top: 1px solid var(--ck-color-base-border);
+
+		/* The list should be scrollable when there are more than 4 items. */
+		&:has(.ck-list__item:nth-child(n + 5)) {
+			overflow: auto;
+			/* Scroll should appear when there are more than 5 item on the list.
+			* var(--ck-spacing-large) - is a form padding.
+			* 1px - is a border width. */
+			max-height: calc(var(--ck-link-provider-list-item-height) * 4 + var(--ck-spacing-large) + 1px);
+		}
 
 		& .ck-link__button {
 			padding: var(--ck-spacing-small) var(--ck-spacing-large);

@@ -93,9 +93,78 @@ const ShopsLinksPlugin = createPredefinedLinksProvider( {
 	}
 } );
 
+const EmptyLinkList = createPredefinedLinksProvider( {
+	label: 'No links',
+	getListItems: () => []
+} );
+
+const CKLinkList = createPredefinedLinksProvider( {
+	label: 'CK links',
+	getListItems: () => [
+		{
+			id: 'ckeditor',
+			href: 'https://ckeditor.com',
+			label: 'CKEditor5',
+			icon: linkIcon
+		},
+		{
+			id: 'cksource',
+			href: 'https://cksource.com',
+			label: 'CKSource',
+			icon: linkIcon
+		}
+	],
+	navigate: item => {
+		window.open( `${ item.href }`, '_blank' );
+		return true;
+	}
+} );
+
+const DummyLinkList = createPredefinedLinksProvider( {
+	label: 'Dummy links',
+	getListItems: () => [
+		{
+			id: 'dummy1',
+			href: 'https://example.com',
+			label: 'Example 1',
+			icon: linkIcon
+		},
+		{
+			id: 'dummy2',
+			href: 'https://example.com',
+			label: 'Example 2',
+			icon: linkIcon
+		},
+		{
+			id: 'dummy3',
+			href: 'https://example.com',
+			label: 'Example 3',
+			icon: linkIcon
+		}
+	]
+} );
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Typing, Paragraph, Undo, Enter, SocialLinksPlugin, ShopsLinksPlugin ],
+	.create( document.querySelector( '#editor-with-link-providers' ), {
+		plugins: [
+			Link, Typing, Paragraph, Undo, Enter,
+			SocialLinksPlugin, ShopsLinksPlugin, EmptyLinkList, CKLinkList
+		],
+		toolbar: [ 'link', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-with-many-link-providers' ), {
+		plugins: [
+			Link, Typing, Paragraph, Undo, Enter,
+			SocialLinksPlugin, ShopsLinksPlugin, EmptyLinkList, CKLinkList, DummyLinkList
+		],
 		toolbar: [ 'link', 'undo', 'redo' ]
 	} )
 	.then( editor => {
