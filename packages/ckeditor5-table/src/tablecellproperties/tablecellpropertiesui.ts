@@ -27,7 +27,7 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties.js';
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 import { getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 

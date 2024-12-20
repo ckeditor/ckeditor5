@@ -19,7 +19,7 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import { priorities, type EventInfo, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
