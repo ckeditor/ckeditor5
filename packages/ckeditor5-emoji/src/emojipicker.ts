@@ -42,9 +42,9 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * Registered emojis. A pair of an emoji name and all its available skin tone variants.
 	 */
-	public emojis: Map<string, Array<string>>;
+	private _emojis: Map<string, Array<string>>;
 
-	public selectedSkinTone: SkinToneId;
+	private _selectedSkinTone: SkinToneId;
 
 	private _emojiGroups: Array<EmojiGroup>;
 
@@ -55,6 +55,14 @@ export default class EmojiPicker extends Plugin {
 	private _searchQuery: string | null;
 
 	private _emojiDatabase: Database;
+
+	public get emojis(): typeof this._emojis {
+		return this._emojis;
+	}
+
+	public get selectedSkinTone(): typeof this._selectedSkinTone {
+		return this._selectedSkinTone;
+	}
 
 	/**
 	 * @inheritDoc
@@ -83,8 +91,8 @@ export default class EmojiPicker extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.emojis = new Map();
-		this.selectedSkinTone = 0;
+		this._emojis = new Map();
+		this._selectedSkinTone = 0;
 		this._emojiGroups = [];
 		this._emojiPickerView = null;
 		this._searchQuery = null;
@@ -171,7 +179,7 @@ export default class EmojiPicker extends Plugin {
 					emojis.push( ...item.skins!.sort( ( a, b ) => a.tone - b.tone ).map( item => item.unicode ) );
 				}
 
-				this.emojis.set( name, emojis );
+				this._emojis.set( name, emojis );
 
 				return { name, emojis };
 			} )
@@ -185,7 +193,7 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
 		const searchView = new EmojiSearchView( locale );
-		const toneView = new EmojiToneView( locale, this.selectedSkinTone );
+		const toneView = new EmojiToneView( locale, this._selectedSkinTone );
 		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups );
 		const gridView = new EmojiGridView( locale );
 		const infoView = new EmojiInfoView( locale );
@@ -219,7 +227,7 @@ export default class EmojiPicker extends Plugin {
 
 		// Update the grid of emojis when selected skin tone changes.
 		toneView.on( 'change:selectedSkinTone', ( evt, propertyName, newValue ) => {
-			this.selectedSkinTone = newValue;
+			this._selectedSkinTone = newValue;
 
 			this._updateGrid( dropdownPanelContent );
 		} );
@@ -261,7 +269,7 @@ export default class EmojiPicker extends Plugin {
 				name = queriedEmoji.annotation;
 			}
 
-			const emojis = this.emojis.get( name );
+			const emojis = this._emojis.get( name );
 
 			// Query might return some emojis which we chose not to add to our database.
 			/* istanbul ignore next -- @preserve */
@@ -284,7 +292,7 @@ export default class EmojiPicker extends Plugin {
 
 	private _addTilesToGrid( gridView: EmojiGridView, emojisForCategory: Array<EmojiItem> ) {
 		for ( const item of emojisForCategory ) {
-			const emoji = item.emojis[ this.selectedSkinTone ] || item.emojis[ 0 ];
+			const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis[ 0 ];
 
 			gridView.tiles.add( gridView.createTile( emoji, item.name ) );
 		}
