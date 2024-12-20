@@ -29,4 +29,18 @@
 		--ck-font-size-base: 15px;
 		font-weight: bold;
 	}
+
+	/* Padding when back button is hidden */
+	&:has(.ck-button-back.ck-hidden) {
+		padding-inline: var(--ck-spacing-large) var(--ck-spacing-large);
+	}
+
+	/* Padding when back button is visible */
+	&:has(.ck-button-back:not(.ck-hidden)) {
+		padding-inline: var(--ck-spacing-small) var(--ck-spacing-small);
+	}
+
+	& > .ck-button-back {
+		margin-inline-end: var(--ck-spacing-small);
+	}
 }

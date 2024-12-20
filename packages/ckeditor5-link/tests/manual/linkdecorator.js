@@ -26,7 +26,8 @@ ClassicEditor
 					attributes: {
 						target: '_blank',
 						rel: 'noopener noreferrer'
-					}
+					},
+					defaultValue: true
 				},
 				isDownloadable: {
 					mode: 'manual',
@@ -38,9 +39,7 @@ ClassicEditor
 				isGallery: {
 					mode: 'manual',
 					label: 'Gallery link',
-					attributes: {
-						class: 'gallery'
-					}
+					classes: 'gallery'
 				}
 			}
 		},

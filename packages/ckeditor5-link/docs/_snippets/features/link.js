@@ -35,6 +35,26 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
+		link: {
+			addTargetToExternalLinks: false,
+			decorators: [
+				{
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				},
+				{
+					mode: 'manual',
+					label: 'Open in a new tab',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}
+				}
+			]
+		},
 		licenseKey: 'GPL'
 	} )
 	.then( editor => {

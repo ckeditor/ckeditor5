@@ -80,18 +80,19 @@ describe( 'MediaEmbedUI', () => {
 	} );
 
 	describe( 'dialog', () => {
-		let form, dialog;
+		let form, dialog, mediaEmbedCommand;
 
 		beforeEach( () => {
 			button.fire( 'execute' );
 			dialog = editor.plugins.get( 'Dialog' );
 			form = editor.plugins.get( 'MediaEmbedUI' )._formView;
+			mediaEmbedCommand = editor.commands.get( 'mediaEmbed' );
 		} );
 
 		it( 'has two action buttons', () => {
 			expect( dialog.view.actionsView.children ).to.have.length( 2 );
 			expect( dialog.view.actionsView.children.get( 0 ).label ).to.equal( 'Cancel' );
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
 		} );
 
 		it( 'should be open as modal', () => {
@@ -100,6 +101,31 @@ describe( 'MediaEmbedUI', () => {
 
 		it( 'should be open at screen center', () => {
 			expect( dialog.view.position ).to.be.equal( DialogViewPosition.SCREEN_CENTER );
+		} );
+
+		it( 'should have a title', () => {
+			const sinonSpy = sinon.spy( dialog, 'show' );
+
+			dialog.hide();
+			button.fire( 'execute' );
+
+			expect( sinonSpy ).to.have.been.calledWithMatch( { title: 'Media embed' } );
+		} );
+
+		it( 'should show save button if media is selected', () => {
+			dialog.hide();
+			mediaEmbedCommand.value = 'http://example.org';
+			button.fire( 'execute' );
+
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Save' );
+		} );
+
+		it( 'should show insert button if media is selected', () => {
+			dialog.hide();
+			mediaEmbedCommand.value = undefined;
+			button.fire( 'execute' );
+
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
 		} );
 
 		testSubmit( 'Accept button', () => {
