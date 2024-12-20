@@ -121,8 +121,8 @@ export default class ImageSizeAttributes extends Plugin {
 
 		// Dedicated converters to propagate attributes to the <img> element.
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			attachDowncastConverter( dispatcher, 'width', 'width', true );
-			attachDowncastConverter( dispatcher, 'height', 'height', true );
+			attachDowncastConverter( dispatcher, 'width', 'width', true, true );
+			attachDowncastConverter( dispatcher, 'height', 'height', true, true );
 		} );
 
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
@@ -134,7 +134,8 @@ export default class ImageSizeAttributes extends Plugin {
 			dispatcher: DowncastDispatcher,
 			modelAttributeName: string,
 			viewAttributeName: string,
-			setRatioForInlineImage: boolean
+			setRatioForInlineImage: boolean,
+			isEditingDowncast: boolean = false
 		) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ modelAttributeName }:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
@@ -166,8 +167,14 @@ export default class ImageSizeAttributes extends Plugin {
 				const width = data.item.getAttribute( 'width' );
 				const height = data.item.getAttribute( 'height' );
 
-				if ( width && height ) {
-					viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
+				if ( !width || !height ) {
+					return;
+				}
+
+				viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
+
+				if ( isEditingDowncast ) {
+					viewWriter.setAttribute( 'loading', 'lazy', img );
 				}
 			} );
 		}

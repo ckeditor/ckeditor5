@@ -288,6 +288,8 @@ describe( 'placeholder', () => {
 				isDirectHost: true
 			} );
 
+			view.forceRender();
+
 			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
 			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
