@@ -33,7 +33,7 @@
 		border-top: 1px solid var(--ck-color-base-border);
 
 		& .ck-link__button {
-			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+			padding: var(--ck-spacing-small) var(--ck-spacing-large);
 			border-radius: 0;
 		}
 	}
