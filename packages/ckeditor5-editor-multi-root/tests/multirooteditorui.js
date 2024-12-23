@@ -423,5 +423,21 @@ describe( 'MultiRootEditorUI', () => {
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
+
+		// Some of integrations might detach the DOM editing view *before* destroying the editor.
+		// It happens quite often in the strict mode of the React integration. In such case, the editor
+		// component is being unmounted after editable component is detached from the DOM. In such scenario,
+		// the root doesn't contain the DOM editable anymore. This test ensures that the editor does not throw.
+		// Issue: https://github.com/ckeditor/ckeditor5/issues/16561
+		it( 'should not throw when trying to detach a DOM root that was not attached to editing view', async () => {
+			const newEditor = await MultiRootEditor.create( { foo: '', bar: '' } );
+			const editingView = newEditor.editing.view;
+
+			// Simulate unmounting the editable child component before the editor component.
+			editingView.detachDomRoot( 'foo' );
+
+			// This should not throw
+			await newEditor.destroy();
+		} );
 	} );
 } );
