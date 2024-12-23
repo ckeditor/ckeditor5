@@ -339,7 +339,7 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		it( 'should not crash if called twice', async () => {
-			const editor = VirtualInlineTestEditor.create( '' );
+			const editor = await VirtualInlineTestEditor.create( '' );
 
 			await editor.destroy();
 			await editor.destroy();
