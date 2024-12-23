@@ -337,6 +337,13 @@ describe( 'InlineEditorUI', () => {
 			await editor.destroy();
 			editor = null;
 		} );
+
+		it( 'should not crash if called twice', async () => {
+			const editor = VirtualInlineTestEditor.create( '' );
+
+			await editor.destroy();
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'element()', () => {

@@ -439,5 +439,13 @@ describe( 'MultiRootEditorUI', () => {
 			// This should not throw
 			await newEditor.destroy();
 		} );
+
+		// Issue: https://github.com/ckeditor/ckeditor5/issues/16561
+		it( 'should not throw error when it was called twice', async () => {
+			const newEditor = await MultiRootEditor.create( { foo: '', bar: '' } );
+
+			await newEditor.destroy();
+			await newEditor.destroy(); // This should not throw
+		} );
 	} );
 } );

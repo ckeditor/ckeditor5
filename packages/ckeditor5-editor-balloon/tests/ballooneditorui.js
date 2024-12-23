@@ -189,6 +189,13 @@ describe( 'BalloonEditorUI', () => {
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
+
+		it( 'should not crash if called twice', async () => {
+			const newEditor = await VirtualBalloonTestEditor.create( '' );
+
+			await newEditor.destroy();
+			await newEditor.destroy();
+		} );
 	} );
 
 	describe( 'element()', () => {
