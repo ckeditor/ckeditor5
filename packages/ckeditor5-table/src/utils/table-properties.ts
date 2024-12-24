@@ -8,7 +8,7 @@
  */
 
 import type { BoxSides } from 'ckeditor5/src/engine.js';
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 /**
  * Returns a string if all four values of box sides are equal.

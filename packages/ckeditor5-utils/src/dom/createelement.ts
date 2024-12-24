@@ -8,7 +8,7 @@
  */
 
 import isIterable from '../isiterable.js';
-import { isString } from 'lodash-es';
+import { isString } from 'es-toolkit/compat';
 
 /**
  * Attributes to be applied to the HTML element.
