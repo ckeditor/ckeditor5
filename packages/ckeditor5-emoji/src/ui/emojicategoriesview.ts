@@ -35,17 +35,15 @@ export default class EmojiCategoriesView extends View {
 	 */
 	private readonly _keystrokeHandler: KeystrokeHandler;
 
-	private _categoryNames: Array<string>;
 	private _buttonViews: ViewCollection<ButtonView>;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, emojiGroups: Array<EmojiGroup> ) {
+	constructor( locale: Locale, emojiGroups: Array<EmojiGroup>, categoryName: string ) {
 		super( locale );
 
-		this._categoryNames = emojiGroups.map( emojiGroup => emojiGroup.title );
-		this.set( 'currentCategoryName', this._categoryNames[ 0 ] );
+		this.set( 'currentCategoryName', categoryName );
 
 		this._buttonViews = new ViewCollection( emojiGroups.map( emojiGroup => {
 			const buttonView = new ButtonView();

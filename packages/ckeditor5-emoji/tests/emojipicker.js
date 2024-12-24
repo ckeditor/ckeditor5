@@ -150,6 +150,25 @@ describe( 'EmojiPicker', () => {
 		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
 	} );
 
+	it( 'should store the category when the picker is closed', async () => {
+		clickEmojiToolbarButton();
+
+		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
+		secondCategoryButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		// Close the emoji picker.
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		clickEmojiToolbarButton();
+
+		const secondCategoryButtonAfterReopen = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
+
+		expect( [ ...secondCategoryButtonAfterReopen.classList ] ).to.include( 'ck-active-category' );
+	} );
+
 	it( 'should update the grid when skin tone changes', async () => {
 		clickEmojiToolbarButton();
 
