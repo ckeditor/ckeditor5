@@ -224,13 +224,7 @@ export default class ClipboardPipeline extends Plugin {
 			if ( data.content ) {
 				content = data.content;
 			} else {
-				let contentData = '';
-
-				if ( dataTransfer.getData( 'text/html' ) ) {
-					contentData = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
-				} else if ( dataTransfer.getData( 'text/plain' ) ) {
-					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-				}
+				const contentData = this.fire<ClipboardHTMLNormalizationEvent>( 'htmlNormalization', dataTransfer ) || '';
 
 				content = this.editor.data.htmlProcessor.toView( contentData );
 			}
@@ -286,6 +280,18 @@ export default class ClipboardPipeline extends Plugin {
 
 		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
 			data.resultRange = clipboardMarkersUtils._pasteFragmentWithMarkers( data.content );
+		}, { priority: 'low' } );
+
+		this.listenTo<ClipboardHTMLNormalizationEvent>( this, 'htmlNormalization', ( evt, dataTransfer ) => {
+			if ( evt.return ) {
+				return;
+			}
+
+			if ( dataTransfer.getData( 'text/html' ) ) {
+				evt.return = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
+			} else if ( dataTransfer.getData( 'text/plain' ) ) {
+				evt.return = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+			}
 		}, { priority: 'low' } );
 	}
 
@@ -390,6 +396,20 @@ export interface ClipboardInputTransformationData {
 	 */
 	method: 'paste' | 'drop';
 }
+
+/**
+ * Fired when the HTML content from the clipboard is being normalized, just before it is processed by the input pipeline and
+ * converted to a view document fragment.
+ *
+ * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
+ *
+ * **Note**: Your should not stop this event if you want to change the input data. You should modify the `return` property instead.
+ */
+export type ClipboardHTMLNormalizationEvent = {
+	name: 'htmlNormalization';
+	args: [ dataTransfer: DataTransfer ];
+	return: string;
+};
 
 /**
  * Fired with the `content`, `dataTransfer`, `method`, and `targetRanges` properties:
