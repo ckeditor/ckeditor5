@@ -6,7 +6,7 @@
 /* global document, console */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Emoji, EmojiMention } from '../src/index.js';
+import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
@@ -358,6 +358,34 @@ describe( 'EmojiMention', () => {
 
 			return queryEmoji( '  face' ).then( queryResult => {
 				expect( queryResult.length ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should return emojis with the proper skin tone when it is selected in the emoji picker plugin', () => {
+			editor.plugins.get( EmojiPicker )._selectedSkinTone = 5;
+
+			return queryEmoji( 'hand_with_index_finger_and_thumb_crossed' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 2 );
+
+				expect( queryResult[ 0 ] ).to.deep.equal( {
+					id: 'emoji:hand_with_index_finger_and_thumb_crossed:',
+					text: '🫰🏿'
+				} );
+				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
+			} );
+		} );
+
+		it( 'should return emojis with the default skin tone when the skin tone is selected but the emoji does not have variants', () => {
+			editor.plugins.get( EmojiPicker )._selectedSkinTone = 5;
+
+			return queryEmoji( 'flag_poland' ).then( queryResult => {
+				expect( queryResult.length ).to.equal( 2 );
+
+				expect( queryResult[ 0 ] ).to.deep.equal( {
+					id: 'emoji:flag_poland:',
+					text: '🇵🇱'
+				} );
+				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
 			} );
 		} );
 	} );

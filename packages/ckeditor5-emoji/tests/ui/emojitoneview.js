@@ -32,6 +32,18 @@ describe( 'EmojiToneView', () => {
 		expect( emojiToneView.selectedSkinTone ).to.equal( 5 );
 	} );
 
+	it( 'displays a check mark next to the active skin tone', () => {
+		expect( Array.from( emojiToneView._dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
+			true, false, false, false, false, false
+		] );
+
+		Array.from( emojiToneView._dropdownButtons ).at( -1 ).fire( 'execute' );
+
+		expect( Array.from( emojiToneView._dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
+			false, false, false, false, false, true
+		] );
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'creates #element from template', () => {
 			expect( emojiToneView.element.classList.contains( 'ck' ) ).to.be.true;

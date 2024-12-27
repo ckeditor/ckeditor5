@@ -44,19 +44,27 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _emojis: Map<string, Array<string>>;
 
+	private _selectedSkinTone: SkinToneId;
+
 	private _emojiGroups: Array<EmojiGroup>;
 
 	private _balloon!: ContextualBalloon;
 
 	private _emojiPickerView: EmojiPickerView | null;
 
-	private _selectedSkinTone: SkinToneId;
-
 	private _searchQuery: string | null;
 
 	private _emojiDatabase: Database;
 
 	private _currentCategoryName: string;
+
+	public get emojis(): typeof this._emojis {
+		return this._emojis;
+	}
+
+	public get selectedSkinTone(): typeof this._selectedSkinTone {
+		return this._selectedSkinTone;
+	}
 
 	/**
 	 * @inheritDoc
@@ -86,9 +94,9 @@ export default class EmojiPicker extends Plugin {
 		super( editor );
 
 		this._emojis = new Map();
+		this._selectedSkinTone = 0;
 		this._emojiGroups = [];
 		this._emojiPickerView = null;
-		this._selectedSkinTone = 0;
 		this._searchQuery = null;
 		this._emojiDatabase = new Database();
 		this._currentCategoryName = '';

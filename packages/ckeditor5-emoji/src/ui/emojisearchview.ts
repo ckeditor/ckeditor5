@@ -7,7 +7,7 @@
  * @module emoji/ui/emojisearchview
  */
 
-import { View, createLabeledInputText, LabeledFieldView, type InputView } from 'ckeditor5/src/ui.js';
+import { View, createLabeledInputText, SearchTextQueryView, type InputView } from 'ckeditor5/src/ui.js';
 import { type Locale } from 'ckeditor5/src/utils.js';
 
 export default class EmojiSearchView extends View {
@@ -16,7 +16,7 @@ export default class EmojiSearchView extends View {
 	 *
 	 * @internal
 	 */
-	public readonly _findInputView: LabeledFieldView<InputView>;
+	public readonly _findInputView: SearchTextQueryView<InputView>;
 
 	/**
 	 * @inheritDoc
@@ -29,7 +29,7 @@ export default class EmojiSearchView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-emoji-input' ]
+				class: [ 'ck', 'ck-emoji-input', 'ck-search' ]
 			},
 			children: [
 				this._findInputView
@@ -52,16 +52,17 @@ export default class EmojiSearchView extends View {
 	 * @param label The input label.
 	 * @returns The labeled input view instance.
 	 */
-	private _createInputField( label: string ): LabeledFieldView<InputView> {
-		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+	private _createInputField( label: string ): SearchTextQueryView<InputView> {
+		const labeledInput = new SearchTextQueryView( this.locale!, {
+			label,
+			creator: createLabeledInputText
+		} );
 
 		labeledInput.fieldView.on( 'input', () => {
 			const value = labeledInput.fieldView.element!.value || null;
 
 			this.fire<EmojiSearchViewInputEvent>( 'input', { value } );
 		} );
-
-		labeledInput.label = label;
 
 		return labeledInput;
 	}

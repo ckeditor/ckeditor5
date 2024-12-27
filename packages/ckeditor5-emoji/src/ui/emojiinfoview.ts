@@ -31,13 +31,6 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 	declare public name: string | null;
 
 	/**
-	 * The "Unicode string" of the {@link #emoji}. For instance "U+0061".
-	 *
-	 * @observable
-	 */
-	declare public readonly code: string;
-
-	/**
 	 * @inheritDoc
 	 */
 	constructor( locale: Locale ) {
@@ -47,7 +40,6 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 
 		this.set( 'emoji', null );
 		this.set( 'name', null );
-		this.bind( 'code' ).to( this, 'emoji', characterToUnicodeString );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -65,19 +57,6 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 							text: bind.to( 'name', name => name ? name : '\u200B' )
 						}
 					]
-				},
-				{
-					tag: 'span',
-					attributes: {
-						class: [
-							'ck-emoji-info__code'
-						]
-					},
-					children: [
-						{
-							text: bind.to( 'code' )
-						}
-					]
 				}
 			],
 			attributes: {
@@ -88,21 +67,4 @@ export default class EmojiInfoView extends View<HTMLDivElement> {
 			}
 		} );
 	}
-}
-
-/**
- * Converts a character into a "Unicode string", for instance:
- *
- * "$" -> "U+0024"
- *
- * Returns an empty string when the character is `null`.
- */
-function characterToUnicodeString( emoji: string | null ): string {
-	if ( emoji === null ) {
-		return '';
-	}
-
-	const hexCode = emoji.codePointAt( 0 )!.toString( 16 );
-
-	return 'U+' + ( '0000' + hexCode ).slice( -4 );
 }
