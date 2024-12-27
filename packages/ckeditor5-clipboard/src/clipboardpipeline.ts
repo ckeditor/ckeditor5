@@ -224,9 +224,13 @@ export default class ClipboardPipeline extends Plugin {
 			if ( data.content ) {
 				content = data.content;
 			} else {
-				const contentData = this.fire<ClipboardHTMLNormalizationEvent>( 'htmlNormalization', dataTransfer ) || '';
+				const htmlOrView = this.fire<ClipboardInputHTMLNormalizationEvent>( 'inputHtmlNormalization', dataTransfer ) || '';
 
-				content = this.editor.data.htmlProcessor.toView( contentData );
+				if ( typeof htmlOrView === 'string' ) {
+					content = this.editor.data.htmlProcessor.toView( htmlOrView );
+				} else {
+					content = htmlOrView;
+				}
 			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
@@ -282,7 +286,7 @@ export default class ClipboardPipeline extends Plugin {
 			data.resultRange = clipboardMarkersUtils._pasteFragmentWithMarkers( data.content );
 		}, { priority: 'low' } );
 
-		this.listenTo<ClipboardHTMLNormalizationEvent>( this, 'htmlNormalization', ( evt, dataTransfer ) => {
+		this.listenTo<ClipboardInputHTMLNormalizationEvent>( this, 'inputHtmlNormalization', ( evt, dataTransfer ) => {
 			if ( evt.return ) {
 				return;
 			}
@@ -405,10 +409,10 @@ export interface ClipboardInputTransformationData {
  *
  * **Note**: Your should not stop this event if you want to change the input data. You should modify the `return` property instead.
  */
-export type ClipboardHTMLNormalizationEvent = {
-	name: 'htmlNormalization';
+export type ClipboardInputHTMLNormalizationEvent = {
+	name: 'inputHtmlNormalization';
 	args: [ dataTransfer: DataTransfer ];
-	return: string;
+	return: string | ViewDocumentFragment;
 };
 
 /**

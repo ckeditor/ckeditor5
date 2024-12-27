@@ -12,6 +12,7 @@ export {
 	default as ClipboardPipeline,
 	type ClipboardContentInsertionEvent,
 	type ClipboardContentInsertionData,
+	type ClipboardInputHTMLNormalizationEvent,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
 	type ClipboardOutputTransformationEvent,
