@@ -7,17 +7,10 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata.js';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-
-const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 /**
  * Mocks dataTransfer object which can be used for simulating paste.
@@ -174,16 +167,12 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 			testRunner( name, () => {
 				// Simulate data from Clipboard event
 				const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
-				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
 				const dataTransfer = createDataTransfer( {
 					'text/html': fixtures.input[ name ],
 					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
 				} );
 
-				// data.content might be completely overwritten with a new object, so we need obtain final result for comparison.
-				const data = { content, dataTransfer };
-				clipboardPlugin.fire( 'inputTransformation', data );
-				const transformedContent = data.content;
+				const transformedContent = clipboardPlugin.fire( 'inputHtmlNormalization', dataTransfer );
 
 				expectNormalized(
 					transformedContent,

@@ -18,6 +18,8 @@ import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockeditin
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { DomConverter } from '@ckeditor/ckeditor5-engine';
+import MSWordNormalizer from '../src/normalizers/mswordnormalizer.js';
+import GoogleDocsNormalizer from '../src/normalizers/googledocsnormalizer.js';
 
 /* global document, DOMParser */
 
@@ -124,17 +126,13 @@ describe( 'PasteFromOffice', () => {
 			} );
 
 			function checkCorrectData( inputString ) {
-				const data = setUpData( inputString );
-				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+				const dataTransfer = createHTMLDataTransfer( inputString );
+				const getDataSpy = sinon.spy( dataTransfer, 'getData' );
 
-				clipboard.fire( 'inputTransformation', data );
+				const result = clipboard.fire( 'inputHtmlNormalization', dataTransfer );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
-				expect( data._parsedData ).to.have.property( 'body' );
-				expect( data._parsedData ).to.have.property( 'bodyString' );
-				expect( data._parsedData ).to.have.property( 'styles' );
-				expect( data._parsedData ).to.have.property( 'stylesString' );
-				expect( data._parsedData.body ).to.be.instanceOf( ViewDocumentFragment );
+				expect( result.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( result ).to.be.instanceOf( ViewDocumentFragment );
 
 				sinon.assert.called( getDataSpy );
 			}
@@ -164,25 +162,23 @@ describe( 'PasteFromOffice', () => {
 			it( 'should process data for codeBlock', () => {
 				setModelData( editor.model, '<codeBlock language="plaintext">[]</codeBlock>' );
 
-				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
-				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+				const inputString = '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>';
+				const dataTransfer = createHTMLDataTransfer( inputString );
 
-				clipboard.fire( 'inputTransformation', data );
+				const result = clipboard.fire( 'inputHtmlNormalization', dataTransfer );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
-				expect( data._parsedData ).to.be.undefined;
-
-				sinon.assert.notCalled( getDataSpy );
+				expect( result.isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( result ).to.be.equal( inputString );
 			} );
 
 			function checkNotProcessedData( inputString ) {
-				const data = setUpData( inputString );
-				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+				const dataTransfer = createHTMLDataTransfer( inputString );
+				const getDataSpy = sinon.spy( dataTransfer, 'getData' );
 
-				clipboard.fire( 'inputTransformation', data );
+				const result = clipboard.fire( 'inputHtmlNormalization', dataTransfer );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
-				expect( data._parsedData ).to.be.undefined;
+				expect( result.isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( result ).to.be.equal( inputString );
 
 				sinon.assert.called( getDataSpy );
 			}
@@ -190,42 +186,41 @@ describe( 'PasteFromOffice', () => {
 
 		describe( 'data which already have the flag', () => {
 			it( 'should not process again ms word data containing a flag', () => {
-				checkAlreadyProcessedData( '<meta name=Generator content="Microsoft Word 15">' +
-					'<p class="MsoNormal">Hello world<o:p></o:p></p>' );
+				checkAlreadyProcessedData(
+					MSWordNormalizer,
+					'<meta name=Generator content="Microsoft Word 15">' +
+						'<p class="MsoNormal">Hello world<o:p></o:p></p>'
+				);
 			} );
 
 			it( 'should not process again google docs data containing a flag', () => {
-				checkAlreadyProcessedData( '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
-					'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>' );
+				checkAlreadyProcessedData(
+					GoogleDocsNormalizer,
+					'<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
+						'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>' );
 			} );
 
-			function checkAlreadyProcessedData( inputString ) {
-				const data = setUpData( inputString, true );
-				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+			function checkAlreadyProcessedData( Normalizer, inputString ) {
+				clipboard.on( 'inputHtmlNormalization', evt => {
+					evt.return = new ViewDocumentFragment( null );
+					evt.return.isTransformedWithPasteFromOffice = true;
+				}, { priority: 'high' } );
 
-				clipboard.fire( 'inputTransformation', data );
+				const executeSpy = sinon.spy( Normalizer.prototype, 'execute' );
+				const data = createHTMLDataTransfer( inputString, true );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
-				expect( data._parsedData ).to.be.undefined;
+				const result = clipboard.fire( 'inputHtmlNormalization', data );
 
-				sinon.assert.notCalled( getDataSpy );
+				expect( result.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( result ).to.be.instanceOf( ViewDocumentFragment );
+
+				executeSpy.restore();
+				expect( executeSpy ).not.to.be.called;
 			}
 		} );
 	} );
 
-	// @param {String} inputString html to be processed by paste from office
-	// @param {Boolean} [isTransformedWithPasteFromOffice=false] if set, marks output data with isTransformedWithPasteFromOffice flag
-	// @returns {Object} data object simulating content obtained from the clipboard
-	function setUpData( inputString, isTransformedWithPasteFromOffice = false ) {
-		const data = {
-			content: htmlDataProcessor.toView( inputString ),
-			dataTransfer: createDataTransfer( { 'text/html': inputString } )
-		};
-
-		if ( isTransformedWithPasteFromOffice ) {
-			data._isTransformedWithPasteFromOffice = true;
-		}
-
-		return data;
+	function createHTMLDataTransfer( inputString ) {
+		return createDataTransfer( { 'text/html': inputString } );
 	}
 } );
