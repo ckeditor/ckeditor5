@@ -150,7 +150,7 @@ describe( 'EmojiPicker', () => {
 		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
 	} );
 
-	it( 'should store the category when the picker is closed', async () => {
+	it( 'should load previous category after reopening the emoji picker', async () => {
 		clickEmojiToolbarButton();
 
 		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
