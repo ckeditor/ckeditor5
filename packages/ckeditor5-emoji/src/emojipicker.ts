@@ -167,11 +167,20 @@ export default class EmojiPicker extends Plugin {
 		databaseId: number; title: string; exampleEmoji: string;
 	} ): Promise<EmojiGroup> {
 		const databaseGroup = await this._emojiDatabase.getEmojiByGroup( databaseId );
+		const container = this._createEmojiWidthTestingContainer();
+		const baselineEmojiWidth = this._getNodeWidth( container, '🙂' );
 
-		return {
-			title,
-			exampleEmoji,
-			items: databaseGroup.map( item => {
+		const items = databaseGroup
+			.filter( item => {
+				const emojiWidth = this._getNodeWidth( container, item.unicode );
+
+				// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
+				// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
+				// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
+				// So here we set the threshold at 1.8 times the size of the baseline emoji.
+				return ( emojiWidth / 1.8 < baselineEmojiWidth ) && ( emojiWidth >= baselineEmojiWidth );
+			} )
+			.map( item => {
 				const name = item.annotation;
 				const emojis = [ item.unicode ];
 
@@ -182,7 +191,15 @@ export default class EmojiPicker extends Plugin {
 				this._emojis.set( name, emojis );
 
 				return { name, emojis };
-			} )
+			} );
+
+		// Clean up width testing container.
+		document.body.removeChild( container );
+
+		return {
+			title,
+			exampleEmoji,
+			items
 		};
 	}
 
@@ -431,6 +448,33 @@ export default class EmojiPicker extends Plugin {
 				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
 			} );
 		}
+	}
+
+	/**
+	 * Creates a div for emoji width testing purposes.
+	 */
+	private _createEmojiWidthTestingContainer(): HTMLDivElement {
+		const container = document.createElement( 'div' );
+		container.style.position = 'absolute';
+		container.style.left = '-9999px';
+		container.style.whiteSpace = 'nowrap';
+		container.style.fontSize = '24px';
+		document.body.appendChild( container );
+
+		return container;
+	}
+
+	/**
+	 * Returns the width of the provided node.
+	 */
+	private _getNodeWidth( container: HTMLDivElement, node: string ): number {
+		const span = document.createElement( 'span' );
+		span.textContent = node;
+		container.appendChild( span );
+		const nodeWidth = span.offsetWidth;
+		container.removeChild( span );
+
+		return nodeWidth;
 	}
 }
 
