@@ -50,7 +50,7 @@ describe( 'ImageInsertUrlView', () => {
 
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
-			expect( view.element.tagName ).to.equal( 'DIV' );
+			expect( view.element.tagName ).to.equal( 'FORM' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-image-insert-url' ) ).to.true;
 

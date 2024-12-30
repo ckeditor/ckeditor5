@@ -19,14 +19,54 @@ export default async function updatePackageEntryPoint( packagePath ) {
 
 	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const pkgJson = await fs.readJson( packageJsonPath );
-	const { main } = pkgJson;
+	const main = pkgJson.main.replace( /\.ts$/, '.js' );
+	const types = pkgJson.main.replace( /\.ts$/, '.d.ts' );
+	const files = pkgJson.files || [];
 
-	if ( !main ) {
-		return;
+	pkgJson.main = main;
+	pkgJson.types = types;
+
+	pkgJson.exports = {
+		'.': {
+			types: './' + types,
+			import: './' + main,
+			default: './' + main
+		},
+		'./dist/*': {
+			/**
+			 * To avoid problems caused by having two different copies of the declaration
+			 * files, the new installation methods will temporarily use those from the
+			 * old installation methods. Once the old methods are removed, the declaration
+			 * files will be moved to the `dist` directory.
+			 */
+			types: './' + types,
+			import: './dist/*',
+			default: './dist/*'
+		},
+		'./src/*': {
+			types: './src/*.d.ts',
+			import: './src/*',
+			default: './src/*'
+		}
+	};
+
+	if ( files.includes( 'build' ) ) {
+		pkgJson.exports[ './build/*' ] = './build/*';
 	}
 
-	pkgJson.main = main.replace( /\.ts$/, '.js' );
-	pkgJson.types = main.replace( /\.ts$/, '.d.ts' );
+	if ( await checkPathExists( path.join( packagePath, 'lang' ) ) ) {
+		pkgJson.exports[ './lang/*' ] = './lang/*';
+	}
+
+	if ( await checkPathExists( path.join( packagePath, 'theme' ) ) ) {
+		pkgJson.exports[ './theme/*' ] = './theme/*';
+	}
+
+	if ( files.includes( 'ckeditor5-metadata.json' ) ) {
+		pkgJson.exports[ './ckeditor5-metadata.json' ] = './ckeditor5-metadata.json';
+	}
+
+	pkgJson.exports[ './package.json' ] = './package.json';
 
 	return fs.writeJson( packageJsonPath, pkgJson );
 
@@ -45,10 +85,14 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		}
 
 		// Otherwise, let's check if the package contains a `tsconfig.json` file.
-		return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
+		return checkPathExists( path.join( packagePath, 'tsconfig.json' ) );
 	}
 
-	function checkFileExists( file ) {
+	/**
+	 * @param {String} file
+	 * @returns {Promise.<Boolean>}
+	 */
+	function checkPathExists( file ) {
 		return fs.access( file, fs.constants.F_OK )
 			.then( () => true )
 			.catch( () => false );

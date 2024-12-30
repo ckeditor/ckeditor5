@@ -525,8 +525,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				return;
 			}
 
-			if ( [ 'evaluation', 'trial', 'development' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' | 'development' = licensePayload.licenseType;
+			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
+				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
 
 				console.info(
 					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
@@ -540,6 +540,13 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				editor.on( 'destroy', () => {
 					clearTimeout( timerId );
 				} );
+			}
+
+			if ( licensePayload.licenseType === 'development' ) {
+				console.info(
+					'You are using the development version of CKEditor 5. ' +
+					'Make sure you will not use it in the production environment.'
+				);
 			}
 
 			if ( licensePayload.usageEndpoint ) {

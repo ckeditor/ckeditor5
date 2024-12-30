@@ -27,10 +27,10 @@ export default function getCKEditor5PackageJson() {
 		type: 'module',
 		main: 'dist/ckeditor5.js',
 		module: 'dist/ckeditor5.js',
-		types: 'dist/index.d.ts',
+		types: 'src/index.d.ts',
 		exports: {
 			'.': {
-				'types': './dist/index.d.ts',
+				'types': './src/index.d.ts',
 				'import': './dist/ckeditor5.js'
 			},
 			'./*': './dist/*',

@@ -8,3 +8,4 @@
  */
 
 export { default as ClassicEditor } from './classiceditor.js';
+export { default as ClassicEditorUIView } from './classiceditoruiview.js';
