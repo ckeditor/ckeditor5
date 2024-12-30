@@ -382,7 +382,7 @@ export default class TableSelection extends Plugin {
 		// If the selection starts at `B` and ends at `E`, the entire first row should be selected.
 		//
 		// In other words, the selection will represent the following cells:
-		// 	* Without this adjustment, only `A` and `E` would be selected.
+		// 	* Without this adjustment, only `B`, `A` and `E` would be selected.
 		// 	* With this adjustment, `A`, `B`, `C`, `D`, and `E` are selected.
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/17538
