@@ -288,11 +288,11 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should query single emoji properly properly', () => {
-			return queryEmoji( 'flag_poland' ).then( queryResult => {
-				expect( queryResult ).to.deep.equal( [
-					{ id: 'emoji:flag_poland:', text: '🇵🇱' },
-					{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' }
-				] );
+			return queryEmoji( 'toothbrush' ).then( queryResult => {
+				expect( queryResult[ 0 ].id ).to.equal( 'emoji:toothbrush:' );
+				expect( queryResult[ 0 ].text ).to.equal( '🪥' );
+				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
+				expect( queryResult[ 1 ].text ).to.equal( 'toothbrush' );
 			} );
 		} );
 
@@ -378,12 +378,12 @@ describe( 'EmojiMention', () => {
 		it( 'should return emojis with the default skin tone when the skin tone is selected but the emoji does not have variants', () => {
 			editor.plugins.get( EmojiPicker )._selectedSkinTone = 5;
 
-			return queryEmoji( 'flag_poland' ).then( queryResult => {
+			return queryEmoji( 'toothbrush' ).then( queryResult => {
 				expect( queryResult.length ).to.equal( 2 );
 
 				expect( queryResult[ 0 ] ).to.deep.equal( {
-					id: 'emoji:flag_poland:',
-					text: '🇵🇱'
+					id: 'emoji:toothbrush:',
+					text: '🪥'
 				} );
 				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
 			} );
