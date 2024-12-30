@@ -41,7 +41,9 @@ describe( 'InlineEditorUI', () => {
 	} );
 
 	afterEach( async () => {
-		await editor.destroy();
+		if ( editor ) {
+			await editor.destroy();
+		}
 	} );
 
 	describe( 'constructor()', () => {
@@ -327,6 +329,20 @@ describe( 'InlineEditorUI', () => {
 			await newEditor.destroy();
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
+		} );
+
+		it( 'should not crash if the editable element is not present', async () => {
+			editor.editing.view.detachDomRoot( editor.ui.view.editable.name );
+
+			await editor.destroy();
+			editor = null;
+		} );
+
+		it( 'should not crash if called twice', async () => {
+			const editor = await VirtualInlineTestEditor.create( '' );
+
+			await editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 
