@@ -369,9 +369,22 @@ export default class TableSelection extends Plugin {
 
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 
-		// If users selects the colspan cell, and the previous row contains selection, the selection should be
-		// expanded in the previous row to accommodate the size of the colspan cell.
-		// Make sure that "end" of the column points to the right corner of the colspan cell.
+		// Adjust the selection to include the entire row if a cell with colspan is selected.
+		// This ensures that the selection covers the full width of the colspan cell.
+		//
+		// Example:
+		// +---+---+---+---+
+		// | A | B | C | D |
+		// +---+---+---+---+
+		// | E             |
+		// +---+---+---+---+
+		//
+		// If the selection starts at `B` and ends at `E`, the entire first row should be selected.
+		//
+		// In other words, the selection will represent the following cells:
+		// 	* Without this adjustment, only `A` and `E` would be selected.
+		// 	* With this adjustment, `A`, `B`, `C`, `D`, and `E` are selected.
+		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/17538
 		const endColumnExtraColspan = ( parseInt( targetCell.getAttribute( 'colspan' ) as string || '1' ) - 1 );
 		const endColumn = Math.max( startLocation.column, endLocation.column + endColumnExtraColspan );
