@@ -360,6 +360,7 @@ export default class TableSelection extends Plugin {
 	 */
 	private _getCellsToSelect( anchorCell: Element, targetCell: Element ) {
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
+
 		const startLocation = tableUtils.getCellLocation( anchorCell );
 		const endLocation = tableUtils.getCellLocation( targetCell );
 
@@ -367,11 +368,16 @@ export default class TableSelection extends Plugin {
 		const endRow = Math.max( startLocation.row, endLocation.row );
 
 		const startColumn = Math.min( startLocation.column, endLocation.column );
-		const endColumn = Math.max( startLocation.column, endLocation.column );
+
+		// If users selects the colspan cell, and the previous row contains selection, the selection should be
+		// expanded in the previous row to accommodate the size of the colspan cell.
+		// Make sure that "end" of the column points to the right corner of the colspan cell.
+		// See: https://github.com/ckeditor/ckeditor5/issues/17538
+		const endColumnExtraColspan = ( parseInt( targetCell.getAttribute( 'colspan' ) as string || '1' ) - 1 );
+		const endColumn = Math.max( startLocation.column, endLocation.column + endColumnExtraColspan );
 
 		// 2-dimensional array of the selected cells to ease flipping the order of cells for backward selections.
 		const selectionMap: Array<Array<Element>> = new Array( endRow - startRow + 1 ).fill( null ).map( () => [] );
-
 		const walkerOptions = {
 			startRow,
 			endRow,
