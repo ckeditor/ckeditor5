@@ -302,6 +302,16 @@ describe( 'BookmarkUI', () => {
 	} );
 
 	describe( 'toolbar', () => {
+		let clock;
+
+		beforeEach( () => {
+			clock = sinon.useFakeTimers();
+		} );
+
+		afterEach( () => {
+			clock.restore();
+		} );
+
 		it( 'should use the config.bookmark.toolbar to create items', () => {
 			// Make sure that toolbar is empty before first show.
 			expect( toolbarView.items.length ).to.equal( 0 );
@@ -309,6 +319,8 @@ describe( 'BookmarkUI', () => {
 			editor.ui.focusTracker.isFocused = true;
 
 			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+			clock.tick( 100 );
 
 			expect( toolbarView.items ).to.have.length( 4 );
 			expect( toolbarView.items.get( 0 ).text ).to.equal( 'foo' );
@@ -322,6 +334,8 @@ describe( 'BookmarkUI', () => {
 			editor.ui.focusTracker.isFocused = true;
 
 			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+			clock.tick( 100 );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
 				return view === toolbarView && balloonClassName === 'ck-toolbar-container';
@@ -341,6 +355,8 @@ describe( 'BookmarkUI', () => {
 			editor.ui.focusTracker.isFocused = true;
 
 			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+
+			clock.tick( 100 );
 
 			const bookmarkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 			const defaultPositions = BalloonPanelView.defaultPositions;
@@ -380,6 +396,7 @@ describe( 'BookmarkUI', () => {
 				expect( balloon.visibleView ).to.be.null;
 
 				editor.ui.fire( 'update' );
+				clock.tick( 100 );
 
 				expect( balloon.visibleView ).to.be.null;
 
@@ -389,17 +406,36 @@ describe( 'BookmarkUI', () => {
 					);
 				} );
 
+				clock.tick( 100 );
 				expect( balloon.visibleView ).to.equal( toolbarView );
 
 				// Make sure successive change does not throw, e.g. attempting
 				// to insert the toolbar twice.
 				editor.ui.fire( 'update' );
+				clock.tick( 100 );
+
+				expect( balloon.visibleView ).to.equal( toolbarView );
+			} );
+
+			it( 'should debounce the toolbar visibility after changing selection', () => {
+				setModelData( editor.model, '<paragraph>[]<bookmark bookmarkId="foo"></bookmark></paragraph>' );
+
+				editor.model.change( writer => {
+					writer.setSelection(
+						writer.createRangeOn( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ) )
+					);
+				} );
+
+				expect( balloon.visibleView ).to.be.null;
+
+				clock.tick( 100 );
 				expect( balloon.visibleView ).to.equal( toolbarView );
 			} );
 
 			it( 'should hide the toolbar on ui#update if the bookmark is de–selected', () => {
 				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
+				clock.tick( 100 );
 				expect( balloon.visibleView ).to.equal( toolbarView );
 
 				editor.model.change( writer => {
@@ -408,6 +444,7 @@ describe( 'BookmarkUI', () => {
 					);
 				} );
 
+				clock.tick( 100 );
 				expect( balloon.visibleView ).to.be.null;
 
 				// Make sure successive change does not throw, e.g. attempting

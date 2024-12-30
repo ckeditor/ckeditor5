@@ -33,6 +33,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { isWidget } from './utils.js';
+import { debounce, type DebouncedFunc } from 'lodash-es';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole
@@ -68,6 +69,8 @@ export default class WidgetToolbarRepository extends Plugin {
 
 	private _balloon!: ContextualBalloon;
 
+	private _debouncedUpdateToolbarVisibility: DebouncedFunc<( () => void )>;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -87,6 +90,15 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this._debouncedUpdateToolbarVisibility = debounce( this._updateToolbarsVisibility.bind( this ), 15 );
 	}
 
 	/**
@@ -113,7 +125,23 @@ export default class WidgetToolbarRepository extends Plugin {
 		} );
 
 		this.listenTo<EditorUIUpdateEvent>( editor.ui, 'update', () => {
-			this._updateToolbarsVisibility();
+			// When a widget (e.g., a bookmark anchor) is clicked, two consecutive 'update' events may fire:
+			// 1. First when the widget gets focused
+			// 2. Second when the selection changes shortly after
+			//
+			// While the widget usually stays selected, sometimes the selection may move to a different element
+			// (e.g., to the start of the parent paragraph). This can cause the toolbar to flicker as it's
+			// quickly shown and hidden.
+			//
+			// This issue particularly affects widgets like anchors that contain a single SVG element.
+			// To prevent the flickering, we need to debounce the toolbar visibility updates.
+			// See: https://github.com/ckeditor/ckeditor5/pull/17690
+			if ( this._isSelectedDefinitionDebounced() ) {
+				this._debouncedUpdateToolbarVisibility();
+			} else {
+				this._debouncedUpdateToolbarVisibility.cancel();
+				this._updateToolbarsVisibility();
+			}
 		} );
 
 		// UI#update is not fired after focus is back in editor, we need to check if balloon panel should be visible.
@@ -149,11 +177,13 @@ export default class WidgetToolbarRepository extends Plugin {
 		{
 			ariaLabel,
 			items,
+			debounced,
 			getRelatedElement,
 			balloonClassName = 'ck-toolbar-container',
 			positions
 		}: {
 			ariaLabel?: string;
+			debounced?: boolean;
 			items: Array<ToolbarConfigItem>;
 			getRelatedElement: ( selection: ViewDocumentSelection ) => ( ViewElement | null );
 			balloonClassName?: string;
@@ -199,6 +229,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		const toolbarDefinition: WidgetRepositoryToolbarDefinition = {
 			view: toolbarView,
+			debounced,
 			getRelatedElement,
 			balloonClassName,
 			itemsConfig: items,
@@ -269,6 +300,18 @@ export default class WidgetToolbarRepository extends Plugin {
 	private _hideToolbar( toolbarDefinition: WidgetRepositoryToolbarDefinition ) {
 		this._balloon.remove( toolbarDefinition.view );
 		this.stopListening( this._balloon, 'change:visibleView' );
+	}
+
+	/**
+	 * Checks if any toolbar definition has a throttled flag set to true.
+	 */
+	private _isSelectedDefinitionDebounced() {
+		return Array
+			.from( this._toolbarDefinitions.values() )
+			.some( definition =>
+				definition.debounced &&
+				definition.getRelatedElement( this.editor.editing.view.document.selection )
+			);
 	}
 
 	/**
@@ -381,4 +424,6 @@ interface WidgetRepositoryToolbarDefinition {
 	positions?: ReadonlyArray<PositioningFunction>;
 
 	initialized: boolean;
+
+	debounced?: boolean;
 }

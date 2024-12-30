@@ -134,8 +134,16 @@ export default class BookmarkUI extends Plugin {
 		widgetToolbarRepository.register( 'bookmark', {
 			ariaLabel: t( 'Bookmark toolbar' ),
 			items: editor.config.get( 'bookmark.toolbar' )!,
-
 			getRelatedElement: getSelectedBookmarkWidget,
+
+			// Delay the widget toolbar to avoid flickering when the expected selection is not being set on the focused element.
+			// It happens quite often when user clicks somewhere at the end of the paragraph *AND* and it's last child is the
+			// bookmark element. In such scenario, the editor will focus bookmark element (and `update` event will be fired).
+			// and shortly after, the browser will fire the selection change event that selects the start of the paragraph
+			// instead of the bookmark element (the second `update` event is fired). This delay will give the editor a chance
+			// to interpret the selection properly and decide if the toolbar should be displayed or not.
+			// See more: https://github.com/ckeditor/ckeditor5/pull/17690
+			debounced: true,
 
 			// Override positions to the same list as for balloon panel default
 			// so widget toolbar will try to use same position as form view.

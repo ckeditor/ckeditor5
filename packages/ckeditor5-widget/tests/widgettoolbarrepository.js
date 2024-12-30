@@ -746,6 +746,28 @@ describe( 'WidgetToolbarRepository', () => {
 				defaultPositions.northArrowSouth
 			] );
 		} );
+
+		it( 'should debounce toolbar visibility updates if debounced flag is set to true', () => {
+			const clock = testUtils.sinon.useFakeTimers();
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget,
+				debounced: true
+			} );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.equal( null );
+
+			clock.tick( 100 );
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+
+			clock.restore();
+		} );
 	} );
 } );
 
