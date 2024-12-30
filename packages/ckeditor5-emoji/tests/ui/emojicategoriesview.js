@@ -28,7 +28,7 @@ describe( 'EmojiCategoriesView', () => {
 			exampleEmoji: '📕'
 		} ];
 
-		emojiCategoriesView = new EmojiCategoriesView( locale, emojiGroups );
+		emojiCategoriesView = new EmojiCategoriesView( locale, emojiGroups, 'faces' );
 		emojiCategoriesView.render();
 	} );
 

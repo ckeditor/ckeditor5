@@ -8,7 +8,7 @@
  */
 
 import '../theme/emojipicker.css';
-import type { Locale } from 'ckeditor5/src/utils.js';
+import type { Locale, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import { Database } from 'emoji-picker-element';
 import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
@@ -56,6 +56,8 @@ export default class EmojiPicker extends Plugin {
 
 	private _emojiDatabase: Database;
 
+	private _currentCategoryName: string;
+
 	public get emojis(): typeof this._emojis {
 		return this._emojis;
 	}
@@ -97,6 +99,7 @@ export default class EmojiPicker extends Plugin {
 		this._emojiPickerView = null;
 		this._searchQuery = null;
 		this._emojiDatabase = new Database();
+		this._currentCategoryName = '';
 	}
 
 	/**
@@ -132,6 +135,8 @@ export default class EmojiPicker extends Plugin {
 			this._getEmojiGroup( { databaseId: 8, title: 'Symbols', exampleEmoji: '🟢' } ),
 			this._getEmojiGroup( { databaseId: 9, title: 'Flags', exampleEmoji: '🏁' } )
 		] );
+
+		this._currentCategoryName = this._emojiGroups[ 0 ].title;
 
 		// Renders a fake visual selection marker on an expanded selection.
 		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
@@ -194,7 +199,7 @@ export default class EmojiPicker extends Plugin {
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
 		const searchView = new EmojiSearchView( locale );
 		const toneView = new EmojiToneView( locale, this._selectedSkinTone );
-		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups );
+		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups, this._currentCategoryName );
 		const gridView = new EmojiGridView( locale );
 		const infoView = new EmojiInfoView( locale );
 
@@ -221,7 +226,8 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		// Update the grid of emojis when selected category changes.
-		categoriesView.on( 'change:currentCategoryName', () => {
+		categoriesView.on<ObservableChangeEvent<string>>( 'change:currentCategoryName', ( ev, args, categoryName ) => {
+			this._currentCategoryName = categoryName;
 			this._updateGrid( dropdownPanelContent );
 		} );
 
@@ -253,7 +259,7 @@ export default class EmojiPicker extends Plugin {
 		gridView.tiles.clear();
 
 		if ( !this._searchQuery || this._searchQuery.length < 2 ) {
-			const emojisForCategory = this._getEmojisForCategory( categoriesView.currentCategoryName );
+			const emojisForCategory = this._getEmojisForCategory( this._currentCategoryName );
 
 			this._addTilesToGrid( gridView, emojisForCategory );
 			categoriesView.enableCategories();
