@@ -104,6 +104,10 @@ describe( 'LinkFormView', () => {
 				expect( secondFormRow.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
 			} );
 
+			it( 'should `saveButtonView` has no tooltip', () => {
+				expect( view.saveButtonView.tooltip ).to.be.false;
+			} );
+
 			it( 'should `backButtonView` has correct label', () => {
 				const headerChildren = view.template.children[ 0 ].get( 0 ).template.children[ 0 ];
 				const backButton = headerChildren.get( 0 );

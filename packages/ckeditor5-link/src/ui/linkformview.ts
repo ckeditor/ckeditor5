@@ -272,7 +272,7 @@ export default class LinkFormView extends View {
 
 		saveButton.set( {
 			label: t( 'Insert' ),
-			tooltip: true,
+			tooltip: false,
 			withText: true,
 			type: 'submit',
 			class: 'ck-button-action ck-button-bold'
