@@ -33,6 +33,7 @@ import {
 	toMap,
 	uid
 } from '@ckeditor/ckeditor5-utils';
+import TreeWalker from './treewalker.js';
 
 const storePrefix = 'selection:';
 
@@ -1135,20 +1136,20 @@ class LiveSelection extends Selection {
 
 		if ( !this.isCollapsed ) {
 			// 1. If selection is a range...
-			const range = this.getFirstRange();
+			const range = new TreeWalker( {
+				boundaries: this.getFirstRange(),
+				ignoreElementEnd: true,
+				shallow: true
+			} );
 
 			// ...look for a first character node in that range and take attributes from it.
 			for ( const value of range ) {
 				// If the item is an object, we don't want to get attributes from its children...
 				if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
 					// ...but collect attributes from inline object.
-					attrs = getTextAttributes( value.item, schema );
-					break;
-				}
-
-				if ( value.type == 'text' ) {
-					attrs = value.item.getAttributes();
-					break;
+					attrs = mergeAttributes( attrs, getTextAttributes( value.item, schema ) );
+				} else if ( value.type == 'text' ) {
+					attrs = mergeAttributes( attrs, value.item.getAttributes() );
 				}
 			}
 		} else {
@@ -1279,4 +1280,28 @@ function clearAttributesStoredInElement( model: Model, batch: Batch ) {
 			} );
 		}
 	}
+}
+
+/**
+ * Helper function to merge attributes
+ */
+function mergeAttributes(
+	existingAttrs: Iterable<[string, unknown]> | null,
+	newAttrs: Iterable<[string, unknown]> | null
+): Iterable<[string, unknown]> {
+	if ( !existingAttrs ) {
+		return newAttrs || [];
+	}
+
+	if ( !newAttrs ) {
+		return existingAttrs;
+	}
+
+	const mergedMap = new Map( existingAttrs );
+
+	for ( const [ key, value ] of newAttrs ) {
+		mergedMap.set( key, value );
+	}
+
+	return mergedMap;
 }

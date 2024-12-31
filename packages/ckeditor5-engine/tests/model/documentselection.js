@@ -1130,12 +1130,15 @@ describe( 'DocumentSelection', () => {
 			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
 				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
 
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [
+					[ 'b', true ],
+					[ 'c', true ]
+				] );
 
 				// Step into elements when looking for first character:
 				selection._setTo( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
 
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
 			} );
 
 			it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
@@ -1247,10 +1250,10 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
-			it( 'stops reading attributes if selection starts with an object', () => {
+			it( 'should not stop reading attributes if selection starts with an object', () => {
 				setData( model, '<p>[<imageBlock></imageBlock><$text bold="true">bar]</$text></p>' );
 
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 		} );
 
