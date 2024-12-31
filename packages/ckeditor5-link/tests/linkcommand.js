@@ -207,7 +207,7 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it( 'should not be undefined when selection contains not only elements with `linkHref` attribute', () => {
+			it( 'should be undefined when selection contains not only elements with `linkHref` attribute', () => {
 				setData( model, 'f[o<$text linkHref="url">ob</$text>]ar' );
 
 				expect( command.value ).to.equal( 'url' );
