@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { LivePosition, type Range, type Item } from 'ckeditor5/src/engine.js';
+import { LivePosition, type Range, type Item, type Model, type DocumentSelection } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -65,7 +65,9 @@ export default class LinkCommand extends Command {
 			this.value = selectedElement.getAttribute( 'linkHref' ) as string | undefined;
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {
-			this.value = selection.getAttribute( 'linkHref' ) as string | undefined;
+			const selectionHref = selection.getAttribute( 'linkHref' ) || getLinkHrefFromSelectionItems( model, selection );
+
+			this.value = selectionHref as string | undefined;
 			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
 		}
 
@@ -385,6 +387,29 @@ export default class LinkCommand extends Command {
 
 		return true;
 	}
+}
+
+/**
+* Retrieves the 'linkHref' attribute from the first item in the selection that has this attribute.
+*
+* @param model - The data model in which the selection exists.
+* @param selection - The document selection from which to retrieve the 'linkHref' attribute.
+* @returns The 'linkHref' attribute value if found, otherwise `undefined`.
+*/
+function getLinkHrefFromSelectionItems( model: Model, selection: DocumentSelection ): string | undefined {
+	const validRanges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
+
+	for ( const range of validRanges ) {
+		const walker = range.getWalker( { shallow: true } );
+
+		for ( const { item } of walker ) {
+			if ( item.hasAttribute( 'linkHref' ) ) {
+				return item.getAttribute( 'linkHref' ) as string | undefined;
+			}
+		}
+	}
+
+	return undefined;
 }
 
 /**

@@ -207,10 +207,10 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it( 'should be undefined when selection contains not only elements with `linkHref` attribute', () => {
+			it( 'should not be undefined when selection contains not only elements with `linkHref` attribute', () => {
 				setData( model, 'f[o<$text linkHref="url">ob</$text>]ar' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).to.equal( 'url' );
 			} );
 		} );
 
@@ -331,7 +331,7 @@ describe( 'LinkCommand', () => {
 			it( 'should overwrite existing `linkHref` attribute when selected text wraps text with `linkHref` attribute', () => {
 				setData( model, 'f[o<$text linkHref="other url">o</$text>ba]r' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).to.be.equal( 'other url' );
 
 				command.execute( 'url' );
 
@@ -373,7 +373,7 @@ describe( 'LinkCommand', () => {
 				'attribute', () => {
 				setData( model, 'f[o<$text linkHref="other url">ob]a</$text>r' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).to.be.equal( 'other url' );
 
 				command.execute( 'url' );
 
