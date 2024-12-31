@@ -32,6 +32,7 @@ import {
 import EmojiToneView, { type SkinToneId } from './ui/emojitoneview.js';
 
 const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
+const BASELINE_EMOJI_WIDTH = 24;
 
 /**
  * The emoji picker plugin.
@@ -168,7 +169,6 @@ export default class EmojiPicker extends Plugin {
 	} ): Promise<EmojiGroup> {
 		const databaseGroup = await this._emojiDatabase.getEmojiByGroup( databaseId );
 		const container = this._createEmojiWidthTestingContainer();
-		const baselineEmojiWidth = 24;
 
 		const items = databaseGroup
 			.filter( item => {
@@ -178,7 +178,7 @@ export default class EmojiPicker extends Plugin {
 				// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
 				// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
 				// So here we set the threshold at 1.8 times the size of the baseline emoji.
-				return ( emojiWidth / 1.8 < baselineEmojiWidth ) && ( emojiWidth >= baselineEmojiWidth );
+				return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
 			} )
 			.map( item => {
 				const name = item.annotation;
@@ -458,7 +458,7 @@ export default class EmojiPicker extends Plugin {
 		container.style.position = 'absolute';
 		container.style.left = '-9999px';
 		container.style.whiteSpace = 'nowrap';
-		container.style.fontSize = '24px';
+		container.style.fontSize = BASELINE_EMOJI_WIDTH + 'px';
 		document.body.appendChild( container );
 
 		return container;
