@@ -168,7 +168,7 @@ export default class EmojiPicker extends Plugin {
 	} ): Promise<EmojiGroup> {
 		const databaseGroup = await this._emojiDatabase.getEmojiByGroup( databaseId );
 		const container = this._createEmojiWidthTestingContainer();
-		const baselineEmojiWidth = this._getNodeWidth( container, '🙂' );
+		const baselineEmojiWidth = 24;
 
 		const items = databaseGroup
 			.filter( item => {
