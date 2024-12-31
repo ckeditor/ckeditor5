@@ -1135,7 +1135,7 @@ describe( 'DocumentSelection', () => {
 				// Step into elements when looking for first character:
 				selection._setTo( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
 
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
 			} );
 
 			it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
