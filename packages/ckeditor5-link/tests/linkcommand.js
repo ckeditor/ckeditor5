@@ -331,7 +331,7 @@ describe( 'LinkCommand', () => {
 			it( 'should overwrite existing `linkHref` attribute when selected text wraps text with `linkHref` attribute', () => {
 				setData( model, 'f[o<$text linkHref="other url">o</$text>ba]r' );
 
-				expect( command.value ).to.be.equal( 'other url' );
+				expect( command.value ).to.be.undefined;
 
 				command.execute( 'url' );
 

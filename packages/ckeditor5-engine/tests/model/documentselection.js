@@ -1130,15 +1130,12 @@ describe( 'DocumentSelection', () => {
 			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
 				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
 
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [
-					[ 'b', true ],
-					[ 'c', true ]
-				] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
 
 				// Step into elements when looking for first character:
 				selection._setTo( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
 
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
 			} );
 
 			it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {

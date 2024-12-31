@@ -1136,20 +1136,47 @@ class LiveSelection extends Selection {
 
 		if ( !this.isCollapsed ) {
 			// 1. If selection is a range...
-			const range = new TreeWalker( {
-				boundaries: this.getFirstRange(),
-				ignoreElementEnd: true,
-				shallow: true
-			} );
+			const firstRange = this.getFirstRange();
 
 			// ...look for a first character node in that range and take attributes from it.
-			for ( const value of range ) {
+			for ( const value of firstRange ) {
 				// If the item is an object, we don't want to get attributes from its children...
 				if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
 					// ...but collect attributes from inline object.
-					attrs = mergeAttributes( attrs, getTextAttributes( value.item, schema ) );
-				} else if ( value.type == 'text' ) {
-					attrs = mergeAttributes( attrs, value.item.getAttributes() );
+					attrs = getTextAttributes( value.item, schema );
+					break;
+				}
+
+				if ( value.type == 'text' ) {
+					attrs = value.item.getAttributes();
+					break;
+				}
+			}
+
+			if ( attrs ) {
+				attrs = Array.from( attrs );
+			}
+
+			// If not found or empty, look at the node before the range.
+			if ( !attrs || !attrs.length ) {
+				const backwardRange = new TreeWalker( {
+					boundaries: this.getFirstRange(),
+					direction: 'backward',
+					shallow: true
+				} );
+
+				for ( const value of backwardRange ) {
+					// If the item is an object, we don't want to get attributes from its children...
+					if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
+						// ...but collect attributes from inline object.
+						attrs = getTextAttributes( value.item, schema );
+						break;
+					}
+
+					if ( value.type == 'text' ) {
+						attrs = value.item.getAttributes();
+						break;
+					}
 				}
 			}
 		} else {
