@@ -16,6 +16,8 @@
 	margin: auto;
 	display: block;
 	width: fit-content;
+	padding: 100px 0;
+	color: var(--ck-color-input-disabled-text);
 }
 
 .ck.ck-emoji-nothing-found.hidden {
