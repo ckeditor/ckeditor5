@@ -172,7 +172,10 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
 				} );
 
-				const transformedContent = clipboardPlugin.fire( 'inputHtmlNormalization', dataTransfer );
+				const transformedContent = clipboardPlugin.fire( 'inputHtmlNormalization', {
+					html: dataTransfer.getData( 'text/html' ),
+					dataTransfer
+				} );
 
 				expectNormalized(
 					transformedContent,

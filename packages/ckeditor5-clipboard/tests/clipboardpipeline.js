@@ -467,10 +467,27 @@ describe( 'ClipboardPipeline feature', () => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>foo</p>', 'text/plain': 'foo' } );
 				const preventDefaultSpy = sinon.spy();
 
-				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, dataTransfer ) => {
-					const html = dataTransfer.getData( 'text/html' );
+				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, data ) => {
+					evt.return = data.html.replace( 'foo', 'bar' );
+				}, { priority: 'high' } );
 
-					evt.return = html.replace( 'foo', 'bar' );
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( '<p>bar</p>' );
+				} );
+
+				viewDocument.fire( 'paste', {
+					stopPropagation: () => {},
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should allow chaining html normalization (pick content from data transfer)', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>foo</p>', 'text/plain': 'foo' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, { dataTransfer } ) => {
+					evt.return = dataTransfer.getData( 'text/html' ).replace( 'foo', 'bar' );
 				}, { priority: 'high' } );
 
 				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
@@ -488,8 +505,7 @@ describe( 'ClipboardPipeline feature', () => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>foo</p>', 'text/plain': 'foo' } );
 				const preventDefaultSpy = sinon.spy();
 
-				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, dataTransfer ) => {
-					const html = dataTransfer.getData( 'text/html' );
+				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, { html } ) => {
 					evt.return = html.replace( 'foo', 'bar' );
 					evt.stop();
 				}, { priority: 'high' } );
@@ -533,8 +549,7 @@ describe( 'ClipboardPipeline feature', () => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>foo</p>', 'text/plain': 'foo' } );
 				const preventDefaultSpy = sinon.spy();
 
-				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, dataTransfer ) => {
-					const html = dataTransfer.getData( 'text/html' );
+				clipboardPlugin.on( 'inputHtmlNormalization', ( evt, { html } ) => {
 					evt.return = parseView( html );
 				}, { priority: 'high' } );
 

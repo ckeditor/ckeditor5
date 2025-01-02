@@ -129,7 +129,10 @@ describe( 'PasteFromOffice', () => {
 				const dataTransfer = createHTMLDataTransfer( inputString );
 				const getDataSpy = sinon.spy( dataTransfer, 'getData' );
 
-				const result = clipboard.fire( 'inputHtmlNormalization', dataTransfer );
+				const result = clipboard.fire( 'inputHtmlNormalization', {
+					dataTransfer,
+					html: dataTransfer.getData( 'text/html' )
+				} );
 
 				expect( result.isTransformedWithPasteFromOffice ).to.be.true;
 				expect( result ).to.be.instanceOf( ViewDocumentFragment );
@@ -165,7 +168,10 @@ describe( 'PasteFromOffice', () => {
 				const inputString = '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>';
 				const dataTransfer = createHTMLDataTransfer( inputString );
 
-				const result = clipboard.fire( 'inputHtmlNormalization', dataTransfer );
+				const result = clipboard.fire( 'inputHtmlNormalization', {
+					dataTransfer,
+					html: dataTransfer.getData( 'text/html' )
+				} );
 
 				expect( result.isTransformedWithPasteFromOffice ).to.be.undefined;
 				expect( result ).to.be.equal( inputString );
@@ -175,7 +181,10 @@ describe( 'PasteFromOffice', () => {
 				const dataTransfer = createHTMLDataTransfer( inputString );
 				const getDataSpy = sinon.spy( dataTransfer, 'getData' );
 
-				const result = clipboard.fire( 'inputHtmlNormalization', dataTransfer );
+				const result = clipboard.fire( 'inputHtmlNormalization', {
+					dataTransfer,
+					html: dataTransfer.getData( 'text/html' )
+				} );
 
 				expect( result.isTransformedWithPasteFromOffice ).to.be.undefined;
 				expect( result ).to.be.equal( inputString );
@@ -207,9 +216,12 @@ describe( 'PasteFromOffice', () => {
 				}, { priority: 'high' } );
 
 				const executeSpy = sinon.spy( Normalizer.prototype, 'execute' );
-				const data = createHTMLDataTransfer( inputString, true );
+				const dataTransfer = createHTMLDataTransfer( inputString, true );
 
-				const result = clipboard.fire( 'inputHtmlNormalization', data );
+				const result = clipboard.fire( 'inputHtmlNormalization', {
+					dataTransfer,
+					html: dataTransfer.getData( 'text/html' )
+				} );
 
 				expect( result.isTransformedWithPasteFromOffice ).to.be.true;
 				expect( result ).to.be.instanceOf( ViewDocumentFragment );

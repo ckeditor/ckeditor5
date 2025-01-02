@@ -67,7 +67,7 @@ export default class PasteFromOffice extends Plugin {
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 
-		clipboardPipeline.on<ClipboardInputHTMLPofNormalizationEvent>( 'inputHtmlNormalization', ( evt, dataTransfer ) => {
+		clipboardPipeline.on<ClipboardInputHTMLPofNormalizationEvent>( 'inputHtmlNormalization', ( evt, data ) => {
 			if ( evt.return instanceof ViewDocumentFragment && evt.return.isTransformedWithPasteFromOffice ) {
 				return;
 			}
@@ -78,11 +78,10 @@ export default class PasteFromOffice extends Plugin {
 				return;
 			}
 
-			const htmlString = dataTransfer.getData( 'text/html' );
-			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
+			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( data.html ) );
 
 			if ( activeNormalizer ) {
-				const result = activeNormalizer.execute( dataTransfer );
+				const result = activeNormalizer.execute( data.dataTransfer );
 
 				evt.return = result;
 				evt.return.isTransformedWithPasteFromOffice = true;

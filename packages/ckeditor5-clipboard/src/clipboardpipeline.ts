@@ -224,7 +224,11 @@ export default class ClipboardPipeline extends Plugin {
 			if ( data.content ) {
 				content = data.content;
 			} else {
-				const htmlOrView = this.fire<ClipboardInputHTMLNormalizationEvent>( 'inputHtmlNormalization', dataTransfer ) || '';
+				const htmlOrView = this.fire<ClipboardInputHTMLNormalizationEvent>( 'inputHtmlNormalization', {
+					html: dataTransfer.getData( 'text/html' ),
+					dataTransfer,
+					method: data.method
+				} ) || '';
 
 				if ( typeof htmlOrView === 'string' ) {
 					content = this.editor.data.htmlProcessor.toView( htmlOrView );
@@ -286,7 +290,7 @@ export default class ClipboardPipeline extends Plugin {
 			data.resultRange = clipboardMarkersUtils._pasteFragmentWithMarkers( data.content );
 		}, { priority: 'low' } );
 
-		this.listenTo<ClipboardInputHTMLNormalizationEvent>( this, 'inputHtmlNormalization', ( evt, dataTransfer ) => {
+		this.listenTo<ClipboardInputHTMLNormalizationEvent>( this, 'inputHtmlNormalization', ( evt, { dataTransfer } ) => {
 			if ( evt.return ) {
 				return;
 			}
@@ -411,9 +415,30 @@ export interface ClipboardInputTransformationData {
  */
 export type ClipboardInputHTMLNormalizationEvent = {
 	name: 'inputHtmlNormalization';
-	args: [ dataTransfer: DataTransfer ];
+	args: [ data: ClipboardInputHTMLNormalizationData ];
 	return: string | ViewDocumentFragment;
 };
+
+/**
+ * The data of 'inputHtmlNormalization' event.
+ */
+export interface ClipboardInputHTMLNormalizationData {
+
+	/**
+	 * The data transfer instance.
+	 */
+	dataTransfer: DataTransfer;
+
+	/**
+	 * The HTML content from the clipboard.
+	 */
+	html: string;
+
+	/**
+	 * Whether the event was triggered by a paste or a drop operation.
+	 */
+	method: 'paste' | 'drop';
+}
 
 /**
  * Fired with the `content`, `dataTransfer`, `method`, and `targetRanges` properties:
