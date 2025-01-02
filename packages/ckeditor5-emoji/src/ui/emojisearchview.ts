@@ -64,6 +64,10 @@ export default class EmojiSearchView extends View {
 			this.fire<EmojiSearchViewInputEvent>( 'input', { value } );
 		} );
 
+		labeledInput.resetButtonView!.on( 'execute', () => {
+			this.fire<EmojiSearchViewInputEvent>( 'input', { value: '' } );
+		} );
+
 		return labeledInput;
 	}
 }

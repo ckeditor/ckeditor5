@@ -91,5 +91,19 @@ describe( 'EmojiSearchView', () => {
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { value: 'smile' } );
 		} );
+
+		it( 'delegates the #input event up when reset button is being clicked', () => {
+			emojiSearchView.setSearchQuery( 'smile' );
+
+			const spy = sinon.spy();
+
+			emojiSearchView.on( 'input', spy );
+
+			const resetInputButton = emojiSearchView.element.querySelector( '.ck-search__reset' );
+			resetInputButton.click();
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, sinon.match.any, { value: '' } );
+		} );
 	} );
 } );
