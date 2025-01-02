@@ -88,11 +88,11 @@ describe( 'EmojiPicker', () => {
 
 		clickEmojiToolbarButton();
 
-		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles [title="slightly smiling face"]' );
 
 		firstEmojiInGrid.click();
 
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>🙂[]</paragraph>' );
 	} );
 
 	it( 'should close the picker when clicking outside of it', async () => {
