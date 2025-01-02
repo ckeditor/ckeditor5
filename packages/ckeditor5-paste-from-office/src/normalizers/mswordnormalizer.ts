@@ -11,8 +11,14 @@ import transformBookmarks from '../filters/bookmark.js';
 import { transformListItemLikeElementsIntoLists } from '../filters/list.js';
 import { replaceImagesSourceWithBase64 } from '../filters/image.js';
 import removeMSAttributes from '../filters/removemsattributes.js';
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
-import type { Normalizer, NormalizerData } from '../normalizer.js';
+import {
+	UpcastWriter,
+	type ViewDocumentFragment,
+	type DataTransfer,
+	type ViewDocument
+} from 'ckeditor5/src/engine.js';
+import type { Normalizer } from '../normalizer.js';
+import { parseHtml } from '../filters/parse.js';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
@@ -45,15 +51,18 @@ export default class MSWordNormalizer implements Normalizer {
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: NormalizerData ): void {
+	public execute( dataTransfer: DataTransfer ): ViewDocumentFragment {
 		const writer = new UpcastWriter( this.document );
-		const { body: documentFragment, stylesString } = data._parsedData;
+		const { body: documentFragment, stylesString } = parseHtml(
+			dataTransfer.getData( 'text/html' ),
+			this.document.stylesProcessor
+		);
 
 		transformBookmarks( documentFragment, writer );
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString, this.hasMultiLevelListPlugin );
-		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
+		replaceImagesSourceWithBase64( documentFragment, dataTransfer.getData( 'text/rtf' ) );
 		removeMSAttributes( documentFragment );
 
-		data.content = documentFragment;
+		return documentFragment;
 	}
 }
