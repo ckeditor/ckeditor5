@@ -142,6 +142,11 @@ import ClipboardMarkersUtils from './clipboardmarkersutils.js';
  */
 export default class ClipboardPipeline extends Plugin {
 	/**
+	 * The last known content copied to the clipboard.
+	 */
+	private _lastKnownCopiedHTMLContent: string | null = null;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -236,10 +241,12 @@ export default class ClipboardPipeline extends Plugin {
 			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
+			const isExternal = this._lastKnownCopiedHTMLContent !== dataTransfer.getData( 'text/html' );
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
 				dataTransfer,
+				isExternal,
 				targetRanges: data.targetRanges,
 				method: data.method as 'paste' | 'drop'
 			} );
@@ -278,6 +285,7 @@ export default class ClipboardPipeline extends Plugin {
 				this.fire<ClipboardContentInsertionEvent>( 'contentInsertion', {
 					content: modelFragment,
 					method: data.method,
+					isExternal: data.isExternal,
 					dataTransfer: data.dataTransfer,
 					targetRanges: data.targetRanges
 				} );
@@ -329,8 +337,14 @@ export default class ClipboardPipeline extends Plugin {
 
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
-				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
+				const html = this.editor.data.htmlProcessor.toData( data.content );
+
+				this._lastKnownCopiedHTMLContent = html;
+
+				data.dataTransfer.setData( 'text/html', html );
 				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
+			} else {
+				this._lastKnownCopiedHTMLContent = null;
 			}
 
 			if ( data.method == 'cut' ) {
@@ -389,6 +403,11 @@ export interface ClipboardInputTransformationData {
 	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
+
+	/**
+	 * Whether the content being pasted is external (from outside the editor).
+	 */
+	isExternal: boolean;
 }
 
 /**
@@ -432,6 +451,11 @@ export interface ClipboardContentInsertionData {
 	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
+
+	/**
+	 * Whether the content being pasted is external (from outside the editor).
+	 */
+	isExternal: boolean;
 
 	/**
 	 * The data transfer instance.
