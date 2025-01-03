@@ -186,7 +186,7 @@ export interface CKBoxConfig {
 	 * ```ts
 	 * const ckboxConfig = {
 	 *   // Enable download for specific extensions
-	 *   downloadableFiles: ['zip', 'rar', '7z', 'pdf'],
+	 *   downloadableFiles: ['zip', 'rar', '7z', 'pdf', /docx?/],
 	 *
 	 *   // Or use a custom function
 	 *   downloadableFiles: ( asset ) => {
@@ -197,7 +197,7 @@ export interface CKBoxConfig {
 	 *
 	 * @default true
 	 */
-	downloadableFiles?: boolean | Array<string> | ( ( asset: CKBoxRawAssetDefinition ) => boolean );
+	downloadableFiles?: boolean | Array<string | RegExp> | ( ( asset: CKBoxRawAssetDefinition ) => boolean );
 }
 
 export interface CKBoxDialogConfig {
@@ -486,6 +486,11 @@ export interface CKBoxRawAssetDataDefinition {
 	 * The asset location.
 	 */
 	url: string;
+
+	/**
+	 * The asset type.
+	 */
+	extension?: string;
 }
 
 /**

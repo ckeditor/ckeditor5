@@ -487,9 +487,15 @@ function isDownloadableAsset(
 
 	// If the configuration is an array, it's a list of file extensions that should be downloadable.
 	if ( Array.isArray( config ) ) {
-		const extension = asset.data.url.split( '.' ).slice( -1 )[ 0 ];
+		const { extension } = asset.data;
 
-		return !!extension && config.includes( extension.toLowerCase() );
+		return !!extension && config.some( configExtension => {
+			if ( typeof configExtension === 'string' ) {
+				return configExtension === extension;
+			}
+
+			return configExtension.test( extension );
+		} );
 	}
 
 	// If the configuration is a function, it's a custom logic to determine if the asset is downloadable.

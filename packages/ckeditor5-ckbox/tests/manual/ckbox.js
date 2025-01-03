@@ -55,7 +55,8 @@ ClassicEditor
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
-			allowExternalImagesEditing: [ /^data:/, /^i.imgur.com\//, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, /^i.imgur.com\//, 'origin' ],
+			downloadableFiles: [ /^(?!pdf$).*$/ ]
 		}
 	} )
 	.then( editor => {
