@@ -88,6 +88,8 @@ describe( 'EmojiPicker', () => {
 
 		clickEmojiToolbarButton();
 
+		expect( document.querySelector( '.ck-emoji-grid__tiles' ).firstChild.offsetWidth ).to.equal( 24 );
+
 		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles [title="slightly smiling face"]' );
 
 		firstEmojiInGrid.click();
