@@ -44,8 +44,9 @@ export interface SimpleUploadConfig {
 	uploadUrl: string;
 
 	/**
-	 * Headers sent with the request to the server during the upload. This is the right place to implement security mechanisms like
-	 * authentication and [CSRF](https://developer.mozilla.org/en-US/docs/Glossary/CSRF) protection.
+	 * [Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) sent with the request to the server during the upload.
+	 * This is the right place to implement security mechanisms like authentication and
+	 * [CSRF](https://developer.mozilla.org/en-US/docs/Glossary/CSRF) protection.
 	 *
 	 * The value can be specified either as an object of key-value pairs or a callback function that returns such an object:
 	 *
