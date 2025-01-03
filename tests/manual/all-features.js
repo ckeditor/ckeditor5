@@ -120,7 +120,7 @@ ClassicEditor
 				}
 			],
 			toolbar: [
-				'imageTextAlternative', 'toggleImageCaption', '|',
+				'linkImage', 'imageTextAlternative', 'toggleImageCaption', '|',
 				'imageStyle:inline', 'imageStyle:breakText', 'imageStyle:wrapText', '|',
 				'resizeImage'
 			]
