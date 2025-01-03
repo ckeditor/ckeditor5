@@ -171,6 +171,17 @@ export default class EmojiPicker extends Plugin {
 		const container = this._createEmojiWidthTestingContainer();
 
 		const items = databaseGroup
+			.filter( item => {
+				const emojiWidth = this._getNodeWidth( container, item.unicode );
+				console.log( 'emojiWidth' );
+				console.log( item.annotation + ': ' + emojiWidth );
+
+				// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
+				// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
+				// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
+				// So here we set the threshold at 1.8 times the size of the baseline emoji.
+				return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
+			} )
 			.map( item => {
 				const name = item.annotation;
 				const emojis = [ item.unicode ];
