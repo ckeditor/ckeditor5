@@ -6,6 +6,8 @@
 /* globals window */
 
 import { Emoji } from '@ckeditor/ckeditor5-emoji';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
@@ -15,7 +17,10 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push(
+	Mention,
 	Emoji,
+	SpecialCharacters,
+	SpecialCharactersEssentials,
 	Font,
 	PictureEditing,
 	ImageInsert,
@@ -26,4 +31,3 @@ ClassicEditor.builtinPlugins.push(
 	CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;
-window.Emoji = Emoji;
