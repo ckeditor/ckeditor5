@@ -36,10 +36,31 @@ import type {
 } from '../menubar/menubarview.js';
 import { normalizeMenuBarConfig } from '../menubar/utils.js';
 
+interface ViewConstructor<T extends View = View> {
+	new ( ...args: any ): T;
+}
+
+class ComponentsCollection {
+	private readonly _components: Record<string, ViewConstructor> = {};
+
+	public get<T extends View>( key: string ): ViewConstructor<T> | null {
+		return this._components[ key ] as ViewConstructor<T> || null;
+	}
+
+	public set( key: string, component: ViewConstructor ): void {
+		this._components[ key ] = component;
+	}
+}
+
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  */
 export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
+	/**
+	 * TODO
+	 */
+	public components: ComponentsCollection = new ComponentsCollection();
+
 	/**
 	 * The editor that the UI belongs to.
 	 */
