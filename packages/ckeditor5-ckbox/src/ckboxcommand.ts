@@ -480,11 +480,6 @@ function isDownloadableAsset(
 	config: CKBoxConfig['downloadableFiles'],
 	asset: CKBoxRawAssetDefinition
 ): boolean {
-	// If the configuration is not provided, the asset is always downloadable.
-	if ( config === undefined ) {
-		return true;
-	}
-
 	// If the configuration is a boolean, it's the global setting for all assets.
 	if ( typeof config === 'boolean' ) {
 		return config;
@@ -492,9 +487,9 @@ function isDownloadableAsset(
 
 	// If the configuration is an array, it's a list of file extensions that should be downloadable.
 	if ( Array.isArray( config ) ) {
-		const extension = asset.data.name.split( '.' ).pop()?.toLowerCase();
+		const extension = asset.data.url.split( '.' ).slice( -1 )[ 0 ];
 
-		return extension ? config.includes( extension ) : false;
+		return !!extension && config.includes( extension.toLowerCase() );
 	}
 
 	// If the configuration is a function, it's a custom logic to determine if the asset is downloadable.
@@ -502,7 +497,8 @@ function isDownloadableAsset(
 		return config( asset );
 	}
 
-	return false;
+	// If the configuration is not provided, the asset is always downloadable.
+	return true;
 }
 
 /**
