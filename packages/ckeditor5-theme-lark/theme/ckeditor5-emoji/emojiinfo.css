@@ -5,22 +5,24 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-emoji-info {
-	padding: var(--ck-spacing-small) var(--ck-spacing-large);
-	border-top: 1px solid var(--ck-color-base-border);
+.ck.ck-emoji-picker {
+	& .ck.ck-emoji-info {
+		padding: var(--ck-spacing-small) var(--ck-spacing-large);
+		border-top: 1px solid var(--ck-color-base-border);
 
-	& > * {
-		text-transform: uppercase;
-		font-size: var(--ck-font-size-small);
-	}
+		& > * {
+			text-transform: uppercase;
+			font-size: var(--ck-font-size-small);
+		}
 
-	& .ck-emoji-info__name {
-		max-width: 280px;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
+		& .ck-emoji-info__name {
+			max-width: 280px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
 
-	& .ck-emoji-info__code {
-		opacity: .6;
+		& .ck-emoji-info__code {
+			opacity: .6;
+		}
 	}
 }

@@ -1,17 +1,27 @@
 ---
 category: features
 menu-title: Emoji
-meta-title: Emoji | CKEditor 5 Documentation1
-modified_at: 2024-11-26
+meta-title: Emoji | CKEditor 5 Documentation
+modified_at: 2025-01-03
 ---
+
+{@snippet features/emoji-source}
 
 # Emoji
 
-The emoji feature lets you insert emojis from the editor toolbar, or directly on the go while writing the content.
+The emoji feature lets you insert emojis to the document from the editor toolbar, or directly on the go while writing the content.
+
+Since the number of emojis is very large, they have been conveniently divided into several categories for easier use, like "Smileys & Expressions" or "Objects". Besides, in order not to get lost, you may try to search for the emoji you are looking for using the search field.
 
 ## Demo
 
 Use the emoji toolbar button {@icon @ckeditor/ckeditor5-emoji/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis.
+
+You may also trigger the emoji UI while writing the content when you type a pre-configured `:` marker followed by at least two letters of desired emoji name. Make sure to include at least one space before the marker, otherwise the emoji UI does not kick in. Then, you can either choose which emoji to insert from the suggestion list, or choose the last option &ndash; `Show all emoji...` &ndash; to open the full panel.
+
+Additionally, there is also an option to set the skin tone of the emojis next to the search field.
+
+The selected emoji category and the tone skin are remembered by the feature, so the next time you invoke the panel you can quickly insert a similar emoji as before.
 
 {@snippet features/emoji}
 
@@ -53,25 +63,28 @@ ClassicEditor
 
 ## Configuration
 
-There are two configuration settings available.
+There is one configuration setting available for the emoji feature.
 
-* `marker` &ndash; the trigger character to evoke the emoji dropdown during edition. By default it is `:`.
 * `dropdownLimit` &ndash; the number of items to appear in the emoji dropdown.
-
-<!-- Please update the configuration snippet -->
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
 		emoji: {
-			marker: :,
 			dropdownLimit: 5
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+## Related features
+
+In addition to enabling emoji feature, you may want to check the following related features:
+
+* {@link features/special-characters Special characters} &ndash; Allows inserting **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**).
+* {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
 
 ## Common API
 

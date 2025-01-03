@@ -3,21 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-emoji-grid {
-	max-width: 100%;
-	max-height: 350px;
+.ck.ck-emoji-picker {
+	& .ck-emoji-grid {
+		max-width: 100%;
+		max-height: 350px;
 
-	& .ck-emoji-grid__tiles {
-		display: grid;
+		& .ck-emoji-grid__tiles {
+			display: grid;
+		}
 	}
-}
 
-.ck.ck-emoji-nothing-found {
-	margin: auto;
-	display: block;
-	width: fit-content;
-}
+	& .ck-emoji-nothing-found {
+		margin: auto;
+		display: block;
+		width: fit-content;
+	}
 
-.ck.ck-emoji-nothing-found.hidden {
-	display: none;
+	& .ck-emoji-nothing-found.hidden {
+		display: none;
+	}
 }
