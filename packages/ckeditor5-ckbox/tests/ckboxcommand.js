@@ -1209,6 +1209,290 @@ describe( 'CKBoxCommand', () => {
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
+
+			describe( 'downloadable files configuration', () => {
+				let command;
+
+				beforeEach( async () => {
+					assets = {
+						images: [
+							{
+								data: {
+									id: 'image-id1',
+									extension: 'png',
+									metadata: {
+										width: 100,
+										height: 100
+									},
+									name: 'image1',
+									imageUrls: {
+										100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+										default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+									},
+									url: 'https://example.com/workspace1/assets/image-id1/file'
+								}
+							}
+						],
+						links: [
+							{
+								data: {
+									id: 'link-id1',
+									extension: 'pdf',
+									name: 'file1',
+									url: 'https://example.com/workspace1/assets/link-id1/file'
+								}
+							},
+							{
+								data: {
+									id: 'link-id2',
+									extension: 'zip',
+									name: 'file2',
+									url: 'https://example.com/workspace1/assets/link-id2/file'
+								}
+							}
+						]
+					};
+				} );
+
+				it( 'should add download parameter to URLs by default', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo'
+						}
+					} );
+
+					command = editor.commands.get( 'ckbox' );
+					onChoose = command._prepareOptions().assets.onChoose;
+
+					onChoose( [ assets.links[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id1" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+								'file1' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should allow disabling download parameter globally', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo',
+							downloadableFiles: false
+						}
+					} );
+
+					const command = editor.commands.get( 'ckbox' );
+					const onChoose = command._prepareOptions().assets.onChoose;
+
+					onChoose( [ assets.links[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id1" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id1/file">' +
+								'file1' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should allow enabling download parameter for specific extensions', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo',
+							downloadableFiles: [ 'pdf' ]
+						}
+					} );
+
+					const command = editor.commands.get( 'ckbox' );
+					const onChoose = command._prepareOptions().assets.onChoose;
+
+					// ZIP file should not have download parameter
+					onChoose( [ assets.links[ 1 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id2" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id2/file">' +
+								'file2' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					// PDF file should have download parameter
+					editor.setData( '' );
+					onChoose( [ assets.links[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id1" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+								'file1' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should allow enabling download parameter for specific extensions (regexp)', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo',
+							downloadableFiles: [ 'docx', /^pdf$/ ]
+						}
+					} );
+
+					const command = editor.commands.get( 'ckbox' );
+					const onChoose = command._prepareOptions().assets.onChoose;
+
+					// ZIP file should not have download parameter
+					onChoose( [ assets.links[ 1 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id2" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id2/file">' +
+								'file2' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					// PDF file should have download parameter
+					editor.setData( '' );
+					onChoose( [ assets.links[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id1" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+								'file1' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should mark file as downloadable if it has no extension (regexp extensions)', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo',
+							downloadableFiles: [ /^(?!pdf$).*$/ ]
+						}
+					} );
+
+					const command = editor.commands.get( 'ckbox' );
+					const onChoose = command._prepareOptions().assets.onChoose;
+
+					onChoose( [ assets.links[ 1 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id2" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+								'file2' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					onChoose( [ assets.links[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id1" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id1/file">' +
+								'file2' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should allow custom function for determining downloadable files', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo',
+							downloadableFiles: asset => asset.data.name === 'file1'
+						}
+					} );
+
+					const command = editor.commands.get( 'ckbox' );
+					const onChoose = command._prepareOptions().assets.onChoose;
+
+					// file1 should have download parameter
+					onChoose( [ assets.links[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id1" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+								'file1' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					// file2 should not have download parameter
+					editor.setData( '' );
+					onChoose( [ assets.links[ 1 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<paragraph>' +
+							'[<$text ' +
+								'ckboxLinkId="link-id2" ' +
+								'linkHref="https://example.com/workspace1/assets/link-id2/file">' +
+								'file2' +
+							'</$text>]' +
+						'</paragraph>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should not affect image assets', async () => {
+					const editor = await createTestEditor( {
+						ckbox: {
+							tokenUrl: 'foo',
+							downloadableFiles: false
+						}
+					} );
+
+					const command = editor.commands.get( 'ckbox' );
+					const onChoose = command._prepareOptions().assets.onChoose;
+
+					onChoose( [ assets.images[ 0 ] ] );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<imageBlock ' +
+							'alt="" ' +
+							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
+							'sources="[object Object]" ' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
+						'</imageBlock>]'
+					);
+
+					await editor.destroy();
+				} );
+			} );
 		} );
 	} );
 } );
