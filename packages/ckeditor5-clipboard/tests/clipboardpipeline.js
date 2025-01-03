@@ -462,10 +462,78 @@ describe( 'ClipboardPipeline feature', () => {
 			expect( spy.callCount ).to.equal( 1 );
 		} );
 
+		describe( 'isExternal flag', () => {
+			it( 'should be set to true when pasting content from outside the editor', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
+				const inputTransformationSpy = sinon.spy();
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					inputTransformationSpy( data.isExternal );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( inputTransformationSpy, true );
+			} );
+
+			it( 'should be set to false when pasting content copied from the same editor', () => {
+				const spy = sinon.spy();
+
+				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+
+				// Copy selected content.
+				const dataTransferMock = createDataTransfer();
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {}
+				} );
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					spy( data.isExternal );
+				} );
+
+				// Paste the copied content.
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( spy, false );
+			} );
+
+			it( 'should be propagated to contentInsertion event', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
+				const contentInsertionSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					contentInsertionSpy( data.isExternal );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( contentInsertionSpy, true );
+			} );
+		} );
+
 		function createDataTransfer( data ) {
+			const state = Object.create( data || {} );
+
 			return {
 				getData( type ) {
-					return data[ type ];
+					return state[ type ];
+				},
+				setData( type, newData ) {
+					state[ type ] = newData;
 				}
 			};
 		}
