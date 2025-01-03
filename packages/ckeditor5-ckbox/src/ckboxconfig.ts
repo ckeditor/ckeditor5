@@ -173,6 +173,31 @@ export interface CKBoxConfig {
 	 * ```
 	 */
 	choosableFileExtensions?: Array<string>;
+
+	/**
+	 * Configures how the download attribute should be handled for inserted links.
+	 *
+	 * You can set this to:
+	 * * `false` - to disable download attribute for all assets
+	 * * `true` - to enable download attribute for all assets (default)
+	 * * an array of extensions (e.g. ['pdf', 'zip']) - to enable download only for specific file types
+	 * * a function that takes asset data and returns boolean - for custom logic
+	 *
+	 * ```ts
+	 * const ckboxConfig = {
+	 *   // Enable download for specific extensions
+	 *   downloadableFiles: ['zip', 'rar', '7z', 'pdf'],
+	 *
+	 *   // Or use a custom function
+	 *   downloadableFiles: ( asset ) => {
+	 *     return asset.data.name.endsWith( '.pdf' );
+	 *   }
+	 * };
+	 * ```
+	 *
+	 * @default true
+	 */
+	downloadableFiles?: boolean | Array<string> | ( ( asset: CKBoxRawAssetDefinition ) => boolean );
 }
 
 export interface CKBoxDialogConfig {
