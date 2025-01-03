@@ -97,6 +97,8 @@ export function cropTableToDimensions(
 
 	// Adjust heading rows & columns in cropped table if crop selection includes headings parts.
 	addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer );
+	// Adjust footer rows in cropped table if crop selection includes footer rows.
+	addFootersToCroppedTable( croppedTable, sourceTable, startRow, endRow, writer );
 
 	return croppedTable;
 }
@@ -317,6 +319,31 @@ function addHeadingsToCroppedTable( croppedTable: Element, sourceTable: Element,
 		const headingColumnsInCrop = headingColumns - startColumn;
 		updateNumericAttribute( 'headingColumns', headingColumnsInCrop, croppedTable, writer, 0 );
 	}
+}
+
+/**
+ * Sets footer row attributes to a cropped table.
+ */
+function addFootersToCroppedTable( croppedTable: Element, sourceTable: Element, startRow: number, endRow: number, writer: Writer ) {
+	const maxRows = Array.from( sourceTable.getChildren() )
+		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
+	const footerRows = parseInt( sourceTable.getAttribute( 'footerRows' ) as string || '0' );
+	const footerIndex = maxRows - footerRows;
+
+	if ( footerRows < 1 ) {
+		return;
+	}
+
+	let footerRowsInCrop = 0;
+	if ( endRow >= footerIndex ) {
+		if ( startRow >= footerIndex ) {
+			footerRowsInCrop = endRow - startRow + 1;
+		} else {
+			footerRowsInCrop = endRow - footerIndex + 1;
+		}
+	}
+
+	updateNumericAttribute( 'footerRows', footerRowsInCrop, croppedTable, writer, 0 );
 }
 
 /**

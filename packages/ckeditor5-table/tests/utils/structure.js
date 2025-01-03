@@ -9,7 +9,7 @@ import TableEditing from '../../src/tableediting.js';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable } from '../_utils/utils.js';
-import { getHorizontallyOverlappingCells, getVerticallyOverlappingCells } from '../../src/utils/structure.js';
+import { cropTableToDimensions, getHorizontallyOverlappingCells, getVerticallyOverlappingCells } from '../../src/utils/structure.js';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot;
@@ -113,6 +113,36 @@ describe( 'table utils', () => {
 				expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
 				expect( cellsInfo[ 1 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 10
 				expect( cellsInfo[ 2 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) ); // Cell 21
+			} );
+		} );
+
+		describe( 'cropTableToDimensions()', () => {
+			it( 'coverage for addFootersToCroppedTable()', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				setModelData( model,
+					'<table footerRows="1">' +
+						'<tableRow>' +
+							'<tableCell><paragraph></paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph></paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo></foo>' +
+					'</table>'
+				);
+				const table = modelRoot.getChild( 0 );
+
+				model.change( writer => {
+					const cropDimensions = {
+						startRow: 1,
+						startColumn: 1,
+						endRow: 1,
+						endColumn: 1
+					};
+					cropTableToDimensions( table, cropDimensions, writer );
+				} );
 			} );
 		} );
 	} );
