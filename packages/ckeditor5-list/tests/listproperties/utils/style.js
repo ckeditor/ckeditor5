@@ -6,7 +6,8 @@
 import {
 	getListTypeFromListStyleType,
 	getTypeAttributeFromListStyleType,
-	getListStyleTypeFromTypeAttribute
+	getListStyleTypeFromTypeAttribute,
+	normalizeListStyle
 } from '../../../src/listproperties/utils/style.js';
 
 describe( 'ListProperties - utils - style', () => {
@@ -70,5 +71,26 @@ describe( 'ListProperties - utils - style', () => {
 				expect( getListStyleTypeFromTypeAttribute( 'Q' ) ).to.be.null;
 			} );
 		} );
+	} );
+
+	describe( 'normalizeListStyle()', () => {
+		const testData = [
+			[ 'lower-alpha', 'lower-latin' ],
+			[ 'upper-alpha', 'upper-latin' ],
+			[ 'disc', 'disc' ],
+			[ 'circle', 'circle' ],
+			[ 'square', 'square' ],
+			[ 'decimal', 'decimal' ],
+			[ 'lower-roman', 'lower-roman' ],
+			[ 'upper-roman', 'upper-roman' ],
+			[ 'lower-latin', 'lower-latin' ],
+			[ 'upper-latin', 'upper-latin' ]
+		];
+
+		for ( const [ input, expected ] of testData ) {
+			it( `should convert "${ input }" to "${ expected }"`, () => {
+				expect( normalizeListStyle( input ) ).to.equal( expected );
+			} );
+		}
 	} );
 } );

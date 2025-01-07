@@ -101,7 +101,9 @@ export default class Dialog extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		this._unlockBodyScroll();
+		if ( Dialog._visibleDialogPlugin === this ) {
+			this._unlockBodyScroll();
+		}
 	}
 
 	/**
