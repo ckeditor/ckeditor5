@@ -157,6 +157,7 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should create the balloon when license type is `development`', async () => {
+				const warnStub = sinon.stub( console, 'warn' );
 				const editor = await createEditor( element, {
 					licenseKey: developmentLicenseKey
 				} );
@@ -174,6 +175,7 @@ describe( 'EvaluationBadge', () => {
 				);
 
 				await editor.destroy();
+				warnStub.restore();
 			} );
 
 			it( 'should not depend on white-label', async () => {
