@@ -26,6 +26,8 @@ describe( 'EvaluationBadge', () => {
 
 	beforeEach( async () => {
 		sinon.stub( console, 'info' );
+		sinon.stub( console, 'warn' );
+
 		developmentLicenseKey = generateKey( { licenseType: 'development' } ).licenseKey;
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

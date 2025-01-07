@@ -37,11 +37,12 @@ describe( 'Editor - license check', () => {
 	} );
 
 	describe( 'license key verification', () => {
-		let showErrorStub, consoleInfoStub;
+		let showErrorStub, consoleInfoStub, consoleWarnStub;
 
 		beforeEach( () => {
 			showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 			consoleInfoStub = sinon.stub( console, 'info' );
+			consoleWarnStub = sinon.stub( console, 'warn' );
 		} );
 
 		describe( 'required fields in the license key', () => {
@@ -390,11 +391,23 @@ describe( 'Editor - license check', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, licenseType + 'Limit' );
 					expect( editor.isReadOnly ).to.be.true;
+
+					// Verify console.info call with new format
 					sinon.assert.calledOnce( consoleInfoStub );
 					sinon.assert.calledWith(
 						consoleInfoStub,
-						`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-						'Make sure you will not use it in the production environment.'
+						`%cCKEditor 5 ${ licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 ) } License`,
+						'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+					);
+
+					// Verify console.warn call with the warning message
+					sinon.assert.calledOnce( consoleWarnStub );
+
+					sinon.assert.calledWith(
+						consoleWarnStub,
+						`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
+						`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+						'For production usage, please obtain a production license at https://portal.ckeditor.com/.'
 					);
 
 					dateNow.restore();
@@ -440,9 +453,23 @@ describe( 'Editor - license check', () => {
 				const editor = new TestEditor( { licenseKey } );
 
 				expect( editor.isReadOnly ).to.be.false;
+
+				// Verify console.info call with new format
 				sinon.assert.calledOnce( consoleInfoStub );
-				sinon.assert.calledWith( consoleInfoStub, 'You are using the development version of CKEditor 5. ' +
-				'Make sure you will not use it in the production environment.' );
+				sinon.assert.calledWith(
+					consoleInfoStub,
+					'%cCKEditor 5 Development License',
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+				);
+
+				// Verify console.warn call with the warning message
+				sinon.assert.calledOnce( consoleWarnStub );
+
+				sinon.assert.calledWith(
+					consoleWarnStub,
+					'⚠️ You are using a development license of CKEditor 5. ' +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/.'
+				);
 			} );
 
 			it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
