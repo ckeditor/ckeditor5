@@ -11,26 +11,24 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-emoji-picker {
-	& .ck-search-tone-wrapper {
-		display: flex;
-		padding: 10px;
-		justify-content: space-between;
-	}
+.ck .ck.ck-search-tone-wrapper {
+	display: flex;
+	padding: 10px;
+	justify-content: space-between;
+}
 
-	/*
-	* Classes used by the "fake visual selection" displayed in the content when an input
-	* in the emoji picker UI has focus (the browser does not render the native selection in this state).
-	*/
-	& .ck-fake-emoji-selection {
-		background: var(--ck-color-link-fake-selection);
-	}
+/*
+* Classes used by the "fake visual selection" displayed in the content when an input
+* in the emoji picker UI has focus (the browser does not render the native selection in this state).
+*/
+.ck .ck-fake-emoji-selection {
+	background: var(--ck-color-link-fake-selection);
+}
 
-	/* A collapsed fake visual selection. */
-	& .ck-fake-emoji-selection_collapsed {
-		height: 100%;
-		border-right: 1px solid var(--ck-color-base-text);
-		margin-right: -1px;
-		outline: solid 1px hsla(0, 0%, 100%, .5);
-	}
+/* A collapsed fake visual selection. */
+.ck .ck-fake-emoji-selection_collapsed {
+	height: 100%;
+	border-right: 1px solid var(--ck-color-base-text);
+	margin-right: -1px;
+	outline: solid 1px hsla(0, 0%, 100%, .5);
 }

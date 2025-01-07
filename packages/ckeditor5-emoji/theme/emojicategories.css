@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-emoji-picker {
-	& .ck-emoji-categories .ck.ck-button.ck-button_with-text {
-		border-bottom-width: 2px;
-		border-bottom-style: solid;
-		border-bottom-color: transparent;
+.ck.ck-emoji-categories .ck.ck-button.ck-button_with-text {
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: transparent;
 
-		&.ck-active-category {
-			border-bottom-color: var(--ck-color-base-active);
-		}
+	&.ck-active-category {
+		border-bottom-color: var(--ck-color-base-active);
 	}
 }

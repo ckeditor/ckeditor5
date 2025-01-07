@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-emoji-picker {
-	& .ck-emoji-info {
-		display: flex;
-		justify-content: space-between;
-	}
+.ck.ck-emoji-info {
+	display: flex;
+	justify-content: space-between;
 }

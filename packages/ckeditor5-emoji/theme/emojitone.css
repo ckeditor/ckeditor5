@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-emoji-picker {
-	& .ck-emoji-tone {
-		button.ck.ck-button.ck-button_with-text {
-			width: fit-content;
+.ck.ck-emoji-tone {
+	button.ck.ck-button.ck-button_with-text {
+		width: fit-content;
 
-			> span.ck.ck-button__label {
-				width: fit-content;
-			}
+		> span.ck.ck-button__label {
+			width: fit-content;
 		}
 	}
 }
