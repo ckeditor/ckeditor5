@@ -236,10 +236,12 @@ export default class ClipboardPipeline extends Plugin {
 			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
+			const sourceEditorId = dataTransfer.getData( 'application/ckeditor5-editor-id' ) || null;
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
 				dataTransfer,
+				sourceEditorId,
 				targetRanges: data.targetRanges,
 				method: data.method as 'paste' | 'drop'
 			} );
@@ -278,6 +280,7 @@ export default class ClipboardPipeline extends Plugin {
 				this.fire<ClipboardContentInsertionEvent>( 'contentInsertion', {
 					content: modelFragment,
 					method: data.method,
+					sourceEditorId: data.sourceEditorId,
 					dataTransfer: data.dataTransfer,
 					targetRanges: data.targetRanges
 				} );
@@ -331,6 +334,7 @@ export default class ClipboardPipeline extends Plugin {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
 				data.dataTransfer.setData( 'text/plain', viewToPlainText( editor.data.htmlProcessor.domConverter, data.content ) );
+				data.dataTransfer.setData( 'application/ckeditor5-editor-id', this.editor.id );
 			}
 
 			if ( data.method == 'cut' ) {
@@ -389,6 +393,11 @@ export interface ClipboardInputTransformationData {
 	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
+
+	/**
+	 * ID of the editor instance from which the content was copied.
+	 */
+	sourceEditorId: string | null;
 }
 
 /**
@@ -432,6 +441,11 @@ export interface ClipboardContentInsertionData {
 	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
+
+	/**
+	 * ID of the editor instance from which the content was copied.
+	 */
+	sourceEditorId: string | null;
 
 	/**
 	 * The data transfer instance.
