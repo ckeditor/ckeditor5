@@ -79,6 +79,12 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+<info-box info>
+	The emoji feature already has a pre-configured `:` marker that opens a panel with a table of selectable emojis. If you are using {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key and it may be in conflict with the emoji feature.
+
+	To make all these features work fine together, make sure that {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are defined differently than `:`.
+</info-box>
+
 ## Related features
 
 In addition to enabling emoji feature, you may want to check the following related features:
