@@ -537,7 +537,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				console.warn(
 					`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
 					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
-					'For production usage, please obtain a production license at https://portal.ckeditor.com/.'
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 				);
 			}
 

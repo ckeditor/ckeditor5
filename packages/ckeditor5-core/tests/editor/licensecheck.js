@@ -407,7 +407,7 @@ describe( 'Editor - license check', () => {
 						consoleWarnStub,
 						`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
 						`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
-						'For production usage, please obtain a production license at https://portal.ckeditor.com/.'
+						'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 					);
 
 					dateNow.restore();
@@ -468,7 +468,7 @@ describe( 'Editor - license check', () => {
 				sinon.assert.calledWith(
 					consoleWarnStub,
 					'⚠️ You are using a development license of CKEditor 5. ' +
-					'For production usage, please obtain a production license at https://portal.ckeditor.com/.'
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 				);
 			} );
 
