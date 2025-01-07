@@ -455,6 +455,7 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createEmojiWidthTestingContainer(): HTMLDivElement {
 		const container = document.createElement( 'div' );
+		container.setAttribute( 'aria-hidden', 'true' );
 		container.style.position = 'absolute';
 		container.style.left = '-9999px';
 		container.style.whiteSpace = 'nowrap';
