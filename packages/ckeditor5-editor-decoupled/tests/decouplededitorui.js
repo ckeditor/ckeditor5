@@ -243,6 +243,13 @@ describe( 'DecoupledEditorUI', () => {
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
+
+		it( 'should not crash if called twice', async () => {
+			const newEditor = await VirtualDecoupledTestEditor.create( '' );
+
+			await newEditor.destroy();
+			await newEditor.destroy();
+		} );
 	} );
 
 	describe( 'element()', () => {

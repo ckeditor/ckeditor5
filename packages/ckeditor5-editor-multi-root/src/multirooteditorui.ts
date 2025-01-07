@@ -157,7 +157,12 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * @param editable Editable to remove from the editor UI.
 	 */
 	public removeEditable( editable: InlineEditableUIView ): void {
-		this.editor.editing.view.detachDomRoot( editable.name! );
+		const editingView = this.editor.editing.view;
+
+		if ( editingView.getDomRoot( editable.name! ) ) {
+			editingView.detachDomRoot( editable.name! );
+		}
+
 		editable.unbind( 'isFocused' );
 		this.removeEditableElement( editable.name! );
 	}
