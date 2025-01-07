@@ -232,6 +232,7 @@
 		"framework/guides/plugins/package-generator.html": "framework/develpment-tools/package-generator/using-package-generator.html",
 		"framework/guides/plugins/package-generator/javascript-package.html": "framework/develpment-tools/package-generator/javascript-package.html",
 		"framework/guides/plugins/package-generator/typescript-package.html": "framework/develpment-tools/package-generator/typescript-package.html",
+		"framework/guides/plugins/creating-simple-plugin-timestamp.html": "framework/tutorials/creating-simple-plugin-timestamp.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
