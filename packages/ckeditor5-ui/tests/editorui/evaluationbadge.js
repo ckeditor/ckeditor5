@@ -26,6 +26,7 @@ describe( 'EvaluationBadge', () => {
 
 	beforeEach( async () => {
 		sinon.stub( console, 'info' );
+		sinon.stub( console, 'warn' );
 
 		developmentLicenseKey = generateKey( { licenseType: 'development' } ).licenseKey;
 		element = document.createElement( 'div' );
@@ -91,7 +92,6 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should create the balloon when license type is `evaluation`', async () => {
-				const warnStub = sinon.stub( console, 'warn' );
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'evaluation',
 					isExpired: false,
@@ -120,11 +120,9 @@ describe( 'EvaluationBadge', () => {
 				await editor.destroy();
 
 				dateNow.restore();
-				warnStub.restore();
 			} );
 
 			it( 'should create the balloon when license type is `trial`', async () => {
-				const warnStub = sinon.stub( console, 'warn' );
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'trial',
 					isExpired: false,
@@ -153,11 +151,9 @@ describe( 'EvaluationBadge', () => {
 				await editor.destroy();
 
 				dateNow.restore();
-				warnStub.restore();
 			} );
 
 			it( 'should create the balloon when license type is `development`', async () => {
-				const warnStub = sinon.stub( console, 'warn' );
 				const editor = await createEditor( element, {
 					licenseKey: developmentLicenseKey
 				} );
@@ -175,7 +171,6 @@ describe( 'EvaluationBadge', () => {
 				);
 
 				await editor.destroy();
-				warnStub.restore();
 			} );
 
 			it( 'should not depend on white-label', async () => {
