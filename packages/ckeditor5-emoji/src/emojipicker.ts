@@ -309,9 +309,10 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createDialogButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const buttonView = new ButtonClass( this.editor.locale ) as InstanceType<T>;
+		const t = this.editor.locale.t;
 
 		buttonView.set( {
-			label: this.editor.locale.t( 'Emoji' ),
+			label: t( 'Emoji' ),
 			icon: icons.cog,
 			isToggleable: true
 		} );
