@@ -34,7 +34,7 @@ export default abstract class Operation {
 	 * {@link module:engine/model/batch~Batch Batch} to which the operation is added or `null` if the operation is not
 	 * added to any batch yet.
 	 *
-	 * Note, that a {@link ~isDocumentOperation non-document operation} has this property always set to `null`, and is never added
+	 * Note, that a {@link #isDocumentOperation non-document operation} has this property always set to `null`, and is never added
 	 * to any batch.
 	 */
 	public batch: Batch | null;
