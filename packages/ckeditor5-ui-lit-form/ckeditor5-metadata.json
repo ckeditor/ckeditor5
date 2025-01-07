@@ -1,0 +1,10 @@
+{
+	"plugins": [
+		{
+			"name": "UI Lit Form",
+			"className": "LitForm",
+			"description": "",
+			"path": "src/litform.js"
+		}
+	]
+}

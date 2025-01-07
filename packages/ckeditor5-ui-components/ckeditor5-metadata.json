@@ -1,0 +1,10 @@
+{
+	"plugins": [
+		{
+			"name": "UIComponents",
+			"className": "UIComponents",
+			"description": "",
+			"path": "src/uicomponents.js"
+		}
+	]
+}

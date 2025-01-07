@@ -56,6 +56,7 @@ export * from '@ckeditor/ckeditor5-style';
 export * from '@ckeditor/ckeditor5-table';
 export * from '@ckeditor/ckeditor5-typing';
 export * from '@ckeditor/ckeditor5-ui';
+export * from '@ckeditor/ckeditor5-ui-components';
 export * from '@ckeditor/ckeditor5-undo';
 export * from '@ckeditor/ckeditor5-upload';
 export * from '@ckeditor/ckeditor5-utils';
