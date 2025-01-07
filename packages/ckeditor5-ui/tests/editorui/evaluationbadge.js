@@ -26,6 +26,7 @@ describe( 'EvaluationBadge', () => {
 
 	beforeEach( async () => {
 		sinon.stub( console, 'info' );
+
 		developmentLicenseKey = generateKey( { licenseType: 'development' } ).licenseKey;
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
@@ -90,6 +91,7 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should create the balloon when license type is `evaluation`', async () => {
+				const warnStub = sinon.stub( console, 'warn' );
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'evaluation',
 					isExpired: false,
@@ -118,9 +120,11 @@ describe( 'EvaluationBadge', () => {
 				await editor.destroy();
 
 				dateNow.restore();
+				warnStub.restore();
 			} );
 
 			it( 'should create the balloon when license type is `trial`', async () => {
+				const warnStub = sinon.stub( console, 'warn' );
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'trial',
 					isExpired: false,
@@ -149,6 +153,7 @@ describe( 'EvaluationBadge', () => {
 				await editor.destroy();
 
 				dateNow.restore();
+				warnStub.restore();
 			} );
 
 			it( 'should create the balloon when license type is `development`', async () => {

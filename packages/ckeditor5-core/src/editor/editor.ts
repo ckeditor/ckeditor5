@@ -525,14 +525,24 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				return;
 			}
 
-			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
+			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
+				const { licenseType } = licensePayload;
+				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
 
 				console.info(
-					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-					'Make sure you will not use it in the production environment.'
+					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
 				);
 
+				console.warn(
+					`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
+					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/.'
+				);
+			}
+
+			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
+				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
 				const timerId = setTimeout( () => {
 					blockEditor( `${ licenseType }Limit` );
 				}, 600000 );
@@ -540,13 +550,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				editor.on( 'destroy', () => {
 					clearTimeout( timerId );
 				} );
-			}
-
-			if ( licensePayload.licenseType === 'development' ) {
-				console.info(
-					'You are using the development version of CKEditor 5. ' +
-					'Make sure you will not use it in the production environment.'
-				);
 			}
 
 			if ( licensePayload.usageEndpoint ) {
