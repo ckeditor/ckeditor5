@@ -38,6 +38,7 @@
 
 		& .ck-bookmark__icon {
 			position: relative;
+			display: block;
 			/* To make it align with text baseline. */
 			top: -0.1em;
 
