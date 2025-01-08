@@ -225,6 +225,56 @@ describe( 'SimpleUploadAdapter', () => {
 						} );
 				} );
 
+				it( 'should use config#headers in the request (when specified as a function)', () => {
+					const editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					return ClassicTestEditor
+						.create( editorElement, {
+							plugins: [ SimpleUploadAdapter ],
+							simpleUpload: {
+								uploadUrl: 'http://example.com',
+								headers: file => ( {
+									'X-File-Name': file.name,
+									'X-File-Size': file.size.toString()
+								} )
+							}
+						} )
+						.then( editor => {
+							const adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
+							const validResponse = {
+								url: 'http://example.com/images/image.jpeg'
+							};
+
+							const uploadPromise = adapter.upload();
+
+							return loader.file
+								.then( () => {
+									const request = sinonXHR.requests[ 0 ];
+									request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
+
+									const requestHeaders = request.requestHeaders;
+
+									expect( requestHeaders ).to.be.a( 'object' );
+									expect( requestHeaders ).to.have.property( 'X-File-Name', 'image.jpeg' );
+									expect( requestHeaders ).to.have.property( 'X-File-Size', '1024' );
+
+									return uploadPromise;
+								} )
+								.then( uploadResponse => {
+									expect( uploadResponse ).to.deep.equal( {
+										url: 'http://example.com/images/image.jpeg',
+										urls: {
+											default: 'http://example.com/images/image.jpeg'
+										}
+									} );
+
+									editorElement.remove();
+								} )
+								.then( () => editor.destroy() );
+						} );
+				} );
+
 				it( 'should not set #requestHeaders of the request if config#headers is not specified', () => {
 					const editorElement = document.createElement( 'div' );
 					document.body.appendChild( editorElement );

@@ -454,6 +454,16 @@ describe( 'AutoLink', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		for ( const punctuation of '!.:,;?' ) {
+			it( `does not include "${ punctuation }" at the end of the link after space`, () => {
+				simulateTyping( `https://www.cksource.com${ punctuation } ` );
+
+				expect( getData( model ) ).to.equal(
+					`<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>${ punctuation } []</paragraph>`
+				);
+			} );
+		}
+
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {
 			const supportedURLs = [

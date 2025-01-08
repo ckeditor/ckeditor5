@@ -201,27 +201,40 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
+			let mappedText = text;
+
 			// 1. Detect <kbd>Space</kbd> after a text with a potential link.
-			if ( !isSingleSpaceAtTheEnd( text ) ) {
+			if ( !isSingleSpaceAtTheEnd( mappedText ) ) {
 				return;
 			}
 
-			// 2. Check text before last typed <kbd>Space</kbd>.
-			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
+			// 2. Remove the last space character.
+			mappedText = mappedText.slice( 0, -1 );
+
+			// 3. Remove punctuation at the end of the URL if it exists.
+			if ( '!.:,;?'.includes( mappedText[ mappedText.length - 1 ] ) ) {
+				mappedText = mappedText.slice( 0, -1 );
+			}
+
+			// 4. Check text before last typed <kbd>Space</kbd> or punctuation.
+			const url = getUrlAtTextEnd( mappedText );
 
 			if ( url ) {
-				return { url };
+				return {
+					url,
+					removedTrailingCharacters: text.length - mappedText.length
+				};
 			}
 		} );
 
-		watcher.on<TextWatcherMatchedDataEvent<{ url: string }>>( 'matched:data', ( evt, data ) => {
-			const { batch, range, url } = data;
+		watcher.on<TextWatcherMatchedDataEvent<{ url: string; removedTrailingCharacters: number }>>( 'matched:data', ( evt, data ) => {
+			const { batch, range, url, removedTrailingCharacters } = data;
 
 			if ( !batch.isTyping ) {
 				return;
 			}
 
-			const linkEnd = range.end.getShiftedBy( -1 ); // Executed after a space character.
+			const linkEnd = range.end.getShiftedBy( -removedTrailingCharacters ); // Executed after a space character or punctuation.
 			const linkStart = linkEnd.getShiftedBy( -url.length );
 
 			const linkRange = editor.model.createRange( linkStart, linkEnd );

@@ -16,6 +16,7 @@ In this tutorial, we will add a single option to the `highlight` plugin to confi
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	// Other options are omitted for readability - do not remove them.
 	highlight: {
 
@@ -71,6 +72,7 @@ Then, open the `src/main.js` file and update the editor's configuration to chang
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	// Other options are omitted for readability - do not remove them.
 	highlight: {
 		keystroke: 'Ctrl+Alt+9'

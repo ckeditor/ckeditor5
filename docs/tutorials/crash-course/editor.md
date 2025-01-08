@@ -46,7 +46,9 @@ import 'ckeditor5/ckeditor5.css';
 const element = document.querySelector( '#app' );
 
 // Instantiate the editor using the `create` method.
-const editor = await ClassicEditor.create( element );
+const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL' // Or '<YOUR_LICENSE_KEY>'.
+} );
 ```
 
 As you can see, the {@link module:core/editor/editor~Editor.create `create()`} method creates a new editor instance. It replaces the DOM element passed as the first argument with the editor UI, and sets the initial state of the editor to the content of that DOM element.
@@ -63,6 +65,7 @@ import { Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
 		Paragraph

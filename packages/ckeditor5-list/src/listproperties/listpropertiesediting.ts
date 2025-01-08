@@ -33,7 +33,8 @@ import {
 	getAllSupportedStyleTypes,
 	getListTypeFromListStyleType,
 	getListStyleTypeFromTypeAttribute,
-	getTypeAttributeFromListStyleType
+	getTypeAttributeFromListStyleType,
+	normalizeListStyle
 } from './utils/style.js';
 import ListPropertiesUtils from './listpropertiesutils.js';
 import {
@@ -331,7 +332,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 				const style = listParent.getStyle( 'list-style-type' );
 
 				if ( style ) {
-					return style;
+					return normalizeListStyle( style );
 				}
 
 				const attribute = listParent.getAttribute( 'type' );

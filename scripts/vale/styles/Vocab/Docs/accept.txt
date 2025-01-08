@@ -144,7 +144,7 @@ uploadImage
 (?i)uploader
 (?i)upvote
 upvoting
-[utils]
+utils
 (?i)viewport
 Vite
 Vue

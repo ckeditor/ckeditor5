@@ -1091,10 +1091,10 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			model.change( writer => {
-				model.getSelectedContent( model.document.selection );
-				expect( writer.batch.operations ).to.length( 1 );
-			} );
+			const version = model.document.version;
+			model.getSelectedContent( model.document.selection );
+
+			expect( model.document.version ).to.equal( version );
 		} );
 	} );
 

@@ -11,6 +11,7 @@ import {
 	View,
 	LabeledFieldView,
 	createLabeledInputText,
+	submitHandler,
 	type InputTextView
 } from 'ckeditor5/src/ui.js';
 import { KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
@@ -69,13 +70,14 @@ export default class ImageInsertUrlView extends View {
 		this.urlInputView = this._createUrlInputView();
 
 		this.setTemplate( {
-			tag: 'div',
+			tag: 'form',
 
 			attributes: {
 				class: [
 					'ck',
 					'ck-image-insert-url'
-				]
+				],
+				tabindex: '-1'
 			},
 
 			children: [
@@ -98,6 +100,10 @@ export default class ImageInsertUrlView extends View {
 	 */
 	public override render(): void {
 		super.render();
+
+		submitHandler( {
+			view: this
+		} );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );

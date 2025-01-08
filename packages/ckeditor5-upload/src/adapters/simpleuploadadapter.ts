@@ -205,7 +205,11 @@ class Adapter implements UploadAdapter {
 	 */
 	private _sendRequest( file: File ): void {
 		// Set headers if specified.
-		const headers = this.options.headers || {};
+		let headers = this.options.headers || {};
+
+		if ( typeof headers === 'function' ) {
+			headers = headers( file );
+		}
 
 		// Use the withCredentials flag if specified.
 		const withCredentials = this.options.withCredentials || false;
