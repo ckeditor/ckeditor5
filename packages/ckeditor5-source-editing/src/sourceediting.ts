@@ -10,7 +10,6 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
-import { CommentsOnly } from '@ckeditor/ckeditor5-comments';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
@@ -133,17 +132,13 @@ export default class SourceEditing extends Plugin {
 				}
 			} );
 
-			this.on( 'change:isEnabled', ( evt, name, isEnabled ) => this._handleReadOnlyMode( !isEnabled ) );
+			this.on( 'change:isEnabled', ( evt, name, isEnabled ) => {
+				if ( !isEnabled && this.isSourceEditingMode ) {
+					this.isSourceEditingMode = isEnabled;
+				}
+			} );
 
 			this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
-
-			if ( editor.plugins.has( CommentsOnly ) ) {
-				this.listenTo( editor.plugins.get( CommentsOnly ), 'change:isEnabled', ( evt, name, isCommentsOnlyEnabled ) => {
-					if ( isCommentsOnlyEnabled ) {
-						this.isSourceEditingMode = false;
-					}
-				} );
-			}
 		}
 
 		// Update the editor data while calling editor.getData() in the source editing mode.
@@ -420,56 +415,37 @@ export default class SourceEditing extends Plugin {
 
 		buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
 
-		if ( editor.plugins.has( CommentsOnly ) ) {
-			buttonView.bind( 'isEnabled' ).to(
-				this, 'isEnabled',
-				editor, 'isReadOnly',
-				editor.plugins.get( PendingActions ), 'hasAny',
-				editor.plugins.get( CommentsOnly ), 'isEnabled',
-				this._isSourceEditingButtonEnabled
-			);
-		} else {
-			buttonView.bind( 'isEnabled' ).to(
-				this, 'isEnabled',
-				editor, 'isReadOnly',
-				editor.plugins.get( PendingActions ), 'hasAny',
-				this._isSourceEditingButtonEnabled
-			);
-		}
+		// The button should be disabled if one of the following conditions is met:
+		buttonView.bind( 'isEnabled' ).to(
+			this, 'isEnabled',
+			editor, 'isReadOnly',
+			editor.plugins.get( PendingActions ), 'hasAny',
+			( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
+				// (1) The plugin itself is disabled.
+				if ( !isEnabled ) {
+					return false;
+				}
+
+				// (2) The editor is in read-only mode.
+				if ( isEditorReadOnly ) {
+					return false;
+				}
+
+				// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
+				// until the model is finally set.
+				if ( hasAnyPendingActions ) {
+					return false;
+				}
+
+				return true;
+			}
+		);
 
 		this.listenTo( buttonView, 'execute', () => {
 			this.isSourceEditingMode = !this.isSourceEditingMode;
 		} );
 
 		return buttonView;
-	}
-
-	// The button should be disabled if one of the following conditions is met:
-	private _isSourceEditingButtonEnabled(
-		isEnabled: boolean, isEditorReadOnly: boolean, hasAnyPendingActions: boolean, isCommentsOnlyEnabled?: boolean
-	): boolean {
-		// (1) The plugin itself is disabled.
-		if ( !isEnabled ) {
-			return false;
-		}
-
-		// (2) The editor is in read-only mode.
-		if ( isEditorReadOnly ) {
-			return false;
-		}
-
-		// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
-		// until the model is finally set.
-		if ( hasAnyPendingActions ) {
-			return false;
-		}
-
-		// (4) The ediotr is in comments-only mode
-		if ( isCommentsOnlyEnabled ) {
-			return false;
-		}
-
-		return true;
 	}
 }
 
