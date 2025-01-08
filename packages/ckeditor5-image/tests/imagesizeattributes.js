@@ -290,7 +290,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<p><span class="ck-widget image-inline image_resized" contenteditable="false" style="width:50px">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</span></p>'
 						);
 
@@ -307,7 +308,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<p><span class="ck-widget image-inline" contenteditable="false">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</span></p>'
 						);
 
@@ -489,7 +491,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget image image_resized" contenteditable="false" style="width:50px">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</figure>'
 						);
 
@@ -507,7 +510,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget image" contenteditable="false">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</figure>'
 						);
 

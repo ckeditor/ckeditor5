@@ -50,24 +50,22 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 } ): void {
 	const doc = view.document;
 
-	// Use a single a single post fixer per—document to update all placeholders.
+	// Use a single post fixer per—document to update all placeholders.
 	if ( !documentPlaceholders.has( doc ) ) {
 		documentPlaceholders.set( doc, new Map() );
 
 		// If a post-fixer callback makes a change, it should return `true` so other post–fixers
 		// can re–evaluate the document again.
-		doc.registerPostFixer( writer => updateDocumentPlaceholders( doc, writer ) );
+		doc.registerPostFixer( writer => updateDocumentPlaceholders( documentPlaceholders.get( doc )!, writer ) );
 
 		// Update placeholders on isComposing state change since rendering is disabled while in composition mode.
 		doc.on<ObservableChangeEvent>( 'change:isComposing', () => {
-			view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+			view.change( writer => updateDocumentPlaceholders( documentPlaceholders.get( doc )!, writer ) );
 		}, { priority: 'high' } );
 	}
 
 	if ( element.is( 'editableElement' ) ) {
-		element.on( 'change:placeholder', ( evtInfo, evt, text ) => {
-			setPlaceholder( text );
-		} );
+		element.on( 'change:placeholder', ( evtInfo, evt, text ) => setPlaceholder( text ) );
 	}
 
 	if ( element.placeholder ) {
@@ -81,16 +79,18 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 	}
 
 	function setPlaceholder( text: string ) {
-		// Store information about the element placeholder under its document.
-		documentPlaceholders.get( doc )!.set( element, {
+		const config = {
 			text,
 			isDirectHost,
 			keepOnFocus,
 			hostElement: isDirectHost ? element : null
-		} );
+		};
+
+		// Store information about the element placeholder under its document.
+		documentPlaceholders.get( doc )!.set( element, config );
 
 		// Update the placeholders right away.
-		view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+		view.change( writer => updateDocumentPlaceholders( [ [ element, config ] ], writer ) );
 	}
 }
 
@@ -182,11 +182,7 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 		return false;
 	}
 
-	// Anything but uiElement(s) counts as content.
-	const hasContent = Array.from( element.getChildren() )
-		.some( element => !element.is( 'uiElement' ) );
-
-	if ( hasContent ) {
+	if ( hasContent( element ) ) {
 		return false;
 	}
 
@@ -213,12 +209,27 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 }
 
 /**
+ * Anything but uiElement(s) counts as content.
+ */
+function hasContent( element: Element ): boolean {
+	for ( const child of element.getChildren() ) {
+		if ( !child.is( 'uiElement' ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
  * Updates all placeholders associated with a document in a post–fixer callback.
  *
  * @returns True if any changes were made to the view document.
  */
-function updateDocumentPlaceholders( doc: Document, writer: DowncastWriter ): boolean {
-	const placeholders = documentPlaceholders.get( doc )!;
+function updateDocumentPlaceholders(
+	placeholders: Iterable<[ Element, PlaceholderConfig ]>,
+	writer: DowncastWriter
+): boolean {
 	const directHostElements: Array<Element> = [];
 	let wasViewModified = false;
 
