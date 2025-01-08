@@ -19,6 +19,7 @@ import type {
 	CKBoxAssetImageDefinition,
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
+	CKBoxConfig,
 	CKBoxRawAssetDefinition
 } from './ckboxconfig.js';
 
@@ -189,6 +190,7 @@ export default class CKBoxCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const shouldInsertDataId = !editor.config.get( 'ckbox.ignoreDataId' );
+		const downloadableFilesConfig = editor.config.get( 'ckbox.downloadableFiles' );
 
 		// Refresh the command after firing the `ckbox:*` event.
 		this.on<CKBoxEvent>( 'ckbox', () => {
@@ -230,6 +232,7 @@ export default class CKBoxCommand extends Command {
 
 			const assetsToProcess = prepareAssets( {
 				assets,
+				downloadableFilesConfig,
 				isImageAllowed: imageCommand.isEnabled,
 				isLinkAllowed: linkCommand.isEnabled
 			} );
@@ -379,7 +382,8 @@ export default class CKBoxCommand extends Command {
  * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
  */
 function prepareAssets(
-	{ assets, isImageAllowed, isLinkAllowed }: {
+	{ downloadableFilesConfig, assets, isImageAllowed, isLinkAllowed }: {
+		downloadableFilesConfig: CKBoxConfig['downloadableFiles'];
 		assets: Array<CKBoxRawAssetDefinition>;
 		isImageAllowed: boolean;
 		isLinkAllowed: boolean;
@@ -395,7 +399,7 @@ function prepareAssets(
 			{
 				id: asset.data.id,
 				type: 'link',
-				attributes: prepareLinkAssetAttributes( asset )
+				attributes: prepareLinkAssetAttributes( downloadableFilesConfig, asset )
 			} as const
 		)
 		.filter( asset => asset.type === 'image' ? isImageAllowed : isLinkAllowed );
@@ -424,12 +428,16 @@ export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): C
 /**
  * Parses the assets attributes into the internal data format.
  *
- * @param origin The base URL for assets inserted into the editor.
+ * @param config The CKBox download asset configuration.
+ * @param asset The asset to prepare the attributes for.
  */
-function prepareLinkAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetLinkAttributesDefinition {
+function prepareLinkAssetAttributes(
+	config: CKBoxConfig['downloadableFiles'],
+	asset: CKBoxRawAssetDefinition
+): CKBoxAssetLinkAttributesDefinition {
 	return {
 		linkName: asset.data.name,
-		linkHref: getAssetUrl( asset )
+		linkHref: getAssetUrl( config, asset )
 	};
 }
 
@@ -449,14 +457,34 @@ function isImage( asset: CKBoxRawAssetDefinition ) {
 /**
  * Creates the URL for the asset.
  *
- * @param origin The base URL for assets inserted into the editor.
+ * @param config The CKBox download asset configuration.
+ * @param asset The asset to create the URL for.
  */
-function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
+function getAssetUrl( config: CKBoxConfig['downloadableFiles'], asset: CKBoxRawAssetDefinition ) {
 	const url = new URL( asset.data.url );
 
-	url.searchParams.set( 'download', 'true' );
+	if ( isDownloadableAsset( config, asset ) ) {
+		url.searchParams.set( 'download', 'true' );
+	}
 
 	return url.toString();
+}
+
+/**
+ * Determines if download should be enabled for given asset based on configuration.
+ *
+ * @param config The CKBox download asset configuration.
+ * @param asset The asset to check.
+ */
+function isDownloadableAsset(
+	config: CKBoxConfig['downloadableFiles'],
+	asset: CKBoxRawAssetDefinition
+): boolean {
+	if ( typeof config === 'function' ) {
+		return config( asset );
+	}
+
+	return true;
 }
 
 /**
