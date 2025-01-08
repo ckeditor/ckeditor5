@@ -239,6 +239,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
+				extraContent: data.extraContent,
 				dataTransfer,
 				targetRanges: data.targetRanges,
 				method: data.method as 'paste' | 'drop'
@@ -374,6 +375,11 @@ export interface ClipboardInputTransformationData {
 	 * the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
+
+	/**
+	 * TODO
+	 */
+	extraContent?: unknown;
 
 	/**
 	 * The data transfer instance.

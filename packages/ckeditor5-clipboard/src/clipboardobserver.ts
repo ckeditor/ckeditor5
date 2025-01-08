@@ -176,6 +176,11 @@ export interface ClipboardInputEventData {
 	 * The content of clipboard input.
 	 */
 	content?: ViewDocumentFragment;
+
+	/**
+	 * TODO
+	 */
+	extraContent?: unknown;
 }
 
 /**

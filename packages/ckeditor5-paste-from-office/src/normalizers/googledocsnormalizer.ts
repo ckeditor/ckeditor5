@@ -12,7 +12,8 @@ import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 import removeBoldWrapper from '../filters/removeboldwrapper.js';
 import transformBlockBrsToParagraphs from '../filters/br.js';
 import { unwrapParagraphInListItem } from '../filters/list.js';
-import type { Normalizer, NormalizerData } from '../normalizer.js';
+import type { Normalizer } from '../normalizer.js';
+import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 
@@ -41,14 +42,11 @@ export default class GoogleDocsNormalizer implements Normalizer {
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: NormalizerData ): void {
+	public execute( data: ClipboardInputTransformationData ): void {
 		const writer = new UpcastWriter( this.document );
-		const { body: documentFragment } = data._parsedData;
 
-		removeBoldWrapper( documentFragment, writer );
-		unwrapParagraphInListItem( documentFragment, writer );
-		transformBlockBrsToParagraphs( documentFragment, writer );
-
-		data.content = documentFragment;
+		removeBoldWrapper( data.content, writer );
+		unwrapParagraphInListItem( data.content, writer );
+		transformBlockBrsToParagraphs( data.content, writer );
 	}
 }

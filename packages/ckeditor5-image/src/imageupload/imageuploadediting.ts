@@ -22,7 +22,11 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 import { Notification } from 'ckeditor5/src/ui.js';
-import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard.js';
+import {
+	ClipboardPipeline,
+	type ClipboardInputTransformationEvent,
+	type ViewDocumentClipboardInputEvent
+} from 'ckeditor5/src/clipboard.js';
 import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload.js';
 import { env } from 'ckeditor5/src/utils.js';
 
@@ -199,7 +203,7 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		this.listenTo( clipboardPipeline, 'inputTransformation', ( evt, data ) => {
+		this.listenTo<ClipboardInputTransformationEvent>( clipboardPipeline, 'inputTransformation', ( evt, data ) => {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.map( value => value.item as ViewElement )
 				.filter( viewElement =>

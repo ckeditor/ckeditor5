@@ -9,14 +9,18 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import { ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
+import {
+	ClipboardPipeline,
+	type ViewDocumentClipboardInputEvent,
+	type ClipboardInputTransformationEvent
+} from 'ckeditor5/src/clipboard.js';
 
 import MSWordNormalizer from './normalizers/mswordnormalizer.js';
 import GoogleDocsNormalizer from './normalizers/googledocsnormalizer.js';
 import GoogleSheetsNormalizer from './normalizers/googlesheetsnormalizer.js';
 
 import { parseHtml } from './filters/parse.js';
-import type { Normalizer, NormalizerData } from './normalizer.js';
+import type { Normalizer } from './normalizer.js';
 
 /**
  * The Paste from Office plugin.
@@ -67,33 +71,32 @@ export default class PasteFromOffice extends Plugin {
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 
-		clipboardPipeline.on(
-			'inputTransformation',
-			( evt, data: NormalizerData ) => {
-				if ( data._isTransformedWithPasteFromOffice ) {
-					return;
-				}
+		viewDocument.on<ViewDocumentClipboardInputEvent>( 'clipboardInput', ( evt, data ) => {
+			const htmlString = data.dataTransfer.getData( 'text/html' );
+			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
 
-				const codeBlock = editor.model.document.selection.getFirstPosition()!.parent;
+			if ( activeNormalizer ) {
+				const parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
 
-				if ( codeBlock.is( 'element', 'codeBlock' ) ) {
-					return;
-				}
+				data.content = parsedData.body;
+				data.extraContent = parsedData;
+			}
+		} );
 
-				const htmlString = data.dataTransfer.getData( 'text/html' );
-				const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
+		clipboardPipeline.on<ClipboardInputTransformationEvent>( 'inputTransformation', ( evt, data ) => {
+			const codeBlock = editor.model.document.selection.getFirstPosition()!.parent;
 
-				if ( activeNormalizer ) {
-					if ( !data._parsedData ) {
-						data._parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
-					}
+			if ( codeBlock.is( 'element', 'codeBlock' ) ) {
+				return;
+			}
 
-					activeNormalizer.execute( data );
+			const htmlString = data.dataTransfer.getData( 'text/html' );
+			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
 
-					data._isTransformedWithPasteFromOffice = true;
-				}
-			},
-			{ priority: 'high' }
-		);
+			if ( activeNormalizer ) {
+				activeNormalizer.execute( data );
+			}
+		},
+		{ priority: 'high' } );
 	}
 }

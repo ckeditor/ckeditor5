@@ -9,7 +9,7 @@
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { LiveRange, LivePosition } from 'ckeditor5/src/engine.js';
-import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
+import { Clipboard, type ClipboardInputTransformationEvent, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 import { Undo, type UndoCommand } from 'ckeditor5/src/undo.js';
 import { global } from 'ckeditor5/src/utils.js';
@@ -79,7 +79,7 @@ export default class AutoMediaEmbed extends Plugin {
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into media.
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
-		this.listenTo( clipboardPipeline, 'inputTransformation', () => {
+		this.listenTo<ClipboardInputTransformationEvent>( clipboardPipeline, 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange()!;
 
 			const leftLivePosition = LivePosition.fromPosition( firstRange.start );
