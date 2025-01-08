@@ -12,6 +12,7 @@
 
 .ck-bookmark {
 	&.ck-widget {
+		display: inline-block;
 		outline: none;
 
 		& .ck-bookmark__icon .ck-icon__fill {
