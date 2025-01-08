@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -181,6 +181,32 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			this._position = prevPosition;
 			this._visitedParent = prevVisitedParent;
 		}
+	}
+
+	/**
+	 * Moves tree walker {@link #position} to provided `position`. Tree walker will
+	 * continue traversing from that position.
+	 *
+	 * Note: in contrary to {@link ~TreeWalker#skip}, this method does not iterate over the nodes along the way.
+	 * It simply sets the current tree walker position to a new one.
+	 * From the performance standpoint, it is better to use {@link ~TreeWalker#jumpTo} rather than {@link ~TreeWalker#skip}.
+	 *
+	 * If the provided position is before the start boundary, the position will be
+	 * set to the start boundary. If the provided position is after the end boundary,
+	 * the position will be set to the end boundary.
+	 * This is done to prevent the treewalker from traversing outside the boundaries.
+	 *
+	 * @param position Position to jump to.
+	 */
+	public jumpTo( position: Position ): void {
+		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
+			position = this.boundaries!.start;
+		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
+			position = this.boundaries!.end;
+		}
+
+		this._position = position.clone();
+		this._visitedParent = position.parent;
 	}
 
 	/**

@@ -1,13 +1,13 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module list/list/utils/postfixers
  */
 
-import type { Position, Writer } from 'ckeditor5/src/engine.js';
+import type { Element, Position, Writer } from 'ckeditor5/src/engine.js';
 import { SiblingListBlocksIterator, type ListIteratorValue } from './listwalker.js';
 import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model.js';
 
@@ -17,10 +17,12 @@ import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } fro
  * @internal
  * @param position The search starting position.
  * @param itemToListHead The map from list item element to the list head element.
+ * @param visited A set of elements that were already visited.
  */
 export function findAndAddListHeadToMap(
 	position: Position,
-	itemToListHead: Map<ListElement, ListElement>
+	itemToListHead: Set<ListElement>,
+	visited: Set<Element>
 ): void {
 	const previousNode = position.nodeBefore;
 
@@ -28,7 +30,7 @@ export function findAndAddListHeadToMap(
 		const item = position.nodeAfter;
 
 		if ( isListItemBlock( item ) ) {
-			itemToListHead.set( item, item );
+			itemToListHead.add( item );
 		}
 	} else {
 		let listHead = previousNode;
@@ -42,12 +44,18 @@ export function findAndAddListHeadToMap(
 		for ( const { node } of new SiblingListBlocksIterator( listHead, 'backward' ) ) {
 			listHead = node;
 
-			if ( itemToListHead.has( listHead ) ) {
+			if ( visited.has( listHead ) ) {
+				return;
+			}
+
+			visited.add( listHead );
+
+			if ( itemToListHead.has( previousNode ) ) {
 				return;
 			}
 		}
 
-		itemToListHead.set( previousNode, listHead );
+		itemToListHead.add( listHead );
 	}
 }
 

@@ -51,6 +51,8 @@ Read more in our guides about {@link getting-started/licensing/license-key-and-a
 
 A new license key format has been introduced. Previous license keys **will no longer work** after updating the editor to version 44.0.0 and above.
 
+We also changed the way the development license key works. To prevent it from accidental usage on production it is limited only to development domains, shows informational label, and has operational limit. {@link getting-started/licensing/license-key-and-activation#development-license-key Read more about the details}.
+
 Acquiring new keys:
 
 1. **Access the Customer Portal**: Log in to the [Customer Portal](https://portal.ckeditor.com/) to obtain your new license key.

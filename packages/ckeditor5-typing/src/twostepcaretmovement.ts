@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -13,6 +13,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import {
 	MouseObserver,
+	TouchObserver,
 	type DocumentSelection,
 	type DocumentSelectionChangeRangeEvent,
 	type DomEventData,
@@ -21,6 +22,7 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentSelectionChangeEvent,
+	type ViewDocumentTouchStartEvent,
 	type ModelInsertContentEvent,
 	type ModelDeleteContentEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -481,10 +483,22 @@ export default class TwoStepCaretMovement extends Plugin {
 		const document = editor.editing.view.document;
 
 		editor.editing.view.addObserver( MouseObserver );
+		editor.editing.view.addObserver( TouchObserver );
 
+		let touched = false;
 		let clicked = false;
 
-		// Detect the click.
+		// This event should be fired before selection on mobile devices.
+		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', () => {
+			clicked = false;
+			touched = true;
+		} );
+
+		// Track mouse click event.
+		// Keep in mind that it's often called after the selection change on iOS devices.
+		// On the Android devices, it's called before the selection change.
+		// That's why we watch `touchstart` event on mobile and set `touched` flag, as it's fired before the selection change.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/17171
 		this.listenTo<ViewDocumentMouseDownEvent>( document, 'mousedown', () => {
 			clicked = true;
 		} );
@@ -493,12 +507,13 @@ export default class TwoStepCaretMovement extends Plugin {
 		this.listenTo<ViewDocumentSelectionChangeEvent>( document, 'selectionChange', () => {
 			const attributes = this.attributes;
 
-			if ( !clicked ) {
+			if ( !clicked && !touched ) {
 				return;
 			}
 
-			// ...and it was caused by the click...
+			// ...and it was caused by the click or touch...
 			clicked = false;
+			touched = false;
 
 			// ...and no text is selected...
 			if ( !selection.isCollapsed ) {

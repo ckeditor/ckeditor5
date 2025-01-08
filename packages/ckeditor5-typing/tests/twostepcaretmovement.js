@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -974,6 +974,27 @@ describe( 'TwoStepCaretMovement', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/17171
+		it( 'should handle use touchstart event to determine behavior if mousedown is fired after selectionchange on iOS', () => {
+			setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'touchstart' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			// on safari the mousedown event is called after selectionchange, so we can simulate it here
+			editor.editing.view.document.fire( 'mousedown' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>[]</paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>bar[]</paragraph>' );
 		} );
 	} );
 

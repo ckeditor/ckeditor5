@@ -45,7 +45,8 @@ Trial allows testing both self-hosted and cloud distributions. When the trial fi
 
 CKEditor&nbsp;5 (without the premium features listed above) can be used in an open-source, GPL-compliant setup with:
 
-* a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a license key and free editor loads.
+* a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a unique license key and free editor loads.
+* legacy GPL accounts in our Customer Portal. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 * without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 
 In both cases, the editor will {@link getting-started/licensing/managing-ckeditor-logo display a small “Powered by CKEditor” logo} in the editor area.
@@ -116,8 +117,7 @@ This key grants access to your subscription features. It does not consume editor
 
 * **Features**: Grants access to subscription features.
 * **Functionality**:
-	* Similar to the trial license, the editor is limited functionally, including session time and the number of changes allowed.
-	* Additionally, there are limitations on development domains. The editor can be used in the following domains: `localhost`, `*.test`, `*.localhost`, `*.local`, and IP addresses: `127.0.0.1`, `192.168.*.*`, `10.*.*.*`, `172.*.*.*`.
+	* Limitations on development domains apply on usage-based plans. The editor can be used in the following domains: `localhost`, `*.test`, `*.localhost`, `*.local`, and IP addresses: `127.0.0.1`, `192.168.*.*`, `10.*.*.*`, `172.*.*.*`.
 	* The editor will show a banner informing it was launched for development purposes.
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.
