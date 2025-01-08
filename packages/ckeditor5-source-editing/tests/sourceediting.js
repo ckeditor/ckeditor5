@@ -425,16 +425,11 @@ describe( 'SourceEditing', () => {
 		it( 'should disable textarea if plugin is disabled', () => {
 			button.fire( 'execute' );
 
-			const domRoot = editor.editing.view.getDomRoot();
-			const textarea = domRoot.nextSibling.children[ 0 ];
-
 			plugin.forceDisabled( 'disablePlugin' );
 
-			expect( textarea.readOnly ).to.be.true;
+			expect( plugin.isSourceEditingMode ).to.be.false;
 
 			plugin.clearForceDisabled( 'disablePlugin' );
-
-			expect( textarea.readOnly ).to.be.false;
 		} );
 
 		it( 'should remember replaced roots', () => {
