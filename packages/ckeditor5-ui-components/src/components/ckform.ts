@@ -11,15 +11,23 @@ import { html } from 'lit';
 import CKComponent from '../core/ckcomponent.js';
 
 export default class CKForm extends CKComponent {
-	public static componentName = 'ck-form';
+	public static override componentName = 'ck-form';
 
 	public static override properties = {
 		saveBtn: { type: Boolean },
-		cancelBtn: { type: Boolean }
+		cancelBtn: { type: Boolean },
+		namespace: { type: String },
+		name: { type: String }
 	};
 
 	public saveBtn: boolean = false;
 	public cancelBtn: boolean = false;
+
+	constructor() {
+		super();
+
+		this.name = 'ck-form';
+	}
 
 	public override render(): ReturnType<CKComponent['render']> {
 		return html`

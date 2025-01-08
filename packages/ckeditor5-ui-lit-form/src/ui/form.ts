@@ -11,17 +11,26 @@ import { CKComponent } from '@ckeditor/ckeditor5-ui-components';
 import { css, html } from 'lit';
 
 export default class Form extends CKComponent {
-	public static componentName = 'my-form';
+	public static override componentName = 'my-form';
 
 	public static override properties = {
 		isValid: { type: Boolean },
 		saveBtn: { type: Boolean },
-		cancelBtn: { type: Boolean }
+		cancelBtn: { type: Boolean },
+		namespace: { type: String },
+		name: { type: String }
 	};
 
 	public isValid: boolean = false;
 	public saveBtn: boolean = false;
 	public cancelBtn: boolean = false;
+
+	constructor() {
+		super();
+
+		this.namespace = 'link';
+		this.name = 'form-wrapper';
+	}
 
 	public static override styles = css`
 		span.info { 
@@ -48,8 +57,14 @@ export default class Form extends CKComponent {
 
 	public override render(): ReturnType<CKComponent['render']> {
 		return html`
-			<ck-form ?saveBtn=${ this.saveBtn } ?cancelBtn=${ this.cancelBtn } @save=${ this.onSave } @input=${ this.onInput }>
-				<ck-labeledinput label="Link" for="url"></ck-labeledinput>
+			<ck-form
+				namespace=${ this.namespace }
+				?saveBtn=${ this.saveBtn }
+				?cancelBtn=${ this.cancelBtn }
+				@save=${ this.onSave }
+				@input=${ this.onInput }
+			>
+				<ck-labeledinput label="Link" for="url" namespace=${ this.namespace }></ck-labeledinput>
 				<span class="info ${ this.isValid ? '' : 'error' }">The link is invalid</span>
 			</ck-form>
 		`;

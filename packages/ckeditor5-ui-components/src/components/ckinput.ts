@@ -11,15 +11,23 @@ import { html } from 'lit';
 import CKComponent from '../core/ckcomponent.js';
 
 export default class CKInput extends CKComponent {
-	public static componentName = 'ck-input';
+	public static override componentName = 'ck-input';
 
 	public static override properties = {
 		uid: {},
-		value: {}
+		value: {},
+		namespace: { type: String },
+		name: { type: String }
 	};
 
 	public value: string = '';
 	public uid: string = '';
+
+	constructor() {
+		super();
+
+		this.name = 'ck-input';
+	}
 
 	public override render(): ReturnType<CKComponent['render']> {
 		return html`
@@ -32,7 +40,7 @@ export default class CKInput extends CKComponent {
 		`;
 	}
 
-	protected onInput( e: InputEvent ): void {
+	public onInput( e: InputEvent ): void {
 		this.value = ( e.target as HTMLInputElement ).value;
 
 		e.stopPropagation();

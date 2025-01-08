@@ -11,21 +11,29 @@ import { html } from 'lit';
 import CKComponent from '../core/ckcomponent.js';
 
 export default class CKLabeledInput extends CKComponent {
-	public static componentName = 'ck-labeledinput';
+	public static override componentName = 'ck-labeledinput';
 
 	public static override properties = {
 		label: {},
-		for: {}
+		for: {},
+		namespace: { type: String },
+		name: { type: String }
 	};
 
 	public label: string = '';
 	public for: string = '';
 
+	constructor() {
+		super();
+
+		this.name = 'ck-labeledinput';
+	}
+
 	public override render(): ReturnType<CKComponent['render']> {
 		return html`
 			<div class="labeled-field-component">
 				<label class="label-component" for=${ this.for }>${ this.label }</label>
-				<ck-input uid=${ this.for } />
+				<ck-input uid=${ this.for } namespace=${ this.namespace } name=${ `${ this.name }:input` } />
 			</div>
 		`;
 	}

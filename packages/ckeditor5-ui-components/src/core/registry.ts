@@ -9,25 +9,29 @@
 
 import { type Editor } from 'ckeditor5/src/core.js';
 import type CKComponent from './ckcomponent.js';
+import { type CKComponentConstructor, type ComponentRegisterEvent } from './events.js';
 
 const registryMap = new WeakMap<Editor, Registry>();
 
 export class Registry {
-	private readonly _items: Map<string, CKComponent> = new Map();
+	private readonly _items: Map<string, CKComponentConstructor> = new Map();
 	private readonly _editor: Editor;
 
 	constructor( editor: Editor ) {
 		this._editor = editor;
 	}
 
-	public register( name: string, component: any ): void {
+	public register( name: string, component: CKComponentConstructor ): void {
 		const eventData = { name, component };
-		const result = this._editor.fire( 'componentRegister', eventData );
+		const result = this._editor.fire<ComponentRegisterEvent<CKComponent>>( 'componentRegister', eventData );
 
-		console.log( eventData, result );
+		console.log( 'Registry:componentRegister', eventData, result );
 
-		this._items.set( name, component );
-		customElements.define( name, component );
+		// Update or define once (what happens with multiple editor instances on the same page?)
+		if ( !customElements.get( name ) ) {
+			this._items.set( name, eventData.component );
+			customElements.define( name, eventData.component );
+		}
 	}
 }
 

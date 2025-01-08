@@ -21,18 +21,7 @@ export default class FormView extends WrapperView {
 			attributes: {
 				'savebtn': true,
 				'cancelbtn': true
-				// 	class: [
-				// 		'ck',
-				// 		'ck-media-form',
-				// 'ck-responsive-form'
-				// ],
-
-				// 	tabindex: '-1'
 			}
-
-			// children: [
-			// 	'ck-labeledinput'
-			// ]
 		} );
 
 		this.listen( 'save', () => {

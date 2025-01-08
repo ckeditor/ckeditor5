@@ -14,3 +14,7 @@ export { default as CKLabeledInput } from './components/cklabeledinput.js';
 export { default as CKComponent } from './core/ckcomponent.js';
 export { default as getRegistry } from './core/registry.js';
 
+export * from './core/events.js';
+
+export { html } from 'lit';
+

@@ -11,7 +11,7 @@ import UIComponents from '@ckeditor/ckeditor5-ui-components/src/uicomponents.js'
 import LitForm from '../../src/litform.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor1' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, LitForm, UIComponents ],
 		toolbar: [
@@ -19,7 +19,22 @@ ClassicEditor
 		]
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor1 = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor2' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [ ArticlePluginSet, LitForm, UIComponents ],
+		toolbar: [
+			'litform', 'heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
+		]
+	} )
+	.then( editor => {
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
