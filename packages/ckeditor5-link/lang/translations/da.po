@@ -58,3 +58,7 @@ msgstr "Opret link"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "Flyt ud af et link"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "Rul til mål"

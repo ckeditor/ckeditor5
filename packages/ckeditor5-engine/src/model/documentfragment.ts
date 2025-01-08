@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -339,6 +339,25 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 		}
 
 		return nodes;
+	}
+
+	/**
+	 * Removes children nodes provided as an array and sets
+	 * the {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 *
+	 * These nodes do not need to be direct siblings.
+	 *
+	 * This method is faster than removing nodes one by one, as it recalculates offsets only once.
+	 *
+	 * @internal
+	 * @param nodes Array of nodes.
+	 */
+	public _removeChildrenArray( nodes: Array<Node> ): void {
+		this._children._removeNodesArray( nodes );
+
+		for ( const node of nodes ) {
+			( node as any ).parent = null;
+		}
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): 'documentFragment' {

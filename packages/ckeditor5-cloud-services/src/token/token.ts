@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -47,6 +47,11 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * `setTimeout()` id for a token refresh when {@link module:cloud-services/token/token~TokenOptions auto refresh} is enabled.
 	 */
 	private _tokenRefreshTimeout?: ReturnType<typeof setTimeout>;
+
+	/**
+	 * Flag indicating whether the token has been destroyed.
+	 */
+	private _isDestroyed = false;
 
 	/**
 	 * Creates `Token` instance.
@@ -163,6 +168,8 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * Destroys token instance. Stops refreshing.
 	 */
 	public destroy(): void {
+		this._isDestroyed = true;
+
 		clearTimeout( this._tokenRefreshTimeout );
 	}
 
@@ -196,9 +203,13 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * Registers a refresh token timeout for the time taken from token.
 	 */
 	private _registerRefreshTokenTimeout( timeoutTime?: number ) {
-		const tokenRefreshTimeoutTime = timeoutTime || this._getTokenRefreshTimeoutTime();
-
 		clearTimeout( this._tokenRefreshTimeout );
+
+		if ( this._isDestroyed ) {
+			return;
+		}
+
+		const tokenRefreshTimeoutTime = timeoutTime || this._getTokenRefreshTimeoutTime();
 
 		this._tokenRefreshTimeout = setTimeout( () => {
 			this.refreshToken();

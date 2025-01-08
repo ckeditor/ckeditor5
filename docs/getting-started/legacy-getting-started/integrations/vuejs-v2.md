@@ -361,7 +361,7 @@ module.exports = {
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
 	//	1. The icons used by CKEditor&nbsp;5 must be loaded using raw-loader,
 	//	2. The CSS used by CKEditor&nbsp;5 must be transpiled using PostCSS to load properly.
-	chainWebpack: configuration => {
+	chainWebpack: config => {
 		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
 
@@ -371,8 +371,9 @@ module.exports = {
 		//
 		//		svgRule.uses.clear();
 		//
-		// * or exclude ckeditor directory from node_modules:
+		// * or exclude ckeditor directories from node_modules:
 		svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
+		svgRule.exclude.add( path.join( __dirname, 'node_modules', 'ckeditor5-collaboration' ) );
 
 		// Add an entry for *.svg files belonging to CKEditor. You can either:
 		//

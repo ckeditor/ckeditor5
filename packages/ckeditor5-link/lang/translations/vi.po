@@ -58,3 +58,7 @@ msgstr "Tạo liên kết"
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
 msgstr "Di chuyển ra khỏi một liên kết"
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
+msgstr "Cuộn đến mục tiêu"

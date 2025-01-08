@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -157,7 +157,12 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * @param editable Editable to remove from the editor UI.
 	 */
 	public removeEditable( editable: InlineEditableUIView ): void {
-		this.editor.editing.view.detachDomRoot( editable.name! );
+		const editingView = this.editor.editing.view;
+
+		if ( editingView.getDomRoot( editable.name! ) ) {
+			editingView.detachDomRoot( editable.name! );
+		}
+
 		editable.unbind( 'isFocused' );
 		this.removeEditableElement( editable.name! );
 	}

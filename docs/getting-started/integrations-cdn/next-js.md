@@ -1,6 +1,6 @@
 ---
 menu-title: Next.js
-meta-title: Integration with Next.js using CDN | CKEditor 5 documentation
+meta-title: Integration with Next.js using CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and CDN.
 category: cloud
 order: 40
@@ -24,7 +24,7 @@ This guide assumes you already have a Next project. To create such a project, yo
 ## Using from CDN
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 Next.js is based on React, so we need to install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
@@ -65,11 +65,10 @@ const CustomEditor = () => {
 		Essentials,
 		Paragraph,
 		Bold,
-		Italic,
-		Mention
+		Italic
 	} = cloud.CKEditor;
 
-	const { SlashCommand } = cloud.CKEditorPremiumFeatures;
+	const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
 	return (
 		<CKEditor
@@ -77,10 +76,8 @@ const CustomEditor = () => {
 			data={ '<p>Hello world!</p>' }
 			config={ {
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				},
-				plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			} }
 		/>
 	);
@@ -116,4 +113,4 @@ You can run your project now. If you chose `create-next-app`, type `npm run dev`
 If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
 </info-box>
 
-Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path 
+Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path

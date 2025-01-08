@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
@@ -90,13 +90,13 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 			it( 'should convert single list (type: numbered, style: upper-alpha)', () => {
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>',
 
 					modelList( `
-						# Foo {style:upper-alpha}
+						# Foo {style:upper-latin}
 						# Bar
 					` )
 				);
@@ -104,7 +104,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 			it( 'should convert mixed lists', () => {
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>OL 1</li>' +
 						'<li>OL 2</li>' +
 					'</ol>' +
@@ -114,7 +114,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'</ul>',
 
 					modelList( `
-						# OL 1 {style:upper-alpha}
+						# OL 1 {style:upper-latin}
 						# OL 2
 						* UL 1 {style:circle}
 						* UL 2
@@ -124,7 +124,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 			it( 'should convert nested and mixed lists', () => {
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>OL 1</li>' +
 						'<li>OL 2' +
 							'<ul style="list-style-type:circle;">' +
@@ -136,7 +136,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'</ol>',
 
 					modelList( `
-						# OL 1 {id:000} {style:upper-alpha}
+						# OL 1 {id:000} {style:upper-latin}
 						# OL 2 {id:003}
 						  * UL 1 {id:001} {style:circle}
 						  * UL 2 {id:002}
@@ -148,7 +148,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 			it( 'should convert when the list is in the middle of the content', () => {
 				test.data(
 					'<p>Paragraph.</p>' +
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>' +
@@ -156,7 +156,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 					modelList( `
 						Paragraph.
-						# Foo {id:000} {style:upper-alpha}
+						# Foo {id:000} {style:upper-latin}
 						# Bar {id:001}
 						Paragraph.
 					` )
@@ -168,7 +168,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'<ul>' +
 						'<li>' +
 							'cd' +
-							'<ol style="list-style-type:upper-alpha;">' +
+							'<ol style="list-style-type:upper-latin;">' +
 								'<li>efg</li>' +
 							'</ol>' +
 						'</li>' +
@@ -176,7 +176,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 					modelList( `
 						* cd {id:001} {style:default}
-						  # efg {id:000} {style:upper-alpha}
+						  # efg {id:000} {style:upper-latin}
 					` )
 				);
 			} );
@@ -187,7 +187,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 				}, { priority: 'highest' } );
 
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>',
@@ -236,17 +236,17 @@ describe( 'ListPropertiesEditing - converters', () => {
 				}, { priority: 'highest' } );
 
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>',
 
 					modelList( `
-						# Foo {style:upper-alpha}
+						# Foo {style:upper-latin}
 						# Bar
 					` ),
 
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>'
@@ -261,23 +261,23 @@ describe( 'ListPropertiesEditing - converters', () => {
 				editor.conversion.elementToElement( { view: 'div', model: 'block' } );
 
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li><div>x</div></li>' +
 						'<li>Bar</li>' +
 					'</ol>',
 
 					modelList( `
-						# Foo {style:upper-alpha}
+						# Foo {style:upper-latin}
 						<block>x</block>
-						# Bar {style:upper-alpha}
+						# Bar {style:upper-latin}
 					` ),
 
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 					'</ol>' +
 					'<div>x</div>' +
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Bar</li>' +
 					'</ol>'
 				);
@@ -295,7 +295,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 				);
 
 				test.data(
-					'<ol style="list-style-type:upper-alpha;">' +
+					'<ol style="list-style-type:upper-latin;">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>',
@@ -2244,13 +2244,13 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 			it( 'should convert single list (type: numbered, styled, reversed, start: 5)', () => {
 				test.data(
-					'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+					'<ol style="list-style-type:lower-latin;" reversed="reversed" start="5">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>',
 
 					modelList( `
-						# Foo {style:lower-alpha} {start:5} {reversed:true}
+						# Foo {style:lower-latin} {start:5} {reversed:true}
 						# Bar
 					` )
 				);
@@ -2259,7 +2259,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 			it( 'should convert when the list is in the middle of the content', () => {
 				test.data(
 					'<p>Paragraph.</p>' +
-					'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+					'<ol style="list-style-type:lower-latin;" reversed="reversed" start="5">' +
 						'<li>Foo</li>' +
 						'<li>Bar</li>' +
 					'</ol>' +
@@ -2267,7 +2267,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 					modelList( `
 						Paragraph.
-						# Foo {id:000} {style:lower-alpha} {start:5} {reversed:true}
+						# Foo {id:000} {style:lower-latin} {start:5} {reversed:true}
 						# Bar {id:001}
 						Paragraph.
 					` )
@@ -2279,7 +2279,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'<ul>' +
 						'<li>' +
 							'cd' +
-							'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+							'<ol style="list-style-type:lower-latin;" reversed="reversed" start="5">' +
 								'<li>efg</li>' +
 							'</ol>' +
 						'</li>' +
@@ -2287,7 +2287,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 					modelList( `
 						* cd {id:001} {style:default}
-						  # efg {id:000} {style:lower-alpha} {start:5} {reversed:true}
+						  # efg {id:000} {style:lower-latin} {start:5} {reversed:true}
 					` )
 				);
 			} );
@@ -2297,7 +2297,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'<ol>' +
 						'<li>' +
 							'cd' +
-							'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+							'<ol style="list-style-type:lower-latin;" reversed="reversed" start="5">' +
 								'<li>efg</li>' +
 							'</ol>' +
 						'</li>' +
@@ -2305,7 +2305,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 					modelList( `
 						# cd {id:001} {style:default} {start:1} {reversed:false}
-						  # efg {id:000} {style:lower-alpha} {start:5} {reversed:true}
+						  # efg {id:000} {style:lower-latin} {start:5} {reversed:true}
 					` )
 				);
 			} );
@@ -2335,12 +2335,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 					test.insert(
 						modelList( `
 							x
-							# [<paragraph>Foo</paragraph> {start:5} {reversed:true} {style:lower-alpha}
+							# [<paragraph>Foo</paragraph> {start:5} {reversed:true} {style:lower-latin}
 							# <paragraph>Bar</paragraph>]
 						` ),
 
 						'<p>x</p>' +
-						'<ol reversed="reversed" start="5" style="list-style-type:lower-alpha">' +
+						'<ol reversed="reversed" start="5" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
 						'</ol>'
@@ -2353,18 +2353,18 @@ describe( 'ListPropertiesEditing - converters', () => {
 					test.insert(
 						modelList( `
 							x
-							# [<paragraph>Foo 1</paragraph> {start:1} {reversed:true} {style:lower-alpha}
-							  # <paragraph>Bar 1</paragraph> {start:7} {reversed:false} {style:upper-alpha}
+							# [<paragraph>Foo 1</paragraph> {start:1} {reversed:true} {style:lower-latin}
+							  # <paragraph>Bar 1</paragraph> {start:7} {reversed:false} {style:upper-latin}
 							  # <paragraph>Bar 2</paragraph>
 						    # <paragraph>Foo 2</paragraph>
 						    # <paragraph>Foo 3</paragraph>]
 						` ),
 
 						'<p>x</p>' +
-						'<ol reversed="reversed" style="list-style-type:lower-alpha">' +
+						'<ol reversed="reversed" style="list-style-type:lower-latin">' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">Foo 1</span>' +
-								'<ol start="7" style="list-style-type:upper-alpha">' +
+								'<ol start="7" style="list-style-type:upper-latin">' +
 									'<li><span class="ck-list-bogus-paragraph">Bar 1</span></li>' +
 									'<li><span class="ck-list-bogus-paragraph">Bar 2</span></li>' +
 								'</ol>' +
@@ -2383,13 +2383,13 @@ describe( 'ListPropertiesEditing - converters', () => {
 					test.remove(
 						modelList( `
 							<paragraph>p</paragraph>
-							# [<paragraph>a</paragraph>] {start:6} {reversed:true} {style:lower-alpha}
+							# [<paragraph>a</paragraph>] {start:6} {reversed:true} {style:lower-latin}
 							# <paragraph>b</paragraph>
 							# <paragraph>c</paragraph>
 						` ),
 
 						'<p>p</p>' +
-						'<ol reversed="reversed" start="6" style="list-style-type:lower-alpha">' +
+						'<ol reversed="reversed" start="6" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ol>'
@@ -2402,12 +2402,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 			describe( 'set list properties', () => {
 				it( 'list start on list with defined style', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {style:lower-alpha}
+						# [<paragraph>a</paragraph> {style:lower-latin}
 						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol start="2" style="list-style-type:lower-alpha">' +
+						'<ol start="2" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2421,12 +2421,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 				it( 'list start on list with defined style and reversed', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {style:lower-alpha} {reversed:true}
+						# [<paragraph>a</paragraph> {style:lower-latin} {reversed:true}
 						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2440,12 +2440,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 				it( 'list start and reversed on list with defined style', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {style:lower-alpha}
+						# [<paragraph>a</paragraph> {style:lower-latin}
 						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2462,12 +2462,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 			describe( 'change list property value', () => {
 				it( 'change of list start', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {style:lower-alpha} {start:4}
+						# [<paragraph>a</paragraph> {style:lower-latin} {start:4}
 						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol start="2" style="list-style-type:lower-alpha">' +
+						'<ol start="2" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2481,12 +2481,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 				it( 'list start and reversed', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {style:lower-alpha} {reversed:false} {start:6}
+						# [<paragraph>a</paragraph> {style:lower-latin} {reversed:false} {start:6}
 						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2501,12 +2501,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 				it( 'list start, reversed, and style', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {style:lower-alpha} {reversed:false} {start:3}
+						# [<paragraph>a</paragraph> {style:lower-latin} {reversed:false} {start:3}
 						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed" start="2" style="list-style-type:upper-alpha">' +
+						'<ol reversed="reversed" start="2" style="list-style-type:upper-latin">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2515,7 +2515,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						model.change( writer => {
 							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
 							writer.setAttribute( 'listReversed', true, selection.getFirstRange() );
-							writer.setAttribute( 'listStyle', 'upper-alpha', selection.getFirstRange() );
+							writer.setAttribute( 'listStyle', 'upper-latin', selection.getFirstRange() );
 						} );
 					} );
 				} );
@@ -2543,7 +2543,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 				it( 'to bulleted', () => {
 					const input = modelList( `
-						# [<paragraph>a</paragraph> {start:2} {style:lower-alpha} {reversed:true}
+						# [<paragraph>a</paragraph> {start:2} {style:lower-latin} {reversed:true}
 						# <paragraph>b</paragraph>]
 					` );
 
@@ -2566,7 +2566,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const input = modelList( [
 						'* <paragraph>a</paragraph>',
 						'* [<paragraph>b</paragraph>',
-						'  # <paragraph>c</paragraph>] {start:4} {reversed:true} {style:lower-alpha}'
+						'  # <paragraph>c</paragraph>] {start:4} {reversed:true} {style:lower-latin}'
 					] );
 
 					const output =
@@ -2576,7 +2576,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 								'<ul>' +
 									'<li>' +
 										'<span class="ck-list-bogus-paragraph">b</span>' +
-										'<ol reversed="reversed" start="4" style="list-style-type:lower-alpha">' +
+										'<ol reversed="reversed" start="4" style="list-style-type:lower-latin">' +
 											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 										'</ol>' +
 									'</li>' +

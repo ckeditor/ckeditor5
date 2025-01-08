@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -166,13 +166,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 					expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
 				} );
 
-				it( 'should convert single list (type: numbered, style: upper-alpha)', () => {
+				it( 'should convert single list (type: numbered, style: upper-latin)', () => {
 					setModelData( model,
-						'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Foo</listItem>' +
-						'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Bar</listItem>'
+						'<listItem listIndent="0" listType="numbered" listStyle="upper-latin">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStyle="upper-latin">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol style="list-style-type:upper-alpha;"><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).to.equal( '<ol style="list-style-type:upper-latin;"><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
@@ -334,18 +334,18 @@ describe( 'LegacyListPropertiesEditing', () => {
 					);
 				} );
 
-				it( 'should convert single list (type: numbered, style: upper-alpha)', () => {
-					editor.setData( '<ol style="list-style-type:upper-alpha;"><li>Foo</li><li>Bar</li></ol>' );
+				it( 'should convert single list (type: numbered, style: upper-latin)', () => {
+					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li><li>Bar</li></ol>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Bar</listItem>'
 					);
 				} );
 
 				it( 'should convert nested and mixed lists', () => {
 					editor.setData(
-						'<ol style="list-style-type:upper-alpha;">' +
+						'<ol style="list-style-type:upper-latin;">' +
 							'<li>OL 1</li>' +
 							'<li>OL 2' +
 								'<ul style="list-style-type:circle;">' +
@@ -358,18 +358,18 @@ describe( 'LegacyListPropertiesEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 1</listItem>' +
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 2</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 1</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 1</listItem>' +
 						'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 2</listItem>' +
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 3</listItem>'
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 3</listItem>'
 					);
 				} );
 
 				it( 'should convert when the list is in the middle of the content', () => {
 					editor.setData(
 						'<p>Paragraph.</p>' +
-						'<ol style="list-style-type:upper-alpha;">' +
+						'<ol style="list-style-type:upper-latin;">' +
 							'<li>Foo</li>' +
 							'<li>Bar</li>' +
 						'</ol>' +
@@ -378,8 +378,8 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>Paragraph.</paragraph>' +
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Bar</listItem>' +
 						'<paragraph>Paragraph.</paragraph>'
 					);
 				} );
@@ -5440,10 +5440,10 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should inherit the attributes when merging the same kind of lists', () => {
 					setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
-						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Foo' +
 						'</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Bar' +
 						'</listItem>'
 					);
@@ -5451,13 +5451,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'numberedList' );
 
 					expect( getModelData( model ) ).to.equal(
-						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Foo Bar.[]' +
 						'</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Foo' +
 						'</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Bar' +
 						'</listItem>'
 					);
@@ -5491,7 +5491,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 								'Bar' +
 							'</listItem>' +
-							'<listItem listIndent="0" listStyle="upper-alpha" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="upper-latin" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 
 						editor.execute( 'numberedList' );
@@ -5573,7 +5573,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
 								'1.' +
 							'</listItem>' +
-							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-alpha" listType="numbered">' +
+							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-latin" listType="numbered">' +
 								'2.' +
 							'</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
@@ -5590,10 +5590,10 @@ describe( 'LegacyListPropertiesEditing', () => {
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
 								'1.' +
 							'</listItem>' +
-							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-alpha" listType="numbered">' +
+							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-latin" listType="numbered">' +
 								'2.' +
 							'</listItem>' +
-							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-alpha" listType="numbered">' +
+							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-latin" listType="numbered">' +
 								'3.[]' +
 							'</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
@@ -5607,13 +5607,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 			describe( 'outdenting lists', () => {
 				it( 'should inherit the attributes from parent list', () => {
 					setModelData( model,
-						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
-						'<listItem listIndent="1" listReversed="false" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+						'<listItem listIndent="1" listReversed="false" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'2.[]' +
 						'</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'3.' +
 						'</listItem>'
 					);
@@ -5621,13 +5621,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
-						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'2.[]' +
 						'</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'3.' +
 						'</listItem>'
 					);

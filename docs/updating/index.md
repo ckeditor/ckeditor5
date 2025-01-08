@@ -10,9 +10,17 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 
 CKEditor&nbsp;5 is an active, rapidly developing software project. It is, therefore, important to keep it updated and in best condition for stability and safety reasons.
 
+## Migration to CDN
+
+Migrate your CKEditor&nbsp;5 from an NPM-based installation to a CDN-based one (for example {@link updating/migration-to-cdn/vanilla-js Vanilla JS}). CDN-based installations can simplify the setup process by providing a bundler-agnostic way to lazy initialization of CKEditor&nbsp;5 scripts and styles injection. It reduces complexity in the project setup.
+
+## New installation methods
+
+This section will explore the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods} introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor 5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods.
+
 ## Migration from CKEditor 4
 
-If you want to switch to CKEditor&nbsp;5 from our previous product, CKEditor 4, please refer to the dedicated {@link updating/migration-from-ckeditor-4 Migration from CKEditor 4} guide that will explain all the differences between these two products and help you make the switch.
+If you want to switch to CKEditor&nbsp;5 from our previous product, CKEditor&nbsp;4, please refer to the dedicated {@link updating/migration-from-ckeditor-4 Migration from CKEditor 4} guide that will explain all the differences between these two products and help you make the switch.
 
 ## Daily maintenance of regular operation of CKEditor&nbsp;5
 

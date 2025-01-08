@@ -2,7 +2,7 @@
 
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-env node */
@@ -51,7 +51,7 @@ const EXCLUDED_ICONS = [
 ];
 
 // A pattern to match all the icons.
-const ALL_ICONS_PATTERN = 'packages/**/theme/icons';
+const ALL_ICONS_PATTERN = 'packages/*/theme/icons';
 
 const { paths, verifyOnly } = parseArguments( process.argv.slice( 2 ) );
 

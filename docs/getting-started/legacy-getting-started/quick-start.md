@@ -306,7 +306,7 @@ While the superbuild is designed to provide as many of them as possible, some of
 
 ## Running a full-featured editor with Premium features
 
-If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes, and revision history, sign up for a [14-day free trial](https://orders.ckeditor.com/trial/premium-features).
+If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes, and revision history, sign up for a [14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
 
 After you sign up, in the customer dashboard you will find the full code snippet to run the editor with premium features with all the necessary configurations.
 

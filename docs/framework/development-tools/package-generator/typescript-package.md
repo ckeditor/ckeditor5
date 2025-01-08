@@ -52,7 +52,8 @@ An overview of the project's directory structure:
 ├─ tsconfig.dist.json      # Override for options from `tsconfig.json` file during `npm` and browser builds.
 ├─ tsconfig.test.json      # Override for options from `tsconfig.json` file while executing tests.
 ├─ tsconfig.release.json   # Override for options from `tsconfig.json` file during release process.
-└─ README.md               # Description of your project and usage instructions.
+├─ README.md               # Description of your project and usage instructions.
+└─ vitest.config.ts        # Vitest configuration file.
 
 ```
 
@@ -68,6 +69,7 @@ Guides for developing some of the files:
 * [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
 * [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 * augmentation.ts - Read more in the [relevant issue](https://github.com/ckeditor/ckeditor5/issues/13433), {@link module:core/plugincollection~PluginsMap} and {@link module:core/commandcollection~CommandsMap}.
+* [vitest.config.js](https://vitest.dev/config/)
 
 ## Npm scripts
 
@@ -100,12 +102,7 @@ npm run start -- --language=de
 
 ### `test`
 
-Allows executing unit tests for the package, specified in the `tests/` directory. The command accepts the following modifiers:
-
-* `--coverage` &ndash; Creates the code coverage report.
-* `--watch` &ndash; Observes the source files (the command does not end after executing tests).
-* `--source-map` &ndash; Generates source maps of the sources.
-* `--verbose` &ndash; Prints additional webpack logs.
+Allows executing unit tests for the package specified in the `tests/` directory using [Vitest](https://vitest.dev/) testing framework. To check the code coverage, add the `--coverage` modifier. See other [CLI flags](https://vitest.dev/guide/cli.html) in Vitest.
 
 Examples:
 
@@ -114,7 +111,18 @@ Examples:
 npm run test
 
 # Generate code coverage report after each change in the sources.
-npm run test -- --coverage --test
+npm run test -- --coverage --watch
+```
+
+### `test:debug`
+
+Allows executing unit tests for the package specified in the `tests/` directory using [Vitest](https://vitest.dev/) testing framework with the possibility of debugging them. Once Vitest starts, it will stop execution and wait for you to open developer tools that can connect to Node.js inspector.
+
+Examples:
+
+```bash
+# Execute tests in the debug mode.
+npm run test:debug
 ```
 
 ### `lint`
@@ -187,64 +195,37 @@ npm run dll:serve
 	You can run `npm run dll:build -- --watch` and `npm run dll:serve` in two separate command terminals. That way, after you save your changes and reload the page, the content will update.
 </info-box>
 
-### `translations:collect`
+### `translations:synchronize`
 
-Collects translation messages (arguments of the `t()` function) and context files. Then validates whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
+Synchronizes translation messages (arguments of the `t()` function) by performing the following steps:
+
+ * Collect all translation messages from the package by finding `t()` calls in source files.
+ * Perform the validations to detect if translation context is valid. It checks whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package, and there is no missing, unused or duplicated context entries.
+ * If there are no validation errors, update all translation files (`*.po` files) to be in sync with the context file:
+   * unused translation entries are removed,
+   * missing translation entries are added with empty string as the message translation,
+   * missing translation files are created for languages that do not have own `*.po` file yet.
 
 The task may end with an error if one of the following conditions is met:
 
-* The `Unused context` error is found &ndash; Entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
-* The `Context is duplicated for the id` error is found &ndash; Some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewrite them.
-* The `Context for the message id is missing` error is found &ndash; Entries specified in the source files are not described in the `lang/contexts.json` file. They should be added.
+* Found the `Unused context` error &ndash; entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
+* Found the `Duplicated contex` error &ndash; some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewriting them.
+* Found the `Missing context` error &ndash; entries specified in source files are not described in the `lang/contexts.json` file. They should be added.
 
 Examples:
 
 ```bash
-npm run translations:collect
+npm run translations:synchronize
 ```
 
-### `translations:download`
+### `translations:validate`
 
-Downloads translations from the Transifex server. Depending on users' activity in the project, it creates translation files used for building the editor.
-
-<info-box info>
-	The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
-
-	To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
-
-```json
-"scripts": {
-  "translations:download": "ckeditor5-package-tools translations:upload --organization=[ORGANIZATION] --project=[PROJECT]"
-},
-```
-</info-box>
+Peforms only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
 
 Examples:
 
 ```bash
-npm run translations:download -- --organization [ORGANIZATION] --project [PROJECT]
-```
-
-### `translations:upload`
-
-Uploads translation messages onto the Transifex server. It allows for the creation of translations into other languages by users using the Transifex platform.
-
-<info-box info>
-The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
-
-To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
-
-```json
-"scripts": {
-  "translations:upload": "ckeditor5-package-tools translations:upload --organization=[ORGANIZATION] --project=[PROJECT]"
-},
-```
-</info-box>
-
-Examples:
-
-```bash
-npm run translations:upload -- --organization [ORGANIZATION] --project [PROJECT]
+npm run translations:validate
 ```
 
 ### `prepare`, `prepublishOnly` and `postpublish`
@@ -281,15 +262,12 @@ To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introdu
 
 ## Translations
 
-Packages created by this tool, just like the entirety of the CKEditor&nbsp;5 ecosystem, include full support for localization. If you wish to include translations for your package, visit the {@link framework/deep-dive/localization dedicated translation guide} to learn more.
+Packages created by this tool, just like the entirety of the CKEditor&nbsp;5 ecosystem, include support for localization. If you wish to include translations for your package, visit the {@link framework/deep-dive/localization dedicated translation guide} to learn more.
 
-The package generator provides several tools for handling translations in the created package. We recommend the following flow when dealing with translations:
+The package generator provides a synchronization tool to help preparing files needed for translation into other languages. We recommend the following flow when dealing with translations:
 
-1. Call `npm run translations:download` &ndash; Download the latest version of translations.
-    * If there are changes in the `lang/translations/*` files, commit them as they represent new or updated translation files.
-1. Call `npm run translations:collect` &ndash; Verify whether contexts are up-to-date.
-1. Call `npm run translations:upload` &ndash; Upload new translations.
-1. Call `npm run translations:download` &ndash; If new contexts were uploaded, it updates the `en.po` file in the package. Do not forget to commit the change.
+1. Call `npm run translations:synchronize` &ndash; Prepare the translation files in all supported languages. It creates files for each language in `lang/translations` directory in [PO format](https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html). Each `*.po` file contains empty entry for every message found in the `lang/contexts.json` file.
+2. Provide translations to messages in the generated `lang/translations/*.po` files.
 
 ## Reporting issues
 

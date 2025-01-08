@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -47,7 +47,7 @@ import {
 	isListItemView
 } from './utils/view.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker.js';
+import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
@@ -137,33 +137,34 @@ export function reconvertItemsOnDataChange(
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
-		const itemToListHead = new Map<ListElement, ListElement>();
+		const itemToListHead = new Set<ListElement>();
 		const changedItems = new Set<Node>();
+		const visited = new Set<Element>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				findAndAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
-					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
+					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead, visited );
 				} else {
 					changedItems.add( entry.position.nodeAfter! );
 				}
 			}
 			// Removed list item.
 			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				findAndAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' ) {
 				const item = entry.range.start.nodeAfter!;
 
 				if ( attributeNames.includes( entry.attributeKey ) ) {
-					findAndAddListHeadToMap( entry.range.start, itemToListHead );
+					findAndAddListHeadToMap( entry.range.start, itemToListHead, visited );
 
 					if ( entry.attributeNewValue === null ) {
-						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead, visited );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
 						if ( doesItemBlockRequiresRefresh( item as Element ) ) {
@@ -196,7 +197,7 @@ export function reconvertItemsOnDataChange(
 		const visited = new Set();
 		const stack: Array<ListItemAttributesMap> = [];
 
-		for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+		for ( const { node, previous } of new SiblingListBlocksIterator( listHead ) ) {
 			if ( visited.has( node ) ) {
 				continue;
 			}

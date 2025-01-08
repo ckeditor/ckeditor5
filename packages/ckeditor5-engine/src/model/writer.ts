@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -231,7 +231,11 @@ export default class Writer {
 
 		const version = position.root.document ? position.root.document.version : null;
 
-		const insert = new InsertOperation( position, item, version );
+		const children = item instanceof DocumentFragment ?
+			item._removeChildren( 0, item.childCount ) :
+			item;
+
+		const insert = new InsertOperation( position, children, version );
 
 		if ( item instanceof Text ) {
 			insert.shouldReceiveAttributes = true;

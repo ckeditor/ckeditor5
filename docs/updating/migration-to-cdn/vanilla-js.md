@@ -1,6 +1,6 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 - migrate from npm to CDN | CKEditor 5 documentation
+meta-title: Vanilla JS CKEditor 5 - migrate from npm to CDN | CKEditor 5 Documentation
 meta-description: Migrate CKEditor 5 from npm to CDN in a few simple steps. Learn how to install CKEditor 5 in your project using the CDN.
 category: migrations
 order: 10

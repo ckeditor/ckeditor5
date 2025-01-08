@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 documentation
+meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with CDN.
 category: cloud
 order: 40
@@ -27,7 +27,7 @@ You can use CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your ap
 ## Quick start
 
 <info-box>
-	To use our CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free).
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 First, install the CKEditor&nbsp;5 WYSIWYG editor component for Vue 2:
@@ -45,7 +45,7 @@ Then, include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and 
 		<meta charset="UTF-8" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		
+
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 		<!-- Add if you use premium features -->
@@ -87,9 +87,8 @@ const {
 	Bold,
 	Italic,
 	Paragraph,
-	Mention
 } = CKEDITOR;
-const { SlashCommand } = CKEDITOR_PREMIUM_FEATURES;
+const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 export default {
 	name: 'app',
@@ -99,11 +98,8 @@ export default {
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand ],
-				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				mention: { 
-					// Mention configuration
-				}
+				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			}
 		};
 	}

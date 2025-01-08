@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -123,7 +123,7 @@ export default class Position extends TypeCheckable {
 			);
 		}
 
-		if ( !( path instanceof Array ) || path.length === 0 ) {
+		if ( !Array.isArray( path ) || path.length === 0 ) {
 			/**
 			 * Position path must be an array with at least one item.
 			 *
@@ -897,7 +897,7 @@ export default class Position extends TypeCheckable {
 		offset?: PositionOffset,
 		stickiness: PositionStickiness = 'toNone'
 	): Position {
-		if ( itemOrPosition instanceof Position ) {
+		if ( itemOrPosition.is( 'model:position' ) ) {
 			return new Position( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
 		} else {
 			const node = itemOrPosition;

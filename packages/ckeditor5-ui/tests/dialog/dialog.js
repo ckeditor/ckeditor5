@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -271,6 +271,24 @@ describe( 'Dialog', () => {
 			dialogPlugin.destroy();
 
 			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+		} );
+
+		it( 'should not unlock scrolling on the document if modal was displayed by another plugin instance', () => {
+			const tempDialogPlugin = new Dialog( editor );
+
+			tempDialogPlugin._show( {
+				position: DialogViewPosition.EDITOR_CENTER,
+				isModal: true,
+				className: 'foo'
+			} );
+
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+
+			dialogPlugin.destroy();
+
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+
+			tempDialogPlugin.destroy();
 		} );
 	} );
 

@@ -45,11 +45,11 @@ msgstr "Заголовок рядка"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Вставити рядок зверху"
+msgstr "Вставити рядок знизу"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Вставити рядок знизу"
+msgstr "Вставити рядок зверху"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"

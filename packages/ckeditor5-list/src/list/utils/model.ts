@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -19,7 +19,7 @@ import type {
 
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import ListWalker, { type ListWalkerOptions, iterateSiblingListBlocks } from './listwalker.js';
+import ListWalker, { type ListWalkerOptions, SiblingListBlocksIterator } from './listwalker.js';
 import { type ListType } from '../listediting.js';
 
 /**
@@ -499,7 +499,7 @@ export function outdentFollowingItems( lastBlock: Element, writer: Writer ): Arr
 	// that this is the same effect that we would be get by multiple use of outdent command. However doing
 	// it like this is much more efficient because it's less operation (less memory usage, easier OT) and
 	// less conversion (faster).
-	for ( const { node } of iterateSiblingListBlocks( lastBlock.nextSibling, 'forward' ) ) {
+	for ( const { node } of new SiblingListBlocksIterator( lastBlock.nextSibling ) ) {
 		// Check each next list item, as long as its indent is higher than 0.
 		const indent = node.getAttribute( 'listIndent' );
 

@@ -1,6 +1,6 @@
 ---
 menu-title: Angular
-meta-title: Angular CKEditor 5 - migrate integration from npm to CDN | CKEditor 5 documentation
+meta-title: Angular CKEditor 5 - migrate integration from npm to CDN | CKEditor 5 Documentation
 meta-description: Migrate Angular CKEditor 5 integration from npm to CDN in a few simple steps. Learn how to install Angular CKEditor 5 integration in your project using the CDN.
 category: migrations
 order: 50

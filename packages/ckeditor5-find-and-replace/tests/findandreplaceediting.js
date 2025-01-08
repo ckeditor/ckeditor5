@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import FindAndReplaceEditing from '../src/findandreplaceediting.js';
@@ -10,6 +10,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/index.js';
 
 import FindAndReplace from '../src/findandreplace.js';
 
@@ -57,6 +59,61 @@ describe( 'FindAndReplaceEditing', () => {
 
 			expect( getSearchResultHTML() ).to.equal(
 				'<p><span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span></p>'
+			);
+		} );
+
+		it( 'should properly highlight inline widgets with text content', () => {
+			registerInlinePlaceholderWidget( editor );
+
+			editor.setData(
+				'<p>' +
+					'<span class="placeholder">Foo Bar Foo foo</span>' +
+					'<span>some text #</span>' +
+				'</p>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[]<placeholder>Foo Bar Foo foo</placeholder>some text #</paragraph>'
+			);
+
+			findAndReplaceEditing.find( 'Foo' );
+
+			expect( getSearchResultHTML() ).to.equal(
+				'<p>' +
+					'<span class="ck-widget placeholder" contenteditable="false">' +
+						'<span class="ck-find-result"><span class="ck-find-result_selected">Foo</span></span>' +
+						' Bar <span class="ck-find-result">Foo</span> <span class="ck-find-result">foo</span>' +
+					'</span>' +
+					'some text #' +
+				'</p>'
+			);
+		} );
+
+		it( 'should properly highlight text after an inline widgets with text content', () => {
+			registerInlinePlaceholderWidget( editor );
+
+			editor.setData(
+				'<p>' +
+					'text Foo text' +
+					'<span class="placeholder">Bar Foo baz</span>' +
+					'some Foo text' +
+				'</p>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[]text Foo text<placeholder>Bar Foo baz</placeholder>some Foo text</paragraph>'
+			);
+
+			findAndReplaceEditing.find( 'Foo' );
+
+			expect( getSearchResultHTML() ).to.equal(
+				'<p>' +
+					'text <span class="ck-find-result"><span class="ck-find-result_selected">Foo</span></span> text' +
+					'<span class="ck-widget placeholder" contenteditable="false">' +
+						'Bar <span class="ck-find-result">Foo</span> baz' +
+					'</span>' +
+					'some <span class="ck-find-result">Foo</span> text' +
+				'</p>'
 			);
 		} );
 
@@ -222,5 +279,40 @@ describe( 'FindAndReplaceEditing', () => {
 		} );
 
 		return marker;
+	}
+
+	function registerInlinePlaceholderWidget() {
+		model.schema.register( 'placeholder', {
+			inheritAllFrom: '$inlineObject',
+			allowAttributes: [ 'name' ]
+		} );
+
+		model.schema.extend( '$text', { allowIn: 'placeholder' } );
+
+		editor.editing.mapper.on(
+			'viewToModelPosition',
+			viewToModelPositionOutsideModelElement( model, viewElement => viewElement.hasClass( 'placeholder' ) )
+		);
+
+		editor.conversion.for( 'upcast' ).elementToElement( {
+			view: {
+				name: 'span',
+				classes: [ 'placeholder' ]
+			},
+			model: ( _, { writer } ) => writer.createElement( 'placeholder' )
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'placeholder',
+			view: ( _, { writer } ) => toWidget(
+				writer.createContainerElement( 'span', { class: 'placeholder' } ),
+				writer
+			)
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'placeholder',
+			view: ( _, { writer } ) => writer.createContainerElement( 'span', { class: 'placeholder' } )
+		} );
 	}
 } );

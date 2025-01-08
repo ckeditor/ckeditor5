@@ -1,26 +1,22 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module utils/splicearray
  */
 
-const BIG_CHUNK_SIZE = 10000;
-
 /**
- * Splices one array into another. To be used instead of `Array.prototype.splice` as the latter may
- * throw "Maximum call stack size exceeded" when passed huge number of items to insert.
- *
- * Note: in contrary to Array.splice, this function does not modify the original `target`.
+ * Splices one array into another. To be used instead of `Array.prototype.splice` for better
+ * performance and because the latter may throw "Maximum call stack size exceeded" error when
+ * passing huge number of items to insert.
  *
  * ```ts
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 0, 0 );	// [ 3, 4, 1, 2 ]
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 1 );	// [ 1, 3, 4 ]
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 0 );	// [ 1, 3, 4, 2 ]
- * spliceArray( [ 1, 2 ], [ 3, 4 ], 2, 0 );	// [ 1, 2, 3, 4 ]
- * spliceArray( [ 1, 2 ], [],       0, 1 );	// [ 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 0 );	// [ 3, 4, 1, 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 1 );	// [ 1, 3, 4, 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 2 );	// [ 1, 2, 3, 4 ]
+ * spliceArray( [ 1, 2 ], [],       0 );	// [ 1, 2 ]
  * ```
  *
  * @param target Array to be spliced.
@@ -30,14 +26,21 @@ const BIG_CHUNK_SIZE = 10000;
  *
  * @returns New spliced array.
  */
-export default function spliceArray<T>( target: ReadonlyArray<T>, source: ReadonlyArray<T>, start: number, count: number ): Array<T> {
-	// In case of performance problems, see: https://github.com/ckeditor/ckeditor5/pull/12429/files#r965850568
-	if ( Math.max( source.length, target.length ) > BIG_CHUNK_SIZE ) {
-		return target.slice( 0, start ).concat( source ).concat( target.slice( start + count, target.length ) );
-	} else {
-		const newTarget = Array.from( target );
-		newTarget.splice( start, count, ...source );
+export default function spliceArray<T>(
+	targetArray: Array<T>,
+	insertArray: Array<T>,
+	index: number
+): void {
+	const originalLength = targetArray.length;
+	const insertLength = insertArray.length;
 
-		return newTarget;
+	// Shift elements in the target array to make space for insertArray
+	for ( let i = originalLength - 1; i >= index; i-- ) {
+		targetArray[ i + insertLength ] = targetArray[ i ];
+	}
+
+	// Copy elements from insertArray into the target array
+	for ( let i = 0; i < insertLength; i++ ) {
+		targetArray[ index + i ] = insertArray[ i ];
 	}
 }

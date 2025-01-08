@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,6 +8,7 @@
  */
 
 import {
+	ButtonView,
 	View,
 	ViewCollection,
 	FocusCycler,
@@ -16,7 +17,6 @@ import {
 	createLabeledInputNumber,
 	addKeyboardHandlingForGrid,
 	CollapsibleView,
-	type ButtonView,
 	type InputNumberView,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
@@ -283,6 +283,16 @@ export default class ListPropertiesView extends View {
 		stylesView.children.delegate( 'execute' ).to( this );
 
 		stylesView.focus = function( this: any ) {
+			// If there is a button that is already on, focus it.
+			// It's counterintuitive to focus the first button when there is already a button on.
+			for ( const child of this.children ) {
+				if ( child instanceof ButtonView && child.isOn ) {
+					child.focus();
+					return;
+				}
+			}
+
+			// ... otherwise focus the first button.
 			this.children.first.focus();
 		};
 

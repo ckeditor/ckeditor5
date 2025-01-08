@@ -2,7 +2,7 @@
 category: nim-migration
 order: 30
 menu-title: Migrating from legacy Online Builder
-meta-title: Migrating from the legacy Online Builder to new installation methods | CKEditor 5 documentation
+meta-title: Migrating from the legacy Online Builder to new installation methods | CKEditor 5 Documentation
 meta-description: Learn how to upgrade build from the legacy Online Builder to new installation methods.
 modified_at: 2024-06-25
 ---

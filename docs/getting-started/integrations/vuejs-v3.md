@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 3+
-meta-title: Vue.js 3+ rich text editor component (npm) | CKEditor 5 documentation
+meta-title: Vue.js 3+ rich text editor component (npm) | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with npm.
 category: self-hosted
 order: 50
@@ -18,11 +18,11 @@ order: 50
 
 CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
-This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
-
 {@snippet getting-started/use-builder}
 
 ## Quick start
+
+This guide assumes that you already have a Vue project. If you do not have one, see the [Vue documentation](https://vuejs.org/guide/quick-start) to learn how to create it.
 
 Start by installing the following packages:
 
@@ -46,6 +46,15 @@ npm install @ckeditor/ckeditor5-vue
 
 With these packages installed, create a new Vue component called `Editor.vue`. It will use the `<ckeditor>` component to run the editor. The following example shows a single file component with open-source and premium CKEditor&nbsp;5 plugins.
 
+<info-box>
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+</info-box>
+
 ```html
 <template>
 	<ckeditor
@@ -57,8 +66,8 @@ With these packages installed, create a new Vue component called `Editor.vue`. I
 
 <script setup>
 import { ref, computed } from 'vue';
-import { ClassicEditor, Paragraph, Essentials, Bold, Italic, Mention } from 'ckeditor5';
-import { SlashCommand } from 'ckeditor5-premium-features';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 import 'ckeditor5/ckeditor5.css';
@@ -69,8 +78,8 @@ const data = ref( '<p>Hello world!</p>' );
 const config = computed( () => {
 	return {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Essentials, Paragraph, Bold, Italic, Mention, SlashCommand ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
 } );
 </script>
@@ -372,11 +381,22 @@ beforeAll( () => {
 		};
 	}
 
-	Range.prototype.getClientRects = () => ({
+	const getClientRects = () => ({
 		item: () => null,
 		length: 0,
-		[Symbol.iterator]: function* () {},
+		[Symbol.iterator]: function* () {}
 	});
+
+	Range.prototype.getClientRects = getClientRects;
+	Element.prototype.getClientRects = getClientRects;
+
+	if ( !Document.prototype.createElementNS ) {
+		Document.prototype.createElementNS = ( namespace, name ) => {
+			const element = document.createElement( name );
+			element.namespaceURI = namespace;
+			return element;
+		};
+	}
 } );
 ```
 

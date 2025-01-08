@@ -1,6 +1,6 @@
 ---
 menu-title: Drupal
-meta-title: Real-time editing in Drupal | CKEditor 5 documentation
+meta-title: Real-time editing in Drupal | CKEditor 5 Documentation
 meta-description: Learn how to set up real-time collaboration in the Drupal editing platform with the CKEditor 5 Premium Features module.
 category: installation
 order: 100
@@ -68,7 +68,7 @@ The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugi
 * {@link features/word-count Word count}
 * Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; limitation of the free version are listed [on this page](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/wproofreader-free-vs-premium-feature-comparison)
 
-Plugin Pack also makes it possible to use some of the premium features for free. 
+Plugin Pack also makes it possible to use some of the premium features for free.
 
 Currently available premium features:
 

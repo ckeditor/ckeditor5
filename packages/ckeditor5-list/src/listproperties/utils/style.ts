@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -60,4 +60,26 @@ export function getListStyleTypeFromTypeAttribute( value: string ): string | nul
  */
 export function getTypeAttributeFromListStyleType( value: string ): string | null {
 	return LIST_STYLE_TO_TYPE_ATTRIBUTE[ value ] || null;
+}
+
+/**
+ * Normalizes list style by converting aliases to their canonical form.
+ *
+ * @param listStyle The list style value to normalize.
+ * @returns The canonical form of the list style.
+ *
+ * @example
+ * normalizeListStyle( 'lower-alpha' ); // Returns 'lower-latin'
+ * normalizeListStyle( 'upper-alpha' ); // Returns 'upper-latin'
+ * normalizeListStyle( 'disc' ); // Returns 'disc'
+ */
+export function normalizeListStyle( listStyle: string ): string {
+	switch ( listStyle ) {
+		case 'lower-alpha':
+			return 'lower-latin';
+		case 'upper-alpha':
+			return 'upper-latin';
+		default:
+			return listStyle;
+	}
 }

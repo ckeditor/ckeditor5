@@ -1,7 +1,7 @@
 ---
 category: setup
 menu-title: Editor types
-meta-title: Editor types | CKEditor 5 documentation
+meta-title: Editor types | CKEditor 5 Documentation
 meta-description: Learn more about available CKEditor 5 editor types.
 order: 25
 modified_at: 2024-06-25

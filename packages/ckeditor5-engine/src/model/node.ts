@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -15,7 +15,7 @@ import type Document from './document.js';
 import type DocumentFragment from './documentfragment.js';
 import type Element from './element.js';
 
-import { CKEditorError, compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
+import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Model node. Most basic structure of model tree.

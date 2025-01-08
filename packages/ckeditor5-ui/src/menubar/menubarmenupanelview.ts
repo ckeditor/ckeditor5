@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -105,4 +105,4 @@ export default class MenuBarMenuPanelView extends View implements FocusableView 
  *
  * They are reflected as CSS class suffixes on the panel view element.
  */
-export type MenuBarMenuPanelPosition = 'se' | 'sw' | 'ne' | 'nw' | 'w' | 'e';
+export type MenuBarMenuPanelPosition = 'se' | 'sw' | 'ne' | 'nw' | 'w' | 'ws' | 'e' | 'es';

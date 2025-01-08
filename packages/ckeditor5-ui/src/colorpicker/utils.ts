@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -126,11 +126,11 @@ export function registerCustomElement( elementName: string, constructor: CustomE
 function formatColorOutput( values: FormatTableColor, format: ColorPickerOutputFormat ): string {
 	switch ( format ) {
 		case 'hex': return `#${ values }`;
-		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-		case 'hsl': return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
-		case 'hwb': return `hwb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-		case 'lab': return `lab( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
-		case 'lch': return `lch( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
+		case 'rgb': return `rgb(${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] })`;
+		case 'hsl': return `hsl(${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }%)`;
+		case 'hwb': return `hwb(${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] })`;
+		case 'lab': return `lab(${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] })`;
+		case 'lch': return `lch(${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] })`;
 
 		default: return '';
 	}

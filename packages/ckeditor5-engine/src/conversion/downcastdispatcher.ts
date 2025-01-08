@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -336,8 +336,8 @@ export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		}
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
-			this._testAndFire( 'insert', data, conversionApi );
+		for ( const data of range.getWalker( { shallow: true } ) ) {
+			this._testAndFire( 'insert', walkerValueToEventData( data ), conversionApi );
 		}
 	}
 
@@ -911,12 +911,9 @@ function getEventName<TType extends string>( type: TType, data: { item: Item | S
 }
 
 function walkerValueToEventData( value: TreeWalkerValue ) {
-	const item = value.item;
-	const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length! );
-
 	return {
-		item,
-		range: itemRange
+		item: value.item,
+		range: Range._createFromPositionAndShift( value.previousPosition, value.length! )
 	};
 }
 
