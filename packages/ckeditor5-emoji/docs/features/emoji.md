@@ -29,6 +29,8 @@ The selected emoji category and the tone skin are remembered by the feature, so 
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+**Note:** Availability of emojis and their appearance depends on the operating system. If you want to standardize both the appearance and availability of emojis, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji).
+
 ## Installation
 
 <info-box info>
