@@ -30,6 +30,9 @@ bumpYear( {
 			pattern: '.husky/*'
 		},
 		{
+			pattern: '.circleci/*'
+		},
+		{
 			pattern: 'packages/*/.eslintrc.js'
 		}
 	]

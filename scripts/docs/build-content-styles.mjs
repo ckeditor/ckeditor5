@@ -317,7 +317,7 @@ function generateCKEditor5Source( ckeditor5Modules, cwd ) {
 	const sourceFileContent = [
 		'/**',
 		` * @license Copyright (c) 2003-${ new Date().getFullYear() }, CKSource Holding sp. z o.o. All rights reserved.`,
-		' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
+		' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options',
 		' */',
 		'',
 		'// The editor creator to use.',
