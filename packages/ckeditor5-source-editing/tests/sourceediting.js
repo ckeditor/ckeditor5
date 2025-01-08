@@ -422,7 +422,7 @@ describe( 'SourceEditing', () => {
 			expect( textarea.readOnly ).to.be.false;
 		} );
 
-		it( 'should disable textarea if plugin is disabled', () => {
+		it( 'should close source editing mode if plugin is disabled', () => {
 			button.fire( 'execute' );
 
 			plugin.forceDisabled( 'disablePlugin' );
