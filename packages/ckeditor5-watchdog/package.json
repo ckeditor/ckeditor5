@@ -17,11 +17,9 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-editor-classic": "44.1.0",
     "@ckeditor/ckeditor5-editor-multi-root": "44.1.0",
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
-    "@ckeditor/ckeditor5-utils": "44.1.0",
     "@ckeditor/ckeditor5-clipboard": "44.1.0",
     "ckeditor5": "44.1.0",
     "typescript": "5.0.4"
