@@ -32,6 +32,7 @@ import {
 import EmojiToneView, { type SkinToneId } from './ui/emojitoneview.js';
 
 const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
+const BASELINE_EMOJI_WIDTH = 24;
 
 /**
  * The emoji picker plugin.
@@ -172,11 +173,19 @@ export default class EmojiPicker extends Plugin {
 		databaseId: number; title: string; exampleEmoji: string;
 	} ): Promise<EmojiGroup> {
 		const databaseGroup = await this._emojiDatabase.getEmojiByGroup( databaseId );
+		const container = this._createEmojiWidthTestingContainer();
 
-		return {
-			title,
-			exampleEmoji,
-			items: databaseGroup.map( item => {
+		const items = databaseGroup
+			.filter( item => {
+				const emojiWidth = this._getNodeWidth( container, item.unicode );
+
+				// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
+				// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
+				// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
+				// So here we set the threshold at 1.8 times the size of the baseline emoji.
+				return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
+			} )
+			.map( item => {
 				const name = item.annotation;
 				const emojis = [ item.unicode ];
 
@@ -187,7 +196,15 @@ export default class EmojiPicker extends Plugin {
 				this._emojis.set( name, emojis );
 
 				return { name, emojis };
-			} )
+			} );
+
+		// Clean up width testing container.
+		document.body.removeChild( container );
+
+		return {
+			title,
+			exampleEmoji,
+			items
 		};
 	}
 
@@ -437,6 +454,34 @@ export default class EmojiPicker extends Plugin {
 				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
 			} );
 		}
+	}
+
+	/**
+	 * Creates a div for emoji width testing purposes.
+	 */
+	private _createEmojiWidthTestingContainer(): HTMLDivElement {
+		const container = document.createElement( 'div' );
+		container.setAttribute( 'aria-hidden', 'true' );
+		container.style.position = 'absolute';
+		container.style.left = '-9999px';
+		container.style.whiteSpace = 'nowrap';
+		container.style.fontSize = BASELINE_EMOJI_WIDTH + 'px';
+		document.body.appendChild( container );
+
+		return container;
+	}
+
+	/**
+	 * Returns the width of the provided node.
+	 */
+	private _getNodeWidth( container: HTMLDivElement, node: string ): number {
+		const span = document.createElement( 'span' );
+		span.textContent = node;
+		container.appendChild( span );
+		const nodeWidth = span.offsetWidth;
+		container.removeChild( span );
+
+		return nodeWidth;
 	}
 }
 
