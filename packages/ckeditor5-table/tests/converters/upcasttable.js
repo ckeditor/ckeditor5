@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -562,7 +562,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	describe( 'headingRows', () => {
-		it( 'should be able to detect heding row in 2x2 table', () => {
+		it( 'should be able to detect heading row in 2x2 table', () => {
 			editor.setData(
 				'<table>' +
 					'<tr>' +
@@ -590,7 +590,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'should be able to detect heding row in table with caption', () => {
+		it( 'should be able to detect heading row in table with caption', () => {
 			editor.setData(
 				'<table>' +
 					'<caption>Concerts</caption>' +
@@ -645,7 +645,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'should be able to detect heding row in 2x1 table', () => {
+		it( 'should be able to detect heading row in 2x1 table', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -671,7 +671,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'should be able to detect heding row that has colspan', () => {
+		it( 'should be able to detect heading row that has colspan', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -696,6 +696,108 @@ describe( 'upcastTable()', () => {
 						'<tableCell><paragraph>Data</paragraph></tableCell>' +
 						'<tableCell><paragraph>Data</paragraph></tableCell>' +
 						'<tableCell><paragraph>Data</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should not treat the row containing only th as a heading row if it follows rowspan=2', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<th>00</th>' +
+							'<td>01</td>' +
+							'<td>02</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>10</th>' +
+							'<td colspan="2" rowspan="2">11</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>20</th>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>30</th>' +
+							'<td>31</td>' +
+							'<td>32</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingColumns="1">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'<tableCell><paragraph>02</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'<tableCell colspan="2" rowspan="2"><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>20</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>30</paragraph></tableCell>' +
+						'<tableCell><paragraph>31</paragraph></tableCell>' +
+						'<tableCell><paragraph>32</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should not treat the row containing only th as a heading row if it is last row of rowspan=3', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<th>00</th>' +
+							'<td>01</td>' +
+							'<td>02</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>10</th>' +
+							'<td colspan="2" rowspan="3">11</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>20</th>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>30</th>' +
+						'</tr>' +
+						'<tr>' +
+							'<th>40</th>' +
+							'<td>41</td>' +
+							'<td>42</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingColumns="1">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'<tableCell><paragraph>02</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'<tableCell colspan="2" rowspan="3"><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>20</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>30</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>40</paragraph></tableCell>' +
+						'<tableCell><paragraph>41</paragraph></tableCell>' +
+						'<tableCell><paragraph>42</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);

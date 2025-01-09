@@ -117,8 +117,7 @@ This key grants access to your subscription features. It does not consume editor
 
 * **Features**: Grants access to subscription features.
 * **Functionality**:
-	* Similar to the trial license, the editor is limited functionally, including session time and the number of changes allowed.
-	* Additionally, there are limitations on development domains. The editor can be used in the following domains: `localhost`, `*.test`, `*.localhost`, `*.local`, and IP addresses: `127.0.0.1`, `192.168.*.*`, `10.*.*.*`, `172.*.*.*`.
+	* Limitations on development domains apply on usage-based plans. The editor can be used in the following domains: `localhost`, `*.test`, `*.localhost`, `*.local`, and IP addresses: `127.0.0.1`, `192.168.*.*`, `10.*.*.*`, `172.*.*.*`.
 	* The editor will show a banner informing it was launched for development purposes.
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.

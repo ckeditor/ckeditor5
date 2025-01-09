@@ -318,7 +318,7 @@ dataFilter.allowElement( 'object-block' );
 
 ## Known issues
 
-You can add support for arbitrary styles, classes, and other attributes to existing CKEditor&nbsp;5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor&nbsp;5 features can already be extended this way, however, some cannot yet. This includes the `<ul>` and `<ol>` elements of the list feature (see: [#9917](https://github.com/ckeditor/ckeditor5/issues/9917)).
+You can add support for arbitrary styles, classes, and other attributes to existing CKEditor&nbsp;5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor&nbsp;5 features can already be extended this way, however, some cannot yet.
 
 <info-box info>
 	While the GHS feature is stable, some problems with complex documents may occur if you use it together with {@link features/real-time-collaboration real-time collaboration}.

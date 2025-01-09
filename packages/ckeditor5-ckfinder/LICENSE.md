@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor&nbsp;5 CKFinder feature** (https://github.com/ckeditor/ckeditor5)<br>
-Copyright (c) 2003–2024, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
+Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under a dual-license model, this software is available under:
 

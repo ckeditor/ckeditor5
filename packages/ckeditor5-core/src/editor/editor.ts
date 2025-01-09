@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -525,14 +525,24 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				return;
 			}
 
-			if ( [ 'evaluation', 'trial', 'development' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' | 'development' = licensePayload.licenseType;
+			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
+				const { licenseType } = licensePayload;
+				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
 
 				console.info(
-					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-					'Make sure you will not use it in the production environment.'
+					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
 				);
 
+				console.warn(
+					`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
+					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
+				);
+			}
+
+			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
+				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
 				const timerId = setTimeout( () => {
 					blockEditor( `${ licenseType }Limit` );
 				}, 600000 );
@@ -924,7 +934,14 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( reason == 'expired' ) {
 				/**
-				 * Your license key has expired. Please renew your license on the
+				 * Your license key has expired.
+				 *
+				 * If you used our free trial, you either need to switch to
+				 * [open-source license](https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-and-legal.html), or
+				 * in case of a commercial plan, change the trial key to production key or development key.
+				 * Switching from trial, you also need to align the editor configuration to the features available in your plan.
+				 *
+				 * If you already had one of our Cloud or Custom plans, please renew your license in the
 				 * [Customer Portal](https://portal.ckeditor.com).
 				 *
 				 * @error license-key-expired
@@ -1010,13 +1027,24 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				/**
 				 * Your license does not allow the current distribution channel.
 				 *
-				 * * With a 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
+				 * These are the available distribution channels:
+				 * * Self-hosted - the editor is installed via npm or from a ZIP package
+				 * * Cloud - the editor is run from CDN
+				 *
+				 * The licenses available include:
+				 * * GPL license for open-source users.
+				 * * Commercial plans (Cloud or sales-assisted).
+				 *
+				 * The relation between distribution channels and licenses works as follows:
+				 * * With the 'GPL' license key, you may use the editor installed via npm or a ZIP package (self-hosted).
 				 * * With the CKEditor Cloud plans, you may use the editor via our CDN.
 				 * * With the CKEditor Custom plans, depending on your plan details, you can use the editor via npm
-				 *   or a ZIP package (self-hosted) or Cloud (CDN)
+				 *   or a ZIP package (self-hosted) or Cloud (CDN).
 				 *
 				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
+				 * Should you need to migrate your installation from npm to CDN, please refer to our
+				 * [dedicated migration guides](https://ckeditor.com/docs/ckeditor5/latest/updating/migrations/vanilla-js.html).
 				 *
 				 * @error license-key-invalid-distribution-channel
 				 */

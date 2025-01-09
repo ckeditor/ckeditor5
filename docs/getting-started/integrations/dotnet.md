@@ -22,7 +22,7 @@ For the purpose of this guide, we will use a basic ASP.NET Core project created 
 	Our new CKEditor&nbsp;5 Builder does not provide ZIP output yet &ndash; but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [on the download page](https://ckeditor.com/ckeditor-5/download/#zip).
 </info-box>
 
-After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `wwwroot/assets/vendor/` directory. The folder structure of your app should resemble this one.
+After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `wwwroot/lib/ckeditor5/` directory. The folder structure of your app should resemble this one.
 
 ```plain
 ├── bin
@@ -32,20 +32,21 @@ After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ck
 │   └── ...
 ├── Properties
 ├── wwwroot
-│   ├── assets
-|      ├── vendor
-|          ├── ckeditor5.js
-|          └── ckeditor5.css
 │   ├── css
 │   ├── js
 │   ├── lib
+|      ├── bootstrap
+|      ├── ckeditor5
+|          ├── ckeditor5.js
+|          └── ckeditor5.css
+|      ├── jquery
+|      ├── jquery-validation
+|      ├── jquery-validation-unobtrusive
 │   └── favicon.ico
 ├── appsettings.Development.json
 ├── appsettings.json
 └── ...
 ```
-
-Having all the dependencies of CKEditor&nbsp;5, modify the `Index.cshtml` file in the `Pages` directory to import them. All the necessary markup is in the `index.html` file from the ZIP archive. You can copy and paste it into your page. Pay attention to the paths of the import map and CSS link - they should reflect your folder structure. The template should look similar to the one below:
 
 <info-box>
 	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from ZIP:
@@ -56,70 +57,56 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `Index.cshtml` file i
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
 </info-box>
 
+Once you have all the dependencies of CKEditor&nbsp;5, modify the `Index.cshtml` file in the `Pages` directory to import them. All the necessary markup is in the `index.html` file from the ZIP archive. You can copy and paste it into the `<script>` tag of your page. Pay attention to the paths of the import map and CSS link &ndash; they should reflect your folder structure. The template should look similar to the one below:
+
 ```html
 @page
-@model IndexModel
+@using Microsoft.AspNetCore.Components
 @{
-	ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home Page";
+    var data = new ImportMapDefinition(
+    new Dictionary<string, string>
+    {
+        { "ckeditor5", "/lib/ckeditor5/ckeditor5.js" },
+        { "ckeditor5/", "/lib/ckeditor5/" },
+    }, null, null);
 }
+<link href="~/lib/ckeditor5/ckeditor5.css" rel="stylesheet" />
+<div class="main-container">
+    <div id="editor">
+        <p>Hello from CKEditor 5!</p>
+    </div>
+</div>
+<script type="importmap" asp-importmap="@data"></script>
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Paragraph,
+        Bold,
+        Italic,
+        Font
+    } from 'ckeditor5';
 
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>CKEditor 5 - Quick start ZIP</title>
-		<link rel="stylesheet" href="../../assets/vendor/ckeditor5.css">
-		<style>
-			.main-container {
-				width: 795px;
-				margin-left: auto;
-				margin-right: auto;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="main-container">
-			<div id="editor">
-				<p>Hello from CKEditor 5!</p>
-			</div>
-		</div>
-		<script type="importmap">
-			{
-				"imports": {
-					"ckeditor5": "../../assets/vendor/ckeditor5.js",
-					"ckeditor5/": "../../assets/vendor/"
-				}
-			}
-		</script>
-		<script type="module">
-			import {
-				ClassicEditor,
-				Essentials,
-				Paragraph,
-				Bold,
-				Italic,
-				Font
-			} from 'ckeditor5';
-
-			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-					plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
-					toolbar: [
-						'undo', 'redo', '|', 'bold', 'italic', '|',
-						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-					]
-				} )
-				.then( editor => {
-					window.editor = editor;
-				} )
-				.catch( error => {
-					console.error( error );
-				} );
-		</script>
-	</body>
-</html>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ), {
+            licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+            plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ]
+        } )
+        .then( editor => {
+            window.editor = editor;
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
 ```
+<info-box warning>
+Due to a [bug](https://issues.chromium.org/issues/40611854), Chromium does not support multiple import maps yet. The .NET web app in the current version may already have an import map defined in the shared layout. If that is your case, remove the `<script type="importmap"></script>` tag from the `/Pages/Shared/__Layout.cshtml` file and you will be ready to run your application.
+</info-box>
 
 Finally, in the root directory of your .NET project, run `dotnet watch run` to see the app in action.

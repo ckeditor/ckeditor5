@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -255,6 +255,38 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {id:a00} {style:decimal}
 					` ) );
 				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-latin -> lower-latin)', () => {
+					editor.setData( '<ol style="list-style-type:lower-latin;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:lower-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-alpha -> lower-latin)', () => {
+					editor.setData( '<ol style="list-style-type:lower-alpha;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:lower-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-latin -> upper-latin)', () => {
+					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:upper-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-alpha -> upper-latin)', () => {
+					editor.setData( '<ol style="list-style-type:upper-alpha;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:upper-latin}
+					` ) );
+				} );
 			} );
 
 			describe( 'downcast', () => {
@@ -468,6 +500,38 @@ describe( 'ListPropertiesEditing', () => {
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:decimal}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-latin -> lower-latin)', () => {
+					editor.setData( '<ol style="list-style-type:lower-latin;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:lower-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-alpha -> lower-latin)', () => {
+					editor.setData( '<ol style="list-style-type:lower-alpha;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:lower-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-latin -> upper-latin)', () => {
+					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:upper-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-alpha -> upper-latin)', () => {
+					editor.setData( '<ol style="list-style-type:upper-alpha;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
 			} );
