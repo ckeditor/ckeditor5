@@ -951,7 +951,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				'while waiting for the processed image', async () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
+						'<img alt="alt text" height="50" loading="lazy" src="/assets/sample.png" style="aspect-ratio:50/50" width="50">' +
+						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>'
 				);
@@ -961,7 +962,9 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
 						'contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="100" src="/assets/sample.png" style="height:100px;width:100px" width="100"></img>' +
+						'<img alt="alt text" height="100" loading="lazy" src="/assets/sample.png" ' +
+							'style="height:100px;width:100px" width="100">' +
+						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>'
 				);
