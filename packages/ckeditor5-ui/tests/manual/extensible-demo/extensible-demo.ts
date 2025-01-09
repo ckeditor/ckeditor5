@@ -110,6 +110,11 @@ class IntegratorsViewReplacement extends Plugin {
 	}
 }
 
+console.log( 'Starting editor -1' );
+ClassicEditor.create( '', {
+	plugins: [ DemoPlugin ]
+} );
+
 console.log( 'Starting editor 0' );
 ClassicEditor.create( '', {
 	plugins: [ DemoPlugin, IntegratorsViewReplacement ]
