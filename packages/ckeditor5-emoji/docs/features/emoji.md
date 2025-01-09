@@ -63,6 +63,13 @@ ClassicEditor
 	The emoji feature requires the {@link features/mentions mentions feature} to be installed to work properly.
 </info-box>
 
+The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
+
+* {@link module:emoji/emojimention~EmojiMention} &ndash; Adds support for triggering the emoji UI dropdown while writing the content when you type a pre-configured `:` marker followed by at least two letters of desired emoji name.
+* {@link module:emoji/emojipicker~EmojiPicker} &ndash; Registers the UI button component which opens a panel with a table of selectable emojis.
+
+You can freely choose how to load the feature: either as a whole (as shown in the example above), or select one of the sub-plugins if you only need a specific way of inserting emojis into the document.
+
 ## Configuration
 
 There is one configuration setting available for the emoji feature.
@@ -96,7 +103,7 @@ In addition to enabling emoji feature, you may want to check the following relat
 
 ## Common API
 
-The {@link module:emoji/emoji~Emoji} plugin registers the UI button component (`'emoji'`).
+The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button component (`'emoji'`).
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
