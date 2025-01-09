@@ -694,6 +694,13 @@ describe( 'ClassicEditorUI', () => {
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
+
+		it( 'should not crash if called twice', async () => {
+			const newEditor = await VirtualClassicTestEditor.create( '' );
+
+			await newEditor.destroy();
+			await newEditor.destroy(); // Should not throw.
+		} );
 	} );
 
 	describe( 'view()', () => {
