@@ -21,7 +21,7 @@ You may also trigger the emoji UI while writing the content when you type a pre-
 
 Additionally, there is also an option to set the skin tone of the emojis next to the search field.
 
-The selected emoji category and the tone skin are remembered by the feature, so the next time you invoke the panel you can quickly insert a similar emoji as before.
+The selected emoji category and the skin tone are remembered by the feature, so the next time you invoke the panel you can quickly insert an emoji of similar type.
 
 {@snippet features/emoji}
 
