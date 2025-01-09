@@ -12,6 +12,7 @@
 
 .ck-bookmark {
 	&.ck-widget {
+		display: inline-block;
 		outline: none;
 
 		& .ck-bookmark__icon .ck-icon__fill {
@@ -37,6 +38,7 @@
 
 		& .ck-bookmark__icon {
 			position: relative;
+			display: block;
 			/* To make it align with text baseline. */
 			top: -0.1em;
 
