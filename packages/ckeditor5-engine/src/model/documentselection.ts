@@ -33,6 +33,7 @@ import {
 	toMap,
 	uid
 } from '@ckeditor/ckeditor5-utils';
+import TreeWalker from './treewalker.js';
 
 const storePrefix = 'selection:';
 
@@ -1134,20 +1135,28 @@ class LiveSelection extends Selection {
 		let attrs = null;
 
 		if ( !this.isCollapsed ) {
-			// 1. If selection is a range...
-			const range = this.getFirstRange();
+			const shallowRange = new TreeWalker( {
+				boundaries: this.getFirstRange(),
+				shallow: true,
+				ignoreElementEnd: true
+			} );
 
-			// ...look for a first character node in that range and take attributes from it.
-			for ( const value of range ) {
+			for ( const value of shallowRange ) {
 				// If the item is an object, we don't want to get attributes from its children...
 				if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
 					// ...but collect attributes from inline object.
 					attrs = getTextAttributes( value.item, schema );
-					break;
 				}
 
 				if ( value.type == 'text' ) {
 					attrs = value.item.getAttributes();
+				}
+
+				if ( attrs ) {
+					attrs = Array.from( attrs );
+				}
+
+				if ( attrs && attrs.length ) {
 					break;
 				}
 			}
