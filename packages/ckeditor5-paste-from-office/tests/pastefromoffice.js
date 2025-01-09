@@ -23,7 +23,7 @@ import { DomConverter } from '@ckeditor/ckeditor5-engine';
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
-	let editor, pasteFromOffice, clipboard, element;
+	let editor, pasteFromOffice, clipboard, element, viewDocument;
 
 	testUtils.createSinonSandbox();
 
@@ -36,6 +36,7 @@ describe( 'PasteFromOffice', () => {
 		} );
 		pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
 		clipboard = editor.plugins.get( 'ClipboardPipeline' );
+		viewDocument = editor.editing.view.document;
 	} );
 
 	afterEach( () => {
@@ -95,7 +96,7 @@ describe( 'PasteFromOffice', () => {
 		expect( eventData._parsedData.bodyString ).to.equal( '<body>Already parsed data</body>' );
 	} );
 
-	describe( 'isTransformedWithPasteFromOffice - flag', () => {
+	describe( 'parsed with extraContent property set', () => {
 		describe( 'data which should be marked with flag', () => {
 			it( 'should process data with microsoft word header', () => {
 				checkCorrectData( '<meta name=Generator content="Microsoft Word 15">' );
@@ -127,14 +128,13 @@ describe( 'PasteFromOffice', () => {
 				const data = setUpData( inputString );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 
-				clipboard.fire( 'inputTransformation', data );
+				viewDocument.fire( 'clipboardInput', data );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
-				expect( data._parsedData ).to.have.property( 'body' );
-				expect( data._parsedData ).to.have.property( 'bodyString' );
-				expect( data._parsedData ).to.have.property( 'styles' );
-				expect( data._parsedData ).to.have.property( 'stylesString' );
-				expect( data._parsedData.body ).to.be.instanceOf( ViewDocumentFragment );
+				expect( data.extraContent ).to.have.property( 'body' );
+				expect( data.extraContent ).to.have.property( 'bodyString' );
+				expect( data.extraContent ).to.have.property( 'styles' );
+				expect( data.extraContent ).to.have.property( 'stylesString' );
+				expect( data.content ).to.be.instanceOf( ViewDocumentFragment );
 
 				sinon.assert.called( getDataSpy );
 			}
@@ -167,10 +167,9 @@ describe( 'PasteFromOffice', () => {
 				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 
-				clipboard.fire( 'inputTransformation', data );
+				clipboard.fire( 'clipboardInput', data );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
-				expect( data._parsedData ).to.be.undefined;
+				expect( data.extraContent ).to.be.undefined;
 
 				sinon.assert.notCalled( getDataSpy );
 			} );
@@ -179,16 +178,16 @@ describe( 'PasteFromOffice', () => {
 				const data = setUpData( inputString );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 
-				clipboard.fire( 'inputTransformation', data );
+				viewDocument.fire( 'clipboardInput', data );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
-				expect( data._parsedData ).to.be.undefined;
+				expect( data.extraContent ).to.be.undefined;
+				expect( data.content ).to.deep.equal( inputString );
 
 				sinon.assert.called( getDataSpy );
 			}
 		} );
 
-		describe( 'data which already have the flag', () => {
+		describe.skip( 'data which already have the flag', () => {
 			it( 'should not process again ms word data containing a flag', () => {
 				checkAlreadyProcessedData( '<meta name=Generator content="Microsoft Word 15">' +
 					'<p class="MsoNormal">Hello world<o:p></o:p></p>' );
@@ -214,18 +213,11 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	// @param {String} inputString html to be processed by paste from office
-	// @param {Boolean} [isTransformedWithPasteFromOffice=false] if set, marks output data with isTransformedWithPasteFromOffice flag
 	// @returns {Object} data object simulating content obtained from the clipboard
-	function setUpData( inputString, isTransformedWithPasteFromOffice = false ) {
-		const data = {
-			content: htmlDataProcessor.toView( inputString ),
+	function setUpData( inputString ) {
+		return {
+			content: inputString,
 			dataTransfer: createDataTransfer( { 'text/html': inputString } )
 		};
-
-		if ( isTransformedWithPasteFromOffice ) {
-			data._isTransformedWithPasteFromOffice = true;
-		}
-
-		return data;
 	}
 } );

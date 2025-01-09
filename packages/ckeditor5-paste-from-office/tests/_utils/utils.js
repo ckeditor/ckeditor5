@@ -176,18 +176,16 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
 				} );
 
-				const clipboardInputData = { dataTransfer };
+				// data.content might be completely overwritten with a new object, so we need obtain final result for comparison.
+				let inputTransformationData;
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					inputTransformationData = data;
+				} );
+
+				const clipboardInputData = { dataTransfer, content: fixtures.input[ name ] };
 
 				editor.editing.view.document.fire( 'clipboardInput', clipboardInputData );
-
-				// data.content might be completely overwritten with a new object, so we need obtain final result for comparison.
-				const inputTransformationData = {
-					content: clipboardInputData.content,
-					extraContent: clipboardInputData.extraContent,
-					dataTransfer
-				};
-
-				clipboardPlugin.fire( 'inputTransformation', inputTransformationData );
 
 				const transformedContent = inputTransformationData.content;
 

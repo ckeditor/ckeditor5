@@ -19,6 +19,8 @@ import {
 	type ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
+import plainTextToHtml from './utils/plaintexttohtml.js';
+
 /**
  * Clipboard events observer.
  *
@@ -63,10 +65,20 @@ export default class ClipboardObserver extends DomEventObserver<
 				data.preventDefault();
 
 				const targetRanges = data.dropRange ? [ data.dropRange ] : null;
+				const dataTransfer = data.dataTransfer;
+				let content = '';
+
+				if ( dataTransfer.getData( 'text/html' ) ) {
+					content = dataTransfer.getData( 'text/html' );
+				} else if ( dataTransfer.getData( 'text/plain' ) ) {
+					content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+				}
+
 				const eventInfo = new EventInfo( viewDocument, type );
 
 				viewDocument.fire( eventInfo, {
-					dataTransfer: data.dataTransfer,
+					dataTransfer,
+					content,
 					method: evt.name,
 					targetRanges,
 					target: data.target,
@@ -175,7 +187,7 @@ export interface ClipboardInputEventData {
 	/**
 	 * The content of clipboard input.
 	 */
-	content?: ViewDocumentFragment;
+	content: string | ViewDocumentFragment;
 
 	/**
 	 * TODO

@@ -29,7 +29,6 @@ import ClipboardObserver, {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver.js';
 
-import plainTextToHtml from './utils/plaintexttohtml.js';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
 import viewToPlainText from './utils/viewtoplaintext.js';
 import ClipboardMarkersUtils from './clipboardmarkersutils.js';
@@ -217,30 +216,20 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'highest' } );
 
 		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
-			const dataTransfer = data.dataTransfer;
-			let content: ViewDocumentFragment;
-
-			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock).
-			if ( data.content ) {
-				content = data.content;
-			} else {
-				let contentData = '';
-
-				if ( dataTransfer.getData( 'text/html' ) ) {
-					contentData = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
-				} else if ( dataTransfer.getData( 'text/plain' ) ) {
-					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-				}
-
-				content = this.editor.data.htmlProcessor.toView( contentData );
+			if ( typeof data.content == 'string' ) {
+				data.content = normalizeClipboardHtml( data.content );
 			}
+		}, { priority: 'low' } );
 
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
+			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock, paste from office).
+			const content = typeof data.content == 'string' ? this.editor.data.htmlProcessor.toView( data.content ) : data.content;
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
 				extraContent: data.extraContent,
-				dataTransfer,
+				dataTransfer: data.dataTransfer,
 				targetRanges: data.targetRanges,
 				method: data.method as 'paste' | 'drop'
 			} );

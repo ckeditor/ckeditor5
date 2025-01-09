@@ -21,6 +21,7 @@ import GoogleSheetsNormalizer from './normalizers/googlesheetsnormalizer.js';
 
 import { parseHtml } from './filters/parse.js';
 import type { Normalizer } from './normalizer.js';
+import { priorities } from 'ckeditor5/src/utils.js';
 
 /**
  * The Paste from Office plugin.
@@ -72,16 +73,20 @@ export default class PasteFromOffice extends Plugin {
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 
 		viewDocument.on<ViewDocumentClipboardInputEvent>( 'clipboardInput', ( evt, data ) => {
+			if ( typeof data.content != 'string' ) {
+				return;
+			}
+
 			const htmlString = data.dataTransfer.getData( 'text/html' );
 			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
 
 			if ( activeNormalizer ) {
-				const parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
+				const parsedData = parseHtml( data.content, viewDocument.stylesProcessor );
 
 				data.content = parsedData.body;
 				data.extraContent = parsedData;
 			}
-		} );
+		}, { priority: priorities.low + 10 } );
 
 		clipboardPipeline.on<ClipboardInputTransformationEvent>( 'inputTransformation', ( evt, data ) => {
 			const codeBlock = editor.model.document.selection.getFirstPosition()!.parent;
