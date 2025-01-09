@@ -39,6 +39,7 @@ export { default as DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 export type {
 	ViewDocumentClipboardInputEvent,
 	ViewDocumentCopyEvent,
+	ViewDocumentPasteEvent,
 	ViewDocumentCutEvent
 } from './clipboardobserver.js';
 
