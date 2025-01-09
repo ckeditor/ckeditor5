@@ -57,7 +57,7 @@ After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ck
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
 </info-box>
 
-Having all the dependencies of CKEditor&nbsp;5, modify the `Index.cshtml` file in the `Pages` directory to import them. All the necessary markup is in the `index.html` file from the ZIP archive. You can copy and paste it into the `script` tag of your page. Pay attention to the paths of the import map and CSS link - they should reflect your folder structure. The template should look similar to the one below:
+Once you have all the dependencies of CKEditor&nbsp;5, modify the `Index.cshtml` file in the `Pages` directory to import them. All the necessary markup is in the `index.html` file from the ZIP archive. You can copy and paste it into the `<script>` tag of your page. Pay attention to the paths of the import map and CSS link &ndash; they should reflect your folder structure. The template should look similar to the one below:
 
 ```html
 @page
