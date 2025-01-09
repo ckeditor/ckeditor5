@@ -715,6 +715,7 @@ export default class TableCellPropertiesView extends View {
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Horizontal text alignment toolbar' )
 		} );
 
@@ -722,6 +723,8 @@ export default class TableCellPropertiesView extends View {
 			view: this,
 			icons: ALIGNMENT_ICONS,
 			toolbar: horizontalAlignmentToolbar,
+			role: 'radio',
+			isToggleable: true,
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
@@ -745,6 +748,7 @@ export default class TableCellPropertiesView extends View {
 
 		verticalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Vertical text alignment toolbar' )
 		} );
 
@@ -752,6 +756,8 @@ export default class TableCellPropertiesView extends View {
 			view: this,
 			icons: ALIGNMENT_ICONS,
 			toolbar: verticalAlignmentToolbar,
+			role: 'radio',
+			isToggleable: true,
 			labels: this._verticalAlignmentLabels,
 			propertyName: 'verticalAlignment',
 			defaultValue: this.options.defaultTableCellProperties.verticalAlignment

@@ -193,6 +193,21 @@ describe( 'ToolbarView', () => {
 
 				view.destroy();
 			} );
+
+			it( 'should have proper ARIA properties', () => {
+				expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
+			} );
+
+			it( 'should allow customizing toolbar role', () => {
+				const view = new ToolbarView( locale );
+				view.role = 'radiogroup';
+
+				view.render();
+
+				expect( view.element.getAttribute( 'role' ) ).to.equal( 'radiogroup' );
+
+				view.destroy();
+			} );
 		} );
 
 		describe( 'event listeners', () => {
