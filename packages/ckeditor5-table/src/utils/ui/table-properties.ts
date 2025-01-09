@@ -161,8 +161,6 @@ export function getBorderStyleDefinitions(
  */
 export function fillToolbar<TView extends View, TPropertyName extends keyof TView>(
 	options: {
-		isToggleable?: boolean;
-		role?: string;
 		view: TView;
 		icons: Record<string, string>;
 		toolbar: ToolbarView;
@@ -172,13 +170,13 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
 		defaultValue?: string;
 	}
 ): void {
-	const { role, isToggleable, view, icons, toolbar, labels, propertyName, nameToValue, defaultValue } = options;
+	const { view, icons, toolbar, labels, propertyName, nameToValue, defaultValue } = options;
 	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
 
 		button.set( {
-			isToggleable,
-			role,
+			role: 'radio',
+			isToggleable: true,
 			label: labels[ name ],
 			icon: icons[ name ],
 			tooltip: labels[ name ]

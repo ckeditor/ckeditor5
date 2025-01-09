@@ -646,8 +646,6 @@ export default class TablePropertiesView extends View {
 
 		fillToolbar( {
 			view: this,
-			role: 'radio',
-			isToggleable: true,
 			icons: {
 				left: icons.objectLeft,
 				center: icons.objectCenter,

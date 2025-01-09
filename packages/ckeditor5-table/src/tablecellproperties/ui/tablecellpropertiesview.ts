@@ -723,8 +723,6 @@ export default class TableCellPropertiesView extends View {
 			view: this,
 			icons: ALIGNMENT_ICONS,
 			toolbar: horizontalAlignmentToolbar,
-			role: 'radio',
-			isToggleable: true,
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
@@ -756,8 +754,6 @@ export default class TableCellPropertiesView extends View {
 			view: this,
 			icons: ALIGNMENT_ICONS,
 			toolbar: verticalAlignmentToolbar,
-			role: 'radio',
-			isToggleable: true,
 			labels: this._verticalAlignmentLabels,
 			propertyName: 'verticalAlignment',
 			defaultValue: this.options.defaultTableCellProperties.verticalAlignment
