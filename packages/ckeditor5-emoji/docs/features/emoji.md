@@ -68,7 +68,7 @@ The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
 * {@link module:emoji/emojimention~EmojiMention} &ndash; Adds support for triggering the emoji UI dropdown while writing the content when you type a pre-configured `:` marker followed by at least two letters of desired emoji name.
 * {@link module:emoji/emojipicker~EmojiPicker} &ndash; Registers the UI button component which opens a panel with a table of selectable emojis.
 
-You can freely choose how to load the feature: either as a whole (as shown in the example above), or select one of the sub-plugins if you only need a specific way of inserting emojis into the document.
+You can freely choose how to load the feature: either as a whole (as shown in the example above), or select one of the sub-plugins if you need only one of the ways of inserting emojis into the document.
 
 ## Configuration
 
