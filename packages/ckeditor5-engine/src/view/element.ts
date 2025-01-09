@@ -182,6 +182,7 @@ export default class Element extends Node {
 	 */
 	public* getAttributeKeys(): IterableIterator<string> {
 		// This is yielded in this specific order to maintain backward compatibility of data.
+		// Otherwise, we could simply just have the `for` loop only inside this method.
 
 		if ( this._classes ) {
 			yield 'class';
@@ -861,8 +862,7 @@ export default class Element extends Node {
 			if ( value !== undefined ) {
 				if ( typeof value == 'string' ) {
 					attributes.push( [ key ] );
-				}
-				else {
+				} else {
 					for ( const prop of value._getConsumables( token ) ) {
 						attributes.push( [ key, prop ] );
 					}

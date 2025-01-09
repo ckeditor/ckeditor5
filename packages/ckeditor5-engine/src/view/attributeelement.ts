@@ -170,7 +170,7 @@ export default class AttributeElement extends Element {
 
 	/**
 	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to verify if the given element can be merged without
-	 * conflicts into the element.
+	 * conflicts into this element.
 	 */
 	protected override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
 		// Can't merge if any of elements have an id or a difference of priority.
@@ -183,7 +183,7 @@ export default class AttributeElement extends Element {
 
 	/**
 	 * Used by {@link module:engine/view/element~Element#_subtractAttributesOf} to verify if the given element attributes
-	 * can be fully subtracted from the element.
+	 * can be fully subtracted from this element.
 	 */
 	protected override _canSubtractAttributesOf( otherElement: AttributeElement ): boolean {
 		// Can't subtract if any of elements have an id or a difference of priority.

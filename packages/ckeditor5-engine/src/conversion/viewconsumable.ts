@@ -50,7 +50,7 @@ export default class ViewConsumable {
 	private _consumables = new Map<Node | DocumentFragment, ViewElementConsumables | boolean>();
 
 	/**
-	 * Adds {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
+	 * Adds view {@link module:engine/view/element~Element element}, {@link module:engine/view/text~Text text node} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
 	 *
 	 * ```ts
@@ -366,7 +366,7 @@ export class ViewElementConsumables {
 	 *
 	 * Note: This method accepts only {@link module:engine/conversion/viewconsumable~NormalizedConsumables}.
 	 * You can use {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper to convert from
-	 * {@link module:engine/conversion/viewconsumable~Consumables} to NormalizedConsumables.
+	 * {@link module:engine/conversion/viewconsumable~Consumables} to `NormalizedConsumables`.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
@@ -526,6 +526,7 @@ export class ViewElementConsumables {
 		}
 
 		for ( const [ name, token ] of consumables.attributes ) {
+			// `value` must be set, because `this.test()` returned `true`.
 			const value = this._attributes.get( name )!;
 
 			// Plain not-consumed attribute.

@@ -132,7 +132,7 @@ export default class TokenList implements ElementAttributeValue {
 	 * @internal
 	 * @param attributeKey The attribute name.
 	 * @param patternToken The matched token name pattern.
-	 * @returns An array of tuples [ attributeKey, token ].
+	 * @returns An array of tuples `[ attributeKey, token ]`.
 	 */
 	public _getTokensMatch(
 		attributeKey: string,
@@ -184,8 +184,8 @@ export default class TokenList implements ElementAttributeValue {
 	 * Used by {@link module:engine/view/element~Element#_canMergeAttributesFrom} to verify if the given attribute
 	 * can be merged without conflicts into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while downcasting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other `AttributeElement`.
 	 *
 	 * @internal
 	 */

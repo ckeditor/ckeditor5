@@ -507,7 +507,7 @@ export default class StylesMap implements ElementAttributeValue {
 	 * @param attributeKey The attribute name.
 	 * @param patternToken The matched style name pattern.
 	 * @param patternValue The matched style value pattern.
-	 * @returns An array of tuples [ attributeKey, style name ].
+	 * @returns An array of tuples `[ attributeKey, styleName ]`.
 	 */
 	public _getTokensMatch(
 		attributeKey: string,
