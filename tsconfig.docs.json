@@ -5,7 +5,6 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "./typings/",
     "./packages/*/src/augmentation.ts",
     "./external/ckeditor5-commercial/packages/*/src/augmentation.ts"
   ]

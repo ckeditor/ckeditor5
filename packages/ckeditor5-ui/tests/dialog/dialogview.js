@@ -5,11 +5,11 @@
 
 /* global document, Event, KeyboardEvent, MouseEvent, console */
 
+import { IconCancel } from 'ckeditor5/src/icons.js';
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src/index.js';
 import DialogView, { DialogViewPosition } from '../../src/dialog/dialogview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 describe( 'DialogView', () => {
 	let view, fakeDomRootElement;
@@ -701,7 +701,7 @@ describe( 'DialogView', () => {
 					expect( closeButtonView ).to.be.instanceOf( ButtonView );
 					expect( closeButtonView.label ).to.equal( 'Close' );
 					expect( closeButtonView.tooltip ).to.be.true;
-					expect( closeButtonView.icon ).to.equal( cancelIcon );
+					expect( closeButtonView.icon ).to.equal( IconCancel );
 				} );
 
 				it( 'should fire an event with data upon clicking', () => {

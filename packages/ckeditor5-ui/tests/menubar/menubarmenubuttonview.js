@@ -5,10 +5,10 @@
 
 /* global Event */
 
+import { IconDropdownArrow } from 'ckeditor5/src/icons.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import MenuBarMenuButtonView from '../../src/menubar/menubarmenubuttonview.js';
 import { ButtonView, IconView } from '../../src/index.js';
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 describe( 'MenuBarMenuButtonView', () => {
 	let buttonView, locale;
@@ -45,7 +45,7 @@ describe( 'MenuBarMenuButtonView', () => {
 			} );
 
 			it( 'should use a specific SVG icon', () => {
-				expect( buttonView.arrowView.content ).to.equal( dropdownArrowIcon );
+				expect( buttonView.arrowView.content ).to.equal( IconDropdownArrow );
 			} );
 		} );
 

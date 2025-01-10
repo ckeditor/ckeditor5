@@ -7,7 +7,6 @@
 		"stripInternal": true
 	},
 	"include": [
-		"src",
-		"../../typings"
+		"src"
 	]
 }

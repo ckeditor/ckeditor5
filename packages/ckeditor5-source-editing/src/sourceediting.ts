@@ -9,13 +9,13 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
+import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
+import { IconSourceEditing } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
-import sourceEditingIcon from '../theme/icons/source-editing.svg';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
@@ -99,7 +99,7 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Source' ),
-				icon: sourceEditingIcon,
+				icon: IconSourceEditing,
 				tooltip: true,
 				class: 'ck-source-editing-button'
 			} );

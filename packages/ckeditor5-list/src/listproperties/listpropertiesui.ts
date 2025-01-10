@@ -7,8 +7,20 @@
  * @module list/listproperties/listpropertiesui
  */
 
-import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
-
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import {
+	IconBulletedList,
+	IconNumberedList,
+	IconListStyleCircle,
+	IconListStyleDecimal,
+	IconListStyleDecimalLeadingZero,
+	IconListStyleDisc,
+	IconListStyleLowerLatin,
+	IconListStyleLowerRoman,
+	IconListStyleSquare,
+	IconListStyleUpperLatin,
+	IconListStyleUpperRoman
+} from 'ckeditor5/src/icons.js';
 import {
 	ButtonView,
 	SplitButtonView,
@@ -31,16 +43,6 @@ import type ListReversedCommand from '../listproperties/listreversedcommand.js';
 
 import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
 import { type ListPropertiesStyleListType } from '../listconfig.js';
-
-import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
-import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
-import listStyleSquareIcon from '../../theme/icons/liststylesquare.svg';
-import listStyleDecimalIcon from '../../theme/icons/liststyledecimal.svg';
-import listStyleDecimalWithLeadingZeroIcon from '../../theme/icons/liststyledecimalleadingzero.svg';
-import listStyleLowerRomanIcon from '../../theme/icons/liststylelowerroman.svg';
-import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
-import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
-import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
 
@@ -82,19 +84,19 @@ export default class ListPropertiesUI extends Plugin {
 					label: t( 'Toggle the disc list style' ),
 					tooltip: t( 'Disc' ),
 					type: 'disc',
-					icon: listStyleDiscIcon
+					icon: IconListStyleDisc
 				},
 				{
 					label: t( 'Toggle the circle list style' ),
 					tooltip: t( 'Circle' ),
 					type: 'circle',
-					icon: listStyleCircleIcon
+					icon: IconListStyleCircle
 				},
 				{
 					label: t( 'Toggle the square list style' ),
 					tooltip: t( 'Square' ),
 					type: 'square',
-					icon: listStyleSquareIcon
+					icon: IconListStyleSquare
 				}
 			];
 			const buttonLabel = t( 'Bulleted List' );
@@ -106,7 +108,7 @@ export default class ListPropertiesUI extends Plugin {
 				normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
-				buttonIcon: icons.bulletedList,
+				buttonIcon: IconBulletedList,
 				styleGridAriaLabel,
 				styleDefinitions
 			} ) );
@@ -131,37 +133,37 @@ export default class ListPropertiesUI extends Plugin {
 					label: t( 'Toggle the decimal list style' ),
 					tooltip: t( 'Decimal' ),
 					type: 'decimal',
-					icon: listStyleDecimalIcon
+					icon: IconListStyleDecimal
 				},
 				{
 					label: t( 'Toggle the decimal with leading zero list style' ),
 					tooltip: t( 'Decimal with leading zero' ),
 					type: 'decimal-leading-zero',
-					icon: listStyleDecimalWithLeadingZeroIcon
+					icon: IconListStyleDecimalLeadingZero
 				},
 				{
 					label: t( 'Toggle the lower–roman list style' ),
 					tooltip: t( 'Lower–roman' ),
 					type: 'lower-roman',
-					icon: listStyleLowerRomanIcon
+					icon: IconListStyleLowerRoman
 				},
 				{
 					label: t( 'Toggle the upper–roman list style' ),
 					tooltip: t( 'Upper-roman' ),
 					type: 'upper-roman',
-					icon: listStyleUpperRomanIcon
+					icon: IconListStyleUpperRoman
 				},
 				{
 					label: t( 'Toggle the lower–latin list style' ),
 					tooltip: t( 'Lower-latin' ),
 					type: 'lower-latin',
-					icon: listStyleLowerLatinIcon
+					icon: IconListStyleLowerLatin
 				},
 				{
 					label: t( 'Toggle the upper–latin list style' ),
 					tooltip: t( 'Upper-latin' ),
 					type: 'upper-latin',
-					icon: listStyleUpperLatinIcon
+					icon: IconListStyleUpperLatin
 				}
 			];
 			const buttonLabel = t( 'Numbered List' );
@@ -173,7 +175,7 @@ export default class ListPropertiesUI extends Plugin {
 				normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
-				buttonIcon: icons.numberedList,
+				buttonIcon: IconNumberedList,
 				styleGridAriaLabel,
 				styleDefinitions
 			} ) );
@@ -472,7 +474,7 @@ function getMenuBarStylesMenuCreator(
 
 		menuView.buttonView.set( {
 			label: buttonLabel,
-			icon: icons[ parentCommandName ]
+			icon: parentCommandName === 'bulletedList' ? IconBulletedList : IconNumberedList
 		} );
 		menuView.panelView.children.add( listPropertiesView );
 		menuView.bind( 'isEnabled' ).to( listCommand, 'isEnabled' );

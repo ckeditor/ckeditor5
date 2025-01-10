@@ -34,6 +34,7 @@ export * from '@ckeditor/ckeditor5-highlight';
 export * from '@ckeditor/ckeditor5-horizontal-line';
 export * from '@ckeditor/ckeditor5-html-embed';
 export * from '@ckeditor/ckeditor5-html-support';
+export * from '@ckeditor/ckeditor5-icons';
 export * from '@ckeditor/ckeditor5-image';
 export * from '@ckeditor/ckeditor5-indent';
 export * from '@ckeditor/ckeditor5-language';

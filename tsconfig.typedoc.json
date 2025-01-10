@@ -26,8 +26,7 @@
   },
   "include": [
     "./packages/*/src/**/*.ts",
-    "./external/ckeditor5-commercial/packages/*/src/**/*.ts",
-    "./typings/"
+    "./external/ckeditor5-commercial/packages/*/src/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -20,7 +20,7 @@
 				{
 					"name": "ckbox",
 					"type": "Button",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/browse-files.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/browse-files.svg"
 				}
 			],
 			"htmlOutput": [
@@ -50,7 +50,7 @@
 				{
 					"name": "ckboxImageEdit",
 					"type": "Button",
-					"iconPath": "theme/icons/ckbox-image-edit.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/ckbox-image-edit.svg"
 				}
 			]
 		}

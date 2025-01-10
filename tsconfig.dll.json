@@ -2,8 +2,5 @@
  * The configuration is used when preparing DLL builds.
  */
 {
-  "extends": "./tsconfig.json",
-  "include": [
-    "./typings/"
-  ]
+  "extends": "./tsconfig.json"
 }

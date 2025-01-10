@@ -50,6 +50,7 @@
     "@ckeditor/ckeditor5-horizontal-line": "44.1.0",
     "@ckeditor/ckeditor5-html-embed": "44.1.0",
     "@ckeditor/ckeditor5-html-support": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "44.1.0",
     "@ckeditor/ckeditor5-image": "44.1.0",
     "@ckeditor/ckeditor5-indent": "44.1.0",
     "@ckeditor/ckeditor5-language": "44.1.0",

@@ -1,8 +1,7 @@
 {
 	"extends": "../../tsconfig.release.json",
 	"include": [
-		"src",
-		"../../typings"
+		"src"
 	],
 	"exclude": [
 		"tests"

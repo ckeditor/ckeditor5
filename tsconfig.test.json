@@ -16,7 +16,6 @@
   },
   "include": [
     "**/*.ts",
-    "./typings/",
     "./packages/*/src/augmentation.ts",
     "./external/ckeditor5-commercial/packages/*/src/augmentation.ts"
   ]
