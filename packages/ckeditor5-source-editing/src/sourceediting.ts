@@ -132,7 +132,11 @@ export default class SourceEditing extends Plugin {
 				}
 			} );
 
-			this.on( 'change:isEnabled', ( evt, name, isEnabled ) => this._handleReadOnlyMode( !isEnabled ) );
+			this.on( 'change:isEnabled', ( evt, name, isEnabled ) => {
+				if ( !isEnabled && this.isSourceEditingMode ) {
+					this.isSourceEditingMode = isEnabled;
+				}
+			} );
 
 			this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
 		}
