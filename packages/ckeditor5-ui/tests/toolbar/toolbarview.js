@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -190,6 +190,21 @@ describe( 'ToolbarView', () => {
 				view.render();
 
 				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
+
+				view.destroy();
+			} );
+
+			it( 'should have proper ARIA properties', () => {
+				expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
+			} );
+
+			it( 'should allow customizing toolbar role', () => {
+				const view = new ToolbarView( locale );
+				view.role = 'radiogroup';
+
+				view.render();
+
+				expect( view.element.getAttribute( 'role' ) ).to.equal( 'radiogroup' );
 
 				view.destroy();
 			} );

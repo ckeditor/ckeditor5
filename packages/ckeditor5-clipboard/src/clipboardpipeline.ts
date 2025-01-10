@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -308,7 +308,7 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'low' } );
 
 		this.listenTo<ClipboardOutputTransformationEvent>( this, 'outputTransformation', ( evt, data ) => {
-			const content = editor.data.toView( data.content );
+			const content = editor.data.toView( data.content, { isClipboardPipeline: true } );
 
 			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer: data.dataTransfer,
@@ -320,7 +320,7 @@ export default class ClipboardPipeline extends Plugin {
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
-				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
+				data.dataTransfer.setData( 'text/plain', viewToPlainText( editor.data.htmlProcessor.domConverter, data.content ) );
 			}
 
 			if ( data.method == 'cut' ) {

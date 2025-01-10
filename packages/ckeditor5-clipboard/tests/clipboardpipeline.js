@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -487,9 +487,27 @@ describe( 'ClipboardPipeline feature', () => {
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( data.content ).is.instanceOf( ModelDocumentFragment );
 				expect( stringifyModel( data.content ) ).to.equal( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
-
 				done();
 			} );
+
+			viewDocument.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
+
+		it( 'triggers the conversion with the `isClipboardPipeline` flag', done => {
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+			const toViewSpy = sinon.spy( editor.data, 'toView' );
+
+			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+
+			clipboardPlugin.on( 'outputTransformation', ( evt, data ) => {
+				expect( toViewSpy ).calledWithExactly( data.content, { isClipboardPipeline: true } );
+
+				done();
+			}, { priority: 'lowest' } );
 
 			viewDocument.fire( 'copy', {
 				dataTransfer: dataTransferMock,
