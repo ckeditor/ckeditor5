@@ -95,11 +95,11 @@ export default class EmojiPicker extends Plugin {
 		super( editor );
 
 		this.editor.config.define( 'emoji', {
-			defaultSkinTone: 'default'
+			skinTone: 'default'
 		} );
 
 		this._emojis = new Map();
-		this._selectedSkinTone = editor.config.get( 'emoji.defaultSkinTone' )!;
+		this._selectedSkinTone = editor.config.get( 'emoji.skinTone' )!;
 		this._emojiGroups = [];
 		this._emojiPickerView = null;
 		this._searchQuery = null;

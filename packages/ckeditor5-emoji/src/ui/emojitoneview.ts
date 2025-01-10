@@ -42,12 +42,12 @@ export default class EmojiToneView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, defaultSkinTone: SkinToneId ) {
+	constructor( locale: Locale, skinTone: SkinToneId ) {
 		super( locale );
 
 		const t = locale.t;
 
-		this.set( 'selectedSkinTone', defaultSkinTone );
+		this.set( 'selectedSkinTone', skinTone );
 
 		this._skinTones = [
 			{ id: 'default', example: '👋', tooltip: 'Default skin tone' },

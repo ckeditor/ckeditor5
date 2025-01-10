@@ -161,7 +161,7 @@ describe( 'EmojiPicker', () => {
 					isVisible: true
 				},
 				emoji: {
-					defaultSkinTone: 'medium'
+					skinTone: 'medium'
 				}
 			} )
 			.then( newEditor => {

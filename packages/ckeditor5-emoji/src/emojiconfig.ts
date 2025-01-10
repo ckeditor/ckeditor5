@@ -54,7 +54,7 @@ export interface EmojiConfig {
 	 *			.create( editorElement, {
 	 *				plugins: [ Emoji, ... ],
 	 *				emoji: {
-	 *					defaultSkinTone: 'medium'
+	 *					skinTone: 'medium'
 	 *					// More of editor configuration.
 	 * 					// ...
 	 * 				}
@@ -63,5 +63,5 @@ export interface EmojiConfig {
 	 *			.catch( ... );
 	 * ```
 	 */
-	defaultSkinTone?: SkinToneId;
+	skinTone?: SkinToneId;
 }
