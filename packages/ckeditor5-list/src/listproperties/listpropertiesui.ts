@@ -226,7 +226,7 @@ function getDropdownViewCreator( {
 	styleDefinitions: Array<StyleDefinition>;
 } ) {
 	const parentCommand = editor.commands.get( parentCommandName )!;
-	const allowedListStyleTypes = normalizedConfig.styles.listStyleTypes;
+	const allowedListStyleTypes = normalizedConfig.styles.listTypesStyles;
 
 	// Filter style definitions if specific styles are configured
 	const filteredStyleDefinitions = Array.isArray( allowedListStyleTypes ) ?
@@ -373,17 +373,24 @@ function createListPropertiesView( {
 
 	if ( normalizedConfig.styles.listTypes.includes( listType ) ) {
 		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
-
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
 			parentCommandName,
 			listStyleCommand
 		} );
 
-		// The command can be ListStyleCommand or DocumentListStyleCommand.
-		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
+		const configuredTypes = normalizedConfig.styles.listTypesStyles;
+		let filteredDefinitions = styleDefinitions;
 
-		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
+		if ( configuredTypes ) {
+			const allowedTypes = configuredTypes[ listType ] || [];
+			filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+		}
+
+		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
+		styleButtonViews = filteredDefinitions
+			.filter( isStyleTypeSupported )
+			.map( styleButtonCreator );
 	}
 
 	const listPropertiesView = new ListPropertiesView( locale, {
@@ -461,7 +468,21 @@ function getMenuBarStylesMenuCreator(
 			parentCommandName,
 			listStyleCommand
 		} );
-		const styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
+
+		const configuredTypes = normalizedConfig.styles.listTypesStyles;
+		let filteredDefinitions = styleDefinitions;
+
+		if ( configuredTypes ) {
+			const listType = parentCommandName.replace( 'List', '' ) as 'numbered' | 'bulleted';
+			const allowedTypes = configuredTypes[ listType ] || [];
+
+			filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+		}
+
+		const styleButtonViews = filteredDefinitions
+			.filter( isStyleTypeSupported )
+			.map( styleButtonCreator );
+
 		const listPropertiesView = new ListPropertiesView( locale, {
 			styleGridAriaLabel,
 			enabledProperties: {

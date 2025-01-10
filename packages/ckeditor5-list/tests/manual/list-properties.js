@@ -231,17 +231,19 @@ ClassicEditor
 		list: {
 			properties: {
 				styles: {
-					listStyleTypes: [
-						'decimal',
-						'decimal-leading-zero',
-						'lower-roman',
-						'upper-roman',
-						// 'lower-latin',
-						// 'upper-latin',
-						'disc',
-						'circle',
-						'square'
-					]
+					listTypesStyles: {
+						numbered: [
+							'decimal',
+							'decimal-leading-zero',
+							'lower-roman',
+							'upper-roman'
+						],
+						bulleted: [
+							'disc',
+							'circle',
+							'square'
+						]
+					}
 				}
 			}
 		}

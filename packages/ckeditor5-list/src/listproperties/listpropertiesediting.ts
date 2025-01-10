@@ -269,7 +269,11 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 	if ( enabledProperties.styles ) {
 		const useAttribute = normalizedConfig.styles.useAttribute;
-		const allowedListStyleTypes = normalizedConfig.styles.listStyleTypes;
+		const configuredTypes = normalizedConfig.styles.listTypesStyles;
+		const allowedTypes = {
+			numbered: ( configuredTypes && configuredTypes.numbered ) || [],
+			bulleted: ( configuredTypes && configuredTypes.bulleted ) || []
+		};
 
 		strategies.push( {
 			attributeName: 'listStyle',
@@ -283,8 +287,11 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 					supportedTypes = supportedTypes.filter( styleType => !!getTypeAttributeFromListStyleType( styleType ) );
 				}
 
-				if ( Array.isArray( allowedListStyleTypes ) ) {
-					supportedTypes = supportedTypes.filter( styleType => allowedListStyleTypes.includes( styleType ) );
+				if ( allowedTypes ) {
+					supportedTypes = supportedTypes.filter( styleType => {
+						const listType = getListTypeFromListStyleType( styleType );
+						return allowedTypes[ listType as 'numbered' | 'bulleted' ].includes( styleType );
+					} );
 				}
 
 				editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );
