@@ -269,6 +269,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 	if ( enabledProperties.styles ) {
 		const useAttribute = normalizedConfig.styles.useAttribute;
+		const allowedListStyleTypes = normalizedConfig.styles.listStyleTypes;
 
 		strategies.push( {
 			attributeName: 'listStyle',
@@ -280,6 +281,10 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 				if ( useAttribute ) {
 					supportedTypes = supportedTypes.filter( styleType => !!getTypeAttributeFromListStyleType( styleType ) );
+				}
+
+				if ( Array.isArray( allowedListStyleTypes ) ) {
+					supportedTypes = supportedTypes.filter( styleType => allowedListStyleTypes.includes( styleType ) );
 				}
 
 				editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );

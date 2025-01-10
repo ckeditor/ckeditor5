@@ -226,6 +226,12 @@ function getDropdownViewCreator( {
 	styleDefinitions: Array<StyleDefinition>;
 } ) {
 	const parentCommand = editor.commands.get( parentCommandName )!;
+	const allowedListStyleTypes = normalizedConfig.styles.listStyleTypes;
+
+	// Filter style definitions if specific styles are configured
+	const filteredStyleDefinitions = Array.isArray( allowedListStyleTypes ) ?
+		styleDefinitions.filter( def => allowedListStyleTypes.includes( def.type ) ) :
+		styleDefinitions;
 
 	return ( locale: Locale ) => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
@@ -256,7 +262,7 @@ function getDropdownViewCreator( {
 				dropdownView,
 				parentCommandName,
 				styleGridAriaLabel,
-				styleDefinitions
+				styleDefinitions: filteredStyleDefinitions
 			} );
 
 			dropdownView.panelView.children.add( listPropertiesView );
