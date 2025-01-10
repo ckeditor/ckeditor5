@@ -228,6 +228,9 @@ ClassicEditor
 ClassicEditor
 	.create( document.querySelector( '#editor-i' ), {
 		...config,
+		menuBar: {
+			isVisible: true
+		},
 		list: {
 			properties: {
 				styles: {

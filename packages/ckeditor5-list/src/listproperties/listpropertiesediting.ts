@@ -269,11 +269,6 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 	if ( enabledProperties.styles ) {
 		const useAttribute = normalizedConfig.styles.useAttribute;
-		const configuredTypes = normalizedConfig.styles.listTypesStyles;
-		const allowedTypes = configuredTypes && {
-			numbered: configuredTypes.numbered || [],
-			bulleted: configuredTypes.bulleted || []
-		};
 
 		strategies.push( {
 			attributeName: 'listStyle',
@@ -285,14 +280,6 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 				if ( useAttribute ) {
 					supportedTypes = supportedTypes.filter( styleType => !!getTypeAttributeFromListStyleType( styleType ) );
-				}
-
-				if ( allowedTypes ) {
-					supportedTypes = supportedTypes.filter( styleType => {
-						const listType = getListTypeFromListStyleType( styleType )!;
-
-						return allowedTypes[ listType ].includes( styleType );
-					} );
 				}
 
 				editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );

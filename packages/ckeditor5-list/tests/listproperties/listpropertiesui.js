@@ -255,6 +255,119 @@ describe( 'ListPropertiesUI', () => {
 						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
 					} );
 				} );
+
+				describe( 'listTypesStyles config entry', () => {
+					it( 'should register buttons filtered by listTypesStyles for bulleted list', () => {
+						return withEditor( {
+							styles: {
+								listTypesStyles: {
+									bulleted: [ 'disc', 'circle' ]
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const bulletedListDropdown = componentFactory.create( 'bulletedList' );
+
+							bulletedListDropdown.render();
+							document.body.appendChild( bulletedListDropdown.element );
+
+							// Trigger lazy init
+							bulletedListDropdown.isOpen = true;
+							bulletedListDropdown.isOpen = false;
+
+							const listPropertiesView = bulletedListDropdown.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Disc', 'Circle' ] );
+
+							bulletedListDropdown.element.remove();
+						} );
+					} );
+
+					it( 'should register buttons filtered by listTypesStyles for numbered list', () => {
+						return withEditor( {
+							styles: {
+								listTypesStyles: {
+									numbered: [ 'decimal', 'lower-roman' ]
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListDropdown = componentFactory.create( 'numberedList' );
+
+							numberedListDropdown.render();
+							document.body.appendChild( numberedListDropdown.element );
+
+							// Trigger lazy init
+							numberedListDropdown.isOpen = true;
+							numberedListDropdown.isOpen = false;
+
+							const listPropertiesView = numberedListDropdown.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Decimal', 'Lower–roman' ] );
+
+							numberedListDropdown.element.remove();
+						} );
+					} );
+
+					it( 'should register all buttons when listTypesStyles is undefined', () => {
+						return withEditor( {
+							styles: true
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListDropdown = componentFactory.create( 'numberedList' );
+
+							numberedListDropdown.render();
+							document.body.appendChild( numberedListDropdown.element );
+
+							// Trigger lazy init
+							numberedListDropdown.isOpen = true;
+							numberedListDropdown.isOpen = false;
+
+							const listPropertiesView = numberedListDropdown.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [
+								'Decimal',
+								'Decimal with leading zero',
+								'Lower–roman',
+								'Upper-roman',
+								'Lower-latin',
+								'Upper-latin'
+							] );
+
+							numberedListDropdown.element.remove();
+						} );
+					} );
+
+					it( 'should register no buttons when listTypesStyles has empty array', () => {
+						return withEditor( {
+							styles: {
+								listTypesStyles: {
+									numbered: [],
+									bulleted: []
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListDropdown = componentFactory.create( 'numberedList' );
+
+							numberedListDropdown.render();
+							document.body.appendChild( numberedListDropdown.element );
+
+							// Trigger lazy init
+							numberedListDropdown.isOpen = true;
+							numberedListDropdown.isOpen = false;
+
+							const listPropertiesView = numberedListDropdown.panelView.children.first;
+
+							expect( listPropertiesView.stylesView ).to.be.null;
+
+							numberedListDropdown.element.remove();
+						} );
+					} );
+				} );
 			} );
 
 			describe( 'bulleted list dropdown', () => {
@@ -1070,6 +1183,119 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
 						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
+					} );
+				} );
+
+				describe( 'listTypesStyles config entry', () => {
+					it( 'should register buttons filtered by listTypesStyles for bulleted list in menu bar', () => {
+						return withEditor( {
+							styles: {
+								listTypesStyles: {
+									bulleted: [ 'disc', 'circle' ]
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const bulletedListMenu = componentFactory.create( 'menuBar:bulletedList' );
+
+							bulletedListMenu.render();
+							document.body.appendChild( bulletedListMenu.element );
+
+							// Trigger lazy init
+							bulletedListMenu.isOpen = true;
+							bulletedListMenu.isOpen = false;
+
+							const listPropertiesView = bulletedListMenu.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Disc', 'Circle' ] );
+
+							bulletedListMenu.element.remove();
+						} );
+					} );
+
+					it( 'should register buttons filtered by listTypesStyles for numbered list in menu bar', () => {
+						return withEditor( {
+							styles: {
+								listTypesStyles: {
+									numbered: [ 'decimal', 'lower-roman' ]
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListMenu = componentFactory.create( 'menuBar:numberedList' );
+
+							numberedListMenu.render();
+							document.body.appendChild( numberedListMenu.element );
+
+							// Trigger lazy init
+							numberedListMenu.isOpen = true;
+							numberedListMenu.isOpen = false;
+
+							const listPropertiesView = numberedListMenu.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Decimal', 'Lower–roman' ] );
+
+							numberedListMenu.element.remove();
+						} );
+					} );
+
+					it( 'should register all buttons when listTypesStyles is undefined in menu bar', () => {
+						return withEditor( {
+							styles: true
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListMenu = componentFactory.create( 'menuBar:numberedList' );
+
+							numberedListMenu.render();
+							document.body.appendChild( numberedListMenu.element );
+
+							// Trigger lazy init
+							numberedListMenu.isOpen = true;
+							numberedListMenu.isOpen = false;
+
+							const listPropertiesView = numberedListMenu.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [
+								'Decimal',
+								'Decimal with leading zero',
+								'Lower–roman',
+								'Upper-roman',
+								'Lower-latin',
+								'Upper-latin'
+							] );
+
+							numberedListMenu.element.remove();
+						} );
+					} );
+
+					it( 'should register no buttons when listTypesStyles has empty array in menu bar', () => {
+						return withEditor( {
+							styles: {
+								listTypesStyles: {
+									numbered: [],
+									bulleted: []
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListMenu = componentFactory.create( 'menuBar:numberedList' );
+
+							numberedListMenu.render();
+							document.body.appendChild( numberedListMenu.element );
+
+							// Trigger lazy init
+							numberedListMenu.isOpen = true;
+							numberedListMenu.isOpen = false;
+
+							const listPropertiesView = numberedListMenu.panelView.children.first;
+
+							expect( listPropertiesView.stylesView ).to.be.null;
+
+							numberedListMenu.element.remove();
+						} );
 					} );
 				} );
 			} );

@@ -226,12 +226,6 @@ function getDropdownViewCreator( {
 	styleDefinitions: Array<StyleDefinition>;
 } ) {
 	const parentCommand = editor.commands.get( parentCommandName )!;
-	const allowedListStyleTypes = normalizedConfig.styles.listTypesStyles;
-
-	// Filter style definitions if specific styles are configured
-	const filteredStyleDefinitions = Array.isArray( allowedListStyleTypes ) ?
-		styleDefinitions.filter( def => allowedListStyleTypes.includes( def.type ) ) :
-		styleDefinitions;
 
 	return ( locale: Locale ) => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
@@ -262,7 +256,7 @@ function getDropdownViewCreator( {
 				dropdownView,
 				parentCommandName,
 				styleGridAriaLabel,
-				styleDefinitions: filteredStyleDefinitions
+				styleDefinitions
 			} );
 
 			dropdownView.panelView.children.add( listPropertiesView );
@@ -379,12 +373,15 @@ function createListPropertiesView( {
 			listStyleCommand
 		} );
 
-		const configuredTypes = normalizedConfig.styles.listTypesStyles;
+		const configuredListStylesTypes = normalizedConfig.styles.listTypesStyles;
 		let filteredDefinitions = styleDefinitions;
 
-		if ( configuredTypes ) {
-			const allowedTypes = configuredTypes[ listType ] || [];
-			filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+		if ( configuredListStylesTypes ) {
+			const allowedTypes = configuredListStylesTypes[ listType ];
+
+			if ( allowedTypes ) {
+				filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+			}
 		}
 
 		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
@@ -469,13 +466,16 @@ function getMenuBarStylesMenuCreator(
 			listStyleCommand
 		} );
 
-		const configuredTypes = normalizedConfig.styles.listTypesStyles;
+		const configuredListStylesTypes = normalizedConfig.styles.listTypesStyles;
 		let filteredDefinitions = styleDefinitions;
 
-		if ( configuredTypes ) {
+		if ( configuredListStylesTypes ) {
 			const listType = parentCommandName.replace( 'List', '' ) as 'numbered' | 'bulleted';
+			const allowedTypes = configuredListStylesTypes[ listType ];
 
-			filteredDefinitions = styleDefinitions.filter( def => ( configuredTypes[ listType ] || [] ).includes( def.type ) );
+			if ( allowedTypes ) {
+				filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+			}
 		}
 
 		const styleButtonViews = filteredDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
