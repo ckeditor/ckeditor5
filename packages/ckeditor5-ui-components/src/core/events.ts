@@ -7,25 +7,11 @@
  * @module ui-components/core/events
  */
 
-import type { BaseEvent } from 'ckeditor5/src/utils.js';
 import type CKComponent from './ckcomponent.js';
 
 type ConstructorType<T> = new ( ...args: Array<any> ) => T;
 
 export type CKComponentConstructor = ConstructorType<CKComponent>;
-
-export interface ComponentRegisterEvent<T_COMPONENT extends CKComponent> extends BaseEvent {
-
-    /**
-     * The name of the event.
-     */
-    name: 'componentRegister';
-
-    /**
-     * The component that has been registered.
-     */
-	args: [ data: { name: string; component: ConstructorType<T_COMPONENT> } ];
-}
 
 export class ComponentCreateEvent<T extends CKComponent> extends CustomEvent<{
 

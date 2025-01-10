@@ -8,4 +8,3 @@
  */
 
 export { default as LitForm } from './litform.js';
-export { default as WrapperView } from './ui/wrapperview.js';

@@ -38,14 +38,16 @@ export default class UIComponents extends Plugin {
 		super( editor );
 
 		this._registry = getRegistry( editor );
+
+		this._registry.register( CKForm.componentName, CKForm );
+		this._registry.register( CKInput.componentName, CKInput );
+		this._registry.register( CKLabeledInput.componentName, CKLabeledInput );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this._registry.register( CKForm.componentName, CKForm );
-		this._registry.register( CKInput.componentName, CKInput );
-		this._registry.register( CKLabeledInput.componentName, CKLabeledInput );
+		this._registry.commit();
 	}
 }

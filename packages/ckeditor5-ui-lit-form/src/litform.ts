@@ -10,12 +10,11 @@
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import {
+	CKForm,
 	getRegistry,
 	UIComponents,
 	html,
-	type CKForm,
 	type CKInput,
-	type ComponentRegisterEvent,
 	type ComponentCreateEvent
 } from '@ckeditor/ckeditor5-ui-components';
 import FormView from './ui/formview.js';
@@ -50,56 +49,25 @@ export default class LitForm extends Plugin {
 		// Overriding component class.
 		//
 
-		editor.on<ComponentRegisterEvent<CKForm>>( 'componentRegister', ( _evt, data ) => {
-			if ( data.name !== 'ck-form' ) {
-				return;
+		const registry = getRegistry( editor );
+
+		class BetterForm extends CKForm {
+			public static override componentName = 'betterform';
+
+			public override render() {
+				const template = super.render();
+
+				return html`
+					<div>
+						<h3>Better Form</h3>
+						${ template }
+					</div>
+				`;
 			}
+		}
 
-			console.log( 'componentRegister', data.component );
-
-			// Approach 1
-			//
-			// There needs to be proper generics for event listener. Super 'CKComponent' class type can be used too.
-			// The caveat is that this event is fired for every component, so additional check
-			// for type is needed (and it means generics value is not really true).
-			class BetterForm extends data.component {
-				public static componentName = 'betterform';
-
-				public override render() {
-					const template = super.render();
-
-					return html`
-						<div>
-							<h3>Better Form</h3>
-							${ template }
-						</div>
-					`;
-				}
-			}
-
-			// Approach 2
-			//
-			// If we know what class it is, it can be simply done like below, but this means
-			// class would need to be exported publicly.
-			// With previous "extends data.component" approach, only class type can be exported.
-			//
-			// class BetterForm extends CKForm {
-			// 	public static override componentName = 'betterform';
-
-			// 	public override render() {
-			// 		const template = super.render();
-
-			// 		return html`
-			// 			<div>
-			// 				<h3>Better Form</h3>
-			// 				${ template }
-			// 			</div>
-			// 		`;
-			// 	}
-			// }
-
-			data.component = BetterForm;
-		} );
+		registry.register( Form.componentName, Form );
+		registry.extendComponentDefinition( CKForm.componentName, BetterForm );
 
 		//
 		// Overriding component instance.
@@ -162,8 +130,6 @@ export default class LitForm extends Plugin {
 
 	public init(): void {
 		const editor = this.editor;
-
-		getRegistry( editor ).register( Form.componentName, Form );
 
 		editor.ui.componentFactory.add( 'litform', () => {
 			const t = this.editor.locale.t;

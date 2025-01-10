@@ -13,6 +13,7 @@ export { default as CKInput } from './components/ckinput.js';
 export { default as CKLabeledInput } from './components/cklabeledinput.js';
 export { default as CKComponent } from './core/ckcomponent.js';
 export { default as getRegistry } from './core/registry.js';
+export { default as WrapperView } from './core/wrapperview.js';
 
 export * from './core/events.js';
 

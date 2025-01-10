@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui-lit-form/ui/wrapperview
+ * @module ui-components/core/wrapperview
  */
 
 import { View } from 'ckeditor5/src/ui.js';

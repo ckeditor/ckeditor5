@@ -8,8 +8,7 @@
  */
 
 import { type Editor } from 'ckeditor5/src/core.js';
-import type CKComponent from './ckcomponent.js';
-import { type CKComponentConstructor, type ComponentRegisterEvent } from './events.js';
+import { type CKComponentConstructor } from './events.js';
 
 const registryMap = new WeakMap<Editor, Registry>();
 
@@ -22,15 +21,21 @@ export class Registry {
 	}
 
 	public register( name: string, component: CKComponentConstructor ): void {
-		const eventData = { name, component };
-		const result = this._editor.fire<ComponentRegisterEvent<CKComponent>>( 'componentRegister', eventData );
+		this._items.set( name, component );
+	}
 
-		console.log( 'Registry:componentRegister', eventData, result );
+	public extendComponentDefinition( name: string, definition: CKComponentConstructor ): void {
+		this._items.set( name, definition );
+	}
 
-		// Update or define once (what happens with multiple editor instances on the same page?)
-		if ( !customElements.get( name ) ) {
-			this._items.set( name, eventData.component );
-			customElements.define( name, eventData.component );
+	public commit(): void {
+		for ( const [ name, component ] of this._items ) {
+			// Update or define once (what happens with multiple editor instances on the same page?)
+			if ( !customElements.get( name ) ) {
+				customElements.define( name, component );
+			} else {
+				console.warn( `Component "${ name }" is already registered.` );
+			}
 		}
 	}
 }

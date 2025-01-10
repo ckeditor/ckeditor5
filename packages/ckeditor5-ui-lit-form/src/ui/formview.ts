@@ -9,7 +9,7 @@
 
 import { type Locale } from 'ckeditor5/src/utils.js';
 import { type Dialog } from 'ckeditor5/src/ui.js';
-import WrapperView from './wrapperview.js';
+import { WrapperView } from '@ckeditor/ckeditor5-ui-components';
 
 export default class FormView extends WrapperView {
 	constructor( locale: Locale, dialog: Dialog ) {
