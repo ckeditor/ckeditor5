@@ -25,6 +25,7 @@ import type { StylesProcessor } from './stylesmap.js';
 import type Element from './element.js';
 import type { default as Node, ViewNodeChangeEvent } from './node.js';
 import type Item from './item.js';
+import type DocumentFragment from './documentfragment.js';
 
 import KeyObserver from './observer/keyobserver.js';
 import FakeSelectionObserver from './observer/fakeselectionobserver.js';
@@ -679,7 +680,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element ): Range {
+	public createRangeIn( element: Element | DocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 
