@@ -114,7 +114,7 @@ export { default as ButtonLabelWithHighlightView } from './highlightedtext/butto
 export { default as LabelWithHighlightView } from './highlightedtext/labelwithhighlightview.js';
 
 export { default as TooltipManager } from './tooltipmanager.js';
-export { default as Template, type TemplateDefinition } from './template.js';
+export { default as Template, type TemplateDefinition, type RenderData } from './template.js';
 
 export { default as SpinnerView } from './spinner/spinnerview.js';
 

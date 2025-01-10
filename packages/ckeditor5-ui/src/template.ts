@@ -447,7 +447,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param data Rendering data.
 	 */
-	private _renderElement( data: RenderData ) {
+	protected _renderElement( data: RenderData ): HTMLElement | Text {
 		let node = data.node;
 
 		if ( !node ) {
@@ -511,7 +511,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param data Rendering data.
 	 */
-	private _renderAttributes( data: RenderData ) {
+	protected _renderAttributes( data: RenderData ): void {
 		if ( !this.attributes ) {
 			return;
 		}
@@ -701,7 +701,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param data Rendering data.
 	 */
-	private _renderElementChildren( data: RenderData ) {
+	protected _renderElementChildren( data: RenderData ): void {
 		const node = data.node as HTMLElement;
 		const container = data.intoFragment ? document.createDocumentFragment() : node;
 		const isApplying = data.isApplying;
@@ -757,7 +757,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param data Rendering data.
 	 */
-	private _setUpListeners( data: RenderData ) {
+	protected _setUpListeners( data: RenderData ): void {
 		if ( !this.eventListeners ) {
 			return;
 		}

@@ -7,13 +7,14 @@
  * @module ui-lit-form/ui/formview
  */
 
+import { type Editor } from 'ckeditor5/src/core.js';
 import { type Locale } from 'ckeditor5/src/utils.js';
 import { type Dialog } from 'ckeditor5/src/ui.js';
 import WrapperView from './wrapperview.js';
 
 export default class FormView extends WrapperView {
-	constructor( locale: Locale, dialog: Dialog ) {
-		super( locale );
+	constructor( locale: Locale, dialog: Dialog, editor: Editor ) {
+		super( locale, editor );
 
 		this.setTemplate( {
 			tag: 'my-form',
