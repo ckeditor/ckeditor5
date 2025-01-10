@@ -639,6 +639,7 @@ export default class TablePropertiesView extends View {
 
 		const alignmentToolbar = new ToolbarView( locale! );
 		alignmentToolbar.set( {
+			role: 'radiogroup',
 			isCompact: true,
 			ariaLabel: t( 'Table alignment toolbar' )
 		} );
