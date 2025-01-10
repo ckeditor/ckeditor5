@@ -270,9 +270,9 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	if ( enabledProperties.styles ) {
 		const useAttribute = normalizedConfig.styles.useAttribute;
 		const configuredTypes = normalizedConfig.styles.listTypesStyles;
-		const allowedTypes = {
-			numbered: ( configuredTypes && configuredTypes.numbered ) || [],
-			bulleted: ( configuredTypes && configuredTypes.bulleted ) || []
+		const allowedTypes = configuredTypes && {
+			numbered: configuredTypes.numbered || [],
+			bulleted: configuredTypes.bulleted || []
 		};
 
 		strategies.push( {

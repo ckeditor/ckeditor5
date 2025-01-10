@@ -74,7 +74,10 @@ function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): 
 			normalizedConfig.listTypes;
 
 		normalizedConfig.useAttribute = !!styles.useAttribute;
-		normalizedConfig.listTypesStyles = styles.listTypesStyles;
+
+		if ( styles.listTypesStyles ) {
+			normalizedConfig.listTypesStyles = styles.listTypesStyles;
+		}
 	}
 
 	return normalizedConfig;
