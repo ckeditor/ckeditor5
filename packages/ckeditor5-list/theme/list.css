@@ -38,3 +38,26 @@
 		}
 	}
 }
+
+/* When an element (e.g. table) has `style` tag contains `float` `left`/`right` and has a list as a sibling,
+add margin to the end of the element. */
+[dir="ltr"] [style*="float:left"]:has( ~ul ),
+[dir="ltr"] [style*="float:left"]:has( ~ol ),
+[dir="rtl"] [style*="float:right"]:has( ~ul ),
+[dir="rtl"] [style*="float:right"]:has( ~ol ) {
+	margin-inline-end: 2em;
+}
+
+/* Add `overflow: hidden` and `padding-inline-start` to the lists, starting from the second nesting
+only when they are preceded by an element (e.g. table) has `style` tag contains `float` `left`/`right`. */
+[dir="rtl"] [style*="float:right"] ~ ul ul,
+[dir="rtl"] [style*="float:right"] ~ ul ol,
+[dir="rtl"] [style*="float:right"] ~ ol ol,
+[dir="rtl"] [style*="float:right"] ~ ol ul,
+[dir="ltr"] [style*="float:left"] ~ ul ul,
+[dir="ltr"] [style*="float:left"] ~ ul ol,
+[dir="ltr"] [style*="float:left"] ~ ol ol,
+[dir="ltr"] [style*="float:left"] ~ ol ul {
+	overflow: hidden;
+	padding-inline-start: 2em;
+}
