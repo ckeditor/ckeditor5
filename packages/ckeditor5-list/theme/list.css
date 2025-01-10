@@ -40,7 +40,8 @@
 }
 
 /* When an element (e.g. table) has `style` tag contains `float` `left`/`right` and has a list as a sibling,
-add margin to the end of the element. */
+add margin to the end of the element.
+See https://github.com/ckeditor/ckeditor5/issues/8412 */
 [dir="ltr"] [style*="float:left"]:has( ~ul ),
 [dir="ltr"] [style*="float:left"]:has( ~ol ),
 [dir="rtl"] [style*="float:right"]:has( ~ul ),
@@ -49,7 +50,8 @@ add margin to the end of the element. */
 }
 
 /* Add `overflow: hidden` and `padding-inline-start` to the lists, starting from the second nesting
-only when they are preceded by an element (e.g. table) has `style` tag contains `float` `left`/`right`. */
+only when they are preceded by an element (e.g. table) has `style` tag contains `float` `left`/`right`.
+See https://github.com/ckeditor/ckeditor5/issues/8412 */
 [dir="rtl"] [style*="float:right"] ~ ul ul,
 [dir="rtl"] [style*="float:right"] ~ ul ol,
 [dir="rtl"] [style*="float:right"] ~ ol ol,
