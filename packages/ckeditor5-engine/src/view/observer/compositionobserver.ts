@@ -42,7 +42,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 			document.isComposing = true;
-		}, { priority: 'low' } );
+		} );
 
 		document.on<ViewDocumentCompositionEndEvent>( 'compositionend', () => {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -52,7 +52,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 			document.isComposing = false;
-		}, { priority: 'low' } );
+		} );
 	}
 
 	/**
