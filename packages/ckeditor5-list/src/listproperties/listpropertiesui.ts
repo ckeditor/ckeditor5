@@ -474,15 +474,11 @@ function getMenuBarStylesMenuCreator(
 
 		if ( configuredTypes ) {
 			const listType = parentCommandName.replace( 'List', '' ) as 'numbered' | 'bulleted';
-			const allowedTypes = configuredTypes[ listType ] || [];
 
-			filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+			filteredDefinitions = styleDefinitions.filter( def => ( configuredTypes[ listType ] || [] ).includes( def.type ) );
 		}
 
-		const styleButtonViews = filteredDefinitions
-			.filter( isStyleTypeSupported )
-			.map( styleButtonCreator );
-
+		const styleButtonViews = filteredDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
 		const listPropertiesView = new ListPropertiesView( locale, {
 			styleGridAriaLabel,
 			enabledProperties: {

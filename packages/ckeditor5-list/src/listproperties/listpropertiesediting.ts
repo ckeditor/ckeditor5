@@ -289,8 +289,9 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 				if ( allowedTypes ) {
 					supportedTypes = supportedTypes.filter( styleType => {
-						const listType = getListTypeFromListStyleType( styleType );
-						return allowedTypes[ listType as 'numbered' | 'bulleted' ].includes( styleType );
+						const listType = getListTypeFromListStyleType( styleType )!;
+
+						return allowedTypes[ listType ].includes( styleType );
 					} );
 				}
 
