@@ -43,6 +43,8 @@ export default class EmojiToneView extends View {
 	constructor( locale: Locale, defaultSkinTone: SkinToneId ) {
 		super( locale );
 
+		const t = locale.t;
+
 		this.set( 'selectedSkinTone', defaultSkinTone );
 
 		this._skinTones = [
@@ -71,7 +73,7 @@ export default class EmojiToneView extends View {
 				isVertical: true,
 				isCompact: true,
 				enableActiveItemFocusOnDropdownOpen: true,
-				ariaLabel: locale.t( 'Text alignment toolbar' )
+				ariaLabel: t( 'Skin tone toolbar' )
 			}
 		);
 

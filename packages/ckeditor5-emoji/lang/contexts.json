@@ -1,5 +1,6 @@
 {
 	"Emoji": "Label of the button that inserts an emoji.",
 	"Show all emoji...": "Button appearing at the end of the list of results of emoji search.",
-	"No results...": "Placeholder label when the search list is empty."
+	"Skin tone toolbar": "Label used by assistive technologies describing the emoji feature skin tone toolbar.",
+	"Find an emoji (min. 2 characters)": "Label displayed in the emoji feature search field."
 }

@@ -24,7 +24,9 @@ export default class EmojiSearchView extends View {
 	constructor( locale: Locale ) {
 		super( locale );
 
-		this._findInputView = this._createInputField( locale.t( 'Find an emoji (min. 2 characters)' ) );
+		const t = locale.t;
+
+		this._findInputView = this._createInputField( t( 'Find an emoji (min. 2 characters)' ) );
 
 		this.setTemplate( {
 			tag: 'div',

@@ -16,6 +16,10 @@ Sources of Intellectual Property Included in CKEditor
 
 Where not otherwise indicated, all CKEditor content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
 
+The following libraries are included in CKEditor&nbsp;5 emoji feature under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0):
+
+* emoji-picker-element - Copyright (c) 2020 Nolan Lawson.
+
 Trademarks
 ----------
 

@@ -19,6 +19,10 @@ msgctxt "Button appearing at the end of the list of results of emoji search."
 msgid "Show all emoji..."
 msgstr "Show all emoji..."
 
-msgctxt "Placeholder label when the search list is empty."
-msgid "No results..."
-msgstr "No results..."
+msgctxt "Label used by assistive technologies describing the emoji feature skin tone toolbar."
+msgid "Skin tone toolbar"
+msgstr "Skin tone toolbar"
+
+msgctxt "Label displayed in the emoji feature search field."
+msgid "Find an emoji (min. 2 characters)"
+msgstr "Find an emoji (min. 2 characters)"

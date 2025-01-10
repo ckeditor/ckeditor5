@@ -6,27 +6,28 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-emoji-navigation {
-
-	& > .ck-label {
-		max-width: 160px;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
-
-	& > .ck-dropdown .ck-dropdown__panel {
-		/* There could be dozens of categories available. Use scroll to prevent a 10e6px dropdown. */
-		max-height: 250px;
-		overflow-y: auto;
-		overflow-x: hidden;
-	}
-
-	@mixin ck-media-phone {
-		max-width: 190px;
-
-		& > .ck-form__header__label {
+.ck.ck-emoji-picker {
+	& .ck.ck-emoji-navigation {
+		& > .ck-label {
+			max-width: 160px;
 			text-overflow: ellipsis;
 			overflow: hidden;
+		}
+
+		& > .ck-dropdown .ck-dropdown__panel {
+			/* There could be dozens of categories available. Use scroll to prevent a 10e6px dropdown. */
+			max-height: 250px;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		@mixin ck-media-phone {
+			max-width: 190px;
+
+			& > .ck-form__header__label {
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
 		}
 	}
 }

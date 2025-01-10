@@ -3,29 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+/* globals ClassicEditor, console, window, document */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-// Update these imports globally in the config
-// import { Emoji } from '@ckeditor/ckeditor5-emoji';
-// import { Mention } from '@ckeditor/ckeditor5-mention';
-import { ImageUpload, ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#emoji' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageInsert, CKBoxImageEdit, ImageUpload, CloudServices ],
-		cloudServices: CS_CONFIG,
+	.create( document.querySelector( '#snippet-emoji' ), {
 		toolbar: {
 			items: [
-				'undo', 'redo',
-				'|', 'heading',
+				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'emoji',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -34,11 +23,16 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
+			forceDemoLabel: true
+		},
 		image: {
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:block',
 				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',
@@ -46,19 +40,33 @@ ClassicEditor
 				'ckboxImageEdit'
 			]
 		},
-		ckbox: {
-			tokenUrl: TOKEN_URL,
-			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
-			forceDemoLabel: true
-		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
+		cloudServices: CS_CONFIG,
 		licenseKey: 'GPL'
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem(
+				editor.ui.view.toolbar, item => item.label && item.label === 'Emoji'
+			),
+			text: 'Click to insert emoji.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// External source exclusion.
+const metaElement = document.createElement( 'meta' );
+
+metaElement.name = 'x-cke-crawler-ignore-patterns';
+metaElement.content = JSON.stringify( {
+	'request-failure': 'cdn.jsdelivr.net'
+} );
+
+document.head.appendChild( metaElement );
