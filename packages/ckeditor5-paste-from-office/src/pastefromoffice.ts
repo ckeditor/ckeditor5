@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { priorities, insertToPriorityArray, type PriorityString } from 'ckeditor5/src/utils.js';
 
 import {
 	ClipboardPipeline,
@@ -21,7 +22,6 @@ import GoogleSheetsNormalizer from './normalizers/googlesheetsnormalizer.js';
 
 import { parseHtml } from './filters/parse.js';
 import type { Normalizer } from './normalizer.js';
-import { priorities } from 'ckeditor5/src/utils.js';
 
 /**
  * The Paste from Office plugin.
@@ -37,6 +37,14 @@ import { priorities } from 'ckeditor5/src/utils.js';
  * For more information about this feature check the {@glink api/paste-from-office package page}.
  */
 export default class PasteFromOffice extends Plugin {
+	/**
+	 * TODO
+	 */
+	private _normalizers = [] as Array<{
+		normalizer: Normalizer;
+		priority: PriorityString;
+	}>;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -59,18 +67,30 @@ export default class PasteFromOffice extends Plugin {
 	}
 
 	/**
+	 * TODO
+	 */
+	public registerNormalizer(
+		normalizer: Normalizer,
+		priority?: PriorityString
+	): void {
+		insertToPriorityArray( this._normalizers, {
+			normalizer,
+			priority: priorities.get( priority )
+		} );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
 		const editor = this.editor;
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
-		const normalizers: Array<Normalizer> = [];
 		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
 
-		normalizers.push( new MSWordNormalizer( viewDocument, hasMultiLevelListPlugin ) );
-		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
-		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
+		this.registerNormalizer( new MSWordNormalizer( viewDocument, hasMultiLevelListPlugin ) );
+		this.registerNormalizer( new GoogleDocsNormalizer( viewDocument ) );
+		this.registerNormalizer( new GoogleSheetsNormalizer( viewDocument ) );
 
 		viewDocument.on<ViewDocumentClipboardInputEvent>( 'clipboardInput', ( evt, data ) => {
 			if ( typeof data.content != 'string' ) {
@@ -78,28 +98,26 @@ export default class PasteFromOffice extends Plugin {
 			}
 
 			const htmlString = data.dataTransfer.getData( 'text/html' );
-			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
+			const activeNormalizer = this._normalizers.find( ( { normalizer } ) => normalizer.isActive( htmlString ) );
 
 			if ( activeNormalizer ) {
 				const parsedData = parseHtml( data.content, viewDocument.stylesProcessor );
 
 				data.content = parsedData.body;
-				data.extraContent = parsedData;
+				data.extraContent = { ...parsedData, isTransformedWithPasteFromOffice: true };
 			}
 		}, { priority: priorities.low + 10 } );
 
 		clipboardPipeline.on<ClipboardInputTransformationEvent>( 'inputTransformation', ( evt, data ) => {
-			const codeBlock = editor.model.document.selection.getFirstPosition()!.parent;
-
-			if ( codeBlock.is( 'element', 'codeBlock' ) ) {
+			if ( !data.extraContent || !( data.extraContent as any ).isTransformedWithPasteFromOffice ) {
 				return;
 			}
 
 			const htmlString = data.dataTransfer.getData( 'text/html' );
-			const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
+			const normalizers = this._normalizers.filter( ( { normalizer } ) => normalizer.isActive( htmlString ) );
 
-			if ( activeNormalizer ) {
-				activeNormalizer.execute( data );
+			for ( const { normalizer } of normalizers ) {
+				normalizer.execute( data );
 			}
 		},
 		{ priority: 'high' } );

@@ -216,14 +216,11 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'highest' } );
 
 		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
-			if ( typeof data.content == 'string' ) {
-				data.content = normalizeClipboardHtml( data.content );
-			}
-		}, { priority: 'low' } );
-
-		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
 			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock, paste from office).
-			const content = typeof data.content == 'string' ? this.editor.data.htmlProcessor.toView( data.content ) : data.content;
+			const content = typeof data.content == 'string' ?
+				this.editor.data.htmlProcessor.toView( normalizeClipboardHtml( data.content ) ) :
+				data.content;
+
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
