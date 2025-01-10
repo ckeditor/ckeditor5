@@ -83,6 +83,14 @@ describe( 'EmojiPicker', () => {
 		expect( emojiGrid.checkVisibility() ).to.equal( true );
 	} );
 
+	it( 'should have the "Nothing found" message hidden after opening the picker by default', async () => {
+		clickEmojiToolbarButton();
+
+		expect(
+			document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+		).to.equal( true );
+	} );
+
 	it( 'should insert an emoji after clicking on it in the picker', async () => {
 		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 

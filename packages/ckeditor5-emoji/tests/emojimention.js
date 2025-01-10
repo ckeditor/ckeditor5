@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
+/* global document, console, setTimeout */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
@@ -261,12 +261,40 @@ describe( 'EmojiMention', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
 			const range = editor.model.document.selection.getFirstRange();
-			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' } } );
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'see no evil' } } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
 			const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
-			expect( emojiSearchBar.value ).to.equal( 'flag_poland' );
+			expect( emojiSearchBar.value ).to.equal( 'see no evil' );
+		} );
+
+		it( 'should have the "Nothing found" message hidden after opening the picker when an emoji is found', async () => {
+			setModelData( editor.model, '<paragraph>Hello world![]</paragraph>' );
+
+			const range = editor.model.document.selection.getFirstRange();
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'see no evil' } } );
+
+			// Wait for the emojis to load.
+			await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+			expect(
+				document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+			).to.equal( true );
+		} );
+
+		it( 'should have the "Nothing found" message shown after opening the picker when no emoji is found', async () => {
+			setModelData( editor.model, '<paragraph>Hello world![]</paragraph>' );
+
+			const range = editor.model.document.selection.getFirstRange();
+			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'fooooooooooooooooooooooo' } } );
+
+			// Wait for the emojis to load.
+			await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+			expect(
+				document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+			).to.equal( false );
 		} );
 	} );
 
@@ -288,10 +316,10 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should query single emoji properly properly', () => {
-			return queryEmoji( 'flag_poland' ).then( queryResult => {
+			return queryEmoji( 'see no evil' ).then( queryResult => {
 				expect( queryResult ).to.deep.equal( [
-					{ id: 'emoji:flag_poland:', text: '🇵🇱' },
-					{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'flag_poland' }
+					{ id: 'emoji:see-no-evil_monkey:', text: '🙈' },
+					{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'see no evil' }
 				] );
 			} );
 		} );
@@ -378,12 +406,12 @@ describe( 'EmojiMention', () => {
 		it( 'should return emojis with the default skin tone when the skin tone is selected but the emoji does not have variants', () => {
 			editor.plugins.get( EmojiPicker )._selectedSkinTone = 5;
 
-			return queryEmoji( 'flag_poland' ).then( queryResult => {
+			return queryEmoji( 'see no evil' ).then( queryResult => {
 				expect( queryResult.length ).to.equal( 2 );
 
 				expect( queryResult[ 0 ] ).to.deep.equal( {
-					id: 'emoji:flag_poland:',
-					text: '🇵🇱'
+					id: 'emoji:see-no-evil_monkey:',
+					text: '🙈'
 				} );
 				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
 			} );

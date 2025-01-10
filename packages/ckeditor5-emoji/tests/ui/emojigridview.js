@@ -12,22 +12,21 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'EmojiGridView', () => {
-	let view, nothingFoundElement;
+	let view, locale;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		nothingFoundElement = document.createElement( 'div' );
-		nothingFoundElement.classList.add( 'ck', 'ck-emoji-nothing-found' );
+		locale = {
+			t: str => str
+		};
 
-		document.body.append( nothingFoundElement );
-		view = new EmojiGridView();
+		view = new EmojiGridView( locale );
 		view.render();
 	} );
 
 	afterEach( () => {
 		view.destroy();
-		nothingFoundElement.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -54,7 +53,7 @@ describe( 'EmojiGridView', () => {
 			let view;
 
 			beforeEach( () => {
-				view = new EmojiGridView();
+				view = new EmojiGridView( locale );
 
 				createTilesForGrid( view );
 

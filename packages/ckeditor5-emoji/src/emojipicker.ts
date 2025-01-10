@@ -272,12 +272,10 @@ export default class EmojiPicker extends Plugin {
 	 * Updates the symbol grid depending on the currently selected emoji category.
 	 */
 	private async _updateGrid( { gridView, categoriesView }: DropdownPanelContent ): Promise<void> {
-		// Updating the grid starts with removing all tiles belonging to the old group.
-		gridView.tiles.clear();
-
 		if ( !this._searchQuery || this._searchQuery.length < 2 ) {
 			const emojisForCategory = this._getEmojisForCategory( this._currentCategoryName );
 
+			gridView.tiles.clear();
 			this._addTilesToGrid( gridView, emojisForCategory );
 			categoriesView.enableCategories();
 
@@ -303,6 +301,7 @@ export default class EmojiPicker extends Plugin {
 			return { name, emojis };
 		} );
 
+		gridView.tiles.clear();
 		this._addTilesToGrid( gridView, tilesToAdd.filter( Boolean ) as Array<EmojiItem> );
 		categoriesView.disableCategories();
 	}
@@ -384,6 +383,7 @@ export default class EmojiPicker extends Plugin {
 		}
 
 		this._showFakeVisualSelection();
+		this._emojiPickerView.refreshGridViewContainer();
 	}
 
 	/**
