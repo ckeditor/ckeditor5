@@ -14,7 +14,7 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'emoji', 'specialCharacters',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'emoji',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

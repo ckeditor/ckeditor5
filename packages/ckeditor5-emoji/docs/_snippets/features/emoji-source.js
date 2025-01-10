@@ -7,7 +7,6 @@
 
 import { Emoji } from '@ckeditor/ckeditor5-emoji';
 import { Mention } from '@ckeditor/ckeditor5-mention';
-import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
@@ -19,8 +18,6 @@ import ClassicEditor from '../build-classic.js';
 ClassicEditor.builtinPlugins.push(
 	Mention,
 	Emoji,
-	SpecialCharacters,
-	SpecialCharactersEssentials,
 	Font,
 	PictureEditing,
 	ImageInsert,
