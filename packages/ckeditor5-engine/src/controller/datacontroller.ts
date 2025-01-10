@@ -180,19 +180,9 @@ export default class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * @fires get
 	 * @param options Additional configuration for the retrieved data. `DataController` provides two optional
 	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
-	 * @param options.rootName Root name. Default 'main'.
-	 * @param options.trim Whether returned data should be trimmed. This option is set to `empty` by default,
-	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
-	 * use `'none'`. In such cases the exact content will be returned (for example a `<p>&nbsp;</p>` for an empty editor).
 	 * @returns Output data.
 	 */
-	public get(
-		options: {
-			rootName?: string;
-			trim?: 'empty' | 'none';
-			[ key: string ]: unknown;
-		} = {}
-	): string {
+	public get( options: DataControllerGetOptions = {} ): string {
 		const { rootName = 'main', trim = 'empty' } = options;
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
@@ -245,7 +235,7 @@ export default class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	public stringify(
 		modelElementOrFragment: ModelElement | ModelDocumentFragment,
-		options: Record<string, unknown> = {}
+		options: DataControllerGetOptions = {}
 	): string {
 		// Model -> view.
 		const viewDocumentFragment = this.toView( modelElementOrFragment, options );
@@ -268,7 +258,7 @@ export default class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	public toView(
 		modelElementOrFragment: ModelElement | ModelDocumentFragment,
-		options: Record<string, unknown> = {}
+		options: DataControllerGetOptions = {}
 	): ViewDocumentFragment {
 		const viewDocument = this.viewDocument;
 		const viewWriter = this._viewWriter;
@@ -632,6 +622,21 @@ export type DataControllerToModelEvent = {
 	args: [ Parameters<DataController[ 'toModel' ]> ];
 	return: ReturnType<DataController[ 'toModel' ]>;
 };
+
+export interface DataControllerGetOptions {
+
+	/**
+	 * Root name. Default 'main'.
+	 */
+	rootName?: string;
+
+	/**
+	 * Whether returned data should be trimmed. This option is set to `empty` by default,
+	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
+	 * use `'none'`. In such cases the exact content will be returned (for example a `<p>&nbsp;</p>` for an empty editor).
+	 */
+	trim?: 'empty' | 'none';
+}
 
 /**
  * Helper function for downcast conversion.

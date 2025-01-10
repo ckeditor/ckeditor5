@@ -31,7 +31,8 @@ import {
 	type RootElement,
 	type ViewRootEditableElement,
 	type Writer,
-	type ModelCanEditAtEvent
+	type ModelCanEditAtEvent,
+	type DataControllerGetOptions
 } from 'ckeditor5/src/engine.js';
 
 /**
@@ -585,7 +586,7 @@ export default class MultiRootEditor extends Editor {
 	 * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
 	 * @returns The full document data.
 	 */
-	public getFullData( options?: Record<string, unknown> ): Record<string, string> {
+	public getFullData( options?: DataControllerGetOptions ): Record<string, string> {
 		const data: Record<string, string> = {};
 
 		for ( const rootName of this.model.document.getRootNames() ) {

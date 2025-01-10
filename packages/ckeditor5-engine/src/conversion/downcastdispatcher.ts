@@ -25,6 +25,7 @@ import type Position from '../model/position.js';
 import type Schema from '../model/schema.js';
 import type Selection from '../model/selection.js';
 import type ViewElement from '../view/element.js';
+import type { DataControllerGetOptions } from '../controller/datacontroller.js';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
@@ -955,7 +956,7 @@ export interface DowncastConversionApi {
 	 * An object with an additional configuration which can be used during the conversion process.
 	 * Available only for data downcast conversion.
 	 */
-	options: Record<string, unknown>;
+	options: DataControllerGetOptions;
 
 	/**
 	 * Triggers conversion of a specified item.

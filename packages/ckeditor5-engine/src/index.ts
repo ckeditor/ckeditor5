@@ -16,7 +16,8 @@ export {
 	type DataControllerInitEvent,
 	type DataControllerSetEvent,
 	type DataControllerToModelEvent,
-	type DataControllerToViewEvent
+	type DataControllerToViewEvent,
+	type DataControllerGetOptions
 } from './controller/datacontroller.js';
 
 // Conversion.
