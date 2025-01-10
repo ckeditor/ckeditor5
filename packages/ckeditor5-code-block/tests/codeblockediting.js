@@ -1682,7 +1682,7 @@ describe( 'CodeBlockEditing', () => {
 					'[]o' +
 				'</codeBlock>' );
 
-			sinon.assert.calledOnce( dataTransferMock.getData );
+			sinon.assert.calledTwice( dataTransferMock.getData );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
@@ -1723,7 +1723,7 @@ describe( 'CodeBlockEditing', () => {
 				'<paragraph>bar</paragraph>'
 			);
 
-			sinon.assert.calledOnce( dataTransferMock.getData );
+			sinon.assert.calledTwice( dataTransferMock.getData );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
