@@ -7,6 +7,8 @@
 
 // TODO change to new plugin
 import {
+	IconBulletedList,
+	IconNumberedList,
 	IconListStyleCircle,
 	IconListStyleDecimal,
 	IconListStyleDecimalLeadingZero,
@@ -20,7 +22,6 @@ import {
 import ListProperties from '../../src/legacylistproperties.js';
 import ListPropertiesUI from '../../src/listproperties/listpropertiesui.js';
 
-import { icons } from 'ckeditor5/src/core.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -315,7 +316,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.bulletedList );
+						expect( mainButtonView.icon ).to.equal( IconBulletedList );
 					} );
 
 					it( 'should have a #tooltip based on a label', () => {
@@ -691,7 +692,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.numberedList );
+						expect( mainButtonView.icon ).to.equal( IconNumberedList );
 					} );
 
 					it( 'should have a #tooltip based on a label', () => {
@@ -1128,7 +1129,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.bulletedList );
+						expect( mainButtonView.icon ).to.equal( IconBulletedList );
 					} );
 				} );
 
@@ -1427,7 +1428,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.numberedList );
+						expect( mainButtonView.icon ).to.equal( IconNumberedList );
 					} );
 				} );
 
