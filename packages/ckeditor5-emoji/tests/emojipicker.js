@@ -150,6 +150,40 @@ describe( 'EmojiPicker', () => {
 		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
 	} );
 
+	it( 'should respect the editor config', async () => {
+		await editor.destroy();
+
+		await ClassicEditor
+			.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				toolbar: [ 'emoji' ],
+				menuBar: {
+					isVisible: true
+				},
+				emoji: {
+					defaultSkinTone: 'medium'
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				emojiPicker = newEditor.plugins.get( EmojiPicker );
+			} );
+
+		clickEmojiToolbarButton();
+
+		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
+		secondCategoryButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+
+		firstEmojiInGrid.click();
+
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>👋🏽[]</paragraph>' );
+	} );
+
 	it( 'should load previous category after reopening the emoji picker', async () => {
 		clickEmojiToolbarButton();
 

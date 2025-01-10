@@ -197,7 +197,7 @@ export default class EmojiMention extends Plugin {
 							if ( !emojiSkinToneMap ) {
 								text = null;
 							} else {
-								text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap[ 0 ];
+								text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap.default;
 							}
 						}
 
