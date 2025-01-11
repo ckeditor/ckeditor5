@@ -41,9 +41,12 @@ export function normalizeSpacing( htmlString: string ): string {
 export function normalizeSpacerunSpans( htmlDocument: Document ): void {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		const htmlElement = el as HTMLElement;
-		const innerTextLength = htmlElement.innerText.length || 0;
 
-		htmlElement.innerText = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+		if ( /[^\b]/.test( htmlElement.innerText.trim() ) === false ) {
+			const innerTextLength = htmlElement.innerText.length || 0;
+
+			htmlElement.innerText = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+		}
 	} );
 }
 
