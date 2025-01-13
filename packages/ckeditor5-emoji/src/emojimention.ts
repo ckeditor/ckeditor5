@@ -7,11 +7,10 @@
  * @module emoji/emojimention
  */
 
-import { Database } from 'emoji-picker-element';
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiPicker from './emojipicker.js';
-import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
+import EmojiDatabase from './emojidatabase.js';
 
 import {
 	type MentionFeed,
@@ -30,14 +29,13 @@ const EMOJI_MENTION_MARKER = ':';
 export default class EmojiMention extends Plugin {
 	private _emojiDropdownLimit: number;
 	private _showAllEmojiId: string;
-	private _emojiDatabase: Database;
 	declare private _emojiPickerPlugin: EmojiPicker | null;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Mention' ] as const;
+		return [ EmojiDatabase, 'Mention' ] as const;
 	}
 
 	/**
@@ -66,7 +64,6 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._showAllEmojiId = formatEmojiId( SHOW_ALL_EMOJI );
-		this._emojiDatabase = new Database();
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
 		const mergeFieldsPrefix = this.editor.config.get( 'mergeFields.prefix' )! as string;
@@ -170,40 +167,31 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `feed()` callback for mention config.
 	 */
-	private _getQueryEmojiFn(): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
-		return async ( searchQuery: string ) => {
-			// `getEmojiBySearchQuery()` returns nothing when querying with a single character.
-			if ( searchQuery.length < 2 ) {
-				return [];
-			}
+	private _getQueryEmojiFn(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
+		return ( searchQuery: string ) => {
+			const emojiDatabasePlugin = this.editor.plugins.get( EmojiDatabase );
 
-			// If the first character is space, do not display any feeds.
-			if ( searchQuery[ 0 ] === ' ' ) {
-				return [];
-			}
+			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
+				.map( emoji => {
+					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
-			const emojis = await this._emojiDatabase.getEmojiBySearchQuery( searchQuery )
-				.then( queryResult => {
-					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
-						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
+					let text: string | null = emoji.emoji;
 
-						let text: string | null = emoji.unicode;
+					if ( this._emojiPickerPlugin ) {
+						const emojiSkinToneMap = this._emojiPickerPlugin.emojis.get( emoji.annotation );
 
-						if ( this._emojiPickerPlugin ) {
-							const emojiSkinToneMap = this._emojiPickerPlugin.emojis.get( emoji.annotation );
-
-							// Query might return some emojis which we chose not to add to our database.
-							/* istanbul ignore next -- @preserve */
-							if ( !emojiSkinToneMap ) {
-								text = null;
-							} else {
-								text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap[ 0 ];
-							}
+						// Query might return some emojis which we chose not to add to our database.
+						/* istanbul ignore next -- @preserve */
+						if ( !emojiSkinToneMap ) {
+							text = null;
+						} else {
+							text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap.default;
 						}
+					}
 
-						return { text, id: formatEmojiId( id ) };
-					} ).filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
-				} );
+					return { text, id: formatEmojiId( id ) };
+				} )
+				.filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
 
 			return this._emojiPickerPlugin ?
 				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: this._showAllEmojiId, text: searchQuery } ] :

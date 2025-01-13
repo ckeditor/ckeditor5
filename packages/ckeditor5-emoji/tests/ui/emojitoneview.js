@@ -16,7 +16,7 @@ describe( 'EmojiToneView', () => {
 			t: val => val
 		};
 
-		emojiToneView = new EmojiToneView( locale, 0 );
+		emojiToneView = new EmojiToneView( locale, 'default' );
 		emojiToneView.render();
 	} );
 
@@ -25,11 +25,11 @@ describe( 'EmojiToneView', () => {
 	} );
 
 	it( 'updates the skin tone when #execute event triggers', () => {
-		expect( emojiToneView.selectedSkinTone ).to.equal( 0 );
+		expect( emojiToneView.selectedSkinTone ).to.equal( 'default' );
 
 		Array.from( emojiToneView._dropdownButtons ).at( -1 ).fire( 'execute' );
 
-		expect( emojiToneView.selectedSkinTone ).to.equal( 5 );
+		expect( emojiToneView.selectedSkinTone ).to.equal( 'dark' );
 	} );
 
 	it( 'displays a check mark next to the active skin tone', () => {
@@ -58,11 +58,11 @@ describe( 'EmojiToneView', () => {
 		} );
 
 		it( 'sets #selectedSkinTone to value passed to the constructor', () => {
-			emojiToneView = new EmojiToneView( locale, 0 );
-			expect( emojiToneView.selectedSkinTone ).to.equal( 0 );
+			emojiToneView = new EmojiToneView( locale, 'default' );
+			expect( emojiToneView.selectedSkinTone ).to.equal( 'default' );
 
-			emojiToneView = new EmojiToneView( locale, 3 );
-			expect( emojiToneView.selectedSkinTone ).to.equal( 3 );
+			emojiToneView = new EmojiToneView( locale, 'medium' );
+			expect( emojiToneView.selectedSkinTone ).to.equal( 'medium' );
 		} );
 	} );
 

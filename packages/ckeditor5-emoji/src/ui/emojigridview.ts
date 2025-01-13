@@ -9,10 +9,10 @@
 
 import '../../theme/emojigrid.css';
 
-import type { Database } from 'emoji-picker-element';
 import { addKeyboardHandlingForGrid, ButtonView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from './emojitoneview';
+import EmojiDatabase from '../emojidatabase';
 
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
@@ -33,23 +33,25 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
-	private emojiGroups: Database;
+	private emojiGroups: any;
 
 	declare public currentCategoryName: string;
 	declare public searchQuery: string;
 	declare public activeEmojiGroup: any;
 	declare public selectedSkinTone: SkinToneId;
+	declare public database: EmojiDatabase;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, initialCategory }: { emojiGroups: Array<any>; initialCategory: string } ) {
+	constructor( locale: Locale, { emojiGroups, initialCategory }: { emojiGroups: Array<any>; initialCategory: string }, database: EmojiDatabase ) {
 		super( locale );
 
 		this.emojiGroups = emojiGroups;
 		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
+		this.database = database;
 		this.set( 'searchQuery', '' );
 
 		this.setTemplate( {
@@ -64,6 +66,17 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 						]
 					},
 					children: this.tiles
+				},
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'ck',
+							'ck-emoji-nothing-found',
+							'hidden'
+						]
+					},
+					children: [ { text: 'Nothing found.' } ]
 				}
 			],
 			attributes: {
@@ -99,17 +112,13 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 		let itemsToRender = this.activeEmojiGroup.items;
 		let allItems;
 
-		// TODO: A naive search but it works (xD).
 		if ( pattern ) {
 			allItems = this.emojiGroups.flatMap( group => group.items );
-
-			itemsToRender = allItems.filter( item => {
-				return pattern.test( item.name );
-			} );
+			itemsToRender = this.database.getEmojiBySearchQuery( pattern.source );
 		}
 
 		const arrayOfMatchingItems = itemsToRender.map( item => {
-			const emoji = item.emojis[ this.selectedSkinTone ] || item.emojis[ 0 ];
+			const emoji = item.emojis[ this.selectedSkinTone ] || item.emojis.default;
 
 			return this.createTile( emoji, item.name );
 		} );

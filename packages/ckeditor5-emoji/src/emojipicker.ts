@@ -12,7 +12,6 @@ import '../theme/emojipicker.css';
 import type { Locale, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import { KeystrokeHandler } from 'ckeditor5/src/utils.js';
 
-import { Database } from 'emoji-picker-element';
 import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import EmojiGridView, {
@@ -20,6 +19,7 @@ import EmojiGridView, {
 	type EmojiGridViewTileFocusEvent,
 	type EmojiGridViewTileHoverEvent
 } from './ui/emojigridview.js';
+import EmojiDatabase from './emojidatabase.js';
 import EmojiSearchView, { type EmojiSearchViewInputEvent } from './ui/emojisearchview.js';
 import EmojiCategoriesView from './ui/emojicategoriesview.js';
 import EmojiPickerView from './ui/emojipickerview.js';
@@ -49,7 +49,7 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * Registered emojis. A pair of an emoji name and all its available skin tone variants.
 	 */
-	private _emojis: Map<string, Array<string>>;
+	private _emojis: Map<string, EmojiMap>;
 
 	private _selectedSkinTone: SkinToneId;
 
@@ -77,7 +77,7 @@ export default class EmojiPicker extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ContextualBalloon, Typing, Dialog ] as const;
+		return [ EmojiDatabase, ContextualBalloon, Typing, Dialog ] as const;
 	}
 
 	/**
@@ -100,14 +100,18 @@ export default class EmojiPicker extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		this.editor.config.define( 'emoji', {
+			skinTone: 'default'
+		} );
+
 		this._emojis = new Map();
 		this._emojiGroups = [];
 		this._emojiPickerView = null;
-		this._emojiDatabase = new Database();
+		// this._emojiDatabase = new Database();
 
 		this.set( '_searchQuery', '' );
 		this.set( '_currentCategoryName', '' );
-		this.set( '_selectedSkinTone', 0 );
+		this.set( '_selectedSkinTone', editor.config.get( 'emoji.skinTone' )! );
 	}
 
 	/**
@@ -132,7 +136,7 @@ export default class EmojiPicker extends Plugin {
 
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 
-		this._emojiGroups = await Promise.all( [
+		this._emojiGroups = [
 			this._getEmojiGroup( { databaseId: 0, title: 'Smileys & Expressions', exampleEmoji: '😀' } ),
 			this._getEmojiGroup( { databaseId: 1, title: 'Gestures & People', exampleEmoji: '👋' } ),
 			this._getEmojiGroup( { databaseId: 3, title: 'Animals & Nature', exampleEmoji: '🐻' } ),
@@ -142,7 +146,7 @@ export default class EmojiPicker extends Plugin {
 			this._getEmojiGroup( { databaseId: 7, title: 'Objects', exampleEmoji: '💡' } ),
 			this._getEmojiGroup( { databaseId: 8, title: 'Symbols', exampleEmoji: '🟢' } ),
 			this._getEmojiGroup( { databaseId: 9, title: 'Flags', exampleEmoji: '🏁' } )
-		] );
+		];
 
 		this._currentCategoryName = this._emojiGroups[ 0 ].title;
 
@@ -174,17 +178,18 @@ export default class EmojiPicker extends Plugin {
 		} );
 	}
 
-	private async _getEmojiGroup( {
+	private _getEmojiGroup( {
 		databaseId, title, exampleEmoji
 	}: {
 		databaseId: number; title: string; exampleEmoji: string;
-	} ): Promise<EmojiGroup> {
-		const databaseGroup = await this._emojiDatabase.getEmojiByGroup( databaseId );
+	} ): EmojiGroup {
+		const emojiDatabasePlugin = this.editor.plugins.get( EmojiDatabase );
+		const databaseGroup = emojiDatabasePlugin.getEmojiByGroup( databaseId );
 		const container = this._createEmojiWidthTestingContainer();
 
 		const items = databaseGroup
 			.filter( item => {
-				const emojiWidth = this._getNodeWidth( container, item.unicode );
+				const emojiWidth = this._getNodeWidth( container, item.emoji );
 
 				// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
 				// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
@@ -194,10 +199,23 @@ export default class EmojiPicker extends Plugin {
 			} )
 			.map( item => {
 				const name = item.annotation;
-				const emojis = [ item.unicode ];
+				const emojis: EmojiMap = { default: item.emoji };
 
-				if ( 'skins' in item ) {
-					emojis.push( ...item.skins!.sort( ( a, b ) => a.tone - b.tone ).map( item => item.unicode ) );
+				if ( 'skins' in item && item.skins ) {
+					const skinToneMap: Record<number, SkinToneId> = {
+						0: 'default',
+						1: 'light',
+						2: 'medium-light',
+						3: 'medium',
+						4: 'medium-dark',
+						5: 'dark'
+					};
+
+					item.skins.forEach( skin => {
+						const skinTone = skinToneMap[ skin.tone ];
+
+						emojis[ skinTone ] = skin.emoji;
+					} );
 				}
 
 				this._emojis.set( name, emojis );
@@ -225,7 +243,7 @@ export default class EmojiPicker extends Plugin {
 			emojiGroups: this._emojiGroups,
 			// When creating... TODO.
 			initialCategory: this._currentCategoryName
-		} );
+		}, this.editor.plugins.get( EmojiDatabase )  );
 
 		const resultsView = new SearchInfoView( locale );
 		const searchView = new EmojiSearchView( locale, gridView, resultsView );
@@ -341,7 +359,7 @@ export default class EmojiPicker extends Plugin {
 	//
 	// private _addTilesToGrid( gridView: EmojiGridView, emojisForCategory: Array<EmojiItem> ) {
 	// 	for ( const item of emojisForCategory ) {
-	// 		const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis[ 0 ];
+	// 		const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis.default;
 	//
 	// 		gridView.tiles.add( gridView.createTile( emoji, item.name ) );
 	// 	}
@@ -486,7 +504,11 @@ export type EmojiGroup = {
 
 type EmojiItem = {
 	name: string;
-	emojis: Array<string>;
+	emojis: EmojiMap;
+};
+
+type EmojiMap = Partial<Record<SkinToneId, string>> & {
+	'default': string;
 };
 
 /**

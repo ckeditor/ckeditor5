@@ -83,6 +83,14 @@ describe( 'EmojiPicker', () => {
 		expect( emojiGrid.checkVisibility() ).to.equal( true );
 	} );
 
+	it( 'should have the "Nothing found" message hidden after opening the picker by default', async () => {
+		clickEmojiToolbarButton();
+
+		expect(
+			document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+		).to.equal( true );
+	} );
+
 	it( 'should insert an emoji after clicking on it in the picker', async () => {
 		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
@@ -148,6 +156,40 @@ describe( 'EmojiPicker', () => {
 		const newFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
 
 		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
+	} );
+
+	it( 'should respect the editor config', async () => {
+		await editor.destroy();
+
+		await ClassicEditor
+			.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				toolbar: [ 'emoji' ],
+				menuBar: {
+					isVisible: true
+				},
+				emoji: {
+					skinTone: 'medium'
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				emojiPicker = newEditor.plugins.get( EmojiPicker );
+			} );
+
+		clickEmojiToolbarButton();
+
+		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
+		secondCategoryButton.click();
+
+		// Wait for the emojis to load.
+		await new Promise( resolve => setTimeout( resolve, 250 ) );
+
+		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+
+		firstEmojiInGrid.click();
+
+		expect( getModelData( editor.model ) ).to.equal( '<paragraph>👋🏽[]</paragraph>' );
 	} );
 
 	it( 'should load previous category after reopening the emoji picker', async () => {

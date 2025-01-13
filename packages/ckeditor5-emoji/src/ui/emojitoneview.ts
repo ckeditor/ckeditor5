@@ -23,16 +23,18 @@ import {
 	DropdownButtonView
 } from 'ckeditor5/src/ui.js';
 
-export type SkinToneId = 0 | 1 | 2 | 3 | 4 | 5;
+export type SkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
+
+type SkinTone = {
+	id: SkinToneId;
+	example: string;
+	tooltip: string;
+};
 
 export default class EmojiToneView extends View {
 	declare public selectedSkinTone: SkinToneId;
 
-	private _skinTones: Array<{
-		id: SkinToneId;
-		example: string;
-		tooltip: string;
-	}>;
+	private _skinTones: Array<SkinTone>;
 
 	private _mainDropdownButton: DropdownButtonView;
 	private _dropdownButtons: ViewCollection<ListItemButtonView>;
@@ -40,20 +42,20 @@ export default class EmojiToneView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, defaultSkinTone: SkinToneId ) {
+	constructor( locale: Locale, skinTone: SkinToneId ) {
 		super( locale );
 
 		const t = locale.t;
 
-		this.set( 'selectedSkinTone', defaultSkinTone );
+		this.set( 'selectedSkinTone', skinTone );
 
 		this._skinTones = [
-			{ id: 0, example: '👋', tooltip: 'Default skin tone' },
-			{ id: 1, example: '👋🏻', tooltip: 'Light skin tone' },
-			{ id: 2, example: '👋🏼', tooltip: 'Medium Light skin tone' },
-			{ id: 3, example: '👋🏽', tooltip: 'Medium skin tone' },
-			{ id: 4, example: '👋🏾', tooltip: 'Medium Dark skin tone' },
-			{ id: 5, example: '👋🏿', tooltip: 'Dark skin tone' }
+			{ id: 'default', example: '👋', tooltip: 'Default skin tone' },
+			{ id: 'light', example: '👋🏻', tooltip: 'Light skin tone' },
+			{ id: 'medium-light', example: '👋🏼', tooltip: 'Medium Light skin tone' },
+			{ id: 'medium', example: '👋🏽', tooltip: 'Medium skin tone' },
+			{ id: 'medium-dark', example: '👋🏾', tooltip: 'Medium Dark skin tone' },
+			{ id: 'dark', example: '👋🏿', tooltip: 'Dark skin tone' }
 		];
 
 		this._mainDropdownButton = new DropdownButtonView();
@@ -63,7 +65,7 @@ export default class EmojiToneView extends View {
 		);
 
 		this._mainDropdownButton.withText = true;
-		this._mainDropdownButton.label = this._skinTones[ this.selectedSkinTone ].example;
+		this._mainDropdownButton.label = this._getSkinTone( this.selectedSkinTone ).example;
 		this._mainDropdownButton.tooltip = 'Select skin tone';
 
 		addToolbarToDropdown(
@@ -111,9 +113,13 @@ export default class EmojiToneView extends View {
 		this.listenTo( buttonView, 'execute', () => {
 			this.selectedSkinTone = buttonSkinToneId;
 
-			this._mainDropdownButton.label = this._skinTones[ buttonSkinToneId ].example;
+			this._mainDropdownButton.label = this._getSkinTone( buttonSkinToneId ).example;
 		} );
 
 		return buttonView;
+	}
+
+	private _getSkinTone( skinToneId: SkinToneId ): SkinTone {
+		return this._skinTones.find( tone => tone.id === skinToneId )!;
 	}
 }

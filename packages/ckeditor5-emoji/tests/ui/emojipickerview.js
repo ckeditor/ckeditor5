@@ -22,7 +22,7 @@ describe( 'EmojiPickerView', () => {
 		};
 
 		searchView = new EmojiSearchView( locale );
-		toneView = new EmojiToneView( locale, 0 );
+		toneView = new EmojiToneView( locale, 'default' );
 		categoriesView = new EmojiCategoriesView( locale, [ {} ] );
 		gridView = new EmojiGridView( locale );
 		infoView = new EmojiInfoView( locale );
