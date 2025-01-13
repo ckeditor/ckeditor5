@@ -169,10 +169,6 @@ export default class EmojiMention extends Plugin {
 	 */
 	private _getQueryEmojiFn(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
 		return ( searchQuery: string ) => {
-			if ( !searchQuery.trim() ) {
-				return [];
-			}
-
 			const emojiDatabasePlugin = this.editor.plugins.get( EmojiDatabase );
 
 			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )

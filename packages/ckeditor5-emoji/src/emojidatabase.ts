@@ -11,13 +11,23 @@ import Fuse from 'fuse.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
 
+// An endpoint from which the emoji database will be downloaded during plugin initialization.
+const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json';
+
 /**
  * The emoji database plugin.
  *
- * Loads the emoji database from CDN and provides utility methods to search it.
+ * Loads the emoji database from URL during plugin initialization and provides utility methods to search it.
  */
 export default class EmojiDatabase extends Plugin {
+	/**
+	 * Emoji database.
+	 */
 	private _emojiDatabase: Array<EmojiDatabaseEntry>;
+
+	/**
+	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
+	 */
 	private _fuseSearch: Fuse<EmojiDatabaseEntry> | null;
 
 	/**
@@ -54,29 +64,45 @@ export default class EmojiDatabase extends Plugin {
 			keys: [
 				{
 					name: 'emoticon',
-					weight: 10
+					weight: 5
 				},
 				{
 					name: 'annotation',
-					weight: 5
+					weight: 3
 				},
 				{
 					name: 'tags',
 					weight: 1
 				}
 			],
-			threshold: 0.2,
+			minMatchCharLength: 2,
+			threshold: 0,
 			ignoreLocation: true
 		} );
 	}
 
+	/**
+	 * Returns an array of emoji entries that match the search query.
+	 *
+	 * @param searchQuery A search query to match emoji.
+	 * @returns An array of emoji entries that match the search query.
+	 */
 	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiDatabaseEntry> {
-		const searchQueryTokens = searchQuery.split( ' ' ).filter( Boolean );
+		const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
+
+		// Perform the search only if there is at least two non-white characters next to each other.
+		const shouldSearch = searchQueryTokens.some( token => token.length >= 2 );
+
+		if ( !shouldSearch ) {
+			return [];
+		}
 
 		return this._fuseSearch!
 			.search( {
 				'$or': [
-					{ emoticon: searchQuery },
+					{
+						emoticon: searchQuery
+					},
 					{
 						'$and': searchQueryTokens.map( token => ( { annotation: token } ) )
 					},
@@ -88,14 +114,24 @@ export default class EmojiDatabase extends Plugin {
 			.map( result => result.item );
 	}
 
+	/**
+	 * Returns an array of emoji entries that belong to the provided group.
+	 *
+	 * @param group An identifier of the emoji group.
+	 * @returns An array of emoji entries that belong to the provided group.
+	 */
 	public getEmojiByGroup( group: number ): Array<EmojiDatabaseEntry> {
 		return this._emojiDatabase.filter( entry => entry.group === group );
 	}
 }
 
+/**
+ * Makes the HTTP request to download the emoji database.
+ *
+ * @returns A promise that resolves with an array of emoji entries.
+ */
 async function loadEmojiDatabase(): Promise<Array<EmojiDatabaseEntry>> {
-	const endpoint = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json';
-	const response = await fetch( endpoint );
+	const response = await fetch( EMOJI_DATABASE_URL );
 
 	if ( !response.ok ) {
 		/**
