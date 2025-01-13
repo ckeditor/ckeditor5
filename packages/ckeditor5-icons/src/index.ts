@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module icons
+ */
+
 export { default as IconAccessibility } from '../theme/icons/accessibility.svg';
 export { default as IconAddComment } from '../theme/icons/add-comment.svg';
 export { default as IconAlignBottom } from '../theme/icons/align-bottom.svg';
