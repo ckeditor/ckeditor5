@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconColorTileCheck } from 'ckeditor5/src/icons.js';
+import { IconColorTileCheck } from '@ckeditor/ckeditor5-icons';
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 import ButtonView from '../../src/button/buttonview.js';
 import { env } from '@ckeditor/ckeditor5-utils';

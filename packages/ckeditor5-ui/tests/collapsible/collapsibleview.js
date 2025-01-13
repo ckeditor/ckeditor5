@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconDropdownArrow } from 'ckeditor5/src/icons.js';
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import CollapsibleView from '../../src/collapsible/collapsibleview.js';
 import ButtonView from '../../src/button/buttonview.js';
 

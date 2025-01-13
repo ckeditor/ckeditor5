@@ -5,7 +5,7 @@
 
 /* globals document,Event */
 
-import { IconEraser, IconCheck, IconCancel } from 'ckeditor5/src/icons.js';
+import { IconEraser, IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
 import ColorSelectorView from './../../src/colorselector/colorselectorview.js';
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 import FocusCycler from '../../src/focuscycler.js';

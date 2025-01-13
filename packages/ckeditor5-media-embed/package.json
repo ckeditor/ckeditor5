@@ -16,6 +16,7 @@
     "@ckeditor/ckeditor5-clipboard": "44.1.0",
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "44.1.0",
     "@ckeditor/ckeditor5-typing": "44.1.0",
     "@ckeditor/ckeditor5-ui": "44.1.0",
     "@ckeditor/ckeditor5-undo": "44.1.0",

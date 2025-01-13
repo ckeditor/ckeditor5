@@ -14,6 +14,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "color-convert": "2.0.1",
     "color-parse": "1.4.2",
