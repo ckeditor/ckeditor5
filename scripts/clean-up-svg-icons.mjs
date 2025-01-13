@@ -51,7 +51,7 @@ const EXCLUDED_ICONS = [
 ];
 
 // A pattern to match all the icons.
-const ALL_ICONS_PATTERN = 'packages/ckeditor5-icons/theme';
+const ALL_ICONS_PATTERN = 'packages/ckeditor5-icons/theme/icons';
 
 const { paths, verifyOnly } = parseArguments( process.argv.slice( 2 ) );
 
