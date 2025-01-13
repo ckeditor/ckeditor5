@@ -212,6 +212,7 @@
     "release:clean": "node ./scripts/release/clean.mjs",
     "clean-up-svg-icons": "node ./scripts/clean-up-svg-icons.mjs",
     "collect-svg-icons": "node scripts/collect-svg-icons.mjs",
+    "validate-svg-icons": "node scripts/ci/validate-svg-icons.mjs",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.mjs",
     "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.mjs",

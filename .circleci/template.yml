@@ -148,6 +148,11 @@ jobs:
           when: always
           name: Check if all packages are exported in the "ckeditor5" package
           command: yarn run check-exports
+      - run:
+          when: always
+          name: Check if all editor icon SVGs are properly defined
+          working_directory: external/ckeditor5-commercial
+          command: yarn run validate-svg-icons
 
   cke5_coverage:
     machine: true
