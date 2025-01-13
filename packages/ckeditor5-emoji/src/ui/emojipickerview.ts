@@ -121,6 +121,10 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.items.add( this.gridView );
 	}
 
+	public refreshGridViewContainer(): void {
+		this.gridView.refreshContainer();
+	}
+
 	/**
 	 * @inheritDoc
 	 */
