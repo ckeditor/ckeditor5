@@ -363,7 +363,7 @@ export interface ClipboardInputTransformationData {
 	content: ViewDocumentFragment;
 
 	/**
-	 * TODO
+	 * Custom data stored by the `clipboardInput` event handlers. Content of this property is passed from the `clipboardInput` event.
 	 */
 	extraContent?: unknown;
 

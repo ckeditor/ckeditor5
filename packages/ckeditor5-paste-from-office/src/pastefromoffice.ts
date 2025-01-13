@@ -38,7 +38,7 @@ import type { Normalizer } from './normalizer.js';
  */
 export default class PasteFromOffice extends Plugin {
 	/**
-	 * TODO
+	 * The priority array of registered normalizers.
 	 */
 	private _normalizers = [] as Array<{
 		normalizer: Normalizer;
@@ -67,7 +67,7 @@ export default class PasteFromOffice extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers a normalizer with the given priority.
 	 */
 	public registerNormalizer(
 		normalizer: Normalizer,

@@ -185,12 +185,13 @@ export interface ClipboardInputEventData {
 	targetRanges: Array<ViewRange> | null;
 
 	/**
-	 * The content of clipboard input.
+	 * The content of clipboard input. Defaults to `text/html`. Falls-back to `text/plain`.
 	 */
 	content: string | ViewDocumentFragment;
 
 	/**
-	 * TODO
+	 * Custom data stored by the `clipboardInput` event handlers. Custom properties of this object can be defined and use to
+	 * pass parameters between listeners. Content of this property is passed to the `inputTransformation` event.
 	 */
 	extraContent?: unknown;
 }
