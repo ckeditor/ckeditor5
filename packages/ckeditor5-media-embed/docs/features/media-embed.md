@@ -13,7 +13,7 @@ The media embed feature lets you insert embeddable media such as YouTube or Vime
 
 ## Demo
 
-You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Insert media} to embed media. You can also paste a media URL directly into the editor content, and it will be [automatically embedded](#automatic-media-embed-on-paste). Try both approaches with the following URLs:
+You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-icons/theme/icons/media.svg Insert media} to embed media. You can also paste a media URL directly into the editor content, and it will be [automatically embedded](#automatic-media-embed-on-paste). Try both approaches with the following URLs:
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">

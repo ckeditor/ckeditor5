@@ -19,7 +19,7 @@ By default, the editor filters out all HTML comments on initialization. The {@li
 
 ## Demo
 
-The editor below is configured to keep HTML comments in the document content. You can view the source of the document using the {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see there is an HTML comment in the document source. Try uncommenting the paragraph below the picture. Once you leave the source editing mode, you will see this paragraph in the editable area.
+The editor below is configured to keep HTML comments in the document content. You can view the source of the document using the {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-icons/theme/icons/source-editing.svg Source editing} to see there is an HTML comment in the document source. Try uncommenting the paragraph below the picture. Once you leave the source editing mode, you will see this paragraph in the editable area.
 
 {@snippet features/html-comment}
 
