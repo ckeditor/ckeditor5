@@ -54,18 +54,19 @@ export default class EmojiDatabase extends Plugin {
 			keys: [
 				{
 					name: 'emoticon',
-					weight: 5
+					weight: 10
 				},
 				{
 					name: 'annotation',
-					weight: 3
+					weight: 5
 				},
 				{
 					name: 'tags',
 					weight: 1
 				}
 			],
-			threshold: 0.2
+			threshold: 0.2,
+			ignoreLocation: true
 		} );
 	}
 
