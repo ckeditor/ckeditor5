@@ -43,7 +43,7 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * Registered emojis. A pair of an emoji name and all its available skin tone variants.
 	 */
-	private _emojis: Map<string, Array<string>>;
+	private _emojis: Map<string, EmojiMap>;
 
 	private _selectedSkinTone: SkinToneId;
 
@@ -94,8 +94,12 @@ export default class EmojiPicker extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		this.editor.config.define( 'emoji', {
+			skinTone: 'default'
+		} );
+
 		this._emojis = new Map();
-		this._selectedSkinTone = 0;
+		this._selectedSkinTone = editor.config.get( 'emoji.skinTone' )!;
 		this._emojiGroups = [];
 		this._emojiPickerView = null;
 		this._searchQuery = null;
@@ -187,10 +191,23 @@ export default class EmojiPicker extends Plugin {
 			} )
 			.map( item => {
 				const name = item.annotation;
-				const emojis = [ item.unicode ];
+				const emojis: EmojiMap = { default: item.unicode };
 
-				if ( 'skins' in item ) {
-					emojis.push( ...item.skins!.sort( ( a, b ) => a.tone - b.tone ).map( item => item.unicode ) );
+				if ( 'skins' in item && item.skins ) {
+					const skinToneMap: Record<number, SkinToneId> = {
+						0: 'default',
+						1: 'light',
+						2: 'medium-light',
+						3: 'medium',
+						4: 'medium-dark',
+						5: 'dark'
+					};
+
+					item.skins.forEach( skin => {
+						const skinTone = skinToneMap[ skin.tone ];
+
+						emojis[ skinTone ] = skin.unicode;
+					} );
 				}
 
 				this._emojis.set( name, emojis );
@@ -315,7 +332,7 @@ export default class EmojiPicker extends Plugin {
 
 	private _addTilesToGrid( gridView: EmojiGridView, emojisForCategory: Array<EmojiItem> ) {
 		for ( const item of emojisForCategory ) {
-			const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis[ 0 ];
+			const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis.default;
 
 			gridView.tiles.add( gridView.createTile( emoji, item.name ) );
 		}
@@ -502,5 +519,9 @@ export type EmojiGroup = {
 
 type EmojiItem = {
 	name: string;
-	emojis: Array<string>;
+	emojis: EmojiMap;
+};
+
+type EmojiMap = Partial<Record<SkinToneId, string>> & {
+	'default': string;
 };

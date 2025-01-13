@@ -362,7 +362,7 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should return emojis with the proper skin tone when it is selected in the emoji picker plugin', () => {
-			editor.plugins.get( EmojiPicker )._selectedSkinTone = 5;
+			editor.plugins.get( EmojiPicker )._selectedSkinTone = 'dark';
 
 			return queryEmoji( 'hand_with_index_finger_and_thumb_crossed' ).then( queryResult => {
 				expect( queryResult.length ).to.equal( 2 );

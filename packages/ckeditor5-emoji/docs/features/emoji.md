@@ -90,6 +90,20 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+* `skinTone` &ndash; Initial skin tone for the emoji picker.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		emoji: {
+			skinTone: 'medium'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 <info-box info>
 	The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
 
