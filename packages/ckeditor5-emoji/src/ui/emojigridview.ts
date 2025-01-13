@@ -9,8 +9,10 @@
 
 import '../../theme/emojigrid.css';
 
+import type { Database } from 'emoji-picker-element';
 import { addKeyboardHandlingForGrid, ButtonView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import type { SkinToneId } from './emojitoneview';
 
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
@@ -31,13 +33,24 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
+	private emojiGroups: Database;
+
+	declare public currentCategoryName: string;
+	declare public searchQuery: string;
+	declare public activeEmojiGroup: any;
+	declare public selectedSkinTone: SkinToneId;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, { emojiGroups, initialCategory }: { emojiGroups: Array<any>; initialCategory: string } ) {
 		super( locale );
 
+		this.emojiGroups = emojiGroups;
 		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
+		this.focusTracker = new FocusTracker();
+		this.keystrokes = new KeystrokeHandler();
+		this.set( 'searchQuery', '' );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -51,17 +64,6 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 						]
 					},
 					children: this.tiles
-				},
-				{
-					tag: 'div',
-					attributes: {
-						class: [
-							'ck',
-							'ck-emoji-nothing-found',
-							'hidden'
-						]
-					},
-					children: [ { text: 'Nothing found.' } ]
 				}
 			],
 			attributes: {
@@ -72,8 +74,13 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 			}
 		} );
 
-		this.focusTracker = new FocusTracker();
-		this.keystrokes = new KeystrokeHandler();
+		this.on( 'change:currentCategoryName', () => {
+			this.activeEmojiGroup = emojiGroups.find( item => item.title === this.currentCategoryName );
+			this.filter( '' );
+		} );
+
+		this.set( 'currentCategoryName', initialCategory );
+		this.set( 'selectedSkinTone', 0 );
 
 		addKeyboardHandlingForGrid( {
 			keystrokeHandler: this.keystrokes,
@@ -86,6 +93,34 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 				.length,
 			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 		} );
+	}
+
+	public filter( pattern: RegExp | null ): any {
+		let itemsToRender = this.activeEmojiGroup.items;
+		let allItems;
+
+		// TODO: A naive search but it works (xD).
+		if ( pattern ) {
+			allItems = this.emojiGroups.flatMap( group => group.items );
+
+			itemsToRender = allItems.filter( item => {
+				return pattern.test( item.name );
+			} );
+		}
+
+		const arrayOfMatchingItems = itemsToRender.map( item => {
+			const emoji = item.emojis[ this.selectedSkinTone ] || item.emojis[ 0 ];
+
+			return this.createTile( emoji, item.name );
+		} );
+
+		this.tiles.clear();
+		this.tiles.addMany( arrayOfMatchingItems );
+
+		return {
+			resultsCount: arrayOfMatchingItems.length,
+			totalItemsCount: !pattern ? this.activeEmojiGroup.items.length : allItems.length
+		};
 	}
 
 	/**
@@ -134,33 +169,33 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	public override render(): void {
 		super.render();
 
-		for ( const item of this.tiles ) {
-			this.focusTracker.add( item.element! );
-		}
-
-		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
-			const nothingFoundDiv = document.querySelector( '.ck.ck-emoji-nothing-found' )!;
-
-			if ( this.tiles.length === 0 ) {
-				nothingFoundDiv.classList.remove( 'hidden' );
-			} else {
-				nothingFoundDiv.classList.add( 'hidden' );
-			}
-
-			if ( added.length > 0 ) {
-				for ( const item of added ) {
-					this.focusTracker.add( item.element );
-				}
-			}
-
-			if ( removed.length > 0 ) {
-				for ( const item of removed ) {
-					this.focusTracker.remove( item.element );
-				}
-			}
-		} );
-
-		this.keystrokes.listenTo( this.element! );
+		// for ( const item of this.tiles ) {
+		// 	this.focusTracker.add( item.element! );
+		// }
+		//
+		// this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
+		// 	const nothingFoundDiv = document.querySelector( '.ck.ck-emoji-nothing-found' )!;
+		//
+		// 	if ( this.tiles.length === 0 ) {
+		// 		nothingFoundDiv.classList.remove( 'hidden' );
+		// 	} else {
+		// 		nothingFoundDiv.classList.add( 'hidden' );
+		// 	}
+		//
+		// 	if ( added.length > 0 ) {
+		// 		for ( const item of added ) {
+		// 			this.focusTracker.add( item.element );
+		// 		}
+		// 	}
+		//
+		// 	if ( removed.length > 0 ) {
+		// 		for ( const item of removed ) {
+		// 			this.focusTracker.remove( item.element );
+		// 		}
+		// 	}
+		// } );
+		//
+		// this.keystrokes.listenTo( this.element! );
 	}
 
 	/**

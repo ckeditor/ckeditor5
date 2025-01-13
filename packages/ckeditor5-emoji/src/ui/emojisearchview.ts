@@ -7,7 +7,15 @@
  * @module emoji/ui/emojisearchview
  */
 
-import { View, createLabeledInputText, SearchTextQueryView, type InputView } from 'ckeditor5/src/ui.js';
+import { escapeRegExp } from 'lodash-es';
+import {
+	SearchTextView,
+	View,
+	createLabeledInputText,
+	type InputView,
+	type SearchTextViewSearchEvent,
+	type SearchTextQueryView
+} from 'ckeditor5/src/ui.js';
 import { type Locale } from 'ckeditor5/src/utils.js';
 
 export default class EmojiSearchView extends View {
@@ -21,12 +29,24 @@ export default class EmojiSearchView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, gridView: View, resultsView: View ) {
 		super( locale );
+
+		this._gridView = gridView;
+		this._resultsView = resultsView;
 
 		const t = locale.t;
 
-		this._findInputView = this._createInputField( t( 'Find an emoji (min. 2 characters)' ) );
+		this._findInputView = new SearchTextView( this.locale!, {
+			queryView: {
+				label: t( 'Find an emoji (min. 2 characters)' ),
+				creator: createLabeledInputText
+			},
+			filteredView: this._gridView,
+			infoView: {
+				instance: this._resultsView
+			}
+		} );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -37,40 +57,57 @@ export default class EmojiSearchView extends View {
 				this._findInputView
 			]
 		} );
+
+		this._findInputView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( !data.resultsCount ) {
+				this._resultsView.set( {
+					primaryText: t( 'No emojis were found matching "%0".', data.query ),
+					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
+					isVisible: true
+				} );
+			} else {
+				this._resultsView.set( {
+					isVisible: false
+				} );
+			}
+
+			this.fire( 'input', { query: data.query } );
+		} );
+
+		// Refresh the grid when a skin tone is being changed.
+		this._gridView.on( 'change:selectedSkinTone', () => {
+			this.search( this.getInputValue() );
+		} );
+	}
+
+	/**
+	 * Searches the {@link #filteredView} for the given query.
+	 *
+	 * @internal
+	 * @param query The search query string.
+	 */
+	public search( query: string ): void {
+		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
+		const filteringResults = this._gridView.filter( regExp );
+
+		this._findInputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
+	}
+
+	/**
+	 * Allows defining the default value in the search text field.
+	 *
+	 * @param value The new value.
+	 */
+	public setInputValue( value: string ): void {
+		this._findInputView.queryView.fieldView.value = value;
+	}
+
+	public getInputValue(): string {
+		return this._findInputView.queryView.fieldView.element?.value || '';
 	}
 
 	public focus(): void {
 		this._findInputView.focus();
-	}
-
-	public setSearchQuery( searchQuery: string ): void {
-		this._findInputView.fieldView.element!.value = searchQuery;
-		this._findInputView.fieldView.isEmpty = searchQuery.length ? false : true;
-	}
-
-	/**
-	 * Creates a labeled input view.
-	 *
-	 * @param label The input label.
-	 * @returns The labeled input view instance.
-	 */
-	private _createInputField( label: string ): SearchTextQueryView<InputView> {
-		const labeledInput = new SearchTextQueryView( this.locale!, {
-			label,
-			creator: createLabeledInputText
-		} );
-
-		labeledInput.fieldView.on( 'input', () => {
-			const value = labeledInput.fieldView.element!.value || null;
-
-			this.fire<EmojiSearchViewInputEvent>( 'input', { value } );
-		} );
-
-		labeledInput.resetButtonView!.on( 'execute', () => {
-			this.fire<EmojiSearchViewInputEvent>( 'input', { value: '' } );
-		} );
-
-		return labeledInput;
 	}
 }
 
@@ -90,5 +127,5 @@ export interface EmojiSearchViewInputEventData {
 	/**
 	 * Content of the updated search field.
 	 */
-	value: string | null;
+	query: string;
 }

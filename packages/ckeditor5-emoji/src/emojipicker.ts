@@ -8,7 +8,10 @@
  */
 
 import '../theme/emojipicker.css';
+
 import type { Locale, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import { KeystrokeHandler } from 'ckeditor5/src/utils.js';
+
 import { Database } from 'emoji-picker-element';
 import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
@@ -27,9 +30,12 @@ import {
 	clickOutsideHandler,
 	ContextualBalloon,
 	Dialog,
-	MenuBarMenuListItemButtonView
+	MenuBarMenuListItemButtonView,
+	SearchInfoView
 } from 'ckeditor5/src/ui.js';
 import EmojiToneView, { type SkinToneId } from './ui/emojitoneview.js';
+
+import type { Model } from 'ckeditor5/src/engine.js';
 
 const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
 const BASELINE_EMOJI_WIDTH = 24;
@@ -57,7 +63,7 @@ export default class EmojiPicker extends Plugin {
 
 	private _emojiDatabase: Database;
 
-	private _currentCategoryName: string;
+	declare private _currentCategoryName: string;
 
 	public get emojis(): typeof this._emojis {
 		return this._emojis;
@@ -95,12 +101,13 @@ export default class EmojiPicker extends Plugin {
 		super( editor );
 
 		this._emojis = new Map();
-		this._selectedSkinTone = 0;
 		this._emojiGroups = [];
 		this._emojiPickerView = null;
-		this._searchQuery = null;
 		this._emojiDatabase = new Database();
-		this._currentCategoryName = '';
+
+		this.set( '_searchQuery', '' );
+		this.set( '_currentCategoryName', '' );
+		this.set( '_selectedSkinTone', 0 );
 	}
 
 	/**
@@ -214,112 +221,131 @@ export default class EmojiPicker extends Plugin {
 	 * @returns An object with `categoriesView` and `gridView`properties, containing UI parts.
 	 */
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
-		const searchView = new EmojiSearchView( locale );
+		const gridView = new EmojiGridView( locale, {
+			emojiGroups: this._emojiGroups,
+			// When creating... TODO.
+			initialCategory: this._currentCategoryName
+		} );
+
+		const resultsView = new SearchInfoView( locale );
+		const searchView = new EmojiSearchView( locale, gridView, resultsView );
 		const toneView = new EmojiToneView( locale, this._selectedSkinTone );
 		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups, this._currentCategoryName );
-		const gridView = new EmojiGridView( locale );
-		const infoView = new EmojiInfoView( locale );
+
+		// Bind the "current" plugin settings specific views to avoid manual updates.
+		gridView.bind( 'currentCategoryName' ).to( this, '_currentCategoryName' );
+		gridView.bind( 'selectedSkinTone' ).to( this, '_selectedSkinTone' );
+		gridView.bind( 'searchQuery' ).to( this, '_searchQuery' );
+
+		// const infoView = new EmojiInfoView( locale );
 
 		const dropdownPanelContent = {
 			searchView,
 			toneView,
 			categoriesView,
 			gridView,
-			infoView
+			resultsView
+			// infoView
 		};
-
-		// Set the initial content of the emoji grid.
-		this._updateGrid( dropdownPanelContent ).then( () => {
-			this._balloon.updatePosition();
-		} );
-
-		// Update the grid of emojis when search query input changes.
-		searchView.on<EmojiSearchViewInputEvent>( 'input', ( evt, data ) => {
-			this._searchQuery = data.value;
-
-			this._updateGrid( dropdownPanelContent ).then( () => {
-				this._balloon.updatePosition();
-			} );
-		} );
 
 		// Update the grid of emojis when selected category changes.
 		categoriesView.on<ObservableChangeEvent<string>>( 'change:currentCategoryName', ( ev, args, categoryName ) => {
 			this._currentCategoryName = categoryName;
-			this._updateGrid( dropdownPanelContent );
 		} );
 
+		// // Set the initial content of the emoji grid.
+		// this._updateGrid( dropdownPanelContent ).then( () => {
+		// 	this._balloon.updatePosition();
+		// } );
+
+		// Disable the category switcher when filtering by a query.
+		searchView.on( 'input', ( evt, data ) => {
+			if ( data.query ) {
+				categoriesView.disableCategories();
+			} else {
+				categoriesView.enableCategories();
+			}
+
+			this._searchQuery = data.query;
+
+			// 	this._updateGrid( dropdownPanelContent ).then( () => {
+			// 		this._balloon.updatePosition();
+			// 	} );
+		} );
+
+		//
 		// Update the grid of emojis when selected skin tone changes.
 		toneView.on( 'change:selectedSkinTone', ( evt, propertyName, newValue ) => {
 			this._selectedSkinTone = newValue;
 
-			this._updateGrid( dropdownPanelContent );
+			// this._updateGrid( dropdownPanelContent );
 		} );
-
-		// Update the info view of emojis when a tile in the grid is hovered.
-		gridView.on<EmojiGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
-			infoView.set( data );
-		} );
-
-		// Update the info view of emojis when a tile in the grid is focused.
-		gridView.on<EmojiGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
-			infoView.set( data );
-		} );
+		//
+		// // Update the info view of emojis when a tile in the grid is hovered.
+		// gridView.on<EmojiGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
+		// 	infoView.set( data );
+		// } );
+		//
+		// // Update the info view of emojis when a tile in the grid is focused.
+		// gridView.on<EmojiGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
+		// 	infoView.set( data );
+		// } );
 
 		return dropdownPanelContent;
 	}
 
-	/**
-	 * Updates the symbol grid depending on the currently selected emoji category.
-	 */
-	private async _updateGrid( { gridView, categoriesView }: DropdownPanelContent ): Promise<void> {
-		// Updating the grid starts with removing all tiles belonging to the old group.
-		gridView.tiles.clear();
+	// /**
+	//  * Updates the symbol grid depending on the currently selected emoji category.
+	//  */
+	// private async _updateGrid( { gridView, categoriesView }: DropdownPanelContent ): Promise<void> {
+	// 	// Updating the grid starts with removing all tiles belonging to the old group.
+	// 	gridView.tiles.clear();
+	//
+	// 	if ( !this._searchQuery || this._searchQuery.length < 2 ) {
+	// 		const emojisForCategory = this._getEmojisForCategory( this._currentCategoryName );
+	//
+	// 		this._addTilesToGrid( gridView, emojisForCategory );
+	// 		categoriesView.enableCategories();
+	//
+	// 		return;
+	// 	}
+	//
+	// 	const queryResult = await this._emojiDatabase.getEmojiBySearchQuery( this._searchQuery );
+	// 	const tilesToAdd = queryResult.map( queriedEmoji => {
+	// 		let name = '';
+	//
+	// 		if ( 'annotation' in queriedEmoji ) {
+	// 			name = queriedEmoji.annotation;
+	// 		}
+	//
+	// 		const emojis = this._emojis.get( name );
+	//
+	// 		// Query might return some emojis which we chose not to add to our database.
+	// 		/* istanbul ignore next -- @preserve */
+	// 		if ( !emojis ) {
+	// 			return null;
+	// 		}
+	//
+	// 		return { name, emojis };
+	// 	} );
+	//
+	// 	this._addTilesToGrid( gridView, tilesToAdd.filter( Boolean ) as Array<EmojiItem> );
+	// 	categoriesView.disableCategories();
+	// }
 
-		if ( !this._searchQuery || this._searchQuery.length < 2 ) {
-			const emojisForCategory = this._getEmojisForCategory( this._currentCategoryName );
-
-			this._addTilesToGrid( gridView, emojisForCategory );
-			categoriesView.enableCategories();
-
-			return;
-		}
-
-		const queryResult = await this._emojiDatabase.getEmojiBySearchQuery( this._searchQuery );
-		const tilesToAdd = queryResult.map( queriedEmoji => {
-			let name = '';
-
-			if ( 'annotation' in queriedEmoji ) {
-				name = queriedEmoji.annotation;
-			}
-
-			const emojis = this._emojis.get( name );
-
-			// Query might return some emojis which we chose not to add to our database.
-			/* istanbul ignore next -- @preserve */
-			if ( !emojis ) {
-				return null;
-			}
-
-			return { name, emojis };
-		} );
-
-		this._addTilesToGrid( gridView, tilesToAdd.filter( Boolean ) as Array<EmojiItem> );
-		categoriesView.disableCategories();
-	}
-
-	private _getEmojisForCategory( groupName: string ): Array<EmojiItem> {
-		const group = this._emojiGroups.find( group => group.title === groupName )!;
-
-		return group.items;
-	}
-
-	private _addTilesToGrid( gridView: EmojiGridView, emojisForCategory: Array<EmojiItem> ) {
-		for ( const item of emojisForCategory ) {
-			const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis[ 0 ];
-
-			gridView.tiles.add( gridView.createTile( emoji, item.name ) );
-		}
-	}
+	// private _getEmojisForCategory( groupName: string ): Array<EmojiItem> {
+	// 	const group = this._emojiGroups.find( group => group.title === groupName )!;
+	//
+	// 	return group.items;
+	// }
+	//
+	// private _addTilesToGrid( gridView: EmojiGridView, emojisForCategory: Array<EmojiItem> ) {
+	// 	for ( const item of emojisForCategory ) {
+	// 		const emoji = item.emojis[ this._selectedSkinTone ] || item.emojis[ 0 ];
+	//
+	// 		gridView.tiles.add( gridView.createTile( emoji, item.name ) );
+	// 	}
+	// }
 
 	/**
 	 * Creates a button for toolbar and menu bar that will show the emoji dialog.
@@ -357,11 +383,10 @@ export default class EmojiPicker extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		// Close the dialog while focus is in it.
-		this._emojiPickerView.element!.addEventListener( 'keydown', event => {
-			if ( event.key === 'Escape' ) {
-				this._hideUI();
-			}
+		// Close the panel on esc key press when the **actions have focus**.
+		this._emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this._hideUI();
+			cancel();
 		} );
 
 		// Close the dialog when clicking outside of it.
@@ -372,18 +397,21 @@ export default class EmojiPicker extends Plugin {
 			activator: () => this._balloon.visibleView === this._emojiPickerView
 		} );
 
+		if ( this._searchQuery ) {
+			this._emojiPickerView.searchView.setInputValue( this._searchQuery );
+			this._emojiPickerView.categoriesView.disableCategories();
+		}
+
+		this._emojiPickerView.searchView.search( this._searchQuery );
+
+		// Insert an emoji.
 		dropdownPanelContent.gridView.on<EmojiGridViewExecuteEvent>( 'execute', ( evt, data ) => {
 			this.editor.execute( 'insertText', { text: data.emoji } );
 			this._hideUI();
 		} );
 
 		setTimeout( () => this._emojiPickerView!.focus() );
-
-		if ( this._searchQuery ) {
-			dropdownPanelContent.searchView.setSearchQuery( this._searchQuery );
-		}
-
-		this._showFakeVisualSelection();
+		showFakeVisualSelection( this.editor.model );
 	}
 
 	/**
@@ -397,7 +425,7 @@ export default class EmojiPicker extends Plugin {
 		this.editor.editing.view.focus();
 		this._searchQuery = '';
 
-		this._hideFakeVisualSelection();
+		hideFakeVisualSelection( this.editor.model );
 	}
 
 	private _getBalloonPositionData() {
@@ -410,51 +438,6 @@ export default class EmojiPicker extends Plugin {
 		return {
 			target
 		};
-	}
-
-	/**
-	 * Displays a fake visual selection when the contextual balloon is displayed.
-	 *
-	 * This adds an 'emoji-picker' marker into the document that is rendered as a highlight on selected text fragment.
-	 */
-	private _showFakeVisualSelection(): void {
-		const model = this.editor.model;
-
-		model.change( writer => {
-			const range = model.document.selection.getFirstRange()!;
-
-			if ( range.start.isAtEnd ) {
-				const startPosition = range.start.getLastMatchingPosition(
-					( { item } ) => !model.schema.isContent( item ),
-					{ boundaries: range }
-				);
-
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range: writer.createRange( startPosition, range.end )
-				} );
-			} else {
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range
-				} );
-			}
-		} );
-	}
-
-	/**
-	 * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
-	 */
-	private _hideFakeVisualSelection(): void {
-		const model = this.editor.model;
-
-		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-			model.change( writer => {
-				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
-			} );
-		}
 	}
 
 	/**
@@ -491,7 +474,8 @@ export interface DropdownPanelContent {
 	toneView: EmojiToneView;
 	categoriesView: EmojiCategoriesView;
 	gridView: EmojiGridView;
-	infoView: EmojiInfoView;
+	resultsView: SearchInfoView;
+	// infoView: EmojiInfoView;
 }
 
 export type EmojiGroup = {
@@ -504,3 +488,44 @@ type EmojiItem = {
 	name: string;
 	emojis: Array<string>;
 };
+
+/**
+ * Displays a fake visual selection when the contextual balloon is displayed.
+ *
+ * This adds an 'emoji-picker' marker into the document that is rendered as a highlight on selected text fragment.
+ */
+function showFakeVisualSelection( model: Model ): void {
+	model.change( writer => {
+		const range = model.document.selection.getFirstRange()!;
+
+		if ( range.start.isAtEnd ) {
+			const startPosition = range.start.getLastMatchingPosition(
+				( { item } ) => !model.schema.isContent( item ),
+				{ boundaries: range }
+			);
+
+			writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+				usingOperation: false,
+				affectsData: false,
+				range: writer.createRange( startPosition, range.end )
+			} );
+		} else {
+			writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+				usingOperation: false,
+				affectsData: false,
+				range
+			} );
+		}
+	} );
+}
+
+/**
+ * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
+ */
+function hideFakeVisualSelection( model: Model ): void {
+	if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+		model.change( writer => {
+			writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
+		} );
+	}
+}

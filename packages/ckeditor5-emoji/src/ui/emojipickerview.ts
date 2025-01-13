@@ -15,6 +15,7 @@ import type EmojiSearchView from './emojisearchview.js';
 import type EmojiInfoView from './emojiinfoview.js';
 import type EmojiToneView from './emojitoneview.js';
 import type { DropdownPanelContent } from '../emojipicker.js';
+import EmojiResultsView from './emojiresultsview';
 
 /**
  * A view that glues pieces of the emoji dropdown panel together.
@@ -72,10 +73,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		super( locale );
 
 		this.searchView = dropdownPanelContent.searchView;
-		this.toneView = dropdownPanelContent.toneView;
 		this.categoriesView = dropdownPanelContent.categoriesView;
 		this.gridView = dropdownPanelContent.gridView;
-		this.infoView = dropdownPanelContent.infoView;
+		this.resultsView = dropdownPanelContent.resultsView;
+		this.toneView = dropdownPanelContent.toneView;
+
+		// this.infoView = dropdownPanelContent.infoView;
+
+
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
@@ -105,18 +110,27 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 				},
 				this.categoriesView,
 				this.gridView,
-				this.infoView
+				{
+					tag: 'div',
+					children: [
+						this.resultsView
+					],
+					attributes: {
+						class: [ 'ck', 'ck-search__results' ]
+					}
+				},
+				// this.infoView
 			],
 			attributes: {
 				// Avoid focus loss when the user clicks the area of the grid that is not a button.
 				// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
 				tabindex: '-1',
-				class: [ 'ck', 'ck-emoji-picker' ]
+				class: [ 'ck', 'ck-emoji-picker', 'ck-search' ]
 			}
 		} );
 
 		this.items.add( this.searchView );
-		this.items.add( this.toneView );
+		// this.items.add( this.toneView );
 		this.items.add( this.categoriesView );
 		this.items.add( this.gridView );
 	}
@@ -128,7 +142,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		super.render();
 
 		this.focusTracker.add( this.searchView.element! );
-		this.focusTracker.add( this.toneView.element! );
+		// this.focusTracker.add( this.toneView.element! );
 		this.focusTracker.add( this.categoriesView.element! );
 		this.focusTracker.add( this.gridView.element! );
 
