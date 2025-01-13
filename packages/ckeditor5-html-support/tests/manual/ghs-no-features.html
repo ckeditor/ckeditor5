@@ -15,13 +15,6 @@
 			border: 1px solid red !important;
 		}
 	</style>
-		<!--
-            For a totally unknown reason, Travis cannot fetch an image from the `via.placeholder.com` service.
-            So this request/response has been added to exclusions for the crawler. See: #11436.
-        -->
-		<meta name="x-cke-crawler-ignore-patterns" content='{
-			"response-failure": "via.placeholder.com"
-		}'>
 </head>
 <div style="display: flex">
 	<div style="width: 40%; margin-right: 20px">
@@ -303,7 +296,7 @@
 
 				<p><button>Click me!</button></p>
 
-				<p><input alt="" src="https://via.placeholder.com/100" type="image" /></p>
+				<p><input alt="" src="https://placehold.co/100" type="image" /></p>
 
 				<p><video controls="" height="240" width="320"><source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" /> Your browser does not support the video tag.</video></p>
 
