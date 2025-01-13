@@ -17,7 +17,7 @@
 				{
 					"type": "Button",
 					"name": "accessibilityHelp",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/accessibility.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/accessibility.svg"
 				}
 			]
 		}

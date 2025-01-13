@@ -10,12 +10,12 @@
 				{
 					"type": "Button",
 					"name": "undo",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/undo.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/undo.svg"
 				},
 				{
 					"type": "Button",
 					"name": "redo",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/redo.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/redo.svg"
 				}
 			]
 		}

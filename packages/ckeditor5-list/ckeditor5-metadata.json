@@ -10,12 +10,12 @@
 				{
 					"type": "Button",
 					"name": "numberedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/numbered-list.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/numbered-list.svg"
 				},
 				{
 					"type": "Button",
 					"name": "bulletedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/bulleted-list.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bulleted-list.svg"
 				}
 			],
 			"htmlOutput": [
@@ -41,7 +41,7 @@
 				{
 					"type": "Button",
 					"name": "todoList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/todo-list.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/todo-list.svg"
 				}
 			],
 			"htmlOutput": [
@@ -103,12 +103,12 @@
 				{
 					"type": "Button",
 					"name": "numberedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/numbered-list.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/numbered-list.svg"
 				},
 				{
 					"type": "Button",
 					"name": "bulletedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/bulleted-list.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bulleted-list.svg"
 				}
 			],
 			"htmlOutput": [
@@ -136,7 +136,7 @@
 				{
 					"type": "Button",
 					"name": "todoList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/todo-list.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/todo-list.svg"
 				}
 			],
 			"htmlOutput": [
