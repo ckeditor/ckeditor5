@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import { IconParagraph } from 'ckeditor5/src/icons.js';
+import { IconParagraph } from '@ckeditor/ckeditor5-icons';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '../src/paragraph.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';

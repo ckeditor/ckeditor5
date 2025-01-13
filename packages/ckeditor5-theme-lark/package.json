@@ -17,7 +17,6 @@
     "@ckeditor/ckeditor5-editor-balloon": "44.1.0",
     "@ckeditor/ckeditor5-editor-classic": "44.1.0",
     "@ckeditor/ckeditor5-highlight": "44.1.0",
-    "@ckeditor/ckeditor5-show-blocks": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "ckeditor5": "44.1.0"
   },
