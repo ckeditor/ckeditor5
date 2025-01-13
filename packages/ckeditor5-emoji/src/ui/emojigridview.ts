@@ -61,7 +61,11 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 							'hidden'
 						]
 					},
-					children: [ { text: 'Nothing found.' } ]
+					children: [
+						{
+							text: locale.t( 'Nothing found' )
+						}
+					]
 				}
 			],
 			attributes: {
@@ -129,6 +133,19 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	}
 
 	/**
+	 * Shows or hides the "nothing found" message depending on whether or not the grid has any tiles.
+	 */
+	public refreshContainer(): void {
+		const nothingFoundDiv = this.element!.querySelector( '.ck.ck-emoji-nothing-found' )!;
+
+		if ( this.tiles.length === 0 ) {
+			nothingFoundDiv.classList.remove( 'hidden' );
+		} else {
+			nothingFoundDiv.classList.add( 'hidden' );
+		}
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public override render(): void {
@@ -139,13 +156,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 		}
 
 		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
-			const nothingFoundDiv = document.querySelector( '.ck.ck-emoji-nothing-found' )!;
-
-			if ( this.tiles.length === 0 ) {
-				nothingFoundDiv.classList.remove( 'hidden' );
-			} else {
-				nothingFoundDiv.classList.add( 'hidden' );
-			}
+			this.refreshContainer();
 
 			if ( added.length > 0 ) {
 				for ( const item of added ) {

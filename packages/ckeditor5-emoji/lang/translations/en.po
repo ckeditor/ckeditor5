@@ -26,3 +26,7 @@ msgstr "Skin tone toolbar"
 msgctxt "Label displayed in the emoji feature search field."
 msgid "Find an emoji (min. 2 characters)"
 msgstr "Find an emoji (min. 2 characters)"
+
+msgctxt "Label displayed in the emoji grid when no emoji matches the search query."
+msgid "Nothing found"
+msgstr "Nothing found"

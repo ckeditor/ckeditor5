@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import type { SkinToneId } from './ui/emojitoneview.js';
+
 /**
  * @module emoji/emojiconfig
  */
@@ -43,4 +45,23 @@ export interface EmojiConfig {
 	 * ```
 	 */
 	dropdownLimit?: number;
+
+	/**
+	 * Initial skin tone for the emoji picker.
+	 *
+	 * ```ts
+	 *		ClassicEditor
+	 *			.create( editorElement, {
+	 *				plugins: [ Emoji, ... ],
+	 *				emoji: {
+	 *					skinTone: 'medium'
+	 *					// More of editor configuration.
+	 * 					// ...
+	 * 				}
+	 *			} )
+	 *			.then( ... )
+	 *			.catch( ... );
+	 * ```
+	 */
+	skinTone?: SkinToneId;
 }
