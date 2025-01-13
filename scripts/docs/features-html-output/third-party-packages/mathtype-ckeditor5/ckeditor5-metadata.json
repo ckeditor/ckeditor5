@@ -10,12 +10,12 @@
 				{
 					"type": "Button",
 					"name": "MathType",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/formula.svg"
+					"iconPath": "theme/icons/formula.svg"
 				},
 				{
 					"type": "Button",
 					"name": "ChemType",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/chem.svg"
+					"iconPath": "theme/icons/chem.svg"
 				}
 			],
 			"htmlOutput": [

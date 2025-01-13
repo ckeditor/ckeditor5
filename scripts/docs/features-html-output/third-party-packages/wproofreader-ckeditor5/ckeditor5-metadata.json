@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "wproofreader",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/wproofreader.svg"
+					"iconPath": "theme/icons/wproofreader.svg"
 				}
 			]
 		}
