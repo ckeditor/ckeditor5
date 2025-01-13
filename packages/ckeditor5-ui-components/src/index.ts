@@ -11,7 +11,7 @@ export { default as UIComponents } from './uicomponents.js';
 export { default as CKForm } from './components/ckform.js';
 export { default as CKInput } from './components/ckinput.js';
 export { default as CKLabeledInput } from './components/cklabeledinput.js';
-export { default as CKComponent } from './core/ckcomponent.js';
+export { default as CKComponent, context, ContextConsumer, ContextProvider } from './core/ckcomponent.js';
 export { default as getRegistry } from './core/registry.js';
 export { default as WrapperView } from './core/wrapperview.js';
 

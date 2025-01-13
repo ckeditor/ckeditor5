@@ -8,9 +8,16 @@
  */
 
 import { LitElement } from 'lit';
+import { createContext, ContextConsumer, ContextProvider } from '@lit/context';
 import { ComponentCreateEvent } from './events.js';
 
+export { ContextConsumer, ContextProvider };
+
+export const context = createContext( Symbol( 'editorContext' ) );
+
 export default class CKComponent extends LitElement {
+	protected _consumer = new ContextConsumer( this, { context, subscribe: true } );
+
 	public static componentName = 'default';
 
 	public static override properties = {

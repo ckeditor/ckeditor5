@@ -81,20 +81,20 @@ export default class LitForm extends Plugin {
 
 			if ( evt.detail.name === 'ck-labeledinput:input' && evt.detail.namespace === 'link' ) {
 				// This is so meh... I really don't like such way of extending component instance.
-				const instance = evt.detail.instance;
-				instance.render = () => {
-					return html`
-						<div>
-							<input
-								style="border: 1px solid blue;"
-								class="input-component"
-								type="input"
-								id=${ instance.uid }
-								@input=${ instance.onInput }
-							/>
-						</div>
-					`;
-				};
+				// const instance = evt.detail.instance;
+				// instance.render = () => {
+				// 	return html`
+				// 		<div>
+				// 			<input
+				// 				style="border: 1px solid blue;"
+				// 				class="input-component"
+				// 				type="input"
+				// 				id=${ instance.uid }
+				// 				@input=${ instance.onInput }
+				// 			/>
+				// 		</div>
+				// 	`;
+				// };
 
 				// The only reasonable way I can think of now would be extending class and passing instance.
 				// But it won't work since the element is being connected to the DOM already so can't be replaced like that.
@@ -161,7 +161,7 @@ export default class LitForm extends Plugin {
 		dialog.show( {
 			id: 'litform-dialog',
 			title: t( 'Lit Form' ),
-			content: new FormView( editor.locale, dialog ),
+			content: new FormView( editor.locale, dialog, editor ),
 			isModal: true,
 			onShow: () => {},
 			actionButtons: []

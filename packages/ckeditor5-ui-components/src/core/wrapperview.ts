@@ -7,18 +7,29 @@
  * @module ui-components/core/wrapperview
  */
 
+import { type Editor } from 'ckeditor5/src/core.js';
 import { View } from 'ckeditor5/src/ui.js';
 import { type Locale } from 'ckeditor5/src/utils.js';
+import { context, ContextProvider } from './ckcomponent.js';
 
 type ListenersMap = Map<string, ( evt: Event ) => void>;
 
 export default class WrapperView extends View {
-	private listeners: ListenersMap = new Map();
+	protected listeners: ListenersMap = new Map();
+	protected _provider: ContextProvider<any, HTMLElement> | null = null;
 
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, editor: Editor ) {
 		super( locale );
 
 		this.on( 'render', () => {
+			this._provider = new ContextProvider( this.element!, {
+				context,
+				initialValue: {
+					id: editor.id,
+					editor
+				}
+			} );
+
 			this.listeners.forEach( ( callback, eventName ) => {
 				this.element?.addEventListener( eventName, callback );
 			} );
