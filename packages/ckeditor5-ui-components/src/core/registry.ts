@@ -13,7 +13,8 @@ import { type CKComponentConstructor } from './events.js';
 const registryMap = new WeakMap<Editor, Registry>();
 
 export class Registry {
-	private readonly _items: Map<string, CKComponentConstructor> = new Map();
+	private readonly _definitions: Map<string, CKComponentConstructor> = new Map();
+	private readonly _instances: Map<string, CKComponentConstructor> = new Map();
 	private readonly _editor: Editor;
 
 	constructor( editor: Editor ) {
@@ -21,15 +22,19 @@ export class Registry {
 	}
 
 	public register( name: string, component: CKComponentConstructor ): void {
-		this._items.set( name, component );
+		this._definitions.set( name, component );
 	}
 
 	public extendComponentDefinition( name: string, definition: CKComponentConstructor ): void {
-		this._items.set( name, definition );
+		this._definitions.set( name, definition );
+	}
+
+	public extendComponentInstance( name: string, namespace: string, id: string, definition: CKComponentConstructor ): void {
+		this._instances.set( this.composeInstanceId( name, namespace, id ), definition );
 	}
 
 	public commit(): void {
-		for ( const [ name, component ] of this._items ) {
+		for ( const [ name, component ] of this._definitions ) {
 			// Update or define once (what happens with multiple editor instances on the same page?)
 			if ( !customElements.get( name ) ) {
 				customElements.define( name, component );
@@ -37,6 +42,26 @@ export class Registry {
 				console.warn( `Component "${ name }" is already registered.` );
 			}
 		}
+	}
+
+	public getComponentOverride( name: string, namespace: string, id: string ): string {
+		const instanceId = this.composeInstanceId( name, namespace, id );
+
+		// If there is no instance override, return the original component name.
+		if ( !this._instances.has( instanceId ) ) {
+			return name;
+		}
+
+		// Register the instance override if it's not registered yet.
+		if ( !customElements.get( instanceId ) ) {
+			customElements.define( instanceId, this._instances.get( instanceId )! );
+		}
+
+		return instanceId;
+	}
+
+	protected composeInstanceId( name: string, namespace: string, id: string ): string {
+		return `${ name }-${ namespace }_${ id }`;
 	}
 }
 

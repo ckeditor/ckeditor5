@@ -9,13 +9,13 @@
 
 import { LitElement } from 'lit';
 import { createContext, ContextConsumer, ContextProvider } from '@lit/context';
-import { ComponentCreateEvent } from './events.js';
+import getRegistry from './registry.js';
 
 export { ContextConsumer, ContextProvider };
 
 export const context = createContext( Symbol( 'editorContext' ) );
 
-export default class CKComponent extends LitElement {
+export default abstract class CKComponent extends LitElement {
 	protected _consumer = new ContextConsumer( this, { context, subscribe: true } );
 
 	public static componentName = 'default';
@@ -28,25 +28,60 @@ export default class CKComponent extends LitElement {
 	public namespace: string = 'default';
 	public name: string = 'default';
 
-	public override connectedCallback(): void {
-		console.log(
-			'CKComponent:componentInstanceCreated',
-			`${ this.namespace }:${ this.name }`,
-			( this.constructor as any ).componentName, // Works but it's hacky :/
-			this
-		);
+	// public override connectedCallback(): void {
+	// 	super.connectedCallback();
+	// }
 
-		// On what object should event be fired? How to get the editor object here?
+	public override render(): ReturnType<LitElement['render']> {
+		return this.updateTemplate( this.template() );
+	}
 
-		const eventDetail = { instance: this, namespace: this.namespace, name: this.name };
+	protected template(): ReturnType<LitElement['render']> {
+		throw new Error( 'Method not implemented.' );
+	}
 
-		window.dispatchEvent( new ComponentCreateEvent( 'componentInstanceCreated', {
-			bubbles: true,
-			composed: true,
-			detail: eventDetail
-		} ) );
+	private updateTemplate( template: ReturnType<LitElement['render']> ) {
+		console.log( 'UPDATE TEMPLATE', template, this._consumer.value, this.namespace, this.name );
 
-		super.connectedCallback();
+		if ( !this._consumer.value ) {
+			return template;
+		}
+
+		const registry = getRegistry( ( this._consumer.value as any ).editor );
+		const newTemplate: any = {};
+		newTemplate.strings = [ ...template.strings ];
+		newTemplate.strings.raw = [ ...template.strings.raw ];
+		newTemplate.values = template.values;
+		newTemplate._$litType$ = template._$litType$;
+
+		console.log( 'NEW TEMPLATE:', newTemplate );
+
+		const templateStrings = newTemplate.strings;
+		for ( let i = 0; i < templateStrings.length; i++ ) {
+			const part = templateStrings[ i ];
+			const values: Array<string> = ( template as any ).values;
+			console.log( 'PART:', part );
+
+			const components = part.match( /<ck-[a-zA-Z]*/g );
+			console.log( 'COMPONENTS:', components );
+
+			if ( components?.length ) {
+				for ( const component of components ) {
+					const customComponent = registry.getComponentOverride(
+						( component as string ).substring( 1 ), values[ 3 ], values[ 4 ]
+					);
+					console.log( 'CUSTOM COMPONENT:', customComponent );
+
+					if ( customComponent !== component ) {
+						templateStrings[ i ] = part.replace( component, `<${ customComponent }` );
+					}
+				}
+			}
+
+			console.log( 'PART2:', part );
+		}
+
+		return newTemplate;
 	}
 
 	// public override updated(): void {

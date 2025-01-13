@@ -11,11 +11,10 @@ import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import {
 	CKForm,
+	CKInput,
 	getRegistry,
 	UIComponents,
-	html,
-	type CKInput,
-	type ComponentCreateEvent
+	html
 } from '@ckeditor/ckeditor5-ui-components';
 import FormView from './ui/formview.js';
 import Form from './ui/form.js';
@@ -54,8 +53,8 @@ export default class LitForm extends Plugin {
 		class BetterForm extends CKForm {
 			public static override componentName = 'betterform';
 
-			public override render() {
-				const template = super.render();
+			public override template() {
+				const template = super.template();
 
 				return html`
 					<div>
@@ -73,59 +72,25 @@ export default class LitForm extends Plugin {
 		// Overriding component instance.
 		//
 
-		// Typescript complains about wrong event type. Since firing this event on window is a quick workaround,
-		// I did not spend time fixing it.
-		// Can be done like https://stackoverflow.com/a/68783088.
-		window.addEventListener( 'componentInstanceCreated', ( evt: ComponentCreateEvent<CKInput> ) => {
-			console.log( 'componentInstanceCreated', evt.detail );
+		class BetterInput extends CKInput {
+			public static override componentName = 'betterinput';
 
-			if ( evt.detail.name === 'ck-labeledinput:input' && evt.detail.namespace === 'link' ) {
-				// This is so meh... I really don't like such way of extending component instance.
-				// const instance = evt.detail.instance;
-				// instance.render = () => {
-				// 	return html`
-				// 		<div>
-				// 			<input
-				// 				style="border: 1px solid blue;"
-				// 				class="input-component"
-				// 				type="input"
-				// 				id=${ instance.uid }
-				// 				@input=${ instance.onInput }
-				// 			/>
-				// 		</div>
-				// 	`;
-				// };
-
-				// The only reasonable way I can think of now would be extending class and passing instance.
-				// But it won't work since the element is being connected to the DOM already so can't be replaced like that.
-				//
-				// And even if it could, there are some issues - https://stackoverflow.com/a/61883392
-				// class BetterInput extends CKInput {
-				// 	public static override componentName = 'better-input';
-
-				// 	public override render() {
-				// 		return html`
-				// 			<div>
-				// 				<input
-				// 					style="border: 1px solid blue;"
-				// 					class="input-component"
-				// 					type="input"
-				// 					id=${ this.uid }
-				// 					@input=${ this.onInput }
-				// 				/>
-				// 			</div>
-				// 		`;
-				// 	}
-				// }
-
-				// getRegistry( editor ).register( 'better-input', BetterInput );
-				// const instance = document.createElement( 'better-input' );
-				// evt.detail.instance = instance;
-
-				// What if we provide class here so it can be extended the sam way as for 'componentRegister' but pass
-				// an instance instead of a class?
+			public override template() {
+				return html`
+					<div>
+						<input
+							style="border: 1px solid blue;"
+							class="input-component"
+							type="input"
+							id=${ this.uid }
+							@input=${ this.onInput }
+						/>
+					</div>
+				`;
 			}
-		} );
+		}
+
+		registry.extendComponentInstance( CKInput.componentName, 'link', 'ck-labeledinput_input', BetterInput );
 	}
 
 	public init(): void {

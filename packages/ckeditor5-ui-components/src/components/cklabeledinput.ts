@@ -29,11 +29,11 @@ export default class CKLabeledInput extends CKComponent {
 		this.name = 'ck-labeledinput';
 	}
 
-	public override render(): ReturnType<CKComponent['render']> {
+	public override template(): ReturnType<CKComponent['template']> {
 		return html`
 			<div class="labeled-field-component">
 				<label class="label-component" for=${ this.for }>${ this.label }</label>
-				<ck-input uid=${ this.for } namespace=${ this.namespace } name=${ `${ this.name }:input` } />
+				<ck-input uid=${ this.for } namespace=${ this.namespace } name=${ `${ this.name }_input` } />
 			</div>
 		`;
 	}

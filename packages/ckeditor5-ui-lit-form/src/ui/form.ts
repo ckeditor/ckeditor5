@@ -55,7 +55,7 @@ export default class Form extends CKComponent {
 		this.isValid = ( e.detail.value || '' ).length > 6; // Dumb check for testing purposes.
 	};
 
-	public override render(): ReturnType<CKComponent['render']> {
+	public override template(): ReturnType<CKComponent['template']> {
 		return html`
 			<ck-form
 				namespace=${ this.namespace }

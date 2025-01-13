@@ -29,7 +29,7 @@ export default class CKForm extends CKComponent {
 		this.name = 'ck-form';
 	}
 
-	public override render(): ReturnType<CKComponent['render']> {
+	public override template(): ReturnType<CKComponent['template']> {
 		return html`
 			<form class="link-form-component">
 				<slot></slot>

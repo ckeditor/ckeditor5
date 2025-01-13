@@ -29,9 +29,7 @@ export default class CKInput extends CKComponent {
 		this.name = 'ck-input';
 	}
 
-	public override render(): ReturnType<CKComponent['render']> {
-		console.log( 'CKInput:CONTEXT', this._consumer.value );
-
+	public override template(): ReturnType<CKComponent['template']> {
 		return html`
 			<input
 				class="input-component"
