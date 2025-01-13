@@ -32,12 +32,12 @@ import {
 	createLabeledInputText
 } from '@ckeditor/ckeditor5-ui';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import * as icons from '@ckeditor/ckeditor5-icons';
 
 window.BalloonPanelView = BalloonPanelView;
 window.ButtonView = ButtonView;
@@ -63,6 +63,8 @@ window.createLabeledInputNumber = createLabeledInputNumber;
 window.createLabeledInputText = createLabeledInputText;
 window.Collection = Collection;
 window.Locale = Locale;
+
+window.icons = icons;
 
 window.DialogViewPosition = DialogViewPosition;
 window.Plugin = Plugin;
