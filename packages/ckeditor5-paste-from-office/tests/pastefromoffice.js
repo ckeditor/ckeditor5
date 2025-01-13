@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
 import CodeBlockUI from '@ckeditor/ckeditor5-code-block/src/codeblockui.js';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /* global document */
 
@@ -172,6 +172,73 @@ describe( 'PasteFromOffice', () => {
 
 				sinon.assert.notCalled( getDataSpy );
 			}
+		} );
+	} );
+
+	describe( 'code block integration', () => {
+		it( 'should not intercept input when selection anchored outside any code block', () => {
+			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+			const getDataStub = sinon.stub();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+
+			getDataStub.withArgs( 'text/html' ).returns( 'abc' );
+			getDataStub.withArgs( 'text/plain' ).returns( 'bar\nbaz\n' );
+
+			const dataTransferMock = {
+				getData: getDataStub
+			};
+
+			viewDocument.fire( 'clipboardInput', {
+				content: 'abc',
+				dataTransfer: dataTransferMock,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>fabc[]oo</paragraph>' );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
+		} );
+
+		it( 'should intercept input when selection anchored in the code block', () => {
+			setModelData( editor.model, '<codeBlock language="css">f[o]o</codeBlock>' );
+
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+			const getDataStub = sinon.stub();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+
+			getDataStub.withArgs( 'text/html' ).returns( 'abc' );
+			getDataStub.withArgs( 'text/plain' ).returns( 'bar\nbaz\n' );
+
+			const dataTransferMock = {
+				getData: getDataStub
+			};
+
+			viewDocument.fire( 'clipboardInput', {
+				content: 'abc',
+				dataTransfer: dataTransferMock,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( editor.model ) ).to.equal(
+				'<codeBlock language="css">' +
+					'fbar' +
+					'<softBreak></softBreak>' +
+					'baz' +
+					'<softBreak></softBreak>' +
+					'[]o' +
+				'</codeBlock>' );
+
+			sinon.assert.calledOnce( dataTransferMock.getData );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
 		} );
 	} );
 

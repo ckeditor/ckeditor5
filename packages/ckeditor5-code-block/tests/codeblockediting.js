@@ -1646,6 +1646,7 @@ describe( 'CodeBlockEditing', () => {
 			};
 
 			viewDoc.fire( 'clipboardInput', {
+				content: dataTransferMock.getData( 'text/plain' ),
 				dataTransfer: dataTransferMock,
 				stop: sinon.spy()
 			} );
@@ -1669,6 +1670,7 @@ describe( 'CodeBlockEditing', () => {
 			};
 
 			viewDoc.fire( 'clipboardInput', {
+				content: dataTransferMock.getData( 'text/plain' ),
 				dataTransfer: dataTransferMock,
 				stop: sinon.spy()
 			} );
