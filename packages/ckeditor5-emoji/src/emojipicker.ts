@@ -7,26 +7,6 @@
  * @module emoji/emojipicker
  */
 
-import '../theme/emojipicker.css';
-
-import type { Locale, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
-import {
-	icons,
-	Plugin,
-	type Editor
-} from 'ckeditor5/src/core.js';
-import { Typing } from 'ckeditor5/src/typing.js';
-import EmojiGridView, {
-	type EmojiGridViewExecuteEvent,
-	type EmojiGridViewTileFocusEvent,
-	type EmojiGridViewTileHoverEvent
-} from './ui/emojigridview.js';
-import EmojiDatabase, { type EmojiCategory } from './emojidatabase.js';
-import EmojiSearchView, { type EmojiSearchViewInputEvent } from './ui/emojisearchview.js';
-import EmojiCategoriesView from './ui/emojicategoriesview.js';
-import EmojiPickerView from './ui/emojipickerview.js';
-import EmojiInfoView from './ui/emojiinfoview.js';
-
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -35,12 +15,22 @@ import {
 	MenuBarMenuListItemButtonView,
 	SearchInfoView
 } from 'ckeditor5/src/ui.js';
-import EmojiToneView, { type SkinToneId } from './ui/emojitoneview.js';
-
 import type { Model } from 'ckeditor5/src/engine.js';
+import type { Locale, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
+
+import EmojiGridView, { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
+import EmojiDatabase, { type EmojiCategory } from './emojidatabase.js';
+import EmojiSearchView from './ui/emojisearchview.js';
+import EmojiCategoriesView from './ui/emojicategoriesview.js';
+import EmojiPickerView from './ui/emojipickerview.js';
+
+import EmojiToneView from './ui/emojitoneview.js';
+import type { SkinToneId } from './emojiconfig.js';
+
+import '../theme/emojipicker.css';
 
 const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
-const BASELINE_EMOJI_WIDTH = 24;
 
 /**
  * The emoji picker plugin.
@@ -49,30 +39,54 @@ const BASELINE_EMOJI_WIDTH = 24;
  */
 export default class EmojiPicker extends Plugin {
 	/**
-	 * Registered emojis. A pair of an emoji name and all its available skin tone variants.
+	 * Active skin tone.
+	 *
+	 * @observable
+	 * @default 'default'
 	 */
-	private _emojis: Map<string, EmojiMap>;
+	declare private _skinTone: SkinToneId;
 
-	private _selectedSkinTone: SkinToneId;
+	/**
+	 * Active category.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare private _categoryName: string;
 
-	private _emojiGroups: Arrary<EmojiCategory>;
+	/**
+	 * A query provided by a user in the search field.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare private _searchQuery: string;
 
-	private _balloon!: ContextualBalloon;
+	/**
+	 * An array containing all emojis grouped by their categories.
+	 */
+	declare private _emojiGroups: Arrary<EmojiCategory>;
 
-	private _emojiPickerView: EmojiPickerView | null;
+	/**
+	 * The contextual balloon plugin instance.
+	 */
+	declare private _balloon: ContextualBalloon;
 
-	private _searchQuery: string | null;
+	/**
+	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
+	 */
+	declare private _emojiDatabase: EmojiDatabase;
 
-	private _emojiDatabase: EmojiDatabase;
+	/**
+	 * The actions view displayed inside the balloon.
+	 */
+	declare private _emojiPickerView: EmojiPickerView | undefined;
 
-	declare private _currentCategoryName: string;
-
-	public get emojis(): typeof this._emojis {
-		return this._emojis;
-	}
-
-	public get selectedSkinTone(): typeof this._selectedSkinTone {
-		return this._selectedSkinTone;
+	/**
+	 * Returns an active skin tone.
+	 */
+	public get skinTone(): typeof this._skinTone {
+		return this._skinTone;
 	}
 
 	/**
@@ -106,13 +120,9 @@ export default class EmojiPicker extends Plugin {
 			skinTone: 'default'
 		} );
 
-		this._emojis = new Map();
-		this._emojiGroups = [];
-		this._emojiPickerView = null;
-
 		this.set( '_searchQuery', '' );
-		this.set( '_currentCategoryName', '' );
-		this.set( '_selectedSkinTone', editor.config.get( 'emoji.skinTone' )! );
+		this.set( '_categoryName', '' );
+		this.set( '_skinTone', editor.config.get( 'emoji.skinTone' )! );
 	}
 
 	/**
@@ -124,7 +134,7 @@ export default class EmojiPicker extends Plugin {
 		this._emojiDatabase = editor.plugins.get( EmojiDatabase );
 		this._balloon = editor.plugins.get( ContextualBalloon );
 		this._emojiGroups = this._emojiDatabase.getEmojiGroups();
-		this._currentCategoryName = this._emojiGroups[ 0 ].title;
+		this._categoryName = this._emojiGroups[ 0 ].title;
 
 		editor.ui.componentFactory.add( 'emoji', () => {
 			const button = this._createDialogButton( ButtonView );
@@ -194,7 +204,7 @@ export default class EmojiPicker extends Plugin {
 			this._emojiPickerView.searchView.setInputValue( this._searchQuery );
 		}
 
-		// To trigger an initial search to render the grid..
+		// To trigger an initial search to render the grid.
 		this._emojiPickerView.searchView.search( this._searchQuery );
 
 		setTimeout( () => this._emojiPickerView!.focus() );
@@ -204,7 +214,7 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * Hides the balloon with the emoji picker.
 	 */
-	private _hideUI() {
+	private _hideUI(): void {
 		if ( this._emojiPickerView ) {
 			this._balloon.remove( this._emojiPickerView );
 		}
@@ -257,36 +267,28 @@ export default class EmojiPicker extends Plugin {
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
 		const gridView = new EmojiGridView( locale, {
 			emojiGroups: this._emojiGroups,
-			initialCategory: this._currentCategoryName,
+			initialCategory: this._categoryName,
 			getEmojiBySearchQuery: ( query: string ) => {
 				return this._emojiDatabase.getEmojiBySearchQuery( query );
 			}
 		} );
 
 		gridView.emojiGroups = this._emojiGroups;
-		gridView.currentCategoryName = this._currentCategoryName;
+		gridView.categoryName = this._categoryName;
 
 		const resultsView = new SearchInfoView( locale );
 		const searchView = new EmojiSearchView( locale, gridView, resultsView );
-		const toneView = new EmojiToneView( locale, this._selectedSkinTone );
-		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups, this._currentCategoryName );
+		const toneView = new EmojiToneView( locale, this._skinTone );
+		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups, this._categoryName );
 
 		// Bind the "current" plugin settings specific views to avoid manual updates.
-		gridView.bind( 'currentCategoryName' ).to( this, '_currentCategoryName' );
-		gridView.bind( 'selectedSkinTone' ).to( this, '_selectedSkinTone' );
+		gridView.bind( 'categoryName' ).to( this, '_categoryName' );
+		gridView.bind( 'skinTone' ).to( this, '_skinTone' );
 		gridView.bind( 'searchQuery' ).to( this, '_searchQuery' );
 
-		const dropdownPanelContent = {
-			searchView,
-			toneView,
-			categoriesView,
-			gridView,
-			resultsView
-		};
-
 		// Update the grid of emojis when selected category changes.
-		categoriesView.on<ObservableChangeEvent<string>>( 'change:currentCategoryName', ( ev, args, categoryName ) => {
-			this._currentCategoryName = categoryName;
+		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
+			this._categoryName = categoryName;
 		} );
 
 		// Disable the category switcher when filtering by a query.
@@ -301,8 +303,8 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		// Update the grid of emojis when selected skin tone changes.
-		toneView.on( 'change:selectedSkinTone', ( evt, propertyName, newValue ) => {
-			this._selectedSkinTone = newValue;
+		toneView.on( 'change:skinTone', ( evt, propertyName, newValue ) => {
+			this._skinTone = newValue;
 		} );
 
 		// Insert an emoji on a tile click.
@@ -318,31 +320,22 @@ export default class EmojiPicker extends Plugin {
 			this._hideUI();
 		} );
 
-		return dropdownPanelContent;
+		return {
+			searchView,
+			toneView,
+			categoriesView,
+			gridView,
+			resultsView
+		};
 	}
 }
 
-export interface DropdownPanelContent {
+type DropdownPanelContent = {
 	searchView: EmojiSearchView;
 	toneView: EmojiToneView;
 	categoriesView: EmojiCategoriesView;
 	gridView: EmojiGridView;
 	resultsView: SearchInfoView;
-}
-
-export type EmojiGroup = {
-	title: string;
-	exampleEmoji: string;
-	items: Array<EmojiItem>;
-};
-
-type EmojiItem = {
-	name: string;
-	emojis: EmojiMap;
-};
-
-type EmojiMap = Partial<Record<SkinToneId, string>> & {
-	'default': string;
 };
 
 function getBalloonPositionData( editor: Editor ): Partial<PositionOptions> {
@@ -397,5 +390,3 @@ function hideFakeVisualSelection( model: Model ): void {
 		} );
 	}
 }
-
-

@@ -11,7 +11,7 @@ import Fuse from 'fuse.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
 import { groupBy } from 'lodash-es';
-import type { SkinToneId } from './ui/emojitoneview.js';
+import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
 const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json';
@@ -36,12 +36,12 @@ export default class EmojiDatabase extends Plugin {
 	/**
 	 * Emoji database.
 	 */
-	private _emojiDatabase: Array<MappedEmojiDatabaseEntry>;
+	declare private _emojiDatabase: Array<EmojiEntry>;
 
 	/**
 	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
 	 */
-	private _fuseSearch: Fuse<EmojiDatabaseEntry> | null;
+	declare private _fuseSearch: Fuse<EmojiDatabaseCdnEntry> | null;
 
 	/**
 	 * @inheritDoc
@@ -89,7 +89,7 @@ export default class EmojiDatabase extends Plugin {
 				return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
 			} )
 			.map( item => {
-				const entry = {
+				const entry: EmojiEntry = {
 					...item,
 					skins: {
 						default: item.emoji
@@ -100,7 +100,11 @@ export default class EmojiDatabase extends Plugin {
 					item.skins.forEach( skin => {
 						const skinTone = skinToneMap[ skin.tone ];
 
-						entry.skins[ skinTone ] = skin.emoji;
+						entry.skins[ skinTone as keyof SkinToneMap ] = skin.emoji;
+
+
+						const foo = entry.skins[ skinTone as keyof SkinToneMap ];
+
 					} );
 				}
 
@@ -136,7 +140,7 @@ export default class EmojiDatabase extends Plugin {
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
-	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiDatabaseEntry> {
+	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiDatabaseCdnEntry> {
 		const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
 
 		// Perform the search only if there is at least two non-white characters next to each other.
@@ -163,17 +167,7 @@ export default class EmojiDatabase extends Plugin {
 			.map( result => result.item );
 	}
 
-	/**
-	 * Returns an array of emoji entries that belong to the provided group.
-	 *
-	 * @param group An identifier of the emoji group.
-	 * @returns An array of emoji entries that belong to the provided group.
-	 */
-	public getEmojiByGroup( group: number ): Array<EmojiDatabaseEntry> {
-		return this._emojiDatabase.filter( entry => entry.group === group );
-	}
-
-	public getEmojiGroups(): Arrary<EmojiCategory> {
+	public getEmojiGroups(): Array<EmojiCategory> {
 		const categories = [
 			{ title: 'Smileys & Expressions', icon: '😀', groupId: 0 },
 			{ title: 'Gestures & People', icon: '👋', groupId: 1 },
@@ -202,7 +196,7 @@ export default class EmojiDatabase extends Plugin {
  *
  * @returns A promise that resolves with an array of emoji entries.
  */
-async function loadEmojiDatabase(): Promise<Array<EmojiDatabaseEntry>> {
+async function loadEmojiDatabase(): Promise<Array<EmojiDatabaseCdnEntry>> {
 	const response = await fetch( EMOJI_DATABASE_URL );
 
 	if ( !response.ok ) {
@@ -248,14 +242,14 @@ function getNodeWidth( container: HTMLDivElement, node: string ): number {
 	return nodeWidth;
 }
 
-export interface EmojiCategory {
+export type EmojiCategory = {
 	title: string;
 	icon: string;
 	groupId: number;
-	items: Array<EmojiDatabaseEntry>;
-}
+	items: Array<EmojiDatabaseCdnEntry>;
+};
 
-export interface EmojiDatabaseEntry {
+export type EmojiDatabaseCdnEntry = {
 	annotation: string;
 	emoji: string;
 	group: number;
@@ -263,25 +257,18 @@ export interface EmojiDatabaseEntry {
 	version: number;
 	emoticon?: string;
 	shortcodes?: Array<string>;
-	skins?: Array<EmojiSkin>;
+	skins?: Array<{
+		emoji: string;
+		tone: number;
+		version: number;
+	}>;
 	tags?: Array<string>;
-}
+};
 
-export interface MappedEmojiDatabaseEntry extends EmojiDatabaseEntry {
-	skins: Record<SkinToneId, string>
-}
+export type EmojiEntry = Omit<EmojiDatabaseCdnEntry, 'skins'> & {
+	skins: EmojiMap;
+};
 
-export interface EmojiSkin {
-	emoji: string;
-	tone: EmojiSkinTone;
-	version: number;
-}
-
-export enum EmojiSkinTone {
-	Default = 0,
-	Light = 1,
-	MediumLight = 2,
-	Medium = 3,
-	MediumDark = 4,
-	Dark = 5
-}
+export type EmojiMap = { [K in Exclude<SkinToneId, 'default'>]?: string; } & {
+	default: string;
+};

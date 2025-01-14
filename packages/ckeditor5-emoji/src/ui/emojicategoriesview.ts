@@ -23,7 +23,7 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * Currently selected emoji category name.
 	 */
-	declare public currentCategoryName: string;
+	declare public categoryName: string;
 
 	/**
 	 * Tracks information about the DOM focus in the grid.
@@ -72,7 +72,7 @@ export default class EmojiCategoriesView extends View {
 			children: this._buttonViews
 		} );
 
-		this.on( 'change:currentCategoryName', ( event, name, newValue, oldValue ) => {
+		this.on( 'change:categoryName', ( event, name, newValue, oldValue ) => {
 			const previousButton = this._buttonViews.find( button => button.tooltip === oldValue )!;
 			const newButton = this._buttonViews.find( button => button.tooltip === newValue )!;
 
@@ -83,7 +83,7 @@ export default class EmojiCategoriesView extends View {
 			newButton.class = ACTIVE_CATEGORY_CLASS;
 		} );
 
-		this.set( 'currentCategoryName', categoryName );
+		this.set( 'categoryName', categoryName );
 	}
 
 	/**
@@ -149,13 +149,13 @@ export default class EmojiCategoriesView extends View {
 					return;
 				}
 
-				this.currentCategoryName = buttonView.tooltip as string;
+				this.categoryName = buttonView.tooltip as string;
 			} );
 
 			buttonView.on( 'change:isEnabled', ( event, name, oldValue, newValue ) => {
 				if ( newValue ) {
 					buttonView.class = '';
-				} else if ( buttonView.tooltip === this.currentCategoryName ) {
+				} else if ( buttonView.tooltip === this.categoryName ) {
 					buttonView.class = ACTIVE_CATEGORY_CLASS;
 				}
 			} );

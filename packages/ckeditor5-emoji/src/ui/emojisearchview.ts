@@ -8,23 +8,14 @@
  */
 
 import { escapeRegExp } from 'lodash-es';
-import {
-	SearchTextView,
-	View,
-	createLabeledInputText,
-	type InputView,
-	type SearchTextViewSearchEvent,
-	type SearchTextQueryView
-} from 'ckeditor5/src/ui.js';
-import { type Locale } from 'ckeditor5/src/utils.js';
+import { createLabeledInputText, SearchTextView, type SearchTextViewSearchEvent, View, } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
 
 export default class EmojiSearchView extends View {
 	/**
 	 * The find in text input view that stores the searched string.
-	 *
-	 * @internal
 	 */
-	public readonly _findInputView: SearchTextView;
+	public readonly findInputView: SearchTextView;
 
 	/**
 	 * @inheritDoc
@@ -37,7 +28,7 @@ export default class EmojiSearchView extends View {
 
 		const t = locale.t;
 
-		this._findInputView = new SearchTextView( this.locale!, {
+		this.findInputView = new SearchTextView( this.locale!, {
 			queryView: {
 				label: t( 'Find an emoji (min. 2 characters)' ),
 				creator: createLabeledInputText
@@ -54,11 +45,11 @@ export default class EmojiSearchView extends View {
 				class: [ 'ck', 'ck-emoji-input', 'ck-search' ]
 			},
 			children: [
-				this._findInputView
+				this.findInputView
 			]
 		} );
 
-		this._findInputView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+		this.findInputView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( !data.resultsCount ) {
 				this._resultsView.set( {
 					primaryText: t( 'No emojis were found matching "%0".', data.query ),
@@ -75,7 +66,7 @@ export default class EmojiSearchView extends View {
 		} );
 
 		// Refresh the grid when a skin tone is being changed.
-		this._gridView.on( 'change:selectedSkinTone', () => {
+		this._gridView.on( 'change:skinTone', () => {
 			this.search( this.getInputValue() );
 		} );
 	}
@@ -83,14 +74,13 @@ export default class EmojiSearchView extends View {
 	/**
 	 * Searches the {@link #filteredView} for the given query.
 	 *
-	 * @internal
 	 * @param query The search query string.
 	 */
 	public search( query: string ): void {
 		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
 		const filteringResults = this._gridView.filter( regExp );
 
-		this._findInputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
+		this.findInputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
 	}
 
 	/**
@@ -99,36 +89,20 @@ export default class EmojiSearchView extends View {
 	 * @param value The new value.
 	 */
 	public setInputValue( value: string ): void {
-		this._findInputView.queryView.fieldView.value = value;
+		this.findInputView.queryView.fieldView.value = value;
 	}
 
+	/**
+	 * Returns the provided query from the input element if exists. Otherwise, returns an empty string.
+	 */
 	public getInputValue(): string {
-		return this._findInputView.queryView.fieldView.element?.value || '';
+		return this.findInputView.queryView.fieldView.element?.value || '';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public focus(): void {
-		this._findInputView.focus();
+		this.findInputView.focus();
 	}
-}
-
-/**
- * Fired when the search field is updated.
- *
- * @eventName ~EmojiSearchView#input
- * @param data Additional information about the event.
- */
-export type EmojiSearchViewInputEvent = {
-	name: 'input';
-	args: [ data: EmojiSearchViewInputEventData ];
-};
-
-export interface EmojiSearchViewInputEventData {
-
-	/**
-	 * Content of the updated search field.
-	 */
-	query: string;
 }

@@ -9,11 +9,10 @@
 
 import '../../theme/emojigrid.css';
 
-import { addKeyboardHandlingForGrid, ButtonView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { addKeyboardHandlingForGrid, ButtonView, View, type FilteredView, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type { SkinToneId } from './emojitoneview';
+import type { SkinToneId } from './emojitoneview.js';
 import type { EmojiDatabaseEntry, EmojiCategory } from '../emojidatabase.js';
-import { EmojiGroup } from '../emojipicker';
 
 export type EmojiGridViewOptions = {
 	emojiGroups: Arrary<EmojiCategory>;
@@ -24,7 +23,35 @@ export type EmojiGridViewOptions = {
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
  */
-export default class EmojiGridView extends View<HTMLDivElement> {
+export default class EmojiGridView extends View<HTMLDivElement> implements FilteredView {
+	/**
+	 * Defines the active category name.
+	 *
+	 * @observable
+	 */
+	declare public categoryName: string;
+
+	/**
+	 * A query provided by a user in the search field.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare public searchQuery: string;
+
+	/**
+	 * Active skin tone.
+	 *
+	 * @observable
+	 * @default 'default'
+	 */
+	declare public skinTone: SkinToneId;
+
+	/**
+	 * Set to `true` when the {@link #tiles} collection is empty.
+	 */
+	declare private _isEmpty: boolean;
+
 	/**
 	 * A collection of the child tile views. Each tile represents a particular emoji.
 	 */
@@ -40,12 +67,6 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
-	declare public isEmpty: boolean;
-	declare public currentCategoryName: string;
-	declare public searchQuery: string;
-	declare public activeEmojiGroup: any;
-	declare public selectedSkinTone: SkinToneId;
-
 	private readonly getEmojiBySearchQuery: EmojiGridViewOptions[ 'getEmojiBySearchQuery' ];
 	private readonly emojiGroups: EmojiGridViewOptions['emojiGroups'];
 
@@ -57,9 +78,9 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	constructor( locale: Locale, { emojiGroups, initialCategory, getEmojiBySearchQuery }: EmojiGridViewOptions ) {
 		super( locale );
 
-		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
-		this.set( 'isEmpty', true );
+		this.set( '_isEmpty', true );
 
+		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
@@ -87,20 +108,18 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 					'ck',
 					'ck-emoji-grid',
 					// To avoid issues with focus cycling, ignore a grid when it's empty.
-					bind.if( 'isEmpty', 'ck-hidden', value => value )
+					bind.if( '_isEmpty', 'ck-hidden', value => value )
 				]
 			}
 		} );
 
-		this.on( 'change:currentCategoryName', () => {
-			this.activeEmojiGroup = emojiGroups.find( item => item.title === this.currentCategoryName );
+		this.on( 'change:categoryName', () => {
 			this.filter( '' );
 		} );
 
 		this.set( 'searchQuery', '' );
-		this.set( 'activeEmojiGroup', '' ); // TODO: ???
-		this.set( 'currentCategoryName', initialCategory );
-		this.set( 'selectedSkinTone', 'default' );
+		this.set( 'categoryName', initialCategory );
+		this.set( 'skinTone', 'default' );
 
 		addKeyboardHandlingForGrid( {
 			keystrokeHandler: this.keystrokes,
@@ -115,37 +134,46 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 		} );
 	}
 
-	public filter( pattern: RegExp | null ): any {
-		let itemsToRender = this.activeEmojiGroup.items;
+	/**
+	 * Filters the grid view by the given regular expression.
+	 *
+	 * It filters either by the pattern or an emoji category, but never both.
+	 */
+	public filter( pattern: RegExp | null ): { resultsCount: number; totalItemsCount: number } {
+		const emojiCategory = this.emojiGroups.find( item => item.title === this.categoryName );
+
+		let itemsToRender = emojiCategory.items;
 		let allItems;
 
+		// When filtering by a query, the mechanism checks the entire database.
 		if ( pattern ) {
 			allItems = this.emojiGroups.flatMap( group => group.items );
 			itemsToRender = this.getEmojiBySearchQuery( pattern.source );
 		}
 
 		const arrayOfMatchingItems = itemsToRender.map( item => {
-			const emoji = item.skins[ this.selectedSkinTone ] || item.skins.default;
+			const emoji = item.skins[ this.skinTone ] || item.skins.default;
 
-			return this.createTile( emoji, item.annotation );
+			return this._createTile( emoji, item.annotation );
 		} );
 
+		// Clean-up.
 		[ ...this.tiles ].forEach( item => {
 			this.focusTracker.remove( item );
+			this.tiles.remove( item );
 		} );
 
-		this.tiles.clear();
-		this.tiles.addMany( arrayOfMatchingItems );
-
-		this.set( 'isEmpty', arrayOfMatchingItems.length === 0 );
-
+		// Insert new elements.
 		arrayOfMatchingItems.forEach( item => {
+			this.tiles.add( item );
 			this.focusTracker.add( item );
 		} );
 
+		this.set( 'isEmpty', arrayOfMatchingItems.length === 0 );
+
 		return {
 			resultsCount: arrayOfMatchingItems.length,
-			totalItemsCount: !pattern ? this.activeEmojiGroup.items.length : allItems.length
+			totalItemsCount: !pattern ? emojiCategory.items.length : allItems.length
 		};
 	}
 
@@ -155,7 +183,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	 * @param emoji The emoji itself.
 	 * @param name The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
 	 */
-	public createTile( emoji: string, name: string ): ButtonView {
+	private _createTile( emoji: string, name: string ): ButtonView {
 		const tile = new ButtonView( this.locale );
 
 		tile.set( {
@@ -172,14 +200,6 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 				mouseover: tile.bindTemplate.to( 'mouseover' ),
 				focus: tile.bindTemplate.to( 'focus' )
 			}
-		} );
-
-		tile.on( 'mouseover', () => {
-			this.fire<EmojiGridViewTileHoverEvent>( 'tileHover', { name, emoji } );
-		} );
-
-		tile.on( 'focus', () => {
-			this.fire<EmojiGridViewTileFocusEvent>( 'tileFocus', { name, emoji } );
 		} );
 
 		tile.on( 'execute', () => {
@@ -228,29 +248,6 @@ export default class EmojiGridView extends View<HTMLDivElement> {
  */
 export type EmojiGridViewExecuteEvent = {
 	name: 'execute';
-	args: [ data: EmojiGridViewEventData ];
-};
-
-/**
- * Fired when a mouse or another pointing device caused the cursor to move onto any {@link ~EmojiGridView#tiles grid tile}
- * (similar to the native `mouseover` DOM event).
- *
- * @eventName ~EmojiGridView#tileHover
- * @param data Additional information about the event.
- */
-export type EmojiGridViewTileHoverEvent = {
-	name: 'tileHover';
-	args: [ data: EmojiGridViewEventData ];
-};
-
-/**
- * Fired when {@link ~EmojiGridView#tiles grid tile} is focused (e.g. by navigating with arrow keys).
- *
- * @eventName ~EmojiGridView#tileFocus
- * @param data Additional information about the event.
- */
-export type EmojiGridViewTileFocusEvent = {
-	name: 'tileFocus';
 	args: [ data: EmojiGridViewEventData ];
 };
 

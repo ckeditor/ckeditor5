@@ -22,8 +22,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface PluginsMap {
-		[Emoji.pluginName]: Emoji;
-		[EmojiMention.pluginName]: EmojiMention;
-		[EmojiPicker.pluginName]: EmojiPicker;
+		[ Emoji.pluginName ]: Emoji;
+		[ EmojiMention.pluginName ]: EmojiMention;
+		[ EmojiPicker.pluginName ]: EmojiPicker;
 	}
 }

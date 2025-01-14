@@ -18,8 +18,9 @@ import {
 } from '@ckeditor/ckeditor5-mention';
 
 const EMOJI_PREFIX = 'emoji';
-const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
 const EMOJI_MENTION_MARKER = ':';
+
+const SHOW_ALL_EMOJI_ID = formatEmojiId( '__SHOW_ALL_EMOJI__' );
 
 /**
  * The emoji mention plugin.
@@ -27,9 +28,17 @@ const EMOJI_MENTION_MARKER = ':';
  * Introduces the autocomplete of emojis while typing.
  */
 export default class EmojiMention extends Plugin {
-	private _emojiDropdownLimit: number;
-	private _showAllEmojiId: string;
+	/**
+	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
+	 */
 	declare private _emojiPickerPlugin: EmojiPicker | null;
+
+	/**
+	 * Defines a number of displayed items in the auto complete dropdown.
+	 *
+	 * It includes the "Show all emojis..." option if the `EmojiPicker` plugin is loaded.
+	 */
+	private readonly _emojiDropdownLimit: number;
 
 	/**
 	 * @inheritDoc
@@ -63,7 +72,6 @@ export default class EmojiMention extends Plugin {
 		} );
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
-		this._showAllEmojiId = formatEmojiId( SHOW_ALL_EMOJI );
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
 		const mergeFieldsPrefix = this.editor.config.get( 'mergeFields.prefix' )! as string;
@@ -120,8 +128,8 @@ export default class EmojiMention extends Plugin {
 			itemElement.style.display = 'block';
 
 			switch ( item.id ) {
-				case this._showAllEmojiId:
-					itemElement.textContent = t( 'Show all emoji...' );
+				case SHOW_ALL_EMOJI_ID:
+					itemElement.textContent = t( 'Show all emojis...' );
 
 					break;
 				default:
@@ -146,7 +154,7 @@ export default class EmojiMention extends Plugin {
 			let textToInsert = eventData.mention.text;
 			let shouldShowEmojiView = false;
 
-			if ( eventData.mention.id === this._showAllEmojiId ) {
+			if ( eventData.mention.id === SHOW_ALL_EMOJI_ID ) {
 				shouldShowEmojiView = true;
 
 				textToInsert = '';
@@ -178,7 +186,7 @@ export default class EmojiMention extends Plugin {
 					let text = emoji.annotation;
 
 					if ( this._emojiPickerPlugin ) {
-						text = emoji.skins[ this._emojiPickerPlugin.selectedSkinTone ] || emoji.skins.default;
+						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
 					}
 
 					return { text, id: formatEmojiId( id ) };
@@ -186,7 +194,7 @@ export default class EmojiMention extends Plugin {
 				.filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
 
 			return this._emojiPickerPlugin ?
-				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: this._showAllEmojiId, text: searchQuery } ] :
+				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: SHOW_ALL_EMOJI_ID, text: searchQuery } ] :
 				emojis.slice( 0, this._emojiDropdownLimit );
 		};
 	}

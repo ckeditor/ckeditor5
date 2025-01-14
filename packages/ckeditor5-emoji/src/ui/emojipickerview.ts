@@ -42,27 +42,27 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * An instance of the `EmojiSearchView`.
 	 */
-	public searchView: EmojiSearchView;
+	public readonly searchView: EmojiSearchView;
 
 	/**
 	 * An instance of the `EmojiToneView`.
 	 */
-	public toneView: EmojiToneView;
+	public readonly toneView: EmojiToneView;
 
 	/**
 	 * An instance of the `EmojiCategoriesView`.
 	 */
-	public categoriesView: EmojiCategoriesView;
+	public readonly categoriesView: EmojiCategoriesView;
 
 	/**
 	 * An instance of the `EmojiGridView`.
 	 */
-	public gridView: EmojiGridView;
+	public readonly gridView: EmojiGridView;
 
 	/**
 	 * An instance of the `EmojiGridView`.
 	 */
-	public resultsView: SearchInfoView;
+	public readonly resultsView: SearchInfoView;
 
 	/**
 	 * @inheritDoc
@@ -110,8 +110,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 						this.resultsView
 					],
 					attributes: {
-						class: [ 'ck', 'ck-search__results' ],
-						tabindex: '-1'
+						class: [ 'ck', 'ck-search__results' ]
 					}
 				}
 			],
@@ -144,7 +143,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		// We need to disable listening for all events within the `SearchTextView` view.
 		// Otherwise, its own focus tracker interfere with `EmojiPickerView` which leads to unexpected results.
-		this.searchView._findInputView.keystrokes.stopListening();
+		this.searchView.findInputView.keystrokes.stopListening();
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
