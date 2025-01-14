@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-typing": "44.1.0",
     "@ckeditor/ckeditor5-ui": "44.1.0",
+    "@ckeditor/ckeditor5-utils": "44.1.0",
     "ckeditor5": "44.1.0"
   },
   "devDependencies": {
@@ -26,7 +27,6 @@
     "@ckeditor/ckeditor5-essentials": "44.1.0",
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
     "@ckeditor/ckeditor5-theme-lark": "44.1.0",
-    "@ckeditor/ckeditor5-utils": "44.1.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
