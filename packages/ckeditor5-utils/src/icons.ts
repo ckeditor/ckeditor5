@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module utils/icons
+ */
+
 export type Icons = Record<string, string>;
 
 declare global {
