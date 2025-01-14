@@ -12,27 +12,24 @@
  *
  * @param stylesheets An array of stylesheet paths delivered by the user through the plugin configuration.
  */
-export default function collectStylesheets( stylesheets?: Array<string> ): Promise<string> {
+export default async function collectStylesheets( stylesheets?: Array<string> ): Promise<string> {
 	if ( !stylesheets ) {
-		return new Promise( resolve => resolve( '' ) );
+		return '';
 	}
 
-	const styles = [];
+	const results = await Promise.all(
+		stylesheets.map( async stylesheet => {
+			if ( stylesheet === 'EDITOR_STYLES' ) {
+				return getEditorStyles();
+			}
 
-	for ( const stylesheet of stylesheets ) {
-		if ( stylesheet === 'EDITOR_STYLES' ) {
-			styles.push( getEditorStyles() );
+			const response = await window.fetch( stylesheet );
 
-			continue;
-		}
+			return response.text();
+		} )
+	);
 
-		styles.push( window.fetch( stylesheet ).then( response => response.text() ) );
-	}
-
-	return Promise.all( styles ).then( values => {
-		// We want to trim the returned value in case of `[ "", "", "", ... ]`.
-		return values.join( ' ' ).trim();
-	} );
+	return results.join( ' ' ).trim();
 }
 
 /**
