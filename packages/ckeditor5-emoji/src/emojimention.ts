@@ -175,18 +175,10 @@ export default class EmojiMention extends Plugin {
 				.map( emoji => {
 					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
-					let text: string | null = emoji.emoji;
+					let text = emoji.annotation;
 
 					if ( this._emojiPickerPlugin ) {
-						const emojiSkinToneMap = this._emojiPickerPlugin.emojis.get( emoji.annotation );
-
-						// Query might return some emojis which we chose not to add to our database.
-						/* istanbul ignore next -- @preserve */
-						if ( !emojiSkinToneMap ) {
-							text = null;
-						} else {
-							text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap.default;
-						}
+						text = emoji.skins[ this._emojiPickerPlugin.selectedSkinTone ] || emoji.skins.default;
 					}
 
 					return { text, id: formatEmojiId( id ) };

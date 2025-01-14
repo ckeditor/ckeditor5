@@ -24,7 +24,7 @@ export default class EmojiSearchView extends View {
 	 *
 	 * @internal
 	 */
-	public readonly _findInputView: SearchTextQueryView<InputView>;
+	public readonly _findInputView: SearchTextView;
 
 	/**
 	 * @inheritDoc
@@ -106,6 +106,9 @@ export default class EmojiSearchView extends View {
 		return this._findInputView.queryView.fieldView.element?.value || '';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public focus(): void {
 		this._findInputView.focus();
 	}

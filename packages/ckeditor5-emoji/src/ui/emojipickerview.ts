@@ -7,15 +7,13 @@
  * @module emoji/ui/emojipickerview
  */
 
-import { View, FocusCycler, type ViewCollection, type FocusableView } from 'ckeditor5/src/ui.js';
+import { View, FocusCycler, type SearchInfoView, type ViewCollection, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type EmojiGridView from './emojigridview.js';
 import type EmojiCategoriesView from './emojicategoriesview.js';
 import type EmojiSearchView from './emojisearchview.js';
-import type EmojiInfoView from './emojiinfoview.js';
 import type EmojiToneView from './emojitoneview.js';
 import type { DropdownPanelContent } from '../emojipicker.js';
-import EmojiResultsView from './emojiresultsview';
 
 /**
  * A view that glues pieces of the emoji dropdown panel together.
@@ -39,7 +37,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * Helps cycling over focusable {@link #items} in the view.
 	 */
-	protected readonly _focusCycler: FocusCycler;
+	public readonly focusCycler: FocusCycler;
 
 	/**
 	 * An instance of the `EmojiSearchView`.
@@ -62,9 +60,9 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	public gridView: EmojiGridView;
 
 	/**
-	 * An instance of the `EmojiInfoView`.
+	 * An instance of the `EmojiGridView`.
 	 */
-	public infoView: EmojiInfoView;
+	public resultsView: SearchInfoView;
 
 	/**
 	 * @inheritDoc
@@ -75,17 +73,13 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.searchView = dropdownPanelContent.searchView;
 		this.categoriesView = dropdownPanelContent.categoriesView;
 		this.gridView = dropdownPanelContent.gridView;
-		this.resultsView = dropdownPanelContent.resultsView;
 		this.toneView = dropdownPanelContent.toneView;
-
-		// this.infoView = dropdownPanelContent.infoView;
-
+		this.resultsView = dropdownPanelContent.resultsView;
 
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
-
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this.items,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -116,10 +110,10 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 						this.resultsView
 					],
 					attributes: {
-						class: [ 'ck', 'ck-search__results' ]
+						class: [ 'ck', 'ck-search__results' ],
+						tabindex: '-1'
 					}
-				},
-				// this.infoView
+				}
 			],
 			attributes: {
 				// Avoid focus loss when the user clicks the area of the grid that is not a button.
@@ -130,9 +124,10 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		} );
 
 		this.items.add( this.searchView );
-		// this.items.add( this.toneView );
+		this.items.add( this.toneView );
 		this.items.add( this.categoriesView );
 		this.items.add( this.gridView );
+		this.items.add( this.resultsView );
 	}
 
 	/**
@@ -142,9 +137,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		super.render();
 
 		this.focusTracker.add( this.searchView.element! );
-		// this.focusTracker.add( this.toneView.element! );
+		this.focusTracker.add( this.toneView.element! );
 		this.focusTracker.add( this.categoriesView.element! );
 		this.focusTracker.add( this.gridView.element! );
+		this.focusTracker.add( this.resultsView.element! );
+
+		// We need to disable listening for all events within the `SearchTextView` view.
+		// Otherwise, its own focus tracker interfere with `EmojiPickerView` which leads to unexpected results.
+		this.searchView._findInputView.keystrokes.stopListening();
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
@@ -164,6 +164,6 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	public focus(): void {
-		this._focusCycler.focusFirst();
+		this.focusCycler.focusFirst();
 	}
 }

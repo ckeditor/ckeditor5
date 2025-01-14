@@ -88,6 +88,9 @@ export default class EmojiToneView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public focus(): void {
 		this._mainDropdownButton.focus();
 	}

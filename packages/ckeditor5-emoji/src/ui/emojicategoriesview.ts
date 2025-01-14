@@ -9,7 +9,7 @@
 
 import '../../theme/emojicategories.css';
 
-import { ButtonView, View, ViewCollection } from 'ckeditor5/src/ui.js';
+import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { EmojiGroup } from '../emojipicker.js';
 
@@ -40,6 +40,8 @@ export default class EmojiCategoriesView extends View {
 	 */
 	private readonly _buttonViews: ViewCollection<ButtonView>;
 
+	private readonly _focusCycler: FocusCycler;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -47,8 +49,20 @@ export default class EmojiCategoriesView extends View {
 		super( locale );
 
 		this._buttonViews = new ViewCollection(
-			this.createCategoryButtons( emojiGroups )
+			this._createCategoryButtons( emojiGroups )
 		);
+
+		this._focusTracker = new FocusTracker();
+		this._keystrokeHandler = new KeystrokeHandler();
+		this._focusCycler = new FocusCycler( {
+			focusables: this._buttonViews,
+			focusTracker: this._focusTracker,
+			keystrokeHandler: this._keystrokeHandler,
+			actions: {
+				focusPrevious: 'arrowleft',
+				focusNext: 'arrowright'
+			}
+		} );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -56,29 +70,6 @@ export default class EmojiCategoriesView extends View {
 				class: [ 'ck', 'ck-emoji-categories' ]
 			},
 			children: this._buttonViews
-		} );
-
-		this._focusTracker = new FocusTracker();
-		this._keystrokeHandler = new KeystrokeHandler();
-
-		this._keystrokeHandler.set( 'arrowleft', () => {
-			const previousSibling = this._focusTracker.focusedElement?.previousElementSibling;
-
-			if ( previousSibling ) {
-				( previousSibling as HTMLButtonElement ).focus();
-			} else {
-				this._buttonViews.last!.focus();
-			}
-		} );
-
-		this._keystrokeHandler.set( 'arrowright', () => {
-			const nextSibling = this._focusTracker.focusedElement?.nextElementSibling;
-
-			if ( nextSibling ) {
-				( nextSibling as HTMLButtonElement ).focus();
-			} else {
-				this._buttonViews.first!.focus();
-			}
 		} );
 
 		this.on( 'change:currentCategoryName', ( event, name, newValue, oldValue ) => {
@@ -111,28 +102,44 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * @inheritDoc
 	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this._focusTracker.destroy();
+		this._keystrokeHandler.destroy();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public focus(): void {
 		this._buttonViews.first!.focus();
 	}
 
+	/**
+	 * Marks all categories buttons as enabled (clickable).
+	 */
 	public enableCategories(): void {
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = true;
 		} );
 	}
 
+	/**
+	 * Marks all categories buttons as disabled (non-clickable).
+	 */
 	public disableCategories(): void {
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = false;
 		} );
 	}
 
-	private createCategoryButtons( emojiGroups: Array<EmojiGroup> ) {
+	private _createCategoryButtons( emojiGroups: Array<EmojiGroup> ) {
 		return emojiGroups.map( emojiGroup => {
 			const buttonView = new ButtonView();
 
 			buttonView.tooltip = emojiGroup.title;
-			buttonView.label = emojiGroup.exampleEmoji;
+			buttonView.label = emojiGroup.icon;
 			buttonView.withText = true;
 
 			buttonView.on( 'execute', event => {

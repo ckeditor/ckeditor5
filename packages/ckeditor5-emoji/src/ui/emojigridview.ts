@@ -12,7 +12,14 @@ import '../../theme/emojigrid.css';
 import { addKeyboardHandlingForGrid, ButtonView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from './emojitoneview';
-import EmojiDatabase from '../emojidatabase';
+import type { EmojiDatabaseEntry, EmojiCategory } from '../emojidatabase.js';
+import { EmojiGroup } from '../emojipicker';
+
+export type EmojiGridViewOptions = {
+	emojiGroups: Arrary<EmojiCategory>;
+	initialCategory: EmojiCategory[ 'title' ];
+	getEmojiBySearchQuery: ( query: string ) => Array<EmojiDatabaseEntry>;
+};
 
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
@@ -33,26 +40,33 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
-	private emojiGroups: any;
-
+	declare public isEmpty: boolean;
 	declare public currentCategoryName: string;
 	declare public searchQuery: string;
 	declare public activeEmojiGroup: any;
 	declare public selectedSkinTone: SkinToneId;
-	declare public database: EmojiDatabase;
+
+	private readonly getEmojiBySearchQuery: EmojiGridViewOptions[ 'getEmojiBySearchQuery' ];
+	private readonly emojiGroups: EmojiGridViewOptions['emojiGroups'];
+
+	private readonly initialCategory: EmojiGridViewOptions['initialCategory'];
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, initialCategory }: { emojiGroups: Array<any>; initialCategory: string }, database: EmojiDatabase ) {
+	constructor( locale: Locale, { emojiGroups, initialCategory, getEmojiBySearchQuery }: EmojiGridViewOptions ) {
 		super( locale );
 
-		this.emojiGroups = emojiGroups;
 		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
+		this.set( 'isEmpty', true );
+
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
-		this.database = database;
-		this.set( 'searchQuery', '' );
+
+		this.getEmojiBySearchQuery = getEmojiBySearchQuery;
+		this.emojiGroups = emojiGroups;
+
+		const bind = this.bindTemplate;
 
 		this.setTemplate( {
 			tag: 'div',
@@ -66,23 +80,14 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 						]
 					},
 					children: this.tiles
-				},
-				{
-					tag: 'div',
-					attributes: {
-						class: [
-							'ck',
-							'ck-emoji-nothing-found',
-							'hidden'
-						]
-					},
-					children: [ { text: 'Nothing found.' } ]
 				}
 			],
 			attributes: {
 				class: [
 					'ck',
-					'ck-emoji-grid'
+					'ck-emoji-grid',
+					// To avoid issues with focus cycling, ignore a grid when it's empty.
+					bind.if( 'isEmpty', 'ck-hidden', value => value )
 				]
 			}
 		} );
@@ -92,8 +97,10 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 			this.filter( '' );
 		} );
 
+		this.set( 'searchQuery', '' );
+		this.set( 'activeEmojiGroup', '' ); // TODO: ???
 		this.set( 'currentCategoryName', initialCategory );
-		this.set( 'selectedSkinTone', 0 );
+		this.set( 'selectedSkinTone', 'default' );
 
 		addKeyboardHandlingForGrid( {
 			keystrokeHandler: this.keystrokes,
@@ -114,17 +121,27 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 
 		if ( pattern ) {
 			allItems = this.emojiGroups.flatMap( group => group.items );
-			itemsToRender = this.database.getEmojiBySearchQuery( pattern.source );
+			itemsToRender = this.getEmojiBySearchQuery( pattern.source );
 		}
 
 		const arrayOfMatchingItems = itemsToRender.map( item => {
-			const emoji = item.emojis[ this.selectedSkinTone ] || item.emojis.default;
+			const emoji = item.skins[ this.selectedSkinTone ] || item.skins.default;
 
-			return this.createTile( emoji, item.name );
+			return this.createTile( emoji, item.annotation );
+		} );
+
+		[ ...this.tiles ].forEach( item => {
+			this.focusTracker.remove( item );
 		} );
 
 		this.tiles.clear();
 		this.tiles.addMany( arrayOfMatchingItems );
+
+		this.set( 'isEmpty', arrayOfMatchingItems.length === 0 );
+
+		arrayOfMatchingItems.forEach( item => {
+			this.focusTracker.add( item );
+		} );
 
 		return {
 			resultsCount: arrayOfMatchingItems.length,
@@ -178,33 +195,7 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 	public override render(): void {
 		super.render();
 
-		// for ( const item of this.tiles ) {
-		// 	this.focusTracker.add( item.element! );
-		// }
-		//
-		// this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
-		// 	const nothingFoundDiv = document.querySelector( '.ck.ck-emoji-nothing-found' )!;
-		//
-		// 	if ( this.tiles.length === 0 ) {
-		// 		nothingFoundDiv.classList.remove( 'hidden' );
-		// 	} else {
-		// 		nothingFoundDiv.classList.add( 'hidden' );
-		// 	}
-		//
-		// 	if ( added.length > 0 ) {
-		// 		for ( const item of added ) {
-		// 			this.focusTracker.add( item.element );
-		// 		}
-		// 	}
-		//
-		// 	if ( removed.length > 0 ) {
-		// 		for ( const item of removed ) {
-		// 			this.focusTracker.remove( item.element );
-		// 		}
-		// 	}
-		// } );
-		//
-		// this.keystrokes.listenTo( this.element! );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -214,13 +205,18 @@ export default class EmojiGridView extends View<HTMLDivElement> {
 		super.destroy();
 
 		this.keystrokes.destroy();
+		this.focusTracker.destroy();
 	}
 
 	/**
-	 * Focuses the first focusable in {@link ~EmojiGridView#tiles}.
+	 * Focuses the first focusable in {@link ~EmojiGridView#tiles} if available.
 	 */
 	public focus(): void {
-		this.tiles.first!.focus();
+		const firstTile = this.tiles.first;
+
+		if ( firstTile ) {
+			firstTile.focus();
+		}
 	}
 }
 
