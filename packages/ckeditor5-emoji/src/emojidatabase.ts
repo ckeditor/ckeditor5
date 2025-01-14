@@ -131,20 +131,28 @@ export default class EmojiDatabase extends Plugin {
  * @returns A promise that resolves with an array of emoji entries.
  */
 async function loadEmojiDatabase(): Promise<Array<EmojiDatabaseEntry>> {
-	const response = await fetch( EMOJI_DATABASE_URL );
+	const result = await fetch( EMOJI_DATABASE_URL )
+		.then( response => {
+			if ( !response.ok ) {
+				return [];
+			}
 
-	if ( !response.ok ) {
+			return response.json();
+		} )
+		.catch( () => {
+			return [];
+		} );
+
+	if ( !result.length ) {
 		/**
 		 * Unable to load the emoji database from CDN.
 		 *
 		 * @error emoji-database-load-failed
 		 */
 		logWarning( 'emoji-database-load-failed' );
-
-		return [];
 	}
 
-	return response.json();
+	return result;
 }
 
 interface EmojiDatabaseEntry {
