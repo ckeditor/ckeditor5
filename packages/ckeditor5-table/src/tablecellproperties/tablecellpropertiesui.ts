@@ -7,8 +7,10 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
+import { debounce } from 'lodash-es';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconTableCellProperties } from 'ckeditor5/src/icons.js';
+import { registerIcon, type GetCallback, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -17,8 +19,6 @@ import {
 	normalizeColorOptions,
 	type View
 } from 'ckeditor5/src/ui.js';
-import type { Batch } from 'ckeditor5/src/engine.js';
-
 import TableCellPropertiesView from './ui/tablecellpropertiesview.js';
 import {
 	colorFieldValidator,
@@ -28,15 +28,13 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties.js';
-import { debounce } from 'lodash-es';
 import { getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 import { getNormalizedDefaultCellProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
-import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
-
+import type { Batch } from 'ckeditor5/src/engine.js';
 import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
 
-const ERROR_TEXT_TIMEOUT = 500;
+const tableCellPropertiesIcon = /* #__PURE__ */ registerIcon( 'tableCellProperties', IconTableCellProperties );
 
 // Map of view properties and related commands.
 const propertyToCommandMap = {
@@ -144,7 +142,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 			view.set( {
 				label: t( 'Cell properties' ),
-				icon: IconTableCellProperties,
+				icon: tableCellPropertiesIcon(),
 				tooltip: true
 			} );
 
@@ -442,6 +440,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			errorText: string;
 		}
 	): GetCallback<ObservableChangeEvent<string>> {
+		const ERROR_TEXT_TIMEOUT = 500;
 		const { commandName, viewField, validator, errorText } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;

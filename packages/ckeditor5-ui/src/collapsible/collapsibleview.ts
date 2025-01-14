@@ -8,13 +8,15 @@
  */
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
+import { registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
 import type ViewCollection from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/collapsible/collapsible.css';
+
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
 
 /**
  * A collapsible UI component. Consists of a labeled button and a container which can be collapsed
@@ -134,7 +136,7 @@ export default class CollapsibleView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: IconDropdownArrow
+			icon: dropdownArrowIcon()
 		} );
 
 		buttonView.extendTemplate( {

@@ -14,9 +14,12 @@ import {
 	type ButtonView,
 	type MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { IconImageUpload } from 'ckeditor5/src/icons.js';
 import { createImageTypeRegExp } from './utils.js';
 import type ImageInsertUI from '../imageinsert/imageinsertui.js';
+
+const imageUploadIcon = /* #__PURE__ */ registerIcon( 'imageUpload', IconImageUpload );
 
 /**
  * The image upload button plugin.
@@ -88,7 +91,7 @@ export default class ImageUploadUI extends Plugin {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 			allowMultipleFiles: true,
 			label: t( 'Upload from computer' ),
-			icon: IconImageUpload
+			icon: imageUploadIcon()
 		} );
 
 		view.bind( 'isEnabled' ).to( command );

@@ -9,10 +9,11 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconSuperscript } from 'ckeditor5/src/icons.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
 
-const SUPERSCRIPT = 'superscript';
+const superscriptIcon = /* #__PURE__ */ registerIcon( 'superscript', IconSuperscript );
 
 /**
  * The superscript UI feature. It introduces the Superscript button.
@@ -36,13 +37,14 @@ export default class SuperscriptUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const SUPERSCRIPT = 'superscript';
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: SUPERSCRIPT,
 			plugin: this,
-			icon: IconSuperscript,
+			icon: superscriptIcon(),
 			label: t( 'Superscript' )
 		} );
 

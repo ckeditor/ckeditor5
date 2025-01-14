@@ -7,21 +7,21 @@
  * @module ui/colorselector/colorgridsfragmentview
  */
 
+import { IconEraser, IconColorPalette } from '@ckeditor/ckeditor5-icons';
+import { registerIcon, type FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
 import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview.js';
 import ColorTileView from '../colorgrid/colortileview.js';
 import Template from '../template.js';
-
 import DocumentColorCollection from './documentcolorcollection.js';
-
 import type { Model } from '@ckeditor/ckeditor5-engine';
-import type { FocusTracker, Locale } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
 
-import { IconEraser, IconColorPalette } from '@ckeditor/ckeditor5-icons';
+const eraserIcon = /* #__PURE__ */ registerIcon( 'eraser', IconEraser );
+const colorPaletteIcon = /* #__PURE__ */ registerIcon( 'colorPalette', IconColorPalette );
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -337,7 +337,7 @@ export default class ColorGridsFragmentView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: IconColorPalette,
+			icon: colorPaletteIcon(),
 			class: 'ck-color-selector__color-picker'
 		} );
 
@@ -354,7 +354,7 @@ export default class ColorGridsFragmentView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: IconEraser,
+			icon: eraserIcon(),
 			label: this._removeButtonLabel
 		} );
 

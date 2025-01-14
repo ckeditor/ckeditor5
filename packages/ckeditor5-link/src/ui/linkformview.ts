@@ -22,11 +22,11 @@ import {
 import {
 	FocusTracker,
 	KeystrokeHandler,
+	registerIcon,
 	type Collection,
 	type Locale
 } from 'ckeditor5/src/utils.js';
 import { IconCancel, IconCheck } from 'ckeditor5/src/icons.js';
-
 import type LinkCommand from '../linkcommand.js';
 import type ManualDecorator from '../utils/manualdecorator.js';
 
@@ -34,6 +34,9 @@ import type ManualDecorator from '../utils/manualdecorator.js';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/linkform.css';
+
+const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
 
 /**
  * The link form view controller class.
@@ -109,9 +112,9 @@ export default class LinkFormView extends View {
 
 		this._validators = validators;
 		this.urlInputView = this._createUrlInput();
-		this.saveButtonView = this._createButton( t( 'Save' ), IconCheck, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon(), 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), IconCancel, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon(), 'ck-button-cancel', 'cancel' );
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
 		this.children = this._createFormChildren( linkCommand.manualDecorators );
 

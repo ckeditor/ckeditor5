@@ -10,6 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	logWarning,
+	registerIcon,
 	type Locale,
 	type Observable
 } from 'ckeditor5/src/utils.js';
@@ -27,9 +28,10 @@ import {
 	type View
 } from 'ckeditor5/src/ui.js';
 import { IconImage } from 'ckeditor5/src/icons.js';
-
-import ImageInsertFormView from './ui/imageinsertformview.js';
 import ImageUtils from '../imageutils.js';
+import ImageInsertFormView from './ui/imageinsertformview.js';
+
+const imageIcon = /* #__PURE__ */ registerIcon( 'image', IconImage );
 
 /**
  * The image insert dropdown plugin.
@@ -232,7 +234,7 @@ export default class ImageInsertUI extends Plugin {
 			resultView.panelView.children.add( listView );
 
 			resultView.buttonView.set( {
-				icon: IconImage,
+				icon: imageIcon(),
 				label: t( 'Image' )
 			} );
 

@@ -27,6 +27,7 @@ import {
 import {
 	env,
 	isForwardArrowKeyCode,
+	registerIcon,
 	type BaseEvent,
 	type Emitter,
 	type GetCallback,
@@ -69,11 +70,8 @@ import type Widget from '../widget.js';
 
 import '../../theme/widgettypearound.css';
 
+const returnArrowIcon = /* #__PURE__ */ registerIcon( 'returnArrow', IconReturnArrow );
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
-
-// Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
-const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( IconReturnArrow, 'image/svg+xml' ).firstChild!;
-
 const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
 
 /**
@@ -920,7 +918,10 @@ function injectButtons( wrapperDomElement: HTMLElement, buttonTitles: { before: 
 				'aria-hidden': 'true'
 			},
 			children: [
-				wrapperDomElement.ownerDocument.importNode( RETURN_ARROW_ICON_ELEMENT, true )
+				wrapperDomElement.ownerDocument.importNode(
+					new DOMParser().parseFromString( returnArrowIcon(), 'image/svg+xml' ).firstChild!,
+					true
+				)
 			]
 		} );
 

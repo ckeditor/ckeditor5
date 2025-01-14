@@ -7,12 +7,14 @@
  * @module ui/dropdown/menu/dropdownmenubuttonview
  */
 
+import { registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import IconView from '../../icon/iconview.js';
 import ListItemButtonView from '../../button/listitembuttonview.js';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../../theme/components/dropdown/menu/dropdownmenubutton.css';
+
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
 
 /**
  * Represents a view for a dropdown menu button.
@@ -72,7 +74,7 @@ export default class DropdownMenuButtonView extends ListItemButtonView {
 	private _createArrowView() {
 		const arrowView = new IconView();
 
-		arrowView.content = IconDropdownArrow;
+		arrowView.content = dropdownArrowIcon();
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-dropdown-menu-list__nested-menu__button__arrow'

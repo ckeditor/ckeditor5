@@ -7,7 +7,7 @@
  * @module image/imagestyle/utils
  */
 
-import { logWarning } from 'ckeditor5/src/utils.js';
+import { logWarning, registerIcon } from 'ckeditor5/src/utils.js';
 import {
 	IconObjectCenter,
 	IconObjectFullWidth,
@@ -19,6 +19,14 @@ import {
 } from 'ckeditor5/src/icons.js';
 import type { Editor, PluginCollection } from 'ckeditor5/src/core.js';
 import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
+
+const objectCenterIcon = /* #__PURE__ */ registerIcon( 'objectCenter', IconObjectCenter );
+const objectFullWidthIcon = /* #__PURE__ */ registerIcon( 'objectFullWidth', IconObjectFullWidth );
+const objectInlineIcon = /* #__PURE__ */ registerIcon( 'objectInline', IconObjectInline );
+const objectInlineLeftIcon = /* #__PURE__ */ registerIcon( 'objectInlineLeft', IconObjectInlineLeft );
+const objectInlineRightIcon = /* #__PURE__ */ registerIcon( 'objectInlineRight', IconObjectInlineRight );
+const objectLeftIcon = /* #__PURE__ */ registerIcon( 'objectLeft', IconObjectLeft );
+const objectRightIcon = /* #__PURE__ */ registerIcon( 'objectRight', IconObjectRight );
 
 /**
  * Default image style options provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
@@ -44,7 +52,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'inline',
 			title: 'In line',
-			icon: IconObjectInline,
+			icon: objectInlineIcon(),
 			modelElements: [ 'imageInline' ],
 			isDefault: true
 		};
@@ -55,7 +63,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignLeft',
 			title: 'Left aligned image',
-			icon: IconObjectInlineLeft,
+			icon: objectInlineLeftIcon(),
 			modelElements: [ 'imageBlock', 'imageInline' ],
 			className: 'image-style-align-left'
 		};
@@ -66,7 +74,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignBlockLeft',
 			title: 'Left aligned image',
-			icon: IconObjectLeft,
+			icon: objectLeftIcon(),
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-block-align-left'
 		};
@@ -77,7 +85,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignCenter',
 			title: 'Centered image',
-			icon: IconObjectCenter,
+			icon: objectCenterIcon(),
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-align-center'
 		};
@@ -88,7 +96,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignRight',
 			title: 'Right aligned image',
-			icon: IconObjectInlineRight,
+			icon: objectInlineRightIcon(),
 			modelElements: [ 'imageBlock', 'imageInline' ],
 			className: 'image-style-align-right'
 		};
@@ -99,7 +107,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignBlockRight',
 			title: 'Right aligned image',
-			icon: IconObjectRight,
+			icon: objectRightIcon(),
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-block-align-right'
 		};
@@ -110,7 +118,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'block',
 			title: 'Centered image',
-			icon: IconObjectCenter,
+			icon: objectCenterIcon(),
 			modelElements: [ 'imageBlock' ],
 			isDefault: true
 		};
@@ -121,7 +129,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'side',
 			title: 'Side image',
-			icon: IconObjectInlineRight,
+			icon: objectInlineRightIcon(),
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-side'
 		};
@@ -136,14 +144,14 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  */
-export const DEFAULT_ICONS: Record<string, string> = /* #__PURE__ */ ( () => ( {
-	full: IconObjectFullWidth,
-	left: IconObjectLeft,
-	right: IconObjectRight,
-	center: IconObjectCenter,
-	inlineLeft: IconObjectInlineLeft,
-	inlineRight: IconObjectInlineRight,
-	inline: IconObjectInline
+export const DEFAULT_ICONS: Record<string, () => string> = /* #__PURE__ */ ( () => ( {
+	full: objectFullWidthIcon,
+	left: objectLeftIcon,
+	right: objectRightIcon,
+	center: objectCenterIcon,
+	inlineLeft: objectInlineLeftIcon,
+	inlineRight: objectInlineRightIcon,
+	inline: objectInlineIcon
 } ) )();
 
 /**
@@ -271,7 +279,7 @@ function normalizeDefinition( definition: string | Partial<ImageStyleOptionDefin
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
 	if ( typeof definition.icon === 'string' ) {
-		definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
+		definition.icon = DEFAULT_ICONS[ definition.icon ] ? DEFAULT_ICONS[ definition.icon ]() : definition.icon;
 	}
 
 	return definition as ImageStyleOptionDefinition;

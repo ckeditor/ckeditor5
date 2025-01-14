@@ -7,12 +7,15 @@
  * @module ui/search/text/searchtextqueryview
  */
 import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
+import { registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../../button/buttonview.js';
 import IconView from '../../icon/iconview.js';
 import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '../../labeledfield/utils.js';
 import type InputBase from '../../input/inputbase.js';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+
+const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const loupeIcon = /* #__PURE__ */ registerIcon( 'loupe', IconLoupe );
 
 /**
  * A search input field for the {@link module:ui/search/text/searchtextview~SearchTextView} component.
@@ -56,7 +59,7 @@ export default class SearchTextQueryView<
 
 		if ( this._viewConfig.showIcon ) {
 			this.iconView = new IconView();
-			this.iconView.content = IconLoupe;
+			this.iconView.content = loupeIcon();
 			this.fieldWrapperChildren.add( this.iconView, 0 );
 
 			this.extendTemplate( {
@@ -70,7 +73,7 @@ export default class SearchTextQueryView<
 			this.resetButtonView = new ButtonView( locale );
 			this.resetButtonView.set( {
 				label: t( 'Clear' ),
-				icon: IconCancel,
+				icon: cancelIcon(),
 				class: 'ck-search__reset',
 				isVisible: false,
 				tooltip: true

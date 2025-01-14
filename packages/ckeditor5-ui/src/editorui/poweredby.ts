@@ -8,16 +8,15 @@
  */
 
 import { IconProjectLogo } from '@ckeditor/ckeditor5-icons';
-import { parseBase64EncodedObject, type Locale } from '@ckeditor/ckeditor5-utils';
-
+import { parseBase64EncodedObject, registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view.js';
 import Badge from '../badge/badge.js';
 import IconView from '../icon/iconview.js';
 import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 
-const DEFAULT_LABEL = 'Powered by';
-
 type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
+
+const projectLogoIcon = /* #__PURE__ */ registerIcon( 'projectLogo', IconProjectLogo );
 
 /**
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
@@ -68,6 +67,7 @@ export default class PoweredBy extends Badge {
 	 * It takes the user configuration into account and falls back to the default one.
 	 */
 	protected override _getNormalizedConfig(): Required<PoweredByConfig> {
+		const DEFAULT_LABEL = 'Powered by';
 		const badgeConfig = super._getNormalizedConfig();
 		const userConfig = this.editor.config.get( 'ui.poweredBy' ) || {};
 		const position = userConfig.position || badgeConfig.position;
@@ -101,7 +101,7 @@ class PoweredByView extends View<HTMLDivElement> {
 		const bind = this.bindTemplate;
 
 		iconView.set( {
-			content: IconProjectLogo,
+			content: projectLogoIcon(),
 			isColorInherited: false
 		} );
 

@@ -7,7 +7,7 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	type Button,
 	ButtonView,
@@ -19,18 +19,16 @@ import {
 	MenuBarMenuListView
 } from 'ckeditor5/src/ui.js';
 import { IconAlignCenter, IconAlignJustify, IconAlignLeft, IconAlignRight } from 'ckeditor5/src/icons.js';
-import type { Locale } from 'ckeditor5/src/utils.js';
+import { registerIcon, type Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
-const iconsMap = /* #__PURE__ */ ( () => new Map( [
-	[ 'left', IconAlignLeft ],
-	[ 'right', IconAlignRight ],
-	[ 'center', IconAlignCenter ],
-	[ 'justify', IconAlignJustify ]
-] ) )();
+const alignLeftIcon =/* #__PURE__ */ registerIcon( 'alignLeft', IconAlignLeft );
+const alignRightIcon = /* #__PURE__ */ registerIcon( 'alignRight', IconAlignRight );
+const alignCenterIcon = /* #__PURE__ */ registerIcon( 'alignCenter', IconAlignCenter );
+const alignJustifyIcon = /* #__PURE__ */ registerIcon( 'alignJustify', IconAlignJustify );
 
 /**
  * The default alignment UI plugin.
@@ -39,6 +37,19 @@ const iconsMap = /* #__PURE__ */ ( () => new Map( [
  * and the `'alignment'` dropdown.
  */
 export default class AlignmentUI extends Plugin {
+	private icons: Map<string, string>;
+
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.icons = new Map( [
+			[ 'left', alignLeftIcon() ],
+			[ 'right', alignRightIcon() ],
+			[ 'center', alignCenterIcon() ],
+			[ 'justify', alignJustifyIcon() ]
+		] );
+	}
+
 	/**
 	 * Returns the localized option titles provided by the plugin.
 	 *
@@ -122,7 +133,7 @@ export default class AlignmentUI extends Plugin {
 
 		buttonView.set( {
 			label: this.localizedOptionTitles[ option ],
-			icon: iconsMap.get( option ),
+			icon: this.icons.get( option ),
 			tooltip: true,
 			isToggleable: true,
 			...buttonAttrs
@@ -179,11 +190,11 @@ export default class AlignmentUI extends Plugin {
 			} );
 
 			// The default icon depends on the direction of the content.
-			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? iconsMap.get( 'right' ) : iconsMap.get( 'left' );
+			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? this.icons.get( 'right' ) : this.icons.get( 'left' );
 			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
 
 			// Change icon to reflect current selection's alignment.
-			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => iconsMap.get( value ) || defaultIcon );
+			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => this.icons.get( value ) || defaultIcon );
 
 			// Enable button if any of the buttons is enabled.
 			dropdownView.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -230,7 +241,7 @@ export default class AlignmentUI extends Plugin {
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.set( {
 					label: this.localizedOptionTitles[ option.name ],
-					icon: iconsMap.get( option.name ),
+					icon: this.icons.get( option.name ),
 					role: 'menuitemcheckbox',
 					isToggleable: true
 				} );

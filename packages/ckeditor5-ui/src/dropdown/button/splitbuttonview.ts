@@ -9,6 +9,7 @@
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import {
+	registerIcon,
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale
@@ -21,6 +22,8 @@ import type DropdownButton from './dropdownbutton.js';
 import type { FocusableView } from '../../focuscycler.js';
 
 import '../../../theme/components/dropdown/splitbutton.css';
+
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
 
 /**
  * The split button view class.
@@ -306,7 +309,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 		const arrowView = new ButtonView();
 		const bind = arrowView.bindTemplate;
 
-		arrowView.icon = IconDropdownArrow;
+		arrowView.icon = dropdownArrowIcon();
 
 		arrowView.extendTemplate( {
 			attributes: {

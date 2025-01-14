@@ -7,22 +7,28 @@
  * @module ui/colorselector/colorpickerfragmentview
  */
 
+import { IconCancel, IconCheck } from '@ckeditor/ckeditor5-icons';
+import {
+	registerIcon,
+	type FocusTracker,
+	type KeystrokeHandler,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
 import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
-import type ViewCollection from '../viewcollection.js';
-import type { FocusableView } from '../focuscycler.js';
-import type LabeledFieldView from '../labeledfield/labeledfieldview.js';
-import type InputTextView from '../inputtext/inputtextview.js';
 import {
 	default as ColorPickerView,
 	type ColorPickerColorSelectedEvent
 } from '../colorpicker/colorpickerview.js';
-
-import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
+import type ViewCollection from '../viewcollection.js';
+import type { FocusableView } from '../focuscycler.js';
+import type LabeledFieldView from '../labeledfield/labeledfieldview.js';
+import type InputTextView from '../inputtext/inputtextview.js';
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
-import { IconCancel, IconCheck } from '@ckeditor/ckeditor5-icons';
 
+const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
  *
@@ -290,7 +296,7 @@ export default class ColorPickerFragmentView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: IconCheck,
+			icon: checkIcon(),
 			class: 'ck-button-save',
 			type: 'button',
 			withText: false,
@@ -298,7 +304,7 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		cancelButtonView.set( {
-			icon: IconCancel,
+			icon: cancelIcon(),
 			class: 'ck-button-cancel',
 			type: 'button',
 			withText: false,

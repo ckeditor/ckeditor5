@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { IconEraser, IconMarker, IconPen } from 'ckeditor5/src/icons.js';
 import {
 	addToolbarToDropdown,
@@ -22,11 +23,14 @@ import {
 	ToolbarSeparatorView,
 	type DropdownView
 } from 'ckeditor5/src/ui.js';
-
 import type { HighlightOption } from './highlightconfig.js';
 import type HighlightCommand from './highlightcommand.js';
 
 import './../theme/highlight.css';
+
+const eraserIcon = /* #__PURE__ */ registerIcon( 'eraser', IconEraser );
+const markerIcon = /* #__PURE__ */ registerIcon( 'marker', IconMarker );
+const penIcon = /* #__PURE__ */ registerIcon( 'pen', IconPen );
 
 /**
  * The default highlight UI plugin. It introduces:
@@ -111,7 +115,7 @@ export default class HighlightUI extends Plugin {
 		const t = this.editor.t;
 		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), IconEraser, null, button => {
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), eraserIcon(), null, button => {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		} );
 	}
@@ -319,7 +323,7 @@ export default class HighlightUI extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Remove highlight' ),
-				icon: IconEraser
+				icon: eraserIcon()
 			} );
 
 			buttonView.delegate( 'execute' ).to( menuView );
@@ -352,8 +356,8 @@ function bindToolbarIconStyleToActiveColor( dropdownView: DropdownView ): void {
 /**
  * Returns icon for given highlighter type.
  */
-function getIconForType( type: 'marker' | 'pen' ) {
-	return type === 'marker' ? IconMarker : IconPen;
+function getIconForType( type: 'marker' | 'pen' ): string {
+	return type === 'marker' ? markerIcon() : penIcon();
 }
 
 type HighlightSplitButtonView = SplitButtonView & {

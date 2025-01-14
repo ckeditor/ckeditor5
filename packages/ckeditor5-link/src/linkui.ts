@@ -9,6 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconLink } from 'ckeditor5/src/icons.js';
+import { registerIcon, type PositionOptions } from 'ckeditor5/src/utils.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -24,19 +25,19 @@ import {
 	MenuBarMenuListItemButtonView,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
-import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
-
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
 import LinkActionsView from './ui/linkactionsview.js';
-import type LinkCommand from './linkcommand.js';
-import type UnlinkCommand from './unlinkcommand.js';
 import {
 	addLinkProtocolIfApplicable,
 	isLinkElement,
 	createBookmarkCallbacks,
 	LINK_KEYSTROKE
 } from './utils.js';
+import type LinkCommand from './linkcommand.js';
+import type UnlinkCommand from './unlinkcommand.js';
+
+const linkIcon = /* #__PURE__ */ registerIcon( 'link', IconLink );
 
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
@@ -300,7 +301,7 @@ export default class LinkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Link' ),
-			icon: IconLink,
+			icon: linkIcon(),
 			keystroke: LINK_KEYSTROKE,
 			isToggleable: true
 		} );

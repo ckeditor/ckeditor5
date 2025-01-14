@@ -9,7 +9,10 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconContentUnlock } from 'ckeditor5/src/icons.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+
+const contentUnlockIcon = /* #__PURE__ */ registerIcon( 'contentUnlock', IconContentUnlock );
 
 /**
  * The standard editing mode UI feature.
@@ -63,7 +66,7 @@ export default class StandardEditingModeUI extends Plugin {
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const t = locale.t;
 
-		view.icon = IconContentUnlock;
+		view.icon = contentUnlockIcon();
 
 		view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 		view.bind( 'label' ).to( command, 'value', value => {

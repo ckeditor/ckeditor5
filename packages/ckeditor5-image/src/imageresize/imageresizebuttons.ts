@@ -7,7 +7,6 @@
  * @module image/imageresize/imageresizebuttons
  */
 import { map } from 'lodash-es';
-
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
@@ -17,7 +16,7 @@ import {
 	addListToDropdown,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
-import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
+import { CKEditorError, Collection, registerIcon, type Locale } from 'ckeditor5/src/utils.js';
 import {
 	IconObjectSizeCustom,
 	IconObjectSizeFull,
@@ -25,19 +24,15 @@ import {
 	IconObjectSizeMedium,
 	IconObjectSizeSmall
 } from 'ckeditor5/src/icons.js';
-
 import ImageResizeEditing from './imageresizeediting.js';
-
 import type ResizeImageCommand from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
 
-const RESIZE_ICONS = /* #__PURE__ */ ( () => ( {
-	small: IconObjectSizeSmall,
-	medium: IconObjectSizeMedium,
-	large: IconObjectSizeLarge,
-	custom: IconObjectSizeCustom,
-	original: IconObjectSizeFull
-} ) )();
+const objectSizeCustomIcon = /* #__PURE__ */ registerIcon( 'objectSizeCustom', IconObjectSizeCustom );
+const objectSizeFullIcon = /* #__PURE__ */ registerIcon( 'objectSizeFull', IconObjectSizeFull );
+const objectSizeLargeIcon = /* #__PURE__ */ registerIcon( 'objectSizeLarge', IconObjectSizeLarge );
+const objectSizeMediumIcon = /* #__PURE__ */ registerIcon( 'objectSizeMedium', IconObjectSizeMedium );
+const objectSizeSmallIcon = /* #__PURE__ */ registerIcon( 'objectSizeSmall', IconObjectSizeSmall );
 
 /**
  * The image resize buttons plugin.
@@ -45,6 +40,8 @@ const RESIZE_ICONS = /* #__PURE__ */ ( () => ( {
  * It adds a possibility to resize images using the toolbar dropdown or individual buttons, depending on the plugin configuration.
  */
 export default class ImageResizeButtons extends Plugin {
+	private icons: Record<string, string>;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -77,6 +74,14 @@ export default class ImageResizeButtons extends Plugin {
 	 */
 	constructor( editor: Editor ) {
 		super( editor );
+
+		this.icons = {
+			custom: objectSizeCustomIcon(),
+			original: objectSizeFullIcon(),
+			large: objectSizeLargeIcon(),
+			medium: objectSizeMediumIcon(),
+			small: objectSizeSmallIcon()
+		};
 
 		this._resizeUnit = editor.config.get( 'image.resizeUnit' )!;
 	}
@@ -112,7 +117,7 @@ export default class ImageResizeButtons extends Plugin {
 			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const labelText = this._getOptionLabelValue( option, true );
 
-			if ( !RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ] ) {
+			if ( !this.icons[ icon as keyof typeof this.icons ] ) {
 				/**
 				 * When configuring {@link module:image/imageconfig~ImageConfig#resizeOptions `config.image.resizeOptions`} for standalone
 				 * buttons, a valid `icon` token must be set for each option.
@@ -133,7 +138,7 @@ export default class ImageResizeButtons extends Plugin {
 			button.set( {
 				// Use the `label` property for a verbose description (because of ARIA).
 				label: labelText,
-				icon: RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ],
+				icon: this.icons[ icon as keyof typeof this.icons ],
 				tooltip: labelText,
 				isToggleable: true
 			} );
@@ -181,7 +186,7 @@ export default class ImageResizeButtons extends Plugin {
 			dropdownButton.set( {
 				tooltip: accessibleLabel,
 				commandValue: originalSizeOption.value,
-				icon: RESIZE_ICONS.medium,
+				icon: this.icons.medium,
 				isToggleable: true,
 				label: this._getOptionLabelValue( originalSizeOption ),
 				withText: true,

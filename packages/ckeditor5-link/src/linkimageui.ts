@@ -10,19 +10,15 @@
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconLink } from 'ckeditor5/src/icons.js';
-import type {
-	DocumentSelection,
-	Selection,
-	ViewDocumentClickEvent
-} from 'ckeditor5/src/engine.js';
-
-import type { ImageUtils } from '@ckeditor/ckeditor5-image';
-
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import LinkUI from './linkui.js';
 import LinkEditing from './linkediting.js';
+import { LINK_KEYSTROKE } from './utils.js';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
+import type { DocumentSelection, Selection, ViewDocumentClickEvent } from 'ckeditor5/src/engine.js';
 import type LinkCommand from './linkcommand.js';
 
-import { LINK_KEYSTROKE } from './utils.js';
+const linkIcon = /* #__PURE__ */ registerIcon( 'link', IconLink );
 
 /**
  * The link image UI plugin.
@@ -92,7 +88,7 @@ export default class LinkImageUI extends Plugin {
 			button.set( {
 				isEnabled: true,
 				label: t( 'Link image' ),
-				icon: IconLink,
+				icon: linkIcon(),
 				keystroke: LINK_KEYSTROKE,
 				tooltip: true,
 				isToggleable: true

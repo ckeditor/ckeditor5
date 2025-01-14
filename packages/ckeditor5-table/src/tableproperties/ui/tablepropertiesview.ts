@@ -26,7 +26,13 @@ import {
 	type ColorPickerConfig,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
+import {
+	registerIcon,
+	FocusTracker,
+	KeystrokeHandler,
+	type ObservableChangeEvent,
+	type Locale
+} from 'ckeditor5/src/utils.js';
 import {
 	IconCancel,
 	IconCheck,
@@ -34,7 +40,6 @@ import {
 	IconObjectInlineLeft,
 	IconObjectInlineRight
 } from 'ckeditor5/src/icons.js';
-
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
@@ -42,12 +47,18 @@ import {
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
 import FormRowView from '../../ui/formrowview.js';
+import type ColorInputView from '../../ui/colorinputview.js';
+import type { TablePropertiesOptions } from '../../tableconfig.js';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
-import type ColorInputView from '../../ui/colorinputview.js';
-import type { TablePropertiesOptions } from '../../tableconfig.js';
+
+const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
+const objectCenterIcon = /* #__PURE__ */ registerIcon( 'objectCenter', IconObjectCenter );
+const objectInlineLeftIcon = /* #__PURE__ */ registerIcon( 'objectInlineLeft', IconObjectInlineLeft );
+const objectInlineRightIcon = /* #__PURE__ */ registerIcon( 'objectInlineRight', IconObjectInlineRight );
 
 /**
  * Additional configuration of the view.
@@ -652,9 +663,9 @@ export default class TablePropertiesView extends View {
 		fillToolbar( {
 			view: this,
 			icons: {
-				left: IconObjectInlineLeft,
-				center: IconObjectCenter,
-				right: IconObjectInlineRight
+				left: objectInlineLeftIcon(),
+				center: objectCenterIcon(),
+				right: objectInlineRightIcon()
 			},
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
@@ -693,7 +704,7 @@ export default class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: IconCheck,
+			icon: checkIcon(),
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -705,7 +716,7 @@ export default class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: IconCancel,
+			icon: cancelIcon(),
 			class: 'ck-button-cancel',
 			withText: true
 		} );

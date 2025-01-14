@@ -9,9 +9,12 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconHtml } from 'ckeditor5/src/icons.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { RawHtmlApi } from './htmlembedediting.js';
 import type HtmlEmbedCommand from './htmlembedcommand.js';
+
+const htmlIcon = /* #__PURE__ */ registerIcon( 'html', IconHtml );
 
 /**
  * The HTML embed UI plugin.
@@ -71,7 +74,7 @@ export default class HtmlEmbedUI extends Plugin {
 		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
 
 		view.set( {
-			icon: IconHtml
+			icon: htmlIcon()
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

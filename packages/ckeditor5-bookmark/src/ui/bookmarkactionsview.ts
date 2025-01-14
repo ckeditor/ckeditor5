@@ -17,6 +17,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import {
+	registerIcon,
 	FocusTracker,
 	KeystrokeHandler,
 	type LocaleTranslate,
@@ -27,6 +28,9 @@ import { IconPencil, IconRemove } from 'ckeditor5/src/icons.js';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/bookmarkactions.css';
+
+const pencilIcon = /* #__PURE__ */ registerIcon( 'pencil', IconPencil );
+const removeIcon = /* #__PURE__ */ registerIcon( 'remove', IconRemove );
 
 /**
  * The bookmark actions view class. This view displays the bookmark preview, allows
@@ -86,8 +90,8 @@ export default class BookmarkActionsView extends View {
 		const t = locale.t;
 
 		this.bookmarkPreviewView = this._createBookmarkPreviewView();
-		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), IconRemove, 'remove', this.bookmarkPreviewView );
-		this.editButtonView = this._createButton( t( 'Edit bookmark' ), IconPencil, 'edit', this.bookmarkPreviewView );
+		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), removeIcon(), 'remove', this.bookmarkPreviewView );
+		this.editButtonView = this._createButton( t( 'Edit bookmark' ), pencilIcon(), 'edit', this.bookmarkPreviewView );
 
 		this.set( 'id', undefined );
 

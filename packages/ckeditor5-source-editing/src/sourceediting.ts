@@ -12,10 +12,12 @@
 import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
 import { IconSourceEditing } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
-import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
+import { CKEditorError, createElement, ElementReplacer, registerIcon } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
+
+const sourceEditingIcon = /* #__PURE__ */ registerIcon( 'sourceEditing', IconSourceEditing );
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
@@ -99,7 +101,7 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Source' ),
-				icon: IconSourceEditing,
+				icon: sourceEditingIcon(),
 				tooltip: true,
 				class: 'ck-source-editing-button'
 			} );

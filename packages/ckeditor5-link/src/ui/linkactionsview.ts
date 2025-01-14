@@ -9,16 +9,17 @@
 
 import { IconUnlink, IconPencil } from 'ckeditor5/src/icons.js';
 import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
-
+import { FocusTracker, KeystrokeHandler, registerIcon, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
 import { ensureSafeUrl, openLink } from '../utils.js';
+import type { LinkConfig } from '../linkconfig.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/linkactions.css';
 
-import type { LinkConfig } from '../linkconfig.js';
+const unlinkIcon = /* #__PURE__ */ registerIcon( 'unlink', IconUnlink );
+const pencilIcon = /* #__PURE__ */ registerIcon( 'pencil', IconPencil );
 
 /**
  * The link actions view class. This view displays the link preview, allows
@@ -83,8 +84,8 @@ export default class LinkActionsView extends View {
 
 		this._options = options;
 		this.previewButtonView = this._createPreviewButton();
-		this.unlinkButtonView = this._createButton( t( 'Unlink' ), IconUnlink, 'unlink' );
-		this.editButtonView = this._createButton( t( 'Edit link' ), IconPencil, 'edit' );
+		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon(), 'unlink' );
+		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon(), 'edit' );
 
 		this.set( 'href', undefined );
 

@@ -7,19 +7,7 @@
  * @module ui/toolbar/toolbarview
  */
 
-import View from '../view.js';
-import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
-import ToolbarSeparatorView from './toolbarseparatorview.js';
-import ToolbarLineBreakView from './toolbarlinebreakview.js';
-import preventDefault from '../bindings/preventdefault.js';
-import { createDropdown, addToolbarToDropdown } from '../dropdown/utils.js';
-import normalizeToolbarConfig from './normalizetoolbarconfig.js';
-
-import type ComponentFactory from '../componentfactory.js';
-import type ViewCollection from '../viewcollection.js';
-import type DropdownView from '../dropdown/dropdownview.js';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
-
+import { isObject } from 'lodash-es';
 import {
 	FocusTracker,
 	KeystrokeHandler,
@@ -28,6 +16,7 @@ import {
 	global,
 	isVisible,
 	logWarning,
+	registerIcon,
 	type CollectionAddEvent,
 	type CollectionChangeEvent,
 	type CollectionRemoveEvent,
@@ -46,21 +35,40 @@ import {
 	IconDragIndicator
 } from '@ckeditor/ckeditor5-icons';
 import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
-
-import { isObject } from 'lodash-es';
+import View from '../view.js';
+import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
+import ToolbarSeparatorView from './toolbarseparatorview.js';
+import ToolbarLineBreakView from './toolbarlinebreakview.js';
+import preventDefault from '../bindings/preventdefault.js';
+import { createDropdown, addToolbarToDropdown } from '../dropdown/utils.js';
+import normalizeToolbarConfig from './normalizetoolbarconfig.js';
+import type ComponentFactory from '../componentfactory.js';
+import type ViewCollection from '../viewcollection.js';
+import type DropdownView from '../dropdown/dropdownview.js';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
 
 import '../../theme/components/toolbar/toolbar.css';
 
-export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
-	alignLeft: IconAlignLeft,
-	bold: IconBold,
-	importExport: IconImportExport,
-	paragraph: IconParagraph,
-	plus: IconPlus,
-	text: IconText,
-	threeVerticalDots: IconThreeVerticalDots,
-	pilcrow: IconPilcrow,
-	dragIndicator: IconDragIndicator
+const alignLeftIcon = /* #__PURE__ */ registerIcon( 'alignLeft', IconAlignLeft );
+const boldIcon = /* #__PURE__ */ registerIcon( 'bold', IconBold );
+const importExportIcon = /* #__PURE__ */ registerIcon( 'importExport', IconImportExport );
+const paragraphIcon = /* #__PURE__ */ registerIcon( 'paragraph', IconParagraph );
+const plusIcon = /* #__PURE__ */ registerIcon( 'plus', IconPlus );
+const textIcon = /* #__PURE__ */ registerIcon( 'text', IconText );
+const threeVerticalDotsIcon = /* #__PURE__ */ registerIcon( 'threeVerticalDots', IconThreeVerticalDots );
+const pilcrowIcon = /* #__PURE__ */ registerIcon( 'pilcrow', IconPilcrow );
+const dragIndicatorIcon = /* #__PURE__ */ registerIcon( 'dragIndicator', IconDragIndicator );
+
+export const NESTED_TOOLBAR_ICONS: Record<string, () => string> = /* #__PURE__ */ ( () => ( {
+	alignLeft: alignLeftIcon,
+	bold: boldIcon,
+	importExport: importExportIcon,
+	paragraph: paragraphIcon,
+	plus: plusIcon,
+	text: textIcon,
+	threeVerticalDots: threeVerticalDotsIcon,
+	pilcrow: pilcrowIcon,
+	dragIndicator: dragIndicatorIcon
 } ) )();
 
 /**
@@ -546,7 +554,9 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] ?
+				NESTED_TOOLBAR_ICONS[ icon! ]() :
+				icon || IconThreeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {

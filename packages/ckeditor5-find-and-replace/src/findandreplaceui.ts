@@ -9,6 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconFindReplace } from 'ckeditor5/src/icons.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import {
 	ButtonView,
 	MenuBarMenuListItemButtonView,
@@ -26,6 +27,8 @@ import type FindNextCommand from './findnextcommand.js';
 import type FindPreviousCommand from './findpreviouscommand.js';
 import type ReplaceCommand from './replacecommand.js';
 import type ReplaceAllCommand from './replaceallcommand.js';
+
+const findReplaceIcon = /* #__PURE__ */ registerIcon( 'findReplace', IconFindReplace );
 
 /**
  * The default find and replace UI.
@@ -176,7 +179,7 @@ export default class FindAndReplaceUI extends Plugin {
 		}, { priority: 'low' } );
 
 		dropdownView.buttonView.set( {
-			icon: IconFindReplace,
+			icon: findReplaceIcon(),
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F',
 			tooltip: true
@@ -257,7 +260,7 @@ export default class FindAndReplaceUI extends Plugin {
 		buttonView.bind( 'isEnabled' ).to( findCommand );
 
 		buttonView.set( {
-			icon: IconFindReplace,
+			icon: findReplaceIcon(),
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F'
 		} );

@@ -277,7 +277,9 @@ export default class BlockToolbar extends Plugin {
 		const buttonView = new BlockButtonView( editor.locale );
 		const iconFromConfig = this._blockToolbarConfig.icon;
 
-		const icon = NESTED_TOOLBAR_ICONS[ iconFromConfig! ] || iconFromConfig || NESTED_TOOLBAR_ICONS.dragIndicator;
+		const icon: string = NESTED_TOOLBAR_ICONS[ iconFromConfig! ] ?
+			NESTED_TOOLBAR_ICONS[ iconFromConfig! ]() :
+			iconFromConfig || NESTED_TOOLBAR_ICONS.dragIndicator();
 
 		buttonView.set( {
 			label: t( 'Edit block' ),

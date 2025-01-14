@@ -7,7 +7,7 @@
  * @module core/editor/editorconfig
  */
 
-import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
+import type { ArrayOrItem, Icons, Translations } from '@ckeditor/ckeditor5-utils';
 import type Context from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import type Editor from './editor.js';
@@ -823,6 +823,11 @@ export interface EditorConfig {
 	 * Translations to be used in the editor.
 	 */
 	translations?: ArrayOrItem<Translations>;
+
+	/**
+	 * Custom icons to be used in the editor instead of the defaults.
+	 */
+	icons?: Icons;
 
 	/**
 	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies

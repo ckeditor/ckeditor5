@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { Collection } from 'ckeditor5/src/utils.js';
+import { registerIcon, Collection } from 'ckeditor5/src/utils.js';
 import {
 	ViewModel,
 	SplitButtonView,
@@ -21,13 +21,13 @@ import {
 	type ListDropdownButtonDefinition
 } from 'ckeditor5/src/ui.js';
 import { IconCodeBlock } from 'ckeditor5/src/icons.js';
-
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
-
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import type CodeBlockCommand from './codeblockcommand.js';
 
 import '../theme/codeblock.css';
+
+const codeBlockIcon = /* #__PURE__ */ registerIcon( 'codeBlock', IconCodeBlock );
 
 /**
  * The code block UI plugin.
@@ -68,7 +68,7 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.set( {
 				label: accessibleLabel,
 				tooltip: true,
-				icon: IconCodeBlock,
+				icon: codeBlockIcon(),
 				isToggleable: true
 			} );
 

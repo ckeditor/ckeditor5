@@ -7,29 +7,31 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import BalloonPanelView from './balloonpanelview.js';
-import View from '../../view.js';
-import ButtonView from '../../button/buttonview.js';
-import type { ButtonExecuteEvent } from '../../button/button.js';
-import type ViewCollection from '../../viewcollection.js';
-
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	FocusTracker,
 	Rect,
 	toUnit,
+	registerIcon,
 	type Locale,
 	type ObservableChangeEvent,
 	type PositionOptions,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
+import BalloonPanelView from './balloonpanelview.js';
+import View from '../../view.js';
+import ButtonView from '../../button/buttonview.js';
+import type { ButtonExecuteEvent } from '../../button/button.js';
+import type ViewCollection from '../../viewcollection.js';
 
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
+const nextArrowIcon = /* #__PURE__ */ registerIcon( 'nextArrow', IconNextArrow );
+const previousArrowIcon = /* #__PURE__ */ registerIcon( 'previousArrow', IconPreviousArrow );
 
 /**
  * Provides the common contextual balloon for the editor.
@@ -640,8 +642,8 @@ export class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		this.focusTracker = new FocusTracker();
-		this.buttonPrevView = this._createButtonView( t( 'Previous' ), IconPreviousArrow );
-		this.buttonNextView = this._createButtonView( t( 'Next' ), IconNextArrow );
+		this.buttonPrevView = this._createButtonView( t( 'Previous' ), previousArrowIcon() );
+		this.buttonNextView = this._createButtonView( t( 'Next' ), nextArrowIcon() );
 		this.content = this.createCollection();
 
 		this.setTemplate( {

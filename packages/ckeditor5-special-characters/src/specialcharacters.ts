@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
-import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
+import { CKEditorError, registerIcon, type Locale } from 'ckeditor5/src/utils.js';
 import CharacterGridView, {
 	type CharacterGridViewExecuteEvent,
 	type CharacterGridViewTileFocusEvent,
@@ -19,9 +19,11 @@ import CharacterGridView, {
 } from './ui/charactergridview.js';
 import CharacterInfoView from './ui/characterinfoview.js';
 import SpecialCharactersView from './ui/specialcharactersview.js';
+import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesview.js';
 
 import '../theme/specialcharacters.css';
-import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesview.js';
+
+const specialCharactersIcon = /* #__PURE__ */ registerIcon( 'specialCharacters', IconSpecialCharacters );
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
 
@@ -265,7 +267,7 @@ export default class SpecialCharacters extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Special characters' ),
-			icon: IconSpecialCharacters,
+			icon: specialCharactersIcon(),
 			isToggleable: true
 		} );
 

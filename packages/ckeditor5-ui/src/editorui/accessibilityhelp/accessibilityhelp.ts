@@ -9,16 +9,18 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconAccessibility } from '@ckeditor/ckeditor5-icons';
+import { getEnvKeystrokeText, registerIcon } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../../button/buttonview.js';
 import Dialog from '../../dialog/dialog.js';
 import MenuBarMenuListItemButtonView from '../../menubar/menubarmenulistitembuttonview.js';
 import AccessibilityHelpContentView from './accessibilityhelpcontentview.js';
-import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
 import type { EditorUIReadyEvent } from '../../editorui/editorui.js';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
 import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
 import '../../../theme/components/editorui/accessibilityhelp.css';
+
+const accessibilityIcon = /* #__PURE__ */ registerIcon( 'accessibility', IconAccessibility );
 
 /**
  * A plugin that brings the accessibility help dialog to the editor available under the <kbd>Alt</kbd>+<kbd>0</kbd>
@@ -102,7 +104,7 @@ export default class AccessibilityHelp extends Plugin {
 
 		view.set( {
 			keystroke: 'Alt+0',
-			icon: IconAccessibility,
+			icon: accessibilityIcon(),
 			isToggleable: true
 		} );
 
@@ -164,7 +166,7 @@ export default class AccessibilityHelp extends Plugin {
 				id: 'accessibilityHelp',
 				className: 'ck-accessibility-help-dialog',
 				title: t( 'Accessibility help' ),
-				icon: IconAccessibility,
+				icon: accessibilityIcon(),
 				hasCloseButton: true,
 				content: this.contentView
 			} );

@@ -19,14 +19,15 @@ import {
 	MenuBarMenuListItemView,
 	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
-import { Collection } from 'ckeditor5/src/utils.js';
-
+import { Collection, registerIcon } from 'ckeditor5/src/utils.js';
 import { normalizeOptions } from './utils.js';
 import { FONT_SIZE } from '../utils.js';
-
-import '../../theme/fontsize.css';
 import type { FontSizeOption } from '../fontconfig.js';
 import type FontSizeCommand from './fontsizecommand.js';
+
+import '../../theme/fontsize.css';
+
+const fontSizeIcon = /* #__PURE__ */ registerIcon( 'fontSize', IconFontSize );
 
 /**
  * The font size UI plugin. It introduces the `'fontSize'` dropdown.
@@ -72,7 +73,7 @@ export default class FontSizeUI extends Plugin {
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
 				label: accessibleLabel,
-				icon: IconFontSize,
+				icon: fontSizeIcon(),
 				tooltip: true
 			} );
 
@@ -100,7 +101,7 @@ export default class FontSizeUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: accessibleLabel,
-				icon: IconFontSize
+				icon: fontSizeIcon()
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

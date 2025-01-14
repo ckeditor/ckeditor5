@@ -7,10 +7,13 @@
  * @module font/fontcolor/fontcolorui
  */
 
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { IconFontColor } from 'ckeditor5/src/icons.js';
 import ColorUI from '../ui/colorui.js';
 import { FONT_COLOR } from '../utils.js';
 import type { Editor } from 'ckeditor5/src/core.js';
+
+const fontColorIcon = /* #__PURE__ */ registerIcon( 'fontColor', IconFontColor );
 
 /**
  * The font color UI plugin. It introduces the `'fontColor'` dropdown.
@@ -25,7 +28,7 @@ export default class FontColorUI extends ColorUI {
 		super( editor, {
 			commandName: FONT_COLOR,
 			componentName: FONT_COLOR,
-			icon: IconFontColor,
+			icon: fontColorIcon(),
 			dropdownLabel: t( 'Font Color' )
 		} );
 	}

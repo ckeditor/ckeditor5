@@ -7,22 +7,20 @@
  * @module heading/headingbuttonsui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { IconHeading1, IconHeading2, IconHeading3, IconHeading4, IconHeading5, IconHeading6 } from 'ckeditor5/src/icons.js';
-
 import { getLocalizedOptions } from './utils.js';
 import type { HeadingOption } from './headingconfig.js';
 import type HeadingCommand from './headingcommand.js';
 
-const defaultIcons: Record<string, string> = /* #__PURE__ */ ( () => ( {
-	heading1: IconHeading1,
-	heading2: IconHeading2,
-	heading3: IconHeading3,
-	heading4: IconHeading4,
-	heading5: IconHeading5,
-	heading6: IconHeading6
-} ) )();
+const heading1Icon = /* #__PURE__ */ registerIcon( 'heading1', IconHeading1 );
+const heading2Icon = /* #__PURE__ */ registerIcon( 'heading2', IconHeading2 );
+const heading3Icon = /* #__PURE__ */ registerIcon( 'heading3', IconHeading3 );
+const heading4Icon = /* #__PURE__ */ registerIcon( 'heading4', IconHeading4 );
+const heading5Icon = /* #__PURE__ */ registerIcon( 'heading5', IconHeading5 );
+const heading6Icon = /* #__PURE__ */ registerIcon( 'heading6', IconHeading6 );
 
 /**
  * The `HeadingButtonsUI` plugin defines a set of UI buttons that can be used instead of the
@@ -58,6 +56,21 @@ const defaultIcons: Record<string, string> = /* #__PURE__ */ ( () => ( {
  * For the default configuration standard icons are used.
  */
 export default class HeadingButtonsUI extends Plugin {
+	private icons: Record<string, string>;
+
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.icons = {
+			heading1: heading1Icon(),
+			heading2: heading2Icon(),
+			heading3: heading3Icon(),
+			heading4: heading4Icon(),
+			heading5: heading5Icon(),
+			heading6: heading6Icon()
+		};
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -80,7 +93,7 @@ export default class HeadingButtonsUI extends Plugin {
 			const command: HeadingCommand = editor.commands.get( 'heading' )!;
 
 			view.label = option.title;
-			view.icon = option.icon || defaultIcons[ option.model ];
+			view.icon = option.icon || this.icons[ option.model ];
 			view.tooltip = true;
 			view.isToggleable = true;
 			view.bind( 'isEnabled' ).to( command );

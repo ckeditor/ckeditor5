@@ -9,13 +9,12 @@
 
 import { IconView, Template } from 'ckeditor5/src/ui.js';
 import { IconMediaPlaceholder } from 'ckeditor5/src/icons.js';
-import { logWarning, toArray, type Locale } from 'ckeditor5/src/utils.js';
-
+import { logWarning, toArray, registerIcon, type Locale } from 'ckeditor5/src/utils.js';
 import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembedconfig.js';
 import type { MediaOptions } from './utils.js';
 
-const mediaPlaceholderIconViewBox = '0 0 64 42';
+const mediaPlaceholderIcon = /* #__PURE__ */ registerIcon( 'mediaPlaceholder', IconMediaPlaceholder );
 
 /**
  * A bridge between the raw media content provider definitions and the editor view content.
@@ -255,10 +254,11 @@ class Media {
 	 * Returns the placeholder HTML when the media has no content preview.
 	 */
 	private _getPlaceholderHtml(): string {
+		const mediaPlaceholderIconViewBox = '0 0 64 42';
 		const icon = new IconView();
 		const t = this._locale.t;
 
-		icon.content = IconMediaPlaceholder;
+		icon.content = mediaPlaceholderIcon();
 		icon.viewBox = mediaPlaceholderIconViewBox;
 
 		const placeholder = new Template( {

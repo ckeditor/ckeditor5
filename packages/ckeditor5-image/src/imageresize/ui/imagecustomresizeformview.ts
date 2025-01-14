@@ -18,8 +18,7 @@ import {
 	type FocusableView,
 	type InputNumberView
 } from 'ckeditor5/src/ui.js';
-
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { FocusTracker, KeystrokeHandler, registerIcon, type Locale } from 'ckeditor5/src/utils.js';
 import { IconCancel, IconCheck } from 'ckeditor5/src/icons.js';
 
 import '../../../theme/imagecustomresizeform.css';
@@ -27,6 +26,9 @@ import '../../../theme/imagecustomresizeform.css';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+
+const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
 
 /**
  * The ImageCustomResizeFormView class.
@@ -90,10 +92,10 @@ export default class ImageCustomResizeFormView extends View {
 
 		this.labeledInput = this._createLabeledInputView();
 
-		this.saveButtonView = this._createButton( t( 'Save' ), IconCheck, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon(), 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), IconCancel, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon(), 'ck-button-cancel', 'cancel' );
 
 		this._focusables = new ViewCollection();
 		this._validators = validators;

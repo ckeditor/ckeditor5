@@ -19,6 +19,7 @@ import {
 	toArray,
 	uid,
 	crc32,
+	registerIcon,
 	type Locale,
 	type LocaleTranslate,
 	type ObservableChangeEvent,
@@ -320,8 +321,9 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		const { translations: defaultTranslations, ...defaultConfig } = constructor.defaultConfig || {};
 		const { translations = defaultTranslations, ...rest } = config;
 
-		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
+		// Prefer values passed to the constructor instead of the `defaultConfig`, if both are set.
 		const language = config.language || defaultConfig.language;
+		const icons = config.icons || defaultConfig.icons;
 
 		this._context = config.context || new Context( { language, translations } );
 		this._context._addEditor( this, !config.context );
@@ -340,6 +342,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		this.locale = this._context.locale;
 		this.t = this.locale.t;
+
+		if ( icons ) {
+			for ( const [ name, value ] of Object.entries( icons ) ) {
+				registerIcon( name, value, true );
+			}
+		}
 
 		this._readOnlyLocks = new Set();
 

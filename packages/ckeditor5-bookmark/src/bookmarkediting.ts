@@ -11,8 +11,7 @@ import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
 import { IconBookmarkInline } from 'ckeditor5/src/icons.js';
-import type { EventInfo } from 'ckeditor5/src/utils.js';
-
+import { registerIcon, type EventInfo } from 'ckeditor5/src/utils.js';
 import type {
 	ViewUIElement,
 	DowncastWriter,
@@ -23,11 +22,12 @@ import type {
 	UpcastConversionData,
 	UpcastConversionApi
 } from 'ckeditor5/src/engine.js';
-
 import InsertBookmarkCommand from './insertbookmarkcommand.js';
 import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
 import '../theme/bookmark.css';
+
+const bookmarkInlineIcon = /* #__PURE__ */ registerIcon( 'bookmarkInline', IconBookmarkInline );
 
 /**
  * The bookmark editing plugin.
@@ -161,7 +161,7 @@ export default class BookmarkEditing extends Plugin {
 			const icon = new IconView();
 
 			icon.set( {
-				content: IconBookmarkInline,
+				content: bookmarkInlineIcon(),
 				isColorInherited: false
 			} );
 

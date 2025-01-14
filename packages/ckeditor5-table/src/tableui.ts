@@ -9,22 +9,25 @@
 
 import { Plugin, type Command, type Editor } from 'ckeditor5/src/core.js';
 import { IconTable, IconTableColumn, IconTableRow, IconTableMergeCell } from 'ckeditor5/src/icons.js';
+import { registerIcon, Collection, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
 import {
 	addListToDropdown,
 	createDropdown,
 	ViewModel,
 	SplitButtonView,
 	SwitchButtonView,
+	MenuBarMenuView,
 	type DropdownView,
-	type ListDropdownItemDefinition,
-	MenuBarMenuView
+	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
-import { Collection, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
-
 import InsertTableView from './ui/inserttableview.js';
-
 import type InsertTableCommand from './commands/inserttablecommand.js';
 import type MergeCellsCommand from './commands/mergecellscommand.js';
+
+const tableIcon = /* #__PURE__ */ registerIcon( 'table', IconTable );
+const tableColumnIcon = /* #__PURE__ */ registerIcon( 'tableColumn', IconTableColumn );
+const tableRowIcon = /* #__PURE__ */ registerIcon( 'tableRow', IconTableRow );
+const tableMergeCellIcon = /* #__PURE__ */ registerIcon( 'tableMergeCell', IconTableMergeCell );
 
 /**
  * The table UI plugin. It introduces:
@@ -69,7 +72,7 @@ export default class TableUI extends Plugin {
 
 			// Decorate dropdown's button.
 			dropdownView.buttonView.set( {
-				icon: IconTable,
+				icon: tableIcon(),
 				label: t( 'Insert table' ),
 				tooltip: true
 			} );
@@ -116,7 +119,7 @@ export default class TableUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: t( 'Table' ),
-				icon: IconTable
+				icon: tableIcon()
 			} );
 
 			menuView.panelView.children.add( insertTableView );
@@ -167,7 +170,7 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
-			return this._prepareDropdown( t( 'Column' ), IconTableColumn, options, locale );
+			return this._prepareDropdown( t( 'Column' ), tableColumnIcon(), options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
@@ -211,7 +214,7 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
-			return this._prepareDropdown( t( 'Row' ), IconTableRow, options, locale );
+			return this._prepareDropdown( t( 'Row' ), tableRowIcon(), options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
@@ -261,7 +264,7 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
-			return this._prepareMergeSplitButtonDropdown( t( 'Merge cells' ), IconTableMergeCell, options, locale );
+			return this._prepareMergeSplitButtonDropdown( t( 'Merge cells' ), tableMergeCellIcon(), options, locale );
 		} );
 	}
 

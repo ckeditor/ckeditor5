@@ -9,9 +9,12 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconShowBlocks } from 'ckeditor5/src/icons.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import '../theme/showblocks.css';
+
+const showBlocksIcon = /* #__PURE__ */ registerIcon( 'showBlocks', IconShowBlocks );
 
 /**
  * The UI plugin of the show blocks feature.
@@ -45,7 +48,7 @@ export default class ShowBlocksUI extends Plugin {
 
 			buttonView.set( {
 				tooltip: true,
-				icon: IconShowBlocks
+				icon: showBlocksIcon()
 			} );
 
 			return buttonView;

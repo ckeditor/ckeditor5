@@ -11,32 +11,32 @@ import {
 	View,
 	ButtonView,
 	LabeledFieldView,
-
 	FocusCycler,
 	createLabeledInputText,
 	submitHandler,
 	ViewCollection,
-
+	CollapsibleView,
+	SwitchButtonView,
 	type Template,
 	type InputView,
-	type FocusableView,
-	SwitchButtonView,
-	CollapsibleView
+	type FocusableView
 } from 'ckeditor5/src/ui.js';
-
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	Rect,
 	isVisible,
+	registerIcon,
 	type Locale
 } from 'ckeditor5/src/utils.js';
+import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/findandreplaceform.css';
-import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
+
+const previousArrowIcon = /* #__PURE__ */ registerIcon( 'previousArrow', IconPreviousArrow );
 
 /**
  * The find and replace form view class.
@@ -257,7 +257,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findPrevButtonView = this._createButton( {
 			label: t( 'Previous result' ),
 			class: 'ck-button-prev',
-			icon: IconPreviousArrow,
+			icon: previousArrowIcon(),
 			keystroke: 'Shift+F3',
 			tooltip: true
 		} );
@@ -265,7 +265,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findNextButtonView = this._createButton( {
 			label: t( 'Next result' ),
 			class: 'ck-button-next',
-			icon: IconPreviousArrow,
+			icon: previousArrowIcon(),
 			keystroke: 'F3',
 			tooltip: true
 		} );

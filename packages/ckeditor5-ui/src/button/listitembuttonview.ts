@@ -7,17 +7,18 @@
  * @module ui/button/listitembuttonview
  */
 
-import type { ObservableChangeEvent, Locale } from '@ckeditor/ckeditor5-utils';
-import type ButtonLabel from './buttonlabel.js';
-import type ViewCollection from '../viewcollection.js';
-
 import { IconCheck } from '@ckeditor/ckeditor5-icons';
+import { registerIcon, type ObservableChangeEvent, type Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from './buttonview.js';
 import ButtonLabelView from './buttonlabelview.js';
 import IconView from '../icon/iconview.js';
 import View from '../view.js';
+import type ButtonLabel from './buttonlabel.js';
+import type ViewCollection from '../viewcollection.js';
 
 import '../../theme/components/button/listitembutton.css';
+
+const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
 
 /**
  * Button that is used as dropdown list item entry.
@@ -183,7 +184,7 @@ export class CheckIconHolderView extends View {
 	private _createCheckIconView() {
 		const iconView = new IconView();
 
-		iconView.content = IconCheck;
+		iconView.content = checkIcon();
 		iconView.extendTemplate( {
 			attributes: {
 				class: 'ck-list-item-button__check-icon'

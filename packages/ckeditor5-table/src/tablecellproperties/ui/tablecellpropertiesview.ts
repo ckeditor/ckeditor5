@@ -25,6 +25,7 @@ import {
 	type ColorPickerConfig
 } from 'ckeditor5/src/ui.js';
 import {
+	registerIcon,
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale,
@@ -41,7 +42,6 @@ import {
 	IconCancel,
 	IconCheck
 } from 'ckeditor5/src/icons.js';
-
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
@@ -55,6 +55,16 @@ import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
+
+const alignBottomIcon = /* #__PURE__ */ registerIcon( 'alignBottom', IconAlignBottom );
+const alignCenterIcon = /* #__PURE__ */ registerIcon( 'alignCenter', IconAlignCenter );
+const alignJustifyIcon = /* #__PURE__ */ registerIcon( 'alignJustify', IconAlignJustify );
+const alignLeftIcon = /* #__PURE__ */ registerIcon( 'alignLeft', IconAlignLeft );
+const alignMiddleIcon = /* #__PURE__ */ registerIcon( 'alignMiddle', IconAlignMiddle );
+const alignRightIcon = /* #__PURE__ */ registerIcon( 'alignRight', IconAlignRight );
+const alignTopIcon = /* #__PURE__ */ registerIcon( 'alignTop', IconAlignTop );
+const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
 
 export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
@@ -707,13 +717,13 @@ export default class TableCellPropertiesView extends View {
 		const alignmentLabel = new LabelView( locale );
 
 		const ALIGNMENT_ICONS = {
-			left: IconAlignLeft,
-			center: IconAlignCenter,
-			right: IconAlignRight,
-			justify: IconAlignJustify,
-			top: IconAlignTop,
-			middle: IconAlignMiddle,
-			bottom: IconAlignBottom
+			left: alignLeftIcon(),
+			center: alignCenterIcon(),
+			right: alignRightIcon(),
+			justify: alignJustifyIcon(),
+			top: alignTopIcon(),
+			middle: alignMiddleIcon(),
+			bottom: alignBottomIcon()
 		};
 
 		alignmentLabel.text = t( 'Table cell text alignment' );
@@ -794,7 +804,7 @@ export default class TableCellPropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: IconCheck,
+			icon: checkIcon(),
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -806,7 +816,7 @@ export default class TableCellPropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: IconCancel,
+			icon: cancelIcon(),
 			class: 'ck-button-cancel',
 			withText: true
 		} );

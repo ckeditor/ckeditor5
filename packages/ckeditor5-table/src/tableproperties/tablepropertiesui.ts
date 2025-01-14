@@ -7,8 +7,10 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
+import { debounce } from 'lodash-es';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconTableProperties } from 'ckeditor5/src/icons.js';
+import { registerIcon, type EventInfo, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -17,9 +19,6 @@ import {
 	normalizeColorOptions,
 	type LabeledFieldView
 } from 'ckeditor5/src/ui.js';
-
-import { debounce } from 'lodash-es';
-
 import TablePropertiesView from './ui/tablepropertiesview.js';
 import {
 	colorFieldValidator,
@@ -33,11 +32,9 @@ import { getSelectionAffectedTableWidget } from '../utils/ui/widget.js';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 import { getNormalizedDefaultTableProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
 import type { Batch } from 'ckeditor5/src/engine.js';
-import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
-
 import type TableBorderStyleCommand from './commands/tableborderstylecommand.js';
 
-const ERROR_TEXT_TIMEOUT = 500;
+const tablePropertiesIcon = /* #__PURE__ */ registerIcon( 'tableProperties', IconTableProperties );
 
 // Map of view properties and related commands.
 const propertyToCommandMap = {
@@ -138,7 +135,7 @@ export default class TablePropertiesUI extends Plugin {
 
 			view.set( {
 				label: t( 'Table properties' ),
-				icon: IconTableProperties,
+				icon: tablePropertiesIcon(),
 				tooltip: true
 			} );
 
@@ -424,6 +421,7 @@ export default class TablePropertiesUI extends Plugin {
 			errorText: string;
 		}
 	) {
+		const ERROR_TEXT_TIMEOUT = 500;
 		const { commandName, viewField, validator, errorText } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;

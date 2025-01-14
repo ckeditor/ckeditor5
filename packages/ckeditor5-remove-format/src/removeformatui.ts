@@ -9,9 +9,11 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconRemoveFormat } from 'ckeditor5/src/icons.js';
+import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-
 import type RemoveFormatCommand from './removeformatcommand.js';
+
+const removeFormatIcon = /* #__PURE__ */ registerIcon( 'removeFormat', IconRemoveFormat );
 
 const REMOVE_FORMAT = 'removeFormat';
 
@@ -65,7 +67,7 @@ export default class RemoveFormatUI extends Plugin {
 
 		view.set( {
 			label: t( 'Remove Format' ),
-			icon: IconRemoveFormat
+			icon: removeFormatIcon()
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
