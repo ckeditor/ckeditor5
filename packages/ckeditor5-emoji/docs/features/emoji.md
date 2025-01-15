@@ -74,7 +74,7 @@ You can freely choose how to load the feature: either as a whole (as shown in th
 
 ## Configuration
 
-There is one configuration setting available for the emoji feature.
+The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfig `config.emoji`} object.
 
 * `dropdownLimit` &ndash; the number of items to appear in the emoji dropdown.
 
@@ -90,7 +90,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-* `skinTone` &ndash; Initial skin tone for the emoji picker.
+* `skinTone` &ndash; the initial skin tone for the emojis that support skin tones.
 
 ```js
 ClassicEditor
@@ -98,6 +98,20 @@ ClassicEditor
 		// ... Other configuration options ...
 		emoji: {
 			skinTone: 'medium'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+* `version` &ndash; the emoji database version.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		emoji: {
+			version: 15
 		}
 	} )
 	.then( /* ... */ )

@@ -15,10 +15,13 @@ import EmojiDatabase from '../src/emojidatabase.js';
 describe( 'EmojiDatabase', () => {
 	testUtils.createSinonSandbox();
 
-	let isEmojiSupportedStub;
+	let isEmojiSupportedStub, consoleStub, fetchStub;
 
 	beforeEach( () => {
 		isEmojiSupportedStub = testUtils.sinon.stub( EmojiDatabase, '_isEmojiSupported' ).returns( true );
+
+		consoleStub = sinon.stub( console, 'warn' );
+		fetchStub = testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( '[]' ) );
 	} );
 
 	it( 'should be correctly named', () => {
@@ -33,13 +36,25 @@ describe( 'EmojiDatabase', () => {
 		expect( EmojiDatabase.isPremiumPlugin ).to.be.false;
 	} );
 
+	it( 'should configure default emoji database version', async () => {
+		const domElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( domElement );
+
+		const editor = await createTestEditor( domElement );
+		const emojiVersion = editor.config.get( 'emoji.version' );
+
+		expect( emojiVersion ).to.equal( 16 );
+
+		domElement.remove();
+
+		await editor.destroy();
+	} );
+
 	describe( 'init()', () => {
-		let editor, editorPromise, domElement, consoleStub, fetchStub, fetchStubResolve, fetchStubReject;
+		let editor, editorPromise, domElement, fetchStubResolve, fetchStubReject;
 
 		beforeEach( () => {
-			consoleStub = sinon.stub( console, 'warn' );
-
-			fetchStub = testUtils.sinon.stub( window, 'fetch' ).returns( new Promise( ( resolve, reject ) => {
+			fetchStub.returns( new Promise( ( resolve, reject ) => {
 				fetchStubResolve = resolve;
 				fetchStubReject = reject;
 			} ) );
@@ -48,13 +63,7 @@ describe( 'EmojiDatabase', () => {
 			global.document.body.appendChild( domElement );
 
 			editor = null;
-			editorPromise = ClassicTestEditor.create( domElement, {
-				plugins: [
-					Essentials,
-					Paragraph,
-					EmojiDatabase
-				]
-			} );
+			editorPromise = createTestEditor( domElement );
 		} );
 
 		afterEach( async () => {
@@ -67,7 +76,7 @@ describe( 'EmojiDatabase', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should fetch the emoji database from the defined URL', async () => {
+		it( 'should fetch the emoji database version 16', async () => {
 			const response = JSON.stringify( [
 				{ annotation: 'neutral face', group: 0 },
 				{ annotation: 'unamused face', group: 0 }
@@ -87,7 +96,34 @@ describe( 'EmojiDatabase', () => {
 			expect( emojiDatabasePlugin._emojiDatabase[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
 		} );
 
-		it( 'should filter out group=2 from the fetched emoji database', async () => {
+		it( 'should fetch the emoji database version 15', async () => {
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', group: 0 },
+				{ annotation: 'unamused face', group: 0 }
+			] );
+
+			fetchStubResolve( new Response( response ) );
+
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			const editor = await createTestEditor( domElement, {
+				emoji: {
+					version: 15
+				}
+			} );
+
+			// The first `fetch()` call is from the test editor created in `beforeEach()` hook.
+			// In this unit test we are creating another test editor with modified config.
+			// Hence, we want to check the last `fetch()` call.
+			expect( fetchStub.lastCall.args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' );
+
+			domElement.remove();
+
+			await editor.destroy();
+		} );
+
+		it( 'should filter out group "2" from the fetched emoji database', async () => {
 			const response = JSON.stringify( [
 				{ annotation: 'neutral face', group: 0 },
 				{ annotation: 'medium-dark skin tone', group: 2 },
@@ -232,19 +268,12 @@ describe( 'EmojiDatabase', () => {
 				{ annotation: 'unamused face', emoticon: ':?', tags: [ 'bored', 'face', 'fine', 'ugh', 'whatever' ], group: 0 }
 			] );
 
-			testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( response ) );
+			fetchStub.resolves( new Response( response ) );
 
 			domElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( domElement );
 
-			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [
-					Essentials,
-					Paragraph,
-					EmojiDatabase
-				]
-			} );
-
+			editor = await createTestEditor( domElement );
 			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
 		} );
 
@@ -333,19 +362,12 @@ describe( 'EmojiDatabase', () => {
 				{ annotation: 'flag: Poland', group: 9 }
 			] );
 
-			testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( response ) );
+			fetchStub.resolves( new Response( response ) );
 
 			domElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( domElement );
 
-			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [
-					Essentials,
-					Paragraph,
-					EmojiDatabase
-				]
-			} );
-
+			editor = await createTestEditor( domElement );
 			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
 		} );
 
@@ -398,3 +420,14 @@ describe( 'EmojiDatabase', () => {
 		} );
 	} );
 } );
+
+function createTestEditor( domElement, editorConfig = {} ) {
+	return ClassicTestEditor.create( domElement, {
+		plugins: [
+			Essentials,
+			Paragraph,
+			EmojiDatabase
+		],
+		...editorConfig
+	} );
+}

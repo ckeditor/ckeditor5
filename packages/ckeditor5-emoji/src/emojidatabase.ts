@@ -15,7 +15,8 @@ import { logWarning } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
-const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json';
+// The `{version}` placeholder is replaced with the value from editor config.
+const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{version}/en.json';
 
 const SKIN_TONE_MAP: Record<number, SkinToneId> = {
 	0: 'default',
@@ -76,6 +77,10 @@ export default class EmojiDatabase extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		this.editor.config.define( 'emoji', {
+			version: 16
+		} );
+
 		this._emojiDatabase = [];
 		this._fuseSearch = null;
 	}
@@ -86,8 +91,11 @@ export default class EmojiDatabase extends Plugin {
 	public async init(): Promise<void> {
 		const container = createEmojiWidthTestingContainer();
 
+		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
+		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
+
 		// Store emoji database after normalizing the raw data.
-		this._emojiDatabase = ( await loadEmojiDatabase() )
+		this._emojiDatabase = ( await loadEmojiDatabase( emojiDatabaseUrl ) )
 			.filter( item => isEmojiGroupAllowed( item ) )
 			.filter( item => EmojiDatabase._isEmojiSupported( item, container ) )
 			.map( item => normalizeEmojiSkinTone( item ) );
@@ -166,11 +174,9 @@ export default class EmojiDatabase extends Plugin {
 
 /**
  * Makes the HTTP request to download the emoji database.
- *
- * @returns A promise that resolves with an array of emoji entries.
  */
-async function loadEmojiDatabase(): Promise<Array<EmojiCdnResource>> {
-	const result = await fetch( EMOJI_DATABASE_URL )
+async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<EmojiCdnResource>> {
+	const result = await fetch( emojiDatabaseUrl )
 		.then( response => {
 			if ( !response.ok ) {
 				return [];
