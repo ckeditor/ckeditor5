@@ -34,14 +34,30 @@ const objectSizeLargeIcon = /* #__PURE__ */ registerIcon( 'objectSizeLarge', Ico
 const objectSizeMediumIcon = /* #__PURE__ */ registerIcon( 'objectSizeMedium', IconObjectSizeMedium );
 const objectSizeSmallIcon = /* #__PURE__ */ registerIcon( 'objectSizeSmall', IconObjectSizeSmall );
 
+const RESIZE_ICONS: Record<string, string> = {
+	get small() {
+		return objectSizeSmallIcon();
+	},
+	get medium() {
+		return objectSizeMediumIcon();
+	},
+	get large() {
+		return objectSizeLargeIcon();
+	},
+	get custom() {
+		return objectSizeCustomIcon();
+	},
+	get original() {
+		return objectSizeFullIcon();
+	}
+};
+
 /**
  * The image resize buttons plugin.
  *
  * It adds a possibility to resize images using the toolbar dropdown or individual buttons, depending on the plugin configuration.
  */
 export default class ImageResizeButtons extends Plugin {
-	private icons: Record<string, string>;
-
 	/**
 	 * @inheritDoc
 	 */
@@ -74,14 +90,6 @@ export default class ImageResizeButtons extends Plugin {
 	 */
 	constructor( editor: Editor ) {
 		super( editor );
-
-		this.icons = {
-			custom: objectSizeCustomIcon(),
-			original: objectSizeFullIcon(),
-			large: objectSizeLargeIcon(),
-			medium: objectSizeMediumIcon(),
-			small: objectSizeSmallIcon()
-		};
 
 		this._resizeUnit = editor.config.get( 'image.resizeUnit' )!;
 	}
@@ -117,7 +125,7 @@ export default class ImageResizeButtons extends Plugin {
 			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const labelText = this._getOptionLabelValue( option, true );
 
-			if ( !this.icons[ icon as keyof typeof this.icons ] ) {
+			if ( !RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ] ) {
 				/**
 				 * When configuring {@link module:image/imageconfig~ImageConfig#resizeOptions `config.image.resizeOptions`} for standalone
 				 * buttons, a valid `icon` token must be set for each option.
@@ -138,7 +146,7 @@ export default class ImageResizeButtons extends Plugin {
 			button.set( {
 				// Use the `label` property for a verbose description (because of ARIA).
 				label: labelText,
-				icon: this.icons[ icon as keyof typeof this.icons ],
+				icon: RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ],
 				tooltip: labelText,
 				isToggleable: true
 			} );
@@ -186,7 +194,7 @@ export default class ImageResizeButtons extends Plugin {
 			dropdownButton.set( {
 				tooltip: accessibleLabel,
 				commandValue: originalSizeOption.value,
-				icon: this.icons.medium,
+				icon: RESIZE_ICONS.medium,
 				isToggleable: true,
 				label: this._getOptionLabelValue( originalSizeOption ),
 				withText: true,

@@ -7,6 +7,8 @@
  * @module utils/icons
  */
 
+import global from './dom/global.js';
+
 export type Icons = Record<string, string>;
 
 declare global {
@@ -21,18 +23,18 @@ export function registerIcon(
 ): () => string {
 	// Create icons object if it doesn't exist yet.
 	// TODO: Replace with `globalThis.CKEDITOR_ICONS ||= {};` when we migrate to ES2022.
-	if ( !globalThis.CKEDITOR_ICONS ) {
-		globalThis.CKEDITOR_ICONS = {};
+	if ( !global.window.CKEDITOR_ICONS ) {
+		global.window.CKEDITOR_ICONS = {};
 	}
 
 	// If icon is provided and it's not already registered, then register it.
-	if ( !globalThis.CKEDITOR_ICONS[ name ] || force ) {
-		globalThis.CKEDITOR_ICONS[ name ] = icon;
+	if ( !global.window.CKEDITOR_ICONS[ name ] || force ) {
+		global.window.CKEDITOR_ICONS[ name ] = icon;
 	}
 
 	return () => useIcon( name )!;
 }
 
 export function useIcon( name: string ): string | undefined {
-	return globalThis.CKEDITOR_ICONS && globalThis.CKEDITOR_ICONS[ name ];
+	return global.window.CKEDITOR_ICONS && global.window.CKEDITOR_ICONS[ name ];
 }

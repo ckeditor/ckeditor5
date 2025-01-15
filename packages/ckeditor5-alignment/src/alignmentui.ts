@@ -7,7 +7,7 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	type Button,
 	ButtonView,
@@ -30,6 +30,21 @@ const alignRightIcon = /* #__PURE__ */ registerIcon( 'alignRight', IconAlignRigh
 const alignCenterIcon = /* #__PURE__ */ registerIcon( 'alignCenter', IconAlignCenter );
 const alignJustifyIcon = /* #__PURE__ */ registerIcon( 'alignJustify', IconAlignJustify );
 
+const iconsMap: Record<string, string> = {
+	get left() {
+		return alignLeftIcon();
+	},
+	get right() {
+		return alignRightIcon();
+	},
+	get center() {
+		return alignCenterIcon();
+	},
+	get justify() {
+		return alignJustifyIcon();
+	}
+};
+
 /**
  * The default alignment UI plugin.
  *
@@ -37,19 +52,6 @@ const alignJustifyIcon = /* #__PURE__ */ registerIcon( 'alignJustify', IconAlign
  * and the `'alignment'` dropdown.
  */
 export default class AlignmentUI extends Plugin {
-	private icons: Map<string, string>;
-
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this.icons = new Map( [
-			[ 'left', alignLeftIcon() ],
-			[ 'right', alignRightIcon() ],
-			[ 'center', alignCenterIcon() ],
-			[ 'justify', alignJustifyIcon() ]
-		] );
-	}
-
 	/**
 	 * Returns the localized option titles provided by the plugin.
 	 *
@@ -133,7 +135,7 @@ export default class AlignmentUI extends Plugin {
 
 		buttonView.set( {
 			label: this.localizedOptionTitles[ option ],
-			icon: this.icons.get( option ),
+			icon: iconsMap[ option ],
 			tooltip: true,
 			isToggleable: true,
 			...buttonAttrs
@@ -190,11 +192,11 @@ export default class AlignmentUI extends Plugin {
 			} );
 
 			// The default icon depends on the direction of the content.
-			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? this.icons.get( 'right' ) : this.icons.get( 'left' );
+			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? iconsMap.right : iconsMap.left;
 			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
 
 			// Change icon to reflect current selection's alignment.
-			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => this.icons.get( value ) || defaultIcon );
+			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => iconsMap[ value ] || defaultIcon );
 
 			// Enable button if any of the buttons is enabled.
 			dropdownView.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -241,7 +243,7 @@ export default class AlignmentUI extends Plugin {
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.set( {
 					label: this.localizedOptionTitles[ option.name ],
-					icon: this.icons.get( option.name ),
+					icon: iconsMap[ option.name ],
 					role: 'menuitemcheckbox',
 					isToggleable: true
 				} );

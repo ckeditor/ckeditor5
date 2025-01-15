@@ -59,17 +59,35 @@ const threeVerticalDotsIcon = /* #__PURE__ */ registerIcon( 'threeVerticalDots',
 const pilcrowIcon = /* #__PURE__ */ registerIcon( 'pilcrow', IconPilcrow );
 const dragIndicatorIcon = /* #__PURE__ */ registerIcon( 'dragIndicator', IconDragIndicator );
 
-export const NESTED_TOOLBAR_ICONS: Record<string, () => string> = /* #__PURE__ */ ( () => ( {
-	alignLeft: alignLeftIcon,
-	bold: boldIcon,
-	importExport: importExportIcon,
-	paragraph: paragraphIcon,
-	plus: plusIcon,
-	text: textIcon,
-	threeVerticalDots: threeVerticalDotsIcon,
-	pilcrow: pilcrowIcon,
-	dragIndicator: dragIndicatorIcon
-} ) )();
+export const NESTED_TOOLBAR_ICONS: Record<string, string> = {
+	get alignLeft() {
+		return alignLeftIcon();
+	},
+	get bold() {
+		return boldIcon();
+	},
+	get importExport() {
+		return importExportIcon();
+	},
+	get paragraph() {
+		return paragraphIcon();
+	},
+	get plus() {
+		return plusIcon();
+	},
+	get text() {
+		return textIcon();
+	},
+	get threeVerticalDots() {
+		return threeVerticalDotsIcon();
+	},
+	get pilcrow() {
+		return pilcrowIcon();
+	},
+	get dragIndicator() {
+		return dragIndicatorIcon();
+	}
+};
 
 /**
  * The toolbar view class.
@@ -554,9 +572,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] ?
-				NESTED_TOOLBAR_ICONS[ icon! ]() :
-				icon || IconThreeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
