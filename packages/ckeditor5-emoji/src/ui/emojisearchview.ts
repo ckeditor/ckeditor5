@@ -12,6 +12,8 @@ import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearch
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type EmojiGridView from './emojigridview.js';
 
+import '../../theme/emojisearch.css';
+
 export default class EmojiSearchView extends View {
 	/**
 	 * The find in text input view that stores the searched string.

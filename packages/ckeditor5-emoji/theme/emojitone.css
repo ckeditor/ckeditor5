@@ -4,11 +4,35 @@
  */
 
 .ck.ck-emoji-tone {
-	button.ck.ck-button.ck-button_with-text {
-		width: fit-content;
+	> .ck.ck-dropdown.ck-toolbar-dropdown {
+		> button.ck.ck-dropdown__button {
+			padding: 0 10px 0 4px;
+			justify-content: center;
 
-		> span.ck.ck-button__label {
-			width: fit-content;
+			> svg.ck.ck-dropdown__arrow {
+				margin: 0;
+			}
+
+			> span.ck.ck-button__label {
+				font-size: 1.5em;
+				width: fit-content;
+			}
+		}
+
+		> div.ck.ck-dropdown__panel {
+			> div.ck.ck-toolbar {
+				> div.ck.ck-toolbar__items {
+					> button {
+						padding: 0;
+						justify-content: center;
+						flex-direction: row-reverse;
+
+						> span.ck.ck-button__label {
+							font-size: 1.5em;
+						}
+					}
+				}
+			}
 		}
 	}
 }

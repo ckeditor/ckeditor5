@@ -7,7 +7,7 @@
 @import "../mixins/_rounded.css";
 
 :root {
-	--ck-emoji-grid-tile-size: 24px;
+	--ck-emoji-grid-tile-size: 27px;
 }
 
 .ck.ck-emoji-picker {
@@ -19,7 +19,7 @@
 		& .ck-emoji-grid__tiles {
 			grid-template-columns: repeat(auto-fill, minmax(var(--ck-emoji-grid-tile-size), 1fr));
 			margin: var(--ck-spacing-standard) var(--ck-spacing-large);
-			grid-gap: var(--ck-spacing-standard);
+			grid-gap: 5px;
 		}
 
 		& .ck-emoji-grid__tile {
