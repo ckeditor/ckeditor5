@@ -223,7 +223,7 @@ describe( 'EmojiDatabase', () => {
 		} );
 	} );
 
-	describe( 'getEmojiBySearchQuery', () => {
+	describe( 'getEmojiBySearchQuery()', () => {
 		let editor, domElement, emojiDatabasePlugin;
 
 		beforeEach( async () => {

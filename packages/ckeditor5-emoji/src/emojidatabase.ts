@@ -86,6 +86,7 @@ export default class EmojiDatabase extends Plugin {
 	public async init(): Promise<void> {
 		const container = createEmojiWidthTestingContainer();
 
+		// Store emoji database after normalizing the raw data.
 		this._emojiDatabase = ( await loadEmojiDatabase() )
 			.filter( item => isEmojiGroupAllowed( item ) )
 			.filter( item => EmojiDatabase._isEmojiSupported( item, container ) )
@@ -93,6 +94,7 @@ export default class EmojiDatabase extends Plugin {
 
 		container.remove();
 
+		// Create instance of the Fuse.js library with configured weighted search keys and disabled fuzzy search.
 		this._fuseSearch = new Fuse( this._emojiDatabase, {
 			keys: [
 				{ name: 'emoticon', weight: 5 },
