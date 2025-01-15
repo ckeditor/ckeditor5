@@ -285,6 +285,7 @@ export default class EmojiPicker extends Plugin {
 		// Update the grid of emojis when selected category changes.
 		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
 			this.categoryName = categoryName;
+			this._balloon.updatePosition();
 		} );
 
 		// Disable the category switcher when filtering by a query.
@@ -296,6 +297,7 @@ export default class EmojiPicker extends Plugin {
 			}
 
 			this.searchQuery = data.query;
+			this._balloon.updatePosition();
 		} );
 
 		// Update the grid of emojis when selected skin tone changes.
