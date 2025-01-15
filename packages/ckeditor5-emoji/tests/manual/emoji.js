@@ -30,7 +30,7 @@ Object.keys( elements )
 		elements[ name ].innerHTML = tempDiv.innerHTML;
 	} );
 
-function getEditorConfig( extraPlugins ) {
+function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 	return {
 		plugins: [
 			Mention,
@@ -41,7 +41,11 @@ function getEditorConfig( extraPlugins ) {
 			Bold,
 			...extraPlugins
 		],
-		toolbar: [ 'undo', 'redo', 'emoji' ],
+		toolbar: [
+			'undo',
+			'redo',
+			emojiButtonInToolbar ? 'emoji' : ''
+		].filter( Boolean ),
 		menuBar: {
 			isVisible: true
 		}
@@ -49,19 +53,28 @@ function getEditorConfig( extraPlugins ) {
 }
 
 ClassicEditor
-	.create( elements.emojiBoth, getEditorConfig( [ Emoji, Mention ] ) )
+	.create(
+		elements.emojiBoth,
+		getEditorConfig( { extraPlugins: [ Emoji, Mention ] } )
+	)
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
 ClassicEditor
-	.create( elements.emojiMention, getEditorConfig( [ EmojiMention, Mention ] ) )
+	.create(
+		elements.emojiMention,
+		getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } )
+	)
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
 ClassicEditor
-	.create( elements.emojiPicker, getEditorConfig( [ EmojiPicker ] ) )
+	.create(
+		elements.emojiPicker,
+		getEditorConfig( { extraPlugins: [ EmojiPicker ] } )
+	)
 	.catch( err => {
 		console.error( err.stack );
 	} );
