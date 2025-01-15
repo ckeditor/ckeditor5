@@ -121,6 +121,7 @@ describe( 'Editor', () => {
 	afterEach( () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
+		delete window.CKEDITOR_ICONS;
 
 		sinon.restore();
 	} );
@@ -394,6 +395,56 @@ describe( 'Editor', () => {
 
 			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
 			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+	} );
+
+	describe( 'icons', () => {
+		it( 'should not register any icons by default', () => {
+			// eslint-disable-next-line no-unused-vars
+			const editor = new TestEditor();
+
+			expect( window.CKEDITOR_ICONS ).to.be.undefined;
+		} );
+
+		it( 'should use icons passed as the argument to the constructor', () => {
+		// eslint-disable-next-line no-unused-vars
+			const editor = new TestEditor( {
+				icons: {
+					foo: 'bar'
+				}
+			} );
+
+			expect( window.CKEDITOR_ICONS ).to.deep.equals( { foo: 'bar' } );
+		} );
+
+		it( 'should use icons set as the defaultConfig option on the constructor', () => {
+			TestEditor.defaultConfig = {
+				icons: {
+					foo: 'bar'
+				}
+			};
+
+			// eslint-disable-next-line no-unused-vars
+			const editor = new TestEditor();
+
+			expect( window.CKEDITOR_ICONS ).to.deep.equals( { foo: 'bar' } );
+		} );
+
+		it( 'should prefer icons passed as the argument to the constructor instead of the defaultConfig if both are set', () => {
+			TestEditor.defaultConfig = {
+				icons: {
+					foo: 'bar'
+				}
+			};
+
+			// eslint-disable-next-line no-unused-vars
+			const editor = new TestEditor( {
+				icons: {
+					foo: 'baz'
+				}
+			} );
+
+			expect( window.CKEDITOR_ICONS ).to.deep.equals( { foo: 'baz' } );
 		} );
 	} );
 
