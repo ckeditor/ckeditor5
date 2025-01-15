@@ -14,7 +14,7 @@ import type EmojiCategoriesView from './emojicategoriesview.js';
 import type EmojiSearchView from './emojisearchview.js';
 import type EmojiToneView from './emojitoneview.js';
 
-export type DropdownPanelContent = {
+export type EmojiDropdownPanelContent = {
 	searchView: EmojiSearchView;
 	toneView: EmojiToneView;
 	categoriesView: EmojiCategoriesView;
@@ -74,7 +74,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, dropdownPanelContent: DropdownPanelContent ) {
+	constructor( locale: Locale, dropdownPanelContent: EmojiDropdownPanelContent ) {
 		super( locale );
 
 		this.searchView = dropdownPanelContent.searchView;

@@ -23,7 +23,7 @@ import EmojiGridView, { type EmojiGridViewExecuteEvent } from './ui/emojigridvie
 import EmojiDatabase, { type EmojiCategory } from './emojidatabase.js';
 import EmojiSearchView from './ui/emojisearchview.js';
 import EmojiCategoriesView from './ui/emojicategoriesview.js';
-import EmojiPickerView, { type DropdownPanelContent } from './ui/emojipickerview.js';
+import EmojiPickerView, { type EmojiDropdownPanelContent } from './ui/emojipickerview.js';
 import EmojiToneView from './ui/emojitoneview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -256,7 +256,7 @@ export default class EmojiPicker extends Plugin {
 	 *
 	 * @returns An object with `categoriesView` and `gridView`properties, containing UI parts.
 	 */
-	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
+	private _createDropdownPanelContent( locale: Locale ): EmojiDropdownPanelContent {
 		const t = locale.t;
 
 		const gridView = new EmojiGridView( locale, {
