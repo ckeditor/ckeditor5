@@ -16,7 +16,6 @@ import {
 	DropdownButtonView
 } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
-
 import type { SkinToneId } from '../emojiconfig.js';
 
 import '../../theme/emojitone.css';
@@ -121,7 +120,6 @@ export default class EmojiToneView extends View {
 		// Execute command.
 		this.listenTo( buttonView, 'execute', () => {
 			this.skinTone = buttonSkinToneId;
-
 			this.mainDropdownButton.label = this._getSkinTone( buttonSkinToneId ).icon;
 		} );
 

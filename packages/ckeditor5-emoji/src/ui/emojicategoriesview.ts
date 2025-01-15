@@ -7,11 +7,11 @@
  * @module emoji/ui/emojicategoriesview
  */
 
-import '../../theme/emojicategories.css';
-
 import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { EmojiCategory } from '../emojidatabase.js';
+
+import '../../theme/emojicategories.css';
 
 const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
 
@@ -36,11 +36,14 @@ export default class EmojiCategoriesView extends View {
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * TODO: Fill it up.
+	 * Helps cycling over focusable children in the input view.
+	 */
+	public readonly focusCycler: FocusCycler;
+
+	/**
+	 * A collection of the categories buttons.
 	 */
 	private readonly _buttonViews: ViewCollection<ButtonView>;
-
-	private readonly focusCycler: FocusCycler;
 
 	/**
 	 * @inheritDoc

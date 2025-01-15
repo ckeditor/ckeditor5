@@ -7,18 +7,12 @@
  * @module emoji/ui/emojigridview
  */
 
-import '../../theme/emojigrid.css';
-
 import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { EmojiCategory, EmojiEntry } from '../emojidatabase.js';
 import type { SkinToneId } from '../emojiconfig.js';
 
-export type EmojiGridViewOptions = {
-	emojiGroups: Array<EmojiCategory>;
-	categoryName: EmojiCategory[ 'title' ];
-	getEmojiBySearchQuery: ( query: string ) => Array<EmojiEntry>;
-};
+import '../../theme/emojigrid.css';
 
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
@@ -67,14 +61,24 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
-	private readonly getEmojiBySearchQuery: EmojiGridViewOptions[ 'getEmojiBySearchQuery' ];
+	/**
+	 * An array containing all emojis grouped by their categories.
+	 */
+	public readonly emojiGroups: Array<EmojiCategory>;
 
-	public emojiGroups: EmojiGridViewOptions[ 'emojiGroups' ];
+	/**
+	 * A callback used to filter grid items by a specified query.
+	 */
+	private readonly getEmojiBySearchQuery: EmojiSearchQueryCallback;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, categoryName, getEmojiBySearchQuery }: EmojiGridViewOptions ) {
+	constructor( locale: Locale, { emojiGroups, categoryName, getEmojiBySearchQuery }: {
+		emojiGroups: Array<EmojiCategory>;
+		categoryName: string;
+		getEmojiBySearchQuery: EmojiSearchQueryCallback;
+	} ) {
 		super( locale );
 
 		this.set( 'isEmpty', true );
@@ -134,46 +138,103 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override render(): void {
+		super.render();
+
+		this.keystrokes.listenTo( this.element! );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this.keystrokes.destroy();
+		this.focusTracker.destroy();
+	}
+
+	/**
+	 * Focuses the first focusable in {@link ~EmojiGridView#tiles} if available.
+	 */
+	public focus(): void {
+		const firstTile = this.tiles.first;
+
+		if ( firstTile ) {
+			firstTile.focus();
+		}
+	}
+
+	/**
 	 * Filters the grid view by the given regular expression.
 	 *
 	 * It filters either by the pattern or an emoji category, but never both.
+	 *
+	 * @param pattern Expression to search or `null` when filter by category name.
 	 */
 	public filter( pattern: RegExp | null ): { resultsCount: number; totalItemsCount: number } {
+		const { matchingItems, allItems } = pattern ? this._getItemsByQuery( pattern.source ) : this._getItemsByCategory();
+
+		this._updateGrid( matchingItems );
+		this.set( 'isEmpty', matchingItems.length === 0 );
+
+		return {
+			resultsCount: matchingItems.length,
+			totalItemsCount: allItems.length
+		};
+	}
+
+	/**
+	 * Filters emojis to show based on the specified query phrase.
+	 *
+	 * @param query A query used to filter the grid.
+	 */
+	private _getItemsByQuery( query: string ): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
+		return {
+			matchingItems: this.getEmojiBySearchQuery( query ),
+			allItems: this.emojiGroups.flatMap( group => group.items )
+		};
+	}
+
+	/**
+	 * Returns emojis that belong to the specified category.
+	 */
+	private _getItemsByCategory(): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
 		const emojiCategory = this.emojiGroups.find( item => item.title === this.categoryName )!;
+		const { items } = emojiCategory;
 
-		let itemsToRender = emojiCategory.items;
-		let allItems: Array<EmojiEntry>;
+		return {
+			matchingItems: items,
+			allItems: items
+		};
+	}
 
-		// When filtering by a query, the mechanism checks the entire database.
-		if ( pattern ) {
-			allItems = this.emojiGroups.flatMap( group => group.items );
-			itemsToRender = this.getEmojiBySearchQuery( pattern.source );
-		}
-
-		const arrayOfMatchingItems = itemsToRender.map( item => {
-			const emoji = item.skins[ this.skinTone ] || item.skins.default;
-
-			return this._createTile( emoji, item.annotation );
-		} );
-
+	/**
+	 * Updates the grid by removing the existing items and insert the new ones.
+	 *
+	 * @param items An array of items to insert.
+	 */
+	private _updateGrid( items: Array<EmojiEntry> ): void {
 		// Clean-up.
 		[ ...this.tiles ].forEach( item => {
 			this.focusTracker.remove( item );
 			this.tiles.remove( item );
 		} );
 
-		// Insert new elements.
-		arrayOfMatchingItems.forEach( item => {
-			this.tiles.add( item );
-			this.focusTracker.add( item );
-		} );
+		items
+			// Create tiles from matching results.
+			.map( item => {
+				const emoji = item.skins[ this.skinTone ] || item.skins.default;
 
-		this.set( 'isEmpty', arrayOfMatchingItems.length === 0 );
-
-		return {
-			resultsCount: arrayOfMatchingItems.length,
-			totalItemsCount: !pattern ? emojiCategory.items.length : allItems!.length
-		};
+				return this._createTile( emoji, item.annotation );
+			} )
+			// Insert new elements.
+			.forEach( item => {
+				this.tiles.add( item );
+				this.focusTracker.add( item );
+			} );
 	}
 
 	/**
@@ -207,37 +268,12 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		return tile;
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override render(): void {
-		super.render();
-
-		this.keystrokes.listenTo( this.element! );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override destroy(): void {
-		super.destroy();
-
-		this.keystrokes.destroy();
-		this.focusTracker.destroy();
-	}
-
-	/**
-	 * Focuses the first focusable in {@link ~EmojiGridView#tiles} if available.
-	 */
-	public focus(): void {
-		const firstTile = this.tiles.first;
-
-		if ( firstTile ) {
-			firstTile.focus();
-		}
-	}
 }
+
+/**
+ * A callback used to filter grid items by a specified query.
+ */
+export type EmojiSearchQueryCallback = ( query: string ) => Array<EmojiEntry>;
 
 /**
  * Fired when any of {@link ~EmojiGridView#tiles grid tiles} is clicked.
@@ -250,7 +286,7 @@ export type EmojiGridViewExecuteEvent = {
 	args: [ data: EmojiGridViewEventData ];
 };
 
-export interface EmojiGridViewEventData {
+export type EmojiGridViewEventData = {
 
 	/**
 	 * The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
@@ -261,4 +297,4 @@ export interface EmojiGridViewEventData {
 	 * The emoji itself.
 	 */
 	emoji: string;
-}
+};
