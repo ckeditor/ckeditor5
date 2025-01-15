@@ -108,7 +108,7 @@ export default class CodeBlockUI extends Plugin {
 			menuView.buttonView.set( {
 				role: 'menuitem',
 				label: t( 'Code block' ),
-				icon: IconCodeBlock
+				icon: codeBlockIcon()
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );
