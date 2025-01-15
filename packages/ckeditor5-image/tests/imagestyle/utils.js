@@ -164,7 +164,7 @@ describe( 'ImageStyle utils', () => {
 					for ( const icon in DEFAULT_ICONS ) {
 						const style = { name: 'custom', modelElements: [ 'imageBlock' ], icon };
 
-						expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS[ icon ]() } ] );
+						expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS[ icon ] } ] );
 					}
 
 					sinon.assert.notCalled( console.warn );
@@ -232,7 +232,7 @@ describe( 'ImageStyle utils', () => {
 					const normalizedStyles = normalizeStyles( [ style ] );
 
 					expect( normalizedStyles[ 0 ] ).to.not.equal( DEFAULT_OPTIONS.alignLeft );
-					expect( normalizedStyles ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS.inline() } ] );
+					expect( normalizedStyles ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS.inline } ] );
 
 					sinon.assert.notCalled( console.warn );
 				} );

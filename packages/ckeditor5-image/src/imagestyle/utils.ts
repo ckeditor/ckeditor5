@@ -144,15 +144,29 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  */
-export const DEFAULT_ICONS: Record<string, () => string> = /* #__PURE__ */ ( () => ( {
-	full: objectFullWidthIcon,
-	left: objectLeftIcon,
-	right: objectRightIcon,
-	center: objectCenterIcon,
-	inlineLeft: objectInlineLeftIcon,
-	inlineRight: objectInlineRightIcon,
-	inline: objectInlineIcon
-} ) )();
+export const DEFAULT_ICONS: Record<string, string> = {
+	get full() {
+		return objectFullWidthIcon();
+	},
+	get left() {
+		return objectLeftIcon();
+	},
+	get right() {
+		return objectRightIcon();
+	},
+	get center() {
+		return objectCenterIcon();
+	},
+	get inlineLeft() {
+		return objectInlineLeftIcon();
+	},
+	get inlineRight() {
+		return objectInlineRightIcon();
+	},
+	get inline() {
+		return objectInlineIcon();
+	}
+};
 
 /**
  * Default drop-downs provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#toolbar}
@@ -279,7 +293,7 @@ function normalizeDefinition( definition: string | Partial<ImageStyleOptionDefin
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
 	if ( typeof definition.icon === 'string' ) {
-		definition.icon = DEFAULT_ICONS[ definition.icon ] ? DEFAULT_ICONS[ definition.icon ]() : definition.icon;
+		definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
 	}
 
 	return definition as ImageStyleOptionDefinition;
