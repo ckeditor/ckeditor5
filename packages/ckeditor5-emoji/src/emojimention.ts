@@ -7,20 +7,61 @@
  * @module emoji/emojimention
  */
 
-import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import EmojiPicker from './emojipicker.js';
-import EmojiDatabase from './emojidatabase.js';
+import { env, type Locale, type ObservableChangeEvent, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import EmojiDatabase, { type EmojiCategory } from './emojidatabase.js';
+import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
+import { clickOutsideHandler, ContextualBalloon, Dialog, SearchInfoView, type SearchTextViewSearchEvent } from 'ckeditor5/src/ui.js';
+import EmojiPickerView, { type EmojiDropdownPanelContent } from './ui/emojipickerview.js';
+import type { SkinToneId } from './emojiconfig.js';
+import EmojiGridView, { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
+import EmojiSearchView from './ui/emojisearchview.js';
+import EmojiToneView from './ui/emojitoneview.js';
+import EmojiCategoriesView from './ui/emojicategoriesview.js';
+import type { Range } from 'ckeditor5/src/engine.js';
 
-import {
-	type MentionFeed,
-	type MentionFeedObjectItem
-} from '@ckeditor/ckeditor5-mention';
+function getLastValidMarkerInText( pattern: RegExp, text: string ): number | undefined {
+	let lastValidMarker: any;
 
-const EMOJI_PREFIX = 'emoji';
-const EMOJI_MENTION_MARKER = ':';
+	const currentMarkerLastIndex = text.lastIndexOf( ':' );
 
-const SHOW_ALL_EMOJI_ID = formatEmojiId( '__SHOW_ALL_EMOJI__' );
+	if ( currentMarkerLastIndex > 0 && !text.substring( currentMarkerLastIndex - 1 ).match( pattern ) ) {
+		return undefined;
+	}
+
+	if ( !lastValidMarker || currentMarkerLastIndex >= lastValidMarker.position ) {
+		return currentMarkerLastIndex;
+	}
+}
+
+/**
+ * Creates a RegExp pattern for the marker.
+ *
+ * Function has to be exported to achieve 100% code coverage.
+ */
+function createRegExp( marker: string, minimumCharacters: number ): RegExp {
+	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
+	const openAfterCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
+	const mentionCharacters = '.';
+
+	// I wanted to make an util out of it, but since this regexp uses "u" flag, it became difficult.
+	// When "u" flag is used, the regexp has "strict" escaping rules, i.e. if you try to escape a character that does not need
+	// to be escaped, RegExp() will throw. It made it difficult to write a generic util, because different characters are
+	// allowed in different context. For example, escaping "-" sometimes was correct, but sometimes it threw an error.
+	marker = marker.replace( /[.*+?^${}()\-|[\]\\]/g, '\\$&' );
+
+	// The pattern consists of 3 groups:
+	//
+	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
+	// - 1: The marker character,
+	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
+	//
+	// The pattern matches up to the caret (end of string switch - $).
+	//               (0:      opening sequence       )(1:   marker  )(2:                typed mention              )$
+	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])(${ mentionCharacters }${ numberOfCharacters })$`;
+
+	return new RegExp( pattern, 'u' );
+}
 
 /**
  * The emoji mention plugin.
@@ -29,22 +70,54 @@ const SHOW_ALL_EMOJI_ID = formatEmojiId( '__SHOW_ALL_EMOJI__' );
  */
 export default class EmojiMention extends Plugin {
 	/**
-	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
+	 * Active skin tone.
+	 *
+	 * @observable
+	 * @default 'default'
 	 */
-	declare private _emojiPickerPlugin: EmojiPicker | null;
+	declare public skinTone: SkinToneId;
 
 	/**
-	 * Defines a number of displayed items in the auto complete dropdown.
+	 * Active category.
 	 *
-	 * It includes the "Show all emojis..." option if the `EmojiPicker` plugin is loaded.
+	 * @observable
+	 * @default ''
 	 */
-	private readonly _emojiDropdownLimit: number;
+	declare public categoryName: string;
+
+	/**
+	 * A query provided by a user in the search field.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare public searchQuery: string;
+
+	/**
+	 * An array containing all emojis grouped by their categories.
+	 */
+	declare public emojiGroups: Array<EmojiCategory>;
+
+	/**
+	 * The contextual balloon plugin instance.
+	 */
+	declare private _balloon: ContextualBalloon;
+
+	/**
+	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
+	 */
+	declare private _emojiDatabase: EmojiDatabase;
+
+	/**
+	 * The actions view displayed inside the balloon.
+	 */
+	declare private _emojiPickerView: EmojiPickerView | undefined;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiDatabase, 'Mention' ] as const;
+		return [ EmojiDatabase, ContextualBalloon, Dialog ] as const;
 	}
 
 	/**
@@ -61,153 +134,226 @@ export default class EmojiMention extends Plugin {
 		return true;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
+	public init(): void {
+		const { editor } = this;
 
-		this.editor.config.define( 'emoji', {
-			dropdownLimit: 6
+		this._emojiDatabase = editor.plugins.get( EmojiDatabase );
+		this._balloon = editor.plugins.get( ContextualBalloon );
+
+		this.emojiGroups = this._emojiDatabase.getEmojiGroups();
+
+		this.set( 'searchQuery', '' );
+		this.set( 'categoryName', this.emojiGroups[ 0 ].title );
+		this.set( 'skinTone', 'default' );
+
+		const pattern = createRegExp( ':', 0 );
+		let isTyping = false;
+		let typingTimer: number;
+
+		editor.model.document.on( 'change:data', () => {
+			if ( !isTyping ) {
+				isTyping = true;
+			}
+
+			// Optionally, you can set a timeout to detect when typing has stopped
+			if ( typingTimer ) {
+				clearTimeout( typingTimer );
+			}
+			typingTimer = setTimeout( () => {
+				isTyping = false;
+			}, 250 );
 		} );
 
-		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
+		const watcher = new TextWatcher( editor.model, ( text: string ) => {
+			if ( !isTyping ) {
+				return false;
+			}
 
-		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
-		const mergeFieldsPrefix = this.editor.config.get( 'mergeFields.prefix' )! as string;
-		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
-		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
+			const position = getLastValidMarkerInText( pattern, text );
 
-		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
-			/**
-			 * The `marker` in the `emoji` config is already used by other plugin configuration.
-			 *
-			 * @error emoji-config-marker-already-used
-			 * @param {string} marker Used marker.
-			 */
-			logWarning( 'emoji-config-marker-already-used', { marker: EMOJI_MENTION_MARKER } );
+			if ( typeof position === 'undefined' ) {
+				return false;
+			}
 
-			return;
+			let splitStringFrom = 0;
+
+			if ( position !== 0 ) {
+				splitStringFrom = position - 1;
+			}
+
+			const textToTest = text.substring( splitStringFrom );
+
+			return pattern.test( textToTest );
+		} );
+
+		watcher.on<TextWatcherMatchedEvent>( 'matched', ( evt, data ) => {
+			this.showUI( data.text.slice( 1 ), data.range );
+		} );
+	}
+
+	/**
+	 * Displays the balloon with the emoji picker.
+	 */
+	public showUI( searchValue: string, range: Range ): void {
+		const dropdownPanelContent = this._createDropdownPanelContent( this.editor.locale, range );
+		this._emojiPickerView = new EmojiPickerView( this.editor.locale, dropdownPanelContent );
+
+		this._balloon.add( {
+			view: this._emojiPickerView,
+			position: this._getBalloonPositionData()
+		} );
+
+		// Close the panel on esc key press when the **actions have focus**.
+		this._emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this._hideUI();
+			cancel();
+		} );
+
+		// Close the dialog when clicking outside of it.
+		clickOutsideHandler( {
+			emitter: this._emojiPickerView,
+			contextElements: [ this._balloon.view.element! ],
+			callback: () => this._hideUI(),
+			activator: () => this._balloon.visibleView === this._emojiPickerView
+		} );
+
+		if ( searchValue ) {
+			this.searchQuery = searchValue;
+			this._emojiPickerView.searchView.setInputValue( this.searchQuery );
 		}
 
-		this._setupMentionConfiguration( mentionFeedsConfigs );
-		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
+		// To trigger an initial search to render the grid.
+		this._emojiPickerView.searchView.search( this.searchQuery );
+
+		setTimeout( () => this._emojiPickerView!.focus() );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Hides the balloon with the emoji picker.
 	 */
-	public init(): void {
-		this._emojiPickerPlugin = this.editor.plugins.has( EmojiPicker ) ? this.editor.plugins.get( EmojiPicker ) : null;
+	private _hideUI(): void {
+		if ( this._emojiPickerView ) {
+			this._balloon.remove( this._emojiPickerView );
+		}
+
+		this.editor.editing.view.focus();
+		this.searchQuery = '';
+
+		// this._hideFakeVisualSelection();
 	}
 
 	/**
-	 * Initializes the configuration for emojis in the mention feature.
+	 * Initializes the dropdown, used for lazy loading.
+	 *
+	 * @returns An object with `categoriesView` and `gridView`properties, containing UI parts.
 	 */
-	private _setupMentionConfiguration( mentionFeedsConfigs: Array<MentionFeed> ): void {
-		const emojiMentionFeedConfig = {
-			marker: EMOJI_MENTION_MARKER,
-			dropdownLimit: this._emojiDropdownLimit,
-			itemRenderer: this._getCustomItemRendererFn( this.editor.t ),
-			feed: this._getQueryEmojiFn()
-		};
+	private _createDropdownPanelContent( locale: Locale, range: Range ): EmojiDropdownPanelContent {
+		const t = locale.t;
 
-		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
-	}
+		const gridView = new EmojiGridView( locale, {
+			emojiGroups: this.emojiGroups,
+			categoryName: this.categoryName,
+			getEmojiBySearchQuery: ( query: string ) => {
+				return this._emojiDatabase.getEmojiBySearchQuery( query );
+			}
+		} );
 
-	/**
-	 * Returns the `itemRenderer()` callback for mention config.
-	 */
-	private _getCustomItemRendererFn( t: LocaleTranslate ) {
-		return ( item: MentionFeedObjectItem ) => {
-			const itemElement = document.createElement( 'span' );
+		const resultsView = new SearchInfoView();
+		const searchView = new EmojiSearchView( locale, {
+			gridView,
+			resultsView
+		} );
+		const toneView = new EmojiToneView( locale, {
+			skinTone: this.skinTone
+		} );
+		const categoriesView = new EmojiCategoriesView( locale, {
+			emojiGroups: this.emojiGroups,
+			categoryName: this.categoryName
+		} );
 
-			itemElement.classList.add( 'custom-item' );
-			itemElement.id = `mention-list-item-id-${ item.id }`;
-			itemElement.style.width = '100%';
-			itemElement.style.display = 'block';
+		// Bind the "current" plugin settings specific views to avoid manual updates.
+		gridView.bind( 'categoryName' ).to( this, 'categoryName' );
+		gridView.bind( 'skinTone' ).to( this, 'skinTone' );
+		gridView.bind( 'searchQuery' ).to( this, 'searchQuery' );
 
-			switch ( item.id ) {
-				case SHOW_ALL_EMOJI_ID:
-					itemElement.textContent = t( 'Show all emojis...' );
-
-					break;
-				default:
-					itemElement.textContent = `${ item.text } ${ removeEmojiPrefix( item.id ) }`;
+		// Disable the category switcher when filtering by a query.
+		searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( data.query ) {
+				categoriesView.disableCategories();
+			} else {
+				categoriesView.enableCategories();
 			}
 
-			return itemElement;
-		};
-	}
+			this.searchQuery = data.query;
+			this._balloon.updatePosition();
+		} );
 
-	/**
-	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
-	 */
-	private _overrideMentionExecuteListener() {
-		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
-			const eventData = data[ 0 ];
-
-			if ( !isEmojiId( eventData.mention.id ) ) {
-				return;
+		// Show a user-friendly message when emojis are not found.
+		searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( !data.resultsCount ) {
+				resultsView.set( {
+					primaryText: t( 'No emojis were found matching "%0".', data.query ),
+					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
+					isVisible: true
+				} );
+			} else {
+				resultsView.set( {
+					isVisible: false
+				} );
 			}
+		} );
 
-			let textToInsert = eventData.mention.text;
-			let shouldShowEmojiView = false;
+		// Update the grid of emojis when selected category changes.
+		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
+			this.categoryName = categoryName;
+			this._balloon.updatePosition();
+		} );
 
-			if ( eventData.mention.id === SHOW_ALL_EMOJI_ID ) {
-				shouldShowEmojiView = true;
+		// Update the grid of emojis when selected skin tone changes.
+		toneView.on<ObservableChangeEvent>( 'change:skinTone', ( evt, propertyName, newValue ) => {
+			this.skinTone = newValue;
 
-				textToInsert = '';
-			}
+			searchView.search( this.searchQuery );
+		} );
 
-			this.editor.model.change( writer => {
-				this.editor.model.insertContent( writer.createText( textToInsert ), eventData.range );
+		// Insert an emoji on a tile click.
+		gridView.on<EmojiGridViewExecuteEvent>( 'execute', ( evt, data ) => {
+			const editor = this.editor;
+			const model = editor.model;
+			const textToInsert = data.emoji;
+
+			model.change( writer => {
+				const selection = model.createSelection( range );
+
+				model.deleteContent( selection );
+				model.insertContent( writer.createText( textToInsert ) );
 			} );
 
-			if ( shouldShowEmojiView ) {
-				this._emojiPickerPlugin!.showUI( eventData.mention.text );
-			}
+			this._hideUI();
+		} );
 
-			event.stop();
-		}, { priority: 'high' } );
+		return {
+			searchView,
+			toneView,
+			categoriesView,
+			gridView,
+			resultsView
+		};
 	}
 
 	/**
-	 * Returns the `feed()` callback for mention config.
+	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
+	 * to the target element or selection.
 	 */
-	private _getQueryEmojiFn(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
-		return ( searchQuery: string ) => {
-			const emojiDatabasePlugin = this.editor.plugins.get( EmojiDatabase );
+	private _getBalloonPositionData(): Partial<PositionOptions> {
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
-			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
-				.map( emoji => {
-					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
+		// Set a target position by converting view selection range to DOM.
+		const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
 
-					let text = emoji.skins.default;
-
-					if ( this._emojiPickerPlugin ) {
-						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
-					}
-
-					return { text, id: formatEmojiId( id ) };
-				} )
-				.filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
-
-			return this._emojiPickerPlugin ?
-				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: SHOW_ALL_EMOJI_ID, text: searchQuery } ] :
-				emojis.slice( 0, this._emojiDropdownLimit );
+		return {
+			target
 		};
 	}
-}
-
-function isEmojiId( string: string ): boolean {
-	return new RegExp( `^${ EMOJI_PREFIX }:[^:]+:$` ).test( string );
-}
-
-function formatEmojiId( id: string ): string {
-	return `${ EMOJI_PREFIX }:${ id }:`;
-}
-
-function removeEmojiPrefix( formattedEmojiId: string ): string {
-	return formattedEmojiId.replace( new RegExp( `^${ EMOJI_PREFIX }:` ), ':' );
 }
