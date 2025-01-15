@@ -183,7 +183,7 @@ export default class EmojiMention extends Plugin {
 				.map( emoji => {
 					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
-					let text = emoji.annotation;
+					let text = emoji.skins.default;
 
 					if ( this._emojiPickerPlugin ) {
 						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
