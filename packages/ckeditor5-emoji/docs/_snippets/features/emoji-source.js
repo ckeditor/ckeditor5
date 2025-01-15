@@ -25,6 +25,7 @@ ClassicEditor.builtinPlugins.push(
 	AutoImage,
 	LinkImage,
 	CKBox,
-	CKBoxImageEdit );
+	CKBoxImageEdit
+);
 
 window.ClassicEditor = ClassicEditor;

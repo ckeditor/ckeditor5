@@ -23,10 +23,13 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "44.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
     "@ckeditor/ckeditor5-editor-classic": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
     "@ckeditor/ckeditor5-essentials": "44.1.0",
+    "@ckeditor/ckeditor5-heading": "44.1.0",
+    "@ckeditor/ckeditor5-list": "44.1.0",
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
     "@ckeditor/ckeditor5-theme-lark": "44.1.0",
     "typescript": "5.0.4",

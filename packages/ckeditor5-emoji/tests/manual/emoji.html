@@ -1,9 +1,41 @@
 <head>
-	<!-- Required to fetch emoji database from https://cdn.jsdelivr.net -->
-	<meta http-equiv="Content-Security-Policy"
-		content="connect-src 'self' https://cksource.com http://*.cke-cs.com https://cdn.ckeditor.com">
+    <!-- Required to fetch emoji database from https://cdn.jsdelivr.net -->
+    <meta http-equiv="Content-Security-Policy"
+          content="connect-src 'self' https://cksource.com http://*.cke-cs.com https://cdn.ckeditor.com">
 </head>
 
-<div id="editor">
-	<p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+<h3><code>EmojiMention</code> + <code>EmojiPicker</code></h3>
+<div id="editor-emoji-both">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
 </div>
+
+<h3><code>EmojiMention</code></h3>
+<div id="editor-emoji-mention">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+</div>
+
+<h3><code>EmojiPicker</code></h3>
+<div id="editor-emoji-picker">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+</div>
+
+
+<template id="content">
+    <h3>Overview of Emojis</h3>
+
+    <p>
+        Emojis are small digital images or icons used to express emotions, ideas, or concepts in electronic communication. They
+        originated in Japan in the late 1990s, with the first set created by Shigetaka Kurita.
+    </p>
+
+    <h3>Examples of Common Emojis</h3>
+
+    <ul>
+        <li>😊 <strong>Smiling Face</strong>: Used to convey happiness, friendliness, or gratitude.</li>
+        <li>❤️ <strong>Red Heart</strong>: Represents love, affection, or appreciation.</li>
+        <li>😂 <strong>Face with Tears of Joy</strong>: Indicates laughter or something funny.</li>
+        <li>😢 <strong>Crying Face</strong>: Represents sadness, disappointment, or sympathy.</li>
+        <li>👍 <strong>Thumbs Up</strong>: Used to show approval, agreement, or to indicate that everything is good or okay.</li>
+        <li>🔥 <strong>Fire</strong>: Often used to signify something hot, trendy, or impressive.</li>
+    </ul>
+</template>
