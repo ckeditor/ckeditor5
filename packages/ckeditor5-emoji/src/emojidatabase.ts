@@ -8,15 +8,16 @@
  */
 
 import Fuse from 'fuse.js';
+import { groupBy } from 'lodash-es';
+
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
-import { groupBy } from 'lodash-es';
 import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
 const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json';
 
-const skinToneMap: Record<number, SkinToneId> = {
+const SKIN_TONE_MAP: Record<number, SkinToneId> = {
 	0: 'default',
 	1: 'light',
 	2: 'medium-light',
@@ -24,6 +25,18 @@ const skinToneMap: Record<number, SkinToneId> = {
 	4: 'medium-dark',
 	5: 'dark'
 };
+
+const CATEGORIES = [
+	{ title: 'Smileys & Expressions', icon: '😀', groupId: 0 },
+	{ title: 'Gestures & People', icon: '👋', groupId: 1 },
+	{ title: 'Animals & Nature', icon: '🐻', groupId: 3 },
+	{ title: 'Food & Drinks', icon: '🍎', groupId: 4 },
+	{ title: 'Travel & Places', icon: '🚘', groupId: 5 },
+	{ title: 'Activities', icon: '🏀', groupId: 6 },
+	{ title: 'Objects', icon: '💡', groupId: 7 },
+	{ title: 'Symbols', icon: '🟢', groupId: 8 },
+	{ title: 'Flags', icon: '🏁', groupId: 9 }
+];
 
 const BASELINE_EMOJI_WIDTH = 24;
 
@@ -41,7 +54,7 @@ export default class EmojiDatabase extends Plugin {
 	/**
 	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
 	 */
-	declare private _fuseSearch: Fuse<EmojiDatabaseCdnEntry> | null;
+	declare private _fuseSearch: Fuse<EmojiEntry> | null;
 
 	/**
 	 * @inheritDoc
@@ -98,13 +111,9 @@ export default class EmojiDatabase extends Plugin {
 
 				if ( item.skins ) {
 					item.skins.forEach( skin => {
-						const skinTone = skinToneMap[ skin.tone ];
+						const skinTone = SKIN_TONE_MAP[ skin.tone ];
 
-						entry.skins[ skinTone as keyof SkinToneMap ] = skin.emoji;
-
-
-						const foo = entry.skins[ skinTone as keyof SkinToneMap ];
-
+						entry.skins[ skinTone ] = skin.emoji;
 					} );
 				}
 
@@ -140,7 +149,7 @@ export default class EmojiDatabase extends Plugin {
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
-	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiDatabaseCdnEntry> {
+	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiEntry> {
 		const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
 
 		// Perform the search only if there is at least two non-white characters next to each other.
@@ -168,21 +177,9 @@ export default class EmojiDatabase extends Plugin {
 	}
 
 	public getEmojiGroups(): Array<EmojiCategory> {
-		const categories = [
-			{ title: 'Smileys & Expressions', icon: '😀', groupId: 0 },
-			{ title: 'Gestures & People', icon: '👋', groupId: 1 },
-			{ title: 'Animals & Nature', icon: '🐻', groupId: 3 },
-			{ title: 'Food & Drinks', icon: '🍎', groupId: 4 },
-			{ title: 'Travel & Places', icon: '🚘', groupId: 5 },
-			{ title: 'Activities', icon: '🏀', groupId: 6 },
-			{ title: 'Objects', icon: '💡', groupId: 7 },
-			{ title: 'Symbols', icon: '🟢', groupId: 8 },
-			{ title: 'Flags', icon: '🏁', groupId: 9 }
-		];
-
 		const groups = groupBy( this._emojiDatabase, 'group' );
 
-		return categories.map( category => {
+		return CATEGORIES.map( category => {
 			return {
 				...category,
 				items: groups[ category.groupId ]
@@ -196,7 +193,7 @@ export default class EmojiDatabase extends Plugin {
  *
  * @returns A promise that resolves with an array of emoji entries.
  */
-async function loadEmojiDatabase(): Promise<Array<EmojiDatabaseCdnEntry>> {
+async function loadEmojiDatabase(): Promise<Array<EmojiCdnResource>> {
 	const response = await fetch( EMOJI_DATABASE_URL );
 
 	if ( !response.ok ) {
@@ -242,14 +239,36 @@ function getNodeWidth( container: HTMLDivElement, node: string ): number {
 	return nodeWidth;
 }
 
+/**
+ * Represents a single group of the emoji category, e.g., "Smileys & Expressions".
+ */
 export type EmojiCategory = {
+
+	/**
+	 * A name of the category.
+	 */
 	title: string;
+
+	/**
+	 * An example emoji representing items belonging to the category.
+	 */
 	icon: string;
+
+	/**
+	 * Group id used to assign {@link #items}.
+	 */
 	groupId: number;
-	items: Array<EmojiDatabaseCdnEntry>;
+
+	/**
+	 * An array of emojis.
+	 */
+	items: Array<EmojiEntry>;
 };
 
-export type EmojiDatabaseCdnEntry = {
+/**
+ * Represents a single item fetched from the CDN.
+ */
+export type EmojiCdnResource = {
 	annotation: string;
 	emoji: string;
 	group: number;
@@ -265,10 +284,18 @@ export type EmojiDatabaseCdnEntry = {
 	tags?: Array<string>;
 };
 
-export type EmojiEntry = Omit<EmojiDatabaseCdnEntry, 'skins'> & {
+/**
+ * Represents a single emoji item used by the emoji feature.
+ */
+export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
 	skins: EmojiMap;
 };
 
+/**
+ * Represents mapping between a skin tone and its corresponding emoji.
+ *
+ * The `default` key is always present. Additional values are assigned only if an emoji supports skin tones.
+ */
 export type EmojiMap = { [K in Exclude<SkinToneId, 'default'>]?: string; } & {
 	default: string;
 };

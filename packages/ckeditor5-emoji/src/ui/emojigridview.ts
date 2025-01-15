@@ -9,15 +9,15 @@
 
 import '../../theme/emojigrid.css';
 
-import { addKeyboardHandlingForGrid, ButtonView, View, type FilteredView, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type { SkinToneId } from './emojitoneview.js';
-import type { EmojiDatabaseEntry, EmojiCategory } from '../emojidatabase.js';
+import type { EmojiCategory, EmojiEntry } from '../emojidatabase.js';
+import type { SkinToneId } from '../emojiconfig.js';
 
 export type EmojiGridViewOptions = {
-	emojiGroups: Arrary<EmojiCategory>;
-	initialCategory: EmojiCategory[ 'title' ];
-	getEmojiBySearchQuery: ( query: string ) => Array<EmojiDatabaseEntry>;
+	emojiGroups: Array<EmojiCategory>;
+	categoryName: EmojiCategory[ 'title' ];
+	getEmojiBySearchQuery: ( query: string ) => Array<EmojiEntry>;
 };
 
 /**
@@ -50,7 +50,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	/**
 	 * Set to `true` when the {@link #tiles} collection is empty.
 	 */
-	declare private _isEmpty: boolean;
+	declare public isEmpty: boolean;
 
 	/**
 	 * A collection of the child tile views. Each tile represents a particular emoji.
@@ -68,17 +68,16 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	public readonly keystrokes: KeystrokeHandler;
 
 	private readonly getEmojiBySearchQuery: EmojiGridViewOptions[ 'getEmojiBySearchQuery' ];
-	private readonly emojiGroups: EmojiGridViewOptions['emojiGroups'];
 
-	private readonly initialCategory: EmojiGridViewOptions['initialCategory'];
+	public emojiGroups: EmojiGridViewOptions[ 'emojiGroups' ];
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, initialCategory, getEmojiBySearchQuery }: EmojiGridViewOptions ) {
+	constructor( locale: Locale, { emojiGroups, categoryName, getEmojiBySearchQuery }: EmojiGridViewOptions ) {
 		super( locale );
 
-		this.set( '_isEmpty', true );
+		this.set( 'isEmpty', true );
 
 		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
 		this.focusTracker = new FocusTracker();
@@ -108,17 +107,17 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 					'ck',
 					'ck-emoji-grid',
 					// To avoid issues with focus cycling, ignore a grid when it's empty.
-					bind.if( '_isEmpty', 'ck-hidden', value => value )
+					bind.if( 'isEmpty', 'ck-hidden', value => value )
 				]
 			}
 		} );
 
 		this.on( 'change:categoryName', () => {
-			this.filter( '' );
+			this.filter( null );
 		} );
 
 		this.set( 'searchQuery', '' );
-		this.set( 'categoryName', initialCategory );
+		this.set( 'categoryName', categoryName );
 		this.set( 'skinTone', 'default' );
 
 		addKeyboardHandlingForGrid( {
@@ -140,10 +139,10 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 * It filters either by the pattern or an emoji category, but never both.
 	 */
 	public filter( pattern: RegExp | null ): { resultsCount: number; totalItemsCount: number } {
-		const emojiCategory = this.emojiGroups.find( item => item.title === this.categoryName );
+		const emojiCategory = this.emojiGroups.find( item => item.title === this.categoryName )!;
 
 		let itemsToRender = emojiCategory.items;
-		let allItems;
+		let allItems: Array<EmojiEntry>;
 
 		// When filtering by a query, the mechanism checks the entire database.
 		if ( pattern ) {
@@ -173,7 +172,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		return {
 			resultsCount: arrayOfMatchingItems.length,
-			totalItemsCount: !pattern ? emojiCategory.items.length : allItems.length
+			totalItemsCount: !pattern ? emojiCategory.items.length : allItems!.length
 		};
 	}
 

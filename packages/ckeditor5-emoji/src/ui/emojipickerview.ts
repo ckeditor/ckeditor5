@@ -13,7 +13,14 @@ import type EmojiGridView from './emojigridview.js';
 import type EmojiCategoriesView from './emojicategoriesview.js';
 import type EmojiSearchView from './emojisearchview.js';
 import type EmojiToneView from './emojitoneview.js';
-import type { DropdownPanelContent } from '../emojipicker.js';
+
+export type DropdownPanelContent = {
+	searchView: EmojiSearchView;
+	toneView: EmojiToneView;
+	categoriesView: EmojiCategoriesView;
+	gridView: EmojiGridView;
+	resultsView: SearchInfoView;
+};
 
 /**
  * A view that glues pieces of the emoji dropdown panel together.

@@ -8,8 +8,9 @@
  */
 
 import { escapeRegExp } from 'lodash-es';
-import { createLabeledInputText, SearchTextView, type SearchTextViewSearchEvent, View, } from 'ckeditor5/src/ui.js';
+import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearchEvent, type SearchInfoView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
+import type EmojiGridView from './emojigridview.js';
 
 export default class EmojiSearchView extends View {
 	/**
@@ -18,13 +19,23 @@ export default class EmojiSearchView extends View {
 	public readonly findInputView: SearchTextView;
 
 	/**
+	 * An instance of the `EmojiGridView`.
+	 */
+	public readonly gridView: EmojiGridView;
+
+	/**
+	 * An instance of the `EmojiGridView`.
+	 */
+	public readonly resultsView: SearchInfoView;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, gridView: View, resultsView: View ) {
+	constructor( locale: Locale, { gridView, resultsView }: { gridView: EmojiGridView; resultsView: SearchInfoView } ) {
 		super( locale );
 
-		this._gridView = gridView;
-		this._resultsView = resultsView;
+		this.gridView = gridView;
+		this.resultsView = resultsView;
 
 		const t = locale.t;
 
@@ -33,9 +44,9 @@ export default class EmojiSearchView extends View {
 				label: t( 'Find an emoji (min. 2 characters)' ),
 				creator: createLabeledInputText
 			},
-			filteredView: this._gridView,
+			filteredView: this.gridView,
 			infoView: {
-				instance: this._resultsView
+				instance: this.resultsView
 			}
 		} );
 
@@ -51,13 +62,13 @@ export default class EmojiSearchView extends View {
 
 		this.findInputView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( !data.resultsCount ) {
-				this._resultsView.set( {
+				this.resultsView.set( {
 					primaryText: t( 'No emojis were found matching "%0".', data.query ),
 					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
 					isVisible: true
 				} );
 			} else {
-				this._resultsView.set( {
+				this.resultsView.set( {
 					isVisible: false
 				} );
 			}
@@ -66,7 +77,7 @@ export default class EmojiSearchView extends View {
 		} );
 
 		// Refresh the grid when a skin tone is being changed.
-		this._gridView.on( 'change:skinTone', () => {
+		this.gridView.on( 'change:skinTone', () => {
 			this.search( this.getInputValue() );
 		} );
 	}
@@ -78,7 +89,7 @@ export default class EmojiSearchView extends View {
 	 */
 	public search( query: string ): void {
 		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
-		const filteringResults = this._gridView.filter( regExp );
+		const filteringResults = this.gridView.filter( regExp );
 
 		this.findInputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
 	}

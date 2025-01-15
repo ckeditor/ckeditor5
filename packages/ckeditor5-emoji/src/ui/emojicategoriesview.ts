@@ -11,7 +11,7 @@ import '../../theme/emojicategories.css';
 
 import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type { EmojiGroup } from '../emojipicker.js';
+import type { EmojiCategory } from '../emojidatabase.js';
 
 const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
 
@@ -28,36 +28,36 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * Tracks information about the DOM focus in the grid.
 	 */
-	private readonly _focusTracker: FocusTracker;
+	public readonly focusTracker: FocusTracker;
 
 	/**
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 */
-	private readonly _keystrokeHandler: KeystrokeHandler;
+	public readonly keystrokes: KeystrokeHandler;
 
 	/**
 	 * TODO: Fill it up.
 	 */
 	private readonly _buttonViews: ViewCollection<ButtonView>;
 
-	private readonly _focusCycler: FocusCycler;
+	private readonly focusCycler: FocusCycler;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, emojiGroups: Array<EmojiGroup>, categoryName: string ) {
+	constructor( locale: Locale, { emojiGroups, categoryName }: { emojiGroups: Array<EmojiCategory>; categoryName: string } ) {
 		super( locale );
 
 		this._buttonViews = new ViewCollection(
 			this._createCategoryButtons( emojiGroups )
 		);
 
-		this._focusTracker = new FocusTracker();
-		this._keystrokeHandler = new KeystrokeHandler();
-		this._focusCycler = new FocusCycler( {
+		this.focusTracker = new FocusTracker();
+		this.keystrokes = new KeystrokeHandler();
+		this.focusCycler = new FocusCycler( {
 			focusables: this._buttonViews,
-			focusTracker: this._focusTracker,
-			keystrokeHandler: this._keystrokeHandler,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
 			actions: {
 				focusPrevious: 'arrowleft',
 				focusNext: 'arrowright'
@@ -93,10 +93,10 @@ export default class EmojiCategoriesView extends View {
 		super.render();
 
 		this._buttonViews.forEach( buttonView => {
-			this._focusTracker.add( buttonView );
+			this.focusTracker.add( buttonView );
 		} );
 
-		this._keystrokeHandler.listenTo( this.element! );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -105,8 +105,8 @@ export default class EmojiCategoriesView extends View {
 	public override destroy(): void {
 		super.destroy();
 
-		this._focusTracker.destroy();
-		this._keystrokeHandler.destroy();
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 
 	/**
@@ -134,7 +134,7 @@ export default class EmojiCategoriesView extends View {
 		} );
 	}
 
-	private _createCategoryButtons( emojiGroups: Array<EmojiGroup> ) {
+	private _createCategoryButtons( emojiGroups: Array<EmojiCategory> ) {
 		return emojiGroups.map( emojiGroup => {
 			const buttonView = new ButtonView();
 

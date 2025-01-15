@@ -10,6 +10,7 @@
 export { default as Emoji } from './emoji.js';
 export { default as EmojiMention } from './emojimention.js';
 export { default as EmojiPicker } from './emojipicker.js';
+export { default as EmojiDatabase } from './emojidatabase.js';
 
 export type { EmojiConfig } from './emojiconfig.js';
 

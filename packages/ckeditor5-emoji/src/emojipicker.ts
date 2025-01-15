@@ -15,16 +15,14 @@ import {
 	MenuBarMenuListItemButtonView,
 	SearchInfoView
 } from 'ckeditor5/src/ui.js';
-import type { Model } from 'ckeditor5/src/engine.js';
-import type { Locale, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import type { Locale, ObservableChangeEvent, PositionOptions } from 'ckeditor5/src/utils.js';
 import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
 
 import EmojiGridView, { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import EmojiDatabase, { type EmojiCategory } from './emojidatabase.js';
 import EmojiSearchView from './ui/emojisearchview.js';
 import EmojiCategoriesView from './ui/emojicategoriesview.js';
-import EmojiPickerView from './ui/emojipickerview.js';
-
+import EmojiPickerView, { type DropdownPanelContent } from './ui/emojipickerview.js';
 import EmojiToneView from './ui/emojitoneview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -44,7 +42,7 @@ export default class EmojiPicker extends Plugin {
 	 * @observable
 	 * @default 'default'
 	 */
-	declare private _skinTone: SkinToneId;
+	declare public skinTone: SkinToneId;
 
 	/**
 	 * Active category.
@@ -52,7 +50,7 @@ export default class EmojiPicker extends Plugin {
 	 * @observable
 	 * @default ''
 	 */
-	declare private _categoryName: string;
+	declare public categoryName: string;
 
 	/**
 	 * A query provided by a user in the search field.
@@ -60,12 +58,12 @@ export default class EmojiPicker extends Plugin {
 	 * @observable
 	 * @default ''
 	 */
-	declare private _searchQuery: string;
+	declare public searchQuery: string;
 
 	/**
 	 * An array containing all emojis grouped by their categories.
 	 */
-	declare private _emojiGroups: Arrary<EmojiCategory>;
+	declare public emojiGroups: Array<EmojiCategory>;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -81,13 +79,6 @@ export default class EmojiPicker extends Plugin {
 	 * The actions view displayed inside the balloon.
 	 */
 	declare private _emojiPickerView: EmojiPickerView | undefined;
-
-	/**
-	 * Returns an active skin tone.
-	 */
-	public get skinTone(): typeof this._skinTone {
-		return this._skinTone;
-	}
 
 	/**
 	 * @inheritDoc
@@ -120,9 +111,9 @@ export default class EmojiPicker extends Plugin {
 			skinTone: 'default'
 		} );
 
-		this.set( '_searchQuery', '' );
-		this.set( '_categoryName', '' );
-		this.set( '_skinTone', editor.config.get( 'emoji.skinTone' )! );
+		this.set( 'searchQuery', '' );
+		this.set( 'categoryName', '' );
+		this.set( 'skinTone', editor.config.get( 'emoji.skinTone' )! );
 	}
 
 	/**
@@ -133,8 +124,8 @@ export default class EmojiPicker extends Plugin {
 
 		this._emojiDatabase = editor.plugins.get( EmojiDatabase );
 		this._balloon = editor.plugins.get( ContextualBalloon );
-		this._emojiGroups = this._emojiDatabase.getEmojiGroups();
-		this._categoryName = this._emojiGroups[ 0 ].title;
+		this.emojiGroups = this._emojiDatabase.getEmojiGroups();
+		this.categoryName = this.emojiGroups[ 0 ].title;
 
 		editor.ui.componentFactory.add( 'emoji', () => {
 			const button = this._createDialogButton( ButtonView );
@@ -182,7 +173,7 @@ export default class EmojiPicker extends Plugin {
 
 		this._balloon.add( {
 			view: this._emojiPickerView,
-			position: getBalloonPositionData( this.editor )
+			position: this._getBalloonPositionData()
 		} );
 
 		// Close the panel on esc key press when the **actions have focus**.
@@ -200,15 +191,15 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		if ( searchValue ) {
-			this._searchQuery = searchValue;
-			this._emojiPickerView.searchView.setInputValue( this._searchQuery );
+			this.searchQuery = searchValue;
+			this._emojiPickerView.searchView.setInputValue( this.searchQuery );
 		}
 
 		// To trigger an initial search to render the grid.
-		this._emojiPickerView.searchView.search( this._searchQuery );
+		this._emojiPickerView.searchView.search( this.searchQuery );
 
 		setTimeout( () => this._emojiPickerView!.focus() );
-		showFakeVisualSelection( this.editor.model );
+		this._showFakeVisualSelection();
 	}
 
 	/**
@@ -220,9 +211,9 @@ export default class EmojiPicker extends Plugin {
 		}
 
 		this.editor.editing.view.focus();
-		this._searchQuery = '';
+		this.searchQuery = '';
 
-		hideFakeVisualSelection( this.editor.model );
+		this._hideFakeVisualSelection();
 	}
 
 	/**
@@ -266,29 +257,34 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
 		const gridView = new EmojiGridView( locale, {
-			emojiGroups: this._emojiGroups,
-			initialCategory: this._categoryName,
+			emojiGroups: this.emojiGroups,
+			categoryName: this.categoryName,
 			getEmojiBySearchQuery: ( query: string ) => {
 				return this._emojiDatabase.getEmojiBySearchQuery( query );
 			}
 		} );
 
-		gridView.emojiGroups = this._emojiGroups;
-		gridView.categoryName = this._categoryName;
-
-		const resultsView = new SearchInfoView( locale );
-		const searchView = new EmojiSearchView( locale, gridView, resultsView );
-		const toneView = new EmojiToneView( locale, this._skinTone );
-		const categoriesView = new EmojiCategoriesView( locale, this._emojiGroups, this._categoryName );
+		const resultsView = new SearchInfoView();
+		const searchView = new EmojiSearchView( locale, {
+			gridView,
+			resultsView
+		} );
+		const toneView = new EmojiToneView( locale, {
+			skinTone: this.skinTone
+		} );
+		const categoriesView = new EmojiCategoriesView( locale, {
+			emojiGroups: this.emojiGroups,
+			categoryName: this.categoryName
+		} );
 
 		// Bind the "current" plugin settings specific views to avoid manual updates.
-		gridView.bind( 'categoryName' ).to( this, '_categoryName' );
-		gridView.bind( 'skinTone' ).to( this, '_skinTone' );
-		gridView.bind( 'searchQuery' ).to( this, '_searchQuery' );
+		gridView.bind( 'categoryName' ).to( this, 'categoryName' );
+		gridView.bind( 'skinTone' ).to( this, 'skinTone' );
+		gridView.bind( 'searchQuery' ).to( this, 'searchQuery' );
 
 		// Update the grid of emojis when selected category changes.
 		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
-			this._categoryName = categoryName;
+			this.categoryName = categoryName;
 		} );
 
 		// Disable the category switcher when filtering by a query.
@@ -299,12 +295,12 @@ export default class EmojiPicker extends Plugin {
 				categoriesView.enableCategories();
 			}
 
-			this._searchQuery = data.query;
+			this.searchQuery = data.query;
 		} );
 
 		// Update the grid of emojis when selected skin tone changes.
 		toneView.on( 'change:skinTone', ( evt, propertyName, newValue ) => {
-			this._skinTone = newValue;
+			this.skinTone = newValue;
 		} );
 
 		// Insert an emoji on a tile click.
@@ -328,65 +324,65 @@ export default class EmojiPicker extends Plugin {
 			resultsView
 		};
 	}
-}
 
-type DropdownPanelContent = {
-	searchView: EmojiSearchView;
-	toneView: EmojiToneView;
-	categoriesView: EmojiCategoriesView;
-	gridView: EmojiGridView;
-	resultsView: SearchInfoView;
-};
+	/**
+	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
+	 * to the target element or selection.
+	 */
+	private _getBalloonPositionData(): Partial<PositionOptions> {
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
-function getBalloonPositionData( editor: Editor ): Partial<PositionOptions> {
-	const view = editor.editing.view;
-	const viewDocument = view.document;
+		// Set a target position by converting view selection range to DOM.
+		const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
 
-	// Set a target position by converting view selection range to DOM.
-	const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
+		return {
+			target
+		};
+	}
 
-	return {
-		target
-	};
-}
+	/**
+	 * Displays a fake visual selection when the contextual balloon is displayed.
+	 *
+	 * This adds an 'emoji-picker' marker into the document that is rendered as a highlight on selected text fragment.
+	 */
+	private _showFakeVisualSelection(): void {
+		const model = this.editor.model;
 
-/**
- * Displays a fake visual selection when the contextual balloon is displayed.
- *
- * This adds an 'emoji-picker' marker into the document that is rendered as a highlight on selected text fragment.
- */
-function showFakeVisualSelection( model: Model ): void {
-	model.change( writer => {
-		const range = model.document.selection.getFirstRange()!;
+		model.change( writer => {
+			const range = model.document.selection.getFirstRange()!;
 
-		if ( range.start.isAtEnd ) {
-			const startPosition = range.start.getLastMatchingPosition(
-				( { item } ) => !model.schema.isContent( item ),
-				{ boundaries: range }
-			);
+			if ( range.start.isAtEnd ) {
+				const startPosition = range.start.getLastMatchingPosition(
+					( { item } ) => !model.schema.isContent( item ),
+					{ boundaries: range }
+				);
 
-			writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-				usingOperation: false,
-				affectsData: false,
-				range: writer.createRange( startPosition, range.end )
-			} );
-		} else {
-			writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-				usingOperation: false,
-				affectsData: false,
-				range
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range: writer.createRange( startPosition, range.end )
+				} );
+			} else {
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * Hides the fake visual selection.
+	 */
+	private _hideFakeVisualSelection(): void {
+		const model = this.editor.model;
+
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			model.change( writer => {
+				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
 			} );
 		}
-	} );
-}
-
-/**
- * Hides the fake visual selection.
- */
-function hideFakeVisualSelection( model: Model ): void {
-	if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-		model.change( writer => {
-			writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
-		} );
 	}
 }

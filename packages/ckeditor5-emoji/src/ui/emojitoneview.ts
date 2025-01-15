@@ -21,6 +21,15 @@ import type { SkinToneId } from '../emojiconfig.js';
 
 import '../../theme/emojitone.css';
 
+const SKIN_TONES: Array<SkinTone> = [
+	{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
+	{ id: 'light', icon: '👋🏻', tooltip: 'Light skin tone' },
+	{ id: 'medium-light', icon: '👋🏼', tooltip: 'Medium Light skin tone' },
+	{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
+	{ id: 'medium-dark', icon: '👋🏾', tooltip: 'Medium Dark skin tone' },
+	{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
+];
+
 type SkinTone = {
 	id: SkinToneId;
 	icon: string;
@@ -28,55 +37,46 @@ type SkinTone = {
 };
 
 export default class EmojiToneView extends View {
-	declare public skinTone: SkinToneId;
-
 	/**
-	 * An array containing available skin tones.
+	 * Active skin tone.
+	 *
+	 * @observable
 	 */
-	private readonly _skinTones: Array<SkinTone>;
+	declare public skinTone: SkinToneId;
 
 	/**
 	 * A dropdown element for selecting an active skin tone.
 	 */
-	private readonly _mainDropdownButton: DropdownButtonView;
+	public readonly mainDropdownButton: DropdownButtonView;
 
 	/**
 	 * Option elements to select an active tone.
 	 */
-	private readonly _dropdownButtons: ViewCollection<ListItemButtonView>;
+	public readonly dropdownButtons: ViewCollection<ListItemButtonView>;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, skinTone: SkinToneId ) {
+	constructor( locale: Locale, { skinTone }: { skinTone: SkinToneId } ) {
 		super( locale );
 
 		const t = locale.t;
 
 		this.set( 'skinTone', skinTone );
 
-		this._skinTones = [
-			{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
-			{ id: 'light', icon: '👋🏻', tooltip: 'Light skin tone' },
-			{ id: 'medium-light', icon: '👋🏼', tooltip: 'Medium Light skin tone' },
-			{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
-			{ id: 'medium-dark', icon: '👋🏾', tooltip: 'Medium Dark skin tone' },
-			{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
-		];
-
-		this._mainDropdownButton = new DropdownButtonView();
-		const dropdownView = createDropdown( locale, this._mainDropdownButton );
-		this._dropdownButtons = new ViewCollection(
-			this._skinTones.map( ( { id, icon, tooltip } ) => this._createButton( locale, id, icon, tooltip ) )
+		this.mainDropdownButton = new DropdownButtonView();
+		const dropdownView = createDropdown( locale, this.mainDropdownButton );
+		this.dropdownButtons = new ViewCollection(
+			SKIN_TONES.map( ( { id, icon, tooltip } ) => this._createButton( locale, id, icon, tooltip ) )
 		);
 
-		this._mainDropdownButton.withText = true;
-		this._mainDropdownButton.label = this._getSkinTone( this.skinTone ).icon;
-		this._mainDropdownButton.tooltip = 'Select skin tone';
+		this.mainDropdownButton.withText = true;
+		this.mainDropdownButton.label = this._getSkinTone( this.skinTone ).icon;
+		this.mainDropdownButton.tooltip = 'Select skin tone';
 
 		addToolbarToDropdown(
 			dropdownView,
-			this._dropdownButtons,
+			this.dropdownButtons,
 			{
 				isVertical: true,
 				isCompact: true,
@@ -98,7 +98,7 @@ export default class EmojiToneView extends View {
 	 * @inheritDoc
 	 */
 	public focus(): void {
-		this._mainDropdownButton.focus();
+		this.mainDropdownButton.focus();
 	}
 
 	/**
@@ -122,13 +122,13 @@ export default class EmojiToneView extends View {
 		this.listenTo( buttonView, 'execute', () => {
 			this.skinTone = buttonSkinToneId;
 
-			this._mainDropdownButton.label = this._getSkinTone( buttonSkinToneId ).icon;
+			this.mainDropdownButton.label = this._getSkinTone( buttonSkinToneId ).icon;
 		} );
 
 		return buttonView;
 	}
 
 	private _getSkinTone( skinToneId: SkinToneId ): SkinTone {
-		return this._skinTones.find( tone => tone.id === skinToneId )!;
+		return SKIN_TONES.find( tone => tone.id === skinToneId )!;
 	}
 }
