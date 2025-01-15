@@ -16,7 +16,7 @@ export default class EmojiSearchView extends View {
 	/**
 	 * The find in text input view that stores the searched string.
 	 */
-	public readonly findInputView: SearchTextView;
+	public readonly inputView: SearchTextView;
 
 	/**
 	 * An instance of the `EmojiGridView`.
@@ -39,7 +39,7 @@ export default class EmojiSearchView extends View {
 
 		const t = locale.t;
 
-		this.findInputView = new SearchTextView( this.locale!, {
+		this.inputView = new SearchTextView( this.locale!, {
 			queryView: {
 				label: t( 'Find an emoji (min. 2 characters)' ),
 				creator: createLabeledInputText
@@ -56,16 +56,16 @@ export default class EmojiSearchView extends View {
 				class: [ 'ck', 'ck-emoji-input', 'ck-search' ]
 			},
 			children: [
-				this.findInputView
+				this.inputView
 			]
 		} );
 
 		// Pass through the `search` event to handle it by a controller (parent).
-		this.findInputView.delegate( 'search' ).to( this );
+		this.inputView.delegate( 'search' ).to( this );
 	}
 
 	/**
-	 * Searches the {@link #filteredView} for the given query.
+	 * Searches the {@link #gridView} for the given query.
 	 *
 	 * @param query The search query string.
 	 */
@@ -73,7 +73,7 @@ export default class EmojiSearchView extends View {
 		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
 		const filteringResults = this.gridView.filter( regExp );
 
-		this.findInputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
+		this.inputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
 	}
 
 	/**
@@ -82,13 +82,13 @@ export default class EmojiSearchView extends View {
 	 * @param value The new value.
 	 */
 	public setInputValue( value: string ): void {
-		this.findInputView.queryView.fieldView.value = value;
+		this.inputView.queryView.fieldView.value = value;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public focus(): void {
-		this.findInputView.focus();
+		this.inputView.focus();
 	}
 }
