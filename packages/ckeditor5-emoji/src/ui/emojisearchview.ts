@@ -60,26 +60,8 @@ export default class EmojiSearchView extends View {
 			]
 		} );
 
-		this.findInputView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
-			if ( !data.resultsCount ) {
-				this.resultsView.set( {
-					primaryText: t( 'No emojis were found matching "%0".', data.query ),
-					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
-					isVisible: true
-				} );
-			} else {
-				this.resultsView.set( {
-					isVisible: false
-				} );
-			}
-
-			this.fire( 'input', { query: data.query } );
-		} );
-
-		// Refresh the grid when a skin tone is being changed.
-		this.gridView.on( 'change:skinTone', () => {
-			this.search( this.getInputValue() );
-		} );
+		// Pass through the `search` event to handle it by a controller (parent).
+		this.findInputView.delegate( 'search' ).to( this );
 	}
 
 	/**
@@ -101,13 +83,6 @@ export default class EmojiSearchView extends View {
 	 */
 	public setInputValue( value: string ): void {
 		this.findInputView.queryView.fieldView.value = value;
-	}
-
-	/**
-	 * Returns the provided query from the input element if exists. Otherwise, returns an empty string.
-	 */
-	public getInputValue(): string {
-		return this.findInputView.queryView.fieldView.element?.value || '';
 	}
 
 	/**

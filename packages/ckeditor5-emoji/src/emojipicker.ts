@@ -13,7 +13,8 @@ import {
 	ContextualBalloon,
 	Dialog,
 	MenuBarMenuListItemButtonView,
-	SearchInfoView
+	SearchInfoView,
+	type SearchTextViewSearchEvent
 } from 'ckeditor5/src/ui.js';
 import type { Locale, ObservableChangeEvent, PositionOptions } from 'ckeditor5/src/utils.js';
 import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
@@ -256,6 +257,8 @@ export default class EmojiPicker extends Plugin {
 	 * @returns An object with `categoriesView` and `gridView`properties, containing UI parts.
 	 */
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
+		const t = locale.t;
+
 		const gridView = new EmojiGridView( locale, {
 			emojiGroups: this.emojiGroups,
 			categoryName: this.categoryName,
@@ -282,14 +285,8 @@ export default class EmojiPicker extends Plugin {
 		gridView.bind( 'skinTone' ).to( this, 'skinTone' );
 		gridView.bind( 'searchQuery' ).to( this, 'searchQuery' );
 
-		// Update the grid of emojis when selected category changes.
-		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
-			this.categoryName = categoryName;
-			this._balloon.updatePosition();
-		} );
-
 		// Disable the category switcher when filtering by a query.
-		searchView.on( 'input', ( evt, data ) => {
+		searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( data.query ) {
 				categoriesView.disableCategories();
 			} else {
@@ -300,9 +297,32 @@ export default class EmojiPicker extends Plugin {
 			this._balloon.updatePosition();
 		} );
 
+		// Show a user-friendly message when emojis are not found.
+		searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( !data.resultsCount ) {
+				resultsView.set( {
+					primaryText: t( 'No emojis were found matching "%0".', data.query ),
+					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
+					isVisible: true
+				} );
+			} else {
+				resultsView.set( {
+					isVisible: false
+				} );
+			}
+		} );
+
+		// Update the grid of emojis when selected category changes.
+		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
+			this.categoryName = categoryName;
+			this._balloon.updatePosition();
+		} );
+
 		// Update the grid of emojis when selected skin tone changes.
-		toneView.on( 'change:skinTone', ( evt, propertyName, newValue ) => {
+		toneView.on<ObservableChangeEvent>( 'change:skinTone', ( evt, propertyName, newValue ) => {
 			this.skinTone = newValue;
+
+			searchView.search( this.searchQuery );
 		} );
 
 		// Insert an emoji on a tile click.
