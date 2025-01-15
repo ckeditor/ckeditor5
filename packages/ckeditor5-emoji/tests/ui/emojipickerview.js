@@ -8,7 +8,6 @@
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import EmojiCategoriesView from '../../src/ui/emojicategoriesview.js';
 import EmojiGridView from '../../src/ui/emojigridview.js';
-import EmojiInfoView from '../../src/ui/emojiinfoview.js';
 import EmojiPickerView from '../../src/ui/emojipickerview.js';
 import EmojiSearchView from '../../src/ui/emojisearchview.js';
 import EmojiToneView from '../../src/ui/emojitoneview.js';
@@ -25,7 +24,6 @@ describe( 'EmojiPickerView', () => {
 		toneView = new EmojiToneView( locale, 'default' );
 		categoriesView = new EmojiCategoriesView( locale, [ {} ] );
 		gridView = new EmojiGridView( locale );
-		infoView = new EmojiInfoView( locale );
 
 		emojiPickerView = new EmojiPickerView( locale, { searchView, toneView, categoriesView, gridView, infoView } );
 		emojiPickerView.render();

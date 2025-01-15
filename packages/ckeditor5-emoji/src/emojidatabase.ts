@@ -87,60 +87,22 @@ export default class EmojiDatabase extends Plugin {
 		const container = createEmojiWidthTestingContainer();
 
 		this._emojiDatabase = ( await loadEmojiDatabase() )
-			.filter( item => {
-				// Category group=2 contains skin tones only.
-				// It represents invalid elements which we do not want to render.
-				return item.group !== 2;
-			} )
-			.filter( item => {
-				const emojiWidth = getNodeWidth( container, item.emoji );
+			.filter( item => isEmojiGroupAllowed( item ) )
+			.filter( item => EmojiDatabase._isEmojiSupported( item, container ) )
+			.map( item => normalizeEmojiSkinTone( item ) );
 
-				// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
-				// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
-				// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
-				// So here we set the threshold at 1.8 times the size of the baseline emoji.
-				return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
-			} )
-			.map( item => {
-				const entry: EmojiEntry = {
-					...item,
-					skins: {
-						default: item.emoji
-					}
-				};
-
-				if ( item.skins ) {
-					item.skins.forEach( skin => {
-						const skinTone = SKIN_TONE_MAP[ skin.tone ];
-
-						entry.skins[ skinTone ] = skin.emoji;
-					} );
-				}
-
-				return entry;
-			} );
+		container.remove();
 
 		this._fuseSearch = new Fuse( this._emojiDatabase, {
 			keys: [
-				{
-					name: 'emoticon',
-					weight: 5
-				},
-				{
-					name: 'annotation',
-					weight: 3
-				},
-				{
-					name: 'tags',
-					weight: 1
-				}
+				{ name: 'emoticon', weight: 5 },
+				{ name: 'annotation', weight: 3 },
+				{ name: 'tags', weight: 1 }
 			],
 			minMatchCharLength: 2,
 			threshold: 0,
 			ignoreLocation: true
 		} );
-
-		container.remove();
 	}
 
 	/**
@@ -176,6 +138,11 @@ export default class EmojiDatabase extends Plugin {
 			.map( result => result.item );
 	}
 
+	/**
+	 * Groups all emojis by categories.
+	 *
+	 * @returns An array of emoji entries grouped by categories.
+	 */
 	public getEmojiGroups(): Array<EmojiCategory> {
 		const groups = groupBy( this._emojiDatabase, 'group' );
 
@@ -186,6 +153,13 @@ export default class EmojiDatabase extends Plugin {
 			};
 		} );
 	}
+
+	/**
+	 * A function used to check if the given emoji is supported in the operating system.
+	 *
+	 * Referenced for unit testing purposes.
+	 */
+	private static _isEmojiSupported = isEmojiSupported;
 }
 
 /**
@@ -194,20 +168,28 @@ export default class EmojiDatabase extends Plugin {
  * @returns A promise that resolves with an array of emoji entries.
  */
 async function loadEmojiDatabase(): Promise<Array<EmojiCdnResource>> {
-	const response = await fetch( EMOJI_DATABASE_URL );
+	const result = await fetch( EMOJI_DATABASE_URL )
+		.then( response => {
+			if ( !response.ok ) {
+				return [];
+			}
 
-	if ( !response.ok ) {
+			return response.json();
+		} )
+		.catch( () => {
+			return [];
+		} );
+
+	if ( !result.length ) {
 		/**
 		 * Unable to load the emoji database from CDN.
 		 *
 		 * @error emoji-database-load-failed
 		 */
 		logWarning( 'emoji-database-load-failed' );
-
-		return [];
 	}
 
-	return response.json();
+	return result;
 }
 
 /**
@@ -237,6 +219,49 @@ function getNodeWidth( container: HTMLDivElement, node: string ): number {
 	container.removeChild( span );
 
 	return nodeWidth;
+}
+
+/**
+ * Checks whether the emoji is supported in the operating system.
+ */
+function isEmojiSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
+	const emojiWidth = getNodeWidth( container, item.emoji );
+
+	// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
+	// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
+	// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
+	// So here we set the threshold at 1.8 times the size of the baseline emoji.
+	return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
+}
+
+/**
+ * Adds default skin tone property to each emoji. If emoji defines other skin tones, they are added as well.
+ */
+function normalizeEmojiSkinTone( item: EmojiCdnResource ): EmojiEntry {
+	const entry: EmojiEntry = {
+		...item,
+		skins: {
+			default: item.emoji
+		}
+	};
+
+	if ( item.skins ) {
+		item.skins.forEach( skin => {
+			const skinTone = SKIN_TONE_MAP[ skin.tone ];
+
+			entry.skins[ skinTone ] = skin.emoji;
+		} );
+	}
+
+	return entry;
+}
+
+/**
+ * Checks whether the emoji belongs to a group that is allowed.
+ */
+function isEmojiGroupAllowed( item: EmojiCdnResource ): boolean {
+	// Category group=2 contains skin tones only, which we do not want to render.
+	return item.group !== 2;
 }
 
 /**
