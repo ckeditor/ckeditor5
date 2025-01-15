@@ -20,11 +20,7 @@ import TextAlternativeFormView, {
 	type TextAlternativeFormViewCancelEvent,
 	type TextAlternativeFormViewSubmitEvent
 } from './ui/textalternativeformview.js';
-import {
-	repositionContextualBalloon,
-	getBalloonPositionData,
-	type PositionOptions
-} from '../image/ui/utils.js';
+import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils.js';
 import type ImageTextAlternativeCommand from './imagetextalternativecommand.js';
 import type ImageUtils from '../imageutils.js';
 
