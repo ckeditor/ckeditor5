@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -667,11 +667,21 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 				yield startBlock as any;
 			}
 
-			for ( const value of range.getWalker() ) {
+			const treewalker = range.getWalker();
+
+			for ( const value of treewalker ) {
 				const block = value.item;
 
 				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
 					yield block as Element;
+				}
+				// If element is block, we can skip its children and jump to the end of it.
+				else if (
+					value.type == 'elementStart' &&
+					block.is( 'model:element' ) &&
+					block.root.document!.model.schema.isBlock( block )
+				) {
+					treewalker.jumpTo( Position._createAt( block, 'end' ) );
 				}
 			}
 
