@@ -306,6 +306,18 @@ describe( 'TooltipManager', () => {
 					} );
 				} );
 
+				it( 'should pin a tooltip instantly if element has a `data-cke-tooltip-instant` attribute', () => {
+					elements.a.dataset.ckeTooltipInstant = true;
+
+					utils.dispatchMouseEnter( elements.a );
+
+					sinon.assert.calledOnce( pinSpy );
+					sinon.assert.calledWith( pinSpy, {
+						target: elements.a,
+						positions: sinon.match.array
+					} );
+				} );
+
 				it( 'should pin just a single tooltip (singleton)', async () => {
 					const secondEditor = await ClassicTestEditor.create( element, {
 						plugins: [ Paragraph, Bold, Italic ],
@@ -697,6 +709,19 @@ describe( 'TooltipManager', () => {
 				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
 
 				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should remove the tooltip immediately if the element has `data-cke-tooltip-instant` attribute', () => {
+				elements.a.dataset.ckeTooltipInstant = true;
+
+				utils.dispatchMouseEnter( elements.a );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
+
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
