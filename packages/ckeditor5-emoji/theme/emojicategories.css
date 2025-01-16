@@ -15,19 +15,17 @@
 		border-bottom-color: transparent;
 
 		padding: 0;
-		
-		font-size: 1.5em;
-		min-width: 1.5em;
-		min-height: 1.5em;
+
+		font-size: var(--ck-font-size-big);
+		min-width: var(--ck-font-size-big);
+		min-height: var(--ck-font-size-big);
 
 		&.ck-active-category {
 			border-bottom-color: var(--ck-color-base-active);
 		}
 
-		& > span {
-			/* width: 100%; */
+		> span {
 			margin: auto;
-			text-align: center;
 		}
 	}
 }

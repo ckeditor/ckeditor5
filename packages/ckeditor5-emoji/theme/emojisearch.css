@@ -5,6 +5,6 @@
 
 .ck.ck-emoji-picker {
 	& .ck.ck-emoji-input.ck-search {
-		width: 240px;
+		/* width: 250px; */
 	}
 }

@@ -14,7 +14,7 @@
 			}
 
 			> span.ck.ck-button__label {
-				font-size: 1.5em;
+				font-size: var(--ck-font-size-big);
 				width: fit-content;
 			}
 		}
@@ -28,7 +28,7 @@
 						flex-direction: row-reverse;
 
 						> span.ck.ck-button__label {
-							font-size: 1.5em;
+							font-size: var(--ck-font-size-big);
 						}
 					}
 				}
