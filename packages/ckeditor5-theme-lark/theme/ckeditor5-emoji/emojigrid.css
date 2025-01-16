@@ -19,7 +19,7 @@
 		& .ck-emoji-grid__tiles {
 			grid-template-columns: repeat(auto-fill, minmax(var(--ck-emoji-grid-tile-size), 1fr));
 			margin: var(--ck-spacing-standard) var(--ck-spacing-large);
-			grid-gap: 5px;
+			grid-gap: var(--ck-spacing-small);
 		}
 
 		& .ck-emoji-grid__tile {
