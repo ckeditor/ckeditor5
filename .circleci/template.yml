@@ -151,7 +151,6 @@ jobs:
       - run:
           when: always
           name: Check if all editor icon SVGs are properly defined
-          working_directory: external/ckeditor5-commercial
           command: yarn run validate-svg-icons
 
   cke5_coverage:
