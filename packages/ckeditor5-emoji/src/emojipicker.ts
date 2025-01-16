@@ -154,7 +154,7 @@ export default class EmojiPicker extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Emoji' ),
-			icon: icons.cog,
+			icon: icons.emoji,
 			isToggleable: true
 		} );
 
