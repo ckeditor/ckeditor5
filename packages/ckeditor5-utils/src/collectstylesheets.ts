@@ -57,7 +57,7 @@ function getEditorStyles(): string {
 	if ( !editorStyles.length ) {
 		console.warn(
 			'The editor stylesheet could not be found in the document. ' +
-			'Check your webpack config – style-loader should use data-cke=true attribute for the editor stylesheet.'
+			'Check your webpack config - style-loader should use data-cke=true attribute for the editor stylesheet.'
 		);
 	}
 
