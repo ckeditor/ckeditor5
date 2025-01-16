@@ -240,7 +240,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+				test: /ckeditor5-icons\/theme\/icons\/[^/\\]+\.svg$/,
 
 				use: [ 'raw-loader' ]
 			},

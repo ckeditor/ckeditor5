@@ -450,7 +450,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 
 ```js
 {
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	test: /ckeditor5-icons\/theme\/icons\/[^/\\]+\.svg$/,
 	use: [ 'raw-loader' ]
 },
 {
