@@ -135,6 +135,6 @@ msgctxt "The label used by assistive technologies describing a button that opens
 msgid "Color picker"
 msgstr "Вибір кольору"
 
-msgctxt "The secondary text of the message shown to the user when no templates are available for the search criteria."
+msgctxt "The secondary text of the message shown to the user when no results are available for the search criteria."
 msgid "Please try a different phrase or check the spelling."
 msgstr "Будь ласка, спробуйте іншу фразу або перевірте написання."

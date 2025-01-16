@@ -30,5 +30,5 @@
 	"Accept": "Label of the button confirming the changes done in the current interface.",
 	"Paragraph": "Dropdown option label for the paragraph format.",
 	"Color picker": "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.).",
-	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no templates are available for the search criteria."
+	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no results are available for the search criteria."
 }
