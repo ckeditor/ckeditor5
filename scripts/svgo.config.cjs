@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+const svgoViewBoxPlugin = require( './utils/svgo-viewBox-plugin.cjs' );
+
 /* eslint-env node */
 
 module.exports = {
@@ -28,6 +30,7 @@ module.exports = {
 		},
 		{ name: 'removeTitle' },
 		{ name: 'removeComments' },
-		{ name: 'removeMetadata' }
+		{ name: 'removeMetadata' },
+		svgoViewBoxPlugin
 	]
 };
