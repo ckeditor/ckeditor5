@@ -273,7 +273,8 @@ export default class EmojiPicker extends Plugin {
 			resultsView
 		} );
 		const toneView = new EmojiToneView( locale, {
-			skinTone: this.skinTone
+			skinTone: this.skinTone,
+			skinTones: this._emojiDatabase.getSkinTones()
 		} );
 		const categoriesView = new EmojiCategoriesView( locale, {
 			emojiGroups: this.emojiGroups,

@@ -17,23 +17,9 @@ import {
 } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from '../emojiconfig.js';
+import type { SkinTone } from '../emojidatabase.js';
 
 import '../../theme/emojitone.css';
-
-const SKIN_TONES: Array<SkinTone> = [
-	{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
-	{ id: 'light', icon: '👋🏻', tooltip: 'Light skin tone' },
-	{ id: 'medium-light', icon: '👋🏼', tooltip: 'Medium Light skin tone' },
-	{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
-	{ id: 'medium-dark', icon: '👋🏾', tooltip: 'Medium Dark skin tone' },
-	{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
-];
-
-type SkinTone = {
-	id: SkinToneId;
-	icon: string;
-	tooltip: string;
-};
 
 export default class EmojiToneView extends View {
 	/**
@@ -54,19 +40,27 @@ export default class EmojiToneView extends View {
 	public readonly dropdownButtons: ViewCollection<ListItemButtonView>;
 
 	/**
+	 * An array of available skin tones.
+	 */
+	private readonly _skinTones: Array<SkinTone>;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { skinTone }: { skinTone: SkinToneId } ) {
+	constructor( locale: Locale, { skinTone, skinTones }: { skinTone: SkinToneId; skinTones: Array<SkinTone> } ) {
 		super( locale );
 
 		const t = locale.t;
 
 		this.set( 'skinTone', skinTone );
 
+		this._skinTones = skinTones;
 		this.mainDropdownButton = new DropdownButtonView();
+
 		const dropdownView = createDropdown( locale, this.mainDropdownButton );
+
 		this.dropdownButtons = new ViewCollection(
-			SKIN_TONES.map( ( { id, icon, tooltip } ) => this._createButton( locale, id, icon, tooltip ) )
+			this._skinTones.map( ( { id, icon, tooltip } ) => this._createButton( locale, id, icon, tooltip ) )
 		);
 
 		this.mainDropdownButton.withText = true;
@@ -126,7 +120,10 @@ export default class EmojiToneView extends View {
 		return buttonView;
 	}
 
+	/**
+	 * Helper method for receiving an object describing the active skin tone.
+	 */
 	private _getSkinTone( skinToneId: SkinToneId ): SkinTone {
-		return SKIN_TONES.find( tone => tone.id === skinToneId )!;
+		return this._skinTones.find( tone => tone.id === skinToneId )!;
 	}
 }

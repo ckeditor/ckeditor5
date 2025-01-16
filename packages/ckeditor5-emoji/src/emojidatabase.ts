@@ -27,18 +27,6 @@ const SKIN_TONE_MAP: Record<number, SkinToneId> = {
 	5: 'dark'
 };
 
-const CATEGORIES = [
-	{ title: 'Smileys & Expressions', icon: '😀', groupId: 0 },
-	{ title: 'Gestures & People', icon: '👋', groupId: 1 },
-	{ title: 'Animals & Nature', icon: '🐻', groupId: 3 },
-	{ title: 'Food & Drinks', icon: '🍎', groupId: 4 },
-	{ title: 'Travel & Places', icon: '🚘', groupId: 5 },
-	{ title: 'Activities', icon: '🏀', groupId: 6 },
-	{ title: 'Objects', icon: '💡', groupId: 7 },
-	{ title: 'Symbols', icon: '🟢', groupId: 8 },
-	{ title: 'Flags', icon: '🏁', groupId: 9 }
-];
-
 const BASELINE_EMOJI_WIDTH = 24;
 
 /**
@@ -155,13 +143,42 @@ export default class EmojiDatabase extends Plugin {
 	 */
 	public getEmojiGroups(): Array<EmojiCategory> {
 		const groups = groupBy( this._emojiDatabase, 'group' );
+		const { t } = this.editor.locale;
 
-		return CATEGORIES.map( category => {
+		const categories = [
+			{ title: t( 'Smileys & Expressions' ), icon: '😀', groupId: 0 },
+			{ title: t( 'Gestures & People' ), icon: '👋', groupId: 1 },
+			{ title: t( 'Animals & Nature' ), icon: '🐻', groupId: 3 },
+			{ title: t( 'Food & Drinks' ), icon: '🍎', groupId: 4 },
+			{ title: t( 'Travel & Places' ), icon: '🚘', groupId: 5 },
+			{ title: t( 'Activities' ), icon: '🏀', groupId: 6 },
+			{ title: t( 'Objects' ), icon: '💡', groupId: 7 },
+			{ title: t( 'Symbols' ), icon: '🟢', groupId: 8 },
+			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
+		];
+
+		return categories.map( category => {
 			return {
 				...category,
 				items: groups[ category.groupId ]
 			};
 		} );
+	}
+
+	/**
+	 * Returns an array of available skin tones.
+	 */
+	public getSkinTones(): Array<SkinTone> {
+		const { t } = this.editor.locale;
+
+		return [
+			{ id: 'default', icon: '👋', tooltip: t( 'Default skin tone' ) },
+			{ id: 'light', icon: '👋🏻', tooltip: t( 'Light skin tone' ) },
+			{ id: 'medium-light', icon: '👋🏼', tooltip: t( 'Medium Light skin tone' ) },
+			{ id: 'medium', icon: '👋🏽', tooltip: t( 'Medium skin tone' ) },
+			{ id: 'medium-dark', icon: '👋🏾', tooltip: t( 'Medium Dark skin tone' ) },
+			{ id: 'dark', icon: '👋🏿', tooltip: t( 'Dark skin tone' ) }
+		];
 	}
 
 	/**
@@ -331,4 +348,13 @@ export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
  */
 export type EmojiMap = { [K in Exclude<SkinToneId, 'default'>]?: string; } & {
 	default: string;
+};
+
+/**
+ * Represents an emoji skin tone variant.
+ */
+export type SkinTone = {
+	id: SkinToneId;
+	icon: string;
+	tooltip: string;
 };
