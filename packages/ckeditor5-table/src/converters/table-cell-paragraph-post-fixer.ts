@@ -100,7 +100,7 @@ function fixTableRow( tableRow: Element, writer: Writer ) {
  */
 function fixTableCellContent( tableCell: Element, writer: Writer ) {
 	// Insert paragraph to an empty table cell.
-	if ( tableCell.childCount == 0 ) {
+	if ( tableCell.childCount == 0 && !tableCell.hasAttribute( 'htmlEmptyBlock' ) ) {
 		// @if CK_DEBUG_TABLE // console.log( 'Post-fixing table: insert paragraph in empty cell.' );
 
 		writer.insertElement( 'paragraph', tableCell );

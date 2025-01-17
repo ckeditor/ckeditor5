@@ -142,7 +142,7 @@ describe( 'EmptyBlocks', () => {
 			editor.setData( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<table><tableRow><tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell></tableRow></table>'
+				'<table><tableRow><tableCell htmlEmptyBlock="true"></tableCell></tableRow></table>'
 			);
 		} );
 
@@ -161,7 +161,7 @@ describe( 'EmptyBlocks', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>foo</paragraph></tableCell>' +
-						'<tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell>' +
+						'<tableCell htmlEmptyBlock="true"></tableCell>' +
 						'<tableCell><paragraph>bar</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -172,11 +172,23 @@ describe( 'EmptyBlocks', () => {
 			);
 		} );
 
-		it( 'should not set htmlEmptyBlock attribute on table cell with whitespace', () => {
+		it( 'should set htmlEmptyBlock attribute on table cell with whitespace', () => {
 			editor.setData( '<figure class="table"><table><tbody><tr><td> </td></tr></tbody></table></figure>' );
 
 			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td>&nbsp;</td></tr></tbody></table></figure>'
+				'<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should not add auto paragraphs to empty table cells with htmlEmptyBlock', () => {
+			editor.setData( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table><tableRow><tableCell htmlEmptyBlock="true"></tableCell></tableRow></table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>'
 			);
 		} );
 	} );
