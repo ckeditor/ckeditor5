@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -175,6 +175,8 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
 		const button = new ButtonView( view.locale );
 
 		button.set( {
+			role: 'radio',
+			isToggleable: true,
 			label: labels[ name ],
 			icon: icons[ name ],
 			tooltip: labels[ name ]
