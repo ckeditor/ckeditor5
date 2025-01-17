@@ -68,6 +68,12 @@ export default class EmptyBlocks extends Plugin {
 			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
 		} );
 
+		if ( schema.isRegistered( 'tableCell' ) ) {
+			schema.extend( 'tableCell', {
+				allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
+			} );
+		}
+
 		// Upcast conversion - detect empty elements.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {

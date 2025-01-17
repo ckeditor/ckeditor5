@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import EmptyBlocks from '../src/emptyblocks.js';
@@ -20,7 +21,7 @@ describe( 'EmptyBlocks', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, EmptyBlocks ]
+			plugins: [ Paragraph, TableEditing, EmptyBlocks ]
 		} );
 
 		model = editor.model;
@@ -133,6 +134,50 @@ describe( 'EmptyBlocks', () => {
 			);
 
 			expect( editor.getData() ).to.equal( '<p></p><p>foo</p><p></p>' );
+		} );
+	} );
+
+	describe( 'table integration', () => {
+		it( 'should set htmlEmptyBlock attribute on empty table cell', () => {
+			editor.setData( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table><tableRow><tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell></tableRow></table>'
+			);
+		} );
+
+		it( 'should preserve empty table cells in data output', () => {
+			editor.setData( '<figure class="table"><table><tbody><tr><td></td><td>foo</td><td></td></tr></tbody></table></figure>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td></td><td>foo</td><td></td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should preserve empty cells mixed with non-empty ones', () => {
+			editor.setData( '<figure class="table"><table><tbody><tr><td>foo</td><td></td><td>bar</td></tr></tbody></table></figure>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>foo</paragraph></tableCell>' +
+						'<tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph>bar</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td>foo</td><td></td><td>bar</td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should not set htmlEmptyBlock attribute on table cell with whitespace', () => {
+			editor.setData( '<figure class="table"><table><tbody><tr><td> </td></tr></tbody></table></figure>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td>&nbsp;</td></tr></tbody></table></figure>'
+			);
 		} );
 	} );
 
