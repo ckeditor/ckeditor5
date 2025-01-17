@@ -948,17 +948,20 @@ describe( 'Mapper', () => {
 } );
 
 describe( 'MapperCache', () => {
-	let cache, viewContainer, viewDocument, viewTextAb, viewSpan, viewEm, viewTextCd, viewTextEf, viewTextGh;
+	let cache, viewContainer, viewDocument, viewTextAb, viewSpan, viewEm, viewB, viewTextCd, viewTextE, viewTextF, viewTextGh;
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		cache = new MapperCache();
 
-		// <p>ab<span>cd<em>ef</em></span>gh</p>.
+		// <p>ab<span>cd<em><b>e</b>f</em></span>gh</p>.
 		viewTextAb = new ViewText( viewDocument, 'ab' );
 		viewTextCd = new ViewText( viewDocument, 'cd' );
-		viewTextEf = new ViewText( viewDocument, 'ef' );
-		viewEm = new ViewAttributeElement( viewDocument, 'em', null, [ viewTextEf ] );
+		viewTextE = new ViewText( viewDocument, 'e' );
+		viewTextF = new ViewText( viewDocument, 'f' );
+
+		viewB = new ViewAttributeElement( viewDocument, 'b', null, [ viewTextE ] );
+		viewEm = new ViewAttributeElement( viewDocument, 'em', null, [ viewB, viewTextF ] );
 		viewSpan = new ViewAttributeElement( viewDocument, 'span', null, [ viewTextCd, viewEm ] );
 		viewTextGh = new ViewText( viewDocument, 'gh' );
 		viewContainer = new ViewElement( viewDocument, 'p', null, [ viewTextAb, viewSpan, viewTextGh ] );
@@ -986,13 +989,13 @@ describe( 'MapperCache', () => {
 
 		it( 'should return previously saved position (deep)', () => {
 			cache.startTracking( viewContainer );
-			cache.save( viewEm, 0, viewContainer, 4 );
+			cache.save( viewEm, 1, viewContainer, 5 );
 
-			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 4 );
+			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 5 );
 
 			expect( viewPosition.parent ).to.equal( viewEm );
-			expect( viewPosition.offset ).to.equal( 0 );
-			expect( modelOffset ).to.equal( 4 );
+			expect( viewPosition.offset ).to.equal( 1 );
+			expect( modelOffset ).to.equal( 5 );
 		} );
 
 		it( 'should return closest saved position if exact position was not saved', () => {
@@ -1008,13 +1011,13 @@ describe( 'MapperCache', () => {
 
 		it( 'should return closest saved position if exact position was not saved (deep)', () => {
 			cache.startTracking( viewContainer );
-			cache.save( viewEm, 0, viewContainer, 4 );
+			cache.save( viewEm, 1, viewContainer, 5 );
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 8 );
 
 			expect( viewPosition.parent ).to.equal( viewEm );
-			expect( viewPosition.offset ).to.equal( 0 );
-			expect( modelOffset ).to.equal( 4 );
+			expect( viewPosition.offset ).to.equal( 1 );
+			expect( modelOffset ).to.equal( 5 );
 		} );
 
 		it( 'should return closest saved position if exact position was not saved (multiple saved positions)', () => {
@@ -1036,7 +1039,7 @@ describe( 'MapperCache', () => {
 		it( 'should hoist returned position', () => {
 			cache.startTracking( viewContainer );
 
-			cache.save( viewEm, 1, viewContainer, 6 );
+			cache.save( viewEm, 2, viewContainer, 6 );
 
 			check( 6, viewContainer, 2, 6 );
 		} );
@@ -1079,7 +1082,7 @@ describe( 'MapperCache', () => {
 			cache.save( viewSpan, 1, viewContainer, 4 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>ef</em></span>^gh</p> -> <p>ab<span>cd<em>ef</em></span><strong></strong>gh</p>.
+			// <p>ab<span>cd<em><b>e</b>f</em></span>^gh</p> -> <p>ab<span>cd<em><b>e</b>f</em></span><strong></strong>gh</p>.
 			// This should invalidate cache starting from `<span>` (yes, that's correct, we invalidate a bit more than necessary).
 			viewContainer._insertChild( 2, new ViewAttributeElement( viewDocument, 'strong' ) );
 
@@ -1103,7 +1106,7 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>^ef</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// <p>ab<span>cd<em>^<b>e</b>f</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong><b>e</b>f</em></span>gh</p>.
 			// This should invalidate cache starting from `<em>`.
 			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
 
@@ -1127,7 +1130,7 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>^ef</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// <p>ab<span>cd<em>^<b>e</b>f</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong><b>e</b>f</em></span>gh</p>.
 			// This should invalidate cache starting from before `<span>` (not before `<em>`).
 			// That's because `<em>` is not cached, so we invalidate starting from before its parent.
 			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
@@ -1149,7 +1152,7 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>^ef</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// <p>ab<span>cd<em>^<b>e</b>f</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong><b>e</b>f</em></span>gh</p>.
 			// This should invalidate cache starting from before `<span>` (not before `<em>`).
 			// That's because `<em>` is not cached, so we invalidate starting from before its parent.
 			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
@@ -1164,13 +1167,12 @@ describe( 'MapperCache', () => {
 		} );
 
 		it( 'nothing happens if change is after valid cache', () => {
-			// This is a similar scenario as above, but this time, `<em>` -- the direct parent of insertion -- is not cached.
 			cache.startTracking( viewContainer );
 
 			cache.save( viewContainer, 1, viewContainer, 2 );
 			cache.save( viewContainer, 2, viewContainer, 6 );
 
-			// <p>ab<span>cd<em>ef</em></span>gh^</p> -> <p>ab<span>cd<em><strong></strong>ef</em></span>gh</p>.
+			// <p>ab<span>cd<em>ef</em></span>gh^</p> -> <p>ab<span>cd<em>ef</em></span>gh<strong></strong></p>.
 			// Only `<span>` was cached so far.
 			viewContainer._insertChild( 3, new ViewAttributeElement( viewDocument, 'strong' ) );
 
@@ -1193,7 +1195,7 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>^ab<span>cd<em>ef</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em>ef</em></span>gh</p>.
+			// <p>^ab<span>cd<em><b>e</b>f</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em><b>e</b>f</em></span>gh</p>.
 			// This should invalidate all cache.
 			viewContainer._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
 
@@ -1211,7 +1213,7 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>ef</em></span>gh^</p> -> <p><strong></strong>ab<span>cd<em>ef</em></span>ghi</p>.
+			// <p>ab<span>cd<em><b>e</b>f</em></span>gh^</p> -> <p><strong></strong>ab<span>cd<em><b>e</b>f</em></span>ghi</p>.
 			// This should invalidate cache starting from before `"ghi"`.
 			viewTextGh._data = 'ghi';
 
@@ -1233,9 +1235,9 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>ef^</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em>efx</em></span></p>.
-			// This should invalidate cache starting from before `"efx"`.
-			viewTextEf._data = 'efx';
+			// <p>ab<span>cd<em><b>e^</b>f</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em><b>ex</b>f</em></span></p>.
+			// This should invalidate cache starting from before `"ex"`.
+			viewTextE._data = 'ex';
 
 			// Retained cached:
 			check( 2, viewContainer, 1, 2 );
@@ -1254,9 +1256,9 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>ef^</em></span>gh^</p> -> <p><strong></strong>ab<span>cd<em>efx</em></span></p>.
-			// This should invalidate cache starting from before `"ghi"`.
-			viewTextEf._data = 'efx';
+			// <p>ab<span>cd<em><b>e^</b>f</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em><b>ex</b>f</em></span></p>.
+			// This should invalidate cache starting from before `"ex"`.
+			viewTextE._data = 'ex';
 
 			// Retained cached:
 			check( 2, viewContainer, 1, 2 );

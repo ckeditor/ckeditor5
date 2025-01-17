@@ -866,10 +866,11 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	};
 
 	/**
-	 * Saves cache for given view position mapping <-> model offset mapping.
+	 * Saves cache for given view position mapping <-> model offset mapping. The view position should be after a node (i.e. it cannot
+	 * be the first position inside its parent, or in other words, `viewOffset` must be greater than `0`).
 	 *
 	 * @param viewParent View position parent.
-	 * @param viewOffset View position offset.
+	 * @param viewOffset View position offset. Must be greater than `0`.
 	 * @param viewContainer Tracked view position ascendant (it may be the direct parent of the view position).
 	 * @param modelOffset Model offset in the model element or document fragment which is mapped to `viewContainer`.
 	 */
@@ -893,16 +894,20 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 			// `Mapper#getModelLength()` are implemented so that parents are cached before their children.
 			//
 			// So, don't create new cache if one already exists. Instead, only save `_nodeToCacheListIndex` value for the related view node.
-			if ( viewOffset > 0 ) {
-				const viewChild = viewParent.getChild( viewOffset - 1 )!;
+			const viewChild = viewParent.getChild( viewOffset - 1 )!;
 
-				// Figure out what index to save with `viewChild`.
-				// We have a `cacheItem` for the `modelOffset`, so we can get a `viewPosition` from there. Before that position, there
-				// must be a node. That node must have an index set. This will be the index we will want to use.
-				const index = this._nodeToCacheListIndex.get( cacheItem.viewPosition.nodeBefore! )!;
+			// Figure out what index to save with `viewChild`.
+			// We have a `cacheItem` for the `modelOffset`, so we can get a `viewPosition` from there. Before that view position, there
+			// must be a node. That node must have an index set. This will be the index we will want to use.
+			// Since we expect `viewOffset` to be greater than 0, then in almost all cases `modelOffset` will be greater than 0 as well.
+			// As a result, we can expect `cacheItem.viewPosition.nodeBefore` to be set.
+			//
+			// However, in an edge case, were the tracked element contains a 0-model-length view element as the first child (UI element or
+			// an empty attribute element), then `modelOffset` will be 0, and `cacheItem` will be the first cache item, which is before any
+			// view node. In such edge case, `cacheItem.viewPosition.nodeBefore` is undefined, and we manually set to `0`.
+			const index = cacheItem.viewPosition.nodeBefore ? this._nodeToCacheListIndex.get( cacheItem.viewPosition.nodeBefore )! : 0;
 
-				this._nodeToCacheListIndex.set( viewChild, index );
-			}
+			this._nodeToCacheListIndex.set( viewChild, index );
 
 			return;
 		}
@@ -1168,6 +1173,16 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	 * Clears all the cache in the cache list related to given `viewContainer`, starting from `index` (inclusive).
 	 */
 	private _clearCacheFromIndex( viewContainer: ViewElement | ViewDocumentFragment, index: number ) {
+		if ( index === 0 ) {
+			// Don't remove the first entry in the cache (this entry is always a mapping between view offset 0 <-> model offset 0,
+			// and it is a default value that is always expected to be in the cache list).
+			//
+			// The cache mechanism may ask to clear from index `0` in a case where a 0-model-length view element (UI element or empty
+			// attribute element) was at the beginning of tracked element. In such scenario, the view element is mapped through
+			// `nodeToCacheListIndex` to index `0`.
+			index = 1;
+		}
+
 		// Cache is always available here because we initialize it just before adding a listener that fires `_clearCacheFromIndex()`.
 		const cache = this._cachedMapping.get( viewContainer )!;
 		const cacheItem = cache.cacheList[ index - 1 ];
