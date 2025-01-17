@@ -507,7 +507,7 @@ describe( 'ClipboardPipeline feature', () => {
 				sinon.assert.calledWith( spy, editor.id );
 			} );
 
-			it( 'should contain editor ID when pasting content copied from the same editor', () => {
+			it( 'should contain an editor ID when pasting content copied from the same editor', () => {
 				const spy = sinon.spy();
 
 				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
