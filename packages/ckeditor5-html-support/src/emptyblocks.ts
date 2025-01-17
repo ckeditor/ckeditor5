@@ -68,14 +68,20 @@ export default class EmptyBlocks extends Plugin {
 			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
 		} );
 
-		if ( schema.isRegistered( 'tableCell' ) ) {
-			schema.extend( 'tableCell', {
-				allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
-			} );
-		}
-
 		// Upcast conversion - detect empty elements.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			// Prevent table cells from being filled with empty paragraphs.
+			// It has slightly higher priority to ensure that it runs before the next handler.
+			dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
+				const { viewItem, modelRange } = data;
+				const modelElement = modelRange && modelRange.start.nodeAfter as Element;
+
+				if ( modelElement && modelElement.name === 'tableCell' && viewItem.isEmpty ) {
+					conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
+				}
+			} );
+
+			// Handle other empty elements.
 			dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 				const { viewItem, modelRange } = data;
 
@@ -88,7 +94,7 @@ export default class EmptyBlocks extends Plugin {
 				if ( modelElement && schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
 					conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
 				}
-			} );
+			}, { priority: 'lowest' } );
 		} );
 
 		// Data downcast conversion - prevent filler in empty elements.

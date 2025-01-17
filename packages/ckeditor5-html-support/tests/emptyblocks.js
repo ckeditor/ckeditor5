@@ -8,23 +8,28 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import EmptyBlocks from '../src/emptyblocks.js';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
 describe( 'EmptyBlocks', () => {
-	let editor, model, element;
+	let editor, model, element, view;
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, TableEditing, EmptyBlocks ]
+			plugins: [ Paragraph, TableEditing, EmptyBlocks, Heading, ListEditing, BlockQuote ]
 		} );
 
 		model = editor.model;
+		view = editor.editing.view;
 	} );
 
 	afterEach( async () => {
@@ -45,8 +50,22 @@ describe( 'EmptyBlocks', () => {
 	} );
 
 	describe( 'schema', () => {
+		it( 'should allow htmlEmptyBlock attribute on block elements', () => {
+			expect( model.schema.checkAttribute( [ 'paragraph' ], 'htmlEmptyBlock' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ 'heading1' ], 'htmlEmptyBlock' ) ).to.be.true;
+		} );
+
+		it( 'should not allow htmlEmptyBlock attribute on inline elements', () => {
+			model.schema.register( 'testInline', { isInline: true } );
+			expect( model.schema.checkAttribute( [ 'testInline' ], 'htmlEmptyBlock' ) ).to.be.false;
+		} );
+
 		it( 'should allow htmlEmptyBlock attribute on $block', () => {
 			expect( model.schema.checkAttribute( [ '$block' ], 'htmlEmptyBlock' ) ).to.be.true;
+		} );
+
+		it( 'should allow htmlEmptyBlock attribute on $container', () => {
+			expect( model.schema.checkAttribute( [ '$container' ], 'htmlEmptyBlock' ) ).to.be.true;
 		} );
 	} );
 
@@ -190,6 +209,61 @@ describe( 'EmptyBlocks', () => {
 			expect( editor.getData() ).to.equal(
 				'<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>'
 			);
+		} );
+	} );
+
+	describe( 'editing pipeline', () => {
+		it( 'should preserve empty paragraph in editing view', () => {
+			setModelData( model, '<paragraph htmlEmptyBlock="true"></paragraph>' );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<p></p>' );
+		} );
+	} );
+
+	describe( 'other block elements', () => {
+		it( 'should set htmlEmptyBlock on empty heading', () => {
+			editor.setData( '<h2></h2>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<heading1 htmlEmptyBlock="true"></heading1>'
+			);
+		} );
+
+		it( 'should preserve empty heading in output', () => {
+			editor.setData( '<paragraph>A</paragraph><h2></h2>' );
+			expect( editor.getData() ).to.equal( '<p>A</p><h2></h2>' );
+		} );
+
+		it( 'should set htmlEmptyBlock on empty list item', () => {
+			editor.setData( '<ul><li></li></ul>' );
+
+			const modelData = getModelData( model, { withoutSelection: true } );
+			const normalizedData = modelData.replace( / listItemId="[^"]+"/g, '' );
+
+			expect( normalizedData )
+				.to.equal( '<paragraph htmlEmptyBlock="true" listIndent="0" listType="bulleted"></paragraph>' );
+		} );
+
+		it( 'should preserve mixed empty and non-empty block elements', () => {
+			editor.setData( '<h2></h2><p>foo</p><h3></h3>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<heading1 htmlEmptyBlock="true"></heading1>' +
+				'<paragraph>foo</paragraph>' +
+				'<heading2 htmlEmptyBlock="true"></heading2>'
+			);
+
+			expect( editor.getData() ).to.equal( '<h2></h2><p>foo</p><h3></h3>' );
+		} );
+
+		it( 'should handle nested empty blocks', () => {
+			editor.setData( '<p>A</p><blockquote><p></p></blockquote>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>A</paragraph><blockQuote><paragraph htmlEmptyBlock="true"></paragraph></blockQuote>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p>A</p><blockquote><p></p></blockquote>' );
 		} );
 	} );
 
