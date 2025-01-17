@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { UpcastElementEvent, Element } from 'ckeditor5/src/engine.js';
+import type { UpcastElementEvent, Element, DowncastDispatcher } from 'ckeditor5/src/engine.js';
 
 const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
 
@@ -59,8 +59,12 @@ export default class EmptyBlocks extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		// Register the attribute for block elements.
+		// Register the attribute for block and container elements.
 		schema.extend( '$block', {
+			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
+		} );
+
+		schema.extend( '$container', {
 			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
 		} );
 
@@ -75,14 +79,14 @@ export default class EmptyBlocks extends Plugin {
 
 				const modelElement = modelRange && modelRange.start.nodeAfter as Element;
 
-				if ( modelElement && schema.isBlock( modelElement ) ) {
+				if ( modelElement && schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
 					conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
 				}
 			} );
 		} );
 
 		// Data downcast conversion - prevent filler in empty elements.
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+		const downcastDispatcher = ( dispatcher: DowncastDispatcher ) => {
 			dispatcher.on( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
 				const { item } = data;
 				const viewElement = conversionApi.mapper.toViewElement( item as Element );
@@ -91,6 +95,9 @@ export default class EmptyBlocks extends Plugin {
 					viewElement.getFillerOffset = () => null;
 				}
 			} );
-		} );
+		};
+
+		editor.conversion.for( 'dataDowncast' ).add( downcastDispatcher );
+		editor.conversion.for( 'editingDowncast' ).add( downcastDispatcher );
 	}
 }
