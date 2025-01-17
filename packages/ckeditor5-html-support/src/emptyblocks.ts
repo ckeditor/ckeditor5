@@ -16,15 +16,11 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * This plugin allows for preserving empty block elements in the editor content instead of
  * automatically filling them with block fillers (`&nbsp;`).
  *
- * Empty elements are detected during upcast and marked with a special attribute.
- * During downcast, elements with this attribute have their `getFillerOffset` set to `null`
- * which prevents adding block fillers.
- *
  * This is useful when you want to:
  *
  *	* Preserve empty block elements exactly as they were in the source HTML
- * 	* Allow for styling empty blocks with CSS (block fillers can interfere with height/margin)
- * 	* Maintain compatibility with external systems that expect empty blocks to remain empty
+ *	* Allow for styling empty blocks with CSS (block fillers can interfere with height/margin)
+ *	* Maintain compatibility with external systems that expect empty blocks to remain empty
  *
  * For example, this allows for HTML like:
  *
@@ -63,12 +59,12 @@ export default class EmptyBlocks extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		// Register the attribute for block elements
+		// Register the attribute for block elements.
 		schema.extend( '$block', {
 			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
 		} );
 
-		// Upcast conversion - detect empty elements
+		// Upcast conversion - detect empty elements.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 				const { viewItem, modelRange } = data;
@@ -77,15 +73,15 @@ export default class EmptyBlocks extends Plugin {
 					return;
 				}
 
-				const modelElement = modelRange?.start.nodeAfter as Element;
+				const modelElement = modelRange && modelRange.start.nodeAfter as Element;
 
 				if ( modelElement && schema.isBlock( modelElement ) ) {
 					conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
 				}
-			}, { priority: 'lowest' } );
+			} );
 		} );
 
-		// Data downcast conversion - prevent filler in empty elements
+		// Data downcast conversion - prevent filler in empty elements.
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
 			dispatcher.on( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
 				const { item } = data;
@@ -94,7 +90,7 @@ export default class EmptyBlocks extends Plugin {
 				if ( viewElement && data.attributeNewValue ) {
 					viewElement.getFillerOffset = () => null;
 				}
-			}, { priority: 'highest' } );
+			} );
 		} );
 	}
 }
