@@ -56,6 +56,13 @@ export default class EmptyBlocks extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
+		this._registerConverters();
+	}
+
+	/**
+	 * Registers converters for handling empty block elements.
+	 */
+	private _registerConverters(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
@@ -68,20 +75,10 @@ export default class EmptyBlocks extends Plugin {
 			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
 		} );
 
-		// Upcast conversion - detect empty elements.
+		// Upcast conversion - detect empty block elements and mark them as empty.
+		this._registerTableConverters();
+
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
-			// Prevent table cells from being filled with empty paragraphs.
-			// It has slightly higher priority to ensure that it runs before the next handler.
-			dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
-				const { viewItem, modelRange } = data;
-				const modelElement = modelRange && modelRange.start.nodeAfter as Element;
-
-				if ( modelElement && modelElement.name === 'tableCell' && viewItem.isEmpty ) {
-					conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
-				}
-			} );
-
-			// Handle other empty elements.
 			dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 				const { viewItem, modelRange } = data;
 
@@ -111,5 +108,29 @@ export default class EmptyBlocks extends Plugin {
 
 		editor.conversion.for( 'dataDowncast' ).add( downcastDispatcher );
 		editor.conversion.for( 'editingDowncast' ).add( downcastDispatcher );
+	}
+
+	/**
+	 * Registers converters for handling empty table cells.
+	 */
+	private _registerTableConverters(): void {
+		const editor = this.editor;
+
+		// Upcast conversion - detect empty table cells.
+		function registerTableCellUpcast( elementName: string ) {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on<UpcastElementEvent>( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+					const { viewItem, modelRange } = data;
+					const modelElement = modelRange && modelRange.start.nodeAfter as Element;
+
+					if ( modelElement && viewItem.isEmpty ) {
+						conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
+					}
+				} );
+			} );
+		}
+
+		registerTableCellUpcast( 'td' );
+		registerTableCellUpcast( 'th' );
 	}
 }
