@@ -11,21 +11,39 @@ import EmojiGridView from '../../src/ui/emojigridview.js';
 import EmojiPickerView from '../../src/ui/emojipickerview.js';
 import EmojiSearchView from '../../src/ui/emojisearchview.js';
 import EmojiToneView from '../../src/ui/emojitoneview.js';
+import { SearchInfoView } from 'ckeditor5/src/ui.js';
 
 describe( 'EmojiPickerView', () => {
-	let emojiPickerView, searchView, toneView, categoriesView, gridView, infoView, locale;
+	let emojiPickerView, searchView, toneView, categoriesView, gridView, resultsView, locale, emojiGroups;
 
 	beforeEach( () => {
+		const categoryName = 'faces';
+
 		locale = {
 			t: val => val
 		};
 
-		searchView = new EmojiSearchView( locale );
-		toneView = new EmojiToneView( locale, 'default' );
-		categoriesView = new EmojiCategoriesView( locale, [ {} ] );
-		gridView = new EmojiGridView( locale );
+		emojiGroups = [ {
+			title: 'faces',
+			icon: '😊',
+			items: []
+		}, {
+			title: 'food',
+			icon: '🍕',
+			items: []
+		}, {
+			title: 'things',
+			icon: '📕',
+			items: []
+		} ];
 
-		emojiPickerView = new EmojiPickerView( locale, { searchView, toneView, categoriesView, gridView, infoView } );
+		toneView = new EmojiToneView( locale, { skinTone: 'default' } );
+		categoriesView = new EmojiCategoriesView( locale, { categoryName, emojiGroups } );
+		gridView = new EmojiGridView( locale, { emojiGroups, categoryName, getEmojiBySearchQuery: () => [] } );
+		resultsView = new SearchInfoView();
+		searchView = new EmojiSearchView( locale, { gridView, resultsView } );
+
+		emojiPickerView = new EmojiPickerView( locale, { searchView, toneView, categoriesView, gridView, resultsView } );
 		emojiPickerView.render();
 		document.body.appendChild( emojiPickerView.element );
 	} );
@@ -37,11 +55,12 @@ describe( 'EmojiPickerView', () => {
 
 	describe( 'constructor()', () => {
 		it( '#items contains categories view and grid view', () => {
-			expect( emojiPickerView.items.length ).to.equal( 4 );
+			expect( emojiPickerView.items.length ).to.equal( 5 );
 			expect( emojiPickerView.items.get( 0 ) ).to.equal( searchView );
 			expect( emojiPickerView.items.get( 1 ) ).to.equal( toneView );
 			expect( emojiPickerView.items.get( 2 ) ).to.equal( categoriesView );
 			expect( emojiPickerView.items.get( 3 ) ).to.equal( gridView );
+			expect( emojiPickerView.items.get( 4 ) ).to.equal( resultsView );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819

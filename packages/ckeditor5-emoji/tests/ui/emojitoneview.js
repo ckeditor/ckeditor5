@@ -16,7 +16,7 @@ describe( 'EmojiToneView', () => {
 			t: val => val
 		};
 
-		emojiToneView = new EmojiToneView( locale, 'default' );
+		emojiToneView = new EmojiToneView( locale, { skinTone: 'default' } );
 		emojiToneView.render();
 	} );
 
@@ -25,21 +25,21 @@ describe( 'EmojiToneView', () => {
 	} );
 
 	it( 'updates the skin tone when #execute event triggers', () => {
-		expect( emojiToneView.selectedSkinTone ).to.equal( 'default' );
+		expect( emojiToneView.skinTone ).to.equal( 'default' );
 
-		Array.from( emojiToneView._dropdownButtons ).at( -1 ).fire( 'execute' );
+		Array.from( emojiToneView.dropdownButtons ).at( -1 ).fire( 'execute' );
 
-		expect( emojiToneView.selectedSkinTone ).to.equal( 'dark' );
+		expect( emojiToneView.skinTone ).to.equal( 'dark' );
 	} );
 
 	it( 'displays a check mark next to the active skin tone', () => {
-		expect( Array.from( emojiToneView._dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
+		expect( Array.from( emojiToneView.dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
 			true, false, false, false, false, false
 		] );
 
-		Array.from( emojiToneView._dropdownButtons ).at( -1 ).fire( 'execute' );
+		Array.from( emojiToneView.dropdownButtons ).at( -1 ).fire( 'execute' );
 
-		expect( Array.from( emojiToneView._dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
+		expect( Array.from( emojiToneView.dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
 			false, false, false, false, false, true
 		] );
 	} );
@@ -58,17 +58,17 @@ describe( 'EmojiToneView', () => {
 		} );
 
 		it( 'sets #selectedSkinTone to value passed to the constructor', () => {
-			emojiToneView = new EmojiToneView( locale, 'default' );
-			expect( emojiToneView.selectedSkinTone ).to.equal( 'default' );
+			emojiToneView = new EmojiToneView( locale, { skinTone: 'default' } );
+			expect( emojiToneView.skinTone ).to.equal( 'default' );
 
-			emojiToneView = new EmojiToneView( locale, 'medium' );
-			expect( emojiToneView.selectedSkinTone ).to.equal( 'medium' );
+			emojiToneView = new EmojiToneView( locale, { skinTone: 'medium' } );
+			expect( emojiToneView.skinTone ).to.equal( 'medium' );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the dropdown', () => {
-			const spy = sinon.spy( emojiToneView._mainDropdownButton, 'focus' );
+			const spy = sinon.spy( emojiToneView.mainDropdownButton, 'focus' );
 
 			emojiToneView.focus();
 
