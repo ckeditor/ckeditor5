@@ -443,7 +443,7 @@ export interface ClipboardContentInsertionData {
 	method: 'paste' | 'drop';
 
 	/**
-	 * ID of the editor instance from which the content was copied.
+	 * The ID of the editor instance from which the content was copied.
 	 */
 	sourceEditorId: string | null;
 
