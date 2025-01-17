@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-const svgoViewBoxPlugin = require( './utils/svgo-viewBox-plugin.cjs' );
+const svgoViewBoxPlugin = require( './utils/svgoviewboxplugin.cjs' );
 
 /* eslint-env node */
 
