@@ -1268,10 +1268,70 @@ describe( 'MapperCache', () => {
 			check( 6, viewSpan, 1, 4 );
 			check( 8, viewSpan, 1, 4 );
 		} );
+
+		it( 'should invalidate cache if first child in tracked element is a 0-model-length element (#1 - ui element + remove)', () => {
+			// This test checks a fix for an edge case scenario bug found in multi-level lists.
+			// Multi-level lists items always start from a UI element. Since it was a 0-model-length element it was not correctly saved
+			// to a cache, and later on, it prevented a validation to happen (the cache thought there is nothing cached).
+			const viewUIElement = new ViewUIElement( viewDocument, 'ui' );
+			const viewTextX = new ViewText( viewDocument, 'x' );
+			const viewB = new ViewAttributeElement( viewDocument, 'b', null, [ new ViewText( viewDocument, 'y' ) ] );
+			// <p><ui />x<b>y</b></p>.
+			const viewContainer2 = new ViewElement( viewDocument, 'p', null, [ viewUIElement, viewTextX, viewB ] );
+
+			cache.startTracking( viewContainer2 );
+
+			cache.save( viewContainer2, 1, viewContainer2, 0 ); // Note that `viewUIElement` has 0 model length, hence `modelOffset` is 0.
+			cache.save( viewContainer2, 2, viewContainer2, 1 );
+			cache.save( viewContainer2, 3, viewContainer2, 2 );
+
+			check( 0, viewContainer2, 0, 0, viewContainer2 ); // Still returns position `viewContainer2, 0`, not position after UI element.
+			check( 1, viewContainer2, 2, 1, viewContainer2 );
+			check( 2, viewContainer2, 3, 2, viewContainer2 );
+			check( 3, viewContainer2, 3, 2, viewContainer2 );
+
+			viewContainer2._removeChildren( 1, 1 );
+
+			// Should fully invalidate cached data.
+			check( 0, viewContainer2, 0, 0, viewContainer2 );
+			check( 1, viewContainer2, 0, 0, viewContainer2 );
+			check( 2, viewContainer2, 0, 0, viewContainer2 );
+			check( 3, viewContainer2, 0, 0, viewContainer2 );
+		} );
+
+		it( 'should invalidate cache if first child in tracked element is a 0-model-length element (#2 - attribute element + typing)', () => {
+			// This test checks a similar scenario as above, although this scenario was working before the fix.
+			const viewUIElement = new ViewUIElement( viewDocument, 'ui' );
+			const viewTextX = new ViewText( viewDocument, 'x' );
+			const viewB = new ViewAttributeElement( viewDocument, 'b', null, [ new ViewText( viewDocument, 'y' ) ] );
+			// <p><ui />x<b>y</b></p>.
+			const viewContainer2 = new ViewElement( viewDocument, 'p', null, [ viewUIElement, viewTextX, viewB ] );
+
+			cache.startTracking( viewContainer2 );
+
+			cache.save( viewContainer2, 1, viewContainer2, 0 ); // Note that `viewUIElement` has 0 model length, hence `modelOffset` is 0.
+			cache.save( viewContainer2, 2, viewContainer2, 1 );
+			cache.save( viewContainer2, 3, viewContainer2, 2 );
+
+			check( 0, viewContainer2, 0, 0, viewContainer2 ); // Still returns position `viewContainer2, 0`, not position after UI element.
+			check( 1, viewContainer2, 2, 1, viewContainer2 );
+			check( 2, viewContainer2, 3, 2, viewContainer2 );
+			check( 3, viewContainer2, 3, 2, viewContainer2 );
+
+			viewTextX._data = 'xx';
+
+			// Should fully invalidate cached data.
+			check( 0, viewContainer2, 0, 0, viewContainer2 );
+			check( 1, viewContainer2, 0, 0, viewContainer2 );
+			check( 2, viewContainer2, 0, 0, viewContainer2 );
+			check( 3, viewContainer2, 0, 0, viewContainer2 );
+		} );
 	} );
 
-	function check( modelOffsetToCheck, expectedViewParent, expectedViewOffset, expectedModelOffset ) {
-		const { viewPosition, modelOffset } = cache.getClosest( viewContainer, modelOffsetToCheck );
+	function check(
+		modelOffsetToCheck, expectedViewParent, expectedViewOffset, expectedModelOffset, viewContainerToCheck = viewContainer
+	) {
+		const { viewPosition, modelOffset } = cache.getClosest( viewContainerToCheck, modelOffsetToCheck );
 
 		expect( viewPosition.parent ).to.equal( expectedViewParent );
 		expect( viewPosition.offset ).to.equal( expectedViewOffset );
