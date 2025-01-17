@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Full screen mode",
+			"className": "FullScreen",
+			"description": "Opens the editor in the full screen mode to allow for more comfortable content editing.",
+			"docs": "features/fullscreen.html",
+			"path": "src/fullscreen.js"
+		}
+	]
+}
