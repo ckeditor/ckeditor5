@@ -184,6 +184,7 @@ export default class EmojiMention extends Plugin {
 				.map( emoji => {
 					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
+					// TODO: The configuration `emoji.skinTone` option is ignored here.
 					let text = emoji.skins.default;
 
 					if ( this._emojiPickerPlugin ) {
@@ -194,6 +195,8 @@ export default class EmojiMention extends Plugin {
 				} )
 				.filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
 
+			// TODO: Improve the `SHOW_ALL_EMOJI_ID` option based on the query length.
+			// If length<2, let's display something like "keep typing to see results...".
 			return this._emojiPickerPlugin ?
 				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: SHOW_ALL_EMOJI_ID, text: searchQuery } ] :
 				emojis.slice( 0, this._emojiDropdownLimit );

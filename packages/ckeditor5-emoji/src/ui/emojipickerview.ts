@@ -21,18 +21,12 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
-import EmojiGridView from './emojigridview.js';
+import EmojiGridView, { type EmojiSearchQueryCallback } from './emojigridview.js';
 import EmojiCategoriesView from './emojicategoriesview.js';
 import EmojiSearchView from './emojisearchview.js';
 import EmojiToneView from './emojitoneview.js';
-
-export type EmojiDropdownPanelContent = {
-	searchView: EmojiSearchView;
-	toneView: EmojiToneView;
-	categoriesView: EmojiCategoriesView;
-	gridView: EmojiGridView;
-	resultsView: SearchInfoView;
-};
+import type { SkinToneId } from '../emojiconfig.js';
+import type { EmojiCategory, SkinTone } from '../emojidatabase.js';
 
 /**
  * A view that glues pieces of the emoji dropdown panel together.
@@ -86,7 +80,15 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, getEmojiBySearchQuery, skinTone, skinTones }: any ) {
+	constructor(
+		locale: Locale,
+		{ emojiGroups, getEmojiBySearchQuery, skinTone, skinTones }: {
+			emojiGroups: Array<EmojiCategory>;
+			getEmojiBySearchQuery: EmojiSearchQueryCallback;
+			skinTone: SkinToneId;
+			skinTones: Array<SkinTone>;
+		}
+	) {
 		super( locale );
 
 		const categoryName = emojiGroups[ 0 ].title;

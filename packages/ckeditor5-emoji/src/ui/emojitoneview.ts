@@ -65,8 +65,12 @@ export default class EmojiToneView extends View {
 
 		this.mainDropdownButton.withText = true;
 		this.mainDropdownButton.label = this._getSkinTone( this.skinTone ).icon;
-		this.mainDropdownButton.tooltip = 'Select skin tone';
+		this.mainDropdownButton.tooltip = t( 'Select skin tone' );
 
+		/* eslint-disable max-len */
+		// TODO: `addListToDropdown()` instead.
+		// Example: https://github.com/ckeditor/ckeditor5/blob/6eca87a05212e01c7067426d41dc21a3a73543af/packages/ckeditor5-heading/src/headingui.ts#L96
+		/* eslint-enable max-len */
 		addToolbarToDropdown(
 			dropdownView,
 			this.dropdownButtons,
