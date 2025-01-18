@@ -24,18 +24,12 @@ export default class EmojiSearchView extends View {
 	public readonly gridView: EmojiGridView;
 
 	/**
-	 * An instance of the `EmojiGridView`.
-	 */
-	public readonly resultsView: SearchInfoView;
-
-	/**
 	 * @inheritDoc
 	 */
 	constructor( locale: Locale, { gridView, resultsView }: { gridView: EmojiGridView; resultsView: SearchInfoView } ) {
 		super( locale );
 
 		this.gridView = gridView;
-		this.resultsView = resultsView;
 
 		const t = locale.t;
 
@@ -46,7 +40,7 @@ export default class EmojiSearchView extends View {
 			},
 			filteredView: this.gridView,
 			infoView: {
-				instance: this.resultsView
+				instance: resultsView
 			}
 		} );
 
@@ -60,7 +54,7 @@ export default class EmojiSearchView extends View {
 			]
 		} );
 
-		// Pass through the `search` event to handle it by a controller (parent).
+		// Pass through the `search` event to handle it by a parent view.
 		this.inputView.delegate( 'search' ).to( this );
 	}
 
@@ -83,6 +77,13 @@ export default class EmojiSearchView extends View {
 	 */
 	public setInputValue( value: string ): void {
 		this.inputView.queryView.fieldView.value = value;
+	}
+
+	/**
+	 * Returns an input provided by a user in the search text field.
+	 */
+	public getInputValue(): string {
+		return this.inputView.queryView.fieldView.element!.value;
 	}
 
 	/**

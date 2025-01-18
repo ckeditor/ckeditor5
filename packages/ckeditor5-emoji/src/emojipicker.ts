@@ -7,24 +7,13 @@
  * @module emoji/emojipicker
  */
 
-import {
-	ButtonView,
-	clickOutsideHandler,
-	ContextualBalloon,
-	Dialog,
-	MenuBarMenuListItemButtonView,
-	SearchInfoView,
-	type SearchTextViewSearchEvent
-} from 'ckeditor5/src/ui.js';
-import type { Locale, ObservableChangeEvent, PositionOptions } from 'ckeditor5/src/utils.js';
+import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
 
-import EmojiGridView, { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
-import EmojiDatabase, { type EmojiCategory } from './emojidatabase.js';
-import EmojiSearchView from './ui/emojisearchview.js';
-import EmojiCategoriesView from './ui/emojicategoriesview.js';
-import EmojiPickerView, { type EmojiDropdownPanelContent } from './ui/emojipickerview.js';
-import EmojiToneView from './ui/emojitoneview.js';
+import EmojiDatabase from './emojidatabase.js';
+import EmojiPickerView from './ui/emojipickerview.js';
+import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
 import '../theme/emojipicker.css';
@@ -37,35 +26,6 @@ const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
  * Introduces the `'emoji'` dropdown.
  */
 export default class EmojiPicker extends Plugin {
-	/**
-	 * Active skin tone.
-	 *
-	 * @observable
-	 * @default 'default'
-	 */
-	declare public skinTone: SkinToneId;
-
-	/**
-	 * Active category.
-	 *
-	 * @observable
-	 * @default ''
-	 */
-	declare public categoryName: string;
-
-	/**
-	 * A query provided by a user in the search field.
-	 *
-	 * @observable
-	 * @default ''
-	 */
-	declare public searchQuery: string;
-
-	/**
-	 * An array containing all emojis grouped by their categories.
-	 */
-	declare public emojiGroups: Array<EmojiCategory>;
-
 	/**
 	 * The contextual balloon plugin instance.
 	 */
@@ -103,6 +63,20 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
+	 * Represents an active skin tone. Its value depends on the emoji UI plugin.
+	 *
+	 * Before opening the UI for the first time, the returned value is read from the editor configuration.
+	 * Otherwise, it reflects the user's intention.
+	 */
+	public get skinTone(): SkinToneId {
+		if ( !this._emojiPickerView ) {
+			return this.editor.config.get( 'emoji.skinTone' )!;
+		}
+
+		return this._emojiPickerView.gridView.skinTone;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -111,10 +85,6 @@ export default class EmojiPicker extends Plugin {
 		this.editor.config.define( 'emoji', {
 			skinTone: 'default'
 		} );
-
-		this.set( 'searchQuery', '' );
-		this.set( 'categoryName', '' );
-		this.set( 'skinTone', editor.config.get( 'emoji.skinTone' )! );
 	}
 
 	/**
@@ -123,10 +93,9 @@ export default class EmojiPicker extends Plugin {
 	public async init(): Promise<void> {
 		const editor = this.editor;
 
+		// TODO: Add error handling if the database was not initialized properly.
 		this._emojiDatabase = editor.plugins.get( EmojiDatabase );
 		this._balloon = editor.plugins.get( ContextualBalloon );
-		this.emojiGroups = this._emojiDatabase.getEmojiGroups();
-		this.categoryName = this.emojiGroups[ 0 ].title;
 
 		editor.ui.componentFactory.add( 'emoji', () => {
 			const button = this._createDialogButton( ButtonView );
@@ -143,6 +112,43 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		this._setupConversion();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		if ( this._emojiPickerView ) {
+			this._emojiPickerView.destroy();
+		}
+	}
+
+	/**
+	 * Displays the balloon with the emoji picker.
+	 *
+	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
+	 */
+	public showUI( searchValue: string = '' ): void {
+		// TODO: Create a command for opening the UI using a command instead of a plugin.
+		if ( !this._emojiPickerView ) {
+			this._emojiPickerView = this._createEmojiPickerView();
+		}
+
+		if ( searchValue ) {
+			this._emojiPickerView.searchView.setInputValue( searchValue );
+		}
+
+		this._emojiPickerView.searchView.search( searchValue );
+
+		this._balloon.add( {
+			view: this._emojiPickerView,
+			position: this._getBalloonPositionData()
+		} );
+
+		setTimeout( () => this._emojiPickerView!.focus() );
+		this._showFakeVisualSelection();
 	}
 
 	/**
@@ -166,54 +172,67 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Displays the balloon with the emoji picker.
+	 * Creates an instance of the `EmojiPickerView` class that represents an emoji balloon.
 	 */
-	public showUI( searchValue?: string ): void {
-		const dropdownPanelContent = this._createDropdownPanelContent( this.editor.locale );
-		this._emojiPickerView = new EmojiPickerView( this.editor.locale, dropdownPanelContent );
+	private _createEmojiPickerView(): EmojiPickerView {
+		const emojiGroups = this._emojiDatabase.getEmojiGroups();
+		const skinTones = this._emojiDatabase.getSkinTones();
 
-		this._balloon.add( {
-			view: this._emojiPickerView,
-			position: this._getBalloonPositionData()
+		const skinTone = this.editor.config.get( 'emoji.skinTone' )!;
+
+		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
+			emojiGroups,
+			skinTone,
+			skinTones,
+			getEmojiBySearchQuery: ( query: string ) => {
+				return this._emojiDatabase.getEmojiBySearchQuery( query );
+			}
 		} );
 
-		// Close the panel on esc key press when the **actions have focus**.
-		this._emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {
+		// Insert an emoji on a tile click.
+		this.listenTo<EmojiGridViewExecuteEvent>( emojiPickerView.gridView, 'execute', ( evt, data ) => {
+			const editor = this.editor;
+			const model = editor.model;
+			const textToInsert = data.emoji;
+
+			model.change( writer => {
+				model.insertContent( writer.createText( textToInsert ) );
+			} );
+
+			this._hideUI();
+		} );
+
+		// TODO: How to resolve it smartly?
+		// this.listenTo( emojiPickerView, 'update', () => {
+		// 	this._balloon.updatePosition();
+		// } );
+
+		// Close the panel on `Esc` key press when the **actions have focus**.
+		emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideUI();
 			cancel();
 		} );
 
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
-			emitter: this._emojiPickerView,
+			emitter: emojiPickerView,
 			contextElements: [ this._balloon.view.element! ],
 			callback: () => this._hideUI(),
-			activator: () => this._balloon.visibleView === this._emojiPickerView
+			activator: () => this._balloon.visibleView === emojiPickerView
 		} );
 
-		if ( searchValue ) {
-			this.searchQuery = searchValue;
-			this._emojiPickerView.searchView.setInputValue( this.searchQuery );
-		}
-
-		// To trigger an initial search to render the grid.
-		this._emojiPickerView.searchView.search( this.searchQuery );
-
-		setTimeout( () => this._emojiPickerView!.focus() );
-		this._showFakeVisualSelection();
+		return emojiPickerView;
 	}
 
 	/**
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		if ( this._emojiPickerView ) {
-			this._balloon.remove( this._emojiPickerView );
-		}
+		this._balloon.remove( this._emojiPickerView! );
+
+		this._emojiPickerView!.searchView.setInputValue( '' );
 
 		this.editor.editing.view.focus();
-		this.searchQuery = '';
-
 		this._hideFakeVisualSelection();
 	}
 
@@ -249,103 +268,6 @@ export default class EmojiPicker extends Plugin {
 				return markerElement;
 			}
 		} );
-	}
-
-	/**
-	 * Initializes the dropdown, used for lazy loading.
-	 *
-	 * @returns An object with `categoriesView` and `gridView`properties, containing UI parts.
-	 */
-	private _createDropdownPanelContent( locale: Locale ): EmojiDropdownPanelContent {
-		const t = locale.t;
-
-		const gridView = new EmojiGridView( locale, {
-			emojiGroups: this.emojiGroups,
-			categoryName: this.categoryName,
-			getEmojiBySearchQuery: ( query: string ) => {
-				return this._emojiDatabase.getEmojiBySearchQuery( query );
-			}
-		} );
-
-		const resultsView = new SearchInfoView();
-		const searchView = new EmojiSearchView( locale, {
-			gridView,
-			resultsView
-		} );
-		const toneView = new EmojiToneView( locale, {
-			skinTone: this.skinTone,
-			skinTones: this._emojiDatabase.getSkinTones()
-		} );
-		const categoriesView = new EmojiCategoriesView( locale, {
-			emojiGroups: this.emojiGroups,
-			categoryName: this.categoryName
-		} );
-
-		// Bind the "current" plugin settings specific views to avoid manual updates.
-		gridView.bind( 'categoryName' ).to( this, 'categoryName' );
-		gridView.bind( 'skinTone' ).to( this, 'skinTone' );
-		gridView.bind( 'searchQuery' ).to( this, 'searchQuery' );
-
-		// Disable the category switcher when filtering by a query.
-		searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
-			if ( data.query ) {
-				categoriesView.disableCategories();
-			} else {
-				categoriesView.enableCategories();
-			}
-
-			this.searchQuery = data.query;
-			this._balloon.updatePosition();
-		} );
-
-		// Show a user-friendly message when emojis are not found.
-		searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
-			if ( !data.resultsCount ) {
-				resultsView.set( {
-					primaryText: t( 'No emojis were found matching "%0".', data.query ),
-					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
-					isVisible: true
-				} );
-			} else {
-				resultsView.set( {
-					isVisible: false
-				} );
-			}
-		} );
-
-		// Update the grid of emojis when selected category changes.
-		categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
-			this.categoryName = categoryName;
-			this._balloon.updatePosition();
-		} );
-
-		// Update the grid of emojis when selected skin tone changes.
-		toneView.on<ObservableChangeEvent>( 'change:skinTone', ( evt, propertyName, newValue ) => {
-			this.skinTone = newValue;
-
-			searchView.search( this.searchQuery );
-		} );
-
-		// Insert an emoji on a tile click.
-		gridView.on<EmojiGridViewExecuteEvent>( 'execute', ( evt, data ) => {
-			const editor = this.editor;
-			const model = editor.model;
-			const textToInsert = data.emoji;
-
-			model.change( writer => {
-				model.insertContent( writer.createText( textToInsert ) );
-			} );
-
-			this._hideUI();
-		} );
-
-		return {
-			searchView,
-			toneView,
-			categoriesView,
-			gridView,
-			resultsView
-		};
 	}
 
 	/**

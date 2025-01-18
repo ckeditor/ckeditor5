@@ -77,6 +77,7 @@ export default class EmojiDatabase extends Plugin {
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
+		// TODO: Add error handling in case when a database is not loaded.
 		const container = createEmojiWidthTestingContainer();
 
 		const emojiVersion = this.editor.config.get( 'emoji.version' )!;

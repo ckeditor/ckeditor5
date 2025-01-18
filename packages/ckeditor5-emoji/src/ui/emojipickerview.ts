@@ -7,12 +7,24 @@
  * @module emoji/ui/emojipickerview
  */
 
-import { View, FocusCycler, type SearchInfoView, type ViewCollection, type FocusableView } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type EmojiGridView from './emojigridview.js';
-import type EmojiCategoriesView from './emojicategoriesview.js';
-import type EmojiSearchView from './emojisearchview.js';
-import type EmojiToneView from './emojitoneview.js';
+import {
+	FocusCycler,
+	SearchInfoView,
+	View,
+	type FocusableView,
+	type ViewCollection,
+	type SearchTextViewSearchEvent
+} from 'ckeditor5/src/ui.js';
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	type Locale,
+	type ObservableChangeEvent
+} from 'ckeditor5/src/utils.js';
+import EmojiGridView from './emojigridview.js';
+import EmojiCategoriesView from './emojicategoriesview.js';
+import EmojiSearchView from './emojisearchview.js';
+import EmojiToneView from './emojitoneview.js';
 
 export type EmojiDropdownPanelContent = {
 	searchView: EmojiSearchView;
@@ -74,14 +86,30 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, dropdownPanelContent: EmojiDropdownPanelContent ) {
+	constructor( locale: Locale, { emojiGroups, getEmojiBySearchQuery, skinTone, skinTones }: any ) {
 		super( locale );
 
-		this.searchView = dropdownPanelContent.searchView;
-		this.categoriesView = dropdownPanelContent.categoriesView;
-		this.gridView = dropdownPanelContent.gridView;
-		this.toneView = dropdownPanelContent.toneView;
-		this.resultsView = dropdownPanelContent.resultsView;
+		const categoryName = emojiGroups[ 0 ].title;
+
+		this.gridView = new EmojiGridView( locale, {
+			categoryName,
+			emojiGroups,
+			getEmojiBySearchQuery,
+			skinTone
+		} );
+		this.resultsView = new SearchInfoView();
+		this.searchView = new EmojiSearchView( locale, {
+			gridView: this.gridView,
+			resultsView: this.resultsView
+		} );
+		this.categoriesView = new EmojiCategoriesView( locale, {
+			emojiGroups,
+			categoryName
+		} );
+		this.toneView = new EmojiToneView( locale, {
+			skinTone,
+			skinTones
+		} );
 
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
@@ -134,6 +162,8 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.items.add( this.categoriesView );
 		this.items.add( this.gridView );
 		this.items.add( this.resultsView );
+
+		this._setupEventListeners();
 	}
 
 	/**
@@ -150,6 +180,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		// We need to disable listening for all events within the `SearchTextView` view.
 		// Otherwise, its own focus tracker interfere with `EmojiPickerView` which leads to unexpected results.
+		// TODO: Could we reuse `keystrokes` from `inputView` instead creating a new one?
 		this.searchView.inputView.keystrokes.stopListening();
 
 		// Start listening for the keystrokes coming from #element.
@@ -171,5 +202,59 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	 */
 	public focus(): void {
 		this.focusCycler.focusFirst();
+	}
+
+	/**
+	 * Initializes interactions between sub-views.
+	 */
+	private _setupEventListeners(): void {
+		const t = this.locale!.t;
+
+		// Disable the category switcher when filtering by a query.
+		this.searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( data.query ) {
+				this.categoriesView.disableCategories();
+			} else {
+				this.categoriesView.enableCategories();
+			}
+		} );
+
+		// Show a user-friendly message depending on the search query.
+		this.searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( data.query.length === 1 ) {
+				this.resultsView.set( {
+					primaryText: t( 'Keep on typing to see the results.' ),
+					secondaryText: t( 'The query must contain at least two characters.' ),
+					isVisible: true
+				} );
+			} else if ( !data.resultsCount ) {
+				this.resultsView.set( {
+					primaryText: t( 'No emojis were found matching "%0".', data.query ),
+					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
+					isVisible: true
+				} );
+			} else {
+				this.resultsView.set( {
+					isVisible: false
+				} );
+			}
+
+			// TODO: So far, it does not work as expected.
+			// Messaging can impact a balloon's position. Let's update it.
+			// this.fire( 'update' );
+		} );
+
+		// Update the grid of emojis when the selected category is changed.
+		this.categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
+			this.gridView.categoryName = categoryName;
+			this.searchView.search( '' );
+		} );
+
+		// Update the grid of emojis when the selected skin tone is changed.
+		// In such a case, the displayed emoji should use an updated skin tone value.
+		this.toneView.on<ObservableChangeEvent>( 'change:skinTone', ( evt, propertyName, newValue ) => {
+			this.gridView.skinTone = newValue;
+			this.searchView.search( this.searchView.getInputValue() );
+		} );
 	}
 }

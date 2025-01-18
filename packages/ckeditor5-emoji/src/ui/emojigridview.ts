@@ -26,23 +26,16 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	declare public categoryName: string;
 
 	/**
-	 * A query provided by a user in the search field.
-	 *
-	 * @observable
-	 * @default ''
-	 */
-	declare public searchQuery: string;
-
-	/**
 	 * Active skin tone.
 	 *
 	 * @observable
-	 * @default 'default'
 	 */
 	declare public skinTone: SkinToneId;
 
 	/**
-	 * Set to `true` when the {@link #tiles} collection is empty.
+	 * Set to `true` when the {@link #tiles} collection does not contain items to display.
+	 *
+	 * @observable
 	 */
 	declare public isEmpty: boolean;
 
@@ -74,14 +67,17 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, categoryName, getEmojiBySearchQuery }: {
-		emojiGroups: Array<EmojiCategory>;
+	constructor( locale: Locale, { categoryName, emojiGroups, getEmojiBySearchQuery, skinTone }: {
 		categoryName: string;
+		emojiGroups: Array<EmojiCategory>;
 		getEmojiBySearchQuery: EmojiSearchQueryCallback;
+		skinTone: SkinToneId;
 	} ) {
 		super( locale );
 
 		this.set( 'isEmpty', true );
+		this.set( 'categoryName', categoryName );
+		this.set( 'skinTone', skinTone );
 
 		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
 		this.focusTracker = new FocusTracker();
@@ -115,14 +111,6 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 				]
 			}
 		} );
-
-		this.on( 'change:categoryName', () => {
-			this.filter( null );
-		} );
-
-		this.set( 'searchQuery', '' );
-		this.set( 'categoryName', categoryName );
-		this.set( 'skinTone', 'default' );
 
 		addKeyboardHandlingForGrid( {
 			keystrokeHandler: this.keystrokes,
@@ -217,6 +205,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 * @param items An array of items to insert.
 	 */
 	private _updateGrid( items: Array<EmojiEntry> ): void {
+		// TODO: `isVisible` instead of `remove()` to improve performance.
+
 		// Clean-up.
 		[ ...this.tiles ].forEach( item => {
 			this.focusTracker.remove( item );
