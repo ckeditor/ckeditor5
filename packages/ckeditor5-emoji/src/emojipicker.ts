@@ -98,7 +98,7 @@ export default class EmojiPicker extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		editor.ui.componentFactory.add( 'emoji', () => {
-			const button = this._createDialogButton( ButtonView );
+			const button = this._createUiComponent( ButtonView );
 
 			button.set( {
 				tooltip: true
@@ -108,7 +108,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:emoji', () => {
-			return this._createDialogButton( MenuBarMenuListItemButtonView );
+			return this._createUiComponent( MenuBarMenuListItemButtonView );
 		} );
 
 		this._setupConversion();
@@ -154,8 +154,8 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * Creates a button for toolbar and menu bar that will show the emoji dialog.
 	 */
-	private _createDialogButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
-		const buttonView = new ButtonClass( this.editor.locale ) as InstanceType<T>;
+	private _createUiComponent<T extends typeof ButtonView>( ViewClass: T ): InstanceType<T> {
+		const buttonView = new ViewClass( this.editor.locale ) as InstanceType<T>;
 		const t = this.editor.locale.t;
 
 		buttonView.set( {
@@ -175,15 +175,10 @@ export default class EmojiPicker extends Plugin {
 	 * Creates an instance of the `EmojiPickerView` class that represents an emoji balloon.
 	 */
 	private _createEmojiPickerView(): EmojiPickerView {
-		const emojiGroups = this._emojiDatabase.getEmojiGroups();
-		const skinTones = this._emojiDatabase.getSkinTones();
-
-		const skinTone = this.editor.config.get( 'emoji.skinTone' )!;
-
 		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
-			emojiGroups,
-			skinTone,
-			skinTones,
+			emojiGroups: this._emojiDatabase.getEmojiGroups(),
+			skinTone: this.editor.config.get( 'emoji.skinTone' )!,
+			skinTones: this._emojiDatabase.getSkinTones(),
 			getEmojiBySearchQuery: ( query: string ) => {
 				return this._emojiDatabase.getEmojiBySearchQuery( query );
 			}
