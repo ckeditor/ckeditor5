@@ -12,6 +12,8 @@ import {
 	addListToDropdown,
 	View,
 	ViewModel,
+	type ButtonExecuteEvent,
+	type DropdownView,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
@@ -31,7 +33,7 @@ export default class EmojiToneView extends View {
 	/**
 	 * A dropdown element for selecting an active skin tone.
 	 */
-	public readonly dropdownButton: typeof DropdownView[ 'buttonView' ];
+	public readonly dropdownButton: DropdownView[ 'buttonView' ];
 
 	/**
 	 * An array of available skin tones.
