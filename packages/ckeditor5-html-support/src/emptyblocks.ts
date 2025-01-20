@@ -14,8 +14,7 @@ import type {
 	DowncastDispatcher,
 	UpcastDispatcher,
 	DowncastAttributeEvent,
-	ElementCreatorFunction,
-	Node
+	DowncastInsertEvent
 } from 'ckeditor5/src/engine.js';
 
 const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
@@ -88,39 +87,36 @@ export default class EmptyBlocks extends Plugin {
 				allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
 			} );
 
-			conversion.for( 'dataDowncast' ).elementToElement( {
-				model: 'paragraph',
-				view: convertEmptyBlockParagraphInTableCell(),
-				converterPriority: 'highest'
-			} );
+			conversion.for( 'dataDowncast' ).add( createEmptyBlockParagraphInTableCellConverter() );
 		}
 	}
 }
 
 /**
- * Converts paragraphs in empty table cells during the downcast conversion.
+ * Creates a downcast converter for handling empty block paragraphs in table cells.
+ *
+ * @returns A function that sets up the downcast conversion dispatcher.
  */
-function convertEmptyBlockParagraphInTableCell(): ElementCreatorFunction {
-	return ( modelElement, { writer } ) => {
-		const parentCell = modelElement.parent;
+function createEmptyBlockParagraphInTableCellConverter() {
+	return ( dispatcher: DowncastDispatcher ) => {
+		dispatcher.on<DowncastInsertEvent<Element>>( 'insert:paragraph', ( evt, data, conversionApi ) => {
+			const modelItem = data.item;
+			const parentCell = modelItem.parent;
 
-		if ( !parentCell!.is( 'element', 'tableCell' ) ) {
-			return null;
-		}
+			if ( !parentCell!.is( 'element', 'tableCell' ) ) {
+				return;
+			}
 
-		if ( parentCell.childCount != 1 ||
-			!parentCell.hasAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE ) ||
-			hasAnyAttribute( modelElement )
-		) {
-			return null;
-		}
+			if ( !parentCell.hasAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
+				return;
+			}
 
-		const viewElement = writer.createContainerElement( 'p' );
+			const viewElement = conversionApi.mapper.toViewElement( data.item )!;
 
-		viewElement.getFillerOffset = () => null;
-		writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
-
-		return viewElement;
+			if ( viewElement.getCustomProperty( 'dataPipeline:transparentRendering' ) ) {
+				viewElement.getFillerOffset = () => null;
+			}
+		} );
 	};
 }
 
@@ -174,13 +170,4 @@ function createEmptyBlocksUpcastConverter( editor: Editor ) {
 			}
 		}, { priority: 'lowest' } );
 	};
-}
-
-/**
- * Checks if an element has any attributes set.
- */
-function hasAnyAttribute( element: Node ): boolean {
-	const iteratorItem = element.getAttributeKeys().next();
-
-	return !iteratorItem.done;
 }

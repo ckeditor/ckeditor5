@@ -235,7 +235,7 @@ describe( 'EmptyBlocks', () => {
 
 	describe( 'lists integration', () => {
 		it( 'should set htmlEmptyBlock on empty list item', () => {
-			editor.setData( '<paragraph>A</paragraph><ul><li></li></ul>' );
+			editor.setData( '<p>A</p><ul><li></li></ul>' );
 
 			const modelData = getModelData( model, { withoutSelection: true } );
 			const normalizedData = modelData.replace( / listItemId="[^"]+"/g, '' );
