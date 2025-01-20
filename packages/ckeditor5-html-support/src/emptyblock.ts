@@ -4,17 +4,17 @@
  */
 
 /**
- * @module html-support/emptyblocks
+ * @module html-support/emptyblock
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	UpcastElementEvent,
 	Element,
+	Schema,
 	DowncastDispatcher,
 	UpcastDispatcher,
-	DowncastAttributeEvent,
-	DowncastInsertEvent
+	DowncastAttributeEvent
 } from 'ckeditor5/src/engine.js';
 
 const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
@@ -44,12 +44,12 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * <td>&nbsp;</td>
  * ```
  */
-export default class EmptyBlocks extends Plugin {
+export default class EmptyBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'EmptyBlocks' as const;
+		return 'EmptyBlock' as const;
 	}
 
 	/**
@@ -66,67 +66,23 @@ export default class EmptyBlocks extends Plugin {
 		const { model, conversion } = this.editor;
 		const schema = model.schema;
 
-		schema.extend( '$block', {
-			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
-		} );
+		schema.extend( '$block', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
+		schema.extend( '$container', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 
-		schema.extend( '$container', {
-			allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
-		} );
-
-		// Downcasts.
-		conversion.for( 'dataDowncast' ).add( createEmptyBlocksDowncastConverter() );
-		conversion.for( 'editingDowncast' ).add( createEmptyBlocksDowncastConverter() );
-
-		// Upcasts.
-		conversion.for( 'upcast' ).add( createEmptyBlocksUpcastConverter( this.editor ) );
-
-		// Table related converters.
 		if ( schema.isRegistered( 'tableCell' ) ) {
-			schema.extend( 'tableCell', {
-				allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ]
-			} );
-
-			conversion.for( 'dataDowncast' ).add( createEmptyBlockParagraphInTableCellConverter() );
+			schema.extend( 'tableCell', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 		}
+
+		conversion.for( 'downcast' ).add( createEmptyBlockDowncastConverter() );
+		conversion.for( 'upcast' ).add( createEmptyBlockUpcastConverter( schema ) );
 	}
 }
 
 /**
- * Creates a downcast converter for handling empty block paragraphs in table cells.
- *
- * @returns A function that sets up the downcast conversion dispatcher.
- */
-function createEmptyBlockParagraphInTableCellConverter() {
-	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<DowncastInsertEvent<Element>>( 'insert:paragraph', ( evt, data, conversionApi ) => {
-			const modelItem = data.item;
-			const parentCell = modelItem.parent;
-
-			if ( !parentCell!.is( 'element', 'tableCell' ) ) {
-				return;
-			}
-
-			if ( !parentCell.hasAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
-				return;
-			}
-
-			const viewElement = conversionApi.mapper.toViewElement( data.item )!;
-
-			if ( viewElement.getCustomProperty( 'dataPipeline:transparentRendering' ) ) {
-				viewElement.getFillerOffset = () => null;
-			}
-		} );
-	};
-}
-
-/**
  * Creates a downcast converter for handling empty blocks.
- * The dispatcher prevents filler elements from being added to elements marked as empty blocks.
- *
- * @returns A function that sets up the downcast conversion dispatcher.
+ * This converter prevents filler elements from being added to elements marked as empty blocks.
  */
-function createEmptyBlocksDowncastConverter() {
+function createEmptyBlockDowncastConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
 			const { mapper, consumable } = conversionApi;
@@ -147,14 +103,9 @@ function createEmptyBlocksDowncastConverter() {
 
 /**
  * Creates an upcast converter for handling empty blocks.
- * The dispatcher detects empty elements and marks them with the empty block attribute.
- *
- * @param editor The editor instance.
- * @returns A function that sets up the upcast converter.
+ * The converter detects empty elements and marks them with the empty block attribute.
  */
-function createEmptyBlocksUpcastConverter( editor: Editor ) {
-	const { schema } = editor.model;
-
+function createEmptyBlockUpcastConverter( schema: Schema ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 			const { viewItem, modelRange } = data;
@@ -163,10 +114,27 @@ function createEmptyBlocksUpcastConverter( editor: Editor ) {
 				return;
 			}
 
+			// Handle element itself.
 			const modelElement = modelRange && modelRange.start.nodeAfter as Element;
 
-			if ( modelElement && schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
-				conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
+			if ( !modelElement || !schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
+				return;
+			}
+
+			conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
+
+			// Handle a auto-paragraphed bogus paragraph inside empty element.
+			if ( modelElement.childCount != 1 ) {
+				return;
+			}
+
+			const firstModelChild = modelElement.getChild( 0 )!;
+
+			if (
+				firstModelChild.is( 'element', 'paragraph' ) &&
+				schema.checkAttribute( firstModelChild, EMPTY_BLOCK_MODEL_ATTRIBUTE )
+			) {
+				conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, firstModelChild );
 			}
 		}, { priority: 'lowest' } );
 	};
