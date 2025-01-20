@@ -13,7 +13,7 @@ import type { EmojiCategory } from '../emojidatabase.js';
 
 import '../../theme/emojicategories.css';
 
-const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
+const ACTIVE_CATEGORY_CLASS = 'ck-emoji__category-item_active';
 
 /**
  * A class representing the navigation part of the emoji UI.
@@ -70,7 +70,8 @@ export default class EmojiCategoriesView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-emoji-categories' ]
+				class: [ 'ck', 'ck-emoji__categories' ],
+				role: 'tablist'
 			},
 			children: this._buttonViews
 		} );
