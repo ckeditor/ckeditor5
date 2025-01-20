@@ -13,7 +13,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "44.1.0",
-    "@types/lodash-es": "^4.17.12",
+    "@types/lodash-es": "4.17.12",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
