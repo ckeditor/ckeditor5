@@ -76,11 +76,11 @@ export default class EmptyBlocks extends Plugin {
 		} );
 
 		// Downcasts.
-		conversion.for( 'dataDowncast' ).add( createEmptyBlocksDowncastDispatcher() );
-		conversion.for( 'editingDowncast' ).add( createEmptyBlocksDowncastDispatcher() );
+		conversion.for( 'dataDowncast' ).add( createEmptyBlocksDowncastConverter() );
+		conversion.for( 'editingDowncast' ).add( createEmptyBlocksDowncastConverter() );
 
 		// Upcasts.
-		conversion.for( 'upcast' ).add( createEmptyBlocksUpcastDispatcher( this.editor ) );
+		conversion.for( 'upcast' ).add( createEmptyBlocksUpcastConverter( this.editor ) );
 
 		// Table related converters.
 		if ( schema.isRegistered( 'tableCell' ) ) {
@@ -125,12 +125,12 @@ function convertEmptyBlockParagraphInTableCell(): ElementCreatorFunction {
 }
 
 /**
- * Creates a downcast dispatcher for handling empty blocks.
+ * Creates a downcast converter for handling empty blocks.
  * The dispatcher prevents filler elements from being added to elements marked as empty blocks.
  *
  * @returns A function that sets up the downcast conversion dispatcher.
  */
-function createEmptyBlocksDowncastDispatcher() {
+function createEmptyBlocksDowncastConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
 			const { mapper, consumable } = conversionApi;
@@ -150,13 +150,13 @@ function createEmptyBlocksDowncastDispatcher() {
 }
 
 /**
- * Creates an upcast dispatcher for handling empty blocks.
+ * Creates an upcast converter for handling empty blocks.
  * The dispatcher detects empty elements and marks them with the empty block attribute.
  *
- * @param editor - The editor instance.
- * @returns A function that sets up the upcast conversion dispatcher.
+ * @param editor The editor instance.
+ * @returns A function that sets up the upcast converter.
  */
-function createEmptyBlocksUpcastDispatcher( editor: Editor ) {
+function createEmptyBlocksUpcastConverter( editor: Editor ) {
 	const { schema } = editor.model;
 
 	return ( dispatcher: UpcastDispatcher ) => {
@@ -169,7 +169,7 @@ function createEmptyBlocksUpcastDispatcher( editor: Editor ) {
 
 			const modelElement = modelRange && modelRange.start.nodeAfter as Element;
 
-			if ( modelElement && schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) && viewItem.isEmpty ) {
+			if ( modelElement && schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
 				conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
 			}
 		}, { priority: 'lowest' } );
