@@ -59,7 +59,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /ckeditor5-icons\/theme\/icons\/[^/\\]+\.svg$/,
+				test: /\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
