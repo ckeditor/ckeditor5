@@ -29,7 +29,8 @@ export type {
 	FONT_BACKGROUND_COLOR,
 	FONT_COLOR,
 	FONT_FAMILY,
-	FONT_SIZE
+	FONT_SIZE,
+	ColorSelectorDropdownView
 } from './utils.js';
 
 export type {
