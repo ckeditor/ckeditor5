@@ -245,10 +245,6 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		tile.extendTemplate( {
 			attributes: {
 				title: name
-			},
-			on: {
-				mouseover: tile.bindTemplate.to( 'mouseover' ),
-				focus: tile.bindTemplate.to( 'focus' )
 			}
 		} );
 
