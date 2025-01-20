@@ -76,7 +76,11 @@ export default class EmojiSearchView extends View {
 	 * @param value The new value.
 	 */
 	public setInputValue( value: string ): void {
-		this.inputView.queryView.fieldView.value = value;
+		if ( !value ) {
+			this.inputView.queryView.fieldView.reset();
+		} else {
+			this.inputView.queryView.fieldView.value = value;
+		}
 	}
 
 	/**
