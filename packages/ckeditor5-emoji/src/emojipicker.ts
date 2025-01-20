@@ -94,7 +94,7 @@ export default class EmojiPicker extends Plugin {
 		const editor = this.editor;
 
 		// TODO: Add error handling if the database was not initialized properly.
-		this._emojiDatabase = editor.plugins.get( EmojiDatabase );
+		this._emojiDatabase = editor.plugins.get( 'EmojiDatabase' );
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		editor.ui.componentFactory.add( 'emoji', () => {

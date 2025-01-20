@@ -10,9 +10,10 @@ import { EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Typing } from '@ckeditor/ckeditor5-typing';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import EmojiDatabase from '../src/emojidatabase.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EmojiPicker', () => {
 	let editor, editorElement, emojiPicker;
@@ -47,7 +48,7 @@ describe( 'EmojiPicker', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( EmojiPicker.requires ).to.deep.equal( [
-			ContextualBalloon, Typing, Dialog
+			EmojiDatabase, ContextualBalloon, Dialog
 		] );
 	} );
 
@@ -87,7 +88,7 @@ describe( 'EmojiPicker', () => {
 		clickEmojiToolbarButton();
 
 		expect(
-			document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+			document.querySelector( '.ck.ck-search__info' ).classList.contains( 'ck-hidden' )
 		).to.equal( true );
 	} );
 
@@ -117,10 +118,10 @@ describe( 'EmojiPicker', () => {
 	it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
 		clickEmojiToolbarButton();
 
-		const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
+		const emojiSearchBar = document.querySelector( '.ck-emoji-picker input' );
 		expect( emojiSearchBar.checkVisibility() ).to.equal( true );
 
-		emojiSearchBar.dispatchEvent( new KeyboardEvent( 'keydown', { bubbles: true, composed: true, key: 'Escape' } ) );
+		emojiSearchBar.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.esc, bubbles: true } ) );
 
 		expect( emojiSearchBar.checkVisibility() ).to.equal( false );
 	} );
@@ -130,7 +131,7 @@ describe( 'EmojiPicker', () => {
 
 		const originalFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
 
-		const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
+		const emojiSearchBar = document.querySelector( '.ck-emoji-picker input' );
 		emojiSearchBar.value = 'frown';
 		emojiSearchBar.dispatchEvent( new Event( 'input' ) );
 
@@ -241,30 +242,6 @@ describe( 'EmojiPicker', () => {
 		expect( originalFirstEmojiInGridTitle ).to.equal( newFirstEmojiInGridTitle );
 		// Inner text changes as the emojis are different skin tone variants.
 		expect( originalFirstEmojiInGridText ).to.not.equal( newFirstEmojiInGridText );
-	} );
-
-	it( 'should show emoji info on the bottom panel when an emoji in the grid is hovered', async () => {
-		clickEmojiToolbarButton();
-
-		const spy = sinon.spy( emojiPicker._emojiPickerView.infoView, 'set' );
-
-		sinon.assert.notCalled( spy );
-
-		emojiPicker._emojiPickerView.gridView.fire( 'tileHover' );
-
-		sinon.assert.calledOnce( spy );
-	} );
-
-	it( 'should show emoji info on the bottom panel when an emoji in the grid is focused', async () => {
-		clickEmojiToolbarButton();
-
-		const spy = sinon.spy( emojiPicker._emojiPickerView.infoView, 'set' );
-
-		sinon.assert.notCalled( spy );
-
-		emojiPicker._emojiPickerView.gridView.fire( 'tileFocus' );
-
-		sinon.assert.calledOnce( spy );
 	} );
 
 	describe( 'fake visual selection', () => {

@@ -33,7 +33,7 @@ export default class EmojiToneView extends View {
 	/**
 	 * A dropdown element for selecting an active skin tone.
 	 */
-	public readonly dropdownButton: DropdownView[ 'buttonView' ];
+	public readonly dropdownView: DropdownView;
 
 	/**
 	 * An array of available skin tones.
@@ -92,7 +92,7 @@ export default class EmojiToneView extends View {
 			tooltip: accessibleLabel
 		} );
 
-		this.dropdownButton = dropdownView.buttonView;
+		this.dropdownView = dropdownView;
 
 		// Execute command when an item from the dropdown is selected.
 		this.listenTo<ButtonExecuteEvent>( dropdownView, 'execute', evt => {
@@ -120,7 +120,7 @@ export default class EmojiToneView extends View {
 	 * @inheritDoc
 	 */
 	public focus(): void {
-		this.dropdownButton.focus();
+		this.dropdownView.buttonView.focus();
 	}
 
 	/**

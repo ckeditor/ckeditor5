@@ -178,7 +178,7 @@ export default class EmojiMention extends Plugin {
 	private _getQueryEmojiFn(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
 		return ( searchQuery: string ) => {
 			// TODO: Add error handling if the database was not initialized properly.
-			const emojiDatabasePlugin = this.editor.plugins.get( EmojiDatabase );
+			const emojiDatabasePlugin = this.editor.plugins.get( 'EmojiDatabase' );
 
 			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
 				.map( emoji => {

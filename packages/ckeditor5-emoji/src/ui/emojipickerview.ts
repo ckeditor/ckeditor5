@@ -75,7 +75,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * An instance of the `EmojiGridView`.
 	 */
-	public readonly resultsView: SearchInfoView;
+	public readonly infoView: SearchInfoView;
 
 	/**
 	 * @inheritDoc
@@ -99,10 +99,10 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			getEmojiBySearchQuery,
 			skinTone
 		} );
-		this.resultsView = new SearchInfoView();
+		this.infoView = new SearchInfoView();
 		this.searchView = new EmojiSearchView( locale, {
 			gridView: this.gridView,
-			resultsView: this.resultsView
+			resultsView: this.infoView
 		} );
 		this.categoriesView = new EmojiCategoriesView( locale, {
 			emojiGroups,
@@ -144,7 +144,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 				{
 					tag: 'div',
 					children: [
-						this.resultsView
+						this.infoView
 					],
 					attributes: {
 						class: [ 'ck', 'ck-search__results' ]
@@ -163,7 +163,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.items.add( this.toneView );
 		this.items.add( this.categoriesView );
 		this.items.add( this.gridView );
-		this.items.add( this.resultsView );
+		this.items.add( this.infoView );
 
 		this._setupEventListeners();
 	}
@@ -178,7 +178,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.focusTracker.add( this.toneView.element! );
 		this.focusTracker.add( this.categoriesView.element! );
 		this.focusTracker.add( this.gridView.element! );
-		this.focusTracker.add( this.resultsView.element! );
+		this.focusTracker.add( this.infoView.element! );
 
 		// We need to disable listening for all events within the `SearchTextView` view.
 		// Otherwise, its own focus tracker interfere with `EmojiPickerView` which leads to unexpected results.
@@ -224,19 +224,19 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		// Show a user-friendly message depending on the search query.
 		this.searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( data.query.length === 1 ) {
-				this.resultsView.set( {
+				this.infoView.set( {
 					primaryText: t( 'Keep on typing to see the results.' ),
 					secondaryText: t( 'The query must contain at least two characters.' ),
 					isVisible: true
 				} );
 			} else if ( !data.resultsCount ) {
-				this.resultsView.set( {
+				this.infoView.set( {
 					primaryText: t( 'No emojis were found matching "%0".', data.query ),
 					secondaryText: t( 'Please try a different phrase or check the spelling.' ),
 					isVisible: true
 				} );
 			} else {
-				this.resultsView.set( {
+				this.infoView.set( {
 					isVisible: false
 				} );
 			}

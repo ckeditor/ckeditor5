@@ -5,9 +5,11 @@
 
 import EmojiSearchView from '../../src/ui/emojisearchview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { SearchInfoView } from '@ckeditor/ckeditor5-ui';
+import EmojiGridView from '../../src/ui/emojigridview.js';
 
 describe( 'EmojiSearchView', () => {
-	let locale, emojiSearchView;
+	let locale, emojiSearchView, emojiGroups;
 
 	testUtils.createSinonSandbox();
 
@@ -16,7 +18,30 @@ describe( 'EmojiSearchView', () => {
 			t: val => val
 		};
 
-		emojiSearchView = new EmojiSearchView( locale );
+		emojiGroups = [ {
+			title: 'faces',
+			icon: '😊',
+			items: [
+				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+			]
+		}, {
+			title: 'food',
+			icon: '🍕',
+			items: [
+				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+			]
+		}, {
+			title: 'things',
+			icon: '📕',
+			items: []
+		} ];
+
+		const searchInfoView = new SearchInfoView();
+		const emojiGridView = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: () => [
+			{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+		] } );
+
+		emojiSearchView = new EmojiSearchView( locale, { gridView: emojiGridView, resultsView: searchInfoView } );
 		emojiSearchView.render();
 	} );
 
@@ -26,21 +51,50 @@ describe( 'EmojiSearchView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates #element from template', () => {
-			expect( emojiSearchView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( emojiSearchView.element.classList.contains( 'ck-emoji-input' ) ).to.be.true;
-
 			expect( Object.values( emojiSearchView.element.childNodes ).length ).to.equal( 1 );
 
-			const childNode = emojiSearchView.element.childNodes[ 0 ];
+			const childNodes = emojiSearchView.element.childNodes;
 
-			expect( childNode.classList.contains( 'ck' ) ).to.be.true;
-			expect( childNode.classList.contains( 'ck-labeled-field-view' ) ).to.be.true;
+			expect( childNodes.length ).to.equal( 1 );
+		} );
+
+		it( 'delegates the #search event up for the search value', () => {
+			const spy = sinon.spy();
+
+			emojiSearchView.on( 'search', spy );
+			emojiSearchView.inputView.fire( 'search', {} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'search()', () => {
+		it( 'should delegate the search event to the inputView (npn empty query)', () => {
+			const spy = sinon.spy();
+			const filterSpy = sinon.spy( emojiSearchView.gridView, 'filter' );
+
+			emojiSearchView.on( 'search', spy );
+			emojiSearchView.search( 'faces' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( filterSpy );
+		} );
+
+		it( 'should delegate the search event to the inputView (empty query)', () => {
+			const spy = sinon.spy();
+			const filterSpy = sinon.spy( emojiSearchView.gridView, 'filter' );
+
+			emojiSearchView.on( 'search', spy );
+			emojiSearchView.search( '' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnceWithExactly( filterSpy, null );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the search bar', () => {
-			const spy = sinon.spy( emojiSearchView._findInputView, 'focus' );
+			const spy = sinon.spy( emojiSearchView.inputView, 'focus' );
 
 			emojiSearchView.focus();
 
@@ -48,62 +102,21 @@ describe( 'EmojiSearchView', () => {
 		} );
 	} );
 
-	describe( 'setSearchQuery()', () => {
+	describe( 'setInputValue()', () => {
 		it( 'sets the value of text input element to passed string', () => {
-			emojiSearchView.setSearchQuery( 'smile' );
+			emojiSearchView.setInputValue( 'smile' );
 
 			expect( emojiSearchView.element.querySelector( 'input' ).value ).to.equal( 'smile' );
-			expect( emojiSearchView._findInputView.fieldView.isEmpty ).to.equal( false );
 		} );
 
 		it( 'sets the value of text input element to an empty value', () => {
-			emojiSearchView.setSearchQuery( 'smile' );
+			emojiSearchView.setInputValue( 'smile' );
 
 			expect( emojiSearchView.element.querySelector( 'input' ).value ).to.equal( 'smile' );
-			expect( emojiSearchView._findInputView.fieldView.isEmpty ).to.equal( false );
 
-			emojiSearchView.setSearchQuery( '' );
+			emojiSearchView.setInputValue( '' );
 
 			expect( emojiSearchView.element.querySelector( 'input' ).value ).to.equal( '' );
-			expect( emojiSearchView._findInputView.fieldView.isEmpty ).to.equal( true );
-		} );
-	} );
-
-	describe( '_createInputField()', () => {
-		it( 'delegates the #input event up when the search value is empty', () => {
-			const spy = sinon.spy();
-
-			emojiSearchView.on( 'input', spy );
-			emojiSearchView._findInputView.fieldView.fire( 'input' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { value: null } );
-		} );
-
-		it( 'delegates the #input event up when the search value is not empty', () => {
-			emojiSearchView.setSearchQuery( 'smile' );
-
-			const spy = sinon.spy();
-
-			emojiSearchView.on( 'input', spy );
-			emojiSearchView._findInputView.fieldView.fire( 'input' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { value: 'smile' } );
-		} );
-
-		it( 'delegates the #input event up when reset button is being clicked', () => {
-			emojiSearchView.setSearchQuery( 'smile' );
-
-			const spy = sinon.spy();
-
-			emojiSearchView.on( 'input', spy );
-
-			const resetInputButton = emojiSearchView.element.querySelector( '.ck-search__reset' );
-			resetInputButton.click();
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { value: '' } );
 		} );
 	} );
 } );

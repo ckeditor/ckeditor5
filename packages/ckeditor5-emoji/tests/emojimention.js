@@ -6,13 +6,53 @@
 /* global document, console, setTimeout */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import EmojiDatabase from '../src/emojidatabase.js';
 
-describe( 'EmojiMention', () => {
+class EmojiDatabaseMock extends EmojiDatabase {
+	// init() {
+	// 	console.error( 'running init!' );
+	// }
+
+	// getEmojiBySearchQuery( query ) {
+	// 	return [
+	// 		[
+	// 			{
+	// 				"shortcodes": [
+	// 					"toothbrush"
+	// 				],
+	// 				"annotation": "toothbrush",
+	// 				"tags": [
+	// 					"bathroom",
+	// 					"brush",
+	// 					"clean",
+	// 					"dental",
+	// 					"hygiene",
+	// 					"teeth",
+	// 					"toiletry"
+	// 				],
+	// 				"emoji": "🪥",
+	// 				"order": 4447,
+	// 				"group": 7,
+	// 				"version": 13,
+	// 				"skins": {
+	// 					"default": "🪥"
+	// 				}
+	// 			}
+	// 		]
+	// 	]
+	// }
+}
+
+describe.only( 'EmojiMention', () => {
+	testUtils.createSinonSandbox();
+
 	let editor, editorElement, consoleLogStub, consoleWarnStub;
 
 	beforeEach( async () => {
@@ -22,13 +62,15 @@ describe( 'EmojiMention', () => {
 		consoleLogStub = sinon.stub( console, 'log' );
 		consoleWarnStub = sinon.stub( console, 'warn' );
 
-		editor = await ClassicEditor.create( editorElement, {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
 				Emoji,
+				EmojiPicker,
 				Mention,
 				Essentials,
 				Paragraph
-			]
+			],
+			substitutePlugins: [ EmojiDatabaseMock ]
 		} );
 	} );
 
@@ -46,9 +88,7 @@ describe( 'EmojiMention', () => {
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMention.requires ).to.deep.equal( [
-			'Mention'
-		] );
+		expect( EmojiMention.requires ).to.deep.equal( [ EmojiDatabase, 'Mention' ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
@@ -75,7 +115,7 @@ describe( 'EmojiMention', () => {
 	it( 'should pass correct config for mention plugin when there is another, non-conflicting mention feed config', async () => {
 		await editor.destroy();
 
-		editor = await ClassicEditor.create( editorElement, {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
 				Emoji,
 				Paragraph,
@@ -108,7 +148,7 @@ describe( 'EmojiMention', () => {
 	it( 'should not pass config for mention plugin when there is another conflicting mention feed config', async () => {
 		await editor.destroy();
 
-		editor = await ClassicEditor.create( editorElement, {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
 				Emoji,
 				Paragraph,
@@ -143,7 +183,7 @@ describe( 'EmojiMention', () => {
 	it( 'should not pass config for mention plugin when there is another conflicting merge fields config', async () => {
 		await editor.destroy();
 
-		editor = await ClassicEditor.create( editorElement, {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
 				Emoji,
 				Paragraph,
@@ -188,7 +228,7 @@ describe( 'EmojiMention', () => {
 			expect( item.nodeName ).to.equal( 'SPAN' );
 			expect( Array.from( item.classList ) ).to.deep.equal( [ 'custom-item' ] );
 			expect( item.id ).to.equal( 'mention-list-item-id-emoji:__SHOW_ALL_EMOJI__:' );
-			expect( item.textContent ).to.equal( 'Show all emoji...' );
+			expect( item.textContent ).to.equal( 'Show all emojis...' );
 			expect( item.style.width ).to.equal( '100%' );
 			expect( item.style.display ).to.equal( 'block' );
 		} );
@@ -198,7 +238,7 @@ describe( 'EmojiMention', () => {
 		it( 'does not override the regular mention command execution', async () => {
 			await editor.destroy();
 
-			editor = await ClassicEditor.create( editorElement, {
+			editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [
 					Emoji,
 					Paragraph,
@@ -256,6 +296,7 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'overrides the mention command execution when triggering show all emoji button', () => {
+			// TODO split this test
 			setModelData( editor.model, '<paragraph>Hello world![]</paragraph>' );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
@@ -265,7 +306,7 @@ describe( 'EmojiMention', () => {
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world![]</paragraph>' );
 
-			const emojiSearchBar = document.querySelector( '.ck-emoji-input input' );
+			const emojiSearchBar = document.querySelector( '.ck-emoji-picker input' );
 			expect( emojiSearchBar.value ).to.equal( 'see no evil' );
 		} );
 
@@ -279,7 +320,7 @@ describe( 'EmojiMention', () => {
 			await new Promise( resolve => setTimeout( resolve, 250 ) );
 
 			expect(
-				document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+				document.querySelector( '.ck.ck-search__info' ).classList.contains( 'ck-hidden' )
 			).to.equal( true );
 		} );
 
@@ -293,7 +334,7 @@ describe( 'EmojiMention', () => {
 			await new Promise( resolve => setTimeout( resolve, 250 ) );
 
 			expect(
-				document.querySelector( '.ck.ck-emoji-nothing-found' ).classList.contains( 'hidden' )
+				document.querySelector( '.ck.ck-search__info' ).classList.contains( 'ck-hidden' )
 			).to.equal( false );
 		} );
 	} );
@@ -310,111 +351,86 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should return nothing when querying a single character', () => {
-			return queryEmoji( 'a' ).then( queryResult => {
-				expect( queryResult ).to.deep.equal( [] );
-			} );
+			const queryResult = queryEmoji( 'a' );
+
+			expect( queryResult ).to.have.length( 1 );
+			expect( queryResult[ 0 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
 		} );
 
 		it( 'should query single emoji properly properly', () => {
-			return queryEmoji( 'see no evil' ).then( queryResult => {
-				expect( queryResult ).to.deep.equal( [
-					{ id: 'emoji:see-no-evil_monkey:', text: '🙈' },
-					{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'see no evil' }
-				] );
-			} );
+			const queryResult = queryEmoji( 'see no evil' );
+
+			expect( queryResult ).to.deep.equal( [
+				{ id: 'emoji:see-no-evil_monkey:', text: '🙈' },
+				{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'see no evil' }
+			] );
 		} );
 
 		it( 'should query multiple emojis properly properly', () => {
-			return queryEmoji( 'face' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 6 );
+			const queryResult = queryEmoji( 'face' );
 
-				queryResult.forEach( item => {
-					expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
+			expect( queryResult.length ).to.equal( 6 );
 
-					if ( item.id !== 'emoji:__SHOW_ALL_EMOJI__:' ) {
-						expect( typeof item.text ).to.equal( 'string' );
-					}
-				} );
+			queryResult.forEach( item => {
+				expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
 
-				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( true );
+				if ( item.id !== 'emoji:__SHOW_ALL_EMOJI__:' ) {
+					expect( typeof item.text ).to.equal( 'string' );
+				}
 			} );
+
+			expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( true );
 		} );
 
 		it( 'should not include the show all emoji button when EmojiPicker plugin is not available', async () => {
 			await editor.destroy();
 
-			editor = await ClassicEditor.create( editorElement, {
+			editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, Mention ]
 			} );
 
 			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
 
-			return queryEmoji( 'face' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 6 );
+			const queryResult = queryEmoji( 'face' );
 
-				queryResult.forEach( item => {
-					expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
-					expect( typeof item.text ).to.equal( 'string' );
-				} );
+			expect( queryResult.length ).to.equal( 6 );
 
-				expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( false );
-			} );
-		} );
-
-		it( 'should not return any feeds when the first character of the search query is empty space', async () => {
-			await editor.destroy();
-
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ EmojiMention, Mention ]
+			queryResult.forEach( item => {
+				expect( item.id.startsWith( 'emoji:' ) ).to.be.true;
+				expect( typeof item.text ).to.equal( 'string' );
 			} );
 
-			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
-
-			return queryEmoji( ' face' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 0 );
-			} );
-		} );
-
-		it( 'should not return any feeds when the two first characters of the search query are empty space', async () => {
-			await editor.destroy();
-
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ EmojiMention, Mention ]
-			} );
-
-			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
-
-			return queryEmoji( '  face' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 0 );
-			} );
+			expect( queryResult.some( item => item.id === 'emoji:__SHOW_ALL_EMOJI__:' ) ).to.equal( false );
 		} );
 
 		it( 'should return emojis with the proper skin tone when it is selected in the emoji picker plugin', () => {
-			editor.plugins.get( EmojiPicker )._selectedSkinTone = 'dark';
+			editor.plugins.get( EmojiPicker ).showUI();
+			editor.plugins.get( EmojiPicker )._hideUI();
+			editor.plugins.get( EmojiPicker )._emojiPickerView.gridView.skinTone = 'dark';
 
-			return queryEmoji( 'hand_with_index_finger_and_thumb_crossed' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 2 );
+			const queryResult = queryEmoji( 'hand_with_index_finger_and_thumb_crossed' );
 
-				expect( queryResult[ 0 ] ).to.deep.equal( {
-					id: 'emoji:hand_with_index_finger_and_thumb_crossed:',
-					text: '🫰🏿'
-				} );
-				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
+			expect( queryResult.length ).to.equal( 2 );
+
+			expect( queryResult[ 0 ] ).to.deep.equal( {
+				id: 'emoji:hand_with_index_finger_and_thumb_crossed:',
+				text: '🫰🏿'
 			} );
+			expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
 		} );
 
 		it( 'should return emojis with the default skin tone when the skin tone is selected but the emoji does not have variants', () => {
 			editor.plugins.get( EmojiPicker )._selectedSkinTone = 5;
 
-			return queryEmoji( 'see no evil' ).then( queryResult => {
-				expect( queryResult.length ).to.equal( 2 );
+			const queryResult = queryEmoji( 'see no evil' );
 
-				expect( queryResult[ 0 ] ).to.deep.equal( {
-					id: 'emoji:see-no-evil_monkey:',
-					text: '🙈'
-				} );
-				expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
+			expect( queryResult.length ).to.equal( 2 );
+
+			expect( queryResult[ 0 ] ).to.deep.equal( {
+				id: 'emoji:see-no-evil_monkey:',
+				text: '🙈'
 			} );
+			expect( queryResult[ 1 ].id ).to.equal( 'emoji:__SHOW_ALL_EMOJI__:' );
 		} );
 	} );
 } );

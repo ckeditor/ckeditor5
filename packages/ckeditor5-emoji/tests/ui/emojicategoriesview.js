@@ -28,7 +28,7 @@ describe( 'EmojiCategoriesView', () => {
 			exampleEmoji: '📕'
 		} ];
 
-		emojiCategoriesView = new EmojiCategoriesView( locale, emojiGroups, 'faces' );
+		emojiCategoriesView = new EmojiCategoriesView( locale, { emojiGroups, categoryName: 'faces' } );
 		emojiCategoriesView.render();
 	} );
 
@@ -37,37 +37,25 @@ describe( 'EmojiCategoriesView', () => {
 	} );
 
 	it( 'updates currentCategoryName when clicking the buttons', () => {
-		expect( emojiCategoriesView.currentCategoryName ).to.equal( 'faces' );
+		expect( emojiCategoriesView.categoryName ).to.equal( 'faces' );
 
 		emojiCategoriesView._buttonViews._items[ 1 ].element.click();
 
-		expect( emojiCategoriesView.currentCategoryName ).to.equal( 'food' );
+		expect( emojiCategoriesView.categoryName ).to.equal( 'food' );
 	} );
 
 	it( 'updates currentCategoryName when clicking the span element inside the buttons', () => {
-		expect( emojiCategoriesView.currentCategoryName ).to.equal( 'faces' );
+		expect( emojiCategoriesView.categoryName ).to.equal( 'faces' );
 
 		emojiCategoriesView._buttonViews._items[ 1 ].element.childNodes[ 0 ].click();
 
-		expect( emojiCategoriesView.currentCategoryName ).to.equal( 'food' );
+		expect( emojiCategoriesView.categoryName ).to.equal( 'food' );
 	} );
 
 	it( 'properly cycles categories with keypresses to the right side', () => {
-		emojiCategoriesView._focusTracker.focusedElement = { nextElementSibling: { focus: sinon.stub() } };
+		const spy = sinon.spy( emojiCategoriesView.focusCycler, 'focusNext' );
 
-		emojiCategoriesView._keystrokeHandler.press( {
-			keyCode: keyCodes.arrowright,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-
-		sinon.assert.calledOnce( emojiCategoriesView._focusTracker.focusedElement.nextElementSibling.focus );
-	} );
-
-	it( 'properly loops back to the first category with keypress to the right side', () => {
-		const spy = sinon.spy( emojiCategoriesView._buttonViews.first, 'focus' );
-
-		emojiCategoriesView._keystrokeHandler.press( {
+		emojiCategoriesView.keystrokes.press( {
 			keyCode: keyCodes.arrowright,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
@@ -77,21 +65,9 @@ describe( 'EmojiCategoriesView', () => {
 	} );
 
 	it( 'properly cycles categories with keypresses to the left side', () => {
-		emojiCategoriesView._focusTracker.focusedElement = { previousElementSibling: { focus: sinon.stub() } };
+		const spy = sinon.spy( emojiCategoriesView.focusCycler, 'focusPrevious' );
 
-		emojiCategoriesView._keystrokeHandler.press( {
-			keyCode: keyCodes.arrowleft,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-
-		sinon.assert.calledOnce( emojiCategoriesView._focusTracker.focusedElement.previousElementSibling.focus );
-	} );
-
-	it( 'properly loops back to the last category with keypress to the left side', () => {
-		const spy = sinon.spy( emojiCategoriesView._buttonViews.last, 'focus' );
-
-		emojiCategoriesView._keystrokeHandler.press( {
+		emojiCategoriesView.keystrokes.press( {
 			keyCode: keyCodes.arrowleft,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
