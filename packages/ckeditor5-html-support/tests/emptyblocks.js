@@ -178,7 +178,7 @@ describe( 'EmptyBlocks', () => {
 			editor.setData( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<table><tableRow><tableCell htmlEmptyBlock="true"></tableCell></tableRow></table>'
+				'<table><tableRow><tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell></tableRow></table>'
 			);
 		} );
 
@@ -197,7 +197,7 @@ describe( 'EmptyBlocks', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>foo</paragraph></tableCell>' +
-						'<tableCell htmlEmptyBlock="true"></tableCell>' +
+						'<tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell>' +
 						'<tableCell><paragraph>bar</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -220,7 +220,11 @@ describe( 'EmptyBlocks', () => {
 			editor.setData( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<table><tableRow><tableCell htmlEmptyBlock="true"></tableCell></tableRow></table>'
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell htmlEmptyBlock="true"><paragraph></paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
 			);
 
 			expect( editor.getData() ).to.equal(

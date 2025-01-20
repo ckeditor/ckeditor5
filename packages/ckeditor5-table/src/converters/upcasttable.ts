@@ -161,9 +161,7 @@ export function ensureParagraphInTableCell( elementName: string ) {
 
 			// Ensure a paragraph in the model for empty table cells for converted table cells.
 			if ( data.viewItem.isEmpty ) {
-				if ( !tableCell.hasAttribute( 'htmlEmptyBlock' ) ) {
-					writer.insertElement( 'paragraph', modelCursor );
-				}
+				writer.insertElement( 'paragraph', modelCursor );
 
 				return;
 			}
