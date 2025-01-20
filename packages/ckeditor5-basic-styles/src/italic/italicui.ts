@@ -7,12 +7,10 @@
  * @module basic-styles/italic/italicui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconItalic } from 'ckeditor5/src/icons.js';
 import { MenuBarMenuListItemButtonView, ButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-const ITALIC = 'italic';
 
 /**
  * The italic UI feature. It introduces the Italic button.
@@ -32,17 +30,24 @@ export default class ItalicUI extends Plugin {
 		return true;
 	}
 
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		editor.locale.addIcon( 'italic', IconItalic );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const ITALIC = 'italic';
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: ITALIC,
 			plugin: this,
-			icon: IconItalic,
+			icon: editor.locale.getIcon( 'italic' )!,
 			keystroke: 'CTRL+I',
 			label: t( 'Italic' )
 		} );

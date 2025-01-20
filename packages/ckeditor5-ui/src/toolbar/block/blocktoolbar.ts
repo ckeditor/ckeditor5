@@ -28,7 +28,7 @@ import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engi
 
 import BlockButtonView from './blockbuttonview.js';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
-import ToolbarView, { NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
+import ToolbarView from '../toolbarview.js';
 import clickOutsideHandler from '../../bindings/clickoutsidehandler.js';
 import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
@@ -276,8 +276,7 @@ export default class BlockToolbar extends Plugin {
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
 		const iconFromConfig = this._blockToolbarConfig.icon;
-
-		const icon = NESTED_TOOLBAR_ICONS[ iconFromConfig! ] || iconFromConfig || NESTED_TOOLBAR_ICONS.dragIndicator;
+		const icon = this.toolbarView.icons[ iconFromConfig! ] || iconFromConfig || this.toolbarView.icons.dragIndicator;
 
 		buttonView.set( {
 			label: t( 'Edit block' ),

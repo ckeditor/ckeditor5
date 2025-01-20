@@ -7,12 +7,10 @@
  * @module basic-styles/strikethrough/strikethroughui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconStrikethrough } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-const STRIKETHROUGH = 'strikethrough';
 
 /**
  * The strikethrough UI feature. It introduces the Strikethrough button.
@@ -32,17 +30,24 @@ export default class StrikethroughUI extends Plugin {
 		return true;
 	}
 
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		editor.locale.addIcon( 'strikethrough', IconStrikethrough );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const STRIKETHROUGH = 'strikethrough';
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: STRIKETHROUGH,
 			plugin: this,
-			icon: IconStrikethrough,
+			icon: editor.locale.getIcon( 'strikethrough' )!,
 			keystroke: 'CTRL+SHIFT+X',
 			label: t( 'Strikethrough' )
 		} );

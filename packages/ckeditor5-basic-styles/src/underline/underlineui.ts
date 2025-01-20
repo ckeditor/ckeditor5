@@ -7,12 +7,10 @@
  * @module basic-styles/underline/underlineui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconUnderline } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-const UNDERLINE = 'underline';
 
 /**
  * The underline UI feature. It introduces the Underline button.
@@ -32,17 +30,24 @@ export default class UnderlineUI extends Plugin {
 		return true;
 	}
 
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		editor.locale.addIcon( 'underline', IconUnderline );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const UNDERLINE = 'underline';
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: UNDERLINE,
 			plugin: this,
-			icon: IconUnderline,
+			icon: editor.locale.getIcon( 'underline' )!,
 			label: t( 'Underline' ),
 			keystroke: 'CTRL+U'
 		} );

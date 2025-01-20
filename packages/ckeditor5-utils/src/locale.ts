@@ -98,9 +98,14 @@ export default class Locale {
 	public readonly t: LocaleTranslate;
 
 	/**
-	 * Object that contains translations.
+	 * Object containing translations.
 	 */
 	public translations?: Translations;
+
+	/**
+	 * Object containing icons.
+	 */
+	public icons: Icons;
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
@@ -118,11 +123,13 @@ export default class Locale {
 		{
 			uiLanguage = 'en',
 			contentLanguage,
-			translations
+			translations,
+			icons
 		}: {
 			readonly uiLanguage?: string;
 			readonly contentLanguage?: string;
 			readonly translations?: ArrayOrItem<Translations>;
+			readonly icons?: Icons;
 		} = {}
 	) {
 		this.uiLanguage = uiLanguage;
@@ -130,6 +137,7 @@ export default class Locale {
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 		this.translations = _unifyTranslations( translations );
+		this.icons = icons || {};
 		this.t = ( message, values ) => this._t( message, values );
 	}
 
@@ -174,6 +182,24 @@ export default class Locale {
 
 		return interpolateString( translatedString, values );
 	}
+
+	/**
+	 * Registers an icon by given name in the registry.
+	 */
+	public addIcon( name: string, icon: string, force: boolean = false ): string {
+		if ( !this.icons[ name ] || force ) {
+			this.icons[ name ] = icon;
+		}
+
+		return this.icons[ name ];
+	}
+
+	/**
+	 * Returns an icon by its name.
+	 */
+	public getIcon( name: string ): string | undefined {
+		return this.icons[ name ];
+	}
 }
 
 /**
@@ -204,3 +230,5 @@ export type Translations = {
 		getPluralForm?: ( ( n: number ) => number | boolean ) | null;
 	};
 };
+
+export type Icons = Record<string, string>;

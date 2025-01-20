@@ -51,18 +51,6 @@ import { isObject } from 'lodash-es';
 
 import '../../theme/components/toolbar/toolbar.css';
 
-export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
-	alignLeft: IconAlignLeft,
-	bold: IconBold,
-	importExport: IconImportExport,
-	paragraph: IconParagraph,
-	plus: IconPlus,
-	text: IconText,
-	threeVerticalDots: IconThreeVerticalDots,
-	pilcrow: IconPilcrow,
-	dragIndicator: IconDragIndicator
-} ) )();
-
 /**
  * The toolbar view class.
  */
@@ -116,6 +104,11 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * by the user.
 	 */
 	public readonly focusables: ViewCollection<FocusableView>;
+
+	/**
+	 * Predefined list of icons used in the view.
+	 */
+	public readonly icons: Record<string, string>;
 
 	declare public locale: Locale;
 
@@ -254,6 +247,18 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		} );
 
 		this._behavior = this.options.shouldGroupWhenFull ? new DynamicGrouping( this ) : new StaticLayout( this );
+
+		this.icons = {
+			alignLeft: locale.addIcon( 'alignLeft', IconAlignLeft ),
+			bold: locale.addIcon( 'bold', IconBold ),
+			importExport: locale.addIcon( 'importExport', IconImportExport ),
+			paragraph: locale.addIcon( 'paragraph', IconParagraph ),
+			plus: locale.addIcon( 'plus', IconPlus ),
+			text: locale.addIcon( 'text', IconText ),
+			threeVerticalDots: locale.addIcon( 'threeVerticalDots', IconThreeVerticalDots ),
+			pilcrow: locale.addIcon( 'pilcrow', IconPilcrow ),
+			dragIndicator: locale.addIcon( 'dragIndicator', IconDragIndicator )
+		};
 	}
 
 	/**
@@ -546,7 +551,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
+			dropdownView.buttonView.icon = this.icons[ icon! ] || icon || IconThreeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {

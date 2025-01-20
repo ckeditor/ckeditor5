@@ -7,14 +7,12 @@
  * @module basic-styles/code/codeui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconCode } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
 
 import '../../theme/code.css';
-
-const CODE = 'code';
 
 /**
  * The code UI feature. It introduces the Code button.
@@ -34,17 +32,24 @@ export default class CodeUI extends Plugin {
 		return true;
 	}
 
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		editor.locale.addIcon( 'code', IconCode );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const CODE = 'code';
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: CODE,
 			plugin: this,
-			icon: IconCode,
+			icon: editor.locale.getIcon( 'code' )!,
 			label: t( 'Code' )
 		} );
 
