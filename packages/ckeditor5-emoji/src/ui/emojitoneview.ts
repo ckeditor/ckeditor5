@@ -63,9 +63,10 @@ export default class EmojiToneView extends View {
 			this._skinTones.map( ( { id, icon, tooltip } ) => this._createButton( locale, id, icon, tooltip ) )
 		);
 
+		const accessibleLabel = t( 'Select skin tone' );
 		this.mainDropdownButton.withText = true;
 		this.mainDropdownButton.label = this._getSkinTone( this.skinTone ).icon;
-		this.mainDropdownButton.tooltip = t( 'Select skin tone' );
+		this.mainDropdownButton.tooltip = accessibleLabel;
 
 		/* eslint-disable max-len */
 		// TODO: `addListToDropdown()` instead.
@@ -78,7 +79,7 @@ export default class EmojiToneView extends View {
 				isVertical: true,
 				isCompact: true,
 				enableActiveItemFocusOnDropdownOpen: true,
-				ariaLabel: t( 'Skin tone toolbar' )
+				ariaLabel: accessibleLabel
 			}
 		);
 
