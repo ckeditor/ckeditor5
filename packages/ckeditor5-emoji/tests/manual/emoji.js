@@ -42,6 +42,7 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 			...extraPlugins
 		],
 		toolbar: [
+			'heading',
 			'undo',
 			'redo',
 			emojiButtonInToolbar ? 'emoji' : ''

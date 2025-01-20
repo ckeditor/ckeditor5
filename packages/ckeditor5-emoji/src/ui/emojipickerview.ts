@@ -136,7 +136,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 						this.toneView
 					],
 					attributes: {
-						class: [ 'ck', 'ck-search-tone-wrapper' ]
+						class: [ 'ck', 'ck-emoji-picker-wrapper' ]
 					}
 				},
 				this.categoriesView,

@@ -46,9 +46,6 @@ export default class EmojiSearchView extends View {
 
 		this.setTemplate( {
 			tag: 'div',
-			attributes: {
-				class: [ 'ck', 'ck-emoji-input', 'ck-search' ]
-			},
 			children: [
 				this.inputView
 			]

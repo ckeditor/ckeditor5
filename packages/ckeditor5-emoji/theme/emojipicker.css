@@ -15,7 +15,7 @@
 	width: 320px;
 }
 
-.ck .ck.ck-search-tone-wrapper {
+.ck .ck.ck-emoji-picker-wrapper {
 	display: flex;
 	padding: var(--ck-spacing-large);
 	padding-bottom: var(--ck-spacing-medium);

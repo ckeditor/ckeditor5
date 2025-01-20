@@ -4,34 +4,17 @@
  */
 
 .ck.ck-emoji-tone {
-	> .ck.ck-dropdown.ck-toolbar-dropdown {
-		> button.ck.ck-dropdown__button {
-			padding: 0 10px 0 4px;
-			justify-content: center;
+	margin-left: var(--ck-spacing-standard);
 
-			> svg.ck.ck-dropdown__arrow {
-				margin: 0;
-			}
+	> .ck.ck-dropdown {
 
-			> span.ck.ck-button__label {
-				font-size: var(--ck-font-size-big);
-				width: fit-content;
-			}
+		.ck.ck-list__item {
+			min-width: 1em;
 		}
 
-		> div.ck.ck-dropdown__panel {
-			> div.ck.ck-toolbar {
-				> div.ck.ck-toolbar__items {
-					> button {
-						padding: 0;
-						justify-content: center;
-						flex-direction: row-reverse;
-
-						> span.ck.ck-button__label {
-							font-size: var(--ck-font-size-big);
-						}
-					}
-				}
+		.ck-button.ck-dropdown__button {
+			.ck-button__label {
+				width: initial;
 			}
 		}
 	}
