@@ -315,7 +315,7 @@ However, we understand that migrating to a new setup, even if easy, requires pla
 
 ### Deprecation of the predefined builds
 
-Our provided predefined editor builds, like `ckeditor5-build-classic`, will be supported until **the end of Q1 (March), 2025**.
+Our provided predefined editor builds, such as `ckeditor5-build-classic`, will be supported until **the end of Q1 (March), 2025**.
 
 What we will sunset on this date:
 
