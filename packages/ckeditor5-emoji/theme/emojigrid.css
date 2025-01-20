@@ -7,8 +7,8 @@
 	--ck-emoji-grid-tile-size: 27px;
 }
 
-.ck.ck-emoji-picker {
-	& .ck.ck-emoji-grid {
+.ck.ck-emoji {
+	& .ck.ck-emoji__grid {
 		max-width: 100%;
 		max-height: 265px;
 
@@ -16,14 +16,14 @@
 		overflow-x: hidden;
 		border-top: 1px solid var(--ck-color-base-border);
 
-		& .ck-emoji-grid__tiles {
+		& .ck-emoji__tiles {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(var(--ck-emoji-grid-tile-size), 1fr));
 			margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 			grid-gap: var(--ck-spacing-small);
 		}
 
-		& .ck-emoji-grid__tile {
+		& .ck-emoji__tile {
 			width: var(--ck-emoji-grid-tile-size);
 			height: var(--ck-emoji-grid-tile-size);
 			min-width: var(--ck-emoji-grid-tile-size);

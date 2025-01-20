@@ -110,7 +110,7 @@ export default class EmojiToneView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-emoji-tone' ]
+				class: [ 'ck', 'ck-emoji__skin-tone' ]
 			},
 			children: [ dropdownView ]
 		} );

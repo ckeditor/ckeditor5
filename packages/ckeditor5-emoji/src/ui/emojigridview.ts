@@ -96,7 +96,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 					attributes: {
 						class: [
 							'ck',
-							'ck-emoji-grid__tiles'
+							'ck-emoji__tiles'
 						]
 					},
 					children: this.tiles
@@ -105,7 +105,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 			attributes: {
 				class: [
 					'ck',
-					'ck-emoji-grid',
+					'ck-emoji__grid',
 					// To avoid issues with focus cycling, ignore a grid when it's empty.
 					bind.if( 'isEmpty', 'ck-hidden', value => value )
 				]
@@ -239,7 +239,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		tile.set( {
 			label: emoji,
 			withText: true,
-			class: 'ck-emoji-grid__tile'
+			class: 'ck-emoji__tile'
 		} );
 
 		tile.extendTemplate( {
