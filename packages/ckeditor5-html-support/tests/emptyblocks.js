@@ -229,6 +229,22 @@ describe( 'EmptyBlocks', () => {
 		} );
 	} );
 
+	describe( 'lists integration', () => {
+		it( 'should set htmlEmptyBlock on empty list item', () => {
+			editor.setData( '<paragraph>A</paragraph><ul><li></li></ul>' );
+
+			const modelData = getModelData( model, { withoutSelection: true } );
+			const normalizedData = modelData.replace( / listItemId="[^"]+"/g, '' );
+
+			expect( normalizedData ).to.equal(
+				'<paragraph>A</paragraph>' +
+				'<paragraph htmlEmptyBlock="true" listIndent="0" listType="bulleted"></paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p>A</p><ul><li><p></p></li></ul>' );
+		} );
+	} );
+
 	describe( 'editing pipeline', () => {
 		it( 'should preserve empty paragraph in editing view', () => {
 			setModelData( model, '<paragraph htmlEmptyBlock="true"></paragraph>' );
@@ -249,16 +265,6 @@ describe( 'EmptyBlocks', () => {
 		it( 'should preserve empty heading in output', () => {
 			editor.setData( '<paragraph>A</paragraph><h2></h2>' );
 			expect( editor.getData() ).to.equal( '<p>A</p><h2></h2>' );
-		} );
-
-		it( 'should set htmlEmptyBlock on empty list item', () => {
-			editor.setData( '<ul><li></li></ul>' );
-
-			const modelData = getModelData( model, { withoutSelection: true } );
-			const normalizedData = modelData.replace( / listItemId="[^"]+"/g, '' );
-
-			expect( normalizedData )
-				.to.equal( '<paragraph htmlEmptyBlock="true" listIndent="0" listType="bulleted"></paragraph>' );
 		} );
 
 		it( 'should preserve mixed empty and non-empty block elements', () => {
