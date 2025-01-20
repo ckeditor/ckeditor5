@@ -7,7 +7,7 @@
  * @module html-support/emptyblocks
  */
 
-import type { PriorityString } from 'ckeditor5/src/utils.js';
+import { priorities, type PriorityString } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { UpcastElementEvent, Element, DowncastDispatcher, UpcastDispatcher } from 'ckeditor5/src/engine.js';
 
@@ -99,8 +99,8 @@ export default class EmptyBlocks extends Plugin {
 
 			editor.conversion
 				.for( 'upcast' )
-				.add( createEmptyBlocksUpcastDispatcher( editor, 'element:td' ) )
-				.add( createEmptyBlocksUpcastDispatcher( editor, 'element:th' ) );
+				.add( createEmptyBlocksUpcastDispatcher( editor, 'element:td', priorities.low + 1 ) )
+				.add( createEmptyBlocksUpcastDispatcher( editor, 'element:th', priorities.low + 1 ) );
 		}
 	}
 }
@@ -142,7 +142,7 @@ function createEmptyBlocksDowncastDispatcher() {
 function createEmptyBlocksUpcastDispatcher(
 	editor: Editor,
 	eventName: 'element' | `element:${ string }`,
-	priority: PriorityString = 'normal'
+	priority: PriorityString
 ) {
 	const { schema } = editor.model;
 
