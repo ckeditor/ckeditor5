@@ -55,7 +55,7 @@ export default class EmptyBlocks extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		this._registerConverters();
 	}
 
@@ -97,8 +97,14 @@ export default class EmptyBlocks extends Plugin {
 		// Data downcast conversion - prevent filler in empty elements.
 		const downcastDispatcher = ( dispatcher: DowncastDispatcher ) => {
 			dispatcher.on( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
+				const { mapper, consumable } = conversionApi;
 				const { item } = data;
-				const viewElement = conversionApi.mapper.toViewElement( item as Element );
+
+				if ( !consumable.consume( item, evt.name ) ) {
+					return;
+				}
+
+				const viewElement = mapper.toViewElement( item as Element );
 
 				if ( viewElement && data.attributeNewValue ) {
 					viewElement.getFillerOffset = () => null;

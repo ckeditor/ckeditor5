@@ -111,7 +111,7 @@ describe( 'EmptyBlocks', () => {
 		} );
 	} );
 
-	describe( 'downcast conversion', () => {
+	describe( 'data downcast conversion', () => {
 		it( 'should not return anything if blank paragraph in model (as it used to do)', () => {
 			setModelData( model, '<paragraph></paragraph>' );
 
@@ -153,6 +153,23 @@ describe( 'EmptyBlocks', () => {
 			);
 
 			expect( editor.getData() ).to.equal( '<p></p><p>foo</p><p></p>' );
+		} );
+
+		it( 'should not set `getFillerOffset` if element is already consumed', () => {
+			editor.setData( '<p></p><p>foo</p>' );
+
+			editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+				dispatcher.on( 'attribute:htmlEmptyBlock', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:htmlEmptyBlock' );
+				}, { priority: 'highest' } );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph htmlEmptyBlock="true"></paragraph>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
 		} );
 	} );
 
