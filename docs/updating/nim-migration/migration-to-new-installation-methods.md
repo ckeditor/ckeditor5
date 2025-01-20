@@ -319,7 +319,7 @@ Our provided predefined editor builds, like `ckeditor5-build-classic`, will be s
 
 What we will sunset on this date:
 
-1. The documentation for the predefined builds, superbuild will be removed.
+1. The documentation for the predefined builds and superbuild will be removed.
 2. No more new versions of predefined builds packages will be published to npm.
 5. We will update our environment to target ES2022 (or newer), thus dropping the support for webpack 4.
 
