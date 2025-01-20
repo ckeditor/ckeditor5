@@ -60,7 +60,8 @@ import {
 	DropdownPanelView,
 	DropdownView,
 	ToolbarView,
-	IconFontColor
+	IconFontColor,
+	registerIcon
 } from 'ckeditor5';
 import { EasyImage } from 'ckeditor5-premium-features';
 
