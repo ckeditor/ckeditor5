@@ -256,11 +256,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				describe( 'listTypesStyles config entry', () => {
-					it( 'should register buttons filtered by listTypesStyles for bulleted list', () => {
+				describe( 'listStyleTypes config entry', () => {
+					it( 'should register buttons filtered by listStyleTypes for bulleted list', () => {
 						return withEditor( {
 							styles: {
-								listTypesStyles: {
+								listStyleTypes: {
 									bulleted: [ 'disc', 'circle' ]
 								}
 							}
@@ -284,10 +284,10 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should register buttons filtered by listTypesStyles for numbered list', () => {
+					it( 'should register buttons filtered by listStyleTypes for numbered list', () => {
 						return withEditor( {
 							styles: {
-								listTypesStyles: {
+								listStyleTypes: {
 									numbered: [ 'decimal', 'lower-roman' ]
 								}
 							}
@@ -311,7 +311,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should register all buttons when listTypesStyles is undefined', () => {
+					it( 'should register all buttons when listStyleTypes is undefined', () => {
 						return withEditor( {
 							styles: true
 						}, editor => {
@@ -341,10 +341,10 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should register no buttons when listTypesStyles has empty array', () => {
+					it( 'should register no buttons when listStyleTypes has empty array', () => {
 						return withEditor( {
 							styles: {
-								listTypesStyles: {
+								listStyleTypes: {
 									numbered: [],
 									bulleted: []
 								}
@@ -1186,11 +1186,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				describe( 'listTypesStyles config entry', () => {
-					it( 'should register buttons filtered by listTypesStyles for bulleted list in menu bar', () => {
+				describe( 'listStyleTypes config entry', () => {
+					it( 'should register buttons filtered by listStyleTypes for bulleted list in menu bar', () => {
 						return withEditor( {
 							styles: {
-								listTypesStyles: {
+								listStyleTypes: {
 									bulleted: [ 'disc', 'circle' ]
 								}
 							}
@@ -1214,10 +1214,10 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should register buttons filtered by listTypesStyles for numbered list in menu bar', () => {
+					it( 'should register buttons filtered by listStyleTypes for numbered list in menu bar', () => {
 						return withEditor( {
 							styles: {
-								listTypesStyles: {
+								listStyleTypes: {
 									numbered: [ 'decimal', 'lower-roman' ]
 								}
 							}
@@ -1241,7 +1241,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should register all buttons when listTypesStyles is undefined in menu bar', () => {
+					it( 'should register all buttons when listStyleTypes is undefined in menu bar', () => {
 						return withEditor( {
 							styles: true
 						}, editor => {
@@ -1271,10 +1271,10 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should register no buttons when listTypesStyles has empty array in menu bar', () => {
+					it( 'should register no buttons when listStyleTypes has empty array in menu bar', () => {
 						return withEditor( {
 							styles: {
-								listTypesStyles: {
+								listStyleTypes: {
 									numbered: [],
 									bulleted: []
 								}

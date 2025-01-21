@@ -171,14 +171,14 @@ export interface ListPropertiesStyleConfig {
 
 	/**
 	 * Defines which list styles should be available in the UI.
-	 * Accepts a configuration object with numbered and bulleted styles or `true` to enable all styles.
+	 * Accepts a configuration object with numbered and bulleted styles.
 	 *
 	 * ```ts
 	 * {
 	 *   list: {
 	 *     properties: {
 	 *       styles: {
-	 *         listTypesStyles: {
+	 *         listStyleTypes: {
 	 *           numbered: [ 'decimal', 'lower-roman', 'upper-roman' ],
 	 *           bulleted: [ 'disc', 'circle' ]
 	 *         }
@@ -193,7 +193,7 @@ export interface ListPropertiesStyleConfig {
 	 *   bulleted: ['disc', 'circle', 'square']
 	 * }
 	 */
-	listTypesStyles?: ListStyleTypesConfig;
+	listStyleTypes?: ListStyleTypesConfig;
 }
 
 export interface ListStyleTypesConfig {

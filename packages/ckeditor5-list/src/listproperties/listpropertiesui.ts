@@ -373,7 +373,7 @@ function createListPropertiesView( {
 			listStyleCommand
 		} );
 
-		const configuredListStylesTypes = normalizedConfig.styles.listTypesStyles;
+		const configuredListStylesTypes = normalizedConfig.styles.listStyleTypes;
 		let filteredDefinitions = styleDefinitions;
 
 		if ( configuredListStylesTypes ) {
@@ -466,7 +466,7 @@ function getMenuBarStylesMenuCreator(
 			listStyleCommand
 		} );
 
-		const configuredListStylesTypes = normalizedConfig.styles.listTypesStyles;
+		const configuredListStylesTypes = normalizedConfig.styles.listStyleTypes;
 		let filteredDefinitions = styleDefinitions;
 
 		if ( configuredListStylesTypes ) {

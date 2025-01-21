@@ -234,7 +234,7 @@ ClassicEditor
 		list: {
 			properties: {
 				styles: {
-					listTypesStyles: {
+					listStyleTypes: {
 						numbered: [
 							'decimal',
 							'decimal-leading-zero',

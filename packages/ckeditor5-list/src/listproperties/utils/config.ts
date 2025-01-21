@@ -75,8 +75,8 @@ function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): 
 
 		normalizedConfig.useAttribute = !!styles.useAttribute;
 
-		if ( styles.listTypesStyles ) {
-			normalizedConfig.listTypesStyles = styles.listTypesStyles;
+		if ( styles.listStyleTypes ) {
+			normalizedConfig.listStyleTypes = styles.listStyleTypes;
 		}
 	}
 
@@ -89,7 +89,7 @@ function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): 
 export type NormalizedListPropertiesConfig = {
 	styles: {
 		listTypes: Array<ListPropertiesStyleListType>;
-		listTypesStyles?: {
+		listStyleTypes?: {
 			numbered?: Array<string>;
 			bulleted?: Array<string>;
 		};
