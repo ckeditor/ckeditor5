@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import { set, get } from 'lodash-es';
+import { set, get } from 'es-toolkit/compat';
 
 import {
 	Config,

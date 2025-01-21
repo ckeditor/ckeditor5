@@ -23,7 +23,7 @@ import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 import DocumentFragment from './documentfragment.js';
 import Text from './text.js';
 import EditableElement from './editableelement.js';
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import type Document from './document.js';
 import type Node from './node.js';

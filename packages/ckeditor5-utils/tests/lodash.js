@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { extend } from 'lodash-es';
+import { extend } from 'es-toolkit/compat';
 
 describe( 'utils', () => {
 	describe( 'extend()', () => {

@@ -17,7 +17,7 @@ import {
 	type LabeledFieldView
 } from 'ckeditor5/src/ui.js';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 import TablePropertiesView from './ui/tablepropertiesview.js';
 import tableProperties from './../../theme/icons/table-properties.svg';
