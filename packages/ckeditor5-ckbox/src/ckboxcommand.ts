@@ -432,7 +432,7 @@ export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): C
  * @param asset The asset to prepare the attributes for.
  */
 function prepareLinkAssetAttributes(
-	config: CKBoxConfig['downloadableFiles'],
+	config: CKBoxConfig[ 'downloadableFiles' ],
 	asset: CKBoxRawAssetDefinition
 ): CKBoxAssetLinkAttributesDefinition {
 	return {
@@ -460,7 +460,7 @@ function isImage( asset: CKBoxRawAssetDefinition ) {
  * @param config The CKBox download asset configuration.
  * @param asset The asset to create the URL for.
  */
-function getAssetUrl( config: CKBoxConfig['downloadableFiles'], asset: CKBoxRawAssetDefinition ) {
+function getAssetUrl( config: CKBoxConfig[ 'downloadableFiles' ], asset: CKBoxRawAssetDefinition ) {
 	const url = new URL( asset.data.url );
 
 	if ( isDownloadableAsset( config, asset ) ) {
@@ -477,7 +477,7 @@ function getAssetUrl( config: CKBoxConfig['downloadableFiles'], asset: CKBoxRawA
  * @param asset The asset to check.
  */
 function isDownloadableAsset(
-	config: CKBoxConfig['downloadableFiles'],
+	config: CKBoxConfig[ 'downloadableFiles' ],
 	asset: CKBoxRawAssetDefinition
 ): boolean {
 	if ( typeof config === 'function' ) {

@@ -1290,7 +1290,7 @@ describe( 'CKBoxCommand', () => {
 					const command = editor.commands.get( 'ckbox' );
 					const onChoose = command._prepareOptions().assets.onChoose;
 
-					// file1 should have download parameter
+					// `file1` should not have download parameter.
 					onChoose( [ assets.links[ 0 ] ] );
 
 					expect( getModelData( editor.model ) ).to.equal(
@@ -1303,7 +1303,7 @@ describe( 'CKBoxCommand', () => {
 						'</paragraph>'
 					);
 
-					// file2 should not have download parameter
+					// `file2` should not have download parameter.
 					editor.setData( '' );
 					onChoose( [ assets.links[ 1 ] ] );
 
@@ -1323,8 +1323,7 @@ describe( 'CKBoxCommand', () => {
 				it( 'should not affect image assets', async () => {
 					const editor = await createTestEditor( {
 						ckbox: {
-							tokenUrl: 'foo',
-							downloadableFiles: false
+							tokenUrl: 'foo'
 						}
 					} );
 
