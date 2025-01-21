@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-clipboard": "44.1.0",
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
-    "@types/marked": "^4.0.8",
+    "@types/marked": "4.3.2",
     "@types/turndown": "5.0.5",
     "ckeditor5": "44.1.0",
     "marked": "4.0.12",
