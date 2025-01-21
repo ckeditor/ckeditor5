@@ -3,6 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* Styles for plain table output */
+.ck-content table {
+	&.table-style-align-left {
+		float: left;
+		margin-inline-end: 2em;
+	}
+
+	&.table-style-align-right {
+		float: right;
+		margin-inline-end: 2em;
+	}
+
+	&.table-style-align-center {
+		float: none;
+	}
+}
+
 .ck-content .table {
 	/* Give the table widget some air and center it horizontally */
 	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
@@ -39,6 +56,20 @@
 			font-weight: bold;
 			background: hsla(0, 0%, 0%, 5%);
 		}
+	}
+
+	&.table-style-align-left {
+		float: left;
+		margin-inline-end: 2em;
+	}
+
+	&.table-style-align-right {
+		float: right;
+		margin-inline-end: 2em;
+	}
+
+	&.table-style-align-center {
+		float: none;
 	}
 }
 

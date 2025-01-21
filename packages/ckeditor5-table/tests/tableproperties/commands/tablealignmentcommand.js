@@ -131,7 +131,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;' );
+						assertTableStyle( editor, null, '', 'table-style-align-right' );
 					} );
 
 					it( 'should change selected table alignment to a passed value', () => {
@@ -139,7 +139,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;' );
+						assertTableStyle( editor, null, '', 'table-style-align-right' );
 					} );
 
 					it( 'should remove alignment from a selected table if no value is passed', () => {
@@ -165,7 +165,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;' );
+						assertTableStyle( editor, null, '', 'table-style-align-right' );
 					} );
 
 					it( 'should change selected table alignment to a passed value', () => {
@@ -173,7 +173,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;' );
+						assertTableStyle( editor, null, '', 'table-style-align-right' );
 					} );
 
 					it( 'should remove alignment from a selected table if no value is passed', () => {
@@ -199,7 +199,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;' );
+						assertTableStyle( editor, null, '', 'table-style-align-right' );
 					} );
 
 					it( 'should change selected table alignment to a passed value', () => {
@@ -207,7 +207,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;' );
+						assertTableStyle( editor, null, '', 'table-style-align-right' );
 					} );
 
 					it( 'should remove alignment from a selected table if no value is passed', () => {
