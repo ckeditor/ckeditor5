@@ -191,6 +191,27 @@ export interface ListPropertiesStyleConfig {
 	 * }
 	 * ```
 	 *
+	 * When the `listTypes` configuration is set, `listStyleTypes` will only take effect for the enabled list types.
+	 * For example, with the following configuration:
+	 *
+	 * ```ts
+	 * {
+	 *   list: {
+	 *     properties: {
+	 *       styles: {
+	 *         listTypes: 'numbered',
+	 *         listStyleTypes: {
+	 *           numbered: [ 'decimal', 'lower-roman' ],
+	 *           bulleted: [ 'disc', 'circle' ]
+	 *         }
+	 *       }
+	 *     }
+	 *   }
+	 * }
+	 * ```
+	 *
+	 * Only the numbered list styles will be available in the UI, as the `listTypes` property limits style selection to numbered lists only.
+	 *
 	 * @default {
 	 *   numbered: ['decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin'],
 	 *   bulleted: ['disc', 'circle', 'square']
