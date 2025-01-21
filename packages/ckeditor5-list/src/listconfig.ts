@@ -173,6 +173,9 @@ export interface ListPropertiesStyleConfig {
 	 * Defines which list styles should be available in the UI.
 	 * Accepts a configuration object with numbered and bulleted styles.
 	 *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
 	 * ```ts
 	 * {
 	 *   list: {
