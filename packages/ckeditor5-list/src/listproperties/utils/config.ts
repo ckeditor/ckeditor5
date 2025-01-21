@@ -53,7 +53,7 @@ export function getNormalizedConfig( config: ListPropertiesConfig ): NormalizedL
  * @returns An object with normalized list properties styles.
  */
 function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): NormalizedListPropertiesConfig[ 'styles' ] {
-	const normalizedConfig: NormalizedListPropertiesConfig['styles'] = {
+	const normalizedConfig: NormalizedListPropertiesConfig[ 'styles' ] = {
 		listTypes: [ 'bulleted', 'numbered' ],
 		useAttribute: false
 	};
