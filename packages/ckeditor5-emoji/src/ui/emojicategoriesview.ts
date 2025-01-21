@@ -7,11 +7,11 @@
  * @module emoji/ui/emojicategoriesview
  */
 
-import '../../theme/emojicategories.css';
-
-import { ButtonView, View, ViewCollection } from 'ckeditor5/src/ui.js';
+import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type { EmojiGroup } from '../emojipicker.js';
+import type { EmojiCategory } from '../emojidatabase.js';
+
+import '../../theme/emojicategories.css';
 
 const ACTIVE_CATEGORY_CLASS = 'ck-active-category';
 
@@ -23,37 +23,49 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * Currently selected emoji category name.
 	 */
-	declare public currentCategoryName: string;
+	declare public categoryName: string;
 
 	/**
 	 * Tracks information about the DOM focus in the grid.
 	 */
-	private readonly _focusTracker: FocusTracker;
+	public readonly focusTracker: FocusTracker;
 
 	/**
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 */
-	private readonly _keystrokeHandler: KeystrokeHandler;
+	public readonly keystrokes: KeystrokeHandler;
 
-	private _buttonViews: ViewCollection<ButtonView>;
+	/**
+	 * Helps cycling over focusable children in the input view.
+	 */
+	public readonly focusCycler: FocusCycler;
+
+	/**
+	 * A collection of the categories buttons.
+	 */
+	private readonly _buttonViews: ViewCollection<ButtonView>;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, emojiGroups: Array<EmojiGroup>, categoryName: string ) {
+	constructor( locale: Locale, { emojiGroups, categoryName }: { emojiGroups: Array<EmojiCategory>; categoryName: string } ) {
 		super( locale );
 
-		this.set( 'currentCategoryName', categoryName );
+		this._buttonViews = new ViewCollection(
+			this._createCategoryButtons( emojiGroups )
+		);
 
-		this._buttonViews = new ViewCollection( emojiGroups.map( emojiGroup => {
-			const buttonView = new ButtonView();
-
-			buttonView.tooltip = emojiGroup.title;
-			buttonView.label = emojiGroup.exampleEmoji;
-			buttonView.withText = true;
-
-			return buttonView;
-		} ) );
+		this.focusTracker = new FocusTracker();
+		this.keystrokes = new KeystrokeHandler();
+		this.focusCycler = new FocusCycler( {
+			focusables: this._buttonViews,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				focusPrevious: 'arrowleft',
+				focusNext: 'arrowright'
+			}
+		} );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -63,28 +75,18 @@ export default class EmojiCategoriesView extends View {
 			children: this._buttonViews
 		} );
 
-		this._focusTracker = new FocusTracker();
-		this._keystrokeHandler = new KeystrokeHandler();
+		this.on( 'change:categoryName', ( event, name, newValue, oldValue ) => {
+			const previousButton = this._buttonViews.find( button => button.tooltip === oldValue )!;
+			const newButton = this._buttonViews.find( button => button.tooltip === newValue )!;
 
-		this._keystrokeHandler.set( 'arrowleft', () => {
-			const previousSibling = this._focusTracker.focusedElement?.previousElementSibling;
-
-			if ( previousSibling ) {
-				( previousSibling as HTMLButtonElement ).focus();
-			} else {
-				this._buttonViews.last!.focus();
+			if ( previousButton ) {
+				previousButton.class = '';
 			}
+
+			newButton.class = ACTIVE_CATEGORY_CLASS;
 		} );
 
-		this._keystrokeHandler.set( 'arrowright', () => {
-			const nextSibling = this._focusTracker.focusedElement?.nextElementSibling;
-
-			if ( nextSibling ) {
-				( nextSibling as HTMLButtonElement ).focus();
-			} else {
-				this._buttonViews.first!.focus();
-			}
-		} );
+		this.set( 'categoryName', categoryName );
 	}
 
 	/**
@@ -93,9 +95,21 @@ export default class EmojiCategoriesView extends View {
 	public override render(): void {
 		super.render();
 
-		this._setupButtons();
+		this._buttonViews.forEach( buttonView => {
+			this.focusTracker.add( buttonView );
+		} );
 
-		this._keystrokeHandler.listenTo( this.element! );
+		this.keystrokes.listenTo( this.element! );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 
 	/**
@@ -105,43 +119,45 @@ export default class EmojiCategoriesView extends View {
 		this._buttonViews.first!.focus();
 	}
 
+	/**
+	 * Marks all categories buttons as enabled (clickable).
+	 */
 	public enableCategories(): void {
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = true;
 		} );
 	}
 
+	/**
+	 * Marks all categories buttons as disabled (non-clickable).
+	 */
 	public disableCategories(): void {
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = false;
 		} );
 	}
 
-	private _setupButtons(): void {
-		this._buttonViews.forEach( buttonView => {
-			this._focusTracker.add( buttonView );
+	private _createCategoryButtons( emojiGroups: Array<EmojiCategory> ) {
+		return emojiGroups.map( emojiGroup => {
+			const buttonView = new ButtonView();
 
-			if ( buttonView.tooltip === this.currentCategoryName ) {
-				buttonView.element!.classList.add( ACTIVE_CATEGORY_CLASS );
-			}
+			buttonView.tooltip = emojiGroup.title;
+			buttonView.label = emojiGroup.icon;
+			buttonView.withText = true;
 
-			buttonView.element!.addEventListener( 'click', event => {
-				this.currentCategoryName = buttonView.tooltip as string;
+			buttonView.on( 'execute', () => {
+				this.categoryName = buttonView.tooltip as string;
+			} );
 
-				this._buttonViews.forEach( buttonViewInnerLoop => {
-					buttonViewInnerLoop.element!.classList.remove( ACTIVE_CATEGORY_CLASS );
-				} );
-
-				let eventTarget = ( event.target as HTMLElement );
-
-				if ( eventTarget.nodeName === 'SPAN' ) {
-					eventTarget = eventTarget.parentElement!;
-				}
-
-				if ( buttonView.tooltip === eventTarget.dataset.ckeTooltipText ) {
-					buttonView.element!.classList.add( ACTIVE_CATEGORY_CLASS );
+			buttonView.on( 'change:isEnabled', ( event, name, oldValue, newValue ) => {
+				if ( newValue ) {
+					buttonView.class = '';
+				} else if ( buttonView.tooltip === this.categoryName ) {
+					buttonView.class = ACTIVE_CATEGORY_CLASS;
 				}
 			} );
+
+			return buttonView;
 		} );
 	}
 }

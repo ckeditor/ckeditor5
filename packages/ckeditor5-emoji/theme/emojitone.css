@@ -4,11 +4,18 @@
  */
 
 .ck.ck-emoji-tone {
-	button.ck.ck-button.ck-button_with-text {
-		width: fit-content;
+	margin-left: var(--ck-spacing-standard);
 
-		> span.ck.ck-button__label {
-			width: fit-content;
+	> .ck.ck-dropdown {
+
+		.ck.ck-list__item {
+			min-width: 1em;
+		}
+
+		.ck-button.ck-dropdown__button {
+			.ck-button__label {
+				width: initial;
+			}
 		}
 	}
 }

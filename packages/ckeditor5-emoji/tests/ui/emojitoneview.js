@@ -7,7 +7,7 @@ import EmojiToneView from '../../src/ui/emojitoneview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'EmojiToneView', () => {
-	let locale, emojiToneView;
+	let locale, emojiToneView, skinTones;
 
 	testUtils.createSinonSandbox();
 
@@ -16,7 +16,16 @@ describe( 'EmojiToneView', () => {
 			t: val => val
 		};
 
-		emojiToneView = new EmojiToneView( locale, 'default' );
+		skinTones = [
+			{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
+			{ id: 'light', icon: '👋🏻', tooltip: 'Light skin tone' },
+			{ id: 'medium-light', icon: '👋🏼', tooltip: 'Medium Light skin tone' },
+			{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
+			{ id: 'medium-dark', icon: '👋🏾', tooltip: 'Medium Dark skin tone' },
+			{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
+		];
+
+		emojiToneView = new EmojiToneView( locale, { skinTone: 'default', skinTones } );
 		emojiToneView.render();
 	} );
 
@@ -25,23 +34,13 @@ describe( 'EmojiToneView', () => {
 	} );
 
 	it( 'updates the skin tone when #execute event triggers', () => {
-		expect( emojiToneView.selectedSkinTone ).to.equal( 'default' );
+		emojiToneView.dropdownView.isOpen = true;
 
-		Array.from( emojiToneView._dropdownButtons ).at( -1 ).fire( 'execute' );
+		expect( emojiToneView.skinTone ).to.equal( 'default' );
 
-		expect( emojiToneView.selectedSkinTone ).to.equal( 'dark' );
-	} );
+		emojiToneView.dropdownView.listView.items.get( 5 ).children.first.fire( 'execute' );
 
-	it( 'displays a check mark next to the active skin tone', () => {
-		expect( Array.from( emojiToneView._dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
-			true, false, false, false, false, false
-		] );
-
-		Array.from( emojiToneView._dropdownButtons ).at( -1 ).fire( 'execute' );
-
-		expect( Array.from( emojiToneView._dropdownButtons ).map( button => button.isOn ) ).to.deep.equal( [
-			false, false, false, false, false, true
-		] );
+		expect( emojiToneView.skinTone ).to.equal( 'dark' );
 	} );
 
 	describe( 'constructor()', () => {
@@ -58,17 +57,17 @@ describe( 'EmojiToneView', () => {
 		} );
 
 		it( 'sets #selectedSkinTone to value passed to the constructor', () => {
-			emojiToneView = new EmojiToneView( locale, 'default' );
-			expect( emojiToneView.selectedSkinTone ).to.equal( 'default' );
+			emojiToneView = new EmojiToneView( locale, { skinTone: 'default', skinTones } );
+			expect( emojiToneView.skinTone ).to.equal( 'default' );
 
-			emojiToneView = new EmojiToneView( locale, 'medium' );
-			expect( emojiToneView.selectedSkinTone ).to.equal( 'medium' );
+			emojiToneView = new EmojiToneView( locale, { skinTone: 'medium', skinTones } );
+			expect( emojiToneView.skinTone ).to.equal( 'medium' );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the dropdown', () => {
-			const spy = sinon.spy( emojiToneView._mainDropdownButton, 'focus' );
+			const spy = sinon.spy( emojiToneView.dropdownView.buttonView, 'focus' );
 
 			emojiToneView.focus();
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { SkinToneId } from './ui/emojitoneview.js';
-
 /**
  * @module emoji/emojiconfig
  */
@@ -15,12 +13,12 @@ import type { SkinToneId } from './ui/emojitoneview.js';
  * Read more about {@glink features/emoji#configuration configuring the emoji feature}.
  *
  * ```ts
- * ClassicEditor
- *   .create( editorElement, {
- *     emoji: ... // Emoji feature options.
- *   } )
- *   .then( ... )
- *   .catch( ... );
+ *	ClassicEditor
+ *		.create( editorElement, {
+ *			emoji: ... // Emoji feature options.
+ *		} )
+ *		.then( ... )
+ *		.catch( ... );
  * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
@@ -31,37 +29,58 @@ export interface EmojiConfig {
 	 * The maximum number of emojis displayed in the dropdown list.
 	 *
 	 * ```ts
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Emoji, ... ],
-	 *				emoji: {
-	 *					dropdownLimit: 4
-	 *					// More of editor configuration.
-	 * 					// ...
-	 * 				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				dropdownLimit: 4
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
 	 * ```
+	 *
+	 * @default 6
 	 */
 	dropdownLimit?: number;
 
 	/**
-	 * Initial skin tone for the emoji picker.
+	 * Initial skin tone for the emojis that support skin tones.
 	 *
 	 * ```ts
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Emoji, ... ],
-	 *				emoji: {
-	 *					skinTone: 'medium'
-	 *					// More of editor configuration.
-	 * 					// ...
-	 * 				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				skinTone: 'medium'
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
 	 * ```
+	 *
+	 * @default 'default'
 	 */
 	skinTone?: SkinToneId;
+
+	/**
+	 * The emoji database version.
+	 *
+	 * ```ts
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				version: 15
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
+	 * ```
+	 *
+	 * @default 16
+	 */
+	version?: 15 | 16;
 }
+
+export type SkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';

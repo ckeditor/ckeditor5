@@ -12,7 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'EmojiGridView', () => {
-	let view, locale;
+	let view, locale, emojiGroups;
 
 	testUtils.createSinonSandbox();
 
@@ -21,8 +21,44 @@ describe( 'EmojiGridView', () => {
 			t: str => str
 		};
 
-		view = new EmojiGridView( locale );
+		emojiGroups = [
+			{
+				title: 'faces',
+				icon: '😊',
+				items: [
+					{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+					{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+					{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } },
+					{ 'annotation': 'heart eyes', 'emoji': '😍', 'skins': { 'default': '😍' } },
+					{ 'annotation': 'crying face', 'emoji': '😢', 'skins': { 'default': '😢' } },
+					{ 'annotation': 'sunglasses', 'emoji': '😎', 'skins': { 'default': '😎' } }
+				]
+			}, {
+				title: 'food',
+				icon: '🍕',
+				items: [
+					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+				]
+			}, {
+				title: 'things',
+				icon: '📕',
+				items: []
+			}
+		];
+
+		view = new EmojiGridView( locale, {
+			emojiGroups,
+			categoryName: 'faces',
+			skinTone: 'default',
+			getEmojiBySearchQuery: () => [
+				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
+				{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } }
+			]
+		} );
 		view.render();
+
+		// Initial search to render grid.
+		view.filter( null );
 	} );
 
 	afterEach( () => {
@@ -35,7 +71,7 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'creates #element from template', () => {
-			const tile = view.createTile( '😊', 'smile' );
+			const tile = view._createTile( '😊', 'smile' );
 			const tilesElement = view.element.firstChild;
 
 			view.tiles.add( tile );
@@ -53,9 +89,19 @@ describe( 'EmojiGridView', () => {
 			let view;
 
 			beforeEach( () => {
-				view = new EmojiGridView( locale );
-
-				createTilesForGrid( view );
+				view = new EmojiGridView( locale, {
+					emojiGroups,
+					categoryName: 'faces',
+					skinTone: 'default',
+					getEmojiBySearchQuery: () => [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } },
+						{ 'annotation': 'heart eyes', 'emoji': '😍', 'skins': { 'default': '😍' } },
+						{ 'annotation': 'crying face', 'emoji': '😢', 'skins': { 'default': '😢' } },
+						{ 'annotation': 'sunglasses', 'emoji': '😎', 'skins': { 'default': '😎' } }
+					]
+				} );
 
 				view.render();
 				document.body.appendChild( view.element );
@@ -73,6 +119,8 @@ describe( 'EmojiGridView', () => {
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
+
+					view.filter( new RegExp( 'smile' ) );
 
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
@@ -99,6 +147,8 @@ describe( 'EmojiGridView', () => {
 						stopPropagation: sinon.spy()
 					};
 
+					view.filter( new RegExp( 'smile' ) );
+
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
@@ -115,6 +165,7 @@ describe( 'EmojiGridView', () => {
 			describe( 'Responsive grid - changed to 5 tiles in a row instead of 10', () => {
 				beforeEach( () => {
 					view.element.firstChild.style.gridTemplateColumns = 'repeat(5, 1fr)';
+					view.element.firstChild.style.display = 'grid';
 				} );
 
 				it( '"arrow right" should focus the next focusable grid item', () => {
@@ -123,6 +174,8 @@ describe( 'EmojiGridView', () => {
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
+
+					view.filter( new RegExp( 'smile' ) );
 
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
@@ -143,6 +196,8 @@ describe( 'EmojiGridView', () => {
 						stopPropagation: sinon.spy()
 					};
 
+					view.filter( new RegExp( 'smile' ) );
+
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
@@ -160,7 +215,7 @@ describe( 'EmojiGridView', () => {
 
 	describe( 'createTile()', () => {
 		it( 'creates a new tile button', () => {
-			const tile = view.createTile( '😊', 'smile' );
+			const tile = view._createTile( '😊', 'smile' );
 
 			expect( tile ).to.be.instanceOf( ButtonView );
 			expect( tile.label ).to.equal( '😊' );
@@ -169,7 +224,7 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'delegates #execute from the tile to the grid', () => {
-			const tile = view.createTile( '😊', 'smile' );
+			const tile = view._createTile( '😊', 'smile' );
 			const spy = sinon.spy();
 
 			view.on( 'execute', spy );
@@ -178,36 +233,14 @@ describe( 'EmojiGridView', () => {
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
 		} );
-
-		it( 'delegates #tileHover from the tile to the grid on hover the tile', () => {
-			const tile = view.createTile( '😊', 'smile' );
-			const spy = sinon.spy();
-
-			view.on( 'tileHover', spy );
-			tile.fire( 'mouseover' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
-		} );
-
-		it( 'delegates #tileFocus from the tile to the grid on focus the tile', () => {
-			const tile = view.createTile( '😊', 'smile' );
-			const spy = sinon.spy();
-
-			view.on( 'tileFocus', spy );
-			tile.fire( 'focus' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
-		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the first tile', () => {
-			const tile = view.createTile( '😊', 'smile' );
-			const spy = sinon.spy( tile, 'focus' );
+			view.filter( new RegExp( 'smile' ) );
 
-			view.tiles.add( tile );
+			const spy = sinon.spy( view.tiles.first, 'focus' );
+
 			view.focus();
 
 			sinon.assert.calledOnce( spy );
@@ -217,31 +250,96 @@ describe( 'EmojiGridView', () => {
 	describe( 'render()', () => {
 		describe( 'FocusTracker', () => {
 			it( 'should add tiles to focus tracker when tiles are added to #tiles', () => {
-				const tile = view.createTile( '😊', 'smile' );
 				const spy = sinon.spy( view.focusTracker, 'add' );
 
-				view.tiles.add( tile );
+				view.filter( new RegExp( 'smile' ) );
 
-				sinon.assert.calledOnce( spy );
+				view.categoryName = 'food';
+
+				sinon.assert.calledTwice( spy );
 			} );
 
 			it( 'should remove tiles from focus tracker when tiles are removed from #tiles', () => {
-				const tile = view.createTile( '😊', 'smile' );
-
-				view.tiles.add( tile );
-
 				const spy = sinon.spy( view.focusTracker, 'remove' );
 
-				view.tiles.remove( tile );
+				view.filter( new RegExp( 'smile' ) );
 
-				sinon.assert.calledOnce( spy );
+				sinon.assert.callCount( spy, 6 );
 			} );
 		} );
 	} );
 
-	function createTilesForGrid( gridView ) {
-		for ( let i = 0; i < 51; i++ ) {
-			gridView.tiles.add( gridView.createTile( '😊', 'smile' ) );
-		}
-	}
+	describe( 'filter()', () => {
+		it( 'should filter emojis by query (non empty output)', () => {
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } }
+					]
+				}
+			];
+
+			const spy = sinon.stub().returns( [
+				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+			] );
+
+			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+
+			const result = view.filter( new RegExp( 'smile' ) );
+
+			expect( result ).to.deep.equal( { resultsCount: 1, totalItemsCount: 3 } );
+			expect( view.isEmpty ).is.equal( false );
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, 'smile' );
+		} );
+
+		it( 'should filter emojis by query (empty output)', () => {
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } }
+					]
+				}
+			];
+
+			const spy = sinon.stub().returns( [] );
+
+			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+
+			const result = view.filter( new RegExp( 'smile' ) );
+
+			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 3 } );
+			expect( view.isEmpty ).is.equal( true );
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, 'smile' );
+		} );
+
+		it( 'should filter emojis by categories (empty query)', () => {
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: []
+				}
+			];
+
+			const spy = sinon.stub().returns( [] );
+
+			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+
+			const result = view.filter( null );
+
+			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 0 } );
+			expect( view.isEmpty ).is.equal( true );
+			sinon.assert.callCount( spy, 0 );
+		} );
+	} );
 } );

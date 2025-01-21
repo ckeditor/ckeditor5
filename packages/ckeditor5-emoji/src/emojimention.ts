@@ -7,11 +7,10 @@
  * @module emoji/emojimention
  */
 
-import { Database } from 'emoji-picker-element';
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import EmojiPicker from './emojipicker.js';
-import type { NativeEmoji } from 'emoji-picker-element/shared.d.ts';
+import EmojiDatabase from './emojidatabase.js';
 
 import {
 	type MentionFeed,
@@ -19,8 +18,9 @@ import {
 } from '@ckeditor/ckeditor5-mention';
 
 const EMOJI_PREFIX = 'emoji';
-const SHOW_ALL_EMOJI = '__SHOW_ALL_EMOJI__';
 const EMOJI_MENTION_MARKER = ':';
+
+const SHOW_ALL_EMOJI_ID = formatEmojiId( '__SHOW_ALL_EMOJI__' );
 
 /**
  * The emoji mention plugin.
@@ -28,16 +28,23 @@ const EMOJI_MENTION_MARKER = ':';
  * Introduces the autocomplete of emojis while typing.
  */
 export default class EmojiMention extends Plugin {
-	private _emojiDropdownLimit: number;
-	private _showAllEmojiId: string;
-	private _emojiDatabase: Database;
+	/**
+	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
+	 */
 	declare private _emojiPickerPlugin: EmojiPicker | null;
+
+	/**
+	 * Defines a number of displayed items in the auto complete dropdown.
+	 *
+	 * It includes the "Show all emojis..." option if the `EmojiPicker` plugin is loaded.
+	 */
+	private readonly _emojiDropdownLimit: number;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Mention' ] as const;
+		return [ EmojiDatabase, 'Mention' ] as const;
 	}
 
 	/**
@@ -65,8 +72,6 @@ export default class EmojiMention extends Plugin {
 		} );
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
-		this._showAllEmojiId = formatEmojiId( SHOW_ALL_EMOJI );
-		this._emojiDatabase = new Database();
 
 		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
 		const mergeFieldsPrefix = this.editor.config.get( 'mergeFields.prefix' )! as string;
@@ -103,8 +108,8 @@ export default class EmojiMention extends Plugin {
 		const emojiMentionFeedConfig = {
 			marker: EMOJI_MENTION_MARKER,
 			dropdownLimit: this._emojiDropdownLimit,
-			itemRenderer: this._getCustomItemRendererFn( this.editor.t ),
-			feed: this._getQueryEmojiFn()
+			itemRenderer: this._customItemRendererFactory( this.editor.t ),
+			feed: this._queryEmojiCallbackFactory()
 		};
 
 		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
@@ -113,7 +118,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `itemRenderer()` callback for mention config.
 	 */
-	private _getCustomItemRendererFn( t: LocaleTranslate ) {
+	private _customItemRendererFactory( t: LocaleTranslate ) {
 		return ( item: MentionFeedObjectItem ) => {
 			const itemElement = document.createElement( 'span' );
 
@@ -123,8 +128,8 @@ export default class EmojiMention extends Plugin {
 			itemElement.style.display = 'block';
 
 			switch ( item.id ) {
-				case this._showAllEmojiId:
-					itemElement.textContent = t( 'Show all emoji...' );
+				case SHOW_ALL_EMOJI_ID:
+					itemElement.textContent = t( 'Show all emojis...' );
 
 					break;
 				default:
@@ -149,7 +154,7 @@ export default class EmojiMention extends Plugin {
 			let textToInsert = eventData.mention.text;
 			let shouldShowEmojiView = false;
 
-			if ( eventData.mention.id === this._showAllEmojiId ) {
+			if ( eventData.mention.id === SHOW_ALL_EMOJI_ID ) {
 				shouldShowEmojiView = true;
 
 				textToInsert = '';
@@ -170,43 +175,30 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `feed()` callback for mention config.
 	 */
-	private _getQueryEmojiFn(): ( searchQuery: string ) => Promise<Array<MentionFeedObjectItem>> {
-		return async ( searchQuery: string ) => {
-			// `getEmojiBySearchQuery()` returns nothing when querying with a single character.
-			if ( searchQuery.length < 2 ) {
-				return [];
-			}
+	private _queryEmojiCallbackFactory(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
+		return ( searchQuery: string ) => {
+			// TODO: Add error handling if the database was not initialized properly.
+			const emojiDatabasePlugin = this.editor.plugins.get( 'EmojiDatabase' );
 
-			// If the first character is space, do not display any feeds.
-			if ( searchQuery[ 0 ] === ' ' ) {
-				return [];
-			}
+			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
+				.map( emoji => {
+					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 
-			const emojis = await this._emojiDatabase.getEmojiBySearchQuery( searchQuery )
-				.then( queryResult => {
-					return ( queryResult as Array<NativeEmoji> ).map( emoji => {
-						const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
+					// TODO: The configuration `emoji.skinTone` option is ignored here.
+					let text = emoji.skins.default;
 
-						let text: string | null = emoji.unicode;
+					if ( this._emojiPickerPlugin ) {
+						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
+					}
 
-						if ( this._emojiPickerPlugin ) {
-							const emojiSkinToneMap = this._emojiPickerPlugin.emojis.get( emoji.annotation );
+					return { text, id: formatEmojiId( id ) };
+				} )
+				.filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
 
-							// Query might return some emojis which we chose not to add to our database.
-							/* istanbul ignore next -- @preserve */
-							if ( !emojiSkinToneMap ) {
-								text = null;
-							} else {
-								text = emojiSkinToneMap[ this._emojiPickerPlugin.selectedSkinTone ] || emojiSkinToneMap.default;
-							}
-						}
-
-						return { text, id: formatEmojiId( id ) };
-					} ).filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
-				} );
-
+			// TODO: Improve the `SHOW_ALL_EMOJI_ID` option based on the query length.
+			// If length<2, let's display something like "keep typing to see results...".
 			return this._emojiPickerPlugin ?
-				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: this._showAllEmojiId, text: searchQuery } ] :
+				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: SHOW_ALL_EMOJI_ID, text: searchQuery } ] :
 				emojis.slice( 0, this._emojiDropdownLimit );
 		};
 	}

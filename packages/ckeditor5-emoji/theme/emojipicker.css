@@ -11,10 +11,16 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck .ck.ck-search-tone-wrapper {
+.ck.ck-emoji-picker {
+	width: 320px;
+}
+
+.ck .ck.ck-emoji-picker-wrapper {
 	display: flex;
-	padding: 10px;
+	padding: var(--ck-spacing-large);
+	padding-bottom: var(--ck-spacing-medium);
 	justify-content: space-between;
+	align-items: center;
 }
 
 /*

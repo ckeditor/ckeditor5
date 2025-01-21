@@ -7,88 +7,90 @@
  * @module emoji/ui/emojisearchview
  */
 
-import { View, createLabeledInputText, SearchTextQueryView, type InputView } from 'ckeditor5/src/ui.js';
-import { type Locale } from 'ckeditor5/src/utils.js';
+import { escapeRegExp } from 'lodash-es';
+import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearchEvent, type SearchInfoView } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import type EmojiGridView from './emojigridview.js';
 
 export default class EmojiSearchView extends View {
 	/**
 	 * The find in text input view that stores the searched string.
-	 *
-	 * @internal
 	 */
-	public readonly _findInputView: SearchTextQueryView<InputView>;
+	public readonly inputView: SearchTextView;
+
+	/**
+	 * An instance of the `EmojiGridView`.
+	 */
+	public readonly gridView: EmojiGridView;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, { gridView, resultsView }: { gridView: EmojiGridView; resultsView: SearchInfoView } ) {
 		super( locale );
+
+		this.gridView = gridView;
 
 		const t = locale.t;
 
-		this._findInputView = this._createInputField( t( 'Find an emoji (min. 2 characters)' ) );
+		this.inputView = new SearchTextView( this.locale!, {
+			queryView: {
+				label: t( 'Find an emoji (min. 2 characters)' ),
+				creator: createLabeledInputText
+			},
+			filteredView: this.gridView,
+			infoView: {
+				instance: resultsView
+			}
+		} );
 
 		this.setTemplate( {
 			tag: 'div',
-			attributes: {
-				class: [ 'ck', 'ck-emoji-input', 'ck-search' ]
-			},
 			children: [
-				this._findInputView
+				this.inputView
 			]
 		} );
-	}
 
-	public focus(): void {
-		this._findInputView.focus();
-	}
-
-	public setSearchQuery( searchQuery: string ): void {
-		this._findInputView.fieldView.element!.value = searchQuery;
-		this._findInputView.fieldView.isEmpty = searchQuery.length ? false : true;
+		// Pass through the `search` event to handle it by a parent view.
+		this.inputView.delegate( 'search' ).to( this );
 	}
 
 	/**
-	 * Creates a labeled input view.
+	 * Searches the {@link #gridView} for the given query.
 	 *
-	 * @param label The input label.
-	 * @returns The labeled input view instance.
+	 * @param query The search query string.
 	 */
-	private _createInputField( label: string ): SearchTextQueryView<InputView> {
-		const labeledInput = new SearchTextQueryView( this.locale!, {
-			label,
-			creator: createLabeledInputText
-		} );
+	public search( query: string ): void {
+		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
+		const filteringResults = this.gridView.filter( regExp );
 
-		labeledInput.fieldView.on( 'input', () => {
-			const value = labeledInput.fieldView.element!.value || null;
-
-			this.fire<EmojiSearchViewInputEvent>( 'input', { value } );
-		} );
-
-		labeledInput.resetButtonView!.on( 'execute', () => {
-			this.fire<EmojiSearchViewInputEvent>( 'input', { value: '' } );
-		} );
-
-		return labeledInput;
+		this.inputView.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
 	}
-}
-
-/**
- * Fired when the search field is updated.
- *
- * @eventName ~EmojiSearchView#input
- * @param data Additional information about the event.
- */
-export type EmojiSearchViewInputEvent = {
-	name: 'input';
-	args: [ data: EmojiSearchViewInputEventData ];
-};
-
-export interface EmojiSearchViewInputEventData {
 
 	/**
-	 * Content of the updated search field.
+	 * Allows defining the default value in the search text field.
+	 *
+	 * @param value The new value.
 	 */
-	value: string | null;
+	public setInputValue( value: string ): void {
+		if ( !value ) {
+			this.inputView.queryView.fieldView.reset();
+		} else {
+			this.inputView.queryView.fieldView.value = value;
+		}
+	}
+
+	/**
+	 * Returns an input provided by a user in the search text field.
+	 */
+	public getInputValue(): string {
+		return this.inputView.queryView.fieldView.element!.value;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public focus(): void {
+		this.inputView.focus();
+	}
 }
