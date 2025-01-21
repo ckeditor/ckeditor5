@@ -470,7 +470,7 @@ function getMenuBarStylesMenuCreator(
 		let filteredDefinitions = styleDefinitions;
 
 		if ( configuredListStylesTypes ) {
-			const listType = parentCommandName.replace( 'List', '' ) as 'numbered' | 'bulleted';
+			const listType = listCommand.type as 'numbered' | 'bulleted';
 			const allowedTypes = configuredListStylesTypes[ listType ];
 
 			if ( allowedTypes ) {
