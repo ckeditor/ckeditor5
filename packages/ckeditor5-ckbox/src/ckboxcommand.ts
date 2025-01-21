@@ -383,7 +383,7 @@ export default class CKBoxCommand extends Command {
  */
 function prepareAssets(
 	{ downloadableFilesConfig, assets, isImageAllowed, isLinkAllowed }: {
-		downloadableFilesConfig: CKBoxConfig['downloadableFiles'];
+		downloadableFilesConfig: CKBoxConfig[ 'downloadableFiles' ];
 		assets: Array<CKBoxRawAssetDefinition>;
 		isImageAllowed: boolean;
 		isLinkAllowed: boolean;
