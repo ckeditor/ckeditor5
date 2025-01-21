@@ -2,26 +2,24 @@
 category: features
 menu-title: Emoji
 meta-title: Emoji | CKEditor 5 Documentation
-modified_at: 2025-01-03
+modified_at: 2025-01-21
 ---
 
 {@snippet features/emoji-source}
 
 # Emoji
 
-The emoji feature lets you insert emojis to the document from the editor toolbar, or directly on the go while writing the content.
+The emoji feature lets you insert emojis into the document from the editor toolbar, or on the go while writing the content.
 
-Since the number of emojis is very large, they have been conveniently divided into several categories for easier use, like "Smileys & Expressions" or "Objects". Besides, in order not to get lost, you may try to search for the emoji you are looking for using the search field.
+Since the is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects". You may also search for a specific emoji using the search field.
 
 ## Demo
 
-Use the emoji toolbar button {@icon @ckeditor/ckeditor5-emoji/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis.
+Use the emoji toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Make sure to include at least one space before the marker, otherwise the emoji UI will not kick in. Then, you can either choose which emoji to insert from the suggestion list, or choose the `Show all emoji...` option to open the full panel.
 
-You may also trigger the emoji UI while writing the content when you type a pre-configured `:` marker followed by at least two letters of desired emoji name. Make sure to include at least one space before the marker, otherwise the emoji UI does not kick in. Then, you can either choose which emoji to insert from the suggestion list, or choose the last option &ndash; `Show all emoji...` &ndash; to open the full panel.
+There is an option to set the skin tone of the emojis next to the search field.
 
-Additionally, there is also an option to set the skin tone of the emojis next to the search field.
-
-The selected emoji category and the skin tone are remembered by the feature, so the next time you invoke the panel you can quickly insert an emoji of similar type.
+The selected emoji category and skin tone are remembered by the feature, so next time you invoke the panel you can quickly insert an emoji of similar type.
 
 {@snippet features/emoji}
 
@@ -30,7 +28,7 @@ The selected emoji category and the skin tone are remembered by the feature, so 
 </info-box>
 
 <info-box warning>
-	Availability of emojis and their appearance depends on the operating system. If you want to standardize both the appearance and availability of emojis, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji).
+	The availability of the emojis and their appearance depends on the operating system. If you want to standardize both the appearance and availability of emojis, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji).
 </info-box>
 
 ## Installation
