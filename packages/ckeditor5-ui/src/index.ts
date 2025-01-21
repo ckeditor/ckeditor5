@@ -44,6 +44,8 @@ export {
 	type ColorSelectorColorPickerShowEvent
 } from './colorselector/colorselectorview.js';
 
+export { default as DocumentColorCollection } from './colorselector/documentcolorcollection.js';
+
 export { default as ComponentFactory } from './componentfactory.js';
 
 export { default as Dialog } from './dialog/dialog.js';
