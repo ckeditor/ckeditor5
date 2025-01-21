@@ -278,7 +278,7 @@
 			"className": "ImageEditing",
 			"description": "Provides basic common image engine features.",
 			"docs": "features/images/images-overview.html",
-			"path": "src/imageediting.js"
+			"path": "src/image/imageediting.js"
 		}
 	]
 }
