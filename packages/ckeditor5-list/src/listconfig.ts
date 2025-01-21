@@ -173,9 +173,6 @@ export interface ListPropertiesStyleConfig {
 	 * Defines which list styles should be available in the UI.
 	 * Accepts a configuration object with numbered and bulleted styles.
 	 *
-	 * **Note**: This configuration works only with
-	 * {@link module:list/listproperties~ListProperties list properties}.
-	 *
 	 * ```ts
 	 * {
 	 *   list: {
@@ -212,9 +209,12 @@ export interface ListPropertiesStyleConfig {
 	 *
 	 * Only the numbered list styles will be available in the UI, as the `listTypes` property limits style selection to numbered lists only.
 	 *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
 	 * @default {
-	 *   numbered: ['decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin'],
-	 *   bulleted: ['disc', 'circle', 'square']
+	 *   numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+	 *   bulleted: [ 'disc', 'circle', 'square' ]
 	 * }
 	 */
 	listStyleTypes?: ListStyleTypesConfig;
