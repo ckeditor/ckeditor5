@@ -419,6 +419,43 @@ describe( 'EmojiDatabase', () => {
 			expect( result[ 8 ].items[ 0 ] ).to.have.property( 'annotation', 'flag: Poland' );
 		} );
 	} );
+
+	describe( 'getSkinTones()', () => {
+		let editor, domElement, emojiDatabasePlugin;
+
+		beforeEach( async () => {
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', group: 0 },
+				{ annotation: 'ninja', group: 1 },
+				{ annotation: 'medium-dark skin tone', group: 2 },
+				{ annotation: 'lobster', group: 3 },
+				{ annotation: 'salt', group: 4 },
+				{ annotation: 'watch', group: 5 },
+				{ annotation: 'magic wand', group: 6 },
+				{ annotation: 'x-ray', group: 7 },
+				{ annotation: 'up-left arrow', group: 8 },
+				{ annotation: 'flag: Poland', group: 9 }
+			] );
+
+			fetchStub.resolves( new Response( response ) );
+
+			domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			editor = await createTestEditor( domElement );
+			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+		} );
+
+		afterEach( async () => {
+			domElement.remove();
+
+			await editor.destroy();
+		} );
+
+		it( 'should return available skin tones', () => {
+			expect( emojiDatabasePlugin.getSkinTones() ).to.length( 6 );
+		} );
+	} );
 } );
 
 function createTestEditor( domElement, editorConfig = {} ) {

@@ -145,13 +145,7 @@ export default class EmojiCategoriesView extends View {
 			buttonView.label = emojiGroup.icon;
 			buttonView.withText = true;
 
-			buttonView.on( 'execute', event => {
-				if ( !buttonView.isEnabled ) {
-					event.stop();
-
-					return;
-				}
-
+			buttonView.on( 'execute', () => {
 				this.categoryName = buttonView.tooltip as string;
 			} );
 

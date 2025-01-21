@@ -69,7 +69,7 @@ describe( 'EmojiSearchView', () => {
 	} );
 
 	describe( 'search()', () => {
-		it( 'should delegate the search event to the inputView (npn empty query)', () => {
+		it( 'should delegate the search event to the inputView (non-empty query)', () => {
 			const spy = sinon.spy();
 			const filterSpy = sinon.spy( emojiSearchView.gridView, 'filter' );
 
@@ -117,6 +117,14 @@ describe( 'EmojiSearchView', () => {
 			emojiSearchView.setInputValue( '' );
 
 			expect( emojiSearchView.element.querySelector( 'input' ).value ).to.equal( '' );
+		} );
+	} );
+
+	describe( 'getInputValue()', () => {
+		it( 'returns a value provided in the input', () => {
+			emojiSearchView.inputView.queryView.fieldView.element.value = 'smile';
+
+			expect( emojiSearchView.getInputValue() ).to.equal( 'smile' );
 		} );
 	} );
 } );

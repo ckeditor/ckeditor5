@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import EmojiCategoriesView from '../../src/ui/emojicategoriesview.js';
 import EmojiGridView from '../../src/ui/emojigridview.js';
 import EmojiPickerView from '../../src/ui/emojipickerview.js';
@@ -20,21 +18,23 @@ describe( 'EmojiPickerView', () => {
 			t: val => val
 		};
 
-		emojiGroups = [ {
-			title: 'faces',
-			icon: '😊',
-			items: [
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-			]
-		}, {
-			title: 'food',
-			icon: '🍕',
-			items: []
-		}, {
-			title: 'things',
-			icon: '📕',
-			items: []
-		} ];
+		emojiGroups = [
+			{
+				title: 'faces',
+				icon: '😊',
+				items: [
+					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+				]
+			}, {
+				title: 'food',
+				icon: '🍕',
+				items: []
+			}, {
+				title: 'things',
+				icon: '📕',
+				items: []
+			}
+		];
 
 		skinTones = [
 			{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
@@ -144,7 +144,7 @@ describe( 'EmojiPickerView', () => {
 			} );
 
 			it( 'should set info view properties when search query is other than one and there are results to show', () => {
-				 const stub = sinon.stub( emojiPickerView.searchView, 'search' );
+				const stub = sinon.stub( emojiPickerView.searchView, 'search' );
 
 				emojiPickerView.categoriesView.categoryName = 'food';
 
@@ -154,8 +154,8 @@ describe( 'EmojiPickerView', () => {
 			} );
 
 			it( 'should set info view properties when search query is other than one and there are results to show', () => {
-				 const searchStub = sinon.stub( emojiPickerView.searchView, 'search' );
-				 const getInputValueStub = sinon.stub( emojiPickerView.searchView, 'getInputValue' ).returns( 'thum' );
+				const searchStub = sinon.stub( emojiPickerView.searchView, 'search' );
+				const getInputValueStub = sinon.stub( emojiPickerView.searchView, 'getInputValue' ).returns( 'thum' );
 
 				emojiPickerView.toneView.skinTone = 'medium';
 

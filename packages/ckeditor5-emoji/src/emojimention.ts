@@ -108,8 +108,8 @@ export default class EmojiMention extends Plugin {
 		const emojiMentionFeedConfig = {
 			marker: EMOJI_MENTION_MARKER,
 			dropdownLimit: this._emojiDropdownLimit,
-			itemRenderer: this._getCustomItemRendererFn( this.editor.t ),
-			feed: this._getQueryEmojiFn()
+			itemRenderer: this._customItemRendererFactory( this.editor.t ),
+			feed: this._queryEmojiCallbackFactory()
 		};
 
 		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
@@ -118,7 +118,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `itemRenderer()` callback for mention config.
 	 */
-	private _getCustomItemRendererFn( t: LocaleTranslate ) {
+	private _customItemRendererFactory( t: LocaleTranslate ) {
 		return ( item: MentionFeedObjectItem ) => {
 			const itemElement = document.createElement( 'span' );
 
@@ -175,7 +175,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `feed()` callback for mention config.
 	 */
-	private _getQueryEmojiFn(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
+	private _queryEmojiCallbackFactory(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
 		return ( searchQuery: string ) => {
 			// TODO: Add error handling if the database was not initialized properly.
 			const emojiDatabasePlugin = this.editor.plugins.get( 'EmojiDatabase' );

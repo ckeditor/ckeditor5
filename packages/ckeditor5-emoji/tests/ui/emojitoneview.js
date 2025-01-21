@@ -67,7 +67,7 @@ describe( 'EmojiToneView', () => {
 
 	describe( 'focus()', () => {
 		it( 'focuses the dropdown', () => {
-			const spy = sinon.spy( emojiToneView.dropdownButton, 'focus' );
+			const spy = sinon.spy( emojiToneView.dropdownView.buttonView, 'focus' );
 
 			emojiToneView.focus();
 

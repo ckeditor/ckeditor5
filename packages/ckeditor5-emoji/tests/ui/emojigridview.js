@@ -21,42 +21,40 @@ describe( 'EmojiGridView', () => {
 			t: str => str
 		};
 
-		emojiGroups = [ {
-			title: 'faces',
-			icon: '😊',
-			items: [
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-			]
-		}, {
-			title: 'food',
-			icon: '🍕',
-			items: [
-				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-			]
-		}, {
-			title: 'things',
-			icon: '📕',
-			items: []
-		} ];
+		emojiGroups = [
+			{
+				title: 'faces',
+				icon: '😊',
+				items: [
+					{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+					{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+					{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } },
+					{ 'annotation': 'heart eyes', 'emoji': '😍', 'skins': { 'default': '😍' } },
+					{ 'annotation': 'crying face', 'emoji': '😢', 'skins': { 'default': '😢' } },
+					{ 'annotation': 'sunglasses', 'emoji': '😎', 'skins': { 'default': '😎' } }
+				]
+			}, {
+				title: 'food',
+				icon: '🍕',
+				items: [
+					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+				]
+			}, {
+				title: 'things',
+				icon: '📕',
+				items: []
+			}
+		];
 
-		view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', skinTone: 'default', getEmojiBySearchQuery: () => [
-			{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-			{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-		] } );
+		view = new EmojiGridView( locale, {
+			emojiGroups,
+			categoryName: 'faces',
+			skinTone: 'default',
+			getEmojiBySearchQuery: () => [
+				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
+				{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } }
+			]
+		} );
 		view.render();
 
 		// Initial search to render grid.
@@ -91,14 +89,19 @@ describe( 'EmojiGridView', () => {
 			let view;
 
 			beforeEach( () => {
-				view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', skinTone: 'default', getEmojiBySearchQuery: () => [
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-				] } );
+				view = new EmojiGridView( locale, {
+					emojiGroups,
+					categoryName: 'faces',
+					skinTone: 'default',
+					getEmojiBySearchQuery: () => [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } },
+						{ 'annotation': 'heart eyes', 'emoji': '😍', 'skins': { 'default': '😍' } },
+						{ 'annotation': 'crying face', 'emoji': '😢', 'skins': { 'default': '😢' } },
+						{ 'annotation': 'sunglasses', 'emoji': '😎', 'skins': { 'default': '😎' } }
+					]
+				} );
 
 				view.render();
 				document.body.appendChild( view.element );
@@ -261,22 +264,24 @@ describe( 'EmojiGridView', () => {
 
 				view.filter( new RegExp( 'smile' ) );
 
-				sinon.assert.callCount( spy, 15 );
+				sinon.assert.callCount( spy, 6 );
 			} );
 		} );
 	} );
 
 	describe( 'filter()', () => {
 		it( 'should filter emojis by query (non empty output)', () => {
-			emojiGroups = [ {
-				title: 'faces',
-				icon: '😊',
-				items: [
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-				]
-			} ];
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } }
+					]
+				}
+			];
 
 			const spy = sinon.stub().returns( [
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
@@ -293,15 +298,17 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'should filter emojis by query (empty output)', () => {
-			emojiGroups = [ {
-				title: 'faces',
-				icon: '😊',
-				items: [
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
-					{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
-				]
-			} ];
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } }
+					]
+				}
+			];
 
 			const spy = sinon.stub().returns( [] );
 
@@ -316,11 +323,13 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'should filter emojis by categories (empty query)', () => {
-			emojiGroups = [ {
-				title: 'faces',
-				icon: '😊',
-				items: []
-			} ];
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: []
+				}
+			];
 
 			const spy = sinon.stub().returns( [] );
 

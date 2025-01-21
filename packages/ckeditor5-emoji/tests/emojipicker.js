@@ -5,15 +5,46 @@
 
 /* global document setTimeout Event KeyboardEvent */
 
-import { ContextualBalloon, Dialog } from 'ckeditor5/src/ui.js';
+import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import EmojiDatabase from '../src/emojidatabase.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import EmojiPickerView from '../src/ui/emojipickerview.js';
+
+class EmojiDatabaseMock extends EmojiDatabase {
+	init() {
+		// An empty init to override the `fetch()` call.
+
+		this.getEmojiBySearchQuery = sinon.stub();
+		this.getEmojiGroups = sinon.stub();
+		this.getSkinTones = sinon.stub();
+
+		// Let's define a default behavior as we need this in UI, but we do not check it.
+		this.getEmojiGroups.returns( [
+			{
+				title: 'Smileys & Expressions',
+				icon: '😀',
+				items: []
+			},
+			{
+				title: 'Food & Drinks',
+				icon: '🍎',
+				items: []
+			}
+		] );
+
+		this.getSkinTones.returns( [
+			{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
+			{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
+			{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
+		] );
+	}
+}
 
 describe( 'EmojiPicker', () => {
 	let editor, editorElement, emojiPicker;
@@ -22,9 +53,10 @@ describe( 'EmojiPicker', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		await ClassicEditor
+		await ClassicTestEditor
 			.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				substitutePlugins: [ EmojiDatabaseMock ],
 				toolbar: [ 'emoji' ],
 				menuBar: {
 					isVisible: true
@@ -37,9 +69,8 @@ describe( 'EmojiPicker', () => {
 	} );
 
 	afterEach( async () => {
-		editorElement.remove();
-
 		await editor.destroy();
+		editorElement.remove();
 	} );
 
 	it( 'should be correctly named', () => {
@@ -60,188 +91,156 @@ describe( 'EmojiPicker', () => {
 		expect( EmojiPicker.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should open the picker when clicking the toolbar button', async () => {
-		clickEmojiToolbarButton();
+	describe( '#skinTone', () => {
+		it( 'should return the value from configuration if the UI is not ready yet (configuration not provided)', () => {
+			expect( emojiPicker.skinTone ).to.equal( 'default' );
+		} );
 
-		const emojiGrid = document.querySelector( '.ck-emoji-grid__tiles' );
+		it( 'should return the value from configuration if the UI is not ready yet (configuration provided)', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
-		expect( emojiGrid.checkVisibility() ).to.equal( true );
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ EmojiPicker, Essentials, Paragraph ],
+					substitutePlugins: [ EmojiDatabaseMock ],
+					emoji: {
+						skinTone: 'medium'
+					}
+				} );
+
+			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'medium' );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should read the selected skin tone from the view when it is ready', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ EmojiPicker, Essentials, Paragraph ],
+					substitutePlugins: [ EmojiDatabaseMock ],
+					emoji: {
+						skinTone: 'medium'
+					}
+				} );
+
+			const emojiPicker = editor.plugins.get( EmojiPicker );
+			emojiPicker.showUI();
+			emojiPicker._hideUI();
+			emojiPicker._emojiPickerView.gridView.skinTone = 'dark';
+
+			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'dark' );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
 	} );
 
-	it( 'should open the picker when clicking the menu bar button', async () => {
-		const insertMenuBarButton = Array.from( document.querySelectorAll( '.ck-menu-bar__menu__button' ) )
-			.find( button => button.innerText === 'Insert' );
+	it( 'should provide the "emoji" toolbar component', async () => {
+		expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( true );
 
-		insertMenuBarButton.click();
+		const toolbarButton = editor.ui.componentFactory.create( 'emoji' );
+		expect( toolbarButton ).to.instanceOf( ButtonView );
 
-		const emojiMenuBarButton = Array.from( document.querySelectorAll( '.ck-menu-bar__menu__item__button' ) )
-			.find( button => button.innerText === 'Emoji' );
+		const stub = sinon.stub( emojiPicker, 'showUI' );
 
-		emojiMenuBarButton.click();
+		toolbarButton.fire( 'execute' );
 
-		const emojiGrid = document.querySelector( '.ck-emoji-grid__tiles' );
-
-		expect( emojiGrid.checkVisibility() ).to.equal( true );
+		sinon.assert.calledOnce( stub );
 	} );
 
-	it( 'should have the "Nothing found" message hidden after opening the picker by default', async () => {
-		clickEmojiToolbarButton();
+	it( 'should provide the "menuBar:emoji" toolbar component', async () => {
+		expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
 
-		expect(
-			document.querySelector( '.ck.ck-search__info' ).classList.contains( 'ck-hidden' )
-		).to.equal( true );
+		expect( editor.ui.componentFactory.create( 'menuBar:emoji' ) ).to.instanceOf( MenuBarMenuListItemButtonView );
 	} );
 
-	it( 'should insert an emoji after clicking on it in the picker', async () => {
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+	describe( 'showUI()', () => {
+		it( 'should read categories from the database plugin when creating UI', () => {
+			const { getEmojiGroups } = editor.plugins.get( 'EmojiDatabase' );
 
-		clickEmojiToolbarButton();
+			emojiPicker.showUI();
 
-		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+			expect( getEmojiGroups.callCount ).to.equal( 1 );
+		} );
 
-		firstEmojiInGrid.click();
+		it( 'should read skin tones from the database plugin when creating UI', () => {
+			const { getSkinTones } = editor.plugins.get( 'EmojiDatabase' );
 
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
-	} );
+			emojiPicker.showUI();
 
-	it( 'should close the picker when clicking outside of it', async () => {
-		clickEmojiToolbarButton();
+			expect( getSkinTones.callCount ).to.equal( 1 );
+		} );
 
-		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
-		expect( firstEmojiInGrid.checkVisibility() ).to.equal( true );
+		it( 'should pass the specified query to the UI view', () => {
+			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiBySearchQuery.returns( [] );
 
-		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+			emojiPicker.showUI( 'query' );
 
-		expect( firstEmojiInGrid.checkVisibility() ).to.equal( false );
-	} );
+			expect( emojiPicker._emojiPickerView.searchView.inputView.queryView.fieldView.value ).to.equal( 'query' );
+			expect( getEmojiBySearchQuery.callCount ).to.equal( 1 );
+			expect( getEmojiBySearchQuery.firstCall.firstArg ).to.equal( 'query' );
+		} );
 
-	it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
-		clickEmojiToolbarButton();
+		it( 'should add the emoji UI view to the `ContextualBalloon` plugin when opens UI', () => {
+			expect( emojiPicker._balloon.visibleView ).to.equal( null );
 
-		const emojiSearchBar = document.querySelector( '.ck-emoji-picker input' );
-		expect( emojiSearchBar.checkVisibility() ).to.equal( true );
+			emojiPicker.showUI();
 
-		emojiSearchBar.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.esc, bubbles: true } ) );
+			expect( emojiPicker._balloon.visibleView ).to.be.instanceOf( EmojiPickerView );
+		} );
 
-		expect( emojiSearchBar.checkVisibility() ).to.equal( false );
-	} );
+		it( 'should focus the query input when opens UI', async () => {
+			emojiPicker.showUI();
 
-	it( 'should update the grid when search query changes', async () => {
-		clickEmojiToolbarButton();
-
-		const originalFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
-
-		const emojiSearchBar = document.querySelector( '.ck-emoji-picker input' );
-		emojiSearchBar.value = 'frown';
-		emojiSearchBar.dispatchEvent( new Event( 'input' ) );
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const newFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
-
-		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
-	} );
-
-	it( 'should update the grid when category changes', async () => {
-		clickEmojiToolbarButton();
-
-		const originalFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
-
-		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
-		secondCategoryButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const newFirstEmojiInGridTitle = document.querySelector( '.ck-emoji-grid__tiles > button' ).title;
-
-		expect( originalFirstEmojiInGridTitle ).to.not.equal( newFirstEmojiInGridTitle );
-	} );
-
-	it( 'should respect the editor config', async () => {
-		await editor.destroy();
-
-		await ClassicEditor
-			.create( editorElement, {
-				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				toolbar: [ 'emoji' ],
-				menuBar: {
-					isVisible: true
-				},
-				emoji: {
-					skinTone: 'medium'
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				emojiPicker = newEditor.plugins.get( EmojiPicker );
+			await new Promise( resolve => {
+				setTimeout( resolve );
 			} );
 
-		clickEmojiToolbarButton();
+			expect( document.activeElement ).to.equal( emojiPicker._emojiPickerView.searchView.inputView.queryView.fieldView.element );
+		} );
 
-		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
-		secondCategoryButton.click();
+		it( 'should insert an emoji after clicking on it in the picker', async () => {
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
+			emojiPicker.showUI();
+			emojiPicker._emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
 
-		const firstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+		} );
 
-		firstEmojiInGrid.click();
+		it( 'should close the picker when clicking outside of it', async () => {
+			emojiPicker.showUI();
 
-		expect( getModelData( editor.model ) ).to.equal( '<paragraph>👋🏽[]</paragraph>' );
-	} );
+			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-	it( 'should load previous category after reopening the emoji picker', async () => {
-		clickEmojiToolbarButton();
+			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+		} );
 
-		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
-		secondCategoryButton.click();
+		it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
+			emojiPicker.showUI();
 
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
+			emojiPicker._balloon.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
+				keyCode: keyCodes.esc,
+				bubbles: true
+			} ) );
 
-		// Close the emoji picker.
-		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+		} );
 
-		clickEmojiToolbarButton();
+		it( 'should load previous category after reopening the emoji picker', async () => {
+			emojiPicker.showUI();
+			emojiPicker._emojiPickerView.categoriesView.categoryName = 'Food & Drinks';
+			emojiPicker._hideUI();
+			emojiPicker.showUI();
 
-		const secondCategoryButtonAfterReopen = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
-
-		expect( [ ...secondCategoryButtonAfterReopen.classList ] ).to.include( 'ck-active-category' );
-	} );
-
-	it( 'should update the grid when skin tone changes', async () => {
-		clickEmojiToolbarButton();
-
-		const secondCategoryButton = document.querySelectorAll( '.ck-emoji-categories > button' )[ 1 ];
-		secondCategoryButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const originalFirstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
-		const originalFirstEmojiInGridTitle = originalFirstEmojiInGrid.title;
-		const originalFirstEmojiInGridText = originalFirstEmojiInGrid.innerText;
-
-		const skinToneDropdown = document.querySelector( '.ck-emoji-tone button' );
-		skinToneDropdown.click();
-
-		const lastSkinToneButton = Array.from( document.querySelectorAll( '.ck-emoji-tone .ck-dropdown__panel button' ) ).at( -1 );
-		lastSkinToneButton.click();
-
-		// Wait for the emojis to load.
-		await new Promise( resolve => setTimeout( resolve, 250 ) );
-
-		const newFirstEmojiInGrid = document.querySelector( '.ck-emoji-grid__tiles > button' );
-		const newFirstEmojiInGridTitle = newFirstEmojiInGrid.title;
-		const newFirstEmojiInGridText = newFirstEmojiInGrid.innerText;
-
-		// Title stays the same as the emojis are the same.
-		expect( originalFirstEmojiInGridTitle ).to.equal( newFirstEmojiInGridTitle );
-		// Inner text changes as the emojis are different skin tone variants.
-		expect( originalFirstEmojiInGridText ).to.not.equal( newFirstEmojiInGridText );
+			expect( emojiPicker._emojiPickerView.gridView.categoryName ).to.equal( 'Food & Drinks' );
+		} );
 	} );
 
 	describe( 'fake visual selection', () => {
@@ -267,7 +266,7 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
-						'of the empty block in the multiline selection', () => {
+				'of the empty block in the multiline selection', () => {
 				setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
 
 				emojiPicker.showUI();
@@ -291,7 +290,7 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
-						'of the first block in the multiline selection', () => {
+				'of the first block in the multiline selection', () => {
 				setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 
 				emojiPicker.showUI();
@@ -385,7 +384,7 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'should be displayed on selection focus when selection contains only one empty element ' +
-						'(selection focus is at the beginning of the first non-empty element)', () => {
+				'(selection focus is at the beginning of the first non-empty element)', () => {
 				setModelData( editor.model, [
 					'<paragraph>foo[</paragraph>',
 					'<paragraph></paragraph>',
@@ -416,7 +415,7 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'should be displayed on selection focus when selection contains few empty elements ' +
-						'(selection focus is at the beginning of the first non-empty element)', () => {
+				'(selection focus is at the beginning of the first non-empty element)', () => {
 				setModelData( editor.model, [
 					'<paragraph>foo[</paragraph>',
 					'<paragraph></paragraph>',
@@ -449,7 +448,7 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'should be displayed on selection focus when selection contains few empty elements ' +
-						'(selection focus is inside an empty element)', () => {
+				'(selection focus is inside an empty element)', () => {
 				setModelData( editor.model, [
 					'<paragraph>foo[</paragraph>',
 					'<paragraph></paragraph>',
@@ -483,9 +482,3 @@ describe( 'EmojiPicker', () => {
 		} );
 	} );
 } );
-
-function clickEmojiToolbarButton() {
-	const emojiToolbarButton = document.querySelector( 'button[data-cke-tooltip-text="Emoji"]' );
-
-	emojiToolbarButton.click();
-}
