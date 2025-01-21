@@ -14,10 +14,10 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import EmptyBlocks from '../src/emptyblocks.js';
+import EmptyBlock from '../src/emptyblock.js';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
-describe( 'EmptyBlocks', () => {
+describe( 'EmptyBlock', () => {
 	let editor, model, element, view;
 
 	beforeEach( async () => {
@@ -25,7 +25,7 @@ describe( 'EmptyBlocks', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, TableEditing, EmptyBlocks, Heading, ListEditing, BlockQuote ]
+			plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote ]
 		} );
 
 		model = editor.model;
@@ -38,15 +38,15 @@ describe( 'EmptyBlocks', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( EmptyBlocks.pluginName ).to.equal( 'EmptyBlocks' );
+		expect( EmptyBlock.pluginName ).to.equal( 'EmptyBlock' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmptyBlocks.isOfficialPlugin ).to.be.true;
+		expect( EmptyBlock.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( EmptyBlocks ) ).to.be.instanceOf( EmptyBlocks );
+		expect( editor.plugins.get( EmptyBlock ) ).to.be.instanceOf( EmptyBlock );
 	} );
 
 	describe( 'schema', () => {
@@ -245,7 +245,7 @@ describe( 'EmptyBlocks', () => {
 				'<paragraph htmlEmptyBlock="true" listIndent="0" listType="bulleted"></paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p>A</p><ul><li><p></p></li></ul>' );
+			expect( editor.getData() ).to.equal( '<p>A</p><ul><li></li></ul>' );
 		} );
 	} );
 

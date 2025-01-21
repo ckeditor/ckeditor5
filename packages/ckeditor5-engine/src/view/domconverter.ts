@@ -1185,11 +1185,7 @@ export default class DomConverter {
 		}
 
 		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		if (
-			( domNode as DomElement ).tagName === 'BR' &&
-			hasBlockParent( domNode, this.blockElements ) &&
-			( domNode as DomElement ).parentNode!.childNodes.length === 1
-		) {
+		if ( isOnlyBrInBlock( domNode as DomElement, this.blockElements ) ) {
 			return true;
 		}
 
@@ -1373,7 +1369,14 @@ export default class DomConverter {
 		},
 		inlineNodes: Array<ViewNode>
 	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
-		if ( this.isBlockFiller( domNode ) ) {
+		// Handle the editing view block filler.
+		// The data mode block filler is handled in this._processDomInlineNodes().
+		if (
+			this.blockFillerMode == 'br' && this.isBlockFiller( domNode ) ||
+			// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode.
+			// See ckeditor5#5564.
+			isOnlyBrInBlock( domNode as DomElement, this.blockElements )
+		) {
 			return null;
 		}
 
@@ -1556,6 +1559,13 @@ export default class DomConverter {
 				// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
 				// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
 				data = getDataWithoutFiller( data );
+
+				// Block filler handling.
+				// TODO handle MARKED_NBSP_FILLER
+				if ( this.blockFillerMode != 'br' && node.parent && isViewBlockFiller( node.parent, data, this.blockElements ) ) {
+					data = '';
+					node.parent._setCustomProperty( '$hasBlockFiller', true );
+				}
 
 				// At this point we should have removed all whitespaces from DOM text data.
 				//
@@ -1877,6 +1887,30 @@ function hasBlockParent( domNode: DomNode, blockElements: ReadonlyArray<string> 
 	const parent = domNode.parentNode;
 
 	return !!parent && !!( parent as DomElement ).tagName && blockElements.includes( ( parent as DomElement ).tagName.toLowerCase() );
+}
+
+/**
+ * TODO
+ */
+function isViewBlockFiller( parent: ViewNode | ViewDocumentFragment, data: string, blockElements: Array<string> ): boolean {
+	return (
+		data == '\u00A0' &&
+		parent &&
+		parent.is( 'element' ) &&
+		parent.childCount == 1 &&
+		blockElements.includes( parent.name )
+	);
+}
+
+/**
+ * Special case for `<p><br></p>` in which `<br>` should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
+ */
+function isOnlyBrInBlock( domNode: DomElement, blockElements: Array<string> ): boolean {
+	return (
+		domNode.tagName === 'BR' &&
+		hasBlockParent( domNode, blockElements ) &&
+		domNode.parentNode!.childNodes.length === 1
+	);
 }
 
 /**

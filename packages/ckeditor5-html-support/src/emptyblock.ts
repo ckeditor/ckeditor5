@@ -110,7 +110,7 @@ function createEmptyBlockUpcastConverter( schema: Schema ) {
 		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 			const { viewItem, modelRange } = data;
 
-			if ( !viewItem.is( 'element' ) || !viewItem.isEmpty ) {
+			if ( !viewItem.is( 'element' ) || !viewItem.isEmpty || viewItem.getCustomProperty( '$hasBlockFiller' ) ) {
 				return;
 			}
 
