@@ -193,13 +193,60 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;foo&nbsp;</p>' );
 		} );
 
-		it( 'single nbsp inside blocks are ignored', () => {
+		it( 'single nbsp inside blocks are ignored (NBSP block filler)', () => {
 			editor.setData( '<p>&nbsp;</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph></paragraph>' );
 
 			expect( editor.getData() ).to.equal( '' ); // trimmed
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+		} );
+
+		it( 'nbsp with spaces inside blocks are ignored (NBSP block filler)', () => {
+			editor.setData( '<p>\n    &nbsp;\n  </p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '' ); // trimmed
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+		} );
+
+		it( 'single nbsp inside blocks are ignored (marked NBSP block filler)', () => {
+			editor.data.processor.useFillerType( 'marked' );
+
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element', ( evt, data ) => {
+					expect( data.viewItem.name ).to.not.equal( 'span' );
+				} );
+			} );
+
+			editor.setData( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '' ); // trimmed
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
+		} );
+
+		it( 'nbsp with spaces inside blocks are ignored (marked NBSP block filler)', () => {
+			editor.data.processor.useFillerType( 'marked' );
+
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element', ( evt, data ) => {
+					expect( data.viewItem.name ).to.not.equal( 'span' );
+				} );
+			} );
+
+			editor.setData( '<p>\n    <span data-cke-filler="true">&nbsp;</span>\n  </p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '' ); // trimmed
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 		} );
 
 		it( 'all whitespaces together are ignored', () => {
