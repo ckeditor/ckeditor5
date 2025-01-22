@@ -23,7 +23,7 @@ export default class EmojiCommand extends Command {
 		const schema = model.schema;
 		const selection = model.document.selection;
 
-		this.isEnabled = schema.checkChild( selection.getFirstPosition(), '$text' );
+		this.isEnabled = schema.checkChild( selection.getFirstPosition()!, '$text' );
 	}
 
 	/**
