@@ -6,20 +6,21 @@
 /* global document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
+import { EmojiMention, EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import EmojiDatabase from '../src/emojidatabase.js';
 
 class EmojiDatabaseMock extends EmojiDatabase {
+	// Overridden `init()` to prevent the `fetch()` call.
 	init() {
-		// An empty init to override the `fetch()` call.
-
 		this.getEmojiBySearchQuery = sinon.stub();
 		this.getEmojiGroups = sinon.stub();
+		this.isDatabaseLoaded = sinon.stub();
 
 		// Let's define a default behavior as we need this in UI, but we do not check it.
 		this.getEmojiGroups.returns( [
@@ -29,7 +30,12 @@ class EmojiDatabaseMock extends EmojiDatabase {
 				items: []
 			}
 		] );
+
+		this.isDatabaseLoaded.returns( EmojiDatabaseMock.isDatabaseLoaded );
 	}
+
+	// Property exposed for testing purposes to control the plugin initialization flow.
+	static isDatabaseLoaded = true;
 }
 
 describe( 'EmojiMention', () => {
@@ -41,17 +47,11 @@ describe( 'EmojiMention', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
+		EmojiDatabaseMock.isDatabaseLoaded = true;
+
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [
-				Emoji,
-				EmojiPicker,
-				Mention,
-				Essentials,
-				Paragraph
-			],
-			substitutePlugins: [
-				EmojiDatabaseMock
-			]
+			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+			substitutePlugins: [ EmojiDatabaseMock ]
 		} );
 	} );
 
@@ -105,15 +105,8 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [
-					Emoji,
-					Paragraph,
-					Essentials,
-					Mention
-				],
-				substitutePlugins: [
-					EmojiDatabaseMock
-				],
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
 				mention: {
 					feeds: [
 						{
@@ -145,15 +138,8 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [
-					Emoji,
-					Paragraph,
-					Essentials,
-					Mention
-				],
-				substitutePlugins: [
-					EmojiDatabaseMock
-				],
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
 				mention: {
 					feeds: [
 						{
@@ -190,15 +176,8 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [
-					Emoji,
-					Paragraph,
-					Essentials,
-					Mention
-				],
-				substitutePlugins: [
-					EmojiDatabaseMock
-				],
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
 				mergeFields: {
 					prefix: ':'
 				}
@@ -265,15 +244,12 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'must not override the default mention command execution for non-emoji auto-complete selection', async () => {
-			await editor.destroy();
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
-			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [
-					Emoji,
-					Paragraph,
-					Essentials,
-					Mention
-				],
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
 				mention: {
 					feeds: [
 						{
@@ -300,6 +276,39 @@ describe( 'EmojiMention', () => {
 				// eslint-disable-next-line max-len
 				/<paragraph>Hello world! <\$text mention="{"uid":"[a-z0-9]+","_text":"Barney","id":"@Barney"}">Barney<\/\$text> \[\]<\/paragraph>/
 			);
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'must not override the default mention command execution if emoji database is not loaded', async () => {
+			EmojiDatabaseMock.isDatabaseLoaded = false;
+
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ]
+			} );
+
+			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+			const { startPosition, endPosition } = simulateTyping( ':raising' );
+
+			const range = editor.model.change( writer => {
+				return writer.createRange( startPosition, endPosition );
+			} );
+
+			// Expect an error from mention plugin if emoji plugin does not override the `mention` command execution.
+			expectToThrowCKEditorError(
+				() => editor.commands.execute( 'mention', { range, mention: { id: 'emoji:raising_hands:', text: '🙌' } } ),
+				/mentioncommand-incorrect-id/,
+				editor
+			);
+
+			await editor.destroy();
+			editorElement.remove();
 		} );
 
 		it( 'should remove the auto-complete query when selecting an item from the list', () => {
@@ -307,11 +316,7 @@ describe( 'EmojiMention', () => {
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
-			const startPosition = editor.model.document.selection.getFirstRange().start;
-
-			simulateTyping( ':raising' );
-
-			const endPosition = editor.model.document.selection.getFirstRange().end;
+			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
 			const range = editor.model.change( writer => {
 				return writer.createRange( startPosition, endPosition );
@@ -327,11 +332,7 @@ describe( 'EmojiMention', () => {
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
-			const startPosition = editor.model.document.selection.getFirstRange().start;
-
-			simulateTyping( ':raising' );
-
-			const endPosition = editor.model.document.selection.getFirstRange().end;
+			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
 			const range = editor.model.change( writer => {
 				return writer.createRange( startPosition, endPosition );
@@ -350,11 +351,7 @@ describe( 'EmojiMention', () => {
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
-			const startPosition = editor.model.document.selection.getFirstRange().start;
-
-			simulateTyping( ':raising' );
-
-			const endPosition = editor.model.document.selection.getFirstRange().end;
+			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
 			const range = editor.model.change( writer => {
 				return writer.createRange( startPosition, endPosition );
@@ -422,9 +419,7 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, Mention ],
-				substitutePlugins: [
-					EmojiDatabaseMock
-				]
+				substitutePlugins: [ EmojiDatabaseMock ]
 			} );
 
 			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
@@ -515,11 +510,18 @@ describe( 'EmojiMention', () => {
 	} );
 
 	function simulateTyping( text ) {
+		const selection = editor.model.document.selection;
+		const startPosition = selection.getFirstRange().start;
+
 		// While typing, every character is an atomic change.
 		text.split( '' ).forEach( character => {
 			editor.execute( 'input', {
 				text: character
 			} );
 		} );
+
+		const endPosition = selection.getFirstRange().end;
+
+		return { startPosition, endPosition };
 	}
 } );

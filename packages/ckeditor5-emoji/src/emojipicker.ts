@@ -63,20 +63,6 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Represents an active skin tone. Its value depends on the emoji UI plugin.
-	 *
-	 * Before opening the UI for the first time, the returned value is read from the editor configuration.
-	 * Otherwise, it reflects the user's intention.
-	 */
-	public get skinTone(): SkinToneId {
-		if ( !this._emojiPickerView ) {
-			return this.editor.config.get( 'emoji.skinTone' )!;
-		}
-
-		return this._emojiPickerView.gridView.skinTone;
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -90,12 +76,23 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public async init(): Promise<void> {
+	public init(): void {
 		const editor = this.editor;
 
-		// TODO: Add error handling if the database was not initialized properly.
 		this._emojiDatabase = editor.plugins.get( 'EmojiDatabase' );
-		this._balloon = editor.plugins.get( ContextualBalloon );
+		this._balloon = editor.plugins.get( 'ContextualBalloon' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		// Skip registering a button in the toolbar and list item in the menu bar if the emoji database is not loaded.
+		if ( !this._emojiDatabase.isDatabaseLoaded() ) {
+			return;
+		}
 
 		editor.ui.componentFactory.add( 'emoji', () => {
 			const button = this._createUiComponent( ButtonView );
@@ -123,6 +120,20 @@ export default class EmojiPicker extends Plugin {
 		if ( this._emojiPickerView ) {
 			this._emojiPickerView.destroy();
 		}
+	}
+
+	/**
+	 * Represents an active skin tone. Its value depends on the emoji UI plugin.
+	 *
+	 * Before opening the UI for the first time, the returned value is read from the editor configuration.
+	 * Otherwise, it reflects the user's intention.
+	 */
+	public get skinTone(): SkinToneId {
+		if ( !this._emojiPickerView ) {
+			return this.editor.config.get( 'emoji.skinTone' )!;
+		}
+
+		return this._emojiPickerView.gridView.skinTone;
 	}
 
 	/**

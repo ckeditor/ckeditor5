@@ -38,12 +38,12 @@ export default class EmojiDatabase extends Plugin {
 	/**
 	 * Emoji database.
 	 */
-	declare private _emojiDatabase: Array<EmojiEntry>;
+	private _emojiDatabase: Array<EmojiEntry>;
 
 	/**
 	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
 	 */
-	declare private _fuseSearch: Fuse<EmojiEntry> | null;
+	private _fuseSearch: Fuse<EmojiEntry> | null;
 
 	/**
 	 * @inheritDoc
@@ -77,14 +77,20 @@ export default class EmojiDatabase extends Plugin {
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
-		// TODO: Add error handling in case when a database is not loaded.
-		const container = createEmojiWidthTestingContainer();
-
 		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
 		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
+		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
 
-		// Store emoji database after normalizing the raw data.
-		this._emojiDatabase = ( await loadEmojiDatabase( emojiDatabaseUrl ) )
+		// Skip the initialization if the emoji database download has failed.
+		// An empty database prevents the initialization of other dependent plugins as well: EmojiMention and EmojiPicker.
+		if ( !emojiDatabase.length ) {
+			return;
+		}
+
+		const container = createEmojiWidthTestingContainer();
+
+		// Store the emoji database after normalizing the raw data.
+		this._emojiDatabase = emojiDatabase
 			.filter( item => isEmojiGroupAllowed( item ) )
 			.filter( item => EmojiDatabase._isEmojiSupported( item, container ) )
 			.map( item => normalizeEmojiSkinTone( item ) );
@@ -106,11 +112,16 @@ export default class EmojiDatabase extends Plugin {
 
 	/**
 	 * Returns an array of emoji entries that match the search query.
+	 * If the emoji database is not loaded, it returns an empty array.
 	 *
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
 	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiEntry> {
+		if ( !this._fuseSearch ) {
+			return [];
+		}
+
 		const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
 
 		// Perform the search only if there is at least two non-white characters next to each other.
@@ -120,7 +131,7 @@ export default class EmojiDatabase extends Plugin {
 			return [];
 		}
 
-		return this._fuseSearch!
+		return this._fuseSearch
 			.search( {
 				'$or': [
 					{
@@ -139,11 +150,11 @@ export default class EmojiDatabase extends Plugin {
 
 	/**
 	 * Groups all emojis by categories.
+	 * If the emoji database is not loaded, it returns an empty array for each category.
 	 *
 	 * @returns An array of emoji entries grouped by categories.
 	 */
 	public getEmojiGroups(): Array<EmojiCategory> {
-		const groups = groupBy( this._emojiDatabase, 'group' );
 		const { t } = this.editor.locale;
 
 		const categories = [
@@ -158,10 +169,14 @@ export default class EmojiDatabase extends Plugin {
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
+		const groups = this.isDatabaseLoaded() ?
+			groupBy( this._emojiDatabase, 'group' ) :
+			null;
+
 		return categories.map( category => {
 			return {
 				...category,
-				items: groups[ category.groupId ]
+				items: groups ? groups[ category.groupId ] : []
 			};
 		} );
 	}
@@ -180,6 +195,13 @@ export default class EmojiDatabase extends Plugin {
 			{ id: 'medium-dark', icon: '👋🏾', tooltip: t( 'Medium Dark skin tone' ) },
 			{ id: 'dark', icon: '👋🏿', tooltip: t( 'Dark skin tone' ) }
 		];
+	}
+
+	/**
+	 * Indicates whether the emoji database has been successfully downloaded and the plugin is operational.
+	 */
+	public isDatabaseLoaded(): boolean {
+		return this._emojiDatabase.length > 0;
 	}
 
 	/**
