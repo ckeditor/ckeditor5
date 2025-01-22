@@ -22,7 +22,7 @@ import {
 	type Element,
 	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
-import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard.js';
 
 import CodeBlockCommand from './codeblockcommand.js';
 import IndentCodeBlockCommand from './indentcodeblockcommand.js';
@@ -178,7 +178,7 @@ export default class CodeBlockEditing extends Plugin {
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
 		// "spill out" as separate paragraphs.
-		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardInputEvent>( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			let insertionRange = model.createRange( model.document.selection.anchor! );
 
 			// Use target ranges in case this is a drop.
