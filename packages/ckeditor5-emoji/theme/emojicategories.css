@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-emoji-categories {
+.ck.ck-emoji__categories {
 	display: flex;
 	justify-content: space-between;
 	margin: 0 var(--ck-spacing-large);
@@ -20,7 +20,7 @@
 		min-width: var(--ck-font-size-big);
 		min-height: var(--ck-font-size-big);
 
-		&.ck-active-category {
+		&.ck-emoji__category-item_active {
 			border-bottom-color: var(--ck-color-base-active);
 		}
 

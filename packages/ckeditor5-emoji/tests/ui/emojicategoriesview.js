@@ -16,16 +16,18 @@ describe( 'EmojiCategoriesView', () => {
 			t: val => val
 		};
 
-		emojiGroups = [ {
-			title: 'faces',
-			exampleEmoji: '😊'
-		}, {
-			title: 'food',
-			exampleEmoji: '🍕'
-		}, {
-			title: 'things',
-			exampleEmoji: '📕'
-		} ];
+		emojiGroups = [
+			{
+				title: 'faces',
+				exampleEmoji: '😊'
+			}, {
+				title: 'food',
+				exampleEmoji: '🍕'
+			}, {
+				title: 'things',
+				exampleEmoji: '📕'
+			}
+		];
 
 		emojiCategoriesView = new EmojiCategoriesView( locale, { emojiGroups, categoryName: 'faces' } );
 		emojiCategoriesView.render();
@@ -46,9 +48,11 @@ describe( 'EmojiCategoriesView', () => {
 	describe( 'constructor()', () => {
 		it( 'creates #element from template', () => {
 			expect( emojiCategoriesView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji-categories' ) ).to.be.true;
+			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories' ) ).to.be.true;
 
 			expect( Object.values( emojiCategoriesView.element.childNodes ).length ).to.equal( emojiGroups.length );
+
+			expect( emojiCategoriesView.element.getAttribute( 'role' ) ).to.equal( 'tablist' );
 		} );
 	} );
 
@@ -74,11 +78,11 @@ describe( 'EmojiCategoriesView', () => {
 		it( 'should restore the "active" category indicator when categories are enabled', () => {
 			const button = emojiCategoriesView._buttonViews.get( 0 );
 
-			expect( button.element.classList.contains( 'ck-active-category' ) ).to.equal( true );
+			expect( button.element.classList.contains( 'ck-emoji__category-item_active' ) ).to.equal( true );
 			emojiCategoriesView.disableCategories();
-			expect( button.element.classList.contains( 'ck-active-category' ) ).to.equal( false );
+			expect( button.element.classList.contains( 'ck-emoji__category-item_active' ) ).to.equal( false );
 			emojiCategoriesView.enableCategories();
-			expect( button.element.classList.contains( 'ck-active-category' ) ).to.equal( true );
+			expect( button.element.classList.contains( 'ck-emoji__category-item_active' ) ).to.equal( true );
 		} );
 	} );
 

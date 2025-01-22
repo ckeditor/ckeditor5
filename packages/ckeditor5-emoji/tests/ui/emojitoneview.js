@@ -46,7 +46,7 @@ describe( 'EmojiToneView', () => {
 	describe( 'constructor()', () => {
 		it( 'creates #element from template', () => {
 			expect( emojiToneView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( emojiToneView.element.classList.contains( 'ck-emoji-tone' ) ).to.be.true;
+			expect( emojiToneView.element.classList.contains( 'ck-emoji__skin-tone' ) ).to.be.true;
 
 			expect( Object.values( emojiToneView.element.childNodes ).length ).to.equal( 1 );
 

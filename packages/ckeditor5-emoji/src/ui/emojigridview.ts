@@ -94,18 +94,20 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 				{
 					tag: 'div',
 					attributes: {
+						role: 'grid',
 						class: [
 							'ck',
-							'ck-emoji-grid__tiles'
+							'ck-emoji__grid'
 						]
 					},
 					children: this.tiles
 				}
 			],
 			attributes: {
+				role: 'tabpanel',
 				class: [
 					'ck',
-					'ck-emoji-grid',
+					'ck-emoji__tiles',
 					// To avoid issues with focus cycling, ignore a grid when it's empty.
 					bind.if( 'isEmpty', 'ck-hidden', value => value )
 				]
@@ -117,7 +119,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 			focusTracker: this.focusTracker,
 			gridItems: this.tiles,
 			numberOfColumns: () => global.window
-				.getComputedStyle( this.element!.firstChild as Element ) // Responsive .ck-emoji-grid__tiles
+				.getComputedStyle( this.element!.firstChild as Element ) // Responsive `.ck-emoji-grid__tiles`.
 				.getPropertyValue( 'grid-template-columns' )
 				.split( ' ' )
 				.length,
@@ -239,7 +241,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		tile.set( {
 			label: emoji,
 			withText: true,
-			class: 'ck-emoji-grid__tile'
+			class: 'ck-emoji__tile'
 		} );
 
 		tile.extendTemplate( {
