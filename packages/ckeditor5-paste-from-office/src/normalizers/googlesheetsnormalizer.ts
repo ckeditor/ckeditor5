@@ -7,13 +7,19 @@
  * @module paste-from-office/normalizers/googlesheetsnormalizer
  */
 
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import {
+	UpcastWriter,
+	type ViewDocument,
+	type DataTransfer,
+	type ViewDocumentFragment
+} from 'ckeditor5/src/engine.js';
 
 import removeXmlns from '../filters/removexmlns.js';
 import removeGoogleSheetsTag from '../filters/removegooglesheetstag.js';
 import removeInvalidTableWidth from '../filters/removeinvalidtablewidth.js';
 import removeStyleBlock from '../filters/removestyleblock.js';
-import type { Normalizer, NormalizerData } from '../normalizer.js';
+import type { Normalizer } from '../normalizer.js';
+import { parseHtml } from '../filters/parse.js';
 
 const googleSheetsMatch = /<google-sheets-html-origin/i;
 
@@ -42,15 +48,18 @@ export default class GoogleSheetsNormalizer implements Normalizer {
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: NormalizerData ): void {
+	public execute( dataTransfer: DataTransfer ): ViewDocumentFragment {
 		const writer = new UpcastWriter( this.document );
-		const { body: documentFragment } = data._parsedData;
+		const { body: documentFragment } = parseHtml(
+			dataTransfer.getData( 'text/html' ),
+			this.document.stylesProcessor
+		);
 
 		removeGoogleSheetsTag( documentFragment, writer );
 		removeXmlns( documentFragment, writer );
 		removeInvalidTableWidth( documentFragment, writer );
 		removeStyleBlock( documentFragment, writer );
 
-		data.content = documentFragment;
+		return documentFragment;
 	}
 }

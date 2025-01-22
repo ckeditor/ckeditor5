@@ -224,15 +224,17 @@ export default class ClipboardPipeline extends Plugin {
 			if ( data.content ) {
 				content = data.content;
 			} else {
-				let contentData = '';
+				const htmlOrView = this.fire<ClipboardInputHTMLNormalizationEvent>( 'inputHtmlNormalization', {
+					html: dataTransfer.getData( 'text/html' ),
+					dataTransfer,
+					method: data.method
+				} ) || '';
 
-				if ( dataTransfer.getData( 'text/html' ) ) {
-					contentData = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
-				} else if ( dataTransfer.getData( 'text/plain' ) ) {
-					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+				if ( typeof htmlOrView === 'string' ) {
+					content = this.editor.data.htmlProcessor.toView( htmlOrView );
+				} else {
+					content = htmlOrView;
 				}
-
-				content = this.editor.data.htmlProcessor.toView( contentData );
 			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
@@ -286,6 +288,18 @@ export default class ClipboardPipeline extends Plugin {
 
 		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
 			data.resultRange = clipboardMarkersUtils._pasteFragmentWithMarkers( data.content );
+		}, { priority: 'low' } );
+
+		this.listenTo<ClipboardInputHTMLNormalizationEvent>( this, 'inputHtmlNormalization', ( evt, { dataTransfer } ) => {
+			if ( evt.return ) {
+				return;
+			}
+
+			if ( dataTransfer.getData( 'text/html' ) ) {
+				evt.return = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
+			} else if ( dataTransfer.getData( 'text/plain' ) ) {
+				evt.return = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+			}
 		}, { priority: 'low' } );
 	}
 
@@ -384,6 +398,41 @@ export interface ClipboardInputTransformationData {
 	 * The target drop ranges.
 	 */
 	targetRanges: Array<ViewRange> | null;
+
+	/**
+	 * Whether the event was triggered by a paste or a drop operation.
+	 */
+	method: 'paste' | 'drop';
+}
+
+/**
+ * Fired when the HTML content from the clipboard is being normalized, just before it is processed by the input pipeline and
+ * converted to a view document fragment.
+ *
+ * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
+ *
+ * **Note**: Your should not stop this event if you want to change the input data. You should modify the `return` property instead.
+ */
+export type ClipboardInputHTMLNormalizationEvent = {
+	name: 'inputHtmlNormalization';
+	args: [ data: ClipboardInputHTMLNormalizationData ];
+	return: string | ViewDocumentFragment;
+};
+
+/**
+ * The data of 'inputHtmlNormalization' event.
+ */
+export interface ClipboardInputHTMLNormalizationData {
+
+	/**
+	 * The data transfer instance.
+	 */
+	dataTransfer: DataTransfer;
+
+	/**
+	 * The HTML content from the clipboard.
+	 */
+	html: string;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.

@@ -7,12 +7,18 @@
  * @module paste-from-office/normalizers/googledocsnormalizer
  */
 
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import {
+	UpcastWriter,
+	type ViewDocument,
+	type DataTransfer,
+	type ViewDocumentFragment
+} from 'ckeditor5/src/engine.js';
 
 import removeBoldWrapper from '../filters/removeboldwrapper.js';
 import transformBlockBrsToParagraphs from '../filters/br.js';
 import { unwrapParagraphInListItem } from '../filters/list.js';
-import type { Normalizer, NormalizerData } from '../normalizer.js';
+import type { Normalizer } from '../normalizer.js';
+import { parseHtml } from '../filters/parse.js';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 
@@ -41,14 +47,17 @@ export default class GoogleDocsNormalizer implements Normalizer {
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: NormalizerData ): void {
+	public execute( dataTransfer: DataTransfer ): ViewDocumentFragment {
 		const writer = new UpcastWriter( this.document );
-		const { body: documentFragment } = data._parsedData;
+		const { body: documentFragment } = parseHtml(
+			dataTransfer.getData( 'text/html' ),
+			this.document.stylesProcessor
+		);
 
 		removeBoldWrapper( documentFragment, writer );
 		unwrapParagraphInListItem( documentFragment, writer );
 		transformBlockBrsToParagraphs( documentFragment, writer );
 
-		data.content = documentFragment;
+		return documentFragment;
 	}
 }
