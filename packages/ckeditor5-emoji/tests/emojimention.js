@@ -217,10 +217,14 @@ describe( 'EmojiMention', () => {
 	} );
 
 	describe( '_customItemRendererFactory()', () => {
-		let itemRenderer;
+		let itemRenderer, locale;
 
 		beforeEach( () => {
-			itemRenderer = editor.config.get( 'mention.feeds' )[ 0 ].itemRenderer;
+			locale = {
+				t: sinon.stub().callsFake( input => input )
+			};
+
+			itemRenderer = editor.plugins.get( 'EmojiMention' )._customItemRendererFactory( locale.t );
 		} );
 
 		it( 'should be a function', () => {
@@ -228,25 +232,63 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should render the specified `MentionFeedObjectItem` object properly', () => {
-			const item = itemRenderer( { id: 'emoji:smile:', text: ':)' } );
+			const item = itemRenderer( { id: ':smiling face:', text: '☺️' } );
 
-			expect( item.nodeName ).to.equal( 'SPAN' );
-			expect( Array.from( item.classList ) ).to.deep.equal( [ 'custom-item' ] );
-			expect( item.id ).to.equal( 'mention-list-item-id-emoji:smile:' );
-			expect( item.textContent ).to.equal( ':) :smile:' );
-			expect( item.style.width ).to.equal( '100%' );
-			expect( item.style.display ).to.equal( 'block' );
+			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
+
+			expect( Array.from( item.classList ) ).to.deep.equal( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
+			expect( item.tabIndex ).to.equal( -1 );
+			expect( item.type ).to.equal( 'button' );
+			expect( item.id ).to.equal( 'mention-list-item-id:smiling face' );
+			expect( item.childNodes ).to.have.lengthOf( 1 );
+
+			const { firstChild } = item;
+
+			expect( firstChild.nodeName.toLowerCase() ).to.equal( 'span' );
+			expect( Array.from( firstChild.classList ) ).to.deep.equal( [ 'ck', 'ck-button__label' ] );
+			expect( firstChild.textContent ).to.equal( '☺️ :smiling face:' );
 		} );
 
 		it( 'should render the "Show all emojis" item properly', () => {
-			const item = itemRenderer( { id: 'emoji:__SHOW_ALL_EMOJI__:' } );
+			const item = itemRenderer( { id: ':__EMOJI_SHOW_ALL:' } );
 
-			expect( item.nodeName ).to.equal( 'SPAN' );
-			expect( Array.from( item.classList ) ).to.deep.equal( [ 'custom-item' ] );
-			expect( item.id ).to.equal( 'mention-list-item-id-emoji:__SHOW_ALL_EMOJI__:' );
-			expect( item.textContent ).to.equal( 'Show all emoji...' );
-			expect( item.style.width ).to.equal( '100%' );
-			expect( item.style.display ).to.equal( 'block' );
+			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
+
+			expect( Array.from( item.classList ) ).to.deep.equal( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
+			expect( item.tabIndex ).to.equal( -1 );
+			expect( item.type ).to.equal( 'button' );
+			expect( item.id ).to.equal( 'mention-list-item-id:__EMOJI_SHOW_ALL' );
+			expect( item.childNodes ).to.have.lengthOf( 1 );
+
+			const { firstChild } = item;
+
+			expect( firstChild.nodeName.toLowerCase() ).to.equal( 'span' );
+			expect( Array.from( firstChild.classList ) ).to.deep.equal( [ 'ck', 'ck-button__label' ] );
+			expect( firstChild.textContent ).to.equal( 'Show all emoji...' );
+
+			expect( locale.t.callCount ).to.equal( 1 );
+			expect( locale.t.firstCall.firstArg ).to.equal( 'Show all emoji...' );
+		} );
+
+		it( 'should render the "Keep on typing..." item properly', () => {
+			const item = itemRenderer( { id: ':__EMOJI_HINT:' } );
+
+			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
+
+			expect( Array.from( item.classList ) ).to.deep.equal( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
+			expect( item.tabIndex ).to.equal( -1 );
+			expect( item.type ).to.equal( 'button' );
+			expect( item.id ).to.equal( 'mention-list-item-id:__EMOJI_HINT' );
+			expect( item.childNodes ).to.have.lengthOf( 1 );
+
+			const { firstChild } = item;
+
+			expect( firstChild.nodeName.toLowerCase() ).to.equal( 'span' );
+			expect( Array.from( firstChild.classList ) ).to.deep.equal( [ 'ck', 'ck-button__label' ] );
+			expect( firstChild.textContent ).to.equal( 'Keep on typing to see the emoji.' );
+
+			expect( locale.t.callCount ).to.equal( 1 );
+			expect( locale.t.firstCall.firstArg ).to.equal( 'Keep on typing to see the emoji.' );
 		} );
 	} );
 
@@ -273,6 +315,9 @@ describe( 'EmojiMention', () => {
 					Paragraph,
 					Essentials,
 					Mention
+				],
+				substitutePlugins: [
+					EmojiDatabaseMock
 				],
 				mention: {
 					feeds: [
@@ -302,6 +347,70 @@ describe( 'EmojiMention', () => {
 			);
 		} );
 
+		describe( 'break the command execution', () => {
+			it( 'should stop the "mention" command when inserting an item from the list', () => {
+				setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+				const range = editor.model.document.selection.getFirstRange();
+
+				let eventStop;
+
+				editor.commands.get( 'mention' ).on( 'execute', event => {
+					eventStop = event.stop;
+				}, { priority: 'highest' } );
+
+				editor.commands.execute( 'mention', {
+					range,
+					marker: ':',
+					mention: { id: ':raising hands:', text: '🙌' }
+				} );
+
+				expect( eventStop.called ).to.equal( true );
+			} );
+
+			it( 'should stop the "mention" command when selecting the "Keep on typing..." option', () => {
+				setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+				const range = editor.model.document.selection.getFirstRange();
+
+				let eventStop;
+
+				editor.commands.get( 'mention' ).on( 'execute', event => {
+					eventStop = event.stop;
+				}, { priority: 'highest' } );
+
+				editor.commands.execute( 'mention', {
+					range,
+					marker: ':',
+					mention: { id: ':__EMOJI_SHOW_ALL:' }
+				} );
+
+				expect( eventStop.called ).to.equal( true );
+			} );
+
+			it( 'should stop the "mention" command when selecting the "Show all emoji" option', () => {
+				setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+				const range = editor.model.document.selection.getFirstRange();
+
+				let eventStop;
+
+				editor.commands.get( 'mention' ).on( 'execute', event => {
+					eventStop = event.stop;
+				}, { priority: 'highest' } );
+
+				editor.commands.execute( 'mention', {
+					range,
+					marker: ':',
+					mention: { id: ':__EMOJI_HINT:' }
+				} );
+
+				expect( eventStop.called ).to.equal( true );
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			} );
+		} );
+
 		it( 'should remove the auto-complete query when selecting an item from the list', () => {
 			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
@@ -317,12 +426,16 @@ describe( 'EmojiMention', () => {
 				return writer.createRange( startPosition, endPosition );
 			} );
 
-			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:raising_hands:', text: '🙌' } } );
+			editor.commands.execute( 'mention', {
+				range,
+				marker: ':',
+				mention: { id: ':raising hands:', text: '🙌' }
+			} );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! 🙌[]</paragraph>' );
 		} );
 
-		it( 'should remove the auto-complete query when selecting the "Show all emojis" option from the list', () => {
+		it( 'should remove the auto-complete query when selecting the "Show all emoji" option from the list', () => {
 			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
@@ -337,7 +450,11 @@ describe( 'EmojiMention', () => {
 				return writer.createRange( startPosition, endPosition );
 			} );
 
-			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:' } } );
+			editor.commands.execute( 'mention', {
+				range,
+				marker: ':',
+				mention: { id: ':__EMOJI_SHOW_ALL:' }
+			} );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 		} );
@@ -360,7 +477,12 @@ describe( 'EmojiMention', () => {
 				return writer.createRange( startPosition, endPosition );
 			} );
 
-			editor.commands.execute( 'mention', { range, mention: { id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'raising' } } );
+			editor.commands.execute( 'mention', {
+				range,
+				marker: ':',
+				mention: { id: ':__EMOJI_SHOW_ALL:' }
+
+			} );
 
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWith( stub, 'raising' );
@@ -371,11 +493,37 @@ describe( 'EmojiMention', () => {
 		let queryEmoji;
 
 		beforeEach( () => {
-			queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+			queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 		} );
 
 		it( 'should be a function', () => {
 			expect( queryEmoji ).to.be.instanceOf( Function );
+		} );
+
+		it( 'should return an empty array when a query starts with a space', () => {
+			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiBySearchQuery.returns( [] );
+
+			expect( queryEmoji( ' ' ) ).to.deep.equal( [] );
+			expect( queryEmoji( '  ' ) ).to.deep.equal( [] );
+			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should return a hint item when a query is too short', () => {
+			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiBySearchQuery.returns( [] );
+
+			let queryResult = queryEmoji( '' );
+
+			expect( queryResult, 'query is empty' ).to.deep.equal( [
+				{ id: ':__EMOJI_HINT:' }
+			] );
+
+			queryResult = queryEmoji( 's' );
+
+			expect( queryResult, 'query as a single character' ).to.deep.equal( [
+				{ id: ':__EMOJI_HINT:' }
+			] );
 		} );
 
 		it( 'should pass the specified query to the database plugin', () => {
@@ -409,25 +557,33 @@ describe( 'EmojiMention', () => {
 
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult ).to.deep.equal( [
-				{ text: '👍️', id: 'emoji:thumbs_up:' },
-				{ text: '👎️', id: 'emoji:thumbs_down:' },
-				{ id: 'emoji:__SHOW_ALL_EMOJI__:', text: 'thumbs' }
-			] );
+			expect( queryResult[ 0 ] ).to.deep.equal( { text: '👍️', id: ':thumbs up:' } );
+			expect( queryResult[ 1 ] ).to.deep.equal( { text: '👎️', id: ':thumbs down:' } );
 		} );
 
-		it( 'should not include the show all emoji button when EmojiPicker plugin is not available', async () => {
+		it( 'should include a "Show all emoji" option when the "EmojiPicker" plugin is available', () => {
+			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiBySearchQuery.returns( [] );
+
+			const queryResult = queryEmoji( 'thumbs' );
+
+			expect( queryResult ).to.deep.equal( [
+				{ id: ':__EMOJI_SHOW_ALL:' }
+			] );
+			expect( editor.plugins.has( 'EmojiPicker' ) ).to.equal( true );
+		} );
+
+		it( 'should not include the show all emoji button when "EmojiPicker" plugin is not available', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, Mention ],
-				substitutePlugins: [
-					EmojiDatabaseMock
-				]
+				substitutePlugins: [ EmojiDatabaseMock ]
 			} );
 
 			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+
 			getEmojiBySearchQuery.returns( [
 				{
 					annotation: 'thumbs up',
@@ -445,13 +601,14 @@ describe( 'EmojiMention', () => {
 				}
 			] );
 
-			const queryEmoji = editor.config.get( 'mention.feeds' )[ 0 ].feed;
+			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 			const queryResult = queryEmoji( 'thumbs' );
 
 			expect( queryResult ).to.deep.equal( [
-				{ text: '👍️', id: 'emoji:thumbs_up:' },
-				{ text: '👎️', id: 'emoji:thumbs_down:' }
+				{ text: '👍️', id: ':thumbs up:' },
+				{ text: '👎️', id: ':thumbs down:' }
 			] );
+			expect( editor.plugins.has( 'EmojiPicker' ) ).to.equal( false );
 
 			await editor.destroy();
 			editorElement.remove();
@@ -483,7 +640,7 @@ describe( 'EmojiMention', () => {
 			expect( queryResult.length ).to.equal( 2 );
 
 			expect( queryResult[ 0 ] ).to.deep.equal( {
-				id: 'emoji:thumbs_up:',
+				id: ':thumbs up:',
 				text: thumbUpItem.skins.dark
 			} );
 		} );
@@ -508,7 +665,7 @@ describe( 'EmojiMention', () => {
 			expect( queryResult.length ).to.equal( 2 );
 
 			expect( queryResult[ 0 ] ).to.deep.equal( {
-				id: 'emoji:thumbs_up:',
+				id: ':thumbs up:',
 				text: thumbUpItem.skins.default
 			} );
 		} );

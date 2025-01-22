@@ -15,8 +15,8 @@ import EmojiPicker from './emojipicker.js';
 import EmojiDatabase from './emojidatabase.js';
 
 const EMOJI_MENTION_MARKER = ':';
-const EMOJI_SHOW_ALL_OPTION_ID = ':$EMOJI_SHOW_ALL:';
-const EMOJI_HINT_OPTION_ID = ':$EMOJI_HINT:';
+const EMOJI_SHOW_ALL_OPTION_ID = ':__EMOJI_SHOW_ALL:';
+const EMOJI_HINT_OPTION_ID = ':__EMOJI_HINT:';
 
 /**
  * The emoji mention plugin.
@@ -121,7 +121,7 @@ export default class EmojiMention extends Plugin {
 			itemElement.classList.add( 'ck' );
 			itemElement.classList.add( 'ck-button' );
 			itemElement.classList.add( 'ck-button_with-text' );
-			itemElement.id = `mention-list-item-id-${ item.id }`;
+			itemElement.id = `mention-list-item-id${ item.id.slice( 0, -1 ) }`;
 			itemElement.type = 'button';
 			itemElement.tabIndex = '-1';
 
@@ -210,7 +210,7 @@ export default class EmojiMention extends Plugin {
 					}
 
 					return {
-						id: `:${ emoji.annotation.replaceAll( ' ', '_' ) }:`,
+						id: `:${ emoji.annotation }:`,
 						text
 					};
 				} );
