@@ -16,8 +16,8 @@ msgid "Emoji"
 msgstr "Emoji"
 
 msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
-msgid "Show all emojis..."
-msgstr "Show all emojis..."
+msgid "Show all emoji..."
+msgstr "Show all emoji..."
 
 msgctxt "A label used by assistive technologies describing the emoji feature skin tone dropdown."
 msgid "Skin tone toolbar"

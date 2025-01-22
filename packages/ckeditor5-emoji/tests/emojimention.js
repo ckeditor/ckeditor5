@@ -244,7 +244,7 @@ describe( 'EmojiMention', () => {
 			expect( item.nodeName ).to.equal( 'SPAN' );
 			expect( Array.from( item.classList ) ).to.deep.equal( [ 'custom-item' ] );
 			expect( item.id ).to.equal( 'mention-list-item-id-emoji:__SHOW_ALL_EMOJI__:' );
-			expect( item.textContent ).to.equal( 'Show all emojis...' );
+			expect( item.textContent ).to.equal( 'Show all emoji...' );
 			expect( item.style.width ).to.equal( '100%' );
 			expect( item.style.display ).to.equal( 'block' );
 		} );

@@ -225,7 +225,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( data.query.length === 1 ) {
 				this.infoView.set( {
-					primaryText: t( 'Keep on typing to see the results.' ),
+					primaryText: t( 'Keep on typing to see the emoji.' ),
 					secondaryText: t( 'The query must contain at least two characters.' ),
 					isVisible: true
 				} );
