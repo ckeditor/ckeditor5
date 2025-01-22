@@ -9,18 +9,14 @@
 
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { MentionFeed, MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
+
 import EmojiPicker from './emojipicker.js';
 import EmojiDatabase from './emojidatabase.js';
 
-import {
-	type MentionFeed,
-	type MentionFeedObjectItem
-} from '@ckeditor/ckeditor5-mention';
-
-const EMOJI_PREFIX = 'emoji';
 const EMOJI_MENTION_MARKER = ':';
-
-const SHOW_ALL_EMOJI_ID = formatEmojiId( '__SHOW_ALL_EMOJI__' );
+const EMOJI_SHOW_ALL_OPTION_ID = ':$EMOJI_SHOW_ALL:';
+const EMOJI_HINT_OPTION_ID = ':$EMOJI_HINT:';
 
 /**
  * The emoji mention plugin.
@@ -36,7 +32,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Defines a number of displayed items in the auto complete dropdown.
 	 *
-	 * It includes the "Show all emojis..." option if the `EmojiPicker` plugin is loaded.
+	 * It includes the "Show all emoji..." option if the `EmojiPicker` plugin is loaded.
 	 */
 	private readonly _emojiDropdownLimit: number;
 
@@ -120,20 +116,28 @@ export default class EmojiMention extends Plugin {
 	 */
 	private _customItemRendererFactory( t: LocaleTranslate ) {
 		return ( item: MentionFeedObjectItem ) => {
-			const itemElement = document.createElement( 'span' );
+			const itemElement = document.createElement( 'button' );
 
-			itemElement.classList.add( 'custom-item' );
+			itemElement.classList.add( 'ck' );
+			itemElement.classList.add( 'ck-button' );
+			itemElement.classList.add( 'ck-button_with-text' );
 			itemElement.id = `mention-list-item-id-${ item.id }`;
-			itemElement.style.width = '100%';
-			itemElement.style.display = 'block';
+			itemElement.type = 'button';
+			itemElement.tabIndex = '-1';
 
-			switch ( item.id ) {
-				case SHOW_ALL_EMOJI_ID:
-					itemElement.textContent = t( 'Show all emojis...' );
+			const labelElement = document.createElement( 'span' );
 
-					break;
-				default:
-					itemElement.textContent = `${ item.text } ${ removeEmojiPrefix( item.id ) }`;
+			labelElement.classList.add( 'ck' );
+			labelElement.classList.add( 'ck-button__label' );
+
+			itemElement.appendChild( labelElement );
+
+			if ( item.id === EMOJI_HINT_OPTION_ID ) {
+				labelElement.textContent = t( 'Keep on typing to see the emoji.' );
+			} else if ( item.id === EMOJI_SHOW_ALL_OPTION_ID ) {
+				labelElement.textContent = t( 'Show all emoji...' );
+			} else {
+				labelElement.textContent = `${ item.text } ${ item.id }`;
 			}
 
 			return itemElement;
@@ -144,31 +148,42 @@ export default class EmojiMention extends Plugin {
 	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
 	 */
 	private _overrideMentionExecuteListener() {
+		const editor = this.editor;
+		const emojiPickerPlugin = this._emojiPickerPlugin;
+
 		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
-			if ( !isEmojiId( eventData.mention.id ) ) {
+			// Ignore non-emoji auto-complete actions.
+			if ( eventData.marker !== EMOJI_MENTION_MARKER ) {
 				return;
 			}
 
-			let textToInsert = eventData.mention.text;
-			let shouldShowEmojiView = false;
-
-			if ( eventData.mention.id === SHOW_ALL_EMOJI_ID ) {
-				shouldShowEmojiView = true;
-
-				textToInsert = '';
-			}
-
-			this.editor.model.change( writer => {
-				this.editor.model.insertContent( writer.createText( textToInsert ), eventData.range );
-			} );
-
-			if ( shouldShowEmojiView ) {
-				this._emojiPickerPlugin!.showUI( eventData.mention.text );
-			}
-
+			// Do not propagate the event.
 			event.stop();
+
+			// Do nothing when executing after selecting a hint message.
+			if ( eventData.mention.id === EMOJI_HINT_OPTION_ID ) {
+				return;
+			}
+
+			// Trigger the picker UI.
+			if ( eventData.mention.id === EMOJI_SHOW_ALL_OPTION_ID ) {
+				const text = [ ...eventData.range.getItems() ]
+					.filter( item => item.is( '$textProxy' ) )
+					.map( item => item.data )
+					.reduce( ( result, text ) => result + text, '' );
+
+				editor.model.change( writer => {
+					editor.model.deleteContent( writer.createSelection( eventData.range ) );
+				} );
+
+				emojiPickerPlugin.showUI( text.slice( 1 ) );
+			} else {
+				editor.model.change( writer => {
+					editor.model.insertContent( writer.createText( eventData.mention.text ), eventData.range );
+				} );
+			}
 		}, { priority: 'high' } );
 	}
 
@@ -177,13 +192,16 @@ export default class EmojiMention extends Plugin {
 	 */
 	private _queryEmojiCallbackFactory(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
 		return ( searchQuery: string ) => {
+			// Do not show anything when a query starts with a space.
+			if ( searchQuery.startsWith( ' ' ) ) {
+				return [];
+			}
+
 			// TODO: Add error handling if the database was not initialized properly.
 			const emojiDatabasePlugin = this.editor.plugins.get( 'EmojiDatabase' );
 
-			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
+			const emojis: Array<MentionFeedObjectItem> = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
 				.map( emoji => {
-					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
-
 					// TODO: The configuration `emoji.skinTone` option is ignored here.
 					let text = emoji.skins.default;
 
@@ -191,27 +209,24 @@ export default class EmojiMention extends Plugin {
 						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
 					}
 
-					return { text, id: formatEmojiId( id ) };
-				} )
-				.filter( emoji => emoji.text ) as Array<MentionFeedObjectItem>;
+					return {
+						id: `:${ emoji.annotation.replaceAll( ' ', '_' ) }:`,
+						text
+					};
+				} );
 
-			// TODO: Improve the `SHOW_ALL_EMOJI_ID` option based on the query length.
-			// If length<2, let's display something like "keep typing to see results...".
-			return this._emojiPickerPlugin ?
-				[ ...emojis.slice( 0, this._emojiDropdownLimit - 1 ), { id: SHOW_ALL_EMOJI_ID, text: searchQuery } ] :
-				emojis.slice( 0, this._emojiDropdownLimit );
+			if ( !this._emojiPickerPlugin ) {
+				return emojis.slice( 0, this._emojiDropdownLimit );
+			}
+
+			const actionItem: MentionFeedObjectItem = {
+				id: searchQuery.length > 1 ? EMOJI_SHOW_ALL_OPTION_ID : EMOJI_HINT_OPTION_ID
+			};
+
+			return [
+				...emojis.slice( 0, this._emojiDropdownLimit - 1 ),
+				actionItem
+			];
 		};
 	}
-}
-
-function isEmojiId( string: string ): boolean {
-	return new RegExp( `^${ EMOJI_PREFIX }:[^:]+:$` ).test( string );
-}
-
-function formatEmojiId( id: string ): string {
-	return `${ EMOJI_PREFIX }:${ id }:`;
-}
-
-function removeEmojiPrefix( formattedEmojiId: string ): string {
-	return formattedEmojiId.replace( new RegExp( `^${ EMOJI_PREFIX }:` ), ':' );
 }
