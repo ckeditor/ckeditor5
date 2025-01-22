@@ -84,6 +84,7 @@ export { default as FocusTracker, type ViewWithFocusTracker, isViewWithFocusTrac
 export { default as KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
 export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
 export { default as toMap } from './tomap.js';
+export { add } from './translation-service.js';
 export { default as priorities, type PriorityString } from './priorities.js';
 export { default as retry, exponentialDelay } from './retry.js';
 export { default as insertToPriorityArray } from './inserttopriorityarray.js';
@@ -94,6 +95,7 @@ export { default as delay, type DelayedFunc } from './delay.js';
 export { default as wait } from './wait.js';
 export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
 export { default as crc32, type CRCData } from './crc32.js';
+export { default as collectStylesheets } from './collectstylesheets.js';
 
 export * from './unicode.js';
 
