@@ -11,6 +11,7 @@ import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenu
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
 
+import EmojiCommand from './emojicommand.js';
 import EmojiDatabase from './emojidatabase.js';
 import EmojiPickerView from './ui/emojipickerview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
@@ -94,6 +95,8 @@ export default class EmojiPicker extends Plugin {
 			return;
 		}
 
+		editor.commands.add( 'emoji', new EmojiCommand( editor ) );
+
 		editor.ui.componentFactory.add( 'emoji', () => {
 			const button = this._createUiComponent( ButtonView );
 
@@ -142,7 +145,6 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
-		// TODO: Create a command for opening the UI using a command instead of a plugin.
 		if ( !this._emojiPickerView ) {
 			this._emojiPickerView = this._createEmojiPickerView();
 		}
@@ -153,13 +155,18 @@ export default class EmojiPicker extends Plugin {
 
 		this._emojiPickerView.searchView.search( searchValue );
 
-		this._balloon.add( {
-			view: this._emojiPickerView,
-			position: this._getBalloonPositionData()
-		} );
+		if ( !this._balloon.hasView( this._emojiPickerView ) ) {
+			this._balloon.add( {
+				view: this._emojiPickerView,
+				position: this._getBalloonPositionData()
+			} );
 
-		setTimeout( () => this._emojiPickerView!.focus() );
-		this._showFakeVisualSelection();
+			this._showFakeVisualSelection();
+		}
+
+		setTimeout( () => {
+			this._emojiPickerView!.focus();
+		} );
 	}
 
 	/**
