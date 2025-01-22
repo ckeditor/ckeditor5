@@ -15,6 +15,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
+    "@ckeditor/ckeditor5-heading": "44.1.0",
     "@ckeditor/ckeditor5-typing": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "ckeditor5": "44.1.0"
@@ -23,10 +24,9 @@
     "@ckeditor/ckeditor5-basic-styles": "44.1.0",
     "@ckeditor/ckeditor5-block-quote": "44.1.0",
     "@ckeditor/ckeditor5-code-block": "44.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
     "@ckeditor/ckeditor5-editor-classic": "44.1.0",
     "@ckeditor/ckeditor5-enter": "44.1.0",
-    "@ckeditor/ckeditor5-heading": "44.1.0",
     "@ckeditor/ckeditor5-horizontal-line": "44.1.0",
     "@ckeditor/ckeditor5-list": "44.1.0",
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
