@@ -51,8 +51,8 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
-    "@ckeditor/ckeditor5-dev-translations": "^45.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "^46.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
     "@ckeditor/ckeditor5-theme-lark": "44.1.0",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",
