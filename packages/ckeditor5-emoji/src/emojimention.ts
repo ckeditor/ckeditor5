@@ -222,8 +222,7 @@ export default class EmojiMention extends Plugin {
 
 			const emojis: Array<MentionFeedObjectItem> = this._emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
 				.map( emoji => {
-					// TODO: The configuration `emoji.skinTone` option is ignored here.
-					let text = emoji.skins.default;
+					let text = emoji.skins[ this.editor.config.get( 'emoji.skinTone' ) || 'default' ];
 
 					if ( this._emojiPickerPlugin ) {
 						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;

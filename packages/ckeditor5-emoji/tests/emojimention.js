@@ -669,6 +669,85 @@ describe( 'EmojiMention', () => {
 				text: thumbUpItem.skins.default
 			} );
 		} );
+
+		it( 'should read default skin tone from config', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				emoji: {
+					skinTone: 'medium'
+				}
+			} );
+
+			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const thumbUpItem = {
+				annotation: 'thumbs up',
+				emoji: '👍️',
+				skins: {
+					'default': '👍️',
+					'light': '👍🏻',
+					'medium-light': '👍🏼',
+					'medium': '👍🏽',
+					'medium-dark': '👍🏾',
+					'dark': '👍🏿'
+				}
+			};
+
+			getEmojiBySearchQuery.returns( [ thumbUpItem ] );
+
+			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
+			const queryResult = queryEmoji( 'thumbs' );
+
+			expect( queryResult.length ).to.equal( 2 );
+
+			expect( queryResult[ 0 ] ).to.deep.equal( {
+				id: ':thumbs up:',
+				text: thumbUpItem.skins.medium
+			} );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should use default skin tone if emoji does not have variants and skin tone is specified in condfig', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				emoji: {
+					skinTone: 'medium'
+				}
+			} );
+
+			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const thumbUpItem = {
+				annotation: 'thumbs up',
+				emoji: '👍️',
+				skins: {
+					'default': '👍️'
+				}
+			};
+
+			getEmojiBySearchQuery.returns( [ thumbUpItem ] );
+
+			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
+			const queryResult = queryEmoji( 'thumbs' );
+
+			expect( queryResult.length ).to.equal( 2 );
+
+			expect( queryResult[ 0 ] ).to.deep.equal( {
+				id: ':thumbs up:',
+				text: thumbUpItem.skins.default
+			} );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
 	} );
 
 	function simulateTyping( text ) {
