@@ -26,7 +26,7 @@
     "@ckeditor/ckeditor5-autoformat": "44.1.0",
     "@ckeditor/ckeditor5-basic-styles": "44.1.0",
     "@ckeditor/ckeditor5-block-quote": "44.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^45.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
     "@ckeditor/ckeditor5-editor-classic": "44.1.0",
     "@ckeditor/ckeditor5-html-support": "44.1.0",
     "@ckeditor/ckeditor5-image": "44.1.0",
