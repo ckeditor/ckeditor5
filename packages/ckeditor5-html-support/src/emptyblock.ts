@@ -123,7 +123,7 @@ function createEmptyBlockUpcastConverter( schema: Schema ) {
 
 			conversionApi.writer.setAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, true, modelElement );
 
-			// Handle a auto-paragraphed bogus paragraph inside empty element.
+			// Handle an auto-paragraphed bogus paragraph inside empty element.
 			if ( modelElement.childCount != 1 ) {
 				return;
 			}
