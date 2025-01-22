@@ -9,8 +9,8 @@
 
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import EmojiPicker from './emojipicker.js';
 import EmojiDatabase from './emojidatabase.js';
+import type EmojiPicker from './emojipicker.js';
 
 import {
 	type MentionFeed,
@@ -32,6 +32,11 @@ export default class EmojiMention extends Plugin {
 	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
 	 */
 	declare private _emojiPickerPlugin: EmojiPicker | null;
+
+	/**
+	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
+	 */
+	declare private _emojiDatabase: EmojiDatabase;
 
 	/**
 	 * Defines a number of displayed items in the auto complete dropdown.
@@ -73,8 +78,8 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 
-		const mentionFeedsConfigs = this.editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
-		const mergeFieldsPrefix = this.editor.config.get( 'mergeFields.prefix' )! as string;
+		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
+		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
 		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
 		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
@@ -91,14 +96,30 @@ export default class EmojiMention extends Plugin {
 		}
 
 		this._setupMentionConfiguration( mentionFeedsConfigs );
-		this.editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this._emojiPickerPlugin = this.editor.plugins.has( EmojiPicker ) ? this.editor.plugins.get( EmojiPicker ) : null;
+		const editor = this.editor;
+
+		this._emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
+		this._emojiDatabase = editor.plugins.get( 'EmojiDatabase' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		// Skip overriding the `mention` command listener if the emoji database is not loaded.
+		if ( !this._emojiDatabase.isDatabaseLoaded() ) {
+			return;
+		}
+
+		editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 	}
 
 	/**
@@ -177,10 +198,7 @@ export default class EmojiMention extends Plugin {
 	 */
 	private _queryEmojiCallbackFactory(): ( searchQuery: string ) => Array<MentionFeedObjectItem> {
 		return ( searchQuery: string ) => {
-			// TODO: Add error handling if the database was not initialized properly.
-			const emojiDatabasePlugin = this.editor.plugins.get( 'EmojiDatabase' );
-
-			const emojis = emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
+			const emojis = this._emojiDatabase.getEmojiBySearchQuery( searchQuery )
 				.map( emoji => {
 					const id = emoji.annotation.replace( /[ :]+/g, '_' ).toLocaleLowerCase();
 

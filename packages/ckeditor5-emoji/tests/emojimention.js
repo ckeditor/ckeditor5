@@ -6,20 +6,21 @@
 /* global document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
+import { EmojiMention, EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import EmojiDatabase from '../src/emojidatabase.js';
 
 class EmojiDatabaseMock extends EmojiDatabase {
+	// Overridden `init()` to prevent the `fetch()` call.
 	init() {
-		// An empty init to override the `fetch()` call.
-
 		this.getEmojiBySearchQuery = sinon.stub();
 		this.getEmojiGroups = sinon.stub();
+		this.isDatabaseLoaded = sinon.stub();
 
 		// Let's define a default behavior as we need this in UI, but we do not check it.
 		this.getEmojiGroups.returns( [
@@ -29,7 +30,12 @@ class EmojiDatabaseMock extends EmojiDatabase {
 				items: []
 			}
 		] );
+
+		this.isDatabaseLoaded.returns( EmojiDatabaseMock.isDatabaseLoaded );
 	}
+
+	// Property exposed for testing purposes to control the plugin initialization flow.
+	static isDatabaseLoaded = true;
 }
 
 describe( 'EmojiMention', () => {
@@ -41,9 +47,11 @@ describe( 'EmojiMention', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
+		EmojiDatabaseMock.isDatabaseLoaded = true;
+
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
-				Emoji,
+				EmojiMention,
 				EmojiPicker,
 				Mention,
 				Essentials,
@@ -106,7 +114,8 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [
-					Emoji,
+					EmojiMention,
+					EmojiPicker,
 					Paragraph,
 					Essentials,
 					Mention
@@ -146,7 +155,8 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [
-					Emoji,
+					EmojiMention,
+					EmojiPicker,
 					Paragraph,
 					Essentials,
 					Mention
@@ -191,7 +201,8 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [
-					Emoji,
+					EmojiMention,
+					EmojiPicker,
 					Paragraph,
 					Essentials,
 					Mention
@@ -269,7 +280,8 @@ describe( 'EmojiMention', () => {
 
 			editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [
-					Emoji,
+					EmojiMention,
+					EmojiPicker,
 					Paragraph,
 					Essentials,
 					Mention
@@ -299,6 +311,44 @@ describe( 'EmojiMention', () => {
 			expect( getModelData( editor.model ) ).to.match(
 				// eslint-disable-next-line max-len
 				/<paragraph>Hello world! <\$text mention="{"uid":"[a-z0-9]+","_text":"Barney","id":"@Barney"}">Barney<\/\$text> \[\]<\/paragraph>/
+			);
+		} );
+
+		it( 'must not override the default mention command execution if emoji database is not loaded', async () => {
+			EmojiDatabaseMock.isDatabaseLoaded = false;
+
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [
+					EmojiMention,
+					EmojiPicker,
+					Paragraph,
+					Essentials,
+					Mention
+				],
+				substitutePlugins: [
+					EmojiDatabaseMock
+				]
+			} );
+
+			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+			const startPosition = editor.model.document.selection.getFirstRange().start;
+
+			simulateTyping( ':raising' );
+
+			const endPosition = editor.model.document.selection.getFirstRange().end;
+
+			const range = editor.model.change( writer => {
+				return writer.createRange( startPosition, endPosition );
+			} );
+
+			// Expect an error from mention plugin if emoji plugin does not override the `mention` command execution.
+			expectToThrowCKEditorError(
+				() => editor.commands.execute( 'mention', { range, mention: { id: 'emoji:raising_hands:', text: '🙌' } } ),
+				/mentioncommand-incorrect-id/,
+				editor
 			);
 		} );
 
