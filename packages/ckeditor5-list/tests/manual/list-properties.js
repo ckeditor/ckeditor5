@@ -222,3 +222,38 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// ------------------------------------------------------------------
+
+ClassicEditor
+	.create( document.querySelector( '#editor-i' ), {
+		...config,
+		menuBar: {
+			isVisible: true
+		},
+		list: {
+			properties: {
+				styles: {
+					listStyleTypes: {
+						numbered: [
+							'decimal',
+							'decimal-leading-zero',
+							'lower-roman',
+							'upper-roman'
+						],
+						bulleted: [
+							'disc',
+							'circle',
+							'square'
+						]
+					}
+				}
+			}
+		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'No properties enabled': editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
