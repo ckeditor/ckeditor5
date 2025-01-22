@@ -60,19 +60,16 @@ describe( 'EmojiPicker', () => {
 
 		EmojiDatabaseMock.isDatabaseLoaded = true;
 
-		await ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				substitutePlugins: [ EmojiDatabaseMock ],
-				toolbar: [ 'emoji' ],
-				menuBar: {
-					isVisible: true
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				emojiPicker = newEditor.plugins.get( EmojiPicker );
-			} );
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiPicker, Essentials, Paragraph ],
+			substitutePlugins: [ EmojiDatabaseMock ],
+			toolbar: [ 'emoji' ],
+			menuBar: {
+				isVisible: true
+			}
+		} );
+
+		emojiPicker = editor.plugins.get( EmojiPicker );
 	} );
 
 	afterEach( async () => {
@@ -107,14 +104,13 @@ describe( 'EmojiPicker', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ EmojiPicker, Essentials, Paragraph ],
-					substitutePlugins: [ EmojiDatabaseMock ],
-					emoji: {
-						skinTone: 'medium'
-					}
-				} );
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				emoji: {
+					skinTone: 'medium'
+				}
+			} );
 
 			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'medium' );
 
@@ -126,14 +122,13 @@ describe( 'EmojiPicker', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ EmojiPicker, Essentials, Paragraph ],
-					substitutePlugins: [ EmojiDatabaseMock ],
-					emoji: {
-						skinTone: 'medium'
-					}
-				} );
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				emoji: {
+					skinTone: 'medium'
+				}
+			} );
 
 			const emojiPicker = editor.plugins.get( EmojiPicker );
 			emojiPicker.showUI();
@@ -173,10 +168,7 @@ describe( 'EmojiPicker', () => {
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiPicker, Paragraph, Essentials ],
-			substitutePlugins: [ EmojiDatabaseMock ],
-			menuBar: {
-				isVisible: true
-			}
+			substitutePlugins: [ EmojiDatabaseMock ]
 		} );
 
 		expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( false );
