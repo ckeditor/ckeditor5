@@ -399,7 +399,7 @@ function prepareAssets(
 			{
 				id: asset.data.id,
 				type: 'link',
-				attributes: prepareLinkAssetAttributes( downloadableFilesConfig, asset )
+				attributes: prepareLinkAssetAttributes( asset, downloadableFilesConfig )
 			} as const
 		)
 		.filter( asset => asset.type === 'image' ? isImageAllowed : isLinkAllowed );
@@ -428,16 +428,16 @@ export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): C
 /**
  * Parses the assets attributes into the internal data format.
  *
- * @param config The CKBox download asset configuration.
  * @param asset The asset to prepare the attributes for.
+ * @param config The CKBox download asset configuration.
  */
 function prepareLinkAssetAttributes(
-	config: CKBoxConfig[ 'downloadableFiles' ],
-	asset: CKBoxRawAssetDefinition
+	asset: CKBoxRawAssetDefinition,
+	config: CKBoxConfig[ 'downloadableFiles' ]
 ): CKBoxAssetLinkAttributesDefinition {
 	return {
 		linkName: asset.data.name,
-		linkHref: getAssetUrl( config, asset )
+		linkHref: getAssetUrl( asset, config )
 	};
 }
 
@@ -457,13 +457,13 @@ function isImage( asset: CKBoxRawAssetDefinition ) {
 /**
  * Creates the URL for the asset.
  *
- * @param config The CKBox download asset configuration.
  * @param asset The asset to create the URL for.
+ * @param config The CKBox download asset configuration.
  */
-function getAssetUrl( config: CKBoxConfig[ 'downloadableFiles' ], asset: CKBoxRawAssetDefinition ) {
+function getAssetUrl( asset: CKBoxRawAssetDefinition, config: CKBoxConfig[ 'downloadableFiles' ] ) {
 	const url = new URL( asset.data.url );
 
-	if ( isDownloadableAsset( config, asset ) ) {
+	if ( isDownloadableAsset( asset, config ) ) {
 		url.searchParams.set( 'download', 'true' );
 	}
 
@@ -473,12 +473,12 @@ function getAssetUrl( config: CKBoxConfig[ 'downloadableFiles' ], asset: CKBoxRa
 /**
  * Determines if download should be enabled for given asset based on configuration.
  *
- * @param config The CKBox download asset configuration.
  * @param asset The asset to check.
+ * @param config The CKBox download asset configuration.
  */
 function isDownloadableAsset(
-	config: CKBoxConfig[ 'downloadableFiles' ],
-	asset: CKBoxRawAssetDefinition
+	asset: CKBoxRawAssetDefinition,
+	config: CKBoxConfig[ 'downloadableFiles' ]
 ): boolean {
 	if ( typeof config === 'function' ) {
 		return config( asset );

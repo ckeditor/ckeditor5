@@ -1290,7 +1290,7 @@ describe( 'CKBoxCommand', () => {
 					const command = editor.commands.get( 'ckbox' );
 					const onChoose = command._prepareOptions().assets.onChoose;
 
-					// `file1` should not have download parameter.
+					// `file1` should have download parameter.
 					onChoose( [ assets.links[ 0 ] ] );
 
 					expect( getModelData( editor.model ) ).to.equal(
