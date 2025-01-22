@@ -712,7 +712,7 @@ describe( 'EmojiMention', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should use default skin tone if emoji does not have variants and skin tone is specified in condfig', async () => {
+		it( 'should use default skin tone if emoji does not have variants and skin tone is specified in config', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
