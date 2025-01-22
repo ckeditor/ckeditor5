@@ -534,7 +534,7 @@ describe( 'ClipboardPipeline feature', () => {
 				sinon.assert.calledWith( spy, editor.id );
 			} );
 
-			it( 'should be propagated to contentInsertion event', () => {
+			it( 'should be propagated to contentInsertion event (when it\'s external content)', () => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
 				const contentInsertionSpy = sinon.spy();
 
@@ -549,6 +549,27 @@ describe( 'ClipboardPipeline feature', () => {
 				} );
 
 				sinon.assert.calledWith( contentInsertionSpy, null );
+			} );
+
+			it( 'should be propagated to contentInsertion event (when it\'s internal content)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<p>internal content</p>',
+					'application/ckeditor5-editor-id': editor.id
+				} );
+
+				const contentInsertionSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					contentInsertionSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( contentInsertionSpy, editor.id );
 			} );
 		} );
 
