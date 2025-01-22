@@ -232,7 +232,7 @@ describe( 'EmojiDatabase', () => {
 			expect( searchIndex.docs[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
 		} );
 
-		it( 'should log a warning and store empty array when emoji database fetch failed', async () => {
+		it( 'should log a warning and keep emoji database as empty array when emoji database fetch failed', async () => {
 			fetchStubResolve( new Response( null, { status: 500 } ) );
 
 			editor = await editorPromise;
@@ -245,7 +245,7 @@ describe( 'EmojiDatabase', () => {
 			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-database-load-failed' );
 		} );
 
-		it( 'should log a warning and store empty array on network error when fetching emoji database', async () => {
+		it( 'should log a warning and keep emoji database as empty array on network error when fetching emoji database', async () => {
 			fetchStubReject( new Response() );
 
 			editor = await editorPromise;
@@ -256,6 +256,16 @@ describe( 'EmojiDatabase', () => {
 
 			expect( consoleStub.calledOnce ).to.be.true;
 			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-database-load-failed' );
+		} );
+
+		it( 'should not initialize Fuse.js instance when emoji database fetch failed', async () => {
+			fetchStubReject( new Response() );
+
+			editor = await editorPromise;
+
+			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+
+			expect( emojiDatabasePlugin._fuseSearch ).to.be.null;
 		} );
 	} );
 
@@ -281,6 +291,14 @@ describe( 'EmojiDatabase', () => {
 			domElement.remove();
 
 			await editor.destroy();
+		} );
+
+		it( 'should return empty array if Fuse.js instance is not created', () => {
+			emojiDatabasePlugin._fuseSearch = null;
+
+			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face' );
+
+			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query is empty', () => {
@@ -377,6 +395,18 @@ describe( 'EmojiDatabase', () => {
 			await editor.destroy();
 		} );
 
+		it( 'should return empty array for each emoji category if emoji database is empty', () => {
+			emojiDatabasePlugin._emojiDatabase = [];
+
+			const result = emojiDatabasePlugin.getEmojiGroups();
+
+			expect( result ).to.have.length( 9 );
+
+			result.forEach( category => {
+				expect( category.items ).to.have.length( 0 );
+			} );
+		} );
+
 		it( 'should return emojis grouped by category', () => {
 			const result = emojiDatabasePlugin.getEmojiGroups();
 
@@ -454,6 +484,45 @@ describe( 'EmojiDatabase', () => {
 
 		it( 'should return available skin tones', () => {
 			expect( emojiDatabasePlugin.getSkinTones() ).to.length( 6 );
+		} );
+	} );
+
+	describe( 'isDatabaseLoaded()', () => {
+		let editor, domElement, emojiDatabasePlugin;
+
+		beforeEach( async () => {
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', group: 0 },
+				{ annotation: 'unamused face', group: 0 }
+			] );
+
+			fetchStub.resolves( new Response( response ) );
+
+			domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			editor = await createTestEditor( domElement );
+			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+		} );
+
+		afterEach( async () => {
+			domElement.remove();
+
+			await editor.destroy();
+		} );
+
+		it( 'should return true when emoji database is not empty', async () => {
+			const result = emojiDatabasePlugin.isDatabaseLoaded();
+
+			expect( result ).to.be.true;
+		} );
+
+		it( 'should return false when emoji database is empty', async () => {
+			emojiDatabasePlugin._emojiDatabase = [];
+
+			const result = emojiDatabasePlugin.isDatabaseLoaded();
+
+			expect( result ).to.be.false;
 		} );
 	} );
 } );

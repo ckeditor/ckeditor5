@@ -136,7 +136,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 						this.toneView
 					],
 					attributes: {
-						class: [ 'ck', 'ck-emoji-picker-wrapper' ]
+						class: [ 'ck', 'ck-emoji__search' ]
 					}
 				},
 				this.categoriesView,
@@ -152,10 +152,8 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 				}
 			],
 			attributes: {
-				// Avoid focus loss when the user clicks the area of the grid that is not a button.
-				// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
 				tabindex: '-1',
-				class: [ 'ck', 'ck-emoji-picker', 'ck-search' ]
+				class: [ 'ck', 'ck-emoji', 'ck-search' ]
 			}
 		} );
 

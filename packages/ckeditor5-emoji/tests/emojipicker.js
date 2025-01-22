@@ -17,12 +17,12 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import EmojiPickerView from '../src/ui/emojipickerview.js';
 
 class EmojiDatabaseMock extends EmojiDatabase {
+	// Overridden `init()` to prevent the `fetch()` call.
 	init() {
-		// An empty init to override the `fetch()` call.
-
 		this.getEmojiBySearchQuery = sinon.stub();
 		this.getEmojiGroups = sinon.stub();
 		this.getSkinTones = sinon.stub();
+		this.isDatabaseLoaded = sinon.stub();
 
 		// Let's define a default behavior as we need this in UI, but we do not check it.
 		this.getEmojiGroups.returns( [
@@ -43,7 +43,12 @@ class EmojiDatabaseMock extends EmojiDatabase {
 			{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
 			{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
 		] );
+
+		this.isDatabaseLoaded.returns( EmojiDatabaseMock.isDatabaseLoaded );
 	}
+
+	// Property exposed for testing purposes to control the plugin initialization flow.
+	static isDatabaseLoaded = true;
 }
 
 describe( 'EmojiPicker', () => {
@@ -53,19 +58,18 @@ describe( 'EmojiPicker', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		await ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				substitutePlugins: [ EmojiDatabaseMock ],
-				toolbar: [ 'emoji' ],
-				menuBar: {
-					isVisible: true
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				emojiPicker = newEditor.plugins.get( EmojiPicker );
-			} );
+		EmojiDatabaseMock.isDatabaseLoaded = true;
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiPicker, Essentials, Paragraph ],
+			substitutePlugins: [ EmojiDatabaseMock ],
+			toolbar: [ 'emoji' ],
+			menuBar: {
+				isVisible: true
+			}
+		} );
+
+		emojiPicker = editor.plugins.get( EmojiPicker );
 	} );
 
 	afterEach( async () => {
@@ -100,14 +104,13 @@ describe( 'EmojiPicker', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ EmojiPicker, Essentials, Paragraph ],
-					substitutePlugins: [ EmojiDatabaseMock ],
-					emoji: {
-						skinTone: 'medium'
-					}
-				} );
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				emoji: {
+					skinTone: 'medium'
+				}
+			} );
 
 			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'medium' );
 
@@ -119,14 +122,13 @@ describe( 'EmojiPicker', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ EmojiPicker, Essentials, Paragraph ],
-					substitutePlugins: [ EmojiDatabaseMock ],
-					emoji: {
-						skinTone: 'medium'
-					}
-				} );
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiPicker, Essentials, Paragraph ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				emoji: {
+					skinTone: 'medium'
+				}
+			} );
 
 			const emojiPicker = editor.plugins.get( EmojiPicker );
 			emojiPicker.showUI();
@@ -157,6 +159,35 @@ describe( 'EmojiPicker', () => {
 		expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
 
 		expect( editor.ui.componentFactory.create( 'menuBar:emoji' ) ).to.instanceOf( MenuBarMenuListItemButtonView );
+	} );
+
+	it( 'must not register the "emoji" toolbar component if emoji database is not loaded', async () => {
+		EmojiDatabaseMock.isDatabaseLoaded = false;
+
+		await editor.destroy();
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiPicker, Paragraph, Essentials ],
+			substitutePlugins: [ EmojiDatabaseMock ]
+		} );
+
+		expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( false );
+	} );
+
+	it( 'must not register the "menuBar:emoji" toolbar component if emoji database is not loaded', async () => {
+		EmojiDatabaseMock.isDatabaseLoaded = false;
+
+		await editor.destroy();
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiPicker, Paragraph, Essentials ],
+			substitutePlugins: [ EmojiDatabaseMock ],
+			menuBar: {
+				isVisible: true
+			}
+		} );
+
+		expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( false );
 	} );
 
 	describe( 'showUI()', () => {

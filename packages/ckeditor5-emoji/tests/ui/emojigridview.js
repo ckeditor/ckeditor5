@@ -71,18 +71,15 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'creates #element from template', () => {
-			const tile = view._createTile( '😊', 'smile' );
-			const tilesElement = view.element.firstChild;
-
-			view.tiles.add( tile );
-
+			expect( view.element.getAttribute( 'role' ) ).to.equal( 'tabpanel' );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-emoji-grid' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).to.be.true;
 
-			expect( tilesElement.classList.contains( 'ck' ) ).to.be.true;
-			expect( tilesElement.classList.contains( 'ck-emoji-grid__tiles' ) ).to.be.true;
+			const tilesContainer = view.element.firstChild;
 
-			expect( tile.element.parentNode ).to.equal( tilesElement );
+			expect( tilesContainer.getAttribute( 'role' ) ).to.equal( 'grid' );
+			expect( tilesContainer.classList.contains( 'ck' ) ).to.be.true;
+			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).to.be.true;
 		} );
 
 		describe( 'Focus management across the grid items using arrow keys', () => {
@@ -136,7 +133,7 @@ describe( 'EmojiGridView', () => {
 
 				it( '"arrow down" should focus the focusable grid item in the second row', () => {
 					const numberOfColumns = window
-						.getComputedStyle( view.element.firstChild ) // Responsive .ck-emoji-grid__tiles
+						.getComputedStyle( view.element.firstChild ) // Responsive `.ck-emoji__tile`.
 						.getPropertyValue( 'grid-template-columns' )
 						.split( ' ' )
 						.length;
@@ -220,7 +217,7 @@ describe( 'EmojiGridView', () => {
 			expect( tile ).to.be.instanceOf( ButtonView );
 			expect( tile.label ).to.equal( '😊' );
 			expect( tile.withText ).to.be.true;
-			expect( tile.class ).to.equal( 'ck-emoji-grid__tile' );
+			expect( tile.class ).to.equal( 'ck-emoji__tile' );
 		} );
 
 		it( 'delegates #execute from the tile to the grid', () => {
