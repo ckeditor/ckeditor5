@@ -1880,7 +1880,7 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 }
 
 /**
- * Checks if given node is a nbsp block filler.
+ * Checks if given DOM node is a nbsp block filler.
  *
  * A &nbsp; is a block filler only if it is a single child of a block element.
  *
@@ -1904,7 +1904,9 @@ function hasBlockParent( domNode: DomNode, blockElements: ReadonlyArray<string> 
 }
 
 /**
- * TODO
+ * Checks if given view node is a nbsp block filler.
+ *
+ * A &nbsp; is a block filler only if it is a single child of a block element.
  */
 function isViewNbspFiller( parent: ViewNode | ViewDocumentFragment, data: string, blockElements: Array<string> ): boolean {
 	return (
@@ -1917,7 +1919,9 @@ function isViewNbspFiller( parent: ViewNode | ViewDocumentFragment, data: string
 }
 
 /**
- * TODO
+ * Checks if given view node is a marked-nbsp block filler.
+ *
+ * A &nbsp; is a block filler only if it is wrapped in `<span data-cke-filler="true">` element.
  */
 function isViewMarkedNbspFiller( parent: ViewNode | ViewDocumentFragment, data: string ): boolean {
 	return (
@@ -1930,7 +1934,9 @@ function isViewMarkedNbspFiller( parent: ViewNode | ViewDocumentFragment, data: 
 }
 
 /**
- * TODO
+ * Checks if given view node is a br block filler.
+ *
+ * A <br> is a block filler only if it has data-cke-filler attribute set.
  */
 function isViewBrFiller( node: ViewNode ): boolean {
 	return (
