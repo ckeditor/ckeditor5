@@ -144,7 +144,7 @@ export default class EmojiMention extends Plugin {
 			itemElement.classList.add( 'ck-button_with-text' );
 			itemElement.id = `mention-list-item-id${ item.id.slice( 0, -1 ) }`;
 			itemElement.type = 'button';
-			itemElement.tabIndex = '-1';
+			itemElement.tabIndex = -1;
 
 			const labelElement = document.createElement( 'span' );
 
@@ -169,9 +169,6 @@ export default class EmojiMention extends Plugin {
 	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
 	 */
 	private _overrideMentionExecuteListener() {
-		const editor = this.editor;
-		const emojiPickerPlugin = this._emojiPickerPlugin;
-
 		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
@@ -195,14 +192,16 @@ export default class EmojiMention extends Plugin {
 					.map( item => item.data )
 					.reduce( ( result, text ) => result + text, '' );
 
-				editor.model.change( writer => {
-					editor.model.deleteContent( writer.createSelection( eventData.range ) );
+				this.editor.model.change( writer => {
+					this.editor.model.deleteContent( writer.createSelection( eventData.range ) );
 				} );
 
-				emojiPickerPlugin.showUI( text.slice( 1 ) );
-			} else {
-				editor.model.change( writer => {
-					editor.model.insertContent( writer.createText( eventData.mention.text ), eventData.range );
+				this._emojiPickerPlugin!.showUI( text.slice( 1 ) );
+			}
+			// Or insert the emoji to editor.
+			else {
+				this.editor.model.change( writer => {
+					this.editor.model.insertContent( writer.createText( eventData.mention.text ), eventData.range );
 				} );
 			}
 		}, { priority: 'high' } );
