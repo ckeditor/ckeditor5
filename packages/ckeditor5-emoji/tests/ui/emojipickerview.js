@@ -124,7 +124,7 @@ describe( 'EmojiPickerView', () => {
 			it( 'should set info view properties when search query length is equal to one', () => {
 				emojiPickerView.searchView.fire( 'search', { query: '1' } );
 
-				expect( emojiPickerView.infoView.primaryText ).to.equal( 'Keep on typing to see the results.' );
+				expect( emojiPickerView.infoView.primaryText ).to.equal( 'Keep on typing to see the emoji.' );
 				expect( emojiPickerView.infoView.secondaryText ).to.equal( 'The query must contain at least two characters.' );
 				expect( emojiPickerView.infoView.isVisible ).to.equal( true );
 			} );

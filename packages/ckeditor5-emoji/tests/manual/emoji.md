@@ -18,6 +18,6 @@ To test it, write the default marker `:` followed by at least first two letters 
 
 Make sure to include at least one space before the marker, otherwise the mention plugin does not kick in. 
 
-Then, you can either choose which emoji to insert, or choose the last option: `Show all emojis...` to open the `EmojiPicker` plugin, which should then have the same text in its search bar.
+Then, you can either choose which emoji to insert, or choose the last option: `Show all emoji...` to open the `EmojiPicker` plugin, which should then have the same text in its search bar.
 
-**Note**: The `Show all emojis...` option does not show up when the `EmojiPicker` plugin is not available.
+**Note**: The `Show all emoji...` option does not show up when the `EmojiPicker` plugin is not available.
