@@ -142,6 +142,7 @@ export default class EmojiMention extends Plugin {
 			itemElement.classList.add( 'ck' );
 			itemElement.classList.add( 'ck-button' );
 			itemElement.classList.add( 'ck-button_with-text' );
+
 			itemElement.id = `mention-list-item-id${ item.id.slice( 0, -1 ) }`;
 			itemElement.type = 'button';
 			itemElement.tabIndex = -1;
@@ -154,6 +155,8 @@ export default class EmojiMention extends Plugin {
 			itemElement.appendChild( labelElement );
 
 			if ( item.id === EMOJI_HINT_OPTION_ID ) {
+				itemElement.classList.add( 'ck-list-item-button' );
+				itemElement.classList.add( 'ck-disabled' );
 				labelElement.textContent = t( 'Keep on typing to see the emoji.' );
 			} else if ( item.id === EMOJI_SHOW_ALL_OPTION_ID ) {
 				labelElement.textContent = t( 'Show all emoji...' );

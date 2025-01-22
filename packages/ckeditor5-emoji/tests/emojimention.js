@@ -254,7 +254,13 @@ describe( 'EmojiMention', () => {
 
 			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
 
-			expect( Array.from( item.classList ) ).to.deep.equal( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
+			expect( Array.from( item.classList ) ).to.deep.equal( [
+				'ck',
+				'ck-button',
+				'ck-button_with-text',
+				'ck-list-item-button',
+				'ck-disabled'
+			] );
 			expect( item.tabIndex ).to.equal( -1 );
 			expect( item.type ).to.equal( 'button' );
 			expect( item.id ).to.equal( 'mention-list-item-id:__EMOJI_HINT' );
