@@ -65,6 +65,13 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	private readonly getEmojiBySearchQuery: EmojiSearchQueryCallback;
 
 	/**
+	 * A collection of all already created tile views. Each tile represents a particular emoji.
+	 * The cached tiles collection is used for efficiency purposes to avoid re-creating a particual
+	 * tile again when the grid view has changed.
+	 */
+	private readonly cachedTiles: ViewCollection<ButtonView>;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale: Locale, { categoryName, emojiGroups, getEmojiBySearchQuery, skinTone }: {
@@ -80,6 +87,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		this.set( 'skinTone', skinTone );
 
 		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
+		this.cachedTiles = this.createCollection() as ViewCollection<ButtonView>;
+
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
@@ -144,6 +153,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		this.keystrokes.destroy();
 		this.focusTracker.destroy();
+		this.tiles.destroy();
+		this.cachedTiles.destroy();
 	}
 
 	/**
@@ -207,8 +218,6 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 * @param items An array of items to insert.
 	 */
 	private _updateGrid( items: Array<EmojiEntry> ): void {
-		// TODO: `isVisible` instead of `remove()` to improve performance.
-
 		// Clean-up.
 		[ ...this.tiles ].forEach( item => {
 			this.focusTracker.remove( item );
@@ -220,7 +229,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 			.map( item => {
 				const emoji = item.skins[ this.skinTone ] || item.skins.default;
 
-				return this._createTile( emoji, item.annotation );
+				return this.cachedTiles.get( emoji ) || this._createTile( emoji, item.annotation );
 			} )
 			// Insert new elements.
 			.forEach( item => {
@@ -230,13 +239,15 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	}
 
 	/**
-	 * Creates a new tile for the grid.
+	 * Creates a new tile for the grid. Created tile is added to the {@link #cachedTiles} collection for further usage, if needed.
 	 *
 	 * @param emoji The emoji itself.
 	 * @param name The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
 	 */
 	private _createTile( emoji: string, name: string ): ButtonView {
 		const tile = new ButtonView( this.locale );
+
+		tile.viewUid = emoji;
 
 		tile.set( {
 			label: emoji,
@@ -253,6 +264,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		tile.on( 'execute', () => {
 			this.fire<EmojiGridViewExecuteEvent>( 'execute', { name, emoji } );
 		} );
+
+		this.cachedTiles.add( tile );
 
 		return tile;
 	}

@@ -215,6 +215,7 @@ describe( 'EmojiGridView', () => {
 			const tile = view._createTile( '😊', 'smile' );
 
 			expect( tile ).to.be.instanceOf( ButtonView );
+			expect( tile.viewUid ).to.equal( '😊' );
 			expect( tile.label ).to.equal( '😊' );
 			expect( tile.withText ).to.be.true;
 			expect( tile.class ).to.equal( 'ck-emoji__tile' );
@@ -229,6 +230,15 @@ describe( 'EmojiGridView', () => {
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
+		} );
+
+		it( 'adds created tile to the collection of cached tiles', () => {
+			expect( view.cachedTiles.has( '😊' ) ).to.equal( false );
+
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( view.cachedTiles.has( '😊' ) ).to.equal( true );
+			expect( view.cachedTiles.get( '😊' ) ).to.equal( tile );
 		} );
 	} );
 
@@ -337,6 +347,38 @@ describe( 'EmojiGridView', () => {
 			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 0 } );
 			expect( view.isEmpty ).is.equal( true );
 			sinon.assert.callCount( spy, 0 );
+		} );
+
+		it( 'should re-use cached tile if it exists', () => {
+			emojiGroups = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
+						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
+						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } }
+					]
+				}
+			];
+
+			const spy = sinon.stub().returns( [
+				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
+			] );
+
+			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+
+			expect( view.cachedTiles.length ).to.equal( 0 );
+
+			view.filter( new RegExp( 'happy' ) );
+
+			expect( view.cachedTiles.length ).to.equal( 1 );
+			expect( view.cachedTiles.has( '😀' ) ).to.equal( true );
+
+			view.filter( new RegExp( 'smile' ) );
+
+			expect( view.cachedTiles.length ).to.equal( 1 );
+			expect( view.tiles.get( '😀' ) ).to.equal( view.cachedTiles.get( '😀' ) );
 		} );
 	} );
 } );
