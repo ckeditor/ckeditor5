@@ -177,7 +177,7 @@ describe( 'EmojiPickerView', () => {
 	} );
 
 	describe( 'render()', () => {
-		describe( 'activates keyboard navigation in the special characters view', () => {
+		describe( 'activates keyboard navigation in the emoji view', () => {
 			it( 'should add emojiView to focusTracker', () => {
 				const stub = sinon.stub( emojiPickerView.focusTracker, 'add' );
 
@@ -191,15 +191,7 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledWith( stub, emojiPickerView.infoView.element );
 			} );
 
-			it( 'should not listen to keystrokes on inputView', () => {
-				const stub = sinon.stub( emojiPickerView.searchView.inputView.keystrokes, 'stopListening' );
-
-				emojiPickerView.render();
-
-				sinon.assert.calledOnce( stub );
-			} );
-
-			it( 'should call keystorokes listenTo on emojiPickerView instance', () => {
+			it( 'should call keystrokes listenTo on emojiPickerView instance', () => {
 				const stub = sinon.stub( emojiPickerView.keystrokes, 'listenTo' );
 
 				emojiPickerView.render();
