@@ -27,8 +27,8 @@ import '../../../theme/imagecustomresizeform.css';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
 
 /**
  * The ImageCustomResizeFormView class.
@@ -92,10 +92,10 @@ export default class ImageCustomResizeFormView extends View {
 
 		this.labeledInput = this._createLabeledInputView();
 
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon(), 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon(), 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		this._focusables = new ViewCollection();
 		this._validators = validators;

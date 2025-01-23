@@ -13,7 +13,7 @@ import { IconHorizontalLine } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type HorizontalLineCommand from './horizontallinecommand.js';
 
-const horizontalLineIcon = /* #__PURE__ */ registerIcon( 'horizontalLine', IconHorizontalLine );
+const horizontalLineIcon = /* #__PURE__ */ registerIcon( '--ck-icon-horizontal-line', IconHorizontalLine );
 
 /**
  * The horizontal line UI plugin.
@@ -67,7 +67,7 @@ export default class HorizontalLineUI extends Plugin {
 
 		view.set( {
 			label: t( 'Horizontal line' ),
-			icon: horizontalLineIcon()
+			icon: horizontalLineIcon
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

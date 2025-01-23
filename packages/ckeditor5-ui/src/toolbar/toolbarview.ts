@@ -49,43 +49,43 @@ import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
 
 import '../../theme/components/toolbar/toolbar.css';
 
-const alignLeftIcon = /* #__PURE__ */ registerIcon( 'alignLeft', IconAlignLeft );
-const boldIcon = /* #__PURE__ */ registerIcon( 'bold', IconBold );
-const importExportIcon = /* #__PURE__ */ registerIcon( 'importExport', IconImportExport );
-const paragraphIcon = /* #__PURE__ */ registerIcon( 'paragraph', IconParagraph );
-const plusIcon = /* #__PURE__ */ registerIcon( 'plus', IconPlus );
-const textIcon = /* #__PURE__ */ registerIcon( 'text', IconText );
-const threeVerticalDotsIcon = /* #__PURE__ */ registerIcon( 'threeVerticalDots', IconThreeVerticalDots );
-const pilcrowIcon = /* #__PURE__ */ registerIcon( 'pilcrow', IconPilcrow );
-const dragIndicatorIcon = /* #__PURE__ */ registerIcon( 'dragIndicator', IconDragIndicator );
+const alignLeftIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-left', IconAlignLeft );
+const boldIcon = /* #__PURE__ */ registerIcon( '--ck-icon-bold', IconBold );
+const importExportIcon = /* #__PURE__ */ registerIcon( '--ck-icon-import-export', IconImportExport );
+const paragraphIcon = /* #__PURE__ */ registerIcon( '--ck-icon-paragraph', IconParagraph );
+const plusIcon = /* #__PURE__ */ registerIcon( '--ck-icon-plus', IconPlus );
+const textIcon = /* #__PURE__ */ registerIcon( '--ck-icon-text', IconText );
+const threeVerticalDotsIcon = /* #__PURE__ */ registerIcon( '--ck-icon-three-vertical-dots', IconThreeVerticalDots );
+const pilcrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-pilcrow', IconPilcrow );
+const dragIndicatorIcon = /* #__PURE__ */ registerIcon( '--ck-icon-drag-indicator', IconDragIndicator );
 
 export const NESTED_TOOLBAR_ICONS: Record<string, string> = {
 	get alignLeft() {
-		return alignLeftIcon();
+		return alignLeftIcon;
 	},
 	get bold() {
-		return boldIcon();
+		return boldIcon;
 	},
 	get importExport() {
-		return importExportIcon();
+		return importExportIcon;
 	},
 	get paragraph() {
-		return paragraphIcon();
+		return paragraphIcon;
 	},
 	get plus() {
-		return plusIcon();
+		return plusIcon;
 	},
 	get text() {
-		return textIcon();
+		return textIcon;
 	},
 	get threeVerticalDots() {
-		return threeVerticalDotsIcon();
+		return threeVerticalDotsIcon;
 	},
 	get pilcrow() {
-		return pilcrowIcon();
+		return pilcrowIcon;
 	},
 	get dragIndicator() {
-		return dragIndicatorIcon();
+		return dragIndicatorIcon;
 	}
 };
 
@@ -572,7 +572,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDotsIcon;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
@@ -1077,7 +1077,7 @@ class DynamicGrouping implements ToolbarBehavior {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: IconThreeVerticalDots
+			icon: threeVerticalDotsIcon
 		} );
 
 		return dropdown;

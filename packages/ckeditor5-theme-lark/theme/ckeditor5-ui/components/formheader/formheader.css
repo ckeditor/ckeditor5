@@ -15,7 +15,7 @@
 	line-height: var(--ck-form-header-height);
 	border-bottom: 1px solid var(--ck-color-base-border);
 
-	& > .ck-icon {
+	& > .ck-css-icon {
 		@mixin ck-dir ltr {
 			margin-right: var(--ck-spacing-medium);
 		}

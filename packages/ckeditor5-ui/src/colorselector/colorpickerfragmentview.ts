@@ -27,8 +27,8 @@ import type InputTextView from '../inputtext/inputtextview.js';
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
  *
@@ -296,7 +296,7 @@ export default class ColorPickerFragmentView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: checkIcon(),
+			icon: checkIcon,
 			class: 'ck-button-save',
 			type: 'button',
 			withText: false,
@@ -304,7 +304,7 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		cancelButtonView.set( {
-			icon: cancelIcon(),
+			icon: cancelIcon,
 			class: 'ck-button-cancel',
 			type: 'button',
 			withText: false,

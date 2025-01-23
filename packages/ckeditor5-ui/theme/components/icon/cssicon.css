@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-css-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ck-css-icon::after {
+	content: '';
+	display: inline-flex;
+	width: var(--ck-icon-width, 20px);
+	height: var(--ck-icon-height, 20px);
+	max-width: 100%;
+	max-height: 100%;
+	mask: var(--ck-icon);
+	background-color: var(--ck-icon-color, var(--ck-color-base-text));
+}

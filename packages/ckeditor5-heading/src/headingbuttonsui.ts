@@ -15,12 +15,12 @@ import { getLocalizedOptions } from './utils.js';
 import type { HeadingOption } from './headingconfig.js';
 import type HeadingCommand from './headingcommand.js';
 
-const heading1Icon = /* #__PURE__ */ registerIcon( 'heading1', IconHeading1 );
-const heading2Icon = /* #__PURE__ */ registerIcon( 'heading2', IconHeading2 );
-const heading3Icon = /* #__PURE__ */ registerIcon( 'heading3', IconHeading3 );
-const heading4Icon = /* #__PURE__ */ registerIcon( 'heading4', IconHeading4 );
-const heading5Icon = /* #__PURE__ */ registerIcon( 'heading5', IconHeading5 );
-const heading6Icon = /* #__PURE__ */ registerIcon( 'heading6', IconHeading6 );
+const heading1Icon = /* #__PURE__ */ registerIcon( '--ck-icon-heading1', IconHeading1 );
+const heading2Icon = /* #__PURE__ */ registerIcon( '--ck-icon-heading2', IconHeading2 );
+const heading3Icon = /* #__PURE__ */ registerIcon( '--ck-icon-heading3', IconHeading3 );
+const heading4Icon = /* #__PURE__ */ registerIcon( '--ck-icon-heading4', IconHeading4 );
+const heading5Icon = /* #__PURE__ */ registerIcon( '--ck-icon-heading5', IconHeading5 );
+const heading6Icon = /* #__PURE__ */ registerIcon( '--ck-icon-heading6', IconHeading6 );
 
 /**
  * The `HeadingButtonsUI` plugin defines a set of UI buttons that can be used instead of the
@@ -62,12 +62,12 @@ export default class HeadingButtonsUI extends Plugin {
 		super( editor );
 
 		this.icons = {
-			heading1: heading1Icon(),
-			heading2: heading2Icon(),
-			heading3: heading3Icon(),
-			heading4: heading4Icon(),
-			heading5: heading5Icon(),
-			heading6: heading6Icon()
+			heading1: heading1Icon,
+			heading2: heading2Icon,
+			heading3: heading3Icon,
+			heading4: heading4Icon,
+			heading5: heading5Icon,
+			heading6: heading6Icon
 		};
 	}
 

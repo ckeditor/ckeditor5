@@ -22,7 +22,7 @@
 				border-top: 1px solid var(--ck-color-base-border);
 			}
 
-			& .ck.ck-icon {
+			& .ck.ck-css-icon {
 				@mixin ck-dir ltr {
 					margin-right: var(--ck-spacing-standard);
 				}

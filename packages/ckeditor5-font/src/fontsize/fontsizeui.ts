@@ -27,7 +27,7 @@ import type FontSizeCommand from './fontsizecommand.js';
 
 import '../../theme/fontsize.css';
 
-const fontSizeIcon = /* #__PURE__ */ registerIcon( 'fontSize', IconFontSize );
+const fontSizeIcon = /* #__PURE__ */ registerIcon( '--ck-icon-font-size', IconFontSize );
 
 /**
  * The font size UI plugin. It introduces the `'fontSize'` dropdown.
@@ -73,7 +73,7 @@ export default class FontSizeUI extends Plugin {
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontSizeIcon(),
+				icon: fontSizeIcon,
 				tooltip: true
 			} );
 
@@ -101,7 +101,7 @@ export default class FontSizeUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontSizeIcon()
+				icon: fontSizeIcon
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

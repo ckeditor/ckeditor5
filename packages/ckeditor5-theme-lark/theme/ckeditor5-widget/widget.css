@@ -92,7 +92,7 @@
 			transition: none;
 		}
 
-		& .ck-icon {
+		& .ck-css-icon {
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
 			width: var(--ck-widget-handler-icon-size);
 			height: var(--ck-widget-handler-icon-size);
@@ -112,7 +112,7 @@
 		}
 
 		/* Advertise using the look of the icon that once clicked the handler, the widget will be selected. */
-		&:hover .ck-icon .ck-icon__selected-indicator {
+		&:hover .ck-css-icon .ck-icon__selected-indicator {
 			opacity: 1;
 		}
 	}
@@ -131,7 +131,7 @@
 			background-color: var(--ck-color-focus-border);
 
 			/* When the widget is selected, notify the user using the proper look of the icon. */
-			& .ck-icon .ck-icon__selected-indicator {
+			& .ck-css-icon .ck-icon__selected-indicator {
 				opacity: 1;
 			}
 		}

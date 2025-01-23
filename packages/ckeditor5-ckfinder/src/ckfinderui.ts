@@ -14,8 +14,8 @@ import { IconBrowseFiles, IconImageAssetManager } from 'ckeditor5/src/icons.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 import type CKFinderCommand from './ckfindercommand.js';
 
-const browseFilesIcon = /* #__PURE__ */ registerIcon( 'browseFiles', IconBrowseFiles );
-const imageAssetManagerIcon = /* #__PURE__ */ registerIcon( 'imageAssetManager', IconImageAssetManager );
+const browseFilesIcon = /* #__PURE__ */ registerIcon( '--ck-icon-browse-files', IconBrowseFiles );
+const imageAssetManagerIcon = /* #__PURE__ */ registerIcon( '--ck-icon-image-asset-manager', IconImageAssetManager );
 
 /**
  * Introduces UI components for `CKFinder` plugin.
@@ -88,7 +88,7 @@ export default class CKFinderUI extends Plugin {
 		const t = this.editor.locale.t;
 		const button = this._createButton( ButtonView );
 
-		button.icon = browseFilesIcon();
+		button.icon = browseFilesIcon;
 		button.label = t( 'Insert image or file' );
 		button.tooltip = true;
 
@@ -104,7 +104,7 @@ export default class CKFinderUI extends Plugin {
 
 		const button = this._createButton( ButtonView );
 
-		button.icon = imageAssetManagerIcon();
+		button.icon = imageAssetManagerIcon;
 		button.bind( 'label' ).to(
 			imageInsertUI,
 			'isImageSelected',
@@ -124,7 +124,7 @@ export default class CKFinderUI extends Plugin {
 
 		const button = this._createButton( ButtonView );
 
-		button.icon = imageAssetManagerIcon();
+		button.icon = imageAssetManagerIcon;
 		button.withText = true;
 		button.bind( 'label' ).to(
 			imageInsertUI,
@@ -146,7 +146,7 @@ export default class CKFinderUI extends Plugin {
 		const t = this.editor.locale.t;
 		const button = this._createButton( MenuBarMenuListItemButtonView );
 
-		button.icon = browseFilesIcon();
+		button.icon = browseFilesIcon;
 		button.withText = true;
 		button.label = t( 'File' );
 
@@ -162,7 +162,7 @@ export default class CKFinderUI extends Plugin {
 		const t = this.editor.locale.t;
 		const button = this._createButton( MenuBarMenuListItemButtonView );
 
-		button.icon = imageAssetManagerIcon();
+		button.icon = imageAssetManagerIcon;
 		button.withText = true;
 
 		switch ( type ) {

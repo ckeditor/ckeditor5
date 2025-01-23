@@ -27,7 +27,7 @@ import type CodeBlockCommand from './codeblockcommand.js';
 
 import '../theme/codeblock.css';
 
-const codeBlockIcon = /* #__PURE__ */ registerIcon( 'codeBlock', IconCodeBlock );
+const codeBlockIcon = /* #__PURE__ */ registerIcon( '--ck-icon-code-block', IconCodeBlock );
 
 /**
  * The code block UI plugin.
@@ -68,7 +68,7 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.set( {
 				label: accessibleLabel,
 				tooltip: true,
-				icon: codeBlockIcon(),
+				icon: codeBlockIcon,
 				isToggleable: true
 			} );
 
@@ -108,7 +108,7 @@ export default class CodeBlockUI extends Plugin {
 			menuView.buttonView.set( {
 				role: 'menuitem',
 				label: t( 'Code block' ),
-				icon: codeBlockIcon()
+				icon: codeBlockIcon
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

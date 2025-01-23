@@ -25,7 +25,7 @@
 	& .ck-widget__selection-handle {
 		position: absolute;
 
-		& .ck-icon {
+		& .ck-css-icon {
 			/* Make sure the icon in not a subject to font-size or line-height to avoid
 			unnecessary spacing around it. */
 			display: block;

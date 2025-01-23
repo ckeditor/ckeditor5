@@ -16,25 +16,12 @@ declare global {
   var CKEDITOR_ICONS: Icons;
 }
 
-export function registerIcon(
-	name: string,
+export function registerIcon<const T extends string>(
+	name: T,
 	icon: string,
-	force: boolean = false
-): () => string {
-	// Create icons object if it doesn't exist yet.
-	// TODO: Replace with `globalThis.CKEDITOR_ICONS ||= {};` when we migrate to ES2022.
-	if ( !global.window.CKEDITOR_ICONS ) {
-		global.window.CKEDITOR_ICONS = {};
-	}
+	element: HTMLElement = global.document.documentElement
+): T {
+	element.style.setProperty( name, `url("data:image/svg+xml;base64,${ btoa( icon ) }")` );
 
-	// If icon is provided and it's not already registered, then register it.
-	if ( !global.window.CKEDITOR_ICONS[ name ] || force ) {
-		global.window.CKEDITOR_ICONS[ name ] = icon;
-	}
-
-	return () => useIcon( name )!;
-}
-
-export function useIcon( name: string ): string | undefined {
-	return global.window.CKEDITOR_ICONS && global.window.CKEDITOR_ICONS[ name ];
+	return name;
 }

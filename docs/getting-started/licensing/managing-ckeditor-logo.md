@@ -113,7 +113,7 @@ It was achieved with just a few style rules:
 		color: var(--main-text-color);
 	}
 
-	.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by .ck-icon {
+	.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by .ck-css-icon {
 		filter: brightness(10);
 	}
 ```

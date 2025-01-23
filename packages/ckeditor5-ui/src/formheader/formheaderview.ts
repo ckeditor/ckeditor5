@@ -8,10 +8,9 @@
  */
 
 import View from '../view.js';
-import type ViewCollection from '../viewcollection.js';
-import IconView from '../icon/iconview.js';
-
+import { default as CssIconView, type CssIconVariable } from '../icon/cssiconview.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type ViewCollection from '../viewcollection.js';
 
 import '../../theme/components/formheader/formheader.css';
 
@@ -50,7 +49,7 @@ export default class FormHeaderView extends View {
 	/**
 	 * The icon view instance. Defined only if icon was passed in the constructor's options.
 	 */
-	public readonly iconView?: IconView;
+	public readonly iconView?: CssIconView;
 
 	/**
 	 * Creates an instance of the form header class.
@@ -64,7 +63,7 @@ export default class FormHeaderView extends View {
 		options: {
 			label?: string | null;
 			class?: string | null;
-			icon?: string | null;
+			icon?: CssIconVariable | null;
 		} = {}
 	) {
 		super( locale );
@@ -89,8 +88,8 @@ export default class FormHeaderView extends View {
 		} );
 
 		if ( options.icon ) {
-			this.iconView = new IconView();
-			this.iconView.content = options.icon;
+			this.iconView = new CssIconView();
+			this.iconView.variable = options.icon;
 
 			this.children.add( this.iconView );
 		}

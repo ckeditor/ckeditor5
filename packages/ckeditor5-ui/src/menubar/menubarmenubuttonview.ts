@@ -9,12 +9,12 @@
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
-import IconView from '../icon/iconview.js';
+import CssIconView from '../icon/cssiconview.js';
 import ListItemButtonView from '../button/listitembuttonview.js';
 
 import '../../theme/components/menubar/menubarmenubutton.css';
 
-const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-dropdown-arrow', IconDropdownArrow );
 
 /**
  * A menu {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#buttonView} class. Buttons like this one
@@ -24,7 +24,7 @@ export default class MenuBarMenuButtonView extends ListItemButtonView {
 	/**
 	 * An icon that displays an arrow to indicate a direction of the menu.
 	 */
-	public readonly arrowView: IconView;
+	public readonly arrowView: CssIconView;
 
 	/**
 	 * Creates an instance of the menu bar button view.
@@ -71,9 +71,14 @@ export default class MenuBarMenuButtonView extends ListItemButtonView {
 	 * Creates the {@link #arrowView} instance.
 	 */
 	private _createArrowView() {
-		const arrowView = new IconView();
+		const arrowView = new CssIconView();
 
-		arrowView.content = dropdownArrowIcon();
+		arrowView.set( {
+			variable: dropdownArrowIcon,
+			width: 10,
+			height: 10
+		} );
+
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-menu-bar__menu__button__arrow'

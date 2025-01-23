@@ -12,7 +12,7 @@ import { IconTodoList } from 'ckeditor5/src/icons.js';
 import { registerIcon } from 'ckeditor5/src/utils.js';
 import { createUIComponents } from '../list/utils.js';
 
-const todoListIcon = /* #__PURE__ */ registerIcon( 'todoList', IconTodoList );
+const todoListIcon = /* #__PURE__ */ registerIcon( '--ck-icon-todo-list', IconTodoList );
 
 /**
  * The to-do list UI feature. It introduces the `'todoList'` button that
@@ -39,6 +39,6 @@ export default class TodoListUI extends Plugin {
 	public init(): void {
 		const t = this.editor.t;
 
-		createUIComponents( this.editor, 'todoList', t( 'To-do List' ), todoListIcon() );
+		createUIComponents( this.editor, 'todoList', t( 'To-do List' ), todoListIcon );
 	}
 }

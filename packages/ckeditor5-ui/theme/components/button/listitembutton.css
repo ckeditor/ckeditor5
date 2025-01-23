@@ -43,6 +43,7 @@
 	}
 
 	& .ck-list-item-button__check-icon {
+		width: 100%;
 		height: 100%;
 	}
 }

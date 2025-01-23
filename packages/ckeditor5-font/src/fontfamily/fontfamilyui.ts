@@ -25,7 +25,7 @@ import { FONT_FAMILY } from '../utils.js';
 import type { FontFamilyOption } from '../fontconfig.js';
 import type FontFamilyCommand from './fontfamilycommand.js';
 
-const fontFamilyIcon = /* #__PURE__ */ registerIcon( 'fontFamily', IconFontFamily );
+const fontFamilyIcon = /* #__PURE__ */ registerIcon( '--ck-icon-font-family', IconFontFamily );
 
 /**
  * The font family UI plugin. It introduces the `'fontFamily'` dropdown.
@@ -69,7 +69,7 @@ export default class FontFamilyUI extends Plugin {
 
 			dropdownView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontFamilyIcon(),
+				icon: fontFamilyIcon,
 				tooltip: true
 			} );
 
@@ -95,7 +95,7 @@ export default class FontFamilyUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontFamilyIcon()
+				icon: fontFamilyIcon
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

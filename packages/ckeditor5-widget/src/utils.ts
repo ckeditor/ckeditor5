@@ -33,12 +33,12 @@ import {
 	type ViewTypeCheckable
 } from '@ckeditor/ckeditor5-engine';
 
-import { IconView } from '@ckeditor/ckeditor5-ui';
+import { CssIconView } from '@ckeditor/ckeditor5-ui';
 
 import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack.js';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
-const dragHandleIcon = /* #__PURE__ */ registerIcon( 'dragHandle', IconDragHandle );
+const dragHandleIcon = /* #__PURE__ */ registerIcon( '--ck-icon-drag-handle', IconDragHandle );
 
 /**
  * CSS class added to each widget element.
@@ -435,8 +435,13 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
 		const domElement = this.toDomElement( domDocument );
 
 		// Use the IconView from the ui library.
-		const icon = new IconView();
-		icon.set( 'content', dragHandleIcon() );
+		const icon = new CssIconView();
+
+		icon.set( {
+			variable: dragHandleIcon,
+			width: 16,
+			height: 16
+		} );
 
 		// Render the icon view right away to append its #element to the selectionHandle DOM element.
 		icon.render();

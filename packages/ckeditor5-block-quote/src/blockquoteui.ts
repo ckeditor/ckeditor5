@@ -14,7 +14,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import '../theme/blockquote.css';
 
-const quoteIcon = /* #__PURE__ */ registerIcon( 'quote', IconQuote );
+const quoteIcon = /* #__PURE__ */ registerIcon( '--ck-icon-quote', IconQuote );
 
 /**
  * The block quote UI plugin.
@@ -77,7 +77,7 @@ export default class BlockQuoteUI extends Plugin {
 
 		view.set( {
 			label: t( 'Block quote' ),
-			icon: quoteIcon(),
+			icon: quoteIcon,
 			isToggleable: true
 		} );
 

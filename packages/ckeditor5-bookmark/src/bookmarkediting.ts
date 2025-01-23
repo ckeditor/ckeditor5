@@ -9,7 +9,7 @@
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
-import { IconView } from 'ckeditor5/src/ui.js';
+import { CssIconView } from 'ckeditor5/src/ui.js';
 import { IconBookmarkInline } from 'ckeditor5/src/icons.js';
 import { registerIcon, type EventInfo } from 'ckeditor5/src/utils.js';
 import type {
@@ -27,7 +27,7 @@ import UpdateBookmarkCommand from './updatebookmarkcommand.js';
 
 import '../theme/bookmark.css';
 
-const bookmarkInlineIcon = /* #__PURE__ */ registerIcon( 'bookmarkInline', IconBookmarkInline );
+const bookmarkInlineIcon = /* #__PURE__ */ registerIcon( '--ck-icon-bookmark-inline', IconBookmarkInline );
 
 /**
  * The bookmark editing plugin.
@@ -158,11 +158,13 @@ export default class BookmarkEditing extends Plugin {
 		return writer.createUIElement( 'span', { class: 'ck-bookmark__icon' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
-			const icon = new IconView();
+			const icon = new CssIconView();
 
 			icon.set( {
-				content: bookmarkInlineIcon(),
-				isColorInherited: false
+				variable: bookmarkInlineIcon,
+				width: 14,
+				height: 16
+				// TODO: isColorInherited: false
 			} );
 
 			icon.render();

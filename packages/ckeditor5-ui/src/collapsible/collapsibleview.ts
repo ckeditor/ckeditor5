@@ -16,7 +16,7 @@ import type { FocusableView } from '../focuscycler.js';
 
 import '../../theme/components/collapsible/collapsible.css';
 
-const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-dropdown-arrow', IconDropdownArrow );
 
 /**
  * A collapsible UI component. Consists of a labeled button and a container which can be collapsed
@@ -136,8 +136,11 @@ export default class CollapsibleView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: dropdownArrowIcon()
+			icon: dropdownArrowIcon
 		} );
+
+		buttonView.iconView.set( 'width', 10 );
+		buttonView.iconView.set( 'height', 10 );
 
 		buttonView.extendTemplate( {
 			attributes: {

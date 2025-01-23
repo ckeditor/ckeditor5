@@ -57,7 +57,7 @@
 
 		}
 
-		& .ck-icon {
+		& .ck-css-icon {
 			display: block;
 			cursor: pointer;
 			width: var(--ck-powered-by-icon-width);

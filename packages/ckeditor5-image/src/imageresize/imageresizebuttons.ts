@@ -28,27 +28,27 @@ import ImageResizeEditing from './imageresizeediting.js';
 import type ResizeImageCommand from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
 
-const objectSizeCustomIcon = /* #__PURE__ */ registerIcon( 'objectSizeCustom', IconObjectSizeCustom );
-const objectSizeFullIcon = /* #__PURE__ */ registerIcon( 'objectSizeFull', IconObjectSizeFull );
-const objectSizeLargeIcon = /* #__PURE__ */ registerIcon( 'objectSizeLarge', IconObjectSizeLarge );
-const objectSizeMediumIcon = /* #__PURE__ */ registerIcon( 'objectSizeMedium', IconObjectSizeMedium );
-const objectSizeSmallIcon = /* #__PURE__ */ registerIcon( 'objectSizeSmall', IconObjectSizeSmall );
+const objectSizeCustomIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-size-custom', IconObjectSizeCustom );
+const objectSizeFullIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-size-full', IconObjectSizeFull );
+const objectSizeLargeIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-size-large', IconObjectSizeLarge );
+const objectSizeMediumIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-size-medium', IconObjectSizeMedium );
+const objectSizeSmallIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-size-small', IconObjectSizeSmall );
 
 const RESIZE_ICONS: Record<string, string> = {
 	get small() {
-		return objectSizeSmallIcon();
+		return objectSizeSmallIcon;
 	},
 	get medium() {
-		return objectSizeMediumIcon();
+		return objectSizeMediumIcon;
 	},
 	get large() {
-		return objectSizeLargeIcon();
+		return objectSizeLargeIcon;
 	},
 	get custom() {
-		return objectSizeCustomIcon();
+		return objectSizeCustomIcon;
 	},
 	get original() {
-		return objectSizeFullIcon();
+		return objectSizeFullIcon;
 	}
 };
 

@@ -70,7 +70,7 @@ import type Widget from '../widget.js';
 
 import '../../theme/widgettypearound.css';
 
-const returnArrowIcon = /* #__PURE__ */ registerIcon( 'returnArrow', IconReturnArrow );
+const returnArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-return-arrow', IconReturnArrow );
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
 
@@ -919,7 +919,7 @@ function injectButtons( wrapperDomElement: HTMLElement, buttonTitles: { before: 
 			},
 			children: [
 				wrapperDomElement.ownerDocument.importNode(
-					new DOMParser().parseFromString( returnArrowIcon(), 'image/svg+xml' ).firstChild!,
+					new DOMParser().parseFromString( returnArrowIcon, 'image/svg+xml' ).firstChild!,
 					true
 				)
 			]

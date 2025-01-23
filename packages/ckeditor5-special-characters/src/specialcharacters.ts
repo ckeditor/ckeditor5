@@ -23,7 +23,7 @@ import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesvie
 
 import '../theme/specialcharacters.css';
 
-const specialCharactersIcon = /* #__PURE__ */ registerIcon( 'specialCharacters', IconSpecialCharacters );
+const specialCharactersIcon = /* #__PURE__ */ registerIcon( '--ck-icon-special-characters', IconSpecialCharacters );
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
 
@@ -267,7 +267,7 @@ export default class SpecialCharacters extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Special characters' ),
-			icon: specialCharactersIcon(),
+			icon: specialCharactersIcon,
 			isToggleable: true
 		} );
 

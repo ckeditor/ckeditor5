@@ -11,9 +11,9 @@ import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../../button/buttonview.js';
 import type DropdownButton from './dropdownbutton.js';
-import IconView from '../../icon/iconview.js';
+import CssIconView from '../../icon/cssiconview.js';
 
-const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-dropdown-arrow', IconDropdownArrow );
 
 /**
  * The default dropdown button view class.
@@ -38,7 +38,7 @@ export default class DropdownButtonView extends ButtonView implements DropdownBu
 	/**
 	 * An icon that displays arrow to indicate a dropdown button.
 	 */
-	public readonly arrowView: IconView;
+	public readonly arrowView: CssIconView;
 
 	/**
 	 * @inheritDoc
@@ -72,9 +72,13 @@ export default class DropdownButtonView extends ButtonView implements DropdownBu
 	 * Creates a {@link module:ui/icon/iconview~IconView} instance as {@link #arrowView}.
 	 */
 	private _createArrowView() {
-		const arrowView = new IconView();
+		const arrowView = new CssIconView();
 
-		arrowView.content = dropdownArrowIcon();
+		arrowView.set( {
+			variable: dropdownArrowIcon,
+			width: 10,
+			height: 10
+		} );
 
 		arrowView.extendTemplate( {
 			attributes: {

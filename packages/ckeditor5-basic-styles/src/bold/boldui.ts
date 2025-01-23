@@ -13,7 +13,7 @@ import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
 
-const boldIcon = /* #__PURE__ */ registerIcon( 'bold', IconBold );
+const boldIcon = /* #__PURE__ */ registerIcon( '--ck-icon-bold', IconBold );
 
 /**
  * The bold UI feature. It introduces the Bold button.
@@ -44,7 +44,7 @@ export default class BoldUI extends Plugin {
 			editor,
 			commandName: BOLD,
 			plugin: this,
-			icon: boldIcon(),
+			icon: boldIcon,
 			label: t( 'Bold' ),
 			keystroke: 'CTRL+B'
 		} );

@@ -31,7 +31,7 @@ import { IconImage } from 'ckeditor5/src/icons.js';
 import ImageUtils from '../imageutils.js';
 import ImageInsertFormView from './ui/imageinsertformview.js';
 
-const imageIcon = /* #__PURE__ */ registerIcon( 'image', IconImage );
+const imageIcon = /* #__PURE__ */ registerIcon( '--ck-icon-image', IconImage );
 
 /**
  * The image insert dropdown plugin.
@@ -234,7 +234,7 @@ export default class ImageInsertUI extends Plugin {
 			resultView.panelView.children.add( listView );
 
 			resultView.buttonView.set( {
-				icon: imageIcon(),
+				icon: imageIcon,
 				label: t( 'Image' )
 			} );
 

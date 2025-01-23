@@ -17,9 +17,9 @@ import type { HtmlEmbedConfig } from './htmlembedconfig.js';
 
 import '../theme/htmlembed.css';
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
-const pencilIcon = /* #__PURE__ */ registerIcon( 'pencil', IconPencil );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
+const pencilIcon = /* #__PURE__ */ registerIcon( '--ck-icon-pencil', IconPencil );
 
 /**
  * The HTML embed editing feature.
@@ -412,7 +412,7 @@ function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onCli
 
 	buttonView.set( {
 		class: `raw-html-embed__${ type }-button`,
-		icon: pencilIcon(),
+		icon: pencilIcon,
 		tooltip: true,
 		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w'
 	} );
@@ -421,21 +421,21 @@ function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onCli
 
 	if ( type === 'edit' ) {
 		buttonView.set( {
-			icon: pencilIcon(),
+			icon: pencilIcon,
 			label: t( 'Edit source' )
 		} );
 
 		buttonView.bind( 'isEnabled' ).to( command );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
-			icon: checkIcon(),
+			icon: checkIcon,
 			label: t( 'Save changes' )
 		} );
 
 		buttonView.bind( 'isEnabled' ).to( command );
 	} else {
 		buttonView.set( {
-			icon: cancelIcon(),
+			icon: cancelIcon,
 			label: t( 'Cancel' )
 		} );
 	}

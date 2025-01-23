@@ -11,7 +11,7 @@ import { IconColorTileCheck } from '@ckeditor/ckeditor5-icons';
 import { env, registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../button/buttonview.js';
 
-const colorTileCheckIcon = /* #__PURE__ */ registerIcon( 'colorTileCheck', IconColorTileCheck );
+const colorTileCheckIcon = /* #__PURE__ */ registerIcon( '--ck-icon-color-tile-check', IconColorTileCheck );
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgridview~ColorGridView}.
@@ -36,7 +36,7 @@ export default class ColorTileView extends ButtonView {
 		this.set( 'color', undefined );
 		this.set( 'hasBorder', false );
 
-		this.icon = colorTileCheckIcon();
+		this.icon = colorTileCheckIcon;
 
 		this.extendTemplate( {
 			attributes: {

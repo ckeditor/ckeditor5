@@ -13,7 +13,7 @@ import { registerIcon } from 'ckeditor5/src/utils.js';
 import { MenuBarMenuListItemButtonView, ButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
 
-const italicIcon = /* #__PURE__ */ registerIcon( 'utalic', IconItalic );
+const italicIcon = /* #__PURE__ */ registerIcon( '--ck-icon-italic', IconItalic );
 
 /**
  * The italic UI feature. It introduces the Italic button.
@@ -44,7 +44,7 @@ export default class ItalicUI extends Plugin {
 			editor,
 			commandName: ITALIC,
 			plugin: this,
-			icon: italicIcon(),
+			icon: italicIcon,
 			keystroke: 'CTRL+I',
 			label: t( 'Italic' )
 		} );

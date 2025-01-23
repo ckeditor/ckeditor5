@@ -19,7 +19,7 @@ import { IconImageUpload } from 'ckeditor5/src/icons.js';
 import { createImageTypeRegExp } from './utils.js';
 import type ImageInsertUI from '../imageinsert/imageinsertui.js';
 
-const imageUploadIcon = /* #__PURE__ */ registerIcon( 'imageUpload', IconImageUpload );
+const imageUploadIcon = /* #__PURE__ */ registerIcon( '--ck-icon-image-upload', IconImageUpload );
 
 /**
  * The image upload button plugin.
@@ -91,7 +91,7 @@ export default class ImageUploadUI extends Plugin {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 			allowMultipleFiles: true,
 			label: t( 'Upload from computer' ),
-			icon: imageUploadIcon()
+			icon: imageUploadIcon
 		} );
 
 		view.bind( 'isEnabled' ).to( command );

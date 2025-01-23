@@ -13,7 +13,7 @@ import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
 
-const underlineIcon = /* #__PURE__ */ registerIcon( 'underline', IconUnderline );
+const underlineIcon = /* #__PURE__ */ registerIcon( '--ck-icon-underline', IconUnderline );
 
 /**
  * The underline UI feature. It introduces the Underline button.
@@ -44,7 +44,7 @@ export default class UnderlineUI extends Plugin {
 			editor,
 			commandName: UNDERLINE,
 			plugin: this,
-			icon: underlineIcon(),
+			icon: underlineIcon,
 			label: t( 'Underline' ),
 			keystroke: 'CTRL+U'
 		} );

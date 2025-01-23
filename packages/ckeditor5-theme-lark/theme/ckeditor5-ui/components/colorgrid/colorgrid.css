@@ -77,13 +77,13 @@
 		transition: unset;
 	}
 
-	& .ck.ck-icon {
+	& .ck.ck-css-icon {
 		display: none;
 		color: var(--ck-color-color-grid-check-icon);
 	}
 
 	&.ck-on {
-		& .ck.ck-icon {
+		& .ck.ck-css-icon {
 			display: block;
 		}
 	}

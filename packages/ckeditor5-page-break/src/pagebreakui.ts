@@ -12,7 +12,7 @@ import { IconPageBreak } from 'ckeditor5/src/icons.js';
 import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
-const pageBreakIcon = /* #__PURE__ */ registerIcon( 'pageBreak', IconPageBreak );
+const pageBreakIcon = /* #__PURE__ */ registerIcon( '--ck-icon-page-break', IconPageBreak );
 
 /**
  * The page break UI plugin.
@@ -64,7 +64,7 @@ export default class PageBreakUI extends Plugin {
 
 		view.set( {
 			label: t( 'Page break' ),
-			icon: pageBreakIcon()
+			icon: pageBreakIcon
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

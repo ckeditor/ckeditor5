@@ -8,7 +8,7 @@
 	--ck-icon-font-size: .8333350694em;
 }
 
-.ck.ck-icon {
+.ck.ck-css-icon {
 	width: var(--ck-icon-size);
 	height: var(--ck-icon-size);
 
@@ -24,7 +24,7 @@
 	}
 
 	/* Allows dynamic coloring of an icon by inheriting its color from the parent. */
-	&.ck-icon_inherit-color {
+	&.ck-css-icon_inherit-color {
 		color: inherit;
 
 		& * {

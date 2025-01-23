@@ -14,12 +14,12 @@
 
 		& > .ck-spinner-container,
 		& > .ck-spinner-container .ck-spinner {
-			/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */
+			/* These styles correspond to .ck-css-icon so that the spinner seamlessly replaces the icon. */
 			--ck-toolbar-spinner-size: 20px;
 		}
 
 		& > .ck-spinner-container {
-			/* This ensures margins corresponding to the .ck-icon. */
+			/* This ensures margins corresponding to the .ck-css-icon. */
 			font-size: var(--ck-icon-font-size);
 
 			@mixin ck-dir ltr {

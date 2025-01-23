@@ -34,7 +34,7 @@ import { getNormalizedDefaultTableProperties, type NormalizedDefaultProperties }
 import type { Batch } from 'ckeditor5/src/engine.js';
 import type TableBorderStyleCommand from './commands/tableborderstylecommand.js';
 
-const tablePropertiesIcon = /* #__PURE__ */ registerIcon( 'tableProperties', IconTableProperties );
+const tablePropertiesIcon = /* #__PURE__ */ registerIcon( '--ck-icon-table-properties', IconTableProperties );
 
 // Map of view properties and related commands.
 const propertyToCommandMap = {
@@ -135,7 +135,7 @@ export default class TablePropertiesUI extends Plugin {
 
 			view.set( {
 				label: t( 'Table properties' ),
-				icon: tablePropertiesIcon(),
+				icon: tablePropertiesIcon,
 				tooltip: true
 			} );
 

@@ -7,7 +7,7 @@
 
 .ck.ck-search {
 	& > .ck-labeled-field-view {
-		& > .ck-labeled-field-view__input-wrapper > .ck-icon {
+		& > .ck-labeled-field-view__input-wrapper > .ck-css-icon {
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);

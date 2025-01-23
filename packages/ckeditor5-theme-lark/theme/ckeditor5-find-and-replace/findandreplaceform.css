@@ -61,11 +61,11 @@
 		/* To display all controls in line when there's an error under the input */
 		align-items: flex-start;
 
-		& > .ck-button-prev > .ck-icon {
+		& > .ck-button-prev > .ck-css-icon {
 			transform: rotate(90deg);
 		}
 
-		& > .ck-button-next > .ck-icon {
+		& > .ck-button-next > .ck-css-icon {
 			transform: rotate(-90deg);
 		}
 

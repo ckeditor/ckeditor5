@@ -91,7 +91,7 @@
 			border-top-left-radius: 0;
 		}
 
-		& .ck.ck-icon {
+		& .ck.ck-css-icon {
 			margin-right: var(--ck-spacing-standard);
 
 			@mixin ck-dir rtl {

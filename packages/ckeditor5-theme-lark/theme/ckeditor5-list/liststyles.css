@@ -32,7 +32,7 @@
 		 */
 		box-sizing: content-box;
 
-		& .ck-icon {
+		& .ck-css-icon {
 			width: var(--ck-list-style-button-size);
 			height: var(--ck-list-style-button-size);
 		}

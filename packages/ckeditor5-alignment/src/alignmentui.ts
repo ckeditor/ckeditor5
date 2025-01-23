@@ -25,24 +25,11 @@ import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
-const alignLeftIcon =/* #__PURE__ */ registerIcon( 'alignLeft', IconAlignLeft );
-const alignRightIcon = /* #__PURE__ */ registerIcon( 'alignRight', IconAlignRight );
-const alignCenterIcon = /* #__PURE__ */ registerIcon( 'alignCenter', IconAlignCenter );
-const alignJustifyIcon = /* #__PURE__ */ registerIcon( 'alignJustify', IconAlignJustify );
-
 const iconsMap: Record<string, string> = {
-	get left() {
-		return alignLeftIcon();
-	},
-	get right() {
-		return alignRightIcon();
-	},
-	get center() {
-		return alignCenterIcon();
-	},
-	get justify() {
-		return alignJustifyIcon();
-	}
+	left: /* #__PURE__ */ registerIcon( '--ck-icon-align-left', IconAlignLeft ),
+	right: /* #__PURE__ */ registerIcon( '--ck-icon-align-right', IconAlignRight ),
+	center: /* #__PURE__ */ registerIcon( '--ck-icon-align-center', IconAlignCenter ),
+	justify: /* #__PURE__ */ registerIcon( '--ck-icon-align-justify', IconAlignJustify )
 };
 
 /**

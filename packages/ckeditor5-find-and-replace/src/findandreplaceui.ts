@@ -28,7 +28,7 @@ import type FindPreviousCommand from './findpreviouscommand.js';
 import type ReplaceCommand from './replacecommand.js';
 import type ReplaceAllCommand from './replaceallcommand.js';
 
-const findReplaceIcon = /* #__PURE__ */ registerIcon( 'findReplace', IconFindReplace );
+const findReplaceIcon = /* #__PURE__ */ registerIcon( '--ck-icon-find-replace', IconFindReplace );
 
 /**
  * The default find and replace UI.
@@ -179,7 +179,7 @@ export default class FindAndReplaceUI extends Plugin {
 		}, { priority: 'low' } );
 
 		dropdownView.buttonView.set( {
-			icon: findReplaceIcon(),
+			icon: findReplaceIcon,
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F',
 			tooltip: true
@@ -260,7 +260,7 @@ export default class FindAndReplaceUI extends Plugin {
 		buttonView.bind( 'isEnabled' ).to( findCommand );
 
 		buttonView.set( {
-			icon: findReplaceIcon(),
+			icon: findReplaceIcon,
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F'
 		} );

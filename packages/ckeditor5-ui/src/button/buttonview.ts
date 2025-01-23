@@ -8,14 +8,11 @@
  */
 
 import View from '../view.js';
-import IconView from '../icon/iconview.js';
-
-import type { TemplateDefinition } from '../template.js';
-import type ViewCollection from '../viewcollection.js';
-import type { default as Button, ButtonExecuteEvent } from './button.js';
-import type ButtonLabel from './buttonlabel.js';
 import ButtonLabelView from './buttonlabelview.js';
-
+import {
+	default as CSSIconView,
+	type CSSIconVariable
+} from '../icon/cssiconview.js';
 import {
 	env,
 	getEnvKeystrokeText,
@@ -24,6 +21,10 @@ import {
 	type Locale,
 	type DelayedFunc
 } from '@ckeditor/ckeditor5-utils';
+import type { TemplateDefinition } from '../template.js';
+import type ViewCollection from '../viewcollection.js';
+import type { default as Button, ButtonExecuteEvent } from './button.js';
+import type ButtonLabel from './buttonlabel.js';
 
 import '../../theme/components/button/button.css';
 
@@ -63,7 +64,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	 * The icon view of the button. Will be added to {@link #children} when the
 	 * {@link #icon icon attribute} is defined.
 	 */
-	public readonly iconView: IconView;
+	public readonly iconView: CSSIconView;
 
 	/**
 	 * A view displaying the keystroke of the button next to the {@link #labelView label}.
@@ -85,7 +86,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * @inheritDoc
 	 */
-	declare public icon: string | undefined;
+	declare public icon: CSSIconVariable | undefined;
 
 	/**
 	 * @inheritDoc
@@ -233,7 +234,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.children = this.createCollection();
 		this.labelView = this._setupLabelView( labelView );
 
-		this.iconView = new IconView();
+		this.iconView = new CSSIconView();
 		this.iconView.extendTemplate( {
 			attributes: {
 				class: 'ck-button__icon'
@@ -340,7 +341,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		super.render();
 
 		if ( this.icon ) {
-			this.iconView.bind( 'content' ).to( this, 'icon' );
+			this.iconView.bind( 'variable' ).to( this, 'icon' );
 			this.children.add( this.iconView );
 		}
 

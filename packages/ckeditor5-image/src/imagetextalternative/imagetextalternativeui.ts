@@ -25,7 +25,7 @@ import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui
 import type ImageTextAlternativeCommand from './imagetextalternativecommand.js';
 import type ImageUtils from '../imageutils.js';
 
-const textAlternativeIcon = /* #__PURE__ */ registerIcon( 'textAlternative', IconTextAlternative );
+const textAlternativeIcon = /* #__PURE__ */ registerIcon( '--ck-icon-text-alternative', IconTextAlternative );
 
 /**
  * The image text alternative UI plugin.
@@ -97,7 +97,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: textAlternativeIcon(),
+				icon: textAlternativeIcon,
 				tooltip: true
 			} );
 

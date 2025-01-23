@@ -36,7 +36,7 @@ import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/findandreplaceform.css';
 
-const previousArrowIcon = /* #__PURE__ */ registerIcon( 'previousArrow', IconPreviousArrow );
+const previousArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-previous-arrow', IconPreviousArrow );
 
 /**
  * The find and replace form view class.
@@ -257,7 +257,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findPrevButtonView = this._createButton( {
 			label: t( 'Previous result' ),
 			class: 'ck-button-prev',
-			icon: previousArrowIcon(),
+			icon: previousArrowIcon,
 			keystroke: 'Shift+F3',
 			tooltip: true
 		} );
@@ -265,7 +265,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findNextButtonView = this._createButton( {
 			label: t( 'Next result' ),
 			class: 'ck-button-next',
-			icon: previousArrowIcon(),
+			icon: previousArrowIcon,
 			keystroke: 'F3',
 			tooltip: true
 		} );

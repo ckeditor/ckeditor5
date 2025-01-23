@@ -37,7 +37,7 @@ import {
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
 
-const linkIcon = /* #__PURE__ */ registerIcon( 'link', IconLink );
+const linkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-link', IconLink );
 
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
@@ -301,7 +301,7 @@ export default class LinkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Link' ),
-			icon: linkIcon(),
+			icon: linkIcon,
 			keystroke: LINK_KEYSTROKE,
 			isToggleable: true
 		} );

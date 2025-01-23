@@ -20,8 +20,8 @@ import type ViewCollection from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
 
-const eraserIcon = /* #__PURE__ */ registerIcon( 'eraser', IconEraser );
-const colorPaletteIcon = /* #__PURE__ */ registerIcon( 'colorPalette', IconColorPalette );
+const eraserIcon = /* #__PURE__ */ registerIcon( '--ck-icon-eraser', IconEraser );
+const colorPaletteIcon = /* #__PURE__ */ registerIcon( '--ck-icon-color-palette', IconColorPalette );
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -337,7 +337,7 @@ export default class ColorGridsFragmentView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: colorPaletteIcon(),
+			icon: colorPaletteIcon,
 			class: 'ck-color-selector__color-picker'
 		} );
 
@@ -354,7 +354,7 @@ export default class ColorGridsFragmentView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: eraserIcon(),
+			icon: eraserIcon,
 			label: this._removeButtonLabel
 		} );
 

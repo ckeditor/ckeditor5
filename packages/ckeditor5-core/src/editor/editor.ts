@@ -345,7 +345,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( icons ) {
 			for ( const [ name, value ] of Object.entries( icons ) ) {
-				registerIcon( name, value, true );
+				registerIcon( name, value );
 			}
 		}
 

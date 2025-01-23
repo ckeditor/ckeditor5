@@ -11,8 +11,8 @@ import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-u
 import { IconUndo, IconRedo } from '@ckeditor/ckeditor5-icons';
 import { registerIcon } from '@ckeditor/ckeditor5-utils';
 
-const undoIcon = /* #__PURE__ */ registerIcon( 'undo', IconUndo );
-const redoIcon = /* #__PURE__ */ registerIcon( 'redo', IconRedo );
+const undoIcon = /* #__PURE__ */ registerIcon( '--ck-icon-undo', IconUndo );
+const redoIcon = /* #__PURE__ */ registerIcon( '--ck-icon-redo', IconRedo );
 
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
@@ -40,8 +40,8 @@ export default class UndoUI extends Plugin {
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedUndoIcon: string = locale.uiLanguageDirection == 'ltr' ? undoIcon() : redoIcon();
-		const localizedRedoIcon: string = locale.uiLanguageDirection == 'ltr' ? redoIcon() : undoIcon();
+		const localizedUndoIcon: string = locale.uiLanguageDirection == 'ltr' ? undoIcon : redoIcon;
+		const localizedRedoIcon: string = locale.uiLanguageDirection == 'ltr' ? redoIcon : undoIcon;
 
 		this._addButtonsToFactory( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
 		this._addButtonsToFactory( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );

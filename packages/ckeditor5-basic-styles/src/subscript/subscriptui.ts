@@ -13,7 +13,7 @@ import { registerIcon } from 'ckeditor5/src/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
 
-const subscriptIcon = /* #__PURE__ */ registerIcon( 'subscript', IconSubscript );
+const subscriptIcon = /* #__PURE__ */ registerIcon( '--ck-icon-subscript', IconSubscript );
 
 /**
  * The subscript UI feature. It introduces the Subscript button.
@@ -45,7 +45,7 @@ export default class SubscriptUI extends Plugin {
 			editor,
 			commandName: SUBSCRIPT,
 			plugin: this,
-			icon: subscriptIcon(),
+			icon: subscriptIcon,
 			label: t( 'Subscript' )
 		} );
 

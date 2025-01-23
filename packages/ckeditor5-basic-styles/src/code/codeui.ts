@@ -15,7 +15,7 @@ import { getButtonCreator } from '../utils.js';
 
 import '../../theme/code.css';
 
-const codeIcon = /* #__PURE__ */ registerIcon( 'code', IconCode );
+const codeIcon = /* #__PURE__ */ registerIcon( '--ck-icon-code', IconCode );
 
 /**
  * The code UI feature. It introduces the Code button.
@@ -46,7 +46,7 @@ export default class CodeUI extends Plugin {
 			editor,
 			commandName: CODE,
 			plugin: this,
-			icon: codeIcon(),
+			icon: codeIcon,
 			label: t( 'Code' )
 		} );
 

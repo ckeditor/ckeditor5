@@ -37,7 +37,7 @@ import type EditorUI from '../editorui/editorui.js';
 import '../../theme/components/dialog/dialog.css';
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
 
 /**
  * Available dialog view positions:
@@ -699,7 +699,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 		buttonView.set( {
 			label: t( 'Close' ),
 			tooltip: true,
-			icon: cancelIcon()
+			icon: cancelIcon
 		} );
 
 		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close', { source: 'closeButton' } ) );

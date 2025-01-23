@@ -15,7 +15,7 @@ import MediaFormView from './ui/mediaformview.js';
 import MediaEmbedEditing from './mediaembedediting.js';
 import type MediaRegistry from './mediaregistry.js';
 
-const mediaIcon = /* #__PURE__ */ registerIcon( 'media', IconMedia );
+const mediaIcon = /* #__PURE__ */ registerIcon( '--ck-icon-media', IconMedia );
 
 /**
  * The media embed UI plugin.
@@ -79,7 +79,12 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' )!;
 		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
 
-		buttonView.icon = mediaIcon();
+		buttonView.icon = mediaIcon;
+
+		buttonView.iconView.set( {
+			width: 22,
+			height: 20
+		} );
 
 		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 

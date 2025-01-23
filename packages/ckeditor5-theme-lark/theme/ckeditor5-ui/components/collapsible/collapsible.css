@@ -24,7 +24,7 @@
 			box-shadow: none;
 		}
 
-		& > .ck-icon {
+		& > .ck-css-icon {
 			margin-right: var(--ck-spacing-medium);
 			width: var(--ck-collapsible-arrow-size);
 		}
@@ -35,7 +35,7 @@
 	}
 
 	&.ck-collapsible_collapsed {
-		& > .ck.ck-button .ck-icon {
+		& > .ck.ck-button .ck-css-icon {
 			transform: rotate(-90deg);
 		}
 	}

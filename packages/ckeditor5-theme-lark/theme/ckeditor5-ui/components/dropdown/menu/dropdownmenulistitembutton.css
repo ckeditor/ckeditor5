@@ -11,12 +11,12 @@
 
 	& > .ck-spinner-container,
 	& > .ck-spinner-container .ck-spinner {
-		/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */
+		/* These styles correspond to .ck-css-icon so that the spinner seamlessly replaces the icon. */
 		--ck-toolbar-spinner-size: 20px;
 	}
 
 	& > .ck-spinner-container {
-		/* These margins are the same as for .ck-icon. */
+		/* These margins are the same as for .ck-css-icon. */
 		margin-left: calc(-1 * var(--ck-spacing-small));
 		margin-right: var(--ck-spacing-small);
 	}

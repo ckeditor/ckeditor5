@@ -34,11 +34,6 @@
 		@mixin ck-disabled;
 	}
 
-	/* Spacing in buttons that miss the icon. */
-	&.ck-icon-spacing:not(:has(.ck-button__icon)) > .ck-button__label {
-		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
-	}
-
 	& > .ck-dropdown-menu-list__nested-menu__button__arrow {
 		width: var(--ck-dropdown-arrow-size);
 

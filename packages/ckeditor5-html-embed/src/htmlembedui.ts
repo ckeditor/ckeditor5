@@ -14,7 +14,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { RawHtmlApi } from './htmlembedediting.js';
 import type HtmlEmbedCommand from './htmlembedcommand.js';
 
-const htmlIcon = /* #__PURE__ */ registerIcon( 'html', IconHtml );
+const htmlIcon = /* #__PURE__ */ registerIcon( '--ck-icon-html', IconHtml );
 
 /**
  * The HTML embed UI plugin.
@@ -74,7 +74,7 @@ export default class HtmlEmbedUI extends Plugin {
 		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
 
 		view.set( {
-			icon: htmlIcon()
+			icon: htmlIcon
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

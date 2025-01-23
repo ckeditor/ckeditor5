@@ -17,7 +17,7 @@ import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
 
-const sourceEditingIcon = /* #__PURE__ */ registerIcon( 'sourceEditing', IconSourceEditing );
+const sourceEditingIcon = /* #__PURE__ */ registerIcon( '--ck-icon-source-editing', IconSourceEditing );
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
@@ -101,7 +101,7 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Source' ),
-				icon: sourceEditingIcon(),
+				icon: sourceEditingIcon,
 				tooltip: true,
 				class: 'ck-source-editing-button'
 			} );

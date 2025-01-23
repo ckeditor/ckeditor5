@@ -23,7 +23,7 @@ import type { FocusableView } from '../../focuscycler.js';
 
 import '../../../theme/components/dropdown/splitbutton.css';
 
-const dropdownArrowIcon = /* #__PURE__ */ registerIcon( 'dropdownArrow', IconDropdownArrow );
+const dropdownArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-dropdown-arrow', IconDropdownArrow );
 
 /**
  * The split button view class.
@@ -309,7 +309,9 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 		const arrowView = new ButtonView();
 		const bind = arrowView.bindTemplate;
 
-		arrowView.icon = dropdownArrowIcon();
+		arrowView.icon = dropdownArrowIcon;
+		arrowView.iconView.set( 'width', 10 );
+		arrowView.iconView.set( 'height', 10 );
 
 		arrowView.extendTemplate( {
 			attributes: {

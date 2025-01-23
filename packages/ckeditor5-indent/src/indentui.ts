@@ -12,8 +12,8 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { registerIcon } from 'ckeditor5/src/utils.js';
 import { IconIndent, IconOutdent } from 'ckeditor5/src/icons.js';
 
-const indentIcon = /* #__PURE__ */ registerIcon( 'indent', IconIndent );
-const outdentIcon = /* #__PURE__ */ registerIcon( 'outdent', IconOutdent );
+const indentIcon = /* #__PURE__ */ registerIcon( '--ck-icon-indent', IconIndent );
+const outdentIcon = /* #__PURE__ */ registerIcon( '--ck-icon-outdent', IconOutdent );
 
 /**
  * The indent UI feature.
@@ -46,8 +46,8 @@ export default class IndentUI extends Plugin {
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedIndentIcon: string = locale.uiLanguageDirection == 'ltr' ? indentIcon() : outdentIcon();
-		const localizedOutdentIcon: string = locale.uiLanguageDirection == 'ltr' ? outdentIcon() : indentIcon();
+		const localizedIndentIcon: string = locale.uiLanguageDirection == 'ltr' ? indentIcon : outdentIcon;
+		const localizedOutdentIcon: string = locale.uiLanguageDirection == 'ltr' ? outdentIcon : indentIcon;
 
 		this._defineButton( 'indent', t( 'Increase indent' ), localizedIndentIcon );
 		this._defineButton( 'outdent', t( 'Decrease indent' ), localizedOutdentIcon );

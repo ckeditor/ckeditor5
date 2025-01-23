@@ -12,7 +12,7 @@ import { IconSelectAll } from '@ckeditor/ckeditor5-icons';
 import { registerIcon } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
-const selectAllIcon = /* #__PURE__ */ registerIcon( 'selectAll', IconSelectAll );
+const selectAllIcon = /* #__PURE__ */ registerIcon( '--ck-icon-select-all', IconSelectAll );
 
 /**
  * The select all UI feature.
@@ -69,7 +69,7 @@ export default class SelectAllUI extends Plugin {
 
 		view.set( {
 			label: t( 'Select all' ),
-			icon: selectAllIcon(),
+			icon: selectAllIcon,
 			keystroke: 'Ctrl+A'
 		} );
 

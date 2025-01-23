@@ -54,11 +54,11 @@ import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
-const objectCenterIcon = /* #__PURE__ */ registerIcon( 'objectCenter', IconObjectCenter );
-const objectInlineLeftIcon = /* #__PURE__ */ registerIcon( 'objectInlineLeft', IconObjectInlineLeft );
-const objectInlineRightIcon = /* #__PURE__ */ registerIcon( 'objectInlineRight', IconObjectInlineRight );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
+const objectCenterIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-center', IconObjectCenter );
+const objectInlineLeftIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-inline-left', IconObjectInlineLeft );
+const objectInlineRightIcon = /* #__PURE__ */ registerIcon( '--ck-icon-object-inline-right', IconObjectInlineRight );
 
 /**
  * Additional configuration of the view.
@@ -663,9 +663,9 @@ export default class TablePropertiesView extends View {
 		fillToolbar( {
 			view: this,
 			icons: {
-				left: objectInlineLeftIcon(),
-				center: objectCenterIcon(),
-				right: objectInlineRightIcon()
+				left: objectInlineLeftIcon,
+				center: objectCenterIcon,
+				right: objectInlineRightIcon
 			},
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
@@ -704,7 +704,7 @@ export default class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: checkIcon(),
+			icon: checkIcon,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -716,7 +716,7 @@ export default class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon(),
+			icon: cancelIcon,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

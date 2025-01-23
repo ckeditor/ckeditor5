@@ -9,13 +9,13 @@
 import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
 import { registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../../button/buttonview.js';
-import IconView from '../../icon/iconview.js';
+import CssIconView from '../../icon/cssiconview.js';
 import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '../../labeledfield/utils.js';
 import type InputBase from '../../input/inputbase.js';
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const loupeIcon = /* #__PURE__ */ registerIcon( 'loupe', IconLoupe );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const loupeIcon = /* #__PURE__ */ registerIcon( '--ck-icon-loupe', IconLoupe );
 
 /**
  * A search input field for the {@link module:ui/search/text/searchtextview~SearchTextView} component.
@@ -29,7 +29,7 @@ export default class SearchTextQueryView<
 	/**
 	 * The loupe icon displayed next to the {@link #fieldView}.
 	 */
-	public iconView?: IconView;
+	public iconView?: CssIconView;
 
 	/**
 	 * The button that clears and focuses the {@link #fieldView}.
@@ -58,8 +58,8 @@ export default class SearchTextQueryView<
 		this._viewConfig = viewConfig;
 
 		if ( this._viewConfig.showIcon ) {
-			this.iconView = new IconView();
-			this.iconView.content = loupeIcon();
+			this.iconView = new CssIconView();
+			this.iconView.variable = loupeIcon;
 			this.fieldWrapperChildren.add( this.iconView, 0 );
 
 			this.extendTemplate( {
@@ -73,7 +73,7 @@ export default class SearchTextQueryView<
 			this.resetButtonView = new ButtonView( locale );
 			this.resetButtonView.set( {
 				label: t( 'Clear' ),
-				icon: cancelIcon(),
+				icon: cancelIcon,
 				class: 'ck-search__reset',
 				isVisible: false,
 				tooltip: true

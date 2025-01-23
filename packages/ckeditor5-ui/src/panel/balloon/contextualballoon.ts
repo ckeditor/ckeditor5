@@ -30,8 +30,8 @@ import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
-const nextArrowIcon = /* #__PURE__ */ registerIcon( 'nextArrow', IconNextArrow );
-const previousArrowIcon = /* #__PURE__ */ registerIcon( 'previousArrow', IconPreviousArrow );
+const nextArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-next-arrow', IconNextArrow );
+const previousArrowIcon = /* #__PURE__ */ registerIcon( '--ck-icon-previous-arrow', IconPreviousArrow );
 
 /**
  * Provides the common contextual balloon for the editor.
@@ -642,8 +642,8 @@ export class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		this.focusTracker = new FocusTracker();
-		this.buttonPrevView = this._createButtonView( t( 'Previous' ), previousArrowIcon() );
-		this.buttonNextView = this._createButtonView( t( 'Next' ), nextArrowIcon() );
+		this.buttonPrevView = this._createButtonView( t( 'Previous' ), previousArrowIcon );
+		this.buttonNextView = this._createButtonView( t( 'Next' ), nextArrowIcon );
 		this.content = this.createCollection();
 
 		this.setTemplate( {

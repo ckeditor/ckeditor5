@@ -14,7 +14,7 @@ import { registerIcon } from 'ckeditor5/src/utils.js';
 import ImageCaptionUtils from './imagecaptionutils.js';
 import type ToggleImageCaptionCommand from './toggleimagecaptioncommand.js';
 
-const captionIcon = /* #__PURE__ */ registerIcon( 'caption', IconCaption );
+const captionIcon = /* #__PURE__ */ registerIcon( '--ck-icon-caption', IconCaption );
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
@@ -55,7 +55,7 @@ export default class ImageCaptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				icon: captionIcon(),
+				icon: captionIcon,
 				tooltip: true,
 				isToggleable: true
 			} );

@@ -18,7 +18,7 @@
 		&.ck-search__query_with-icon {
 			--ck-labeled-field-label-default-position-x: var(--ck-search-field-view-horizontal-spacing);
 
-			& > .ck-labeled-field-view__input-wrapper > .ck-icon {
+			& > .ck-labeled-field-view__input-wrapper > .ck-css-icon {
 				opacity: .5;
 				pointer-events: none;
 			}

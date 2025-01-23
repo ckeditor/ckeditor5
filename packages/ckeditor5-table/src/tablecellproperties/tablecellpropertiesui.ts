@@ -34,7 +34,7 @@ import { getNormalizedDefaultCellProperties, type NormalizedDefaultProperties } 
 import type { Batch } from 'ckeditor5/src/engine.js';
 import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
 
-const tableCellPropertiesIcon = /* #__PURE__ */ registerIcon( 'tableCellProperties', IconTableCellProperties );
+const tableCellPropertiesIcon = /* #__PURE__ */ registerIcon( '--ck-icon-table-cell-properties', IconTableCellProperties );
 
 // Map of view properties and related commands.
 const propertyToCommandMap = {
@@ -142,7 +142,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 			view.set( {
 				label: t( 'Cell properties' ),
-				icon: tableCellPropertiesIcon(),
+				icon: tableCellPropertiesIcon,
 				tooltip: true
 			} );
 

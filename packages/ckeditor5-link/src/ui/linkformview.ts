@@ -35,8 +35,8 @@ import type ManualDecorator from '../utils/manualdecorator.js';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/linkform.css';
 
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
 
 /**
  * The link form view controller class.
@@ -112,9 +112,9 @@ export default class LinkFormView extends View {
 
 		this._validators = validators;
 		this.urlInputView = this._createUrlInput();
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon(), 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon(), 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
 		this.children = this._createFormChildren( linkCommand.manualDecorators );
 

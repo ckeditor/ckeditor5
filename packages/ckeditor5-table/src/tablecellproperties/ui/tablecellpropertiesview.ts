@@ -56,15 +56,15 @@ import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
 
-const alignBottomIcon = /* #__PURE__ */ registerIcon( 'alignBottom', IconAlignBottom );
-const alignCenterIcon = /* #__PURE__ */ registerIcon( 'alignCenter', IconAlignCenter );
-const alignJustifyIcon = /* #__PURE__ */ registerIcon( 'alignJustify', IconAlignJustify );
-const alignLeftIcon = /* #__PURE__ */ registerIcon( 'alignLeft', IconAlignLeft );
-const alignMiddleIcon = /* #__PURE__ */ registerIcon( 'alignMiddle', IconAlignMiddle );
-const alignRightIcon = /* #__PURE__ */ registerIcon( 'alignRight', IconAlignRight );
-const alignTopIcon = /* #__PURE__ */ registerIcon( 'alignTop', IconAlignTop );
-const cancelIcon = /* #__PURE__ */ registerIcon( 'cancel', IconCancel );
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
+const alignBottomIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-bottom', IconAlignBottom );
+const alignCenterIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-center', IconAlignCenter );
+const alignJustifyIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-justify', IconAlignJustify );
+const alignLeftIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-left', IconAlignLeft );
+const alignMiddleIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-middle', IconAlignMiddle );
+const alignRightIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-right', IconAlignRight );
+const alignTopIcon = /* #__PURE__ */ registerIcon( '--ck-icon-align-top', IconAlignTop );
+const cancelIcon = /* #__PURE__ */ registerIcon( '--ck-icon-cancel', IconCancel );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
 
 export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
@@ -717,13 +717,13 @@ export default class TableCellPropertiesView extends View {
 		const alignmentLabel = new LabelView( locale );
 
 		const ALIGNMENT_ICONS = {
-			left: alignLeftIcon(),
-			center: alignCenterIcon(),
-			right: alignRightIcon(),
-			justify: alignJustifyIcon(),
-			top: alignTopIcon(),
-			middle: alignMiddleIcon(),
-			bottom: alignBottomIcon()
+			left: alignLeftIcon,
+			center: alignCenterIcon,
+			right: alignRightIcon,
+			justify: alignJustifyIcon,
+			top: alignTopIcon,
+			middle: alignMiddleIcon,
+			bottom: alignBottomIcon
 		};
 
 		alignmentLabel.text = t( 'Table cell text alignment' );
@@ -804,7 +804,7 @@ export default class TableCellPropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: checkIcon(),
+			icon: checkIcon,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -816,7 +816,7 @@ export default class TableCellPropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon(),
+			icon: cancelIcon,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

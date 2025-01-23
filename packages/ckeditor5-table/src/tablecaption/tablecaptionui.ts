@@ -13,7 +13,7 @@ import { registerIcon } from 'ckeditor5/src/utils.js';
 import { getCaptionFromModelSelection } from './utils.js';
 import type ToggleTableCaptionCommand from './toggletablecaptioncommand.js';
 
-const captionIcon = /* #__PURE__ */ registerIcon( 'caption', IconCaption );
+const captionIcon = /* #__PURE__ */ registerIcon( '--ck-icon-caption', IconCaption );
 
 /**
   * The table caption UI plugin. It introduces the `'toggleTableCaption'` UI button.
@@ -46,7 +46,7 @@ export default class TableCaptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				icon: captionIcon(),
+				icon: captionIcon,
 				tooltip: true,
 				isToggleable: true
 			} );

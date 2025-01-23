@@ -18,8 +18,8 @@ import type { LinkConfig } from '../linkconfig.js';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/linkactions.css';
 
-const unlinkIcon = /* #__PURE__ */ registerIcon( 'unlink', IconUnlink );
-const pencilIcon = /* #__PURE__ */ registerIcon( 'pencil', IconPencil );
+const unlinkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-unlink', IconUnlink );
+const pencilIcon = /* #__PURE__ */ registerIcon( '--ck-icon-pencil', IconPencil );
 
 /**
  * The link actions view class. This view displays the link preview, allows
@@ -84,8 +84,8 @@ export default class LinkActionsView extends View {
 
 		this._options = options;
 		this.previewButtonView = this._createPreviewButton();
-		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon(), 'unlink' );
-		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon(), 'edit' );
+		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
+		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon, 'edit' );
 
 		this.set( 'href', undefined );
 

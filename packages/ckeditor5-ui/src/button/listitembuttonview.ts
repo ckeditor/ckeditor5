@@ -9,16 +9,16 @@
 
 import { IconCheck } from '@ckeditor/ckeditor5-icons';
 import { registerIcon, type ObservableChangeEvent, type Locale } from '@ckeditor/ckeditor5-utils';
-import ButtonView from './buttonview.js';
-import ButtonLabelView from './buttonlabelview.js';
-import IconView from '../icon/iconview.js';
 import View from '../view.js';
+import ButtonView from './buttonview.js';
+import CssIconView from '../icon/cssiconview.js';
+import ButtonLabelView from './buttonlabelview.js';
 import type ButtonLabel from './buttonlabel.js';
 import type ViewCollection from '../viewcollection.js';
 
 import '../../theme/components/button/listitembutton.css';
 
-const checkIcon = /* #__PURE__ */ registerIcon( 'check', IconCheck );
+const checkIcon = /* #__PURE__ */ registerIcon( '--ck-icon-check', IconCheck );
 
 /**
  * Button that is used as dropdown list item entry.
@@ -124,7 +124,7 @@ export class CheckIconHolderView extends View {
 	/**
 	 * The view for the check icon of the button list item.
 	 */
-	private readonly _checkIconView: IconView = this._createCheckIconView();
+	private readonly _checkIconView: CssIconView = this._createCheckIconView();
 
 	/**
 	 * @inheritDoc
@@ -182,9 +182,9 @@ export class CheckIconHolderView extends View {
 	 * Creates a check icon view.
 	 */
 	private _createCheckIconView() {
-		const iconView = new IconView();
+		const iconView = new CssIconView();
 
-		iconView.content = checkIcon();
+		iconView.variable = checkIcon;
 		iconView.extendTemplate( {
 			attributes: {
 				class: 'ck-list-item-button__check-icon'

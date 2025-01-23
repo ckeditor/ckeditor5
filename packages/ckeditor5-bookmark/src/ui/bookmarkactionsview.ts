@@ -29,8 +29,8 @@ import { IconPencil, IconRemove } from 'ckeditor5/src/icons.js';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/bookmarkactions.css';
 
-const pencilIcon = /* #__PURE__ */ registerIcon( 'pencil', IconPencil );
-const removeIcon = /* #__PURE__ */ registerIcon( 'remove', IconRemove );
+const pencilIcon = /* #__PURE__ */ registerIcon( '--ck-icon-pencil', IconPencil );
+const removeIcon = /* #__PURE__ */ registerIcon( '--ck-icon-remove', IconRemove );
 
 /**
  * The bookmark actions view class. This view displays the bookmark preview, allows
@@ -90,8 +90,8 @@ export default class BookmarkActionsView extends View {
 		const t = locale.t;
 
 		this.bookmarkPreviewView = this._createBookmarkPreviewView();
-		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), removeIcon(), 'remove', this.bookmarkPreviewView );
-		this.editButtonView = this._createButton( t( 'Edit bookmark' ), pencilIcon(), 'edit', this.bookmarkPreviewView );
+		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), removeIcon, 'remove', this.bookmarkPreviewView );
+		this.editButtonView = this._createButton( t( 'Edit bookmark' ), pencilIcon, 'edit', this.bookmarkPreviewView );
 
 		this.set( 'id', undefined );
 

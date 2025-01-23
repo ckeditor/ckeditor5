@@ -11,12 +11,12 @@ import { IconProjectLogo } from '@ckeditor/ckeditor5-icons';
 import { parseBase64EncodedObject, registerIcon, type Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view.js';
 import Badge from '../badge/badge.js';
-import IconView from '../icon/iconview.js';
+import CssIconView from '../icon/cssiconview.js';
 import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 
 type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
 
-const projectLogoIcon = /* #__PURE__ */ registerIcon( 'projectLogo', IconProjectLogo );
+const projectLogoIcon = /* #__PURE__ */ registerIcon( '--ck-icon-project-logo', IconProjectLogo );
 
 /**
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
@@ -97,12 +97,14 @@ class PoweredByView extends View<HTMLDivElement> {
 	constructor( locale: Locale, label: string | null ) {
 		super( locale );
 
-		const iconView = new IconView();
+		const iconView = new CssIconView();
 		const bind = this.bindTemplate;
 
 		iconView.set( {
-			content: projectLogoIcon(),
-			isColorInherited: false
+			variable: projectLogoIcon,
+			width: 53,
+			height: 10
+			// TODO: isColorInherited: false
 		} );
 
 		this.setTemplate( {
