@@ -16,9 +16,9 @@
 	"Flags": "Tooltip for filtering the displayed emoji by the \"Flags\" category.",
 	"Select skin tone": "Default label for the emoji skin tone dropdown.",
 	"Default skin tone": "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋.",
-	"Light skin tone": "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 🏻.",
-	"Medium Light skin tone": "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 🏼.",
-	"Medium skin tone": "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 🏽.",
-	"Medium Dark skin tone": "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 🏾.",
-	"Dark skin tone": "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 🏿."
+	"Light skin tone": "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻.",
+	"Medium Light skin tone": "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼.",
+	"Medium skin tone": "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽.",
+	"Medium Dark skin tone": "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾.",
+	"Dark skin tone": "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
 }
