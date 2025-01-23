@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -130,28 +130,26 @@ export default class TokenList implements ElementAttributeValue {
 	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tokens.
 	 *
 	 * @internal
-	 * @param attributeKey The attribute name.
-	 * @param patternToken The matched token name pattern.
-	 * @returns An array of tuples `[ attributeKey, token ]`.
+	 * @param tokenPattern The matched token name pattern.
+	 * @returns An array of matching tokens.
 	 */
 	public _getTokensMatch(
-		attributeKey: string,
-		patternToken: true | string | RegExp
-	): Array<[ string, string ]> | undefined {
-		const match: Array<[ string, string ]> = [];
+		tokenPattern: true | string | RegExp
+	): Array<string> | undefined {
+		const match: Array<string> = [];
 
-		if ( patternToken === true ) {
+		if ( tokenPattern === true ) {
 			for ( const token of this._set.keys() ) {
-				match.push( [ attributeKey, token ] );
+				match.push( token );
 			}
 
 			return match;
 		}
 
-		if ( typeof patternToken == 'string' ) {
-			for ( const token of patternToken.split( /\s+/ ) ) {
+		if ( typeof tokenPattern == 'string' ) {
+			for ( const token of tokenPattern.split( /\s+/ ) ) {
 				if ( this._set.has( token ) ) {
-					match.push( [ attributeKey, token ] );
+					match.push( token );
 				} else {
 					return undefined;
 				}
@@ -161,8 +159,8 @@ export default class TokenList implements ElementAttributeValue {
 		}
 
 		for ( const token of this._set.keys() ) {
-			if ( token.match( patternToken ) ) {
-				match.push( [ attributeKey, token ] );
+			if ( token.match( tokenPattern ) ) {
+				match.push( token );
 			}
 		}
 

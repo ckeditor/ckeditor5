@@ -17,7 +17,6 @@ import { default as StylesMap, type Styles, type StyleValue } from './stylesmap.
 import type Document from './document.js';
 import type Item from './item.js';
 import TokenList from './tokenlist.js';
-import type { NormalizedConsumables } from '../conversion/viewconsumable.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -313,6 +312,8 @@ export default class Element extends Node {
 	 */
 	public getClassNames(): IterableIterator<string> {
 		const array = this._classes ? this._classes.keys() : [];
+
+		// This is overcomplicated because we need to be backward compatible for use cases when iterator is expected.
 		const iterator = array[ Symbol.iterator ]();
 
 		return Object.assign( array, {
@@ -803,33 +804,36 @@ export default class Element extends Node {
 		match: Array<[ string, string? ]>,
 		exclude?: Array<string>
 	): boolean {
-		for ( const [ patternKey, patternToken, patternValue ] of patterns ) {
+		for ( const [ keyPattern, tokenPattern, valuePattern ] of patterns ) {
 			let hasKey = false;
 			let hasValue = false;
 
 			for ( const [ key, value ] of this._attrs ) {
-				if ( exclude && exclude.includes( key ) || !isPatternMatched( patternKey, key ) ) {
+				if ( exclude && exclude.includes( key ) || !isPatternMatched( keyPattern, key ) ) {
 					continue;
 				}
 
 				hasKey = true;
 
 				if ( typeof value == 'string' ) {
-					if ( isPatternMatched( patternToken, value ) ) {
+					if ( isPatternMatched( tokenPattern, value ) ) {
 						match.push( [ key ] );
 						hasValue = true;
 					}
-					else if ( !( patternKey instanceof RegExp ) ) {
+					else if ( !( keyPattern instanceof RegExp ) ) {
 						return false;
 					}
 				} else {
-					const tokenMatch = value._getTokensMatch( key, patternToken, patternValue || true );
+					const tokenMatch = value._getTokensMatch( tokenPattern, valuePattern || true );
 
 					if ( tokenMatch ) {
-						match.push( ...tokenMatch );
 						hasValue = true;
+
+						for ( const tokenMatchItem of tokenMatch ) {
+							match.push( [ key, tokenMatchItem ] );
+						}
 					}
-					else if ( !( patternKey instanceof RegExp ) ) {
+					else if ( !( keyPattern instanceof RegExp ) ) {
 						return false;
 					}
 				}
@@ -1187,16 +1191,14 @@ export interface ElementAttributeValue {
 	/**
 	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tokens.
 	 *
-	 * @param attributeKey The attribute name.
-	 * @param patternToken The matched token name pattern.
-	 * @param patternValue The matched token value pattern.
-	 * @returns An array of tuples [ attributeKey, token ].
+	 * @param tokenPattern The matched token name pattern.
+	 * @param valuePattern The matched token value pattern.
+	 * @returns An array of matching tokens.
 	 */
 	_getTokensMatch(
-		attributeKey: string,
-		patternToken: true | string | RegExp,
-		patternValue?: true | string | RegExp
-	): Array<[ string, string ]> | undefined;
+		tokenPattern: true | string | RegExp,
+		valuePattern?: true | string | RegExp
+	): Array<string> | undefined;
 
 	/**
 	 * Returns a list of consumables for the attribute. This includes related tokens
@@ -1235,6 +1237,24 @@ export interface ElementAttributeValue {
  * Collection of attributes.
  */
 export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unknown ]> | null;
+
+/**
+ * TODO
+ */
+export interface NormalizedConsumables {
+
+	/**
+	 * If set to `true` element's name will be included in a consumable.
+	 * Depending on the usage context it would be added as consumable, tested for being available for consume or consumed.
+	 */
+	name: boolean;
+
+	/**
+	 * Array of tuples - an attribute name, and optional token for tokenized attributes.
+	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
+	 */
+	attributes: Array<[string, string?]>;
+}
 
 /**
  * Converts strings to Text and non-iterables to arrays.

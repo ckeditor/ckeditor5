@@ -399,54 +399,54 @@ describe( 'StylesMap', () => {
 		} );
 
 		it( 'should return undefined if no tokens match', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', 'border', true ) ).to.be.undefined;
+			expect( stylesMap._getTokensMatch( 'border', true ) ).to.be.undefined;
 		} );
 
 		it( 'should match patternToken=true, patternValue=true', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', true, true ) ).to.deep.equal( [
-				[ 'attribute-name', 'margin' ],
-				[ 'attribute-name', 'margin-top' ],
-				[ 'attribute-name', 'margin-right' ],
-				[ 'attribute-name', 'margin-bottom' ],
-				[ 'attribute-name', 'margin-left' ],
-				[ 'attribute-name', 'color' ]
+			expect( stylesMap._getTokensMatch( true, true ) ).to.deep.equal( [
+				'margin',
+				'margin-top',
+				'margin-right',
+				'margin-bottom',
+				'margin-left',
+				'color'
 			] );
 		} );
 
 		it( 'should match patternToken=string, patternValue=true', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', 'margin', true ) ).to.deep.equal( [
-				[ 'attribute-name', 'margin' ]
+			expect( stylesMap._getTokensMatch( 'margin', true ) ).to.deep.equal( [
+				'margin'
 			] );
 		} );
 
 		it( 'should match patternToken=regexp, patternValue=true', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', /^margin/, true ) ).to.deep.equal( [
-				[ 'attribute-name', 'margin' ],
-				[ 'attribute-name', 'margin-top' ],
-				[ 'attribute-name', 'margin-right' ],
-				[ 'attribute-name', 'margin-bottom' ],
-				[ 'attribute-name', 'margin-left' ]
+			expect( stylesMap._getTokensMatch( /^margin/, true ) ).to.deep.equal( [
+				'margin',
+				'margin-top',
+				'margin-right',
+				'margin-bottom',
+				'margin-left'
 			] );
 		} );
 
 		it( 'should match patternToken=string, patternValue=string', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', 'margin', '2px' ) ).to.deep.equal( [
-				[ 'attribute-name', 'margin' ]
+			expect( stylesMap._getTokensMatch( 'margin', '2px' ) ).to.deep.equal( [
+				'margin'
 			] );
 		} );
 
 		it( 'should not match patternToken=string, patternValue=string', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', 'margin', '20px' ) ).to.be.undefined;
+			expect( stylesMap._getTokensMatch( 'margin', '20px' ) ).to.be.undefined;
 		} );
 
 		it( 'should match patternToken=string, patternValue=regexp', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', 'margin', /px$/ ) ).to.deep.equal( [
-				[ 'attribute-name', 'margin' ]
+			expect( stylesMap._getTokensMatch( 'margin', /px$/ ) ).to.deep.equal( [
+				'margin'
 			] );
 		} );
 
 		it( 'should not match patternToken=string, patternValue=regexp', () => {
-			expect( stylesMap._getTokensMatch( 'attribute-name', 'margin', /cm$/ ) ).to.be.undefined;
+			expect( stylesMap._getTokensMatch( 'margin', /cm$/ ) ).to.be.undefined;
 		} );
 	} );
 

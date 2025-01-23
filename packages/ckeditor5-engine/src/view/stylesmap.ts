@@ -504,32 +504,30 @@ export default class StylesMap implements ElementAttributeValue {
 	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching styles.
 	 *
 	 * @internal
-	 * @param attributeKey The attribute name.
-	 * @param patternToken The matched style name pattern.
-	 * @param patternValue The matched style value pattern.
-	 * @returns An array of tuples `[ attributeKey, styleName ]`.
+	 * @param tokenPattern The matched style name pattern.
+	 * @param valuePattern The matched style value pattern.
+	 * @returns An array of matching tokens (style names).
 	 */
 	public _getTokensMatch(
-		attributeKey: string,
-		patternToken: true | string | RegExp,
-		patternValue: true | string | RegExp
-	): Array<[ string, string ]> | undefined {
-		const match: Array<[ string, string ]> = [];
+		tokenPattern: true | string | RegExp,
+		valuePattern: true | string | RegExp
+	): Array<string> | undefined {
+		const match: Array<string> = [];
 
 		for ( const styleName of this.getStyleNames( true ) ) {
-			if ( isPatternMatched( patternToken, styleName ) ) {
-				if ( patternValue === true ) {
-					match.push( [ attributeKey, styleName ] );
+			if ( isPatternMatched( tokenPattern, styleName ) ) {
+				if ( valuePattern === true ) {
+					match.push( styleName );
 					continue;
 				}
-
-				const value = this.getAsString( styleName );
 
 				// For now, the reducers are not returning the full tree of properties.
 				// Casting to string preserves the old behavior until the root cause is fixed.
 				// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
-				if ( isPatternMatched( patternValue, value! ) ) {
-					match.push( [ attributeKey, styleName ] );
+				const value = this.getAsString( styleName );
+
+				if ( isPatternMatched( valuePattern, value! ) ) {
+					match.push( styleName );
 				}
 			}
 		}

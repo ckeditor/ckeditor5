@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -213,39 +213,39 @@ describe( 'TokenList', () => {
 		} );
 
 		it( 'should return undefined if no tokens match', () => {
-			expect( tokenList._getTokensMatch( 'attribute-name', 'xyz' ) ).to.be.undefined;
+			expect( tokenList._getTokensMatch( 'xyz' ) ).to.be.undefined;
 		} );
 
 		it( 'should match patternToken=true', () => {
-			expect( tokenList._getTokensMatch( 'attribute-name', true ) ).to.deep.equal( [
-				[ 'attribute-name', 'foo' ],
-				[ 'attribute-name', 'bar' ],
-				[ 'attribute-name', 'baz' ]
+			expect( tokenList._getTokensMatch( true ) ).to.deep.equal( [
+				'foo',
+				'bar',
+				'baz'
 			] );
 		} );
 
 		it( 'should match patternToken=string', () => {
-			expect( tokenList._getTokensMatch( 'attribute-name', 'bar' ) ).to.deep.equal( [
-				[ 'attribute-name', 'bar' ]
+			expect( tokenList._getTokensMatch( 'bar' ) ).to.deep.equal( [
+				'bar'
 			] );
 		} );
 
 		it( 'should match patternToken=string with spaces', () => {
-			expect( tokenList._getTokensMatch( 'attribute-name', 'bar foo' ) ).to.deep.equal( [
-				[ 'attribute-name', 'bar' ],
-				[ 'attribute-name', 'foo' ]
+			expect( tokenList._getTokensMatch( 'bar foo' ) ).to.deep.equal( [
+				'bar',
+				'foo'
 			] );
 		} );
 
 		it( 'should match patternToken=regexp', () => {
-			expect( tokenList._getTokensMatch( 'attribute-name', /^ba/ ) ).to.deep.equal( [
-				[ 'attribute-name', 'bar' ],
-				[ 'attribute-name', 'baz' ]
+			expect( tokenList._getTokensMatch( /^ba/ ) ).to.deep.equal( [
+				'bar',
+				'baz'
 			] );
 		} );
 
 		it( 'should return undefined if regexp does not match to any token', () => {
-			expect( tokenList._getTokensMatch( 'attribute-name', /x/ ) ).to.be.undefined;
+			expect( tokenList._getTokensMatch( /x/ ) ).to.be.undefined;
 		} );
 	} );
 

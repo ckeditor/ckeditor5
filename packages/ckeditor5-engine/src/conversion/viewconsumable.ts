@@ -9,7 +9,7 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Element from '../view/element.js';
+import type { default as Element, NormalizedConsumables } from '../view/element.js';
 import type Node from '../view/node.js';
 import type Text from '../view/text.js';
 import type DocumentFragment from '../view/documentfragment.js';
@@ -301,21 +301,6 @@ export interface Consumables {
 	styles?: string | Array<string>;
 }
 
-export interface NormalizedConsumables {
-
-	/**
-	 * If set to `true` element's name will be included in a consumable.
-	 * Depending on the usage context it would be added as consumable, tested for being available for consume or consumed.
-	 */
-	name: boolean;
-
-	/**
-	 * Array of tuples - an attribute name, and optional token for tokenized attributes.
-	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
-	 */
-	attributes: Array<[string, string?]>;
-}
-
 /**
  * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
@@ -369,9 +354,6 @@ export class ViewElementConsumables {
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param consumables Object describing which parts of the element can be consumed.
-	 * @param consumables.name If set to `true` element's name will be added as consumable.
-	 * @param consumables.attributes Array of tuples - an attribute name, and optional token for tokenized attributes.
-	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
 	 */
 	public add( consumables: NormalizedConsumables ): void {
 		if ( consumables.name ) {
@@ -433,9 +415,6 @@ export class ViewElementConsumables {
 	 * ```
 	 *
 	 * @param consumables Object describing which parts of the element should be tested.
-	 * @param consumables.name If set to `true` element's name will be tested.
-	 * @param consumables.attributes Array of tuples - an attribute name, and optional token for tokenized attributes.
-	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
 	 * @returns `true` when all tested items can be consumed, `null` when even one of the items
 	 * was never marked for consumption and `false` when even one of the items was already consumed.
 	 */
@@ -508,9 +487,6 @@ export class ViewElementConsumables {
 	 * ```
 	 *
 	 * @param consumables Object describing which parts of the element should be consumed.
-	 * @param consumables.name If set to `true` element's name will be consumed.
-	 * @param consumables.attributes Array of tuples - an attribute name, and optional token for tokenized attributes.
-	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
 	 * @returns `true` when all tested items can be consumed and `false` when even one of the items could not be consumed.
 	 */
 	public consume( consumables: NormalizedConsumables ): boolean {
@@ -538,7 +514,7 @@ export class ViewElementConsumables {
 					value.set( token, false );
 				}
 			} else {
-				// Use Element API to collect related attributes.
+				// Use Element API to collect related attribute tokens.
 				for ( const [ , toConsume ] of this.element._getConsumables( name, token ).attributes ) {
 					value.set( toConsume!, false );
 				}
@@ -564,9 +540,6 @@ export class ViewElementConsumables {
 	 * ```
 	 *
 	 * @param consumables Object describing which parts of the element should be reverted.
-	 * @param consumables.name If set to `true` element's name will be reverted.
-	 * @param consumables.attributes Array of tuples - an attribute name, and optional token for tokenized attributes.
-	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
 	 */
 	public revert( consumables: NormalizedConsumables ): void {
 		if ( consumables.name ) {

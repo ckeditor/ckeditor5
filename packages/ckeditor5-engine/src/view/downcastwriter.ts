@@ -538,7 +538,7 @@ export default class DowncastWriter {
 	 *
 	 * @param key The attribute key.
 	 * @param value The attribute value.
-	 * @param overwrite Whether tokenized attribute should override the attribute value or just add a token.
+	 * @param overwrite Whether tokenized attribute should overwrite the attribute value or just add a token.
 	 * @param element The element to set an attribute on.
 	 */
 	public setAttribute( key: string, value: unknown, overwrite: boolean, element: Element ): void;
