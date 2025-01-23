@@ -239,10 +239,11 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 					isVisible: false
 				} );
 			}
+		} );
 
-			// TODO: So far, it does not work as expected.
-			// Messaging can impact a balloon's position. Let's update it.
-			// this.fire( 'update' );
+		// Emit an update event to react to balloon dimensions changes.
+		this.searchView.on<SearchTextViewSearchEvent>( 'search', () => {
+			this.fire<EmojiPickerViewUpdateEvent>( 'update' );
 		} );
 
 		// Update the grid of emojis when the selected category is changed.
@@ -259,3 +260,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		} );
 	}
 }
+
+/**
+ * Fired when the  {@link module:emoji/ui/emojipickerview~EmojiPickerView} layout is changed, either by filtering emoji tiles or
+ * showing a hint to a user regarding the provided query.
+ *
+ * @eventName ~EmojiPickerView#update
+ */
+export type EmojiPickerViewUpdateEvent = {
+	name: 'update';
+	args: [];
+};

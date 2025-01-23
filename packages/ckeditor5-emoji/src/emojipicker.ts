@@ -12,7 +12,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
 
 import EmojiDatabase from './emojidatabase.js';
-import EmojiPickerView from './ui/emojipickerview.js';
+import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -197,10 +197,12 @@ export default class EmojiPicker extends Plugin {
 			this._hideUI();
 		} );
 
-		// TODO: How to resolve it smartly?
-		// this.listenTo( emojiPickerView, 'update', () => {
-		// 	this._balloon.updatePosition();
-		// } );
+		// Update the balloon position when layout is changed.
+		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
+			if ( this._balloon.visibleView === emojiPickerView ) {
+				this._balloon.updatePosition();
+			}
+		} );
 
 		// Close the panel on `Esc` key press when the **actions have focus**.
 		emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {

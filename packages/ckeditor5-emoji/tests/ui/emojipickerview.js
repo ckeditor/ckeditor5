@@ -164,6 +164,15 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledWith( searchStub, 'thum' );
 				sinon.assert.calledOnce( getInputValueStub );
 			} );
+
+			it( 'should fire an update event when search event is emitted', () => {
+				const fireSpy = sinon.spy( emojiPickerView, 'fire' );
+
+				emojiPickerView.searchView.fire( 'search', { query: '' } );
+
+				sinon.assert.calledOnce( fireSpy );
+				sinon.assert.calledWith( fireSpy, 'update' );
+			} );
 		} );
 	} );
 
