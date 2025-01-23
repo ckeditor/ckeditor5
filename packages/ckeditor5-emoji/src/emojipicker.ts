@@ -9,10 +9,11 @@
 
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
-import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
 
+import EmojiCommand from './emojicommand.js';
 import EmojiDatabase from './emojidatabase.js';
-import EmojiPickerView from './ui/emojipickerview.js';
+import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -65,17 +66,6 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this.editor.config.define( 'emoji', {
-			skinTone: 'default'
-		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public init(): void {
 		const editor = this.editor;
 
@@ -93,6 +83,8 @@ export default class EmojiPicker extends Plugin {
 		if ( !this._emojiDatabase.isDatabaseLoaded() ) {
 			return;
 		}
+
+		editor.commands.add( 'emoji', new EmojiCommand( editor ) );
 
 		editor.ui.componentFactory.add( 'emoji', () => {
 			const button = this._createUiComponent( ButtonView );
@@ -142,7 +134,6 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
-		// TODO: Create a command for opening the UI using a command instead of a plugin.
 		if ( !this._emojiPickerView ) {
 			this._emojiPickerView = this._createEmojiPickerView();
 		}
@@ -153,13 +144,18 @@ export default class EmojiPicker extends Plugin {
 
 		this._emojiPickerView.searchView.search( searchValue );
 
-		this._balloon.add( {
-			view: this._emojiPickerView,
-			position: this._getBalloonPositionData()
-		} );
+		if ( !this._balloon.hasView( this._emojiPickerView ) ) {
+			this._balloon.add( {
+				view: this._emojiPickerView,
+				position: this._getBalloonPositionData()
+			} );
 
-		setTimeout( () => this._emojiPickerView!.focus() );
-		this._showFakeVisualSelection();
+			this._showFakeVisualSelection();
+		}
+
+		setTimeout( () => {
+			this._emojiPickerView!.focus();
+		} );
 	}
 
 	/**
@@ -208,10 +204,12 @@ export default class EmojiPicker extends Plugin {
 			this._hideUI();
 		} );
 
-		// TODO: How to resolve it smartly?
-		// this.listenTo( emojiPickerView, 'update', () => {
-		// 	this._balloon.updatePosition();
-		// } );
+		// Update the balloon position when layout is changed.
+		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
+			if ( this._balloon.visibleView === emojiPickerView ) {
+				this._balloon.updatePosition();
+			}
+		} );
 
 		// Close the panel on `Esc` key press when the **actions have focus**.
 		emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {

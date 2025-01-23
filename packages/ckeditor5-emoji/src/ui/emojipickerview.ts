@@ -29,7 +29,7 @@ import type { SkinToneId } from '../emojiconfig.js';
 import type { EmojiCategory, SkinTone } from '../emojidatabase.js';
 
 /**
- * A view that glues pieces of the emoji dropdown panel together.
+ * A view that glues pieces of the emoji panel together.
  */
 export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
@@ -178,11 +178,6 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.focusTracker.add( this.gridView.element! );
 		this.focusTracker.add( this.infoView.element! );
 
-		// We need to disable listening for all events within the `SearchTextView` view.
-		// Otherwise, its own focus tracker interfere with `EmojiPickerView` which leads to unexpected results.
-		// TODO: Could we reuse `keystrokes` from `inputView` instead creating a new one?
-		this.searchView.inputView.keystrokes.stopListening();
-
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
 	}
@@ -195,6 +190,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
+		this.items.destroy();
 	}
 
 	/**
@@ -238,10 +234,11 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 					isVisible: false
 				} );
 			}
+		} );
 
-			// TODO: So far, it does not work as expected.
-			// Messaging can impact a balloon's position. Let's update it.
-			// this.fire( 'update' );
+		// Emit an update event to react to balloon dimensions changes.
+		this.searchView.on<SearchTextViewSearchEvent>( 'search', () => {
+			this.fire<EmojiPickerViewUpdateEvent>( 'update' );
 		} );
 
 		// Update the grid of emojis when the selected category is changed.
@@ -258,3 +255,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		} );
 	}
 }
+
+/**
+ * Fired when the  {@link module:emoji/ui/emojipickerview~EmojiPickerView} layout is changed, either by filtering emoji tiles or
+ * showing a hint to a user regarding the provided query.
+ *
+ * @eventName ~EmojiPickerView#update
+ */
+export type EmojiPickerViewUpdateEvent = {
+	name: 'update';
+	args: [];
+};

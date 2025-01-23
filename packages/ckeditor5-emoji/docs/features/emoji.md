@@ -131,7 +131,7 @@ In addition to enabling emoji feature, you may want to check the following relat
 
 ## Common API
 
-The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button component (`'emoji'`).
+The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button component (`'emoji'`) and the command (`'emoji'`) that allows opening the emoji picker UI.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

@@ -111,6 +111,7 @@ export default class EmojiCategoriesView extends View {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
+		this._buttonViews.destroy();
 	}
 
 	/**
@@ -138,7 +139,7 @@ export default class EmojiCategoriesView extends View {
 		} );
 	}
 
-	private _createCategoryButtons( emojiGroups: Array<EmojiCategory> ) {
+	private _createCategoryButtons( emojiGroups: Array<EmojiCategory> ): Array<ButtonView> {
 		return emojiGroups.map( emojiGroup => {
 			const buttonView = new ButtonView();
 

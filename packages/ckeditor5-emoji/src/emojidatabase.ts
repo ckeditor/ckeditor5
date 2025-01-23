@@ -66,7 +66,8 @@ export default class EmojiDatabase extends Plugin {
 		super( editor );
 
 		this.editor.config.define( 'emoji', {
-			version: 16
+			version: 16,
+			skinTone: 'default'
 		} );
 
 		this._emojiDatabase = [];
@@ -82,7 +83,7 @@ export default class EmojiDatabase extends Plugin {
 		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
 
 		// Skip the initialization if the emoji database download has failed.
-		// An empty database prevents the initialization of other dependent plugins as well: EmojiMention and EmojiPicker.
+		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
 		if ( !emojiDatabase.length ) {
 			return;
 		}
@@ -231,6 +232,9 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 	if ( !result.length ) {
 		/**
 		 * Unable to load the emoji database from CDN.
+		 *
+		 * TODO: It could be a problem of CKEditor 5 CDN, but also, Content Security Policy that disallow the request.
+		 * It would be good to explain what to do in such a case.
 		 *
 		 * @error emoji-database-load-failed
 		 */

@@ -21,3 +21,12 @@ Make sure to include at least one space before the marker, otherwise the mention
 Then, you can either choose which emoji to insert, or choose the last option: `Show all emoji...` to open the `EmojiPicker` plugin, which should then have the same text in its search bar.
 
 **Note**: The `Show all emoji...` option does not show up when the `EmojiPicker` plugin is not available.
+
+---
+
+#### Configurable options:
+
+* **`Unicode version`** - its value is passed as `emoji.version` in the configuration.
+* **`Default skin tone`** - its value is passed as `emoji.skinTone` in the configuration.
+
+Selecting the `use the plugin default` option does not pass anything. This way plugins use the default vaules.

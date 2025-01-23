@@ -12,6 +12,9 @@ import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearch
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type EmojiGridView from './emojigridview.js';
 
+/**
+ * A view responsible for providing an input element that allows filtering emoji by the provided query.
+ */
 export default class EmojiSearchView extends View {
 	/**
 	 * The find in text input view that stores the searched string.
@@ -61,6 +64,16 @@ export default class EmojiSearchView extends View {
 
 		// Pass through the `search` event to handle it by a parent view.
 		this.inputView.delegate( 'search' ).to( this );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this.inputView.destroy();
+		this.gridView.destroy();
 	}
 
 	/**

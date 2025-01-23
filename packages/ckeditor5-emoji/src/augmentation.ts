@@ -8,7 +8,8 @@ import type {
 	EmojiConfig,
 	EmojiMention,
 	EmojiPicker,
-	EmojiDatabase
+	EmojiDatabase,
+	EmojiCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -27,5 +28,9 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ EmojiMention.pluginName ]: EmojiMention;
 		[ EmojiPicker.pluginName ]: EmojiPicker;
 		[ EmojiDatabase.pluginName ]: EmojiDatabase;
+	}
+
+	interface CommandsMap {
+		emoji: EmojiCommand;
 	}
 }

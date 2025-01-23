@@ -9,10 +9,11 @@
 
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { MentionFeed, MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
+import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor/ckeditor5-mention';
 
 import EmojiDatabase from './emojidatabase.js';
 import type EmojiPicker from './emojipicker.js';
+import type { SkinToneId } from './emojiconfig.js';
 
 const EMOJI_MENTION_MARKER = ':';
 const EMOJI_SHOW_ALL_OPTION_ID = ':__EMOJI_SHOW_ALL:';
@@ -40,6 +41,11 @@ export default class EmojiMention extends Plugin {
 	 * It includes the "Show all emoji..." option if the `EmojiPicker` plugin is loaded.
 	 */
 	private readonly _emojiDropdownLimit: number;
+
+	/**
+	 * Defines a skin tone that is set in the emoji config.
+	 */
+	private readonly _skinTone: SkinToneId;
 
 	/**
 	 * @inheritDoc
@@ -73,6 +79,7 @@ export default class EmojiMention extends Plugin {
 		} );
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
+		this._skinTone = editor.config.get( 'emoji.skinTone' )!;
 
 		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
 		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
@@ -135,7 +142,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `itemRenderer()` callback for mention config.
 	 */
-	private _customItemRendererFactory( t: LocaleTranslate ) {
+	private _customItemRendererFactory( t: LocaleTranslate ): ItemRenderer {
 		return ( item: MentionFeedObjectItem ) => {
 			const itemElement = document.createElement( 'button' );
 
@@ -171,7 +178,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
 	 */
-	private _overrideMentionExecuteListener() {
+	private _overrideMentionExecuteListener(): void {
 		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
@@ -222,8 +229,7 @@ export default class EmojiMention extends Plugin {
 
 			const emojis: Array<MentionFeedObjectItem> = this._emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
 				.map( emoji => {
-					// TODO: The configuration `emoji.skinTone` option is ignored here.
-					let text = emoji.skins.default;
+					let text = emoji.skins[ this._skinTone ] || emoji.skins.default;
 
 					if ( this._emojiPickerPlugin ) {
 						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;

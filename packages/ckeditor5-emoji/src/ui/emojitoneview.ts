@@ -22,6 +22,9 @@ import type { SkinTone } from '../emojidatabase.js';
 
 import '../../theme/emojitone.css';
 
+/**
+ * A view responsible for selecting a skin tone for an emoji.
+ */
 export default class EmojiToneView extends View {
 	/**
 	 * Active skin tone.
@@ -114,6 +117,15 @@ export default class EmojiToneView extends View {
 			},
 			children: [ dropdownView ]
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this.dropdownView.destroy();
 	}
 
 	/**
