@@ -29,7 +29,7 @@ import type { SkinToneId } from '../emojiconfig.js';
 import type { EmojiCategory, SkinTone } from '../emojidatabase.js';
 
 /**
- * A view that glues pieces of the emoji dropdown panel together.
+ * A view that glues pieces of the emoji panel together.
  */
 export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
