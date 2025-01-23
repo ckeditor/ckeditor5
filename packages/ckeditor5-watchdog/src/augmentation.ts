@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { EditorData } from './editorwatchdog.js';
 
 declare module '@ckeditor/ckeditor5-core' {

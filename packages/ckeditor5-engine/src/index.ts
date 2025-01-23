@@ -106,6 +106,7 @@ export type {
 	SchemaChildCheckCallback,
 	AttributeProperties,
 	SchemaItemDefinition,
+	SchemaCompiledItemDefinition,
 	SchemaContext,
 	SchemaContextDefinition
 } from './model/schema.js';

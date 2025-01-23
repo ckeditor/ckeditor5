@@ -462,10 +462,126 @@ describe( 'ClipboardPipeline feature', () => {
 			expect( spy.callCount ).to.equal( 1 );
 		} );
 
+		describe( 'source editor ID in events', () => {
+			it( 'should be null when pasting content from outside the editor', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
+				const inputTransformationSpy = sinon.spy();
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					inputTransformationSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( inputTransformationSpy, null );
+			} );
+
+			it( 'should contain an editor ID when pasting content copied from the same editor (in dataTransfer)', () => {
+				const spy = sinon.spy();
+
+				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+
+				// Copy selected content.
+				const dataTransferMock = createDataTransfer();
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {}
+				} );
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					spy( data.dataTransfer.getData( 'application/ckeditor5-editor-id' ) );
+				} );
+
+				// Paste the copied content.
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( spy, editor.id );
+			} );
+
+			it( 'should contain an editor ID when pasting content copied from the same editor', () => {
+				const spy = sinon.spy();
+
+				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+
+				// Copy selected content.
+				const dataTransferMock = createDataTransfer();
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {}
+				} );
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					spy( data.sourceEditorId );
+				} );
+
+				// Paste the copied content.
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( spy, editor.id );
+			} );
+
+			it( 'should be propagated to contentInsertion event (when it\'s external content)', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
+				const contentInsertionSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					contentInsertionSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( contentInsertionSpy, null );
+			} );
+
+			it( 'should be propagated to contentInsertion event (when it\'s internal content)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<p>internal content</p>',
+					'application/ckeditor5-editor-id': editor.id
+				} );
+
+				const contentInsertionSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					contentInsertionSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( contentInsertionSpy, editor.id );
+			} );
+		} );
+
 		function createDataTransfer( data ) {
+			const state = Object.create( data || {} );
+
 			return {
 				getData( type ) {
-					return data[ type ];
+					return state[ type ];
+				},
+				setData( type, newData ) {
+					state[ type ] = newData;
 				}
 			};
 		}

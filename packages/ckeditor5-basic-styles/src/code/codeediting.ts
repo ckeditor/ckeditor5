@@ -59,12 +59,7 @@ export default class CodeEditing extends Plugin {
 
 		editor.conversion.attributeToElement( {
 			model: CODE,
-			view: 'code',
-			upcastAlso: {
-				styles: {
-					'word-wrap': 'break-word'
-				}
-			}
+			view: 'code'
 		} );
 
 		// Create code command.
