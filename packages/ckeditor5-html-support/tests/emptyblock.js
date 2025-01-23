@@ -359,7 +359,7 @@ describe( 'EmptyBlock', () => {
 		} );
 
 		describe( 'copying content', () => {
-			it( 'should not add block filler in copied model element with `htmlEmptyBlock` attribute', () => {
+			it( 'should not add block filler to copied empty paragraphs', () => {
 				const dataTransferMock = createDataTransfer();
 
 				setModelData( model,
