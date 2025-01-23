@@ -3,6 +3,7 @@ category: source-code-editing
 menu-title: Source code editing
 meta-title: Source code editing | CKEditor 5 Documentation
 modified_at: 2024-02-06
+order: 20
 ---
 
 # Source code editing
