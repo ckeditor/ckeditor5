@@ -114,7 +114,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="source-editing-enhanced" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing-enhanced Source code editing enhanced}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing-enhanced Enhanced source code editing}
 				</span>
 			</td>
 			<td>
