@@ -521,6 +521,16 @@ describe( 'table properties', () => {
 							expect( toolbar.items.last.isOn ).to.be.false;
 							expect( toolbar.items.first.isOn ).to.be.true;
 						} );
+
+						it( 'should set proper ARIA properties', () => {
+							expect( toolbar.role ).to.equal( 'radiogroup' );
+							expect( toolbar.ariaLabel ).to.equal( 'Table alignment toolbar' );
+						} );
+
+						it( 'should have role=radio set on buttons', () => {
+							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).to.be.true;
+							expect( toolbar.items.length ).to.equal( 3 );
+						} );
 					} );
 				} );
 

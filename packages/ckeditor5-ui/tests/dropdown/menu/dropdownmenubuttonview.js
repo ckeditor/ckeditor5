@@ -5,7 +5,7 @@
 
 /* global Event */
 
-import { IconDropdownArrow } from 'ckeditor5/src/icons.js';
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
 import { IconView, ListItemButtonView } from '../../../src/index.js';

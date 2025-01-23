@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconCheck } from 'ckeditor5/src/icons.js';
+import { IconCheck } from '@ckeditor/ckeditor5-icons';
 import View from '../../src/view.js';
 import ViewCollection from '../../src/viewcollection.js';
 import FormHeaderView from '../../src/formheader/formheaderview.js';

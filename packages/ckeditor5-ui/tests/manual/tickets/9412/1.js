@@ -5,7 +5,7 @@
 
 /* globals window, document, console:false */
 
-import { IconBold } from 'ckeditor5/src/icons.js';
+import { IconBold } from '@ckeditor/ckeditor5-icons';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';

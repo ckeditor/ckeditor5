@@ -30,7 +30,17 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import {
+	IconAlignBottom,
+	IconAlignCenter,
+	IconAlignJustify,
+	IconAlignLeft,
+	IconAlignMiddle,
+	IconAlignRight,
+	IconAlignTop,
+	IconCancel,
+	IconCheck
+} from 'ckeditor5/src/icons.js';
 
 import {
 	fillToolbar,
@@ -697,13 +707,13 @@ export default class TableCellPropertiesView extends View {
 		const alignmentLabel = new LabelView( locale );
 
 		const ALIGNMENT_ICONS = {
-			left: icons.alignLeft,
-			center: icons.alignCenter,
-			right: icons.alignRight,
-			justify: icons.alignJustify,
-			top: icons.alignTop,
-			middle: icons.alignMiddle,
-			bottom: icons.alignBottom
+			left: IconAlignLeft,
+			center: IconAlignCenter,
+			right: IconAlignRight,
+			justify: IconAlignJustify,
+			top: IconAlignTop,
+			middle: IconAlignMiddle,
+			bottom: IconAlignBottom
 		};
 
 		alignmentLabel.text = t( 'Table cell text alignment' );
@@ -715,6 +725,7 @@ export default class TableCellPropertiesView extends View {
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Horizontal text alignment toolbar' )
 		} );
 
@@ -745,6 +756,7 @@ export default class TableCellPropertiesView extends View {
 
 		verticalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Vertical text alignment toolbar' )
 		} );
 
@@ -784,7 +796,7 @@ export default class TableCellPropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: icons.check,
+			icon: IconCheck,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -796,7 +808,7 @@ export default class TableCellPropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: icons.cancel,
+			icon: IconCancel,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

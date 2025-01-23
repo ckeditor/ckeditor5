@@ -17,7 +17,7 @@ import {
 	type Locale,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconCancel } from '@ckeditor/ckeditor5-icons';
 import ViewCollection from '../viewcollection.js';
 import View from '../view.js';
 import FormHeaderView from '../formheader/formheaderview.js';
@@ -696,7 +696,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 		buttonView.set( {
 			label: t( 'Close' ),
 			tooltip: true,
-			icon: icons.cancel
+			icon: IconCancel
 		} );
 
 		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close', { source: 'closeButton' } ) );

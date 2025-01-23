@@ -51,7 +51,7 @@ const EXCLUDED_ICONS = [
 ];
 
 // A pattern to match all the icons.
-const ALL_ICONS_PATTERN = 'packages/ckeditor5-icons/theme';
+const ALL_ICONS_PATTERN = 'packages/ckeditor5-icons/theme/icons';
 
 const { paths, verifyOnly } = parseArguments( process.argv.slice( 2 ) );
 
@@ -60,6 +60,8 @@ const globPattern = paths.map( pathToIcon => {
 } );
 
 let statusCode = 0;
+
+const missingViewBoxIcons = [];
 
 globSync( globPattern )
 	.map( upath.toUnix )
@@ -71,6 +73,15 @@ if ( verifyOnly && statusCode ) {
 	console.log( chalk.red(
 		'Execute "yarn run clean-up-svg-icons" to optimize them or add them to exceptions in "scripts/clean-up-svg-icons.js" file.\n'
 	) );
+
+	process.exit( statusCode );
+}
+
+if ( missingViewBoxIcons.length ) {
+	console.log();
+	console.log( chalk.red( 'Following icons have missing or invalid ViewBox:' ) );
+	console.log( missingViewBoxIcons.map( path => ` - ${ path }` ).join( '\n' ) );
+	console.log();
 
 	process.exit( statusCode );
 }
@@ -120,7 +131,19 @@ function processIcon( pathToIcon ) {
 		svgoOptions.push( '-o -' );
 	}
 
-	const result = execSync( `svgo ${ svgoOptions.join( ' ' ) }`, { encoding: 'utf-8' } ).trim();
+	let result;
+
+	try {
+		result = execSync( `svgo ${ svgoOptions.join( ' ' ) }`, { encoding: 'utf-8', stdio: 'pipe' } ).trim();
+	} catch ( err ) {
+		if ( err.message.includes( 'Error: Invalid or missing viewBox.' ) ) {
+			missingViewBoxIcons.push( pathToIcon );
+
+			statusCode = 1;
+		} else {
+			throw new Error( err );
+		}
+	}
 
 	if ( verifyOnly ) {
 		const iconFile = fs.readFileSync( pathToIcon, 'utf-8' ).trim();

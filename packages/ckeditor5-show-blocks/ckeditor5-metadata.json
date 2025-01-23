@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "showBlocks",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/show-blocks.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/show-blocks.svg"
 				}
 			]
 		}

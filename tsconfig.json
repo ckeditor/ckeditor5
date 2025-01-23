@@ -30,5 +30,8 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "include": [
+    "./typings/"
+  ]
 }

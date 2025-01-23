@@ -5,7 +5,7 @@
 
 /* globals window, console */
 
-import { IconAlignLeft, IconAlignCenter, IconAlignRight } from 'ckeditor5/src/icons.js';
+import { IconAlignLeft, IconAlignCenter, IconAlignRight } from '@ckeditor/ckeditor5-icons';
 import Model from '../../../src/model.js';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 

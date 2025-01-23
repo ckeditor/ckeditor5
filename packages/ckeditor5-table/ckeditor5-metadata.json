@@ -10,12 +10,12 @@
 				{
 					"type": "SplitButton",
 					"name": "insertTable",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/table.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table.svg"
 				},
 				{
 					"type": "Button",
 					"name": "tableColumn",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/table-column.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-column.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -23,7 +23,7 @@
 				{
 					"type": "Button",
 					"name": "tableRow",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/table-row.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-row.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -31,7 +31,7 @@
 				{
 					"type": "Button",
 					"name": "mergeTableCells",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/table-merge-cell.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-merge-cell.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -76,7 +76,7 @@
 				{
 					"type": "Button",
 					"name": "tableCellProperties",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/table-cell-properties.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -115,7 +115,7 @@
 				{
 					"type": "Button",
 					"name": "tableProperties",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/table-properties.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
