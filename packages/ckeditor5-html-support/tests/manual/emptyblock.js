@@ -28,12 +28,9 @@ ClassicEditor.create( document.getElementById( 'editor2' ), {
 
 const clipboardPreview = document.getElementById( 'clipboard-preview' );
 
-document.addEventListener( 'copy', evt => {
-	const html = evt.clipboardData.getData( 'text/html' );
-	clipboardPreview.textContent = html;
-} );
+function handleClipboardEvent( evt ) {
+	clipboardPreview.textContent = evt.clipboardData.getData( 'text/html' );
+}
 
-document.addEventListener( 'cut', evt => {
-	const html = evt.clipboardData.getData( 'text/html' );
-	clipboardPreview.textContent = html;
-} );
+document.addEventListener( 'copy', handleClipboardEvent );
+document.addEventListener( 'cut', handleClipboardEvent );
