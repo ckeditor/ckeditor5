@@ -21,16 +21,78 @@ const elements = {
 	emojiPicker: document.querySelector( '#editor-emoji-picker' )
 };
 
-Object.keys( elements )
-	.filter( name => name.startsWith( 'emoji' ) )
-	.forEach( name => {
-		const tempDiv = document.createElement( 'div' );
-		tempDiv.appendChild( elements.template.content.cloneNode( true ) );
+// Keeps active editor references.
+const editors = [];
 
-		elements[ name ].innerHTML = tempDiv.innerHTML;
+// Initial rendering.
+await reloadEditor();
+
+// Reload editors whenever the radio button is clicked.
+[ ...document.querySelectorAll( 'input[type="radio"]' ) ].forEach( element => {
+	element.addEventListener( 'input', async () => {
+		await reloadEditor();
 	} );
+} );
+
+async function reloadEditor() {
+	// Destroy existing editors.
+	await Promise.all(
+		editors.map( editor => editor.destroy() )
+	);
+
+	// Clear references.
+	editors.length = 0;
+
+	// Create new editors.
+	const promises = [
+		ClassicEditor.create( elements.emojiBoth, getEditorConfig( { extraPlugins: [ Emoji, Mention ] } ) )
+			.catch( err => {
+				console.error( err.stack );
+			} ),
+
+		ClassicEditor
+			.create(
+				elements.emojiMention,
+				getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } )
+			)
+			.catch( err => {
+				console.error( err.stack );
+			} ),
+
+		ClassicEditor
+			.create(
+				elements.emojiPicker,
+				getEditorConfig( { extraPlugins: [ EmojiPicker ] } )
+			)
+			.catch( err => {
+				console.error( err.stack );
+			} )
+
+	];
+
+	// Store references.
+	editors.push(
+		...await Promise.all( promises )
+	);
+}
 
 function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
+	const tempDiv = document.createElement( 'div' );
+	tempDiv.appendChild( elements.template.content.cloneNode( true ) );
+	const initialData = tempDiv.innerHTML;
+
+	const emoji = {};
+
+	const dbVersion = document.querySelector( 'input[name="unicode"]:checked' ).value;
+	const skinTone = document.querySelector( 'input[name="skin"]:checked' ).value;
+
+	if ( dbVersion !== 'null' ) {
+		emoji.version = parseInt( dbVersion );
+	}
+	if ( skinTone !== 'null' ) {
+		emoji.skinTone = skinTone;
+	}
+
 	return {
 		plugins: [
 			Mention,
@@ -47,35 +109,11 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 			'redo',
 			emojiButtonInToolbar ? 'emoji' : ''
 		].filter( Boolean ),
+		emoji,
 		menuBar: {
 			isVisible: true
-		}
+		},
+		initialData
 	};
 }
 
-ClassicEditor
-	.create(
-		elements.emojiBoth,
-		getEditorConfig( { extraPlugins: [ Emoji, Mention ] } )
-	)
-	.catch( err => {
-		console.error( err.stack );
-	} );
-
-ClassicEditor
-	.create(
-		elements.emojiMention,
-		getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } )
-	)
-	.catch( err => {
-		console.error( err.stack );
-	} );
-
-ClassicEditor
-	.create(
-		elements.emojiPicker,
-		getEditorConfig( { extraPlugins: [ EmojiPicker ] } )
-	)
-	.catch( err => {
-		console.error( err.stack );
-	} );
