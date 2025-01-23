@@ -12,7 +12,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
 
 import EmojiDatabase from './emojidatabase.js';
-import EmojiPickerView from './ui/emojipickerview.js';
+import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -209,7 +209,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		// Update the balloon position when layout is changed.
-		this.listenTo( emojiPickerView, 'update', () => {
+		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
 			if ( this._balloon.visibleView === emojiPickerView ) {
 				this._balloon.updatePosition();
 			}
