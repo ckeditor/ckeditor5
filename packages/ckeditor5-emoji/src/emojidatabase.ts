@@ -83,7 +83,7 @@ export default class EmojiDatabase extends Plugin {
 		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
 
 		// Skip the initialization if the emoji database download has failed.
-		// An empty database prevents the initialization of other dependent plugins as well: EmojiMention and EmojiPicker.
+		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
 		if ( !emojiDatabase.length ) {
 			return;
 		}
