@@ -9,7 +9,7 @@
 
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
-import { type Editor, icons, Plugin } from 'ckeditor5/src/core.js';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
 
 import EmojiDatabase from './emojidatabase.js';
 import EmojiPickerView from './ui/emojipickerview.js';
@@ -60,17 +60,6 @@ export default class EmojiPicker extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this.editor.config.define( 'emoji', {
-			skinTone: 'default'
-		} );
 	}
 
 	/**

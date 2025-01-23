@@ -66,7 +66,8 @@ export default class EmojiDatabase extends Plugin {
 		super( editor );
 
 		this.editor.config.define( 'emoji', {
-			version: 16
+			version: 16,
+			skinTone: 'default'
 		} );
 
 		this._emojiDatabase = [];
