@@ -12,8 +12,7 @@
   ],
   "sideEffects": [
     "*.css",
-    "build/**/*.js",
-    "tests/**/*.js"
+    "build/**/*.js"
   ],
   "type": "module",
   "main": "src/index.ts",
