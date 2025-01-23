@@ -245,6 +245,26 @@ describe( 'EmojiPicker', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 		} );
 
+		it( 'should update the balloon position on update event', () => {
+			const updatePositionSpy = sinon.spy( emojiPicker._balloon, 'updatePosition' );
+
+			emojiPicker.showUI();
+			emojiPicker._emojiPickerView.fire( 'update' );
+
+			sinon.assert.calledOnce( updatePositionSpy );
+		} );
+
+		it( 'should not update the balloon position on update event when visible view is not current emoji picker view', () => {
+			const updatePositionSpy = sinon.spy( emojiPicker._balloon, 'updatePosition' );
+
+			emojiPicker.showUI();
+			emojiPicker._balloon.visibleView = {};
+
+			emojiPicker._emojiPickerView.fire( 'update' );
+
+			sinon.assert.notCalled( updatePositionSpy );
+		} );
+
 		it( 'should close the picker when clicking outside of it', async () => {
 			emojiPicker.showUI();
 

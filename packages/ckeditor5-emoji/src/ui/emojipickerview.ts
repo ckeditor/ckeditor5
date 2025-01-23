@@ -238,10 +238,11 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 					isVisible: false
 				} );
 			}
+		} );
 
-			// TODO: So far, it does not work as expected.
-			// Messaging can impact a balloon's position. Let's update it.
-			// this.fire( 'update' );
+		// Emit an update event to react to balloon dimensions changes.
+		this.searchView.on<SearchTextViewSearchEvent>( 'search', () => {
+			this.fire( 'update' );
 		} );
 
 		// Update the grid of emojis when the selected category is changed.

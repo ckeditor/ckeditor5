@@ -208,10 +208,12 @@ export default class EmojiPicker extends Plugin {
 			this._hideUI();
 		} );
 
-		// TODO: How to resolve it smartly?
-		// this.listenTo( emojiPickerView, 'update', () => {
-		// 	this._balloon.updatePosition();
-		// } );
+		// Update the balloon position when layout is changed.
+		this.listenTo( emojiPickerView, 'update', () => {
+			if ( this._balloon.visibleView === emojiPickerView ) {
+				this._balloon.updatePosition();
+			}
+		} );
 
 		// Close the panel on `Esc` key press when the **actions have focus**.
 		emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {
