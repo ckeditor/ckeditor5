@@ -891,11 +891,17 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Used by {@link #_mergeAttributesFrom} to verify if the given element can be merged without conflicts into the element.
+	 * Verify if the given element can be merged without conflicts into the element.
 	 *
 	 * Note that this method is extended by the {@link module:engine/view/attributeelement~AttributeElement} implementation.
+	 *
+	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
+	 * @internal
+	 * @returns Returns `true` if elements can be merged.
 	 */
-	protected _canMergeAttributesFrom( otherElement: Element ): boolean {
+	public _canMergeAttributesFrom( otherElement: Element ): boolean {
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
@@ -921,20 +927,17 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Merges attributes of a given element into the element if there are no conflicts.
+	 * Merges attributes of a given element into the element.
 	 * This includes also tokenized attributes like style and class.
+	 *
+	 * Note that you should make sure there are no conflicts before merging (see {@link #_canMergeAttributesFrom}).
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
 	 *
 	 * @internal
-	 * @returns Returns `true` if elements are merged.
 	 */
-	public _mergeAttributesFrom( otherElement: Element ): boolean {
-		if ( !this._canMergeAttributesFrom( otherElement ) ) {
-			return false;
-		}
-
+	public _mergeAttributesFrom( otherElement: Element ): void {
 		this._fireChange( 'attributes', this );
 
 		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
@@ -948,16 +951,20 @@ export default class Element extends Node {
 				value._mergeFrom( otherValue );
 			}
 		}
-
-		return true;
 	}
 
 	/**
-	 * Used by {@link #_subtractAttributesOf} to verify if the given element attributes can be fully subtracted from the element.
+	 * Verify if the given element attributes can be fully subtracted from the element.
 	 *
 	 * Note that this method is extended by the {@link module:engine/view/attributeelement~AttributeElement} implementation.
+	 *
+	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 *
+	 * @internal
+	 * @returns Returns `true` if elements attributes can be fully subtracted.
 	 */
-	protected _canSubtractAttributesOf( otherElement: Element ): boolean {
+	public _canSubtractAttributesOf( otherElement: Element ): boolean {
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
@@ -987,17 +994,14 @@ export default class Element extends Node {
 	 * This includes also tokenized attributes like style and class.
 	 * All attributes, classes and styles from given element should be present inside the element being unwrapped.
 	 *
+	 * Note that you should make sure all attributes could be subtracted before subtracting them (see {@link #_canSubtractAttributesOf}).
+	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
 	 *
 	 * @internal
-	 * @returns Returns `true` if elements are unwrapped.
 	 */
-	public _subtractAttributesOf( otherElement: Element ): boolean {
-		if ( !this._canSubtractAttributesOf( otherElement ) ) {
-			return false;
-		}
-
+	public _subtractAttributesOf( otherElement: Element ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const [ key, otherValue ] of otherElement._attrs ) {
@@ -1014,8 +1018,6 @@ export default class Element extends Node {
 				}
 			}
 		}
-
-		return true;
 	}
 
 	/**

@@ -171,8 +171,10 @@ export default class AttributeElement extends Element {
 	/**
 	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to verify if the given element can be merged without
 	 * conflicts into this element.
+	 *
+	 * @internal
 	 */
-	protected override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
+	public override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
 		// Can't merge if any of elements have an id or a difference of priority.
 		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
 			return false;
@@ -184,8 +186,10 @@ export default class AttributeElement extends Element {
 	/**
 	 * Used by {@link module:engine/view/element~Element#_subtractAttributesOf} to verify if the given element attributes
 	 * can be fully subtracted from this element.
+	 *
+	 * @internal
 	 */
-	protected override _canSubtractAttributesOf( otherElement: AttributeElement ): boolean {
+	public override _canSubtractAttributesOf( otherElement: AttributeElement ): boolean {
 		// Can't subtract if any of elements have an id or a difference of priority.
 		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
 			return false;

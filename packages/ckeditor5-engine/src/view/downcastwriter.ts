@@ -1574,7 +1574,8 @@ export default class DowncastWriter {
 			//
 			// <p><span class="bar">abc</span></p>  -->  <p><span class="foo bar">abc</span></p>
 			//
-			if ( isAttribute && ( child as AttributeElement )._mergeAttributesFrom( wrapElement ) ) {
+			if ( isAttribute && child._canMergeAttributesFrom( wrapElement ) ) {
+				child._mergeAttributesFrom( wrapElement );
 				wrapPositions.push( new Position( parent, i ) );
 			}
 			//
@@ -1689,7 +1690,8 @@ export default class DowncastWriter {
 			// <p><span class="foo bar">abc</span>xyz</p>  -->  <p><span class="bar">abc</span>xyz</p>
 			// <p><i class="foo">abc</i>xyz</p>            -->  <p><i class="foo">abc</i>xyz</p>
 			//
-			if ( child._subtractAttributesOf( unwrapElement ) ) {
+			if ( child._canSubtractAttributesOf( unwrapElement ) ) {
+				child._subtractAttributesOf( unwrapElement );
 				unwrapPositions.push(
 					new Position( parent, i ),
 					new Position( parent, i + 1 )
