@@ -64,6 +64,16 @@ export default class EmojiSearchView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this.inputView.destroy();
+		this.gridView.destroy();
+	}
+
+	/**
 	 * Searches the {@link #gridView} for the given query.
 	 *
 	 * @param query The search query string.

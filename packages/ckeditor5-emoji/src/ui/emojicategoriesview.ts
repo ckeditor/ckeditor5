@@ -111,6 +111,7 @@ export default class EmojiCategoriesView extends View {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
+		this._buttonViews.destroy();
 	}
 
 	/**

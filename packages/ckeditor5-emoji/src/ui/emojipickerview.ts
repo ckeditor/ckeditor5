@@ -195,6 +195,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
+		this.items.destroy();
 	}
 
 	/**
