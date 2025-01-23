@@ -233,6 +233,9 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 		/**
 		 * Unable to load the emoji database from CDN.
 		 *
+		 * TODO: It could be a problem of CKEditor 5 CDN, but also, Content Security Policy that disallow the request.
+		 * It would be good to explain what to do in such a case.
+		 *
 		 * @error emoji-database-load-failed
 		 */
 		logWarning( 'emoji-database-load-failed' );
