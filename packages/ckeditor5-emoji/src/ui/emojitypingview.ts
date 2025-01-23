@@ -144,6 +144,10 @@ export default class EmojiTypingView extends View<HTMLDivElement> {
 	}
 
 	public search( searchQuery: string ): void {
+		this.gridView.tiles.forEach( tile => {
+			tile.element!.classList.remove( 'ck-focus' );
+		} );
+
 		const t = this.locale!.t;
 
 		if ( searchQuery.length < 2 ) {
