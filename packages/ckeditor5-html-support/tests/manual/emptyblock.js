@@ -10,18 +10,20 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Table } from '@ckeditor/ckeditor5-table';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { Bold, Code, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import EmptyBlock from '../../src/emptyblock.js';
 
-ClassicEditor.create( document.getElementById( 'editor1' ), {
-	plugins: [ Essentials, List, ListProperties, Bold, Italic, Code, Paragraph, Heading, SourceEditing, EmptyBlock ],
-	toolbar: [ 'sourceEditing', 'bulletedList', 'numberedList', 'bold', 'italic', 'heading' ]
-} );
+const config = {
+	plugins: [ Table, Essentials, List, ListProperties, Bold, Italic, Code, Paragraph, Heading, SourceEditing, EmptyBlock ],
+	toolbar: [ 'sourceEditing', '|', 'insertTable', 'bulletedList', 'numberedList', 'bold', 'italic', 'heading' ]
+};
 
+ClassicEditor.create( document.getElementById( 'editor1' ), config );
 ClassicEditor.create( document.getElementById( 'editor2' ), {
-	plugins: [ Essentials, List, ListProperties, Bold, Italic, Code, Paragraph, Heading, SourceEditing ],
-	toolbar: [ 'sourceEditing', 'bulletedList', 'numberedList', 'bold', 'italic', 'heading' ]
+	...config,
+	plugins: config.plugins.filter( plugin => plugin !== EmptyBlock )
 } );
 
 const clipboardPreview = document.getElementById( 'clipboard-preview' );
