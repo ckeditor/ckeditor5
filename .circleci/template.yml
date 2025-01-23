@@ -17,7 +17,7 @@ commands:
   install_newest_emoji:
     steps:
       - run:
-          name: Install newest emoji to enable emoji picker testing
+          name: Install the emoji font
           command: |
             sudo apt install fonts-noto-color-emoji
   halt_if_short_flow:
