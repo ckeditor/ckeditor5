@@ -8,7 +8,7 @@
 
 ### Things to check
 
-1. If you copy `<p>&nbsp;</p>` from the editor without EmptyBlock plugin, and then paste to the editor with the EmptyBlock plugin then the pasted content should be `<p>&nbsp;</p>`.
-2. If you copy `<p>&nbsp;</p>` from the editor with EmptyBlock plugin, and then paste to the editor without EmptyBlock plugin then the pasted content should be `<p>&nbsp;</p>`.
-3. If you copy `<p></p>` from the editor with EmptyBlock plugin, and then paste to the editor without EmptyBlock plugin then the pasted content should be `<p>&nbsp;</p>`.
-4. If you copy `<p></p>` from the editor with EmptyBlock plugin, and then paste to the same editor then the pasted content should be `<p></p>`.
+1. If you copy `<p>&nbsp;</p>` from the editor without the EmptyBlock plugin and then paste it to the editor with the EmptyBlock plugin, then the pasted content should be `<p>&nbsp;</p>`.
+2. If you copy `<p>&nbsp;</p>` from the editor with the EmptyBlock plugin and then paste it to the editor without the EmptyBlock plugin, then the pasted content should be `<p>&nbsp;</p>`.
+3. If you copy `<p></p>` from the editor with the EmptyBlock plugin and then paste it to the editor without the EmptyBlock plugin, then the pasted content should be `<p>&nbsp;</p>`.
+4. If you copy `<p></p>` from the editor with the EmptyBlock plugin and then paste it to the same editor, then the pasted content should be `<p></p>`.
