@@ -522,6 +522,7 @@ export default class DowncastWriter {
 	 *
 	 * @param key The attribute key.
 	 * @param value The attribute value.
+	 * @param element The element to set an attribute on.
 	 */
 	public setAttribute( key: string, value: unknown, element: Element ): void;
 
@@ -537,20 +538,21 @@ export default class DowncastWriter {
 	 *
 	 * @param key The attribute key.
 	 * @param value The attribute value.
-	 * @param reset Whether tokenized attribute should override the attribute value or just add a token.
+	 * @param overwrite Whether tokenized attribute should override the attribute value or just add a token.
+	 * @param element The element to set an attribute on.
 	 */
-	public setAttribute( key: string, value: unknown, reset: boolean, element: Element ): void;
+	public setAttribute( key: string, value: unknown, overwrite: boolean, element: Element ): void;
 
 	public setAttribute(
 		key: string,
 		value: unknown,
-		elementOrReset: Element | boolean,
+		elementOrOverwrite: Element | boolean,
 		element?: Element
 	): void {
 		if ( element !== undefined ) {
-			element._setAttribute( key, value, elementOrReset as boolean );
+			element._setAttribute( key, value, elementOrOverwrite as boolean );
 		} else {
-			( elementOrReset as Element )._setAttribute( key, value );
+			( elementOrOverwrite as Element )._setAttribute( key, value );
 		}
 	}
 
@@ -562,6 +564,7 @@ export default class DowncastWriter {
 	 * ```
 	 *
 	 * @param key Attribute key.
+	 * @param element The element to remove an attribute of.
 	 */
 	public removeAttribute( key: string, element: Element ): void;
 
@@ -574,6 +577,8 @@ export default class DowncastWriter {
 	 * ```
 	 *
 	 * @param key Attribute key.
+	 * @param tokens Tokens to partly remove from attribute value. For example class names or style property names.
+	 * @param element The element to remove an attribute of.
 	 */
 	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: Element ): void;
 

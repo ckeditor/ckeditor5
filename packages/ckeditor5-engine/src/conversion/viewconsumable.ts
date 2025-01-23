@@ -81,11 +81,6 @@ export default class ViewConsumable {
 	public add(
 		element: Text | Element | DocumentFragment,
 		consumables?: Consumables | NormalizedConsumables
-	): void;
-
-	public add(
-		element: Text | Element | DocumentFragment,
-		consumables?: Consumables | NormalizedConsumables
 	): void {
 		let elementConsumables: ViewElementConsumables;
 
@@ -274,7 +269,7 @@ export default class ViewConsumable {
 			instance.add( from );
 
 			for ( const child of from.getChildren() ) {
-				instance = ViewConsumable.createFrom( child, instance );
+				ViewConsumable.createFrom( child, instance );
 			}
 		}
 
@@ -285,7 +280,8 @@ export default class ViewConsumable {
 export interface Consumables {
 
 	/**
-	 * If set to true element's name will be included.
+	 * If set to `true` element's name will be included in a consumable.
+	 * Depending on the usage context it would be added as consumable, tested for being available for consume or consumed.
 	 */
 	name?: boolean;
 
@@ -308,7 +304,8 @@ export interface Consumables {
 export interface NormalizedConsumables {
 
 	/**
-	 * If set to true element's name will be included.
+	 * If set to `true` element's name will be included in a consumable.
+	 * Depending on the usage context it would be added as consumable, tested for being available for consume or consumed.
 	 */
 	name: boolean;
 
@@ -529,18 +526,19 @@ export class ViewElementConsumables {
 			// `value` must be set, because `this.test()` returned `true`.
 			const value = this._attributes.get( name )!;
 
-			// Plain not-consumed attribute.
+			// Plain (not tokenized) not-consumed attribute.
 			if ( typeof value == 'boolean' ) {
+				// Use Element API to collect related attributes.
 				for ( const [ toConsume ] of this.element._getConsumables( name, token ).attributes ) {
 					this._attributes.set( toConsume, false );
 				}
-			}
-			else if ( !token ) {
+			} else if ( !token ) {
 				// Tokenized attribute but token is not specified so consume all tokens.
 				for ( const token of value.keys() ) {
 					value.set( token, false );
 				}
 			} else {
+				// Use Element API to collect related attributes.
 				for ( const [ , toConsume ] of this.element._getConsumables( name, token ).attributes ) {
 					value.set( toConsume!, false );
 				}

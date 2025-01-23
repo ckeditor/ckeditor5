@@ -203,6 +203,7 @@ export default class Matcher {
 			return null;
 		}
 
+		// Note the `attributesMatch` array is populated by the above calls.
 		if ( attributesMatch.length ) {
 			match.attributes = attributesMatch;
 		}

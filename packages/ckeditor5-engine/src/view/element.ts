@@ -613,10 +613,10 @@ export default class Element extends Node {
 	 * @internal
 	 * @param key Attribute key.
 	 * @param value Attribute value.
-	 * @param reset Whether tokenized attribute should override the attribute value or just add a token.
+	 * @param overwrite Whether tokenized attribute should override the attribute value or just add a token.
 	 * @fires change
 	 */
-	public _setAttribute( key: string, value: unknown, reset = true ): void {
+	public _setAttribute( key: string, value: unknown, overwrite = true ): void {
 		this._fireChange( 'attributes', this );
 
 		if ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) {
@@ -630,7 +630,7 @@ export default class Element extends Node {
 				this._attrs.set( key, currentValue );
 			}
 
-			if ( reset ) {
+			if ( overwrite ) {
 				// If reset is set then value have to be a string to tokenize.
 				currentValue.setTo( String( value ) );
 			}
@@ -642,7 +642,7 @@ export default class Element extends Node {
 				}
 			}
 			else { // TokenList.
-				currentValue.set( typeof value == 'string' ? value.split( /\s+/ ) : value as ArrayOrItem<string> );
+				currentValue.set( typeof value == 'string' ? value.split( /\s+/ ) : value as Array<string> );
 			}
 		}
 		else {
@@ -1052,19 +1052,20 @@ export default class Element extends Node {
 				attrsMap.delete( key );
 			}
 			else if ( usesStylesMap( this.name, key ) ) {
-				attrsMap.set(
-					key,
-					value instanceof StylesMap ? value._clone() :
-						new StylesMap( this.document.stylesProcessor ).setTo( String( value ) )
-				);
+				// This is either an element clone so we need to clone styles map, or a new instance which requires value to be parsed.
+				const newValue = value instanceof StylesMap ?
+					value._clone() :
+					new StylesMap( this.document.stylesProcessor ).setTo( String( value ) );
+
+				attrsMap.set( key, newValue );
 			}
 			else if ( usesTokenList( this.name, key ) ) {
-				attrsMap.set(
-					key,
-					value instanceof TokenList ?
-						value._clone() :
-						new TokenList().setTo( String( value ) )
-				);
+				// This is either an element clone so we need to clone token list, or a new instance which requires value to be parsed.
+				const newValue = value instanceof TokenList ?
+					value._clone() :
+					new TokenList().setTo( String( value ) );
+
+				attrsMap.set( key, newValue );
 			}
 			else if ( typeof value != 'string' ) {
 				attrsMap.set( key, String( value ) );
