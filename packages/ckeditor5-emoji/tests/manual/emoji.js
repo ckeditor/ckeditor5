@@ -7,6 +7,7 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Emoji, EmojiMention, EmojiPicker } from '../../src/index.js';
+import EmojiTyping from '../../src/emojityping.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -16,6 +17,7 @@ import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 const elements = {
 	template: document.querySelector( '#content' ),
+	emojiTyping: document.querySelector( '#editor-emoji-typing' ),
 	emojiBoth: document.querySelector( '#editor-emoji-both' ),
 	emojiMention: document.querySelector( '#editor-emoji-mention' ),
 	emojiPicker: document.querySelector( '#editor-emoji-picker' )
@@ -52,6 +54,15 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 		}
 	};
 }
+
+ClassicEditor
+	.create(
+		elements.emojiTyping,
+		getEditorConfig( { extraPlugins: [ EmojiTyping ] } )
+	)
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 ClassicEditor
 	.create(
