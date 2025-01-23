@@ -171,6 +171,7 @@ describe( 'EmojiPickerView', () => {
 				emojiPickerView.searchView.fire( 'search', { query: '' } );
 
 				sinon.assert.calledOnce( fireSpy );
+				sinon.assert.calledWith( fireSpy, 'update' );
 			} );
 		} );
 	} );
