@@ -1238,45 +1238,45 @@ describe( 'table properties', () => {
 				it( 'should downcast "right" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;' );
+					assertTableStyle( editor, null, '', 'table-style-align-right' );
 				} );
 
 				it( 'should downcast "left" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;' );
+					assertTableStyle( editor, null, '', 'table-style-align-left' );
 				} );
 
 				it( 'should downcast "center" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'center', table ) );
 
-					assertTableStyle( editor, null, 'float:none;' );
+					assertTableStyle( editor, null, '', 'table-style-align-center' );
 				} );
 
 				it( 'should downcast changed tableAlignment (left -> right)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;' );
+					assertTableStyle( editor, null, '', 'table-style-align-left' );
 
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;' );
+					assertTableStyle( editor, null, '', 'table-style-align-right' );
 				} );
 
 				it( 'should downcast changed tableAlignment (right -> left)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;' );
+					assertTableStyle( editor, null, '', 'table-style-align-right' );
 
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;' );
+					assertTableStyle( editor, null, '', 'table-style-align-left' );
 				} );
 
 				it( 'should downcast removed tableAlignment (from left)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;' );
+					assertTableStyle( editor, null, '', 'table-style-align-left' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
@@ -1286,7 +1286,7 @@ describe( 'table properties', () => {
 				it( 'should downcast removed tableAlignment (from right)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;' );
+					assertTableStyle( editor, null, '', 'table-style-align-right' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
