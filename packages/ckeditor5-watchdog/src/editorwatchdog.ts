@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,22 +9,13 @@
 
 /* globals console */
 
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CKEditorError } from 'ckeditor5/src/utils.js';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { Editor, EditorConfig, Context, EditorReadyEvent } from 'ckeditor5/src/core.js';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
-
+import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
 import Watchdog, { type WatchdogConfig } from './watchdog.js';
-
-import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine.js';
+import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Node, Text, Element, Writer } from '@ckeditor/ckeditor5-engine';
+import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';
+import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
 
 /**
  * A watchdog for CKEditor 5 editors.

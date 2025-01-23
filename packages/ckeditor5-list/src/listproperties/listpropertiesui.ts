@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -367,17 +367,27 @@ function createListPropertiesView( {
 
 	if ( normalizedConfig.styles.listTypes.includes( listType ) ) {
 		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
-
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
 			parentCommandName,
 			listStyleCommand
 		} );
 
-		// The command can be ListStyleCommand or DocumentListStyleCommand.
-		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
+		const configuredListStylesTypes = normalizedConfig.styles.listStyleTypes;
+		let filteredDefinitions = styleDefinitions;
 
-		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
+		if ( configuredListStylesTypes ) {
+			const allowedTypes = configuredListStylesTypes[ listType ];
+
+			if ( allowedTypes ) {
+				filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+			}
+		}
+
+		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
+		styleButtonViews = filteredDefinitions
+			.filter( isStyleTypeSupported )
+			.map( styleButtonCreator );
 	}
 
 	const listPropertiesView = new ListPropertiesView( locale, {
@@ -455,7 +465,20 @@ function getMenuBarStylesMenuCreator(
 			parentCommandName,
 			listStyleCommand
 		} );
-		const styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
+
+		const configuredListStylesTypes = normalizedConfig.styles.listStyleTypes;
+		let filteredDefinitions = styleDefinitions;
+
+		if ( configuredListStylesTypes ) {
+			const listType = listCommand.type as 'numbered' | 'bulleted';
+			const allowedTypes = configuredListStylesTypes[ listType ];
+
+			if ( allowedTypes ) {
+				filteredDefinitions = styleDefinitions.filter( def => allowedTypes.includes( def.type ) );
+			}
+		}
+
+		const styleButtonViews = filteredDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
 		const listPropertiesView = new ListPropertiesView( locale, {
 			styleGridAriaLabel,
 			enabledProperties: {
