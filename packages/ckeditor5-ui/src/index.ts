@@ -92,7 +92,6 @@ export { default as IframeView } from './iframe/iframeview.js';
 export { default as LabelView } from './label/labelview.js';
 
 export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview.js';
-export { default as SearchTextQueryView } from './search/text/searchtextqueryview.js';
 export * from './labeledfield/utils.js';
 
 export { default as ListItemGroupView } from './list/listitemgroupview.js';

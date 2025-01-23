@@ -5,7 +5,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "sourceMap": false,
-    "declaration": true,
-    "moduleResolution": "bundler"
+    "declaration": true
   }
 }

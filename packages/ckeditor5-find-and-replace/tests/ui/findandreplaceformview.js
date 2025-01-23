@@ -674,7 +674,7 @@ describe( 'FindAndReplaceFormView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'should focus the #inputView', () => {
+		it( 'should focus the #findInputView', () => {
 			const spy = sinon.spy( view._findInputView, 'focus' );
 
 			view.focus();
