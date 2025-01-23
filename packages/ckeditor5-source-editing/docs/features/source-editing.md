@@ -1,11 +1,11 @@
 ---
-category: features
-menu-title: Source editing
-meta-title: Source editing | CKEditor 5 Documentation
+category: source-code-editing
+menu-title: Source code editing
+meta-title: Source code editing | CKEditor 5 Documentation
 modified_at: 2024-02-06
 ---
 
-# Source editing
+# Source code editing
 {@snippet features/source-editing-imports}
 
 The source editing feature lets you view and edit the source of your document.
