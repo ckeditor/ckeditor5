@@ -11,6 +11,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
@@ -26,7 +27,7 @@ describe( 'EmptyBlock', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote ]
+			plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ]
 		} );
 
 		model = editor.model;
@@ -346,6 +347,82 @@ describe( 'EmptyBlock', () => {
 		} );
 	} );
 
+	describe( 'clipboard pipeline', () => {
+		it( 'should not crash the editor if there is no clipboard plugin', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ EmptyBlock ]
+			} );
+
+			expect( editor.plugins.get( 'EmptyBlock' ) ).to.be.instanceOf( EmptyBlock );
+		} );
+
+		describe( 'copying content', () => {
+			it( 'should not add block filler in copied model element with `htmlEmptyBlock` attribute', () => {
+				const dataTransferMock = createDataTransfer();
+
+				setModelData( model,
+					'[<paragraph htmlEmptyBlock="true"></paragraph>' +
+					'<paragraph></paragraph>]'
+				);
+
+				view.document.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: sinon.spy()
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+					'<p></p><p>&nbsp;</p>'
+				);
+			} );
+		} );
+
+		describe( 'pasting content', () => {
+			it( 'should not add block filler if paste within editor', () => {
+				const dataTransferMock = createDataTransfer( {
+					'application/ckeditor5-editor-id': editor.id,
+					'text/html': '<p></p><p>Foo</p>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph htmlEmptyBlock="true"></paragraph>' +
+					'<paragraph>Foo[]</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal( '<p></p><p>Foo</p>' );
+			} );
+
+			it( 'should add block filler if paste from another editor', () => {
+				const dataTransferMock = createDataTransfer( {
+					'application/ckeditor5-editor-id': 'it-is-absolutely-different-editor',
+					'text/html': '<p></p><p>Foo</p>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph></paragraph>' +
+					'<paragraph>Foo[]</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>Foo</p>' );
+			} );
+		} );
+	} );
+
 	function registerInlinePlaceholderWidget() {
 		model.schema.register( 'placeholder', {
 			inheritAllFrom: '$inlineObject',
@@ -379,5 +456,19 @@ describe( 'EmptyBlock', () => {
 			model: 'placeholder',
 			view: ( _, { writer } ) => writer.createContainerElement( 'span', { class: 'placeholder' } )
 		} );
+	}
+
+	function createDataTransfer( data = {} ) {
+		const store = Object.create( data );
+
+		return {
+			setData( type, data ) {
+				store[ type ] = data;
+			},
+
+			getData( type ) {
+				return store[ type ];
+			}
+		};
 	}
 } );
