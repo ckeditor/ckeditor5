@@ -178,11 +178,6 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		this.focusTracker.add( this.gridView.element! );
 		this.focusTracker.add( this.infoView.element! );
 
-		// We need to disable listening for all events within the `SearchTextView` view.
-		// Otherwise, its own focus tracker interfere with `EmojiPickerView` which leads to unexpected results.
-		// TODO: Could we reuse `keystrokes` from `inputView` instead creating a new one?
-		this.searchView.inputView.keystrokes.stopListening();
-
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
 	}
