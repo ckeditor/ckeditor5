@@ -4,12 +4,12 @@
  */
 
 /**
- * @module fullscreen
+ * @module full-screen
  */
 
 export { default as Fullscreen } from './fullscreen.js';
 export { default as FullScreenEditing } from './fullscreenediting.js';
 export { default as FullScreenUI } from './fullscreenui.js';
-export { default as FullScreenCommand } from './fullscreencommand.js';
+export type { default as FullScreenCommand } from './fullscreencommand.js';
 
 import './augmentation.js';
