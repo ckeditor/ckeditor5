@@ -12,6 +12,7 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
@@ -48,7 +49,6 @@ import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformatio
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage.js';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import Style from '@ckeditor/ckeditor5-style/src/style.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
@@ -71,9 +71,9 @@ const commonConfig = {
 		CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 		EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 		AutoLink, Mention, TextTransformation,
-		Alignment, IndentBlock, Bookmark,
+		Alignment, IndentBlock, Bookmark, BlockQuote,
 		PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
-		SpecialCharacters, SpecialCharactersEssentials, WordCount,
+		SpecialCharacters, SpecialCharactersEssentials,
 		CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, FullScreen
 	],
 	toolbar: [
