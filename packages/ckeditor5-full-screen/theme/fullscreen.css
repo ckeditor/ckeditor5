@@ -3,24 +3,38 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* Increase z-index of everything to make sure nothing sticks in front of the editor. */
 body.ck-fullscreen {
-	--ck-z-default: 10000;
+	--ck-z-fullscreen: 10000;
+	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
 	--ck-z-panel: calc(var(--ck-z-default) + 999);
 	--ck-z-dialog: 100000;
 }
 
-.ck-full-screen-container {
+/*
+Full screen layout:
+
+<div class="ck ck-full-screen__main-container">
+	<div class="ck ck-full-screen__top-wrapper ck-reset_all">
+		<div class="ck ck-full-screen__menu-bar" data-ck-full-screen-placeholder="menu-bar"></div>
+		<div class="ck ck-full-screen__toolbar" data-ck-full-screen-placeholder="toolbar"></div>
+	</div>
+	<div class="ck ck-full-screen__editor-wrapper">
+		<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="left-sidebar"></div>
+		<div class="ck ck-full-screen__editor" data-ck-full-screen-placeholder="editor"></div>
+		<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="right-sidebar"></div>
+	</div>
+</div>
+*/
+
+.ck-full-screen__main-container {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 10000;
+	z-index: var(--ck-z-fullscreen);
 	background: var(--ck-color-base-foreground);
-}
-
-.ck-full-screen__main-container {
-	height: 100%;
 	display: flex;
 	flex-direction: column;
 }
@@ -29,14 +43,14 @@ body.ck-fullscreen {
 	border: none;
 }
 
-.ck-full-screen-container .ck-full-screen__editor-wrapper {
+.ck-full-screen__main-container .ck-full-screen__editor-wrapper {
 	display: flex;
 	justify-content: center;
 	overflow: auto;
 	max-height: 100%;
 }
 
-.ck-full-screen-container .ck-full-screen__sidebar {
+.ck-full-screen__main-container .ck-full-screen__sidebar {
 	width: 270px;
 	margin-top: 28px;
 	margin-left: 10px;
@@ -45,13 +59,13 @@ body.ck-fullscreen {
 	flex-shrink: 0;
 }
 
-.ck-full-screen-container .ck-full-screen__editor {
+.ck-full-screen__main-container .ck-full-screen__editor {
 	margin-top: 28px;
 	margin-bottom: 56px;
 	height: 100%;
 }
 
-.ck-full-screen-container .ck-full-screen__editor .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+.ck-full-screen__main-container .ck-full-screen__editor .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
 	min-width: calc(210mm + 2px);
 	max-width: calc(210mm + 2px);
@@ -63,6 +77,6 @@ body.ck-fullscreen {
 	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
 }
 
-.ck-full-screen-container .ck-full-screen__editor .ck-source-editing-area {
+.ck-full-screen__main-container .ck-full-screen__editor .ck-source-editing-area {
 	min-width: calc(210mm + 2px);
 }
