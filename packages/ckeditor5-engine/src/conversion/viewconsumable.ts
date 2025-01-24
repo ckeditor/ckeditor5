@@ -277,6 +277,29 @@ export default class ViewConsumable {
 	}
 }
 
+/**
+ * Object describing all features of a view element that could be consumed and converted individually.
+ * This is a non-normalized form of {@link module:engine/view/element~NormalizedConsumables} generated from the view Element.
+ *
+ * Example element:
+ *
+ * ```html
+ * <a class="foo bar" style="color: red; margin: 5px" href="https://ckeditor.com" rel="nofollow noreferrer" target="_blank">
+ * ```
+ *
+ * The `Consumables` would include:
+ *
+ * ```json
+ * {
+ * 	name: true,
+ * 	classes: [ "foo", "bar" ],
+ * 	styles: [ "color", "margin" ]
+ * }
+ * ```
+ *
+ * You could convert a `Consumable` into a {@link module:engine/view/element~NormalizedConsumables}
+ * using the {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper.
+ */
 export interface Consumables {
 
 	/**

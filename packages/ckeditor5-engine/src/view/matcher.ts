@@ -80,16 +80,25 @@ export default class Matcher {
 	 * 	pattern: <pattern used to match found element>,
 	 * 	match: {
 	 * 		name: true,
-	 * 		attributes: [ 'title', 'href' ],
-	 * 		classes: [ 'foo' ],
-	 * 		styles: [ 'color', 'position' ]
+	 * 		attributes: [
+	 * 			[ 'title' ],
+	 * 			[ 'href' ],
+	 * 			[ 'class', 'foo' ],
+	 * 			[ 'style', 'color' ],
+	 * 			[ 'style', 'position' ]
+	 * 		]
 	 * 	}
 	 * }
 	 * ```
 	 *
+	 * You could use the `match` field from the above returned object as an input for the
+	 * {@link module:engine/conversion/viewconsumable~ViewConsumable#test `ViewConsumable#test()`} and
+	 * {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable#consume()`} methods.
+	 *
 	 * @see module:engine/view/matcher~Matcher#add
 	 * @see module:engine/view/matcher~Matcher#matchAll
 	 * @param element View element to match against stored patterns.
+	 * @returns The match information about found element or `null`.
 	 */
 	public match( ...element: Array<Element> ): MatchResult | null {
 		for ( const singleElement of element ) {
@@ -657,7 +666,7 @@ function matchStyles(
  * 		const size = fontSize.match( /(\d+)/px );
  *
  * 		if ( size && Number( size[ 1 ] ) > 26 ) {
- * 			return { name: true, attributes: [ 'font-size' ] };
+ * 			return { name: true, styles: [ 'font-size' ] };
  * 		}
  * 	}
  *

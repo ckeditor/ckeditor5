@@ -1241,7 +1241,36 @@ export interface ElementAttributeValue {
 export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unknown ]> | null;
 
 /**
- * TODO
+ * Object describing all features of a view element that could be consumed and converted individually.
+ * This is a normalized form of {@link module:engine/conversion/viewconsumable~Consumables} generated from the view Element.
+ *
+ * Example element:
+ *
+ * ```html
+ * <a class="foo bar" style="color: red; margin: 5px" href="https://ckeditor.com" rel="nofollow noreferrer" target="_blank">
+ * ```
+ *
+ * The `NormalizedConsumables` would include:
+ *
+ * ```json
+ * {
+ * 	name: true,
+ * 	attributes: [
+ * 		[ "class", "foo" ],
+ * 		[ "class", "bar" ],
+ * 		[ "style", "color" ],
+ * 		[ "style", "margin-top" ],
+ * 		[ "style", "margin-right" ],
+ * 		[ "style", "margin-bottom" ],
+ * 		[ "style", "margin-left" ],
+		[ "style", "margin" ],
+ * 		[ "href" ],
+ * 		[ "rel", "nofollow" ],
+ * 		[ "rel", "noreferrer" ],
+ * 		[ "target" ]
+ * 	]
+ * }
+ * ```
  */
 export interface NormalizedConsumables {
 
