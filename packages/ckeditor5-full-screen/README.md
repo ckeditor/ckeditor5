@@ -1,4 +1,4 @@
-CKEditor&nbsp;5 Full screen Feature
+CKEditor&nbsp;5 full screen feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-fullscreen.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-fullscreen)
@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the demo in the [fullscreen feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/fullscreen.html#demo).
+Check out the demo in the [full screen feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/full-screen.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-fullscreen` package](https://ckeditor.com/docs/ckeditor5/latest/api/fullscreen.html) page as well as the [Fullscreen feature](https://ckeditor.com/docs/ckeditor5/latest/features/fullscreen.html) guide in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-full-screen` package](https://ckeditor.com/docs/ckeditor5/latest/api/full-screen.html) page as well as the [Fullscreen feature](https://ckeditor.com/docs/ckeditor5/latest/features/full-screen.html) guide in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

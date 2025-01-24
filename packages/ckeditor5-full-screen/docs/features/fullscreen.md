@@ -1,25 +1,20 @@
 ---
-title: Fullscreen mode
-menu-title: Fullscreen mode
-meta-title: Fullscreen mode | CKEditor 5 Documentation
+title: Full screen mode
+menu-title: Full screen mode
+meta-title: Full screen mode | CKEditor 5 Documentation
 category: features
-classes: main__content--no-toc
 toc: false
 contributeUrl: false
-modified_at: 2025-01-16
+modified_at: 2025-01-22
 ---
 
 @TODO - description
-
-<info-box warning>
-	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments, and feature requests, please refer to the [issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/10089).
-</info-box>
 
 ## Demo
 
 @TODO
 
-{@snippet features/fullscreen}
+<!-- {@snippet features/fullscreen} -->
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -37,13 +32,13 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { DecoupledEditor, Fullscreen } from 'ckeditor5';
+import { DecoupledEditor, FullScreen } from 'ckeditor5';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Fullscreen, /* ... */ ],
-		fullscreen: {
+		plugins: [ FullScreen, /* ... */ ],
+		fullScreen: {
 			// Configuration.
 		}
 	} )
@@ -55,7 +50,7 @@ DecoupledEditor
 ## Configuration
 
 <info-box>
-	For more technical details, please check the {@link module:fullscreen/fullscreenconfig~FullscreenConfig plugin configuration API}.
+	For more technical details, please check the {@link module:full-screen/fullscreenconfig~FullScreenConfig plugin configuration API}.
 </info-box>
 
 ## Related features

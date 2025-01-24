@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import FullScreenUI from './fullscreenui.js';
 import FullScreenEditing from './fullscreenediting.js';
+import FullScreenUI from './fullscreenui.js';
 
 /**
  * The full screen mode feature.
@@ -35,12 +35,5 @@ export default class FullScreen extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public init(): void {
-		console.log( 'Plugin loaded.' );
 	}
 }

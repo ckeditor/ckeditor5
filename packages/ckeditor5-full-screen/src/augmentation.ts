@@ -11,10 +11,6 @@ import type {
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-	}
-
 	interface PluginsMap {
 		[ Fullscreen.pluginName ]: Fullscreen;
 		[ FullScreenEditing.pluginName ]: FullScreenEditing;
