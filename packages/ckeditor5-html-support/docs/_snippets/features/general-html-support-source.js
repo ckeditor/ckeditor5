@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
+/* globals window, LICENSE_KEY */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import { Code } from '@ckeditor/ckeditor5-basic-styles';
 import { ImageUpload, PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
 import { FullPage, GeneralHtmlSupport, HtmlComment } from '@ckeditor/ckeditor5-html-support';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
@@ -25,7 +25,7 @@ ClassicEditor.builtinPlugins.push(
 	CloudServices,
 	Code,
 	ImageUpload,
-	SourceEditing,
+	SourceEditingEnhanced,
 	PictureEditing,
 	ImageInsert,
 	ImageResize,
@@ -39,7 +39,7 @@ ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
-			'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
+			'undo', 'redo', '|', 'sourceEditingEnhanced', '|', 'heading',
 			'|', 'bold', 'italic',
 			'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
@@ -61,7 +61,7 @@ ClassicEditor.defaultConfig = {
 		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 		forceDemoLabel: true
 	},
-	licenseKey: 'GPL'
+	licenseKey: LICENSE_KEY
 };
 
 window.ClassicEditor = ClassicEditor;
