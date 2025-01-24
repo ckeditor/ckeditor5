@@ -38,6 +38,9 @@ export default class FullScreenCommand extends Command {
 	public constructor( editor: Editor ) {
 		super( editor );
 
+		// Choose the appropriate handler based on the editor type.
+		// Currently only ClassicEditor and DecoupledEditor are supported. For other editor types, the abstract handler is used
+		// which will throw if user tries to enable the full screen mode.
 		if ( editor instanceof ClassicEditor ) {
 			this._fullScreenHandler = new ClassicEditorHandler( editor );
 		} else if ( editor instanceof DecoupledEditor ) {
@@ -48,7 +51,7 @@ export default class FullScreenCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Toggles the full screen mode.
 	 */
 	public override execute(): void {
 		if ( this.value ) {
@@ -62,6 +65,8 @@ export default class FullScreenCommand extends Command {
 	 * Enables the full screen mode.
 	 */
 	private _enableFullScreenMode(): void {
+		document.body.classList.add( 'ck-fullscreen' );
+
 		this._fullScreenHandler.enable();
 
 		this.value = true;
@@ -71,6 +76,8 @@ export default class FullScreenCommand extends Command {
 	 * Disables the full screen mode.
 	 */
 	private _disableFullScreenMode(): void {
+		document.body.classList.remove( 'ck-fullscreen' );
+
 		this._fullScreenHandler.disable();
 
 		this.value = false;
