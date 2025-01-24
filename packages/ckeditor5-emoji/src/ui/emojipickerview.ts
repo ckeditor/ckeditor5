@@ -113,7 +113,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			skinTones
 		} );
 
-		this.items = this.createCollection();
+		this.items = this.createCollection( [
+			this.searchView,
+			this.toneView,
+			this.categoriesView,
+			this.gridView,
+			this.infoView
+		] );
+
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.focusCycler = new FocusCycler( {
@@ -156,12 +163,6 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 				class: [ 'ck', 'ck-emoji', 'ck-search' ]
 			}
 		} );
-
-		this.items.add( this.searchView );
-		this.items.add( this.toneView );
-		this.items.add( this.categoriesView );
-		this.items.add( this.gridView );
-		this.items.add( this.infoView );
 
 		this._setupEventListeners();
 	}
@@ -249,7 +250,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		// Update the grid of emojis when the selected skin tone is changed.
 		// In such a case, the displayed emoji should use an updated skin tone value.
-		this.toneView.on<ObservableChangeEvent>( 'change:skinTone', ( evt, propertyName, newValue ) => {
+		this.toneView.on<ObservableChangeEvent<SkinToneId>>( 'change:skinTone', ( evt, propertyName, newValue ) => {
 			this.gridView.skinTone = newValue;
 			this.searchView.search( this.searchView.getInputValue() );
 		} );

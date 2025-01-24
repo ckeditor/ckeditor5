@@ -3,14 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
-
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
 .ck.ck-emoji {
 	width: 320px;
 }
@@ -24,9 +16,9 @@
 }
 
 /*
-* Classes used by the "fake visual selection" displayed in the content when an input
-* in the emoji picker UI has focus (the browser does not render the native selection in this state).
-*/
+ * Classes used by the "fake visual selection" displayed in the content when an input
+ * in the emoji picker UI has focus (the browser does not render the native selection in this state).
+ */
 .ck .ck-fake-emoji-selection {
 	background: var(--ck-color-link-fake-selection);
 }
