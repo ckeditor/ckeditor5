@@ -59,7 +59,7 @@ We are open for feedback, so if you find any issue, feel free to report it in th
 
 CKEditor&nbsp;5 has other features related to HTML editing you may want to check:
 
-* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Provides the ability for viewing and editing the source of the document in a handy modal window with syntax highlighting and more in all editor types. When paired, these two plugins let the user gain powerful control over the content editing.
+* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
 
 ## Contribute

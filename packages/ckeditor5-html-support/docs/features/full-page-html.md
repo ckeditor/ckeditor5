@@ -56,5 +56,5 @@ Here are some examples of the HTML elements you can enable with this plugin:
 CKEditor&nbsp;5 has other features related to HTML editing that you may want to check:
 
 * {@link features/general-html-support General HTML Support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor&nbsp;5 plugins.
-* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Provides the ability for viewing and editing the source of the document in a handy modal window with syntax highlighting and more in all editor types.
+* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.
