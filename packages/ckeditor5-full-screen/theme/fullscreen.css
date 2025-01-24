@@ -3,6 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+body.ck-fullscreen {
+	--ck-z-default: 10000;
+	--ck-z-panel: calc(var(--ck-z-default) + 999);
+	--ck-z-dialog: 100000;
+}
+
 .ck-full-screen-container {
 	position: fixed;
 	top: 0;
@@ -55,4 +61,8 @@
 	border: 1px hsl(0, 0%, 82.7%) solid;
 	background: hsl(0, 0%, 100%);
 	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+}
+
+.ck-full-screen-container .ck-full-screen__editor .ck-source-editing-area {
+	min-width: calc(210mm + 2px);
 }
