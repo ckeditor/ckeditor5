@@ -7,7 +7,7 @@
  * @module full-screen
  */
 
-export { default as Fullscreen } from './fullscreen.js';
+export { default as FullScreen } from './fullscreen.js';
 export { default as FullScreenEditing } from './fullscreenediting.js';
 export { default as FullScreenUI } from './fullscreenui.js';
 export type { default as FullScreenCommand } from './fullscreencommand.js';
