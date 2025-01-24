@@ -24,6 +24,7 @@ export * from '@ckeditor/ckeditor5-editor-classic';
 export * from '@ckeditor/ckeditor5-editor-decoupled';
 export * from '@ckeditor/ckeditor5-editor-inline';
 export * from '@ckeditor/ckeditor5-editor-multi-root';
+export * from '@ckeditor/ckeditor5-emoji';
 export * from '@ckeditor/ckeditor5-engine';
 export * from '@ckeditor/ckeditor5-enter';
 export * from '@ckeditor/ckeditor5-essentials';

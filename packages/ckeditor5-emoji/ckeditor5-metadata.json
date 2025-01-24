@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Emoji",
+			"className": "Emoji",
+			"description": "Allows for inserting emojis via a dropdown or by typing `:` followed by emoji name.",
+			"path": "src/emoji.js",
+			"docs": "features/emoji.html"
+		}
+	]
+}

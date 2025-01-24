@@ -125,6 +125,8 @@ import remove from './../theme/icons/remove.svg';
 import bookmark from './../theme/icons/bookmark.svg';
 import bookmarkInline from './../theme/icons/bookmark_inline.svg';
 
+import emoji from './../theme/icons/emoji.svg';
+
 export const icons = {
 	bold,
 	cancel,
@@ -206,7 +208,9 @@ export const icons = {
 	remove,
 
 	bookmark,
-	bookmarkInline
+	bookmarkInline,
+
+	emoji
 };
 
 import './augmentation.js';
