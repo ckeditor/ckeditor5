@@ -72,14 +72,14 @@ describe( 'EmojiGridView', () => {
 
 		it( 'creates #element from template', () => {
 			expect( view.element.getAttribute( 'role' ) ).to.equal( 'tabpanel' );
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).to.equal( true );
+			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).to.equal( true );
 
 			const tilesContainer = view.element.firstChild;
 
 			expect( tilesContainer.getAttribute( 'role' ) ).to.equal( 'grid' );
-			expect( tilesContainer.classList.contains( 'ck' ) ).to.be.true;
-			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).to.be.true;
+			expect( tilesContainer.classList.contains( 'ck' ) ).to.equal( true );
+			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).to.equal( true );
 		} );
 
 		describe( 'Focus management across the grid items using arrow keys', () => {
@@ -207,38 +207,6 @@ describe( 'EmojiGridView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
-		} );
-	} );
-
-	describe( 'createTile()', () => {
-		it( 'creates a new tile button', () => {
-			const tile = view._createTile( '😊', 'smile' );
-
-			expect( tile ).to.be.instanceOf( ButtonView );
-			expect( tile.viewUid ).to.equal( '😊' );
-			expect( tile.label ).to.equal( '😊' );
-			expect( tile.withText ).to.be.true;
-			expect( tile.class ).to.equal( 'ck-emoji__tile' );
-		} );
-
-		it( 'delegates #execute from the tile to the grid', () => {
-			const tile = view._createTile( '😊', 'smile' );
-			const spy = sinon.spy();
-
-			view.on( 'execute', spy );
-			tile.fire( 'execute' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
-		} );
-
-		it( 'adds created tile to the collection of cached tiles', () => {
-			expect( view.cachedTiles.has( '😊' ) ).to.equal( false );
-
-			const tile = view._createTile( '😊', 'smile' );
-
-			expect( view.cachedTiles.has( '😊' ) ).to.equal( true );
-			expect( view.cachedTiles.get( '😊' ) ).to.equal( tile );
 		} );
 	} );
 
@@ -379,6 +347,46 @@ describe( 'EmojiGridView', () => {
 
 			expect( view.cachedTiles.length ).to.equal( 1 );
 			expect( view.tiles.get( '😀' ) ).to.equal( view.cachedTiles.get( '😀' ) );
+		} );
+	} );
+
+	describe( '_createTile()', () => {
+		it( 'creates a new tile button', () => {
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( tile ).to.be.instanceOf( ButtonView );
+			expect( tile.viewUid ).to.equal( '😊' );
+			expect( tile.label ).to.equal( '😊' );
+			expect( tile.tooltip ).to.equal( 'smile' );
+			expect( tile.class ).to.equal( 'ck-emoji__tile' );
+			expect( tile.withText ).to.equal( true );
+		} );
+
+		it( 'does not use the `[aria-labelled-by]` attribute as the button is descriptive enough', () => {
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( tile.ariaLabel ).to.equal( 'smile' );
+			expect( tile.ariaLabelledBy ).to.equal( undefined );
+		} );
+
+		it( 'delegates `execute` from the tile to the grid', () => {
+			const tile = view._createTile( '😊', 'smile' );
+			const spy = sinon.spy();
+
+			view.on( 'execute', spy );
+			tile.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
+		} );
+
+		it( 'adds created tile to the collection of cached tiles', () => {
+			expect( view.cachedTiles.has( '😊' ) ).to.equal( false );
+
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( view.cachedTiles.has( '😊' ) ).to.equal( true );
+			expect( view.cachedTiles.get( '😊' ) ).to.equal( tile );
 		} );
 	} );
 } );

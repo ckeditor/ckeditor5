@@ -66,7 +66,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 	/**
 	 * A collection of all already created tile views. Each tile represents a particular emoji.
-	 * The cached tiles collection is used for efficiency purposes to avoid re-creating a particual
+	 * The cached tiles collection is used for efficiency purposes to avoid re-creating a particular
 	 * tile again when the grid view has changed.
 	 */
 	private readonly cachedTiles: ViewCollection<ButtonView>;
@@ -247,18 +247,16 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	private _createTile( emoji: string, name: string ): ButtonView {
 		const tile = new ButtonView( this.locale );
 
-		tile.viewUid = emoji;
-
 		tile.set( {
+			viewUid: emoji,
 			label: emoji,
+			tooltip: name,
 			withText: true,
-			class: 'ck-emoji__tile'
-		} );
-
-		tile.extendTemplate( {
-			attributes: {
-				title: name
-			}
+			class: 'ck-emoji__tile',
+			ariaLabel: name,
+			// To improve accessibility, disconnect a button and its label connection so that screen
+			// readers can read the `[aria-label]` attribute directly from the more descriptive button.
+			ariaLabelledBy: undefined
 		} );
 
 		tile.on( 'execute', () => {
