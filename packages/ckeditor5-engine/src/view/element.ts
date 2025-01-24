@@ -793,6 +793,83 @@ export default class Element extends Node {
 	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tuples
 	 * (attribute name and optional token).
 	 *
+	 * Note that patterns should be normalized from a {@link module:engine/view/matcher~MatcherObjectPattern} to
+	 * an array of {@link module:engine/view/matcher~NormalizedPropertyPattern}s
+	 * using the {@link module:engine/view/matcher~normalizePatterns} helper.
+	 *
+	 * Normalized patterns can be used in following ways:
+	 * - to match any attribute name with any or no value:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ true, true ]
+	 * ]
+	 * ```
+	 *
+	 * - to match a specific attribute with any value:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ 'required', true ]
+	 * ]
+	 * ```
+	 *
+	 * - to match an attribute name with a RegExp with any value:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ /h[1-6]/, true ]
+	 * ]
+	 * ```
+	 *
+	 * 	- to match a specific attribute with the exact value:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ 'rel', 'nofollow' ]
+	 * ]
+	 * ```
+	 *
+	 * 	- to match a specific attribute with a value matching a RegExp:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ 'src', /^https/ ]
+	 * ]
+	 * ```
+	 *
+	 * 	- to match an attribute name with a RegExp and the exact value:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ /^data-property-/, 'foobar' ],
+	 * ]
+	 * ```
+	 *
+	 * 	- to match an attribute name with a RegExp and match a value with another RegExp:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ /^data-property-/, /^foo/ ]
+	 * ]
+	 * ```
+	 *
+	 * 	- to match a specific style property with the value matching a RegExp:
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ 'style', 'font-size', /px$/ ]
+	 * ]
+	 * ```
+	 *
+	 * 	- to match a specific class (class attribute is tokenized so it matches tokens individually):
+	 *
+	 * ```ts
+	 * patterns: [
+	 * 	[ 'class', 'foo' ]
+	 * ]
+	 * ```
+	 *
 	 * @internal
 	 * @param patterns An array of normalized patterns (tuples of 2 or 3 items depending on if tokenized attribute value match is needed).
 	 * @param match An array to populate with matching tuples.

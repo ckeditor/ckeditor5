@@ -252,7 +252,8 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
 }
 
 /**
- * Bring all the possible pattern forms to an array of arrays where first item is a key and second is a value.
+ * Bring all the possible pattern forms to an array of tuples where first item is a key, second is a value,
+ * and third optional is a token value.
  *
  * Examples:
  *
