@@ -118,8 +118,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				</span>
 			</td>
 			<td>
-				The enhanced source code editing feature lets you view and edit the source of your document
-				in a handy modal window with syntax highlighting in all editor types.
+				Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 			</td>
 		</tr>
 		<tr id="block-formatting" class="feature">
