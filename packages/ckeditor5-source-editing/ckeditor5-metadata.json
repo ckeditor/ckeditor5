@@ -1,7 +1,7 @@
 {
 	"plugins": [
 		{
-			"name": "Source editing",
+			"name": "Source code editing",
 			"className": "SourceEditing",
 			"description": "Allows for viewing and editing the source of the document.",
 			"docs": "features/source-editing/source-editing.html",
