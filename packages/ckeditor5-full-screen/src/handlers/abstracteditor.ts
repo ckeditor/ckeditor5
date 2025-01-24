@@ -75,20 +75,18 @@ export default class AbstractEditorHandler {
 	public getContainer(): HTMLElement {
 		if ( !this._container ) {
 			this._container = createElement( document, 'div', {
-				class: 'ck ck-full-screen-container'
+				class: 'ck ck-full-screen__main-container'
 			} );
 
 			this._container.innerHTML = `
-				<div class="ck ck-full-screen__main-container">
-					<div class="ck ck-full-screen__top ck-reset_all">
-						<div class="ck ck-full-screen__menu-bar" data-ck-full-screen-placeholder="menu-bar"></div>
-						<div class="ck ck-full-screen__toolbar" data-ck-full-screen-placeholder="toolbar"></div>
-					</div>
-					<div class="ck ck-full-screen__editor-wrapper">
-						<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="left-sidebar"></div>
-						<div class="ck ck-full-screen__editor" data-ck-full-screen-placeholder="editor"></div>
-						<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="right-sidebar"></div>
-					</div>
+				<div class="ck ck-full-screen__top-wrapper ck-reset_all">
+					<div class="ck ck-full-screen__menu-bar" data-ck-full-screen-placeholder="menu-bar"></div>
+					<div class="ck ck-full-screen__toolbar" data-ck-full-screen-placeholder="toolbar"></div>
+				</div>
+				<div class="ck ck-full-screen__editor-wrapper">
+					<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="left-sidebar"></div>
+					<div class="ck ck-full-screen__editor" data-ck-full-screen-placeholder="editor"></div>
+					<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="right-sidebar"></div>
 				</div>
 			`;
 
