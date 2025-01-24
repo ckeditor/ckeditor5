@@ -369,6 +369,7 @@ function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array
  * @param patterns Object with information about attributes to match. Each key of the object will be
  * used as attribute name. Value of each key can be a string or regular expression to match against attribute value.
  * @param  element Element which attributes will be tested.
+ * @param match An array to populate with matching tuples.
  * @returns Returns array with matched attribute names or `null` if no attributes were matched.
  */
 function matchAttributes(
@@ -401,6 +402,7 @@ function matchAttributes(
  *
  * @param patterns Array of strings or regular expressions to match against element's classes.
  * @param element Element which classes will be tested.
+ * @param match An array to populate with matching tuples.
  * @returns Returns array with matched class names or `null` if no classes were matched.
  */
 function matchClasses(
@@ -417,6 +419,7 @@ function matchClasses(
  * @param patterns Object with information about styles to match. Each key of the object will be
  * used as style name. Value of each key can be a string or regular expression to match against style value.
  * @param element Element which styles will be tested.
+ * @param match An array to populate with matching tuples.
  * @returns Returns array with matched style names or `null` if no styles were matched.
  */
 function matchStyles(
