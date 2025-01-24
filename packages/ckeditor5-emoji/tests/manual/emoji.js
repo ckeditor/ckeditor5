@@ -13,6 +13,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import EmojiFrequently from '../../src/EmojiFrequently.js';
 
 const elements = {
 	template: document.querySelector( '#content' ),
@@ -101,6 +102,7 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 			List,
 			Heading,
 			Bold,
+			EmojiFrequently,
 			...extraPlugins
 		],
 		toolbar: [

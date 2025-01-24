@@ -7,9 +7,9 @@
  * @module emoji/emojimention
  */
 
-import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor/ckeditor5-mention';
+import { type LocaleTranslate, logWarning } from 'ckeditor5/src/utils.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import type { ItemRenderer, MentionFeed, MentionFeedObjectItem } from '@ckeditor/ckeditor5-mention';
 
 import EmojiDatabase from './emojidatabase.js';
 import type EmojiPicker from './emojipicker.js';
@@ -212,6 +212,11 @@ export default class EmojiMention extends Plugin {
 			else {
 				this.editor.model.change( writer => {
 					this.editor.model.insertContent( writer.createText( eventData.mention.text ), eventData.range );
+
+					this.fire<EmojiMentionInsertEvent>( 'insert', {
+						emoji: eventData.mention.text,
+						name: eventData.mention.id.replaceAll( /^:|:$/g, '' )
+					} );
 				} );
 			}
 		}, { priority: 'high' } );
@@ -256,3 +261,21 @@ export default class EmojiMention extends Plugin {
 		};
 	}
 }
+
+export type EmojiMentionInsertEvent = {
+	name: 'insert';
+	args: [
+		{
+
+			/**
+			 * The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
+			 */
+			name: string;
+
+			/**
+			 * The emoji itself.
+			 */
+			emoji: string;
+		}
+	];
+};

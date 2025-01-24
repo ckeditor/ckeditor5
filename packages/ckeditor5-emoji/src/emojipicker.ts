@@ -28,6 +28,11 @@ const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
  */
 export default class EmojiPicker extends Plugin {
 	/**
+	 * The actions view displayed inside the balloon.
+	 */
+	declare public emojiPickerView: EmojiPickerView | undefined;
+
+	/**
 	 * The contextual balloon plugin instance.
 	 */
 	declare private _balloon: ContextualBalloon;
@@ -36,11 +41,6 @@ export default class EmojiPicker extends Plugin {
 	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
 	 */
 	declare private _emojiDatabase: EmojiDatabase;
-
-	/**
-	 * The actions view displayed inside the balloon.
-	 */
-	declare private _emojiPickerView: EmojiPickerView | undefined;
 
 	/**
 	 * @inheritDoc
@@ -109,8 +109,8 @@ export default class EmojiPicker extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		if ( this._emojiPickerView ) {
-			this._emojiPickerView.destroy();
+		if ( this.emojiPickerView ) {
+			this.emojiPickerView.destroy();
 		}
 	}
 
@@ -121,11 +121,11 @@ export default class EmojiPicker extends Plugin {
 	 * Otherwise, it reflects the user's intention.
 	 */
 	public get skinTone(): SkinToneId {
-		if ( !this._emojiPickerView ) {
+		if ( !this.emojiPickerView ) {
 			return this.editor.config.get( 'emoji.skinTone' )!;
 		}
 
-		return this._emojiPickerView.gridView.skinTone;
+		return this.emojiPickerView.gridView.skinTone;
 	}
 
 	/**
@@ -134,19 +134,19 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
-		if ( !this._emojiPickerView ) {
-			this._emojiPickerView = this._createEmojiPickerView();
+		if ( !this.emojiPickerView ) {
+			this.emojiPickerView = this._createEmojiPickerView();
 		}
 
 		if ( searchValue ) {
-			this._emojiPickerView.searchView.setInputValue( searchValue );
+			this.emojiPickerView.searchView.setInputValue( searchValue );
 		}
 
-		this._emojiPickerView.searchView.search( searchValue );
+		this.emojiPickerView.searchView.search( searchValue );
 
-		if ( !this._balloon.hasView( this._emojiPickerView ) ) {
+		if ( !this._balloon.hasView( this.emojiPickerView ) ) {
 			this._balloon.add( {
-				view: this._emojiPickerView,
+				view: this.emojiPickerView,
 				position: this._getBalloonPositionData()
 			} );
 
@@ -154,7 +154,7 @@ export default class EmojiPicker extends Plugin {
 		}
 
 		setTimeout( () => {
-			this._emojiPickerView!.focus();
+			this.emojiPickerView!.focus();
 		} );
 	}
 
@@ -199,6 +199,11 @@ export default class EmojiPicker extends Plugin {
 
 			model.change( writer => {
 				model.insertContent( writer.createText( textToInsert ) );
+
+				this.fire<EmojiPickerInsertEvent>( 'insert', {
+					emoji: data.emoji,
+					name: data.name
+				} );
 			} );
 
 			this._hideUI();
@@ -232,9 +237,9 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		this._balloon.remove( this._emojiPickerView! );
+		this._balloon.remove( this.emojiPickerView! );
 
-		this._emojiPickerView!.searchView.setInputValue( '' );
+		this.emojiPickerView!.searchView.setInputValue( '' );
 
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
@@ -335,3 +340,21 @@ export default class EmojiPicker extends Plugin {
 		}
 	}
 }
+
+export type EmojiPickerInsertEvent = {
+	name: 'insert';
+	args: [
+		{
+
+			/**
+			 * The name of the emoji (e.g. "Smiling Face with Smiling Eyes").
+			 */
+			name: string;
+
+			/**
+			 * The emoji itself.
+			 */
+			emoji: string;
+		}
+	];
+};

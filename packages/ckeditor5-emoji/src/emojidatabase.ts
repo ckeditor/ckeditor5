@@ -74,6 +74,10 @@ export default class EmojiDatabase extends Plugin {
 		this._fuseSearch = null;
 	}
 
+	public getEmojiByName( name: string ): EmojiEntry {
+		return this._emojiDatabase.find( item => item.annotation === name )!;
+	}
+
 	/**
 	 * @inheritDoc
 	 */

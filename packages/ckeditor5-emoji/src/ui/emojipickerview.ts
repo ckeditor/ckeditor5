@@ -217,7 +217,13 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		// Show a user-friendly message depending on the search query.
 		this.searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
-			if ( data.query.length === 1 ) {
+			if ( !data.totalItemsCount ) {
+				this.infoView.set( {
+					primaryText: t( 'The dictionary of emoji is empty.' ),
+					isVisible: true
+				} );
+			}
+			else if ( data.query.length === 1 ) {
 				this.infoView.set( {
 					primaryText: t( 'Keep on typing to see the emoji.' ),
 					secondaryText: t( 'The query must contain at least two characters.' ),
