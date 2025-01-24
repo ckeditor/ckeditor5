@@ -7,6 +7,7 @@
  * @module html-support/emptyblock
  */
 
+import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	UpcastElementEvent,
@@ -63,7 +64,7 @@ export default class EmptyBlock extends Plugin {
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		const { model, conversion } = this.editor;
+		const { model, conversion, plugins } = this.editor;
 		const schema = model.schema;
 
 		schema.extend( '$block', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
@@ -75,6 +76,39 @@ export default class EmptyBlock extends Plugin {
 
 		conversion.for( 'downcast' ).add( createEmptyBlockDowncastConverter() );
 		conversion.for( 'upcast' ).add( createEmptyBlockUpcastConverter( schema ) );
+
+		if ( plugins.has( 'ClipboardPipeline' ) ) {
+			this._registerClipboardPastingHandler();
+		}
+	}
+
+	/**
+	 * Handle clipboard paste events:
+	 *
+	 *	* It does not affect *copying* content from the editor, only *pasting*.
+	 *	* When content is pasted from another editor instance with `<p></p>`,
+	 *	  the `&nbsp;` filler is added, so the getData result is `<p>&nbsp;</p>`.
+	 *	* When content is pasted from the same editor instance with `<p></p>`,
+	 *	  the `&nbsp;` filler is not added, so the getData result is `<p></p>`.
+	 *
+	 * @internal
+	 */
+	private _registerClipboardPastingHandler() {
+		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
+
+		this.listenTo<ClipboardContentInsertionEvent>( clipboardPipeline, 'contentInsertion', ( evt, data ) => {
+			if ( data.sourceEditorId === this.editor.id ) {
+				return;
+			}
+
+			this.editor.model.change( writer => {
+				for ( const { item } of writer.createRangeIn( data.content ) ) {
+					if ( item.is( 'element' ) && item.hasAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
+						writer.removeAttribute( EMPTY_BLOCK_MODEL_ATTRIBUTE, item );
+					}
+				}
+			} );
+		} );
 	}
 }
 
