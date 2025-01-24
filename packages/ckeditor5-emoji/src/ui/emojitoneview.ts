@@ -68,7 +68,10 @@ export default class EmojiToneView extends View {
 					tooltip,
 					tooltipPosition: 'e',
 					role: 'menuitemradio',
-					withText: true
+					withText: true,
+					// To improve accessibility, disconnect a button and its label connection so that screen
+					// readers can read the `[aria-label]` attribute directly from the more descriptive button.
+					ariaLabelledBy: undefined
 				} )
 			};
 
@@ -107,7 +110,8 @@ export default class EmojiToneView extends View {
 		} );
 
 		dropdownView.buttonView.bind( 'ariaLabel' ).to( this, 'skinTone', () => {
-			return this._getSkinTone().tooltip;
+			// Render a current state, but also what the dropdown does.
+			return `${ this._getSkinTone().tooltip }, ${ accessibleLabel }`;
 		} );
 
 		this.setTemplate( {
