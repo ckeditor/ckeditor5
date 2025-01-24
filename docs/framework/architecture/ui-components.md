@@ -150,14 +150,14 @@ To get a button with an icon, import it first. Then set the `icon` property on t
 
 <code-switcher>
 ```js
-import { ButtonView, icons } from 'ckeditor5';
+import { ButtonView, IconCheck } from 'ckeditor5';
 
 const saveButton = new ButtonView();
 
 saveButton.set( {
 	label: 'Save',
 	withText: false,
-	icon: icons.check,
+	icon: IconCheck,
 	class: 'ck-button-save'
 } );
 saveButton.render();
@@ -385,10 +385,11 @@ You can use the {@link module:ui/dropdown/utils#addToolbarToDropdown `addToolbar
 ```js
 import {
 	addToolbarToDropdown,
-	icons,
 	ButtonView,
 	createDropdown,
-	Locale
+	Locale,
+	IconBold,
+	IconItalic
 } from 'ckeditor5';
 
 const locale = new Locale();
@@ -396,8 +397,8 @@ const locale = new Locale();
 const bold = new ButtonView();
 const italic = new ButtonView();
 
-bold.set( { label: 'Bold', withText: false, icon: icons.bold  } );
-italic.set( { label: 'Italic', withText: false, icon: icons.italic  } );
+bold.set( { label: 'Bold', withText: false, icon: IconBold } );
+italic.set( { label: 'Italic', withText: false, icon: IconItalic } );
 
 const buttons = [ bold, italic ];
 
@@ -473,9 +474,10 @@ import {
 	addToolbarToDropdown,
 	ButtonView,
 	createDropdown,
-	icons,
 	SplitButtonViewm,
-	Locale
+	Locale,
+	IconBold,
+	IconItalic
 } from 'ckeditor5';
 
 const locale = new Locale();
@@ -483,8 +485,8 @@ const locale = new Locale();
 const bold = new ButtonView();
 const italic = new ButtonView();
 
-bold.set( { label: 'Bold', withText: false, icon: icons.bold  } );
-italic.set( { label: 'Italic', withText: false, icon: icons.italic  } );
+bold.set( { label: 'Bold', withText: false, icon: IconBold } );
+italic.set( { label: 'Italic', withText: false, icon: IconItalic } );
 
 const buttons = [ bold, italic ];
 
@@ -783,127 +785,18 @@ The CKEditor&nbsp;5 library has a collection of icons representing different edi
 
 <code-switcher>
 ```js
-import { icons, IconView } from 'ckeditor5';
+import { IconView, IconBold } from 'ckeditor5';
 
 const icon = new IconView();
 
-icon.content = icons.bold;
+icon.content = IconBold;
 icon.render();
 
 document.getElementById( 'icon-bold' ).append( icon.element );
 ```
 </code-switcher>
 
-CKEditor&nbsp;5 features use different icons. You can find them in their respective packages. Here is a list of all available icons.
-
-<code-switcher>
-```js
-import { icons } from 'ckeditor5';
-
-console.log( icons.bold );
-console.log( icons.italic );
-console.log( icons.underline );
-console.log( icons.code );
-console.log( icons.strikethrough );
-console.log( icons.subscript );
-console.log( icons.superscript );
-
-console.log( icons.browserFiles );
-
-console.log( icons.codeBlock );
-
-console.log( icons.cancel );
-console.log( icons.caption );
-console.log( icons.check );
-console.log( icons.cog );
-console.log( icons.eraser );
-console.log( icons.lowVision );
-console.log( icons.textAlternative );
-console.log( icons.image );
-console.log( icons.alignBottom );
-console.log( icons.alignMiddle );
-console.log( icons.alignTop );
-console.log( icons.alignLeft );
-console.log( icons.alignCenter );
-console.log( icons.alignRight );
-console.log( icons.alignJustify );
-console.log( icons.objectLeft );
-console.log( icons.objectCenter );
-console.log( icons.objectRight );
-console.log( icons.objectFullWidth );
-console.log( icons.objectInline );
-console.log( icons.objectBlockLeft );
-console.log( icons.objectBlockRight );
-console.log( icons.objectFullSize );
-console.log( icons.objectSizeLarge );
-console.log( icons.objectSizeSmall );
-console.log( icons.objectSizeMedium );
-console.log( icons.pencil );
-console.log( icons.pilcrow );
-console.log( icons.quote );
-console.log( icons.threeVerticalDots );
-
-console.log( icons.fontFamily );
-console.log( icons.fontSize );
-console.log( icons.fontColor );
-console.log( icons.fontBackground );
-
-console.log( icons.heading1 );
-console.log( icons.heading2 );
-console.log( icons.heading3 );
-console.log( icons.heading4 );
-console.log( icons.heading5 );
-console.log( icons.heading6 );
-
-console.log( icons.indent );
-console.log( icons.outdent );
-
-console.log( icons.marker );
-console.log( icons.pen );
-
-console.log( icons.html );
-
-console.log( icons.link );
-console.log( icons.unlink );
-
-console.log( icons.bulletedList );
-console.log( icons.numberedList );
-console.log( icons.todoList );
-
-console.log( icons.media );
-
-console.log( icons.pageBreak );
-
-console.log( icons.paragraph );
-
-console.log( icons.removeFormat );
-
-console.log( icons.contentLock );
-console.log( icons.contentUnlock );
-
-console.log( icons.selectAll );
-
-console.log( icons.sourceEditing );
-
-console.log( icons.specialCharacters );
-
-console.log( icons.table );
-console.log( icons.tableRow );
-console.log( icons.tableColumn );
-console.log( icons.tableMergeCell );
-console.log( icons.tableCellProperties );
-console.log( icons.tableProperties );
-
-console.log( icons.nextArrow );
-console.log( icons.previousArrow );
-
-console.log( icons.undo );
-console.log( icons.redo );
-
-console.log( icons.history );
-console.log( icons.loupe );
-```
-</code-switcher>
+CKEditor&nbsp;5 features use different icons. You can find them in the `@ckeditor/ckeditor5-icons` package.
 
 You can also {@link framework/architecture/ui-library#setting-label-icon-and-tooltip add a custom icon to the dropdown} by providing the entire XML string of the icon
 

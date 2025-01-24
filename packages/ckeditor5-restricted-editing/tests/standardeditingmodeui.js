@@ -5,6 +5,7 @@
 
 /* globals document */
 
+import { IconContentUnlock } from 'ckeditor5/src/icons.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
@@ -13,8 +14,6 @@ import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import StandardEditingModeUI from '../src/standardeditingmodeui.js';
 import StandardEditingModeEditing from '../src/standardeditingmodeediting.js';
-
-import unlockIcon from '../theme/icons/contentunlock.svg';
 
 describe( 'StandardEditingModeUI', () => {
 	let editor, button, editorElement;
@@ -75,7 +74,7 @@ describe( 'StandardEditingModeUI', () => {
 		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( labels[ 0 ] );
-			expect( button.icon ).to.equal( unlockIcon );
+			expect( button.icon ).to.equal( IconContentUnlock );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {

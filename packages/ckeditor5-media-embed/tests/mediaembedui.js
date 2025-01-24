@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconMedia } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import MediaEmbed from '../src/mediaembed.js';
 import MediaEmbedUI from '../src/mediaembedui.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import mediaIcon from '../theme/icons/media.svg';
 import { ButtonView, DialogViewPosition, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'MediaEmbedUI', () => {
@@ -220,7 +220,7 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( mediaIcon );
+			expect( button.icon ).to.equal( IconMedia );
 		} );
 
 		it( 'should open media embed dialog', () => {

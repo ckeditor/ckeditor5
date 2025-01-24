@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "selectAll",
-					"iconPath": "theme/icons/select-all.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/select-all.svg"
 				}
 			]
 		}

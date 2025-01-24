@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "findAndReplace",
-					"iconPath": "theme/icons/find-replace.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/find-replace.svg"
 				}
 			]
 		}

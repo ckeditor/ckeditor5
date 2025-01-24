@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "blockQuote",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/quote.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/quote.svg"
 				}
 			],
 			"htmlOutput": [

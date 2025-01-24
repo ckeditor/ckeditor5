@@ -7,7 +7,8 @@
  * @module horizontal-line/horizontallineui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { IconHorizontalLine } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import type HorizontalLineCommand from './horizontallinecommand.js';
@@ -64,7 +65,7 @@ export default class HorizontalLineUI extends Plugin {
 
 		view.set( {
 			label: t( 'Horizontal line' ),
-			icon: icons.horizontalLine
+			icon: IconHorizontalLine
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

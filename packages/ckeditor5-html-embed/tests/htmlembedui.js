@@ -11,7 +11,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import HtmlEmbedUI from '../src/htmlembedui.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconHtml } from 'ckeditor5/src/icons.js';
 
 describe( 'HtmlEmbedUI', () => {
 	let element, editor, button;
@@ -72,7 +72,7 @@ describe( 'HtmlEmbedUI', () => {
 		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.equal( icons.html );
+			expect( button.icon ).to.equal( IconHtml );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view then switch to edit source mode` +

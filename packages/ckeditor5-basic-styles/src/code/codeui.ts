@@ -8,10 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconCode } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-import codeIcon from '../../theme/icons/code.svg';
 
 import '../../theme/code.css';
 
@@ -45,7 +44,7 @@ export default class CodeUI extends Plugin {
 			editor,
 			commandName: CODE,
 			plugin: this,
-			icon: codeIcon,
+			icon: IconCode,
 			label: t( 'Code' )
 		} );
 

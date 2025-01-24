@@ -8,10 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconSuperscript } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-import superscriptIcon from '../../theme/icons/superscript.svg';
 
 const SUPERSCRIPT = 'superscript';
 
@@ -43,7 +42,7 @@ export default class SuperscriptUI extends Plugin {
 			editor,
 			commandName: SUPERSCRIPT,
 			plugin: this,
-			icon: superscriptIcon,
+			icon: IconSuperscript,
 			label: t( 'Superscript' )
 		} );
 

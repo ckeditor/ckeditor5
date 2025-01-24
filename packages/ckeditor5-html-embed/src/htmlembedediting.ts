@@ -7,10 +7,11 @@
  * @module html-embed/htmlembedediting
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { logWarning, createElement } from 'ckeditor5/src/utils.js';
+import { IconCancel, IconCheck, IconPencil } from 'ckeditor5/src/icons.js';
 
 import type { HtmlEmbedConfig } from './htmlembedconfig.js';
 import HtmlEmbedCommand from './htmlembedcommand.js';
@@ -408,7 +409,7 @@ function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onCli
 
 	buttonView.set( {
 		class: `raw-html-embed__${ type }-button`,
-		icon: icons.pencil,
+		icon: IconPencil,
 		tooltip: true,
 		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w'
 	} );
@@ -417,21 +418,21 @@ function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onCli
 
 	if ( type === 'edit' ) {
 		buttonView.set( {
-			icon: icons.pencil,
+			icon: IconPencil,
 			label: t( 'Edit source' )
 		} );
 
 		buttonView.bind( 'isEnabled' ).to( command );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
-			icon: icons.check,
+			icon: IconCheck,
 			label: t( 'Save changes' )
 		} );
 
 		buttonView.bind( 'isEnabled' ).to( command );
 	} else {
 		buttonView.set( {
-			icon: icons.cancel,
+			icon: IconCancel,
 			label: t( 'Cancel' )
 		} );
 	}

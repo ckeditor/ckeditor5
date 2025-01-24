@@ -7,7 +7,7 @@
  * @module code-block/codeblockui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import {
 	ViewModel,
@@ -20,6 +20,7 @@ import {
 	MenuBarMenuListItemView,
 	type ListDropdownButtonDefinition
 } from 'ckeditor5/src/ui.js';
+import { IconCodeBlock } from 'ckeditor5/src/icons.js';
 
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 
@@ -67,7 +68,7 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.set( {
 				label: accessibleLabel,
 				tooltip: true,
-				icon: icons.codeBlock,
+				icon: IconCodeBlock,
 				isToggleable: true
 			} );
 
@@ -107,7 +108,7 @@ export default class CodeBlockUI extends Plugin {
 			menuView.buttonView.set( {
 				role: 'menuitem',
 				label: t( 'Code block' ),
-				icon: icons.codeBlock
+				icon: IconCodeBlock
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

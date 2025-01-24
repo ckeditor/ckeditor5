@@ -25,25 +25,25 @@ CKEditor&nbsp;5 features cover several functional areas. Listed below are some o
 
 ### Formatting features
 
-{@link features/basic-styles Basic text styles} include essentials like bold {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold}, italics {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic}, superscript {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg Superscript}, and subscript {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg Subscript} as well as inline code formatting and more.
+{@link features/basic-styles Basic text styles} include essentials like bold {@icon @ckeditor/ckeditor5-icons/theme/icons/bold.svg Bold}, italics {@icon @ckeditor/ckeditor5-icons/theme/icons/italic.svg Italic}, superscript {@icon @ckeditor/ckeditor5-icons/theme/icons/superscript.svg Superscript}, and subscript {@icon @ckeditor/ckeditor5-icons/theme/icons/subscript.svg Subscript} as well as inline code formatting and more.
 
-The {@link features/font font feature} provides support for using different font families {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font Family}, controlling the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font Size} as well as font {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font Color} and background colors {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Background Colors}.
+The {@link features/font font feature} provides support for using different font families {@icon @ckeditor/ckeditor5-icons/theme/icons/font-family.svg Font Family}, controlling the font size {@icon @ckeditor/ckeditor5-icons/theme/icons/font-size.svg Font Size} as well as font {@icon @ckeditor/ckeditor5-icons/theme/icons/font-color.svg Font Color} and background colors {@icon @ckeditor/ckeditor5-icons/theme/icons/font-background.svg Background Colors}.
 
-{@link features/headings Headings} {@icon @ckeditor/ckeditor5-core/theme/icons/heading1.svg Heading 1} (with configurable levels and styles) and the {@link features/text-alignment text alignment feature} {@icon @ckeditor/ckeditor5-core/theme/icons/align-left.svg Align Left} help organize the structure of the document.
+{@link features/headings Headings} {@icon @ckeditor/ckeditor5-icons/theme/icons/heading1.svg Heading 1} (with configurable levels and styles) and the {@link features/text-alignment text alignment feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/align-left.svg Align Left} help organize the structure of the document.
 
-You can apply most of these formatting options from the {@link getting-started/setup/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax. You can remove them with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg Remove Format}.
+You can apply most of these formatting options from the {@link getting-started/setup/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax. You can remove them with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/remove-format.svg Remove Format}.
 
 {@img assets/img/features-basic-formatting.png 800 CKEditor&nbsp;5 formatting features.}
 
 ### Advanced content editing
 
-Rich text would not be rich without images. You can upload, caption, edit, or style them. You can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Media} into your content.
+Rich text would not be rich without images. You can upload, caption, edit, or style them. You can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-icons/theme/icons/media.svg Media} into your content.
 
-{@link features/link Links} {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} are an essential feature for online content. You can paste, change, or attribute them.
+{@link features/link Links} {@icon @ckeditor/ckeditor5-icons/theme/icons/link.svg Link} are an essential feature for online content. You can paste, change, or attribute them.
 
-Provide clear and accessible data using {@link features/tables tables} {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Table} (you can even nest them to create advanced layouts), ordered {@icon @ckeditor/ckeditor5-core/theme/icons/numberedlist.svg Numbered List} and unordered {@link features/lists lists} {@icon @ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg Bulleted List} with various markers to choose from, and {@link features/todo-lists to-do lists} {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do List}. Use {@link features/indent indents and outdents} {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} and {@link features/block-quote block quotes} {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Quote} to structure the content and draw the reader's attention to it.
+Provide clear and accessible data using {@link features/tables tables} {@icon @ckeditor/ckeditor5-icons/theme/icons/table.svg Table} (you can even nest them to create advanced layouts), ordered {@icon @ckeditor/ckeditor5-icons/theme/icons/numbered-list.svg Numbered List} and unordered {@link features/lists lists} {@icon @ckeditor/ckeditor5-icons/theme/icons/bulleted-list.svg Bulleted List} with various markers to choose from, and {@link features/todo-lists to-do lists} {@icon @ckeditor/ckeditor5-icons/theme/icons/todo-list.svg To-do List}. Use {@link features/indent indents and outdents} {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} and {@link features/block-quote block quotes} {@icon @ckeditor/ckeditor5-icons/theme/icons/quote.svg Quote} to structure the content and draw the reader's attention to it.
 
-Enrich your content further by {@link features/html-embed embedding HTML code} {@icon @ckeditor/ckeditor5-core/theme/icons/html.svg HTML} &ndash; this one is useful for webmasters. If you need to present code instead of employing it, use the {@link features/code-blocks code block} {@icon @ckeditor/ckeditor5-core/theme/icons/codeblock.svg Code Block} that lets you produce code listing with a syntax highlight, too!
+Enrich your content further by {@link features/html-embed embedding HTML code} {@icon @ckeditor/ckeditor5-icons/theme/icons/html.svg HTML} &ndash; this one is useful for webmasters. If you need to present code instead of employing it, use the {@link features/code-blocks code block} {@icon @ckeditor/ckeditor5-icons/theme/icons/code-block.svg Code Block} that lets you produce code listing with a syntax highlight, too!
 
 {@img assets/img/features-images.png 800 CKEditor&nbsp;5 image feature.}
 
@@ -51,25 +51,25 @@ Enrich your content further by {@link features/html-embed embedding HTML code} {
 
 We created the {@link framework/index CKEditor&nbsp;5 Framework} with {@link features/collaboration collaboration} in mind.
 
-All collaboration features manage user data and permissions with the {@link features/users users API}. {@link features/track-changes Track changes} {@icon @ckeditor/ckeditor5-track-changes/theme/icons/track-changes.svg Track changes} allows the users to follow any changes made to the edited document both asynchronously and in real time. The users accept or reject these changes with a single click from a convenient side panel.
+All collaboration features manage user data and permissions with the {@link features/users users API}. {@link features/track-changes Track changes} {@icon @ckeditor/ckeditor5-icons/theme/icons/track-changes.svg Track changes} allows the users to follow any changes made to the edited document both asynchronously and in real time. The users accept or reject these changes with a single click from a convenient side panel.
 
-Where tracking changes is not enough, the {@link features/comments comments} {@icon @ckeditor/ckeditor5-comments/theme/icons/add-comment.svg Comments} come in, offering a perfect collaborative communication platform for writing and editing as a team. When you resolve a discussion, it moves to the comments archive.
+Where tracking changes is not enough, the {@link features/comments comments} {@icon @ckeditor/ckeditor5-icons/theme/icons/add-comment.svg Comments} come in, offering a perfect collaborative communication platform for writing and editing as a team. When you resolve a discussion, it moves to the comments archive.
 
-Additionally, CKEditor&nbsp;5 offers the {@link features/restricted-editing restricted editing mode} {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} where just the selected parts of the content may be edited by some users, based on a permissions system. And when there is a need for even more control, there are the {@link features/read-only read-only} and {@link features/comments-only-mode comments-only} modes that let the user access the content, but not edit it.
+Additionally, CKEditor&nbsp;5 offers the {@link features/restricted-editing restricted editing mode} {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing} where just the selected parts of the content may be edited by some users, based on a permissions system. And when there is a need for even more control, there are the {@link features/read-only read-only} and {@link features/comments-only-mode comments-only} modes that let the user access the content, but not edit it.
 
 {@img assets/img/features-collaboration.png 800 CKEditor&nbsp;5 collaboration features.}
 
-You can also track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-core/theme/icons/history.svg Revision history}. This robust document versioning tool lets you create named versions, compare changes, and restore previous document versions. It tracks all progress &ndash; also when many editors work together.
+You can also track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/history.svg Revision history}. This robust document versioning tool lets you create named versions, compare changes, and restore previous document versions. It tracks all progress &ndash; also when many editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor&nbsp;5 document versioning feature.}
 
 ### Document conversion
 
-If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry-standard, portable, cross-platform files.
+If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/export-pdf.svg Export to PDF} to produce industry-standard, portable, cross-platform files.
 
-If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &ndash; and keep your comments and changes in the resulting document, ready to edit further.
+If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/export-word.svg Export to Word} instead &ndash; and keep your comments and changes in the resulting document, ready to edit further.
 
-The {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page} complements the exports to ensure all produced documents will always look the way they should.
+The {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-icons/theme/icons/arrow-down.svg Next page} complements the exports to ensure all produced documents will always look the way they should.
 
 If you have any documents in the DOCX format, you can convert them into HTML with the {@link features/import-word import from Word feature} and then continue editing in CKEditor&nbsp;5.
 
@@ -81,7 +81,7 @@ The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can 
 
 ### Other productivity features
 
-The {@link features/ai-assistant-overview AI Assistant} {@icon ckeditor5-collaboration/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the existing content to match your needs, or even come up with a completely new one!
+The {@link features/ai-assistant-overview AI Assistant} {@icon @ckeditor/ckeditor5-icons/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the existing content to match your needs, or even come up with a completely new one!
 
 The {@link features/word-count word and character counter} will help you track progress and control the volume of the content.
 

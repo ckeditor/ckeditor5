@@ -5,11 +5,11 @@
 
 /* globals window, document, console:false */
 
+import { IconBold } from '@ckeditor/ckeditor5-icons';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 import ButtonView from '../../../../src/button/buttonview.js';
 
 function customButtonView( editor ) {
@@ -17,7 +17,7 @@ function customButtonView( editor ) {
 		const view = new ButtonView( locale );
 		view.set( {
 			label: 'Custom Button',
-			icon: boldIcon,
+			icon: IconBold,
 			tooltip: true,
 			withKeystroke: true
 		} );

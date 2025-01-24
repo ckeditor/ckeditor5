@@ -8,7 +8,7 @@ The select all feature lets you select the entire content using the <kbd>Ctrl</k
 
 ## Demo
 
-Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@icon @ckeditor/ckeditor5-select-all/theme/icons/select-all.svg Select all} to select the entire content of the editor.
+Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/select-all.svg Select all} to select the entire content of the editor.
 
 <info-box>
 	When the selection is inside the {@link features/images-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies when the selection is inside a table cell or any self–contained (nested) editable part of the content.

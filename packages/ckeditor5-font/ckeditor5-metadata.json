@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "fontBackgroundColor",
-					"iconPath": "theme/icons/font-background.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-background.svg"
 				}
 			],
 			"htmlOutput": [
@@ -30,7 +30,7 @@
 				{
 					"type": "SplitButton",
 					"name": "fontColor",
-					"iconPath": "theme/icons/font-color.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-color.svg"
 				}
 			],
 			"htmlOutput": [
@@ -50,7 +50,7 @@
 				{
 					"type": "SplitButton",
 					"name": "fontSize",
-					"iconPath": "theme/icons/font-size.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-size.svg"
 				}
 			],
 			"htmlOutput": [
@@ -89,7 +89,7 @@
 				{
 					"type": "SplitButton",
 					"name": "fontFamily",
-					"iconPath": "theme/icons/font-family.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-family.svg"
 				}
 			],
 			"htmlOutput": [

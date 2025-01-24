@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "specialCharacters",
-					"iconPath": "theme/icons/specialcharacters.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/special-characters.svg"
 				}
 			]
 		},

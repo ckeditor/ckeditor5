@@ -7,8 +7,9 @@
  * @module image/imageinsert/imageinsertviaurlui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { IconImageUrl } from 'ckeditor5/src/icons.js';
 
 import ImageInsertUI from './imageinsertui.js';
 import ImageInsertUrlView from './ui/imageinserturlview.js';
@@ -77,7 +78,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	): InstanceType<T> {
 		const button = new ButtonClass( this.editor.locale ) as InstanceType<T>;
 
-		button.icon = icons.imageUrl;
+		button.icon = IconImageUrl;
 		button.on( 'execute', () => {
 			this._showModal();
 		} );

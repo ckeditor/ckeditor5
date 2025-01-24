@@ -72,7 +72,7 @@ This feature only works for pasted contents or on data load, it {@link updating/
 
 ## Indenting lists
 
-Besides controlling {@link features/indent text block indentation}, the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-core/theme/icons/outdent.svg Outdent} buttons allow for indenting list items (nesting them).
+Besides controlling {@link features/indent text block indentation}, the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} buttons allow for indenting list items (nesting them).
 
 This mechanism is transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin. Neither these buttons nor the respective commands implement any functionality by default.
 

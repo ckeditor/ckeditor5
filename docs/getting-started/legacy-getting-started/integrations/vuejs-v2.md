@@ -384,7 +384,7 @@ module.exports = {
 		// * or add a new one:
 		config.module
 			.rule( 'cke-svg' )
-			.test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
+			.test( /\.svg$/ )
 			.use( 'raw-loader' )
 			.loader( 'raw-loader' );
 

@@ -24,7 +24,7 @@ The plugin also gives you the ability to change the size of the image through th
 
 In this case, you can resize an image by dragging square handles displayed in each of its corners. After you enable image resizing, this option does not require any additional configuration.
 
-Use the corner handles to resize the image and adjust it to the text as needed. You can also use the alignment options from the image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Image align} to achieve the desired effect.
+Use the corner handles to resize the image and adjust it to the text as needed. You can also use the alignment options from the image toolbar {@icon @ckeditor/ckeditor5-icons/theme/icons/object-center.svg Image align} to achieve the desired effect.
 
 Images can also be pre-resized using styling, as shown below (the last three images are hard-set to 28% for visual consistency).
 
@@ -93,7 +93,7 @@ const imageConfiguration = {
 }
 ```
 
-Try out the live demo of the resize dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg Image resize} available in the image toolbar:
+Try out the live demo of the resize dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/object-size-medium.svg Image resize} available in the image toolbar:
 
 {@snippet features/image-resize-buttons-dropdown}
 
@@ -146,7 +146,7 @@ const imageConfiguration = {
 }
 ```
 
-Try out the live demo of the individual resize buttons {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-large.svg Image resize} available in the image toolbar:
+Try out the live demo of the individual resize buttons {@icon @ckeditor/ckeditor5-icons/theme/icons/object-size-large.svg Image resize} available in the image toolbar:
 
 {@snippet features/image-resize-buttons}
 

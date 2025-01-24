@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "highlight",
-					"iconPath": "theme/icons/pen.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/pen.svg"
 				}
 			],
 			"htmlOutput": [

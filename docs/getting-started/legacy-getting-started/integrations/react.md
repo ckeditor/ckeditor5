@@ -450,7 +450,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 
 ```js
 {
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	test: /ckeditor5-icons\/theme\/icons\/[^/\\]+\.svg$/,
 	use: [ 'raw-loader' ]
 },
 {
@@ -522,7 +522,7 @@ Finally, exclude CKEditor&nbsp;5 SVG and CSS files from `file-loader`. Find the 
 			/\.(js|mjs|jsx|ts|tsx)$/,
 			/\.html$/,
 			/\.json$/,
-			/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+			/\.svg$/,
 			/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
 		],
 		name: 'static/media/[name].[hash:8].[ext]',

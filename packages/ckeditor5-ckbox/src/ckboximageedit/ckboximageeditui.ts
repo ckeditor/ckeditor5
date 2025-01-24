@@ -9,8 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
-
-import ckboxImageEditIcon from '../../theme/icons/ckbox-image-edit.svg';
+import { IconCkboxImageEdit } from 'ckeditor5/src/icons.js';
 
 /**
  * The UI plugin of the CKBox image edit feature.
@@ -46,7 +45,7 @@ export default class CKBoxImageEditUI extends Plugin {
 			const t = locale.t;
 
 			view.set( {
-				icon: ckboxImageEditIcon,
+				icon: IconCkboxImageEdit,
 				tooltip: true
 			} );
 

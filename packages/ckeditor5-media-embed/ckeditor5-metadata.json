@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "mediaEmbed",
-					"iconPath": "theme/icons/media.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/media.svg"
 				}
 			],
 			"htmlOutput": [

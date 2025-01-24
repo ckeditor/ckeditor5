@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import { icons } from 'ckeditor5/src/core.js';
+import { IconHeading2 } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import HeadingEditing from '../src/headingediting.js';
 import HeadingButtonsUI from '../src/headingbuttonsui.js';
@@ -67,7 +67,7 @@ describe( 'HeadingButtonUI', () => {
 			const heading2Button = editor.ui.componentFactory.create( 'heading2' );
 
 			expect( heading2Button.label ).to.equal( localizedOptions.title );
-			expect( heading2Button.icon ).to.equal( icons.heading2 );
+			expect( heading2Button.icon ).to.equal( IconHeading2 );
 			expect( heading2Button.tooltip ).to.equal( true );
 		} );
 

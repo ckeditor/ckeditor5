@@ -8,10 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconSubscript } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-import subscriptIcon from '../../theme/icons/subscript.svg';
 
 const SUBSCRIPT = 'subscript';
 
@@ -44,7 +43,7 @@ export default class SubscriptUI extends Plugin {
 			editor,
 			commandName: SUBSCRIPT,
 			plugin: this,
-			icon: subscriptIcon,
+			icon: IconSubscript,
 			label: t( 'Subscript' )
 		} );
 

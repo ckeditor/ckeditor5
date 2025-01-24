@@ -11,7 +11,7 @@ The restricted editing feature introduces two modes: the standard editing mode a
 
 The demo below lets you emulate both the standard editing mode and the restricted editing mode.
 
-Start by creating a template of the document in the standard editing mode. Select a section of the text and use the enable editing toolbar button {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} to turn a selected area into an editable region or remove an existing one.
+Start by creating a template of the document in the standard editing mode. Select a section of the text and use the enable editing toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing} to turn a selected area into an editable region or remove an existing one.
 
 Then switch to the restricted editing mode to see how the editable and non-editable regions behave.
 

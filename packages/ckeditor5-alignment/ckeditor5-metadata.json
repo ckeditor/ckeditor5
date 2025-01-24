@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "alignment",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/align-left.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/align-left.svg"
 				}
 			],
 			"htmlOutput": [

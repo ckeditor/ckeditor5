@@ -16,6 +16,7 @@
     "@ckeditor/ckeditor5-cloud-services": "44.1.0",
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-image": "44.1.0",
     "@ckeditor/ckeditor5-ui": "44.1.0",
     "@ckeditor/ckeditor5-upload": "44.1.0",

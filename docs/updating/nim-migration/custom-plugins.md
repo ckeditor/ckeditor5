@@ -98,14 +98,14 @@ The same rule applies to the `theme` folder in the `@ckeditor/ckeditor5-*` packa
 
 ```js
 // ❌
-import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
+import undo from '@ckeditor/ckeditor5-icons/theme/undo.svg';
 
 console.log( undo );
 
 // ✅
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconUndo } from '@ckeditor/ckeditor5-icons';
 
-console.log( icons.undo );
+console.log( IconUndo );
 ```
 
 If you run the following command, the `ckeditor5-rules/allow-imports-only-from-main-package-entry-point` eslint rule will list all the places where you need to update the imports.

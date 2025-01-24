@@ -93,7 +93,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+				test: /\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
@@ -170,7 +170,7 @@ module.exports = {
 				use: [ 'ts-loader' ]
 			},
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+				test: /\.svg$/,
 
 				use: [ 'raw-loader' ]
 			},
@@ -225,13 +225,13 @@ Encore.
 
 	// Use raw-loader for CKEditor 5 SVG files.
 	.addRule( {
-		test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		test: /\.svg$/,
 		loader: 'raw-loader'
 	} )
 
 	// Configure other image loaders to exclude CKEditor 5 SVG files.
 	.configureLoaderRule( 'images', loader => {
-		loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/;
+		loader.exclude = /\.svg$/;
 	} )
 
 	// Configure PostCSS loader.
@@ -586,7 +586,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+				test: /\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{

@@ -8,7 +8,7 @@
 import CodeBlockEditing from '../src/codeblockediting.js';
 import CodeBlockUI from '../src/codeblockui.js';
 
-import { icons } from 'ckeditor5/src/core.js';
+import { IconCodeBlock } from 'ckeditor5/src/icons.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
@@ -83,7 +83,7 @@ describe( 'CodeBlockUI', () => {
 
 		it( 'has the base properties', () => {
 			expect( button ).to.have.property( 'label', 'Insert code block' );
-			expect( button ).to.have.property( 'icon', icons.codeBlock );
+			expect( button ).to.have.property( 'icon', IconCodeBlock );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );

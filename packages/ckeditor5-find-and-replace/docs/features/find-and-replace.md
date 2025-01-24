@@ -11,7 +11,7 @@ The find and replace feature lets you find and replace any text in your document
 
 ## Demo
 
-Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search dialog. Use it to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "AI" with "artificial intelligence" to make the content appeal to less tech-savvy users. Be careful to match the case!
+Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/find-replace.svg Find and replace} to open the search dialog. Use it to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "AI" with "artificial intelligence" to make the content appeal to less tech-savvy users. Be careful to match the case!
 
 {@snippet features/find-and-replace}
 

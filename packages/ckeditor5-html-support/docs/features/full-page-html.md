@@ -13,7 +13,7 @@ Thanks to the full page HTML feature you can use CKEditor&nbsp;5 to edit entire 
 
 ## Demo
 
-Use the {@link features/source-editing source editing feature} toolbar button {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to view and edit the HTML source of the document. Pay attention to the underlying markup.
+Use the {@link features/source-editing source editing feature} toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/source-editing.svg Source editing} to view and edit the HTML source of the document. Pay attention to the underlying markup.
 
 {@snippet features/full-page-html}
 

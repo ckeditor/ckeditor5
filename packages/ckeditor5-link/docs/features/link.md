@@ -10,7 +10,7 @@ The link feature lets you insert hyperlinks into your content and provides a UI 
 
 ## Demo
 
-Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking a link opens a contextual toolbar. The toolbar lets you edit existing links {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} or unlink them {@icon @ckeditor/ckeditor5-link/theme/icons/unlink.svg Unlink} with a click.
+Use the link toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking a link opens a contextual toolbar. The toolbar lets you edit existing links {@icon @ckeditor/ckeditor5-icons/theme/icons/pencil.svg Edit link} or unlink them {@icon @ckeditor/ckeditor5-icons/theme/icons/unlink.svg Unlink} with a click.
 
 {@snippet features/link}
 
@@ -75,7 +75,7 @@ There are two types of link decorators you can use:
 
 ### Demo
 
-In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
+In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-icons/theme/icons/pencil.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
 
 {@snippet features/linkdecorators}
 

@@ -10,7 +10,7 @@
 				{
 					"type": "SplitButton",
 					"name": "restrictedEditing",
-					"iconPath": "theme/icons/contentlock.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/content-lock.svg"
 				}
 			],
 			"htmlOutput": [
@@ -30,7 +30,7 @@
 				{
 					"type": "Button",
 					"name": "restrictedEditingException",
-					"iconPath": "theme/icons/contentunlock.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg"
 				}
 			],
 			"htmlOutput": [

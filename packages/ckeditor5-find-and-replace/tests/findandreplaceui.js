@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconFindReplace } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
@@ -15,7 +16,6 @@ import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/me
 import DialogView from '@ckeditor/ckeditor5-ui/src/dialog/dialogview.js';
 import FindAndReplaceUI from '../src/findandreplaceui.js';
 import FindAndReplace from '../src/findandreplace.js';
-import loupeIcon from '../theme/icons/find-replace.svg';
 import FindAndReplaceFormView from '../src/ui/findandreplaceformview.js';
 
 /* global window */
@@ -236,7 +236,7 @@ describe( 'FindAndReplaceUI', () => {
 					} );
 
 					it( 'should set an #icon of the #buttonView', () => {
-						expect( button.icon ).to.equal( loupeIcon );
+						expect( button.icon ).to.equal( IconFindReplace );
 					} );
 
 					it( 'should set a #label of the #buttonView', () => {
@@ -629,7 +629,7 @@ describe( 'FindAndReplaceUI', () => {
 
 				describe( 'button', () => {
 					it( 'should set an #icon of the #buttonView', () => {
-						expect( dropdown.buttonView.icon ).to.equal( loupeIcon );
+						expect( dropdown.buttonView.icon ).to.equal( IconFindReplace );
 					} );
 
 					it( 'should set a #label of the #buttonView', () => {

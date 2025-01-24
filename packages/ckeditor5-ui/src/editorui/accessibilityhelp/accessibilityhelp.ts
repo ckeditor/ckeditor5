@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconAccessibility } from '@ckeditor/ckeditor5-icons';
 import ButtonView from '../../button/buttonview.js';
 import Dialog from '../../dialog/dialog.js';
 import MenuBarMenuListItemButtonView from '../../menubar/menubarmenulistitembuttonview.js';
@@ -17,7 +18,6 @@ import type { EditorUIReadyEvent } from '../../editorui/editorui.js';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
 import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
-import accessibilityIcon from '../../../theme/icons/accessibility.svg';
 import '../../../theme/components/editorui/accessibilityhelp.css';
 
 /**
@@ -102,7 +102,7 @@ export default class AccessibilityHelp extends Plugin {
 
 		view.set( {
 			keystroke: 'Alt+0',
-			icon: accessibilityIcon,
+			icon: IconAccessibility,
 			isToggleable: true
 		} );
 
@@ -164,7 +164,7 @@ export default class AccessibilityHelp extends Plugin {
 				id: 'accessibilityHelp',
 				className: 'ck-accessibility-help-dialog',
 				title: t( 'Accessibility help' ),
-				icon: accessibilityIcon,
+				icon: IconAccessibility,
 				hasCloseButton: true,
 				content: this.contentView
 			} );

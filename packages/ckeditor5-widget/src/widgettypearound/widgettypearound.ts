@@ -10,7 +10,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-
+import { IconReturnArrow } from '@ckeditor/ckeditor5-icons';
 import { Template } from '@ckeditor/ckeditor5-ui';
 
 import {
@@ -67,14 +67,12 @@ import {
 import { isWidget } from '../utils.js';
 import type Widget from '../widget.js';
 
-import returnIcon from '../../theme/icons/return-arrow.svg';
-
 import '../../theme/widgettypearound.css';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
-const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild!;
+const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( IconReturnArrow, 'image/svg+xml' ).firstChild!;
 
 const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
 

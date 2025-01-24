@@ -258,7 +258,7 @@ public getDefaultCommands() {
 		{
 			id: 'blockQuote',
 			commandName: 'blockQuote',
-			icon: icons.quote,
+			icon: IconQuote,
 			title: translateVariableKey( 'Block quote' ),
 			description: t( 'Create a block quote' )
 		},

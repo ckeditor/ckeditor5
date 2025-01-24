@@ -5,6 +5,7 @@
 
 /* globals document */
 
+import { IconBold, IconItalic, IconCheck, IconCancel } from 'ckeditor5/src/icons.js';
 import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils.js';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
@@ -23,11 +24,6 @@ import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarsepa
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils.js';
-
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 import { SpinnerView } from '@ckeditor/ckeditor5-ui';
@@ -99,10 +95,10 @@ renderInput();
 function renderIcon() {
 	// --- In-text ------------------------------------------------------------
 
-	ui.iconPlain1.add( icon( boldIcon ) );
-	ui.iconPlain2.add( icon( italicIcon ) );
-	ui.iconColor1.add( icon( boldIcon ) );
-	ui.iconColor2.add( icon( italicIcon ) );
+	ui.iconPlain1.add( icon( IconBold ) );
+	ui.iconPlain2.add( icon( IconItalic ) );
+	ui.iconColor1.add( icon( IconBold ) );
+	ui.iconColor2.add( icon( IconItalic ) );
 }
 
 function renderButton() {
@@ -127,8 +123,8 @@ function renderButton() {
 	const actionButton = button( { label: 'Action button' } );
 	const roundedButton = button( { label: 'Rounded corners' } );
 	const boldButton = button( { label: 'Bold text' } );
-	const saveButton = button( { label: 'Save', withText: false, icon: checkIcon } );
-	const cancelButton = button( { label: 'Cancel', withText: false, icon: cancelIcon } );
+	const saveButton = button( { label: 'Save', withText: false, icon: IconCheck } );
+	const cancelButton = button( { label: 'Cancel', withText: false, icon: IconCancel } );
 
 	ui.buttonTypes.add( toolbar( [
 		actionButton, roundedButton, boldButton, saveButton, cancelButton
@@ -151,13 +147,13 @@ function renderButton() {
 	ui.buttonIcon.add( toolbar( [
 		button( {
 			label: 'Bold',
-			icon: boldIcon
+			icon: IconBold
 		} )
 	] ) );
 
 	const styledButton = button( {
 		label: 'Button with an icon and custom styles',
-		icon: italicIcon
+		icon: IconItalic
 	} );
 
 	ui.buttonIconCustom.add( toolbar( [ styledButton ] ) );
@@ -167,14 +163,14 @@ function renderButton() {
 
 	const disabledActionButton = button( {
 		label: 'Disabled action',
-		icon: boldIcon,
+		icon: IconBold,
 		isEnabled: false
 	} );
 
 	ui.buttonIconStates.add( toolbar( [
 		button( {
 			label: 'Disabled',
-			icon: boldIcon,
+			icon: IconBold,
 			isEnabled: false
 		} ),
 		disabledActionButton,
@@ -182,7 +178,7 @@ function renderButton() {
 			label: 'Bold',
 			withText: false,
 			tooltip: true,
-			icon: boldIcon
+			icon: IconBold
 		} )
 	] ) );
 
@@ -199,7 +195,7 @@ function renderButton() {
 		} ),
 		button( {
 			label: 'Bar',
-			icon: boldIcon,
+			icon: IconBold,
 			keystroke: 'Shift+Tab',
 			withKeystroke: true
 		} )
@@ -212,7 +208,7 @@ function renderButton() {
 			label: 'Bold',
 			withText: false,
 			tooltip: true,
-			icon: boldIcon
+			icon: IconBold
 		} );
 
 		ui[ `buttonResponsive${ i }` ].add( toolbar( [
@@ -222,7 +218,7 @@ function renderButton() {
 			} ),
 			button( {
 				label: 'Bold',
-				icon: boldIcon,
+				icon: IconBold,
 				isEnabled: true
 			} ),
 			notextButton
@@ -313,7 +309,7 @@ function renderDropdown() {
 			label: 'On with an icon',
 			withText: true,
 			isOn: true,
-			icon: boldIcon
+			icon: IconBold
 		} )
 	} );
 
@@ -322,7 +318,7 @@ function renderDropdown() {
 		model: new Model( {
 			label: 'Icon and key',
 			withText: true,
-			icon: boldIcon,
+			icon: IconBold,
 			keystroke: 'Shift+Tab',
 			withKeystroke: true
 		} )
@@ -334,7 +330,7 @@ function renderDropdown() {
 			label: 'On with a keystroke',
 			withText: true,
 			isOn: true,
-			icon: boldIcon,
+			icon: IconBold,
 			keystroke: 'Ctrl+A',
 			withKeystroke: true
 		} )
@@ -369,7 +365,7 @@ function renderDropdown() {
 		model: new Model( {
 			label: 'Bold',
 			withText: true,
-			icon: boldIcon
+			icon: IconBold
 		} )
 	} );
 
@@ -378,7 +374,7 @@ function renderDropdown() {
 		model: new Model( {
 			label: 'This item is on',
 			withText: true,
-			icon: boldIcon,
+			icon: IconBold,
 			isOn: true
 		} )
 	} );
@@ -388,7 +384,7 @@ function renderDropdown() {
 		model: new Model( {
 			label: 'Disabled',
 			withText: true,
-			icon: boldIcon,
+			icon: IconBold,
 			isEnabled: false
 		} )
 	} );
@@ -414,12 +410,12 @@ function renderDropdown() {
 				button( {
 					withText: false,
 					label: 'foo',
-					icon: boldIcon
+					icon: IconBold
 				} ),
 				button( {
 					withText: false,
 					label: 'foo',
-					icon: italicIcon
+					icon: IconBold
 				} )
 			]
 		} ),
@@ -431,13 +427,13 @@ function renderDropdown() {
 					withText: false,
 					isEnabled: false,
 					label: 'foo',
-					icon: boldIcon
+					icon: IconBold
 				} ),
 				button( {
 					withText: false,
 					isEnabled: false,
 					label: 'foo',
-					icon: italicIcon
+					icon: IconItalic
 				} )
 			]
 		} )
@@ -448,7 +444,7 @@ function renderToolbar() {
 	// --- Text ------------------------------------------------------------
 
 	ui.toolbarText.add( toolbar( [
-		icon( boldIcon ),
+		icon( IconBold ),
 		text()
 	] ) );
 
@@ -459,13 +455,13 @@ function renderToolbar() {
 		text(),
 		button( {
 			label: 'Button with an icon',
-			icon: boldIcon
+			icon: IconBold
 		} ),
 		listDropdown(),
 		splitButtonDropdown( {
 			label: 'Split button dropdown',
 			withText: false,
-			icon: boldIcon
+			icon: IconBold
 		} ),
 		button(),
 		switchbutton( {
@@ -482,7 +478,7 @@ function renderToolbar() {
 		} ),
 		button( {
 			label: 'Button with an icon',
-			icon: boldIcon
+			icon: IconBold
 		} )
 	] ) );
 
@@ -506,12 +502,12 @@ function renderToolbar() {
 		toolbarSeparator(),
 		button( {
 			label: 'Foo',
-			icon: boldIcon
+			icon: IconBold
 		} ),
 		toolbarSeparator(),
 		button( {
 			label: 'Bar RTL',
-			icon: boldIcon
+			icon: IconBold
 		} )
 	] ) );
 
@@ -523,15 +519,15 @@ function renderToolbar() {
 		toolbarNewLine(),
 		button( {
 			label: 'Foo',
-			icon: boldIcon
+			icon: IconBold
 		} ),
 		button( {
 			label: 'Bar',
-			icon: boldIcon
+			icon: IconBold
 		} ),
 		button( {
 			label: 'Baz',
-			icon: boldIcon
+			icon: IconBold
 		} )
 	] ) );
 
@@ -539,16 +535,16 @@ function renderToolbar() {
 
 	const compactToolbar = toolbar( [
 		button( {
-			icon: boldIcon,
+			icon: IconBold,
 			withText: false
 		} ),
 		button( {
-			icon: italicIcon,
+			icon: IconItalic,
 			withText: false,
 			isOn: true
 		} ),
 		button( {
-			icon: cancelIcon,
+			icon: IconCancel,
 			withText: false
 		} )
 	] );

@@ -103,8 +103,11 @@ import {
     LabeledFieldView,
     createLabeledInputText,
     ButtonView                                      // ADDED
-    } from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';   // ADDED
+} from '@ckeditor/ckeditor5-ui';
+import {
+    IconCheck,
+		IconCancel
+} from '@ckeditor/ckeditor5-icons';					 // ADDED
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -112,14 +115,14 @@ export default class FormView extends View {
 
         // Create the save and cancel buttons.
         this.saveButtonView = this._createButton(
-            t( 'Save' ), icons.check, 'ck-button-save'
+            t( 'Save' ), IconCheck, 'ck-button-save'
         );
 		// Set the type to 'submit', which will trigger
 		// the submit event on entire form when clicked.
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton(
-            t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+            t( 'Cancel' ), IconCancel, 'ck-button-cancel'
         );
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconColorTileCheck } from '@ckeditor/ckeditor5-icons';
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 import ButtonView from '../../src/button/buttonview.js';
-import checkIcon from '../../theme/icons/color-tile-check.svg';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -55,7 +55,7 @@ describe( 'ColorTileView', () => {
 	it( 'has a check icon', () => {
 		colorTile.render();
 
-		expect( colorTile.icon ).to.equal( checkIcon );
+		expect( colorTile.icon ).to.equal( IconColorTileCheck );
 		expect( colorTile.iconView.fillColor ).to.equal( 'hsl(0, 0%, 100%)' );
 	} );
 } );

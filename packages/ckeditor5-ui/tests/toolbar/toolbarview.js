@@ -22,8 +22,15 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
 import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview.js';
 import DropdownView from '../../src/dropdown/dropdownview.js';
-
-import { icons } from '@ckeditor/ckeditor5-core';
+import {
+	IconAlignLeft,
+	IconBold,
+	IconImportExport,
+	IconParagraph,
+	IconPlus,
+	IconText,
+	IconThreeVerticalDots
+} from '@ckeditor/ckeditor5-icons';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -729,7 +736,7 @@ describe( 'ToolbarView', () => {
 
 				expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
 				expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
-				expect( dropdownView.buttonView.icon, 'icon' ).to.equal( icons.threeVerticalDots );
+				expect( dropdownView.buttonView.icon, 'icon' ).to.equal( IconThreeVerticalDots );
 				expect( dropdownView.buttonView.tooltip, 'tooltip' ).to.be.true;
 
 				const nestedToolbarItems = toolbarView.items;
@@ -817,17 +824,17 @@ describe( 'ToolbarView', () => {
 			} );
 
 			describe( 'pre-configured icons', () => {
-				const iconNames = [
-					'alignLeft',
-					'bold',
-					'importExport',
-					'paragraph',
-					'plus',
-					'text',
-					'threeVerticalDots'
-				];
+				const iconNames = {
+					alignLeft: IconAlignLeft,
+					bold: IconBold,
+					importExport: IconImportExport,
+					paragraph: IconParagraph,
+					plus: IconPlus,
+					text: IconText,
+					threeVerticalDots: IconThreeVerticalDots
+				};
 
-				for ( const name of iconNames ) {
+				for ( const [ name, icon ] of Object.entries( iconNames ) ) {
 					it( `should provide the "${ name }" icon`, () => {
 						view.fillFromConfig( [
 							{
@@ -839,7 +846,7 @@ describe( 'ToolbarView', () => {
 
 						dropdownView = view.items.get( 0 );
 
-						expect( dropdownView.buttonView.icon ).to.equal( icons[ name ] );
+						expect( dropdownView.buttonView.icon ).to.equal( icon );
 					} );
 				}
 			} );
@@ -855,7 +862,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.icon ).to.equal( icons.threeVerticalDots );
+				expect( dropdownView.buttonView.icon ).to.equal( IconThreeVerticalDots );
 				expect( dropdownView.buttonView.withText ).to.be.false;
 			} );
 

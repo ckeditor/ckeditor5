@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "removeFormat",
-					"iconPath": "theme/icons/remove-format.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/remove-format.svg"
 				}
 			]
 		}

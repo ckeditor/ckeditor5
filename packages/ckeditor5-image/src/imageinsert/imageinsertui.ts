@@ -7,11 +7,7 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import {
-	Plugin,
-	type Editor,
-	icons
-} from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	logWarning,
 	type Locale,
@@ -30,6 +26,7 @@ import {
 	SplitButtonView,
 	type View
 } from 'ckeditor5/src/ui.js';
+import { IconImage } from 'ckeditor5/src/icons.js';
 
 import ImageInsertFormView from './ui/imageinsertformview.js';
 import ImageUtils from '../imageutils.js';
@@ -235,7 +232,7 @@ export default class ImageInsertUI extends Plugin {
 			resultView.panelView.children.add( listView );
 
 			resultView.buttonView.set( {
-				icon: icons.image,
+				icon: IconImage,
 				label: t( 'Image' )
 			} );
 

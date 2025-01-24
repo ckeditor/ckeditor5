@@ -10,7 +10,7 @@ The show blocks feature allows the content creators to visualize all block-level
 
 ## Demo
 
-Toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button to see the feature in action. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to remove them before exporting.
+Toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-icons/theme/icons/show-blocks.svg Show blocks} toolbar button to see the feature in action. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to remove them before exporting.
 
 {@snippet features/show-blocks}
 

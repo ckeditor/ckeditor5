@@ -1086,7 +1086,7 @@ This rule ensures that all imports from the `@ckeditor/*` packages are done thro
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 // Importing from the `/theme/` folder is not allowed.
-import BoldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
+import BoldIcon from '@ckeditor/ckeditor5-icons/theme/icons/bold.svg';
 ```
 
 👍&nbsp; Examples of correct code for this rule:

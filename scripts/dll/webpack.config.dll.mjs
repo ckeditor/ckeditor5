@@ -45,6 +45,7 @@ function loadCKEditor5modules( window ) {
 		'select-all',
 		'typing',
 		'undo',
+		'icons',
 		'upload',
 		'widget',
 		'watchdog'
@@ -76,6 +77,7 @@ const webpackConfig = {
 		'./src/undo.js',
 
 		// Other, common packages:
+		'./src/icons.js',
 		'./src/upload.js',
 		'./src/widget.js',
 		'./src/watchdog.js'
