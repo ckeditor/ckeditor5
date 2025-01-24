@@ -14,7 +14,9 @@ import {
 	ViewModel,
 	type ButtonExecuteEvent,
 	type DropdownView,
-	type ListDropdownItemDefinition
+	type ListDropdownItemDefinition,
+	type ListItemView,
+	type ListItemButtonView
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from '../emojiconfig.js';
@@ -97,6 +99,16 @@ export default class EmojiToneView extends View {
 
 		this.dropdownView = dropdownView;
 
+		this.dropdownView.once( 'change:isOpen', () => {
+			for ( const listItem of this.dropdownView.listView!.items ) {
+				const listItemButtonView = ( listItem as ListItemView ).children.first! as ListItemButtonView;
+
+				listItemButtonView.set( {
+					ariaLabelledBy: undefined
+				} );
+			}
+		} );
+
 		// Execute command when an item from the dropdown is selected.
 		this.listenTo<ButtonExecuteEvent>( dropdownView, 'execute', evt => {
 			this.skinTone = ( evt.source as any ).value;
@@ -107,7 +119,7 @@ export default class EmojiToneView extends View {
 		} );
 
 		dropdownView.buttonView.bind( 'ariaLabel' ).to( this, 'skinTone', () => {
-			return this._getSkinTone().tooltip;
+			return `${ this._getSkinTone().tooltip }, ${ accessibleLabel }`;
 		} );
 
 		this.setTemplate( {
