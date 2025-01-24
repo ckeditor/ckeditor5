@@ -251,6 +251,23 @@ export default class Widget extends Plugin {
 			}
 		}, { priority: 'low' } );
 
+		// Handle Backspace key while inside a nested editable on Safari. See #17383.
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if ( viewDocument.isComposing ||
+				data.keystroke != keyCodes.backspace && !data.metaKey ||
+				!editor.model.document.selection.isCollapsed
+			) {
+				return;
+			}
+
+			const ancestorLimit = editor.model.schema.getLimitElement( editor.model.document.selection );
+			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
+
+			if ( limitStartPosition.isTouching( editor.model.document.selection.getFirstPosition()! ) ) {
+				data.preventDefault();
+			}
+		} );
+
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
 			id: 'widget',
