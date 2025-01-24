@@ -30,7 +30,6 @@
     "src/**/*.js",
     "src/**/*.d.ts",
     "theme",
-    "build",
     "CHANGELOG.md"
   ],
   "scripts": {
