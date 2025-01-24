@@ -197,7 +197,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;foo&nbsp;</p>' );
 		} );
 
-		it( 'single nbsp inside blocks are ignored (NBSP block filler)', () => {
+		it( 'single nbsp inside blocks is ignored (NBSP block filler)', () => {
 			editor.setData( '<p>&nbsp;</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
@@ -207,7 +207,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 
-		it( 'nbsp with spaces inside blocks are ignored (NBSP block filler)', () => {
+		it( 'nbsp with spaces inside blocks is ignored (NBSP block filler)', () => {
 			editor.setData( '<p>\n    &nbsp;\n  </p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
@@ -217,7 +217,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 
-		it( 'single nbsp inside blocks are ignored (marked NBSP block filler)', () => {
+		it( 'single nbsp inside blocks is ignored (marked NBSP block filler)', () => {
 			editor.data.processor.useFillerType( 'marked' );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => {

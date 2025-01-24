@@ -25,9 +25,9 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  *
  * This is useful when you want to:
  *
- *	* Preserve empty block elements exactly as they were in the source HTML
- *	* Allow for styling empty blocks with CSS (block fillers can interfere with height/margin)
- *	* Maintain compatibility with external systems that expect empty blocks to remain empty
+ * * Preserve empty block elements exactly as they were in the source HTML
+ * * Allow for styling empty blocks with CSS (block fillers can interfere with height/margin)
+ * * Maintain compatibility with external systems that expect empty blocks to remain empty
  *
  * For example, this allows for HTML like:
  *
