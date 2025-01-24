@@ -82,9 +82,11 @@ export default class EmojiCategoriesView extends View {
 
 			if ( previousButton ) {
 				previousButton.class = '';
+				previousButton.isOn = false;
 			}
 
 			newButton.class = ACTIVE_CATEGORY_CLASS;
+			newButton.isOn = true;
 		} );
 
 		this.set( 'categoryName', categoryName );
@@ -136,6 +138,7 @@ export default class EmojiCategoriesView extends View {
 	public disableCategories(): void {
 		this._buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = false;
+			buttonView.isOn = false;
 		} );
 	}
 
@@ -143,12 +146,23 @@ export default class EmojiCategoriesView extends View {
 		return emojiGroups.map( emojiGroup => {
 			const buttonView = new ButtonView();
 
-			buttonView.tooltip = emojiGroup.title;
-			buttonView.label = emojiGroup.icon;
-			buttonView.withText = true;
+			buttonView.extendTemplate( {
+				attributes: {
+					'aria-selected': buttonView.bindTemplate.to( 'isOn', value => value.toString() )
+				}
+			} );
+
+			buttonView.set( {
+				ariaLabel: emojiGroup.title,
+				label: emojiGroup.icon,
+				role: 'tab',
+				ariaLabelledBy: undefined,
+				tooltip: emojiGroup.title,
+				withText: true
+			} );
 
 			buttonView.on( 'execute', () => {
-				this.categoryName = buttonView.tooltip as string;
+				this.categoryName = emojiGroup.title;
 			} );
 
 			buttonView.on( 'change:isEnabled', ( event, name, oldValue, newValue ) => {
@@ -156,6 +170,7 @@ export default class EmojiCategoriesView extends View {
 					buttonView.class = '';
 				} else if ( buttonView.tooltip === this.categoryName ) {
 					buttonView.class = ACTIVE_CATEGORY_CLASS;
+					buttonView.isOn = true;
 				}
 			} );
 

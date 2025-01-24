@@ -251,14 +251,11 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		tile.set( {
 			label: emoji,
+			tooltip: name,
 			withText: true,
-			class: 'ck-emoji__tile'
-		} );
-
-		tile.extendTemplate( {
-			attributes: {
-				title: name
-			}
+			class: 'ck-emoji__tile',
+			ariaLabel: name,
+			ariaLabelledBy: undefined
 		} );
 
 		tile.on( 'execute', () => {
