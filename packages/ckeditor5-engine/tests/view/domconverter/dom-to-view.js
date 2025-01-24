@@ -171,6 +171,16 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( domFiller ) ).to.be.null;
 		} );
 
+		it( 'should ignore a block filler inside a paragraph', () => {
+			// eslint-disable-next-line new-cap
+			const domFiller = BR_FILLER( document );
+			const domP = createElement( document, 'p', undefined, [ domFiller ] );
+
+			const viewP = converter.domToView( domP );
+			expect( viewP.is( 'element', 'p' ) ).to.be.true;
+			expect( viewP.childCount ).to.equal( 0 );
+		} );
+
 		it( 'should return null for empty text node', () => {
 			const textNode = document.createTextNode( '' );
 

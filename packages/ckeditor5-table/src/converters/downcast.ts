@@ -191,9 +191,16 @@ function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): View
  * Checks if an element has any attributes set.
  */
 function hasAnyAttribute( element: Node ): boolean {
-	const iteratorItem = element.getAttributeKeys().next();
+	for ( const attributeKey of element.getAttributeKeys() ) {
+		// Ignore selection attributes stored on block elements.
+		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {
+			continue;
+		}
 
-	return !iteratorItem.done;
+		return true;
+	}
+
+	return false;
 }
 
 export interface DowncastTableOptions {
