@@ -35,6 +35,7 @@ import {
 	env
 } from '@ckeditor/ckeditor5-utils';
 
+import type ViewItem from './item.js';
 import type ViewNode from './node.js';
 import type Document from './document.js';
 import type DocumentSelection from './documentselection.js';
@@ -707,6 +708,7 @@ export default class DomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
+			trimEndBrs?: boolean;
 		} = {}
 	): ViewNode | ViewDocumentFragment | null {
 		const inlineNodes: Array<ViewNode> = [];
@@ -749,13 +751,11 @@ export default class DomConverter {
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
 		// Get child nodes from content document fragment if element is template
-		let childNodes: Array<ChildNode> = [];
-
-		if ( domElement instanceof HTMLTemplateElement ) {
-			childNodes = [ ...domElement.content.childNodes ];
-		} else {
-			childNodes = [ ...domElement.childNodes ];
-		}
+		const childNodes = Array.from(
+			domElement instanceof HTMLTemplateElement ?
+				domElement.content.childNodes :
+				domElement.childNodes
+		);
 
 		for ( let i = 0; i < childNodes.length; i++ ) {
 			const domChild = childNodes[ i ];
@@ -766,7 +766,7 @@ export default class DomConverter {
 
 			if ( viewChild !== null ) {
 				// Whitespace cleaning before entering a block element (between block elements).
-				if ( this._isBlockViewElement( viewChild ) ) {
+				if ( this.isBlockViewElement( viewChild ) ) {
 					this._processDomInlineNodes( domElement, inlineNodes, options );
 				}
 
@@ -976,7 +976,7 @@ export default class DomConverter {
 
 		// Try to use previous sibling to find the corresponding text node.
 		if ( previousSibling ) {
-			if ( !( this.isElement( previousSibling ) ) ) {
+			if ( !isElement( previousSibling ) ) {
 				// The previous is text or comment.
 				return null;
 			}
@@ -1150,7 +1150,7 @@ export default class DomConverter {
 	 * @param node Node to check.
 	 */
 	public isElement( node: DomNode ): node is DomElement {
-		return node && node.nodeType == Node.ELEMENT_NODE;
+		return isElement( node );
 	}
 
 	/**
@@ -1185,11 +1185,7 @@ export default class DomConverter {
 		}
 
 		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		if (
-			( domNode as DomElement ).tagName === 'BR' &&
-			hasBlockParent( domNode, this.blockElements ) &&
-			( domNode as DomElement ).parentNode!.childNodes.length === 1
-		) {
+		if ( isBrBlockFiller( domNode, this.blockElements ) ) {
 			return true;
 		}
 
@@ -1298,6 +1294,26 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
+	 */
+	public isBlockViewElement( node: ViewItem | null ): boolean {
+		return !!node && node.is( 'element' ) && this.blockElements.includes( node.name );
+	}
+
+	/**
+	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
+	 */
+	public isInlineObjectElement( node: ViewItem | ViewDocumentFragment | null ): node is ViewElement {
+		if ( !node || !node.is( 'element' ) ) {
+			return false;
+		}
+
+		return node.name == 'br' ||
+			this.inlineObjectElements.includes( node.name ) ||
+			!!this._inlineObjectElementMatcher.match( node );
+	}
+
+	/**
 	 * Clear temporary custom properties.
 	 *
 	 * @internal
@@ -1338,7 +1354,7 @@ export default class DomConverter {
 			return false;
 		}
 
-		if ( this.isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
+		if ( isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
 			// Selection in an element node, before filler text node.
 			return false;
 		}
@@ -1370,10 +1386,15 @@ export default class DomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
+			trimEndBrs?: boolean;
 		},
 		inlineNodes: Array<ViewNode>
 	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
 		if ( this.isBlockFiller( domNode ) ) {
+			// Push an empty text node to mark that block filler was there (for example `<br>&nbsp;`).
+			// Note that it is only stored in inlineNodes and not in the result.
+			inlineNodes.push( new ViewText( this.document, '' ) );
+
 			return null;
 		}
 
@@ -1408,7 +1429,7 @@ export default class DomConverter {
 			let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
 
 			if ( viewElement ) {
-				if ( this._isInlineObjectElement( viewElement ) ) {
+				if ( this.isInlineObjectElement( viewElement ) ) {
 					inlineNodes.push( viewElement );
 				}
 
@@ -1443,7 +1464,7 @@ export default class DomConverter {
 				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
 					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
 
-					if ( !this._isBlockViewElement( viewElement ) ) {
+					if ( !this.isBlockViewElement( viewElement ) ) {
 						inlineNodes.push( viewElement );
 					}
 
@@ -1471,7 +1492,7 @@ export default class DomConverter {
 
 			// Check if this is an inline object after processing child nodes so matcher
 			// for inline objects can verify if the element is empty.
-			if ( this._isInlineObjectElement( viewElement ) ) {
+			if ( this.isInlineObjectElement( viewElement ) ) {
 				inlineNodes.push( viewElement );
 
 				// Inline object content should be handled as a flow-root.
@@ -1496,7 +1517,10 @@ export default class DomConverter {
 	private _processDomInlineNodes(
 		domParent: DomElement | null,
 		inlineNodes: Array<ViewNode>,
-		options: { withChildren?: boolean }
+		options: {
+			withChildren?: boolean;
+			trimEndBrs?: boolean;
+		}
 	): void {
 		if ( !inlineNodes.length ) {
 			return;
@@ -1528,7 +1552,7 @@ export default class DomConverter {
 				// see https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249) to a single space character.
 				// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
 				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
-				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
+				data = node.data.replace( /[ \n\t\r]+/g, ' ' );
 				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
 
 				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
@@ -1591,6 +1615,14 @@ export default class DomConverter {
 			} else {
 				node._data = data;
 				prevNodeEndsWithSpace = nodeEndsWithSpace;
+			}
+		}
+
+		if ( inlineNodes.length > 1 && options.trimEndBrs !== false ) {
+			const lastNode = inlineNodes[ inlineNodes.length - 1 ];
+
+			if ( lastNode.parent && lastNode.is( 'element', 'br' ) && !first( lastNode.getAttributeKeys() ) ) {
+				lastNode._remove();
 			}
 		}
 
@@ -1726,7 +1758,7 @@ export default class DomConverter {
 				return null;
 			}
 			// Found an inline object (for example an image).
-			else if ( this._isInlineObjectElement( item ) ) {
+			else if ( this.isInlineObjectElement( item ) ) {
 				return item;
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
@@ -1743,27 +1775,7 @@ export default class DomConverter {
 	 * Returns `true` if a DOM node belongs to {@link #blockElements}. `false` otherwise.
 	 */
 	private _isBlockDomElement( node: DomNode ): boolean {
-		return this.isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
-	}
-
-	/**
-	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
-	 */
-	private _isBlockViewElement( node: ViewNode ): boolean {
-		return node.is( 'element' ) && this.blockElements.includes( node.name );
-	}
-
-	/**
-	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
-	 */
-	private _isInlineObjectElement( node: ViewNode | ViewTextProxy | ViewDocumentFragment ): node is ViewElement {
-		if ( !node.is( 'element' ) ) {
-			return false;
-		}
-
-		return node.name == 'br' ||
-			this.inlineObjectElements.includes( node.name ) ||
-			!!this._inlineObjectElementMatcher.match( node );
+		return isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
 	}
 
 	/**
@@ -1858,14 +1870,72 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 /**
  * Checks if given node is a nbsp block filler.
  *
- * A &nbsp; is a block filler only if it is a single child of a block element.
- *
- * @param domNode DOM node.
+ * A &nbsp; is a block filler only if it is a single child of a block element or it's the last node of a block element after a BR.
  */
 function isNbspBlockFiller( domNode: DomNode, blockElements: ReadonlyArray<string> ): boolean {
-	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF );
+	if ( !isText( domNode ) ) {
+		return false;
+	}
 
-	return isNBSP && hasBlockParent( domNode, blockElements ) && ( domNode as DomElement ).parentNode!.childNodes.length === 1;
+	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF ) || !!domNode.data.match( /^[ \n\t\r]*\u00A0[ \n\t\r]*$/ );
+
+	if ( !isNBSP || !hasBlockParent( domNode, blockElements ) ) {
+		return false;
+	}
+
+	const childNodes = Array.from( domNode.parentNode!.childNodes );
+
+	// The only node in a block so a block filler.
+	if ( childNodes.length === 1 ) {
+		return true;
+	}
+
+	// Let's check if there is no BR just before the last NBSP in a block.
+	// <p>....<br>&nbsp;</p>
+	if ( childNodes.length < 2 || childNodes[ childNodes.length - 1 ] !== domNode ) {
+		return false;
+	}
+
+	const previousNode = childNodes[ childNodes.length - 2 ];
+
+	return isElement( previousNode ) && previousNode.tagName == 'BR';
+}
+
+/**
+ * Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode.
+ *
+ * This helper trims whitespaces inside parent block same as browser interprets such HTML. Note that NBSP is not stripped.
+ *
+ * See ckeditor5#5564.
+ */
+function isBrBlockFiller( domNode: DomNode, blockElements: ReadonlyArray<string> ): boolean {
+	if ( !isElement( domNode ) || domNode.tagName != 'BR' || !hasBlockParent( domNode, blockElements ) ) {
+		return false;
+	}
+
+	// TODO this must find block ancestor and check if all children inside can be truncated to '<br>'.
+	//  It should ignore inline non-object elements.
+
+	const childNodes = Array.from( domNode.parentNode!.childNodes );
+
+	if ( childNodes.length == 1 ) {
+		return true;
+	}
+
+	for ( let i = 0; i < childNodes.length; i++ ) {
+		const childNode = childNodes[ i ];
+
+		if ( isElement( childNode ) && childNode !== domNode ) {
+			return false;
+		}
+
+		if ( isText( childNode ) && childNode.data.replace( /[ \n\t\r]/g, '' ).length == 0 ) {
+			childNodes.splice( i, 1 );
+			i--;
+		}
+	}
+
+	return childNodes.length == 1;
 }
 
 /**
@@ -1918,6 +1988,15 @@ function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
 	}
 
 	return false;
+}
+
+/**
+ * Returns `true` when `node.nodeType` equals `Node.ELEMENT_NODE`.
+ *
+ * @param node Node to check.
+ */
+function isElement( node: DomNode ): node is DomElement {
+	return node && node.nodeType == Node.ELEMENT_NODE;
 }
 
 /**
