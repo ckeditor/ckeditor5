@@ -5,6 +5,7 @@
 
 import EmojiCategoriesView from '../../src/ui/emojicategoriesview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 
 describe( 'EmojiCategoriesView', () => {
 	let locale, emojiCategoriesView, emojiGroups;
@@ -38,6 +39,13 @@ describe( 'EmojiCategoriesView', () => {
 	} );
 
 	describe( 'constructor()', () => {
+		it( 'creates `view#buttonViews` collection', () => {
+			expect( emojiCategoriesView.buttonViews ).to.be.instanceOf( ViewCollection );
+
+			// To check if the `#createCollection()` factory was used.
+			expect( emojiCategoriesView._viewCollections.has( emojiCategoriesView.buttonViews ) ).to.equal( true );
+		} );
+
 		it( 'creates #element from template', () => {
 			expect( emojiCategoriesView.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories' ) ).to.be.true;
@@ -69,14 +77,6 @@ describe( 'EmojiCategoriesView', () => {
 
 		it( 'should destroy an instance of keystroke handler', () => {
 			const spy = sinon.spy( emojiCategoriesView.keystrokes, 'destroy' );
-
-			emojiCategoriesView.destroy();
-
-			sinon.assert.calledOnce( spy );
-		} );
-
-		it( 'should destroy an instance of category buttons', () => {
-			const spy = sinon.spy( emojiCategoriesView.buttonViews, 'destroy' );
 
 			emojiCategoriesView.destroy();
 

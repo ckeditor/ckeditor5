@@ -102,6 +102,16 @@ describe( 'EmojiSearchView', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should destroy an instance of the search view', () => {
+			const spy = sinon.spy( emojiSearchView.inputView, 'destroy' );
+
+			emojiSearchView.destroy();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'setInputValue()', () => {
 		it( 'sets the value of text input element to passed string', () => {
 			emojiSearchView.setInputValue( 'smile' );

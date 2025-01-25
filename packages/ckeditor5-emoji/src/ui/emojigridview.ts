@@ -153,8 +153,6 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		this.keystrokes.destroy();
 		this.focusTracker.destroy();
-		this.tiles.destroy();
-		this.cachedTiles.destroy();
 	}
 
 	/**

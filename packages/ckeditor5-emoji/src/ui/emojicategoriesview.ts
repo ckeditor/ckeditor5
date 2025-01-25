@@ -7,7 +7,7 @@
  * @module emoji/ui/emojicategoriesview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
+import { ButtonView, View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import type { EmojiCategory } from '../emojidatabase.js';
 
@@ -51,7 +51,7 @@ export default class EmojiCategoriesView extends View {
 	constructor( locale: Locale, { emojiGroups, categoryName }: { emojiGroups: Array<EmojiCategory>; categoryName: string } ) {
 		super( locale );
 
-		this.buttonViews = new ViewCollection(
+		this.buttonViews = this.createCollection(
 			emojiGroups.map( emojiGroup => this._createCategoryButton( emojiGroup ) )
 		);
 

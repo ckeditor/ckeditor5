@@ -126,15 +126,6 @@ export default class EmojiToneView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	public override destroy(): void {
-		super.destroy();
-
-		this.dropdownView.destroy();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public focus(): void {
 		this.dropdownView.buttonView.focus();
 	}
