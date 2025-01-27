@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window */
+/* global CKEditorInspector, document, window */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
@@ -24,6 +24,7 @@ ClassicEditor
 	.create( document.getElementById( 'editor1' ), config )
 	.then( instance => {
 		window.editor1 = instance;
+		CKEditorInspector.attach( { 'With EmptyBlock plugin': instance } );
 	} );
 
 ClassicEditor
@@ -33,6 +34,7 @@ ClassicEditor
 	} )
 	.then( instance => {
 		window.editor2 = instance;
+		CKEditorInspector.attach( { 'Without EmptyBlock plugin': instance } );
 	} );
 
 const clipboardPreview = document.getElementById( 'clipboard-preview' );
