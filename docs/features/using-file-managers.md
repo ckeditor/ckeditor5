@@ -19,25 +19,45 @@ The most convenient way to upload, manage, and insert images into content in CKE
 CKBox is a modern file management platform with a clean UI and a top-notch UX.
 
 With CKBox you can:
-- Organize images and other files into customizable categories.
-- Create, rename, and delete folders.
-- Delete, rename, and tag files.
-- Search files and filter results by numerous properties.
-- Easily access recently used files.
-- View images in high-resolution full-page preview.
-- Define and reuse alternative text for images.
+* Organize images and other files into customizable categories.
+* Create, rename, and delete folders.
+* Delete, rename, and tag files.
+* Search files and filter results by numerous properties.
+* Easily access recently used files.
+* View images in high-resolution full-page preview.
+* Define and reuse alternative text for images.
 
-{@link features/ckbox **Read a separate guide on CKBox**} to learn about its installation and configuration. The guide also lets you try CKBox in action.
+**Read the {@link features/ckbox dedicated CKBox feature guide**} to learn about its installation and configuration. The guide also lets you try CKBox in action.
+
+## Uploadcare file manager
+
+Uploadcare is a modern file management platform with multiple integrations with services like Dropbox, Facebook, Google Drive, Google Photos, Instagram and OneDrive.
+
+With Uploadcare you can:
+* Upload images directly from:
+	* Dropbox,
+	* Facebook,
+	* Google Drive,
+	* Google Photos,
+	* Instagram,
+	* OneDrive,
+	* Local computer,
+	* External URL.
+* Manage all uploaded images through a dedicated platform.
+* Edit images by changing dimensions, applying filters and adjusting various image parameters.
+* Get your images served quickly through global CDN.
+
+**Read the {@link features/uploadcare dedicated Uploadcare feature guide**} to learn about its installation and configuration. The guide also lets you try Uploadcare in action.
 
 ## CKFinder file manager
 
 CKFinder is a powerful file manager with various image editing and image upload options.
 
 With CKFinder you can:
-- Group images and other files into folders and subfolders.
-- Move or copy files between folders.
-- Easily filter files.
-- Drag and drop images and paste them from the clipboard into the editor.
-- Crop, rotate, edit, and resize images.
+* Group images and other files into folders and subfolders.
+* Move or copy files between folders.
+* Easily filter files.
+* Drag and drop images and paste them from the clipboard into the editor.
+* Crop, rotate, edit, and resize images.
 
-{@link features/ckfinder **Read a separate guide on CKFinder**} to learn about its installation and configuration. The guide also lets you try CKFinder in action.
+**Read the {@link features/ckfinder dedicated CKFinder feature guide**} to learn about its installation and configuration. The guide also lets you try CKFinder in action.
