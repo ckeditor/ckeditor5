@@ -7,13 +7,11 @@
  * @module emoji/ui/emojicategoriesview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { ButtonView, View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import type { EmojiCategory } from '../emojidatabase.js';
 
 import '../../theme/emojicategories.css';
-
-const ACTIVE_CATEGORY_CLASS = 'ck-emoji__category-item_active';
 
 /**
  * A class representing the navigation part of the emoji UI.
@@ -43,7 +41,7 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * A collection of the categories buttons.
 	 */
-	private readonly _buttonViews: ViewCollection<ButtonView>;
+	public readonly buttonViews: ViewCollection<ButtonView>;
 
 	/**
 	 * @inheritDoc
@@ -51,14 +49,14 @@ export default class EmojiCategoriesView extends View {
 	constructor( locale: Locale, { emojiGroups, categoryName }: { emojiGroups: Array<EmojiCategory>; categoryName: string } ) {
 		super( locale );
 
-		this._buttonViews = new ViewCollection(
-			this._createCategoryButtons( emojiGroups )
+		this.buttonViews = this.createCollection(
+			emojiGroups.map( emojiGroup => this._createCategoryButton( emojiGroup ) )
 		);
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.focusCycler = new FocusCycler( {
-			focusables: this._buttonViews,
+			focusables: this.buttonViews,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
@@ -70,21 +68,21 @@ export default class EmojiCategoriesView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-emoji__categories' ],
+				class: [ 'ck', 'ck-emoji__categories-list' ],
 				role: 'tablist'
 			},
-			children: this._buttonViews
+			children: this.buttonViews
 		} );
 
-		this.on( 'change:categoryName', ( event, name, newValue, oldValue ) => {
-			const previousButton = this._buttonViews.find( button => button.tooltip === oldValue )!;
-			const newButton = this._buttonViews.find( button => button.tooltip === newValue )!;
+		this.on<ObservableChangeEvent<string>>( 'change:categoryName', ( event, name, newValue, oldValue ) => {
+			const oldCategoryButton = this.buttonViews.find( button => button.tooltip === oldValue );
 
-			if ( previousButton ) {
-				previousButton.class = '';
+			if ( oldCategoryButton ) {
+				oldCategoryButton.isOn = false;
 			}
 
-			newButton.class = ACTIVE_CATEGORY_CLASS;
+			const newCategoryButton = this.buttonViews.find( button => button.tooltip === newValue )!;
+			newCategoryButton.isOn = true;
 		} );
 
 		this.set( 'categoryName', categoryName );
@@ -96,7 +94,7 @@ export default class EmojiCategoriesView extends View {
 	public override render(): void {
 		super.render();
 
-		this._buttonViews.forEach( buttonView => {
+		this.buttonViews.forEach( buttonView => {
 			this.focusTracker.add( buttonView );
 		} );
 
@@ -111,21 +109,21 @@ export default class EmojiCategoriesView extends View {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
-		this._buttonViews.destroy();
+		this.buttonViews.destroy();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public focus(): void {
-		this._buttonViews.first!.focus();
+		this.buttonViews.first!.focus();
 	}
 
 	/**
 	 * Marks all categories buttons as enabled (clickable).
 	 */
 	public enableCategories(): void {
-		this._buttonViews.forEach( buttonView => {
+		this.buttonViews.forEach( buttonView => {
 			buttonView.isEnabled = true;
 		} );
 	}
@@ -134,32 +132,53 @@ export default class EmojiCategoriesView extends View {
 	 * Marks all categories buttons as disabled (non-clickable).
 	 */
 	public disableCategories(): void {
-		this._buttonViews.forEach( buttonView => {
-			buttonView.isEnabled = false;
+		this.buttonViews.forEach( buttonView => {
+			buttonView.set( {
+				class: '',
+				isEnabled: false,
+				isOn: false
+			} );
 		} );
 	}
 
-	private _createCategoryButtons( emojiGroups: Array<EmojiCategory> ): Array<ButtonView> {
-		return emojiGroups.map( emojiGroup => {
-			const buttonView = new ButtonView();
+	/**
+	 * Creates a button representing a category item.
+	 */
+	private _createCategoryButton( emojiGroup: EmojiCategory ): ButtonView {
+		const buttonView = new ButtonView();
+		const bind = buttonView.bindTemplate;
 
-			buttonView.tooltip = emojiGroup.title;
-			buttonView.label = emojiGroup.icon;
-			buttonView.withText = true;
-
-			buttonView.on( 'execute', () => {
-				this.categoryName = buttonView.tooltip as string;
-			} );
-
-			buttonView.on( 'change:isEnabled', ( event, name, oldValue, newValue ) => {
-				if ( newValue ) {
-					buttonView.class = '';
-				} else if ( buttonView.tooltip === this.categoryName ) {
-					buttonView.class = ACTIVE_CATEGORY_CLASS;
-				}
-			} );
-
-			return buttonView;
+		// A `[role="tab"]` element requires also the `[aria-selected]` attribute with its state.
+		buttonView.extendTemplate( {
+			attributes: {
+				'aria-selected': bind.to( 'isOn', value => value.toString() ),
+				class: [
+					'ck-emoji__category-item'
+				]
+			}
 		} );
+
+		buttonView.set( {
+			ariaLabel: emojiGroup.title,
+			label: emojiGroup.icon,
+			role: 'tab',
+			tooltip: emojiGroup.title,
+			withText: true,
+			// To improve accessibility, disconnect a button and its label connection so that screen
+			// readers can read the `[aria-label]` attribute directly from the more descriptive button.
+			ariaLabelledBy: undefined
+		} );
+
+		buttonView.on( 'execute', () => {
+			this.categoryName = emojiGroup.title;
+		} );
+
+		buttonView.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', () => {
+			if ( buttonView.isEnabled && buttonView.tooltip === this.categoryName ) {
+				buttonView.isOn = true;
+			}
+		} );
+
+		return buttonView;
 	}
 }

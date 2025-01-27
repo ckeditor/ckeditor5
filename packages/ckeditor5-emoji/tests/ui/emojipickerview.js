@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { SearchInfoView, ViewCollection } from 'ckeditor5/src/ui.js';
 import EmojiCategoriesView from '../../src/ui/emojicategoriesview.js';
 import EmojiGridView from '../../src/ui/emojigridview.js';
 import EmojiPickerView from '../../src/ui/emojipickerview.js';
 import EmojiSearchView from '../../src/ui/emojisearchview.js';
 import EmojiToneView from '../../src/ui/emojitoneview.js';
-import { SearchInfoView } from 'ckeditor5/src/ui.js';
 
 describe( 'EmojiPickerView', () => {
 	let emojiPickerView, locale, emojiGroups, skinTones, emojiBySearchQuery;
@@ -104,6 +104,13 @@ describe( 'EmojiPickerView', () => {
 			expect( emojiPickerView.template.attributes.tabindex ).to.deep.equal( [ '-1' ] );
 		} );
 
+		it( 'creates `view#items` collection', () => {
+			expect( emojiPickerView.items ).to.be.instanceOf( ViewCollection );
+
+			// To check if the `#createCollection()` factory was used.
+			expect( emojiPickerView._viewCollections.has( emojiPickerView.items ) ).to.equal( true );
+		} );
+
 		describe( 'events handling', () => {
 			it( 'should disable categories on search event emitted when query is not empty', () => {
 				const stub = sinon.stub( emojiPickerView.categoriesView, 'disableCategories' );
@@ -121,7 +128,7 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledOnce( stub );
 			} );
 
-			it( 'should set info view properties when search query length is equal to one', () => {
+			it( 'should display a hint for users when the query is too short', () => {
 				emojiPickerView.searchView.fire( 'search', { query: '1' } );
 
 				expect( emojiPickerView.infoView.primaryText ).to.equal( 'Keep on typing to see the emoji.' );
@@ -129,7 +136,7 @@ describe( 'EmojiPickerView', () => {
 				expect( emojiPickerView.infoView.isVisible ).to.equal( true );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there is nothing to show', () => {
+			it( 'should display a note when emoji were not matched with the specified query', () => {
 				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 0 } );
 
 				expect( emojiPickerView.infoView.primaryText ).to.equal( 'No emojis were found matching "%0".' );
@@ -137,13 +144,13 @@ describe( 'EmojiPickerView', () => {
 				expect( emojiPickerView.infoView.isVisible ).to.equal( true );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there are results to show', () => {
+			it( 'should hide the hint view when found emoji matches with the specified query', () => {
 				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 1 } );
 
 				expect( emojiPickerView.infoView.isVisible ).to.equal( false );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there are results to show', () => {
+			it( 'should trigger the search mechanism when an active category is changed', () => {
 				const stub = sinon.stub( emojiPickerView.searchView, 'search' );
 
 				emojiPickerView.categoriesView.categoryName = 'food';
@@ -153,7 +160,7 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledWith( stub, '' );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there are results to show', () => {
+			it( 'should use the current query value when updating the skin tone property', () => {
 				const searchStub = sinon.stub( emojiPickerView.searchView, 'search' );
 				const getInputValueStub = sinon.stub( emojiPickerView.searchView, 'getInputValue' ).returns( 'thum' );
 

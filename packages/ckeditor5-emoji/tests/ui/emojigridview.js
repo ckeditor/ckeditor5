@@ -66,23 +66,33 @@ describe( 'EmojiGridView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'creates view#tiles collection', () => {
+		it( 'creates `view#tiles` collection', () => {
 			expect( view.tiles ).to.be.instanceOf( ViewCollection );
+
+			// To check if the `#createCollection()` factory was used.
+			expect( view._viewCollections.has( view.tiles ) ).to.equal( true );
+		} );
+
+		it( 'creates `view#cachedTiles` collection', () => {
+			expect( view.cachedTiles ).to.be.instanceOf( ViewCollection );
+
+			// To check if the `#createCollection()` factory was used.
+			expect( view._viewCollections.has( view.cachedTiles ) ).to.equal( true );
 		} );
 
 		it( 'creates #element from template', () => {
 			expect( view.element.getAttribute( 'role' ) ).to.equal( 'tabpanel' );
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).to.equal( true );
+			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).to.equal( true );
 
 			const tilesContainer = view.element.firstChild;
 
 			expect( tilesContainer.getAttribute( 'role' ) ).to.equal( 'grid' );
-			expect( tilesContainer.classList.contains( 'ck' ) ).to.be.true;
-			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).to.be.true;
+			expect( tilesContainer.classList.contains( 'ck' ) ).to.equal( true );
+			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).to.equal( true );
 		} );
 
-		describe( 'Focus management across the grid items using arrow keys', () => {
+		describe( 'focus management across the grid items using arrow keys', () => {
 			let view;
 
 			beforeEach( () => {
@@ -210,38 +220,6 @@ describe( 'EmojiGridView', () => {
 		} );
 	} );
 
-	describe( 'createTile()', () => {
-		it( 'creates a new tile button', () => {
-			const tile = view._createTile( '😊', 'smile' );
-
-			expect( tile ).to.be.instanceOf( ButtonView );
-			expect( tile.viewUid ).to.equal( '😊' );
-			expect( tile.label ).to.equal( '😊' );
-			expect( tile.withText ).to.be.true;
-			expect( tile.class ).to.equal( 'ck-emoji__tile' );
-		} );
-
-		it( 'delegates #execute from the tile to the grid', () => {
-			const tile = view._createTile( '😊', 'smile' );
-			const spy = sinon.spy();
-
-			view.on( 'execute', spy );
-			tile.fire( 'execute' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
-		} );
-
-		it( 'adds created tile to the collection of cached tiles', () => {
-			expect( view.cachedTiles.has( '😊' ) ).to.equal( false );
-
-			const tile = view._createTile( '😊', 'smile' );
-
-			expect( view.cachedTiles.has( '😊' ) ).to.equal( true );
-			expect( view.cachedTiles.get( '😊' ) ).to.equal( tile );
-		} );
-	} );
-
 	describe( 'focus()', () => {
 		it( 'focuses the first tile', () => {
 			view.filter( new RegExp( 'smile' ) );
@@ -252,27 +230,58 @@ describe( 'EmojiGridView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'does not crash when a grid is empty', () => {
+			const view = new EmojiGridView( locale, {
+				emojiGroups: [],
+				categoryName: '',
+				getEmojiBySearchQuery: sinon.spy()
+			} );
+
+			view.render();
+
+			expect( () => {
+				view.focus();
+			} ).to.not.throw();
+
+			view.destroy();
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy an instance of focus tracker', () => {
+			const spy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should destroy an instance of keystroke handler', () => {
+			const spy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( spy );
+		} );
 	} );
 
 	describe( 'render()', () => {
-		describe( 'FocusTracker', () => {
-			it( 'should add tiles to focus tracker when tiles are added to #tiles', () => {
-				const spy = sinon.spy( view.focusTracker, 'add' );
-
-				view.filter( new RegExp( 'smile' ) );
-
-				view.categoryName = 'food';
-
-				sinon.assert.calledTwice( spy );
+		it( 'listens to keyboard events from the grid element', () => {
+			const view = new EmojiGridView( locale, {
+				emojiGroups: [],
+				categoryName: '',
+				getEmojiBySearchQuery: sinon.spy()
 			} );
 
-			it( 'should remove tiles from focus tracker when tiles are removed from #tiles', () => {
-				const spy = sinon.spy( view.focusTracker, 'remove' );
+			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-				view.filter( new RegExp( 'smile' ) );
+			view.render();
 
-				sinon.assert.callCount( spy, 6 );
-			} );
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, view.element );
+
+			view.destroy();
 		} );
 	} );
 
@@ -294,7 +303,7 @@ describe( 'EmojiGridView', () => {
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 			] );
 
-			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
 
 			const result = view.filter( new RegExp( 'smile' ) );
 
@@ -302,6 +311,8 @@ describe( 'EmojiGridView', () => {
 			expect( view.isEmpty ).is.equal( false );
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, 'smile' );
+
+			view.destroy();
 		} );
 
 		it( 'should filter emojis by query (empty output)', () => {
@@ -319,7 +330,7 @@ describe( 'EmojiGridView', () => {
 
 			const spy = sinon.stub().returns( [] );
 
-			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
 
 			const result = view.filter( new RegExp( 'smile' ) );
 
@@ -327,6 +338,8 @@ describe( 'EmojiGridView', () => {
 			expect( view.isEmpty ).is.equal( true );
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, 'smile' );
+
+			view.destroy();
 		} );
 
 		it( 'should filter emojis by categories (empty query)', () => {
@@ -340,13 +353,15 @@ describe( 'EmojiGridView', () => {
 
 			const spy = sinon.stub().returns( [] );
 
-			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
 
 			const result = view.filter( null );
 
 			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 0 } );
 			expect( view.isEmpty ).is.equal( true );
 			sinon.assert.callCount( spy, 0 );
+
+			view.destroy();
 		} );
 
 		it( 'should re-use cached tile if it exists', () => {
@@ -366,7 +381,7 @@ describe( 'EmojiGridView', () => {
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 			] );
 
-			view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
 
 			expect( view.cachedTiles.length ).to.equal( 0 );
 
@@ -379,6 +394,68 @@ describe( 'EmojiGridView', () => {
 
 			expect( view.cachedTiles.length ).to.equal( 1 );
 			expect( view.tiles.get( '😀' ) ).to.equal( view.cachedTiles.get( '😀' ) );
+
+			view.destroy();
+		} );
+
+		describe( '#focusTracker', () => {
+			it( 'should include the added items in focus tracker', () => {
+				const spy = sinon.spy( view.focusTracker, 'add' );
+
+				view.filter( new RegExp( 'smile' ) );
+
+				// `getEmojiBySearchQuery()` returns two items.
+				sinon.assert.calledTwice( spy );
+			} );
+
+			it( 'should exclude the removed items in focus tracker', () => {
+				const spy = sinon.spy( view.focusTracker, 'remove' );
+
+				view.filter( new RegExp( 'smile' ) );
+
+				// The initial render includes all items from the `faces` category.
+				sinon.assert.callCount( spy, 6 );
+			} );
+		} );
+	} );
+
+	describe( '_createTile()', () => {
+		it( 'creates a new tile button', () => {
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( tile ).to.be.instanceOf( ButtonView );
+			expect( tile.viewUid ).to.equal( '😊' );
+			expect( tile.label ).to.equal( '😊' );
+			expect( tile.tooltip ).to.equal( 'smile' );
+			expect( tile.withText ).to.equal( true );
+			expect( tile.element.classList.contains( 'ck-emoji__tile' ) ).to.equal( true );
+		} );
+
+		it( 'does not use the `[aria-labelled-by]` attribute as the button is descriptive enough', () => {
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( tile.ariaLabel ).to.equal( 'smile' );
+			expect( tile.ariaLabelledBy ).to.equal( undefined );
+		} );
+
+		it( 'delegates `execute` from the tile to the grid', () => {
+			const tile = view._createTile( '😊', 'smile' );
+			const spy = sinon.spy();
+
+			view.on( 'execute', spy );
+			tile.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
+		} );
+
+		it( 'adds created tile to the collection of cached tiles', () => {
+			expect( view.cachedTiles.has( '😊' ) ).to.equal( false );
+
+			const tile = view._createTile( '😊', 'smile' );
+
+			expect( view.cachedTiles.has( '😊' ) ).to.equal( true );
+			expect( view.cachedTiles.get( '😊' ) ).to.equal( tile );
 		} );
 	} );
 } );
