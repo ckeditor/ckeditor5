@@ -40,6 +40,7 @@
     "@ckeditor/ckeditor5-editor-decoupled": "44.1.0",
     "@ckeditor/ckeditor5-editor-inline": "44.1.0",
     "@ckeditor/ckeditor5-editor-multi-root": "44.1.0",
+    "@ckeditor/ckeditor5-emoji": "0.0.1",
     "@ckeditor/ckeditor5-engine": "44.1.0",
     "@ckeditor/ckeditor5-enter": "44.1.0",
     "@ckeditor/ckeditor5-essentials": "44.1.0",
