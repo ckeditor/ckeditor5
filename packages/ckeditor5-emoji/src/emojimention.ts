@@ -83,9 +83,9 @@ export default class EmojiMention extends Plugin {
 
 		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
 		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
-		const isEmojiMarkerAlreadyAdded = mentionFeedsConfigs.find( config => config.isEmojiMarker );
+		const isEmojiMarkerAlreadyAdded = mentionFeedsConfigs.find( config => config._isEmojiMarker );
 		const markerAlreadyUsed = mentionFeedsConfigs
-			.filter( config => !config.isEmojiMarker )
+			.filter( config => !config._isEmojiMarker )
 			.some( config => config.marker === EMOJI_MENTION_MARKER );
 		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
@@ -266,5 +266,9 @@ export default class EmojiMention extends Plugin {
 }
 
 type EmojiMentionFeed = MentionFeed & {
-	isEmojiMarker?: boolean;
+
+	/**
+	 * It's used to not display an emoji mention feed warning when editor plugins are initialized multiple times.
+	 */
+	_isEmojiMarker?: boolean;
 };
