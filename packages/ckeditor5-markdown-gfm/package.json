@@ -12,7 +12,8 @@
   ],
   "sideEffects": [
     "*.css",
-    "build/**/*.js"
+    "build/**/*.js",
+    "dist/translations/*.umd.js"
   ],
   "type": "module",
   "main": "src/index.ts",
