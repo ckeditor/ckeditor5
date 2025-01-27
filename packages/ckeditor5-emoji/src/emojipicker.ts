@@ -134,6 +134,10 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
+		// Show visual selection on a text when the contextual balloon is displayed.
+		// See #17654.
+		this._showFakeVisualSelection();
+
 		if ( !this.emojiPickerView ) {
 			this.emojiPickerView = this._createEmojiPickerView();
 		}
@@ -149,12 +153,20 @@ export default class EmojiPicker extends Plugin {
 				view: this.emojiPickerView,
 				position: this._getBalloonPositionData()
 			} );
-
-			this._showFakeVisualSelection();
 		}
 
 		setTimeout( () => {
 			this.emojiPickerView!.focus();
+
+			// From time to time, the marker conversion causes losing the selection data. Let's restore
+			// the proper selection after focusing the balloon based on the fake selection marker. See: #17819.
+			const marker = this.editor.model.markers.get( VISUAL_SELECTION_MARKER_NAME );
+
+			if ( marker ) {
+				this.editor.model.change( writer => {
+					writer.setSelection( marker.getRange() );
+				} );
+			}
 		} );
 	}
 
@@ -233,9 +245,7 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _hideUI(): void {
 		this._balloonPlugin.remove( this.emojiPickerView! );
-
 		this.emojiPickerView!.searchView.setInputValue( '' );
-
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
 	}
@@ -301,23 +311,27 @@ export default class EmojiPicker extends Plugin {
 		model.change( writer => {
 			const range = model.document.selection.getFirstRange()!;
 
-			if ( range.start.isAtEnd ) {
-				const startPosition = range.start.getLastMatchingPosition(
-					( { item } ) => !model.schema.isContent( item ),
-					{ boundaries: range }
-				);
-
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range: writer.createRange( startPosition, range.end )
-				} );
+			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range
-				} );
+				if ( range.start.isAtEnd ) {
+					const startPosition = range.start.getLastMatchingPosition(
+						( { item } ) => !model.schema.isContent( item ),
+						{ boundaries: range }
+					);
+
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange( startPosition, range.end )
+					} );
+				} else {
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range
+					} );
+				}
 			}
 		} );
 	}

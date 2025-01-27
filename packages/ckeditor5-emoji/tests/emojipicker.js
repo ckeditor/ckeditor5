@@ -245,7 +245,7 @@ describe( 'EmojiPicker', () => {
 			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
 
-		it( 'should insert an emoji after clicking on it in the picker', async () => {
+		it( 'should insert an emoji after clicking on it in the picker', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
@@ -307,6 +307,20 @@ describe( 'EmojiPicker', () => {
 				emojiPicker.showUI();
 				emojiPicker.showUI();
 			} ).to.not.throw();
+		} );
+
+		// See #17819.
+		it( 'should not change the selection after opening the UI', async () => {
+			setModelData(
+				editor.model,
+				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
+			);
+
+			emojiPicker.showUI();
+
+			expect( getModelData( editor.model ) ).to.equal(
+				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
+			);
 		} );
 
 		describe( 'fake visual selection', () => {
