@@ -128,16 +128,18 @@ export default class ImageInsertUI extends Plugin {
 		buttonViewCreator,
 		formViewCreator,
 		menuBarButtonViewCreator,
-		requiresForm = false
+		requiresForm = false,
+		override = false
 	}: {
 		name: string;
 		observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
 		buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
-		formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
-		menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView;
+		formViewCreator: ( isOnlyOne: boolean ) => FocusableView | Array<FocusableView>;
+		menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView | Array<MenuBarMenuListItemButtonView>;
 		requiresForm?: boolean;
+		override?: boolean;
 	} ): void {
-		if ( this._integrations.has( name ) ) {
+		if ( this._integrations.has( name ) && !override ) {
 			/**
 			 * There are two insert-image integrations registered with the same name.
 			 *
@@ -200,7 +202,7 @@ export default class ImageInsertUI extends Plugin {
 		) );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const integrationViews = integrations.map( ( { formViewCreator } ) => formViewCreator( integrations.length == 1 ) );
+			const integrationViews = integrations.flatMap( ( { formViewCreator } ) => formViewCreator( integrations.length == 1 ) );
 			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationViews );
 
 			dropdownView.panelView.children.add( imageInsertFormView );
@@ -221,28 +223,26 @@ export default class ImageInsertUI extends Plugin {
 			return null as any;
 		}
 
-		let resultView: MenuBarMenuListItemButtonView | MenuBarMenuView | undefined;
-		const firstIntegration = integrations[ 0 ];
+		const integrationViews = integrations.flatMap( ( {
+			menuBarButtonViewCreator
+		} ) => menuBarButtonViewCreator( integrations.length == 1 ) );
 
-		if ( integrations.length == 1 ) {
-			resultView = firstIntegration.menuBarButtonViewCreator( true );
-		} else {
-			resultView = new MenuBarMenuView( locale );
-			const listView = new MenuBarMenuListView( locale );
-			resultView.panelView.children.add( listView );
+		const resultView = new MenuBarMenuView( locale );
+		const listView = new MenuBarMenuListView( locale );
+		resultView.panelView.children.add( listView );
 
-			resultView.buttonView.set( {
-				icon: IconImage,
-				label: t( 'Image' )
-			} );
+		resultView.buttonView.set( {
+			icon: IconImage,
+			label: t( 'Image' )
+		} );
 
-			for ( const integration of integrations ) {
-				const listItemView = new MenuBarMenuListItemView( locale, resultView );
-				const buttonView = integration.menuBarButtonViewCreator( false );
+		for ( const integrationView of integrationViews ) {
+			const listItemView = new MenuBarMenuListItemView( locale, resultView );
 
-				listItemView.children.add( buttonView );
-				listView.items.add( listItemView );
-			}
+			listItemView.children.add( integrationView );
+			listView.items.add( listItemView );
+
+			integrationView.delegate( 'execute' ).to( resultView );
 		}
 
 		return resultView;
@@ -310,7 +310,7 @@ export default class ImageInsertUI extends Plugin {
 type IntegrationData = {
 	observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
 	buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
-	menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView;
-	formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
+	menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView | Array<MenuBarMenuListItemButtonView>;
+	formViewCreator: ( isOnlyOne: boolean ) => FocusableView | Array<FocusableView>;
 	requiresForm: boolean;
 };
