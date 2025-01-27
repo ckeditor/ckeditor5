@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+/* global document, window */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
@@ -20,11 +20,20 @@ const config = {
 	toolbar: [ 'sourceEditing', '|', 'insertTable', 'bulletedList', 'numberedList', 'bold', 'italic', 'heading' ]
 };
 
-ClassicEditor.create( document.getElementById( 'editor1' ), config );
-ClassicEditor.create( document.getElementById( 'editor2' ), {
-	...config,
-	plugins: config.plugins.filter( plugin => plugin !== EmptyBlock )
-} );
+ClassicEditor
+	.create( document.getElementById( 'editor1' ), config )
+	.then( instance => {
+		window.editor1 = instance;
+	} );
+
+ClassicEditor
+	.create( document.getElementById( 'editor2' ), {
+		...config,
+		plugins: config.plugins.filter( plugin => plugin !== EmptyBlock )
+	} )
+	.then( instance => {
+		window.editor2 = instance;
+	} );
 
 const clipboardPreview = document.getElementById( 'clipboard-preview' );
 
