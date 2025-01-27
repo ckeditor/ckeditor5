@@ -227,7 +227,7 @@ export default class EmojiMention extends Plugin {
 				return [];
 			}
 
-			const emojis: Array<MentionFeedObjectItem> = this._emojiDatabasePlugin.getEmojiBySearchQuery( searchQuery )
+			const emojis: Array<MentionFeedObjectItem> = this._emojiDatabasePlugin.getEmojiByQuery( searchQuery )
 				.map( emoji => {
 					let text = emoji.skins[ this._skinTone ] || emoji.skins.default;
 

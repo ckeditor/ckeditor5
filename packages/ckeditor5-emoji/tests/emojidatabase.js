@@ -269,7 +269,7 @@ describe( 'EmojiDatabase', () => {
 		} );
 	} );
 
-	describe( 'getEmojiBySearchQuery()', () => {
+	describe( 'getEmojiByQuery()', () => {
 		let editor, domElement, emojiDatabasePlugin;
 
 		beforeEach( async () => {
@@ -296,51 +296,51 @@ describe( 'EmojiDatabase', () => {
 		it( 'should return empty array if Fuse.js instance is not created', () => {
 			emojiDatabasePlugin._fuseSearch = null;
 
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'face' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query is empty', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( '' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( '' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query is shorter than 2 characters', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'f' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'f' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query does not contain two non-white characters next to each other', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'f w' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'f w' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query does not match any emoji', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face happy' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'face happy' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return emojis matched by emoticon', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( ':|' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( ':|' );
 
 			expect( result ).to.have.length( 1 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by annotation (single match)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'neutral' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'neutral' );
 
 			expect( result ).to.have.length( 1 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by annotation (multiple matches)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'face' );
 
 			expect( result ).to.have.length( 2 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -348,14 +348,14 @@ describe( 'EmojiDatabase', () => {
 		} );
 
 		it( 'should return emojis matched by tags (single match)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'blank' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'blank' );
 
 			expect( result ).to.have.length( 1 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by tags (multiple matches)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'whatever' );
+			const result = emojiDatabasePlugin.getEmojiByQuery( 'whatever' );
 
 			expect( result ).to.have.length( 2 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -363,7 +363,7 @@ describe( 'EmojiDatabase', () => {
 		} );
 	} );
 
-	describe( 'getEmojiGroups()', () => {
+	describe( 'getEmojiCategories()', () => {
 		let editor, domElement, emojiDatabasePlugin;
 
 		beforeEach( async () => {
@@ -398,7 +398,7 @@ describe( 'EmojiDatabase', () => {
 		it( 'should return empty array for each emoji category if emoji database is empty', () => {
 			emojiDatabasePlugin._emojiDatabase = [];
 
-			const result = emojiDatabasePlugin.getEmojiGroups();
+			const result = emojiDatabasePlugin.getEmojiCategories();
 
 			expect( result ).to.have.length( 9 );
 
@@ -408,7 +408,7 @@ describe( 'EmojiDatabase', () => {
 		} );
 
 		it( 'should return emojis grouped by category', () => {
-			const result = emojiDatabasePlugin.getEmojiGroups();
+			const result = emojiDatabasePlugin.getEmojiCategories();
 
 			expect( result ).to.have.length( 9 );
 

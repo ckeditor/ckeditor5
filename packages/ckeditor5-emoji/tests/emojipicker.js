@@ -20,13 +20,13 @@ import EmojiCommand from '../src/emojicommand.js';
 class EmojiDatabaseMock extends EmojiDatabase {
 	// Overridden `init()` to prevent the `fetch()` call.
 	init() {
-		this.getEmojiBySearchQuery = sinon.stub();
-		this.getEmojiGroups = sinon.stub();
+		this.getEmojiByQuery = sinon.stub();
+		this.getEmojiCategories = sinon.stub();
 		this.getSkinTones = sinon.stub();
 		this.isDatabaseLoaded = sinon.stub();
 
 		// Let's define a default behavior as we need this in UI, but we do not check it.
-		this.getEmojiGroups.returns( [
+		this.getEmojiCategories.returns( [
 			{
 				title: 'Smileys & Expressions',
 				icon: '😀',
@@ -142,7 +142,7 @@ describe( 'EmojiPicker', () => {
 			const emojiPicker = editor.plugins.get( EmojiPicker );
 			emojiPicker.showUI();
 			emojiPicker._hideUI();
-			emojiPicker._emojiPickerView.gridView.skinTone = 'dark';
+			emojiPicker.emojiPickerView.gridView.skinTone = 'dark';
 
 			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'dark' );
 
@@ -201,11 +201,11 @@ describe( 'EmojiPicker', () => {
 
 	describe( 'showUI()', () => {
 		it( 'should read categories from the database plugin when creating UI', () => {
-			const { getEmojiGroups } = editor.plugins.get( 'EmojiDatabase' );
+			const { getEmojiCategories } = editor.plugins.get( 'EmojiDatabase' );
 
 			emojiPicker.showUI();
 
-			expect( getEmojiGroups.callCount ).to.equal( 1 );
+			expect( getEmojiCategories.callCount ).to.equal( 1 );
 		} );
 
 		it( 'should read skin tones from the database plugin when creating UI', () => {
@@ -217,22 +217,22 @@ describe( 'EmojiPicker', () => {
 		} );
 
 		it( 'should pass the specified query to the UI view', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [] );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [] );
 
 			emojiPicker.showUI( 'query' );
 
-			expect( emojiPicker._emojiPickerView.searchView.inputView.queryView.fieldView.value ).to.equal( 'query' );
-			expect( getEmojiBySearchQuery.callCount ).to.equal( 1 );
-			expect( getEmojiBySearchQuery.firstCall.firstArg ).to.equal( 'query' );
+			expect( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.value ).to.equal( 'query' );
+			expect( getEmojiByQuery.callCount ).to.equal( 1 );
+			expect( getEmojiByQuery.firstCall.firstArg ).to.equal( 'query' );
 		} );
 
 		it( 'should add the emoji UI view to the `ContextualBalloon` plugin when opens UI', () => {
-			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
 
 			emojiPicker.showUI();
 
-			expect( emojiPicker._balloon.visibleView ).to.be.instanceOf( EmojiPickerView );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerView );
 		} );
 
 		it( 'should focus the query input when opens UI', async () => {
@@ -242,34 +242,34 @@ describe( 'EmojiPicker', () => {
 				setTimeout( resolve );
 			} );
 
-			expect( document.activeElement ).to.equal( emojiPicker._emojiPickerView.searchView.inputView.queryView.fieldView.element );
+			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
 
 		it( 'should insert an emoji after clicking on it in the picker', async () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
-			emojiPicker._emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
+			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 		} );
 
 		it( 'should update the balloon position on update event', () => {
-			const updatePositionSpy = sinon.spy( emojiPicker._balloon, 'updatePosition' );
+			const updatePositionSpy = sinon.spy( emojiPicker._balloonPlugin, 'updatePosition' );
 
 			emojiPicker.showUI();
-			emojiPicker._emojiPickerView.fire( 'update' );
+			emojiPicker.emojiPickerView.fire( 'update' );
 
 			sinon.assert.calledOnce( updatePositionSpy );
 		} );
 
 		it( 'should not update the balloon position on update event when visible view is not current emoji picker view', () => {
-			const updatePositionSpy = sinon.spy( emojiPicker._balloon, 'updatePosition' );
+			const updatePositionSpy = sinon.spy( emojiPicker._balloonPlugin, 'updatePosition' );
 
 			emojiPicker.showUI();
-			emojiPicker._balloon.visibleView = {};
+			emojiPicker._balloonPlugin.visibleView = {};
 
-			emojiPicker._emojiPickerView.fire( 'update' );
+			emojiPicker.emojiPickerView.fire( 'update' );
 
 			sinon.assert.notCalled( updatePositionSpy );
 		} );
@@ -279,27 +279,27 @@ describe( 'EmojiPicker', () => {
 
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
 		} );
 
 		it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
 			emojiPicker.showUI();
 
-			emojiPicker._balloon.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
+			emojiPicker._balloonPlugin.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
 				keyCode: keyCodes.esc,
 				bubbles: true
 			} ) );
 
-			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
 		} );
 
 		it( 'should load previous category after reopening the emoji picker', async () => {
 			emojiPicker.showUI();
-			emojiPicker._emojiPickerView.categoriesView.categoryName = 'Food & Drinks';
+			emojiPicker.emojiPickerView.categoriesView.categoryName = 'Food & Drinks';
 			emojiPicker._hideUI();
 			emojiPicker.showUI();
 
-			expect( emojiPicker._emojiPickerView.gridView.categoryName ).to.equal( 'Food & Drinks' );
+			expect( emojiPicker.emojiPickerView.gridView.categoryName ).to.equal( 'Food & Drinks' );
 		} );
 
 		it( 'should not crash when opening the UI twice in a row', () => {

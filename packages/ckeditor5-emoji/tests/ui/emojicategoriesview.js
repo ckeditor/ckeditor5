@@ -8,7 +8,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 
 describe( 'EmojiCategoriesView', () => {
-	let locale, emojiCategoriesView, emojiGroups;
+	let locale, emojiCategoriesView, emojiCategories;
 
 	testUtils.createSinonSandbox();
 
@@ -17,7 +17,7 @@ describe( 'EmojiCategoriesView', () => {
 			t: val => val
 		};
 
-		emojiGroups = [
+		emojiCategories = [
 			{
 				title: 'faces',
 				icon: '😊'
@@ -30,7 +30,7 @@ describe( 'EmojiCategoriesView', () => {
 			}
 		];
 
-		emojiCategoriesView = new EmojiCategoriesView( locale, { emojiGroups, categoryName: 'faces' } );
+		emojiCategoriesView = new EmojiCategoriesView( locale, { emojiCategories, categoryName: 'faces' } );
 		emojiCategoriesView.render();
 	} );
 
@@ -50,7 +50,7 @@ describe( 'EmojiCategoriesView', () => {
 			expect( emojiCategoriesView.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories-list' ) ).to.be.true;
 
-			expect( Object.values( emojiCategoriesView.element.childNodes ).length ).to.equal( emojiGroups.length );
+			expect( Object.values( emojiCategoriesView.element.childNodes ).length ).to.equal( emojiCategories.length );
 
 			expect( emojiCategoriesView.element.getAttribute( 'role' ) ).to.equal( 'tablist' );
 		} );

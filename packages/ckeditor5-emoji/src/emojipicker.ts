@@ -28,19 +28,19 @@ const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
  */
 export default class EmojiPicker extends Plugin {
 	/**
+	 * The actions view displayed inside the balloon.
+	 */
+	declare public emojiPickerView: EmojiPickerView | undefined;
+
+	/**
 	 * The contextual balloon plugin instance.
 	 */
-	declare private _balloon: ContextualBalloon;
+	declare private _balloonPlugin: ContextualBalloon;
 
 	/**
 	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
 	 */
-	declare private _emojiDatabase: EmojiDatabase;
-
-	/**
-	 * The actions view displayed inside the balloon.
-	 */
-	declare private _emojiPickerView: EmojiPickerView | undefined;
+	declare private _emojiDatabasePlugin: EmojiDatabase;
 
 	/**
 	 * @inheritDoc
@@ -69,8 +69,8 @@ export default class EmojiPicker extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		this._emojiDatabase = editor.plugins.get( 'EmojiDatabase' );
-		this._balloon = editor.plugins.get( 'ContextualBalloon' );
+		this._emojiDatabasePlugin = editor.plugins.get( 'EmojiDatabase' );
+		this._balloonPlugin = editor.plugins.get( 'ContextualBalloon' );
 	}
 
 	/**
@@ -80,14 +80,14 @@ export default class EmojiPicker extends Plugin {
 		const editor = this.editor;
 
 		// Skip registering a button in the toolbar and list item in the menu bar if the emoji database is not loaded.
-		if ( !this._emojiDatabase.isDatabaseLoaded() ) {
+		if ( !this._emojiDatabasePlugin.isDatabaseLoaded() ) {
 			return;
 		}
 
 		editor.commands.add( 'emoji', new EmojiCommand( editor ) );
 
 		editor.ui.componentFactory.add( 'emoji', () => {
-			const button = this._createUiComponent( ButtonView );
+			const button = this._createButton( ButtonView );
 
 			button.set( {
 				tooltip: true
@@ -97,7 +97,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:emoji', () => {
-			return this._createUiComponent( MenuBarMenuListItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView );
 		} );
 
 		this._setupConversion();
@@ -109,8 +109,8 @@ export default class EmojiPicker extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		if ( this._emojiPickerView ) {
-			this._emojiPickerView.destroy();
+		if ( this.emojiPickerView ) {
+			this.emojiPickerView.destroy();
 		}
 	}
 
@@ -121,11 +121,11 @@ export default class EmojiPicker extends Plugin {
 	 * Otherwise, it reflects the user's intention.
 	 */
 	public get skinTone(): SkinToneId {
-		if ( !this._emojiPickerView ) {
+		if ( !this.emojiPickerView ) {
 			return this.editor.config.get( 'emoji.skinTone' )!;
 		}
 
-		return this._emojiPickerView.gridView.skinTone;
+		return this.emojiPickerView.gridView.skinTone;
 	}
 
 	/**
@@ -134,19 +134,19 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
-		if ( !this._emojiPickerView ) {
-			this._emojiPickerView = this._createEmojiPickerView();
+		if ( !this.emojiPickerView ) {
+			this.emojiPickerView = this._createEmojiPickerView();
 		}
 
 		if ( searchValue ) {
-			this._emojiPickerView.searchView.setInputValue( searchValue );
+			this.emojiPickerView.searchView.setInputValue( searchValue );
 		}
 
-		this._emojiPickerView.searchView.search( searchValue );
+		this.emojiPickerView.searchView.search( searchValue );
 
-		if ( !this._balloon.hasView( this._emojiPickerView ) ) {
-			this._balloon.add( {
-				view: this._emojiPickerView,
+		if ( !this._balloonPlugin.hasView( this.emojiPickerView ) ) {
+			this._balloonPlugin.add( {
+				view: this.emojiPickerView,
 				position: this._getBalloonPositionData()
 			} );
 
@@ -154,14 +154,14 @@ export default class EmojiPicker extends Plugin {
 		}
 
 		setTimeout( () => {
-			this._emojiPickerView!.focus();
+			this.emojiPickerView!.focus();
 		} );
 	}
 
 	/**
 	 * Creates a button for toolbar and menu bar that will show the emoji dialog.
 	 */
-	private _createUiComponent<T extends typeof ButtonView>( ViewClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>( ViewClass: T ): InstanceType<T> {
 		const buttonView = new ViewClass( this.editor.locale ) as InstanceType<T>;
 		const t = this.editor.locale.t;
 
@@ -183,11 +183,11 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createEmojiPickerView(): EmojiPickerView {
 		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
-			emojiGroups: this._emojiDatabase.getEmojiGroups(),
+			emojiCategories: this._emojiDatabasePlugin.getEmojiCategories(),
 			skinTone: this.editor.config.get( 'emoji.skinTone' )!,
-			skinTones: this._emojiDatabase.getSkinTones(),
-			getEmojiBySearchQuery: ( query: string ) => {
-				return this._emojiDatabase.getEmojiBySearchQuery( query );
+			skinTones: this._emojiDatabasePlugin.getSkinTones(),
+			getEmojiByQuery: ( query: string ) => {
+				return this._emojiDatabasePlugin.getEmojiByQuery( query );
 			}
 		} );
 
@@ -206,8 +206,8 @@ export default class EmojiPicker extends Plugin {
 
 		// Update the balloon position when layout is changed.
 		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
-			if ( this._balloon.visibleView === emojiPickerView ) {
-				this._balloon.updatePosition();
+			if ( this._balloonPlugin.visibleView === emojiPickerView ) {
+				this._balloonPlugin.updatePosition();
 			}
 		} );
 
@@ -220,9 +220,9 @@ export default class EmojiPicker extends Plugin {
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
 			emitter: emojiPickerView,
-			contextElements: [ this._balloon.view.element! ],
+			contextElements: [ this._balloonPlugin.view.element! ],
 			callback: () => this._hideUI(),
-			activator: () => this._balloon.visibleView === emojiPickerView
+			activator: () => this._balloonPlugin.visibleView === emojiPickerView
 		} );
 
 		return emojiPickerView;
@@ -232,9 +232,9 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		this._balloon.remove( this._emojiPickerView! );
+		this._balloonPlugin.remove( this.emojiPickerView! );
 
-		this._emojiPickerView!.searchView.setInputValue( '' );
+		this.emojiPickerView!.searchView.setInputValue( '' );
 
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
@@ -275,7 +275,7 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
+	 * Returns positioning options for the {@link #_balloonPlugin}. They control the way the balloon is attached
 	 * to the target element or selection.
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> {

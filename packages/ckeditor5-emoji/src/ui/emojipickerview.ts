@@ -82,21 +82,21 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	 */
 	constructor(
 		locale: Locale,
-		{ emojiGroups, getEmojiBySearchQuery, skinTone, skinTones }: {
-			emojiGroups: Array<EmojiCategory>;
-			getEmojiBySearchQuery: EmojiSearchQueryCallback;
+		{ emojiCategories, getEmojiByQuery, skinTone, skinTones }: {
+			emojiCategories: Array<EmojiCategory>;
+			getEmojiByQuery: EmojiSearchQueryCallback;
 			skinTone: SkinToneId;
 			skinTones: Array<SkinTone>;
 		}
 	) {
 		super( locale );
 
-		const categoryName = emojiGroups[ 0 ].title;
+		const categoryName = emojiCategories[ 0 ].title;
 
 		this.gridView = new EmojiGridView( locale, {
 			categoryName,
-			emojiGroups,
-			getEmojiBySearchQuery,
+			emojiCategories,
+			getEmojiByQuery,
 			skinTone
 		} );
 		this.infoView = new SearchInfoView();
@@ -105,7 +105,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			resultsView: this.infoView
 		} );
 		this.categoriesView = new EmojiCategoriesView( locale, {
-			emojiGroups,
+			emojiCategories,
 			categoryName
 		} );
 		this.toneView = new EmojiToneView( locale, {

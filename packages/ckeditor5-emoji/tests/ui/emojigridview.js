@@ -12,7 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'EmojiGridView', () => {
-	let view, locale, emojiGroups;
+	let view, locale, emojiCategories;
 
 	testUtils.createSinonSandbox();
 
@@ -21,7 +21,7 @@ describe( 'EmojiGridView', () => {
 			t: str => str
 		};
 
-		emojiGroups = [
+		emojiCategories = [
 			{
 				title: 'faces',
 				icon: '😊',
@@ -47,10 +47,10 @@ describe( 'EmojiGridView', () => {
 		];
 
 		view = new EmojiGridView( locale, {
-			emojiGroups,
+			emojiCategories,
 			categoryName: 'faces',
 			skinTone: 'default',
-			getEmojiBySearchQuery: () => [
+			getEmojiByQuery: () => [
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } },
 				{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } }
 			]
@@ -97,10 +97,10 @@ describe( 'EmojiGridView', () => {
 
 			beforeEach( () => {
 				view = new EmojiGridView( locale, {
-					emojiGroups,
+					emojiCategories,
 					categoryName: 'faces',
 					skinTone: 'default',
-					getEmojiBySearchQuery: () => [
+					getEmojiByQuery: () => [
 						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } },
 						{ 'annotation': 'thumbs up', 'emoji': '👍', 'skins': { 'default': '👍' } },
 						{ 'annotation': 'winking face', 'emoji': '😉', 'skins': { 'default': '😉' } },
@@ -233,9 +233,9 @@ describe( 'EmojiGridView', () => {
 
 		it( 'does not crash when a grid is empty', () => {
 			const view = new EmojiGridView( locale, {
-				emojiGroups: [],
+				emojiCategories: [],
 				categoryName: '',
-				getEmojiBySearchQuery: sinon.spy()
+				getEmojiByQuery: sinon.spy()
 			} );
 
 			view.render();
@@ -269,9 +269,9 @@ describe( 'EmojiGridView', () => {
 	describe( 'render()', () => {
 		it( 'listens to keyboard events from the grid element', () => {
 			const view = new EmojiGridView( locale, {
-				emojiGroups: [],
+				emojiCategories: [],
 				categoryName: '',
-				getEmojiBySearchQuery: sinon.spy()
+				getEmojiByQuery: sinon.spy()
 			} );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
@@ -287,7 +287,7 @@ describe( 'EmojiGridView', () => {
 
 	describe( 'filter()', () => {
 		it( 'should filter emojis by query (non empty output)', () => {
-			emojiGroups = [
+			emojiCategories = [
 				{
 					title: 'faces',
 					icon: '😊',
@@ -303,7 +303,7 @@ describe( 'EmojiGridView', () => {
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 			] );
 
-			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
 			const result = view.filter( new RegExp( 'smile' ) );
 
@@ -316,7 +316,7 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'should filter emojis by query (empty output)', () => {
-			emojiGroups = [
+			emojiCategories = [
 				{
 					title: 'faces',
 					icon: '😊',
@@ -330,7 +330,7 @@ describe( 'EmojiGridView', () => {
 
 			const spy = sinon.stub().returns( [] );
 
-			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
 			const result = view.filter( new RegExp( 'smile' ) );
 
@@ -343,7 +343,7 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'should filter emojis by categories (empty query)', () => {
-			emojiGroups = [
+			emojiCategories = [
 				{
 					title: 'faces',
 					icon: '😊',
@@ -353,7 +353,7 @@ describe( 'EmojiGridView', () => {
 
 			const spy = sinon.stub().returns( [] );
 
-			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
 			const result = view.filter( null );
 
@@ -365,7 +365,7 @@ describe( 'EmojiGridView', () => {
 		} );
 
 		it( 'should re-use cached tile if it exists', () => {
-			emojiGroups = [
+			emojiCategories = [
 				{
 					title: 'faces',
 					icon: '😊',
@@ -381,7 +381,7 @@ describe( 'EmojiGridView', () => {
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 			] );
 
-			const view = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: spy } );
+			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
 			expect( view.cachedTiles.length ).to.equal( 0 );
 
@@ -404,7 +404,7 @@ describe( 'EmojiGridView', () => {
 
 				view.filter( new RegExp( 'smile' ) );
 
-				// `getEmojiBySearchQuery()` returns two items.
+				// `getEmojiByQuery()` returns two items.
 				sinon.assert.calledTwice( spy );
 			} );
 

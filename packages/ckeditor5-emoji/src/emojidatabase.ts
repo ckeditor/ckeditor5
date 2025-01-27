@@ -92,7 +92,7 @@ export default class EmojiDatabase extends Plugin {
 
 		// Store the emoji database after normalizing the raw data.
 		this._emojiDatabase = emojiDatabase
-			.filter( item => isEmojiGroupAllowed( item ) )
+			.filter( item => isEmojiCategoryAllowed( item ) )
 			.filter( item => EmojiDatabase._isEmojiSupported( item, container ) )
 			.map( item => normalizeEmojiSkinTone( item ) );
 
@@ -118,7 +118,7 @@ export default class EmojiDatabase extends Plugin {
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
-	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiEntry> {
+	public getEmojiByQuery( searchQuery: string ): Array<EmojiEntry> {
 		if ( !this._fuseSearch ) {
 			return [];
 		}
@@ -155,7 +155,7 @@ export default class EmojiDatabase extends Plugin {
 	 *
 	 * @returns An array of emoji entries grouped by categories.
 	 */
-	public getEmojiGroups(): Array<EmojiCategory> {
+	public getEmojiCategories(): Array<EmojiCategory> {
 		const { t } = this.editor.locale;
 
 		const categories = [
@@ -311,7 +311,7 @@ function normalizeEmojiSkinTone( item: EmojiCdnResource ): EmojiEntry {
 /**
  * Checks whether the emoji belongs to a group that is allowed.
  */
-function isEmojiGroupAllowed( item: EmojiCdnResource ): boolean {
+function isEmojiCategoryAllowed( item: EmojiCdnResource ): boolean {
 	// Category group=2 contains skin tones only, which we do not want to render.
 	return item.group !== 2;
 }

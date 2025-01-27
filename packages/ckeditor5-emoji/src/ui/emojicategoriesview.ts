@@ -46,11 +46,11 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { emojiGroups, categoryName }: { emojiGroups: Array<EmojiCategory>; categoryName: string } ) {
+	constructor( locale: Locale, { emojiCategories, categoryName }: { emojiCategories: Array<EmojiCategory>; categoryName: string } ) {
 		super( locale );
 
 		this.buttonViews = this.createCollection(
-			emojiGroups.map( emojiGroup => this._createCategoryButton( emojiGroup ) )
+			emojiCategories.map( emojiCategory => this._createCategoryButton( emojiCategory ) )
 		);
 
 		this.focusTracker = new FocusTracker();
@@ -144,7 +144,7 @@ export default class EmojiCategoriesView extends View {
 	/**
 	 * Creates a button representing a category item.
 	 */
-	private _createCategoryButton( emojiGroup: EmojiCategory ): ButtonView {
+	private _createCategoryButton( emojiCategory: EmojiCategory ): ButtonView {
 		const buttonView = new ButtonView();
 		const bind = buttonView.bindTemplate;
 
@@ -159,10 +159,10 @@ export default class EmojiCategoriesView extends View {
 		} );
 
 		buttonView.set( {
-			ariaLabel: emojiGroup.title,
-			label: emojiGroup.icon,
+			ariaLabel: emojiCategory.title,
+			label: emojiCategory.icon,
 			role: 'tab',
-			tooltip: emojiGroup.title,
+			tooltip: emojiCategory.title,
 			withText: true,
 			// To improve accessibility, disconnect a button and its label connection so that screen
 			// readers can read the `[aria-label]` attribute directly from the more descriptive button.
@@ -170,7 +170,7 @@ export default class EmojiCategoriesView extends View {
 		} );
 
 		buttonView.on( 'execute', () => {
-			this.categoryName = emojiGroup.title;
+			this.categoryName = emojiCategory.title;
 		} );
 
 		buttonView.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', () => {

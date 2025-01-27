@@ -57,27 +57,27 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	/**
 	 * An array containing all emojis grouped by their categories.
 	 */
-	public readonly emojiGroups: Array<EmojiCategory>;
-
-	/**
-	 * A callback used to filter grid items by a specified query.
-	 */
-	private readonly getEmojiBySearchQuery: EmojiSearchQueryCallback;
+	public readonly emojiCategories: Array<EmojiCategory>;
 
 	/**
 	 * A collection of all already created tile views. Each tile represents a particular emoji.
 	 * The cached tiles collection is used for efficiency purposes to avoid re-creating a particular
 	 * tile again when the grid view has changed.
 	 */
-	private readonly cachedTiles: ViewCollection<ButtonView>;
+	public readonly cachedTiles: ViewCollection<ButtonView>;
+
+	/**
+	 * A callback used to filter grid items by a specified query.
+	 */
+	private readonly _getEmojiByQuery: EmojiSearchQueryCallback;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { categoryName, emojiGroups, getEmojiBySearchQuery, skinTone }: {
+	constructor( locale: Locale, { categoryName, emojiCategories, getEmojiByQuery, skinTone }: {
 		categoryName: string;
-		emojiGroups: Array<EmojiCategory>;
-		getEmojiBySearchQuery: EmojiSearchQueryCallback;
+		emojiCategories: Array<EmojiCategory>;
+		getEmojiByQuery: EmojiSearchQueryCallback;
 		skinTone: SkinToneId;
 	} ) {
 		super( locale );
@@ -92,8 +92,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.getEmojiBySearchQuery = getEmojiBySearchQuery;
-		this.emojiGroups = emojiGroups;
+		this._getEmojiByQuery = getEmojiByQuery;
+		this.emojiCategories = emojiCategories;
 
 		const bind = this.bindTemplate;
 
@@ -192,8 +192,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 */
 	private _getItemsByQuery( query: string ): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
 		return {
-			matchingItems: this.getEmojiBySearchQuery( query ),
-			allItems: this.emojiGroups.flatMap( group => group.items )
+			matchingItems: this._getEmojiByQuery( query ),
+			allItems: this.emojiCategories.flatMap( group => group.items )
 		};
 	}
 
@@ -201,7 +201,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 * Returns emojis that belong to the specified category.
 	 */
 	private _getItemsByCategory(): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
-		const emojiCategory = this.emojiGroups.find( item => item.title === this.categoryName )!;
+		const emojiCategory = this.emojiCategories.find( item => item.title === this.categoryName )!;
 		const { items } = emojiCategory;
 
 		return {

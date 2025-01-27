@@ -18,12 +18,12 @@ import EmojiDatabase from '../src/emojidatabase.js';
 class EmojiDatabaseMock extends EmojiDatabase {
 	// Overridden `init()` to prevent the `fetch()` call.
 	init() {
-		this.getEmojiBySearchQuery = sinon.stub();
-		this.getEmojiGroups = sinon.stub();
+		this.getEmojiByQuery = sinon.stub();
+		this.getEmojiCategories = sinon.stub();
 		this.isDatabaseLoaded = sinon.stub();
 
 		// Let's define a default behavior as we need this in UI, but we do not check it.
-		this.getEmojiGroups.returns( [
+		this.getEmojiCategories.returns( [
 			{
 				title: 'Smileys & Expressions',
 				icon: '😀',
@@ -279,8 +279,8 @@ describe( 'EmojiMention', () => {
 
 	describe( '_overrideMentionExecuteListener()', () => {
 		beforeEach( () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [
 				{
 					annotation: 'raising hands',
 					emoji: '🙌',
@@ -501,8 +501,8 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should return an empty array when a query starts with a space', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [] );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [] );
 
 			expect( queryEmoji( ' ' ) ).to.deep.equal( [] );
 			expect( queryEmoji( '  ' ) ).to.deep.equal( [] );
@@ -510,8 +510,8 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should return a hint item when a query is too short', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [] );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [] );
 
 			let queryResult = queryEmoji( '' );
 
@@ -527,18 +527,18 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should pass the specified query to the database plugin', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [] );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [] );
 
 			queryEmoji( 'see no evil' );
 
-			expect( getEmojiBySearchQuery.callCount ).to.equal( 1 );
-			expect( getEmojiBySearchQuery.firstCall.firstArg ).to.equal( 'see no evil' );
+			expect( getEmojiByQuery.callCount ).to.equal( 1 );
+			expect( getEmojiByQuery.firstCall.firstArg ).to.equal( 'see no evil' );
 		} );
 
 		it( 'should return an array of items that implements the `MentionFeedObjectItem` type', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [
 				{
 					annotation: 'thumbs up',
 					emoji: '👍️',
@@ -562,8 +562,8 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should include a "Show all emoji" option when the "EmojiPicker" plugin is available', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [] );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
+			getEmojiByQuery.returns( [] );
 
 			const queryResult = queryEmoji( 'thumbs' );
 
@@ -582,9 +582,9 @@ describe( 'EmojiMention', () => {
 				substitutePlugins: [ EmojiDatabaseMock ]
 			} );
 
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
 
-			getEmojiBySearchQuery.returns( [
+			getEmojiByQuery.returns( [
 				{
 					annotation: 'thumbs up',
 					emoji: '👍️',
@@ -615,7 +615,7 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should return emojis with the proper skin tone when it is selected in the emoji picker plugin', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
 			const thumbUpItem = {
 				annotation: 'thumbs up',
 				emoji: '👍️',
@@ -629,11 +629,11 @@ describe( 'EmojiMention', () => {
 				}
 			};
 
-			getEmojiBySearchQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.returns( [ thumbUpItem ] );
 
 			editor.plugins.get( EmojiPicker ).showUI();
 			editor.plugins.get( EmojiPicker )._hideUI();
-			editor.plugins.get( EmojiPicker )._emojiPickerView.gridView.skinTone = 'dark';
+			editor.plugins.get( EmojiPicker ).emojiPickerView.gridView.skinTone = 'dark';
 
 			const queryResult = queryEmoji( 'thumbs' );
 
@@ -646,7 +646,7 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should return emojis with the default skin tone when the skin tone is selected but the emoji does not have variants', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
 			const thumbUpItem = {
 				annotation: 'thumbs up',
 				emoji: '👍️',
@@ -654,11 +654,11 @@ describe( 'EmojiMention', () => {
 					'default': '👍️'
 				}
 			};
-			getEmojiBySearchQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.returns( [ thumbUpItem ] );
 
 			editor.plugins.get( EmojiPicker ).showUI();
 			editor.plugins.get( EmojiPicker )._hideUI();
-			editor.plugins.get( EmojiPicker )._emojiPickerView.gridView.skinTone = 'dark';
+			editor.plugins.get( EmojiPicker ).emojiPickerView.gridView.skinTone = 'dark';
 
 			const queryResult = queryEmoji( 'thumbs' );
 
@@ -682,7 +682,7 @@ describe( 'EmojiMention', () => {
 				}
 			} );
 
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
 			const thumbUpItem = {
 				annotation: 'thumbs up',
 				emoji: '👍️',
@@ -696,7 +696,7 @@ describe( 'EmojiMention', () => {
 				}
 			};
 
-			getEmojiBySearchQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.returns( [ thumbUpItem ] );
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 			const queryResult = queryEmoji( 'thumbs' );
@@ -724,7 +724,7 @@ describe( 'EmojiMention', () => {
 				}
 			} );
 
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiDatabase' );
 			const thumbUpItem = {
 				annotation: 'thumbs up',
 				emoji: '👍️',
@@ -733,7 +733,7 @@ describe( 'EmojiMention', () => {
 				}
 			};
 
-			getEmojiBySearchQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.returns( [ thumbUpItem ] );
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 			const queryResult = queryEmoji( 'thumbs' );

@@ -11,14 +11,14 @@ import EmojiSearchView from '../../src/ui/emojisearchview.js';
 import EmojiToneView from '../../src/ui/emojitoneview.js';
 
 describe( 'EmojiPickerView', () => {
-	let emojiPickerView, locale, emojiGroups, skinTones, emojiBySearchQuery;
+	let emojiPickerView, locale, emojiCategories, skinTones, emojiBySearchQuery;
 
 	beforeEach( () => {
 		locale = {
 			t: val => val
 		};
 
-		emojiGroups = [
+		emojiCategories = [
 			{
 				title: 'faces',
 				icon: '😊',
@@ -51,9 +51,9 @@ describe( 'EmojiPickerView', () => {
 		];
 
 		emojiPickerView = new EmojiPickerView( locale, {
-			emojiGroups,
+			emojiCategories,
 			skinTones,
-			getEmojiBySearchQuery: emojiBySearchQuery,
+			getEmojiByQuery: emojiBySearchQuery,
 			skinTone: 'default'
 		} );
 	} );
@@ -76,8 +76,8 @@ describe( 'EmojiPickerView', () => {
 		it( 'should create grid view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiGridView ) ).to.equal( true );
 			expect( emojiPickerView.gridView.categoryName ).to.equal( 'faces' );
-			expect( emojiPickerView.gridView.emojiGroups ).to.deep.equal( emojiGroups );
-			expect( emojiPickerView.gridView.getEmojiBySearchQuery ).to.equal( emojiBySearchQuery );
+			expect( emojiPickerView.gridView.emojiCategories ).to.deep.equal( emojiCategories );
+			expect( emojiPickerView.gridView._getEmojiByQuery ).to.equal( emojiBySearchQuery );
 			expect( emojiPickerView.gridView.skinTone ).to.equal( 'default' );
 		} );
 
@@ -89,7 +89,7 @@ describe( 'EmojiPickerView', () => {
 
 		it( 'should create emoji results view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiCategoriesView ) ).to.equal( true );
-			expect( emojiPickerView.categoriesView.emojiGroups ).to.equal( emojiPickerView.emojiGroups );
+			expect( emojiPickerView.categoriesView.emojiCategories ).to.equal( emojiPickerView.emojiCategories );
 			expect( emojiPickerView.categoriesView.categoryName ).to.equal( 'faces' );
 		} );
 
