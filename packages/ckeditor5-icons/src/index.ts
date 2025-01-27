@@ -43,6 +43,7 @@ export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
 export { default as IconDragIndicator } from '../theme/icons/drag-indicator.svg';
 export { default as IconDropdownArrow } from '../theme/icons/dropdown-arrow.svg';
 export { default as IconEditComment } from '../theme/icons/edit-comment.svg';
+export { default as IconEmoji } from '../theme/icons/emoji.svg';
 export { default as IconEraser } from '../theme/icons/eraser.svg';
 export { default as IconError } from '../theme/icons/error.svg';
 export { default as IconExportPdf } from '../theme/icons/export-pdf.svg';
