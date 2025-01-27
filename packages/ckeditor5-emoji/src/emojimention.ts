@@ -81,9 +81,12 @@ export default class EmojiMention extends Plugin {
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._skinTone = editor.config.get( 'emoji.skinTone' )!;
 
-		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
+		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
 		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
-		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
+		const isEmojiMarkerAlreadyAdded = mentionFeedsConfigs.find( config => config.isEmojiMarker );
+		const markerAlreadyUsed = mentionFeedsConfigs
+			.filter( config => !config.isEmojiMarker )
+			.some( config => config.marker === EMOJI_MENTION_MARKER );
 		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
 		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
@@ -95,6 +98,10 @@ export default class EmojiMention extends Plugin {
 			 */
 			logWarning( 'emoji-config-marker-already-used', { marker: EMOJI_MENTION_MARKER } );
 
+			return;
+		}
+
+		if ( isEmojiMarkerAlreadyAdded ) {
 			return;
 		}
 
@@ -128,8 +135,9 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Initializes the configuration for emojis in the mention feature.
 	 */
-	private _setupMentionConfiguration( mentionFeedsConfigs: Array<MentionFeed> ): void {
+	private _setupMentionConfiguration( mentionFeedsConfigs: Array<EmojiMentionFeed> ): void {
 		const emojiMentionFeedConfig = {
+			isEmojiMarker: true,
 			marker: EMOJI_MENTION_MARKER,
 			dropdownLimit: this._emojiDropdownLimit,
 			itemRenderer: this._customItemRendererFactory( this.editor.t ),
@@ -256,3 +264,7 @@ export default class EmojiMention extends Plugin {
 		};
 	}
 }
+
+type EmojiMentionFeed = MentionFeed & {
+	isEmojiMarker?: boolean;
+};
