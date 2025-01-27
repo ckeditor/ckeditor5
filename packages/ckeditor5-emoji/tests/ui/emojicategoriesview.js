@@ -48,7 +48,7 @@ describe( 'EmojiCategoriesView', () => {
 
 		it( 'creates #element from template', () => {
 			expect( emojiCategoriesView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories' ) ).to.be.true;
+			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories-list' ) ).to.be.true;
 
 			expect( Object.values( emojiCategoriesView.element.childNodes ).length ).to.equal( emojiGroups.length );
 
@@ -96,15 +96,12 @@ describe( 'EmojiCategoriesView', () => {
 		it( 'should restore the "active" category indicator when categories are enabled', () => {
 			const button = emojiCategoriesView.buttonViews.get( 0 );
 
-			expect( button.element.classList.contains( 'ck-emoji__category-item_active' ) ).to.equal( true );
 			expect( button.isOn ).to.equal( true );
 
 			emojiCategoriesView.disableCategories();
-			expect( button.element.classList.contains( 'ck-emoji__category-item_active' ) ).to.equal( false );
 			expect( button.isOn ).to.equal( false );
 
 			emojiCategoriesView.enableCategories();
-			expect( button.element.classList.contains( 'ck-emoji__category-item_active' ) ).to.equal( true );
 			expect( button.isOn ).to.equal( true );
 		} );
 	} );

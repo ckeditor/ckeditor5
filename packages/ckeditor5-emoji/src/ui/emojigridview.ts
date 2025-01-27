@@ -245,12 +245,20 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	private _createTile( emoji: string, name: string ): ButtonView {
 		const tile = new ButtonView( this.locale );
 
+		tile.viewUid = emoji;
+
+		tile.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-emoji__tile'
+				]
+			}
+		} );
+
 		tile.set( {
-			viewUid: emoji,
 			label: emoji,
 			tooltip: name,
 			withText: true,
-			class: 'ck-emoji__tile',
 			ariaLabel: name,
 			// To improve accessibility, disconnect a button and its label connection so that screen
 			// readers can read the `[aria-label]` attribute directly from the more descriptive button.

@@ -427,8 +427,8 @@ describe( 'EmojiGridView', () => {
 			expect( tile.viewUid ).to.equal( '😊' );
 			expect( tile.label ).to.equal( '😊' );
 			expect( tile.tooltip ).to.equal( 'smile' );
-			expect( tile.class ).to.equal( 'ck-emoji__tile' );
 			expect( tile.withText ).to.equal( true );
+			expect( tile.element.classList.contains( 'ck-emoji__tile' ) ).to.equal( true );
 		} );
 
 		it( 'does not use the `[aria-labelled-by]` attribute as the button is descriptive enough', () => {

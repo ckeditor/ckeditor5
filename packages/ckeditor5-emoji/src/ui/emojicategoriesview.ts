@@ -13,8 +13,6 @@ import type { EmojiCategory } from '../emojidatabase.js';
 
 import '../../theme/emojicategories.css';
 
-const ACTIVE_CATEGORY_CLASS = 'ck-emoji__category-item_active';
-
 /**
  * A class representing the navigation part of the emoji UI.
  * It is responsible allowing the user to select a particular emoji category.
@@ -70,7 +68,7 @@ export default class EmojiCategoriesView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-emoji__categories' ],
+				class: [ 'ck', 'ck-emoji__categories-list' ],
 				role: 'tablist'
 			},
 			children: this.buttonViews
@@ -155,7 +153,7 @@ export default class EmojiCategoriesView extends View {
 			attributes: {
 				'aria-selected': bind.to( 'isOn', value => value.toString() ),
 				class: [
-					bind.if( 'isOn', ACTIVE_CATEGORY_CLASS, value => value )
+					'ck-emoji__category-item'
 				]
 			}
 		} );
