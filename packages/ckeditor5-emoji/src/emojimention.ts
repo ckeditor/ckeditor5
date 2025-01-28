@@ -48,12 +48,12 @@ export default class EmojiMention extends Plugin {
 	private readonly _skinTone: SkinToneId;
 
 	/**
-	 * Defines a skin tone that is set in the emoji config.
+	 * Mention feeds.
 	 */
 	private readonly _mentionFeeds: Array<EmojiMentionFeed>;
 
 	/**
-	 * Defines a skin tone that is set in the emoji config.
+	 * Merge fields prefix.
 	 */
 	private readonly _mergeFieldsPrefix: string;
 
