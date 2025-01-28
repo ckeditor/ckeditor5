@@ -381,7 +381,8 @@
 		"features/images/image-upload/easy-image.html": "features/images/image-upload/image-upload.html",
 		"getting-started/installation/react/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
 		"getting-started/installation/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html",
-		"examples/framework/content-placeholder.html": "features/merge-fields.html"
+		"examples/framework/content-placeholder.html": "features/merge-fields.html",
+		"features/source-editing.html": "features/source-editing/source-editing.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
@@ -656,6 +657,11 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
+				},
+				{
+					"name": "Source code editing",
+					"id": "source-code-editing",
+					"slug": "source-editing"
 				},
 				{
 					"name": "Tables",
