@@ -46,7 +46,7 @@ const keyCodesToGlyphs: { [key: number]: string } = {
  * * `f1-f12`,
  * * `` ` ``, `-`, `=`, `[`, `]`, `;`, `'`, `,`, `.`, `/`, `\`,
  * * `arrow(left|up|right|bottom)`,
- * * `backspace`, `delete`, `enter`, `esc`, `tab`,
+ * * `backspace`, `delete`, `end`, `enter`, `esc`, `home`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
  */
 export const keyCodes = /* #__PURE__ */ generateKnownKeyCodes();
