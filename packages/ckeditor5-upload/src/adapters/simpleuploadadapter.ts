@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -205,7 +205,11 @@ class Adapter implements UploadAdapter {
 	 */
 	private _sendRequest( file: File ): void {
 		// Set headers if specified.
-		const headers = this.options.headers || {};
+		let headers = this.options.headers || {};
+
+		if ( typeof headers === 'function' ) {
+			headers = headers( file );
+		}
 
 		// Use the withCredentials flag if specified.
 		const withCredentials = this.options.withCredentials || false;

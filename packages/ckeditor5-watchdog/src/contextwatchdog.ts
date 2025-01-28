@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,24 +9,12 @@
 
 /* globals console */
 
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type {
-	Context,
-	Editor,
-	EditorConfig,
-	ContextConfig
-} from 'ckeditor5/src/core.js';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type {
-	ArrayOrItem,
-	CKEditorError
-} from 'ckeditor5/src/utils.js';
-
 import Watchdog, { type WatchdogConfig, type WatchdogState } from './watchdog.js';
 import EditorWatchdog, { type EditorCreatorFunction } from './editorwatchdog.js';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
 import getSubNodes from './utils/getsubnodes.js';
+import type { ArrayOrItem, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Context, Editor, EditorConfig, ContextConfig } from '@ckeditor/ckeditor5-core';
 
 const mainQueueId = Symbol( 'MainQueueId' );
 

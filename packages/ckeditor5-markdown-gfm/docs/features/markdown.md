@@ -12,7 +12,7 @@ The Markdown plugin lets you switch the default output from HTML to Markdown. Th
 The editor below is configured to output GitHub Flavored Markdown. Edit the content and see how the Markdown output changes (you can find it below the editor).
 
 <info-box info>
-	Please note that the source editing feature in the demo below is a {@link features/source-editing separate plugin}. If you would like to use it in your integration, you need to install it separately.
+	Please note that the Enhanced source code editing feature in the demo below is a {@link features/source-editing-enhanced separate plugin}. If you would like to use it in your integration, you need to install it separately.
 </info-box>
 
 {@snippet features/markdown}
@@ -98,7 +98,7 @@ While the Markdown plugin is stable and ready to use, some issues are still bein
 
 Some other ways to output the edited content include:
 
-* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
+* {@link features/source-editing-enhanced#markdown-source-view Enhanced source code editing} &ndash; Allows for Markdown source edition if configured accordingly.
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!

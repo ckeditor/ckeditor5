@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -585,7 +585,7 @@ export default class Element extends Node {
 	 * @returns Number of inserted nodes.
 	 */
 	public _insertChild( index: number, items: Item | string | Iterable<Item | string> ): number {
-		this._fireChange( 'children', this );
+		this._fireChange( 'children', this, { index } );
 		let count = 0;
 
 		const nodes = normalize( this.document, items );
@@ -618,7 +618,7 @@ export default class Element extends Node {
 	 * @returns The array of removed nodes.
 	 */
 	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
-		this._fireChange( 'children', this );
+		this._fireChange( 'children', this, { index } );
 
 		for ( let i = index; i < index + howMany; i++ ) {
 			( this._children[ i ] as any ).parent = null;

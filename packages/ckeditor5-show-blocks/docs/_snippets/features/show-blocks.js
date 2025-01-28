@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+/* globals console, window, document, LICENSE_KEY */
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';
@@ -11,13 +11,14 @@ import ClassicEditor from '../build-classic.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
 
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
-ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, PictureEditing );
+ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditingEnhanced,
+	CKBox, CKBoxImageEdit, ImageInsert, PictureEditing );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-show-blocks' ), {
@@ -26,7 +27,7 @@ ClassicEditor
 			items: [
 				'undo', 'redo',
 				'|', 'showBlocks',
-				'|', 'sourceEditing',
+				'|', 'sourceEditingEnhanced',
 				'|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
@@ -59,7 +60,7 @@ ClassicEditor
 				}
 			]
 		},
-		licenseKey: 'GPL'
+		licenseKey: LICENSE_KEY
 	} )
 	.then( editor => {
 		window.editor = editor;

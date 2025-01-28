@@ -96,6 +96,10 @@ Below you can see a demo based on the example shown above. Use the special chara
 
 {@snippet features/special-characters-new-category}
 
+<info-box>
+	You may also check out the ready-to-use {@link features/emoji emoji feature} in order to quickly insert desired emoji into the document.
+</info-box>
+
 ### Adding characters to an existing category
 
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters to an existing category.

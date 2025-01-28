@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -321,7 +321,12 @@ describe( 'ImageInsertUI', () => {
 			} );
 
 			it( 'should create a menu bar button', () => {
-				const button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+				const menu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+				expect( menu ).to.be.instanceOf( MenuBarMenuView );
+
+				const submenuList = menu.panelView.children.get( 0 );
+				const button = submenuList.items.get( 0 ).children.get( 0 );
 
 				expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 				expect( button.label ).to.equal( 'button url' );

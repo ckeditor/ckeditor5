@@ -378,6 +378,474 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 	</tbody>
 </table>
 
+### Source Editing Enhanced (plugin)
+
+Keystrokes introduced by {@link features/source-editing-enhanced Source Editing Enhanced plugin}, to streamline code editing experience.
+
+#### Keystrokes related to the built-in code completion mechanism
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Accept completion</td>
+			<td colspan="2"><kbd>Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Close completion</td>
+			<td colspan="2"><kbd>Esc</kbd></td>
+		</tr>
+		<tr>
+			<td>Move completion selection backward</td>
+			<td colspan="2"><kbd>↑</kbd></td>
+		</tr>
+		<tr>
+			<td>Move completion selection backward by one page</td>
+			<td colspan="2"><kbd>Page Up</kbd></td>
+		</tr>
+		<tr>
+			<td>Move completion selection forward</td>
+			<td colspan="2"><kbd>↓</kbd></td>
+		</tr>
+		<tr>
+			<td>Move completion selection forward by one page</td>
+			<td colspan="2"><kbd>Page Down</kbd></td>
+		</tr>
+	</tbody>
+</table>
+
+#### Keystrokes related to the built-in code folding mechanism
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Fold all</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>[</kbd></td>
+			<td><kbd>⌃⌥[</kbd></td>
+		</tr>
+		<tr>
+			<td>Fold code</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>[</kbd></td>
+			<td><kbd>⌘⌥[</kbd></td>
+		</tr>
+		<tr>
+			<td>Unfold all</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>]</kbd></td>
+			<td><kbd>⌃⌥]</kbd></td>
+		</tr>
+		<tr>
+			<td>Unfold code</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>]</kbd></td>
+			<td><kbd>⌘⌥]</kbd></td>
+		</tr>
+	</tbody>
+</table>
+
+#### Keystrokes that change the selection in the code editor
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Select all</td>
+			<td><kbd>Ctrl</kbd>+<kbd>A</kbd></td>
+			<td><kbd>⌘A</kbd></td>
+		</tr>
+		<tr>
+			<td>Select character left</td>
+			<td><kbd>Shift</kbd>+<kbd>←</kbd></td>
+			<td><kbd>⇧←</kbd>, <kbd>⌃⇧B</kbd></td>
+		</tr>
+		<tr>
+			<td>Select character right</td>
+			<td><kbd>Shift</kbd>+<kbd>→</kbd></td>
+			<td><kbd>⇧→</kbd>, <kbd>⌃⇧F</kbd></td>
+		</tr>
+		<tr>
+			<td>Select document end</td>
+			<td><kbd>Shift</kbd>+<kbd>CtrlEnd</kbd></td>
+			<td><kbd>⌘⇧↓</kbd>, <kbd>⌘⇧End</kbd></td>
+		</tr>
+		<tr>
+			<td>Select document start</td>
+			<td><kbd>Shift</kbd>+<kbd>CtrlHome</kbd></td>
+			<td><kbd>⌘⇧↑</kbd>, <kbd>⌘⇧Home</kbd></td>
+		</tr>
+		<tr>
+			<td>Select group left</td>
+			<td><kbd>Shift</kbd>+<kbd>Ctrl←</kbd></td>
+			<td><kbd>⌥⇧←</kbd></td>
+		</tr>
+		<tr>
+			<td>Select group right</td>
+			<td><kbd>Shift</kbd>+<kbd>Ctrl→</kbd></td>
+			<td><kbd>⌥⇧→</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line</td>
+			<td><kbd>Alt</kbd>+<kbd>L</kbd></td>
+			<td><kbd>⌃L</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line boundary backward</td>
+			<td><kbd>Shift</kbd>+<kbd>Home</kbd></td>
+			<td><kbd>⇧Home</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line boundary forward</td>
+			<td><kbd>Shift</kbd>+<kbd>End</kbd></td>
+			<td><kbd>⇧End</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line down</td>
+			<td><kbd>Shift</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>⇧↓</kbd>, <kbd>⌃⇧N</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line up</td>
+			<td><kbd>Shift</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>⇧↑</kbd>, <kbd>⌃⇧P</kbd></td>
+		</tr>
+		<tr>
+			<td>Select page down</td>
+			<td><kbd>Shift</kbd>+<kbd>Page Down</kbd></td>
+			<td><kbd>⌃⇧↓</kbd>, <kbd>⇧Page Down</kbd></td>
+		</tr>
+		<tr>
+			<td>Select page up</td>
+			<td><kbd>Shift</kbd>+<kbd>Page Up</kbd></td>
+			<td><kbd>⌃⇧↑</kbd>, <kbd>⇧Page Up</kbd></td>
+		</tr>
+		<tr>
+			<td>Select parent syntax</td>
+			<td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+			<td><kbd>⌘I</kbd></td>
+		</tr>
+		<tr>
+			<td>Select syntax left</td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>←</kbd></td>
+			<td><kbd>⌃⇧←</kbd></td>
+		</tr>
+		<tr>
+			<td>Select syntax right</td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>→</kbd></td>
+			<td><kbd>⌃⇧→</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line boundary left</td>
+			<td></td>
+			<td><kbd>⌘⇧←</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line boundary right</td>
+			<td></td>
+			<td><kbd>⌘⇧→</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line end</td>
+			<td></td>
+			<td><kbd>⌃⇧E</kbd></td>
+		</tr>
+		<tr>
+			<td>Select line start</td>
+			<td></td>
+			<td><kbd>⌃⇧A</kbd></td>
+		</tr>
+	</tbody>
+</table>
+
+#### Keystrokes that move the cursor (caret) in the code editor
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Move cursor to character left</td>
+			<td><kbd>←</kbd></td>
+			<td><kbd>←</kbd>, <kbd>⌃B</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to character right</td>
+			<td><kbd>→</kbd></td>
+			<td><kbd>→</kbd>, <kbd>⌃F</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to document end</td>
+			<td><kbd>Ctrl</kbd>+<kbd>End</kbd></td>
+			<td><kbd>⌘↓</kbd>, <kbd>⌘End</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to document start</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Home</kbd></td>
+			<td><kbd>⌘↑</kbd>, <kbd>⌘Home</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to group left</td>
+			<td><kbd>Ctrl</kbd>+<kbd>←</kbd></td>
+			<td><kbd>⌥←</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to group right</td>
+			<td><kbd>Ctrl</kbd>+<kbd>→</kbd></td>
+			<td><kbd>⌥→</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line boundary backward</td>
+			<td colspan="2"><kbd>Home</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line boundary forward</td>
+			<td colspan="2"><kbd>End</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line down</td>
+			<td><kbd>↓</kbd></td>
+			<td><kbd>↓</kbd>, <kbd>⌃N</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line up</td>
+			<td><kbd>↑</kbd></td>
+			<td><kbd>↑</kbd>, <kbd>⌃P</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to matching bracket</td>
+			<td><kbd>Shift</kbd>+<kbd>Ctrl\</kbd></td>
+			<td><kbd>⌘⇧\</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to page down</td>
+			<td><kbd>Page Down</kbd></td>
+			<td><kbd>⌃↓</kbd>, <kbd>⌃V</kbd>, <kbd>Page Down</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to page up</td>
+			<td><kbd>Page Up</kbd></td>
+			<td><kbd>⌃↑</kbd>, <kbd>Page Up</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to syntax left</td>
+			<td><kbd>Alt</kbd>+<kbd>←</kbd></td>
+			<td><kbd>⌃←</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to syntax right</td>
+			<td><kbd>Alt</kbd>+<kbd>→</kbd></td>
+			<td><kbd>⌃→</kbd></td>
+		</tr>
+		<tr>
+			<td>Move line down</td>
+			<td><kbd>Alt</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>⌥↓</kbd></td>
+		</tr>
+		<tr>
+			<td>Move line up</td>
+			<td><kbd>Alt</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>⌥↑</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line boundary left</td>
+			<td></td>
+			<td><kbd>⌘←</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line boundary right</td>
+			<td></td>
+			<td><kbd>⌘→</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line end</td>
+			<td></td>
+			<td><kbd>⌘E</kbd></td>
+		</tr>
+		<tr>
+			<td>Move cursor to line start</td>
+			<td></td>
+			<td><kbd>⌘A</kbd></td>
+		</tr>
+	</tbody>
+</table>
+
+#### Keystrokes that modify the code in the editor
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Copy line down</td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>↓</kbd></td>
+			<td><kbd>⇧⌥↓</kbd></td>
+		</tr>
+		<tr>
+			<td>Copy line up</td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>↑</kbd></td>
+			<td><kbd>⇧⌥↑</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete bracket pair</td>
+			<td colspan="2"><kbd>Backspace</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete character backward</td>
+			<td><kbd>Backspace</kbd>, <kbd>Shift</kbd>+<kbd>Backspace</kbd></td>
+			<td><kbd>Backspace</kbd>, <kbd>⌃H</kbd>, <kbd>⇧Backspace</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete character forward</td>
+			<td><kbd>Delete</kbd></td>
+			<td><kbd>⌃D</kbd>, <kbd>Delete</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete group backward</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Backspace</kbd></td>
+			<td><kbd>⌥Backspace</kbd>, <kbd>⌃⌥H</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete group forward</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Delete</kbd></td>
+			<td><kbd>⌥Delete</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete line</td>
+			<td><kbd>Shift</kbd>+<kbd>CtrlK</kbd></td>
+			<td><kbd>⌘⇧K</kbd></td>
+		</tr>
+		<tr>
+			<td>Indent less</td>
+			<td><kbd>Ctrl</kbd>+<kbd>[</kbd></td>
+			<td><kbd>⌘[</kbd></td>
+		</tr>
+		<tr>
+			<td>Indent more</td>
+			<td><kbd>Ctrl</kbd>+<kbd>]</kbd></td>
+			<td><kbd>⌘]</kbd></td>
+		</tr>
+		<tr>
+			<td>Indent selection</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>\</kbd></td>
+			<td><kbd>⌘⌥\</kbd></td>
+		</tr>
+		<tr>
+			<td>Insert blank line</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td>
+			<td><kbd>⌘Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Insert new line and indent</td>
+			<td><kbd>Enter</kbd>, <kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+			<td><kbd>Enter</kbd>, <kbd>⇧Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Redo</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>, <kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+			<td><kbd>⌘⇧Z</kbd>, <kbd>⌘Y</kbd></td>
+		</tr>
+		<tr>
+			<td>Redo selection</td>
+			<td><kbd>Alt</kbd>+<kbd>U</kbd></td>
+			<td><kbd>⌘⇧U</kbd></td>
+		</tr>
+		<tr>
+			<td>Simplify selection</td>
+			<td colspan="2"><kbd>Esc</kbd></td>
+		</tr>
+		<tr>
+			<td>Toggle block comment</td>
+			<td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>A</kbd></td>
+			<td><kbd>⇧⌥A</kbd></td>
+		</tr>
+		<tr>
+			<td>Toggle comment</td>
+			<td><kbd>Ctrl</kbd>+<kbd>/</kbd></td>
+			<td><kbd>⌘/</kbd></td>
+		</tr>
+		<tr>
+			<td>Undo</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+			<td><kbd>⌘Z</kbd></td>
+		</tr>
+		<tr>
+			<td>Undo selection</td>
+			<td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+			<td><kbd>⌘U</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete line boundary backward</td>
+			<td></td>
+			<td><kbd>⌘Backspace</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete line boundary forward</td>
+			<td></td>
+			<td><kbd>⌘Delete</kbd></td>
+		</tr>
+		<tr>
+			<td>Delete to line end</td>
+			<td></td>
+			<td><kbd>⌃K</kbd></td>
+		</tr>
+		<tr>
+			<td>Split line</td>
+			<td></td>
+			<td><kbd>⌃O</kbd></td>
+		</tr>
+		<tr>
+			<td>Transpose characters</td>
+			<td></td>
+			<td><kbd>⌃T</kbd></td>
+		</tr>
+	</tbody>
+</table>
+
+#### Miscellaneous code editor shortcuts
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Switch between "focus with tab" and "indent with tab" mode</td>
+			<td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+			<td><kbd>⌥⇧M</kbd></td>
+		</tr>
+	</body>
+</table>
+
 <style>
 	.keyboard-shortcuts th {
 		text-align: center;

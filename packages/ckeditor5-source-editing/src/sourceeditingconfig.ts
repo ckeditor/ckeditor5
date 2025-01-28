@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -29,7 +29,7 @@ export interface SourceEditingConfig {
 	 * Set to `true` to enable source editing feature for real-time collaboration.
 	 *
 	 * Please note that source editing feature is not fully compatible with real-time collaboration and using it may lead to data loss.
-	 * {@glink features/source-editing#limitations-and-incompatibilities Read more}.
+	 * {@glink features/source-editing/source-editing#limitations-and-incompatibilities Read more}.
 	 *
 	 * @default false
 	 */

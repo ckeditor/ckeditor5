@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -149,19 +149,6 @@ describe( 'MentionCommand', () => {
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 			assertMention( textNode, '@John' );
 			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
-		} );
-
-		it( 'should throw if marker is not one character', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
-
-			const testCases = [
-				{ marker: '##', mention: '##foo' },
-				{ marker: '', mention: '@foo' }
-			];
-
-			for ( const options of testCases ) {
-				expectToThrowCKEditorError( () => command.execute( options ), /mentioncommand-incorrect-marker/, editor );
-			}
 		} );
 
 		it( 'should throw if marker does not match mention id', () => {

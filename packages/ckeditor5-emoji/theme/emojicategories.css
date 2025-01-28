@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-emoji__categories-list {
+	display: flex;
+	justify-content: space-between;
+	margin: 0 var(--ck-spacing-large);
+
+	> .ck.ck-button.ck-button_with-text {
+		border-width: 0;
+		border-bottom-width: 2px;
+		border-bottom-style: solid;
+		border-bottom-color: transparent;
+		padding: 0;
+		font-size: var(--ck-font-size-big);
+		min-width: var(--ck-font-size-big);
+		min-height: var(--ck-font-size-big);
+
+		&.ck-emoji__category-item.ck-on {
+			border-bottom-color: var(--ck-color-base-active);
+		}
+
+		> span {
+			margin: auto;
+		}
+	}
+}

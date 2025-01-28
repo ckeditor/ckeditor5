@@ -1,18 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-env node */
 
-import module from 'module';
 import path from 'path';
 import fs from 'fs/promises';
 import { glob } from 'glob';
 import { loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-
-const require = module.createRequire( import.meta.url );
 
 /**
  * Returns array with plugin paths.
@@ -67,7 +64,7 @@ export function normalizePath( modulePath ) {
  */
 export function addTypeScriptLoader( webpackConfig, configFile ) {
 	const tsconfigPath = path.join( CKEDITOR5_ROOT_PATH, configFile );
-	const coreIndexFile = require.resolve( '@ckeditor/ckeditor5-core' );
+	const coreIndexFile = import.meta.resolve( '@ckeditor/ckeditor5-core' );
 
 	// Do not include it when processing CKEditor 5 installed as the JavaScript code.
 	if ( coreIndexFile.endsWith( '.ts' ) ) {

@@ -103,12 +103,22 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="source-editing" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing Source editing}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing Source code editing}
 				</span>
 			</td>
 			<td>
-				The source editing feature lets you view and edit the source of your
+				The source code editing feature lets you view and edit the source of your
 				document.
+			</td>
+		</tr>
+		<tr id="source-editing-enhanced" class="subfeature background-gray">
+			<td>
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing-enhanced Enhanced source code editing}
+				</span>
+			</td>
+			<td>
+				Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 			</td>
 		</tr>
 		<tr id="block-formatting" class="feature">

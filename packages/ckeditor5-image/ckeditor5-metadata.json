@@ -265,6 +265,20 @@
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image-url.svg"
 				}
 			]
+		},
+		{
+			"name": "Image utils",
+			"className": "ImageUtils",
+			"description": "Provides utility functions for image handling.",
+			"docs": "features/images/images-overview.html",
+			"path": "src/imageutils.js"
+		},
+		{
+			"name": "Image editing",
+			"className": "ImageEditing",
+			"description": "Provides basic common image engine features.",
+			"docs": "features/images/images-overview.html",
+			"path": "src/image/imageediting.js"
 		}
 	]
 }

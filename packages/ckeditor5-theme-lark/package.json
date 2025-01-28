@@ -26,7 +26,6 @@
     "@ckeditor/ckeditor5-restricted-editing": "44.1.0",
     "@ckeditor/ckeditor5-select-all": "44.1.0",
     "@ckeditor/ckeditor5-show-blocks": "44.1.0",
-    "@ckeditor/ckeditor5-source-editing": "44.1.0",
     "@ckeditor/ckeditor5-special-characters": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "@ckeditor/ckeditor5-table": "44.1.0",

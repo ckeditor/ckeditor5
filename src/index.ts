@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -24,6 +24,7 @@ export * from '@ckeditor/ckeditor5-editor-classic';
 export * from '@ckeditor/ckeditor5-editor-decoupled';
 export * from '@ckeditor/ckeditor5-editor-inline';
 export * from '@ckeditor/ckeditor5-editor-multi-root';
+export * from '@ckeditor/ckeditor5-emoji';
 export * from '@ckeditor/ckeditor5-engine';
 export * from '@ckeditor/ckeditor5-enter';
 export * from '@ckeditor/ckeditor5-essentials';

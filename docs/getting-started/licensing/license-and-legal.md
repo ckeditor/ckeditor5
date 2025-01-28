@@ -15,7 +15,7 @@ CKEditor is dual-licensed. This means you can choose between an open-source and 
 
 The open-source distribution of CKEditor&nbsp;5 is licensed under the terms of GPL 2+. If you plan to use CKEditor&nbsp;5 under this license, you can register your application using the [CKEditor&nbsp;5 GPL 2+ license registration form](https://info.ckeditor.com/l/1018062/2024-08-22/39jtg).
 
-If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a[CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
+If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a [CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
 
 **Note:** the CKEditor&nbsp;5 Free Plan is licensed under the GPL 2+ license.
 

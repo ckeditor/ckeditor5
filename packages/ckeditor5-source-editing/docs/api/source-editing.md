@@ -10,11 +10,11 @@ This package implements the source editing feature for CKEditor&nbsp;5.
 
 ## Demo
 
-Check out the {@link features/source-editing#demo demo in the source editing feature guide}.
+Check out the {@link features/source-editing#demo demo in the source code editing feature guide}.
 
 ## Documentation
 
-See the {@link features/source-editing source editing feature guide} and the {@link module:source-editing/sourceediting~SourceEditing} plugin documentation.
+See the {@link features/source-editing source code editing feature guide} and the {@link module:source-editing/sourceediting~SourceEditing} plugin documentation.
 
 ## Installation
 
