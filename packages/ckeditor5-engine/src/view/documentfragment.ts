@@ -220,7 +220,7 @@ export default class DocumentFragment extends /* #__PURE__ */ EmitterMixin( Type
 	 * @param type Type of the change.
 	 * @param node Changed node.
 	 * @param data Additional data.
-	 * @fires change
+	 * @fires module:engine/view/node~Node#event:change
 	 */
 	public _fireChange( type: ChangeType, node: Node | DocumentFragment, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );

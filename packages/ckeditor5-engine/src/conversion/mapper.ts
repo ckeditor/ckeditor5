@@ -808,7 +808,7 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * For every view element or document fragment tracked by `MapperCache`, it holds currently cached data, or more precisely,
-	 * model offset to view position mappings. See also {@link ~MappingCache MappingCache} and {@link ~CacheItem CacheItem}.
+	 * model offset to view position mappings. See also `MappingCache` and `CacheItem`.
 	 *
 	 * If an item is tracked by `MapperCache` it has an entry in this structure, so this structure can be used to check which items
 	 * are tracked by `MapperCache`. When an item is no longer tracked, it is removed from this structure.
@@ -828,12 +828,10 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	private _cachedMapping = new WeakMap<ViewElement | ViewDocumentFragment, MappingCache>();
 
 	/**
-	 * When `MapperCache` {@link ~MapperCache#save saves} view position -> model offset mapping, a
-	 * {@link ~CacheItem `CacheItem`} is inserted into certain {@link ~MappingCache#cacheList `MappingCache#cacheList`} at some index.
-	 * Additionally, we store that index with the view node that is before the cached view position.
+	 * When `MapperCache` {@link ~MapperCache#save saves} view position -> model offset mapping, a `CacheItem` is inserted into certain
+	 * `MappingCache#cacheList` at some index. Additionally, we store that index with the view node that is before the cached view position.
 	 *
-	 * This allows to quickly get a {@link ~MappingCache#cacheList cache list} item related to certain view node, and hence,
-	 * for fast cache invalidation.
+	 * This allows to quickly get a cache list item related to certain view node, and hence, for fast cache invalidation.
 	 *
 	 * For example, consider view: `<p>Some <strong>bold</strong> text.</p>`, where `<p>` is a view element tracked by `MapperCache`.
 	 * If all `<p>` children were visited by `MapperCache`, then `<p>` cache list would have four items, related to following model offsets:
@@ -943,8 +941,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * For given `modelOffset` inside a model element mapped to given `viewContainer`, it returns the closest saved
-	 * {@link ~CacheItem cache item (view position and related model offset)} to the requested one.
+	 * For given `modelOffset` inside a model element mapped to given `viewContainer`, it returns the closest saved cache item
+	 * (view position and related model offset) to the requested one.
 	 *
 	 * It can be exactly the requested mapping, or it can be mapping that is the closest starting point to look for the requested mapping.
 	 *
@@ -1039,8 +1037,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Starts tracking given `viewContainer`, which must be mapped to a model element or model document fragment.
 	 *
-	 * Note, that this method is automatically called by {@link ~MapperCache#getClosest() `MapperCache#getClosest()`} and there is no need
-	 * to call it manually.
+	 * Note, that this method is automatically called by
+	 * {@link module:engine/conversion/mapper~MapperCache#getClosest `MapperCache#getClosest()`} and there is no need to call it manually.
 	 *
 	 * This method initializes the cache for `viewContainer` and adds callbacks for
 	 * {@link module:engine/view/node~ViewNodeChangeEvent `change` event} fired by `viewContainer`. `MapperCache` listens to `change` event
