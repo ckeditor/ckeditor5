@@ -10,6 +10,7 @@
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Typing } from 'ckeditor5/src/typing.js';
 
 import EmojiCommand from './emojicommand.js';
 import EmojiRepository from './emojirepository.js';
@@ -46,7 +47,7 @@ export default class EmojiPicker extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiRepository, ContextualBalloon, Dialog ] as const;
+		return [ EmojiRepository, ContextualBalloon, Dialog, Typing ] as const;
 	}
 
 	/**
@@ -77,10 +78,12 @@ export default class EmojiPicker extends Plugin {
 			return;
 		}
 
-		editor.commands.add( 'emoji', new EmojiCommand( editor ) );
+		const command = new EmojiCommand( editor );
+
+		editor.commands.add( 'emoji', command );
 
 		editor.ui.componentFactory.add( 'emoji', () => {
-			const button = this._createButton( ButtonView );
+			const button = this._createButton( ButtonView, command );
 
 			button.set( {
 				tooltip: true
@@ -90,7 +93,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:emoji', () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView, command );
 		} );
 
 		this._setupConversion();
@@ -154,9 +157,11 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * Creates a button for toolbar and menu bar that will show the emoji dialog.
 	 */
-	private _createButton<T extends typeof ButtonView>( ViewClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>( ViewClass: T, command: EmojiCommand ): InstanceType<T> {
 		const buttonView = new ViewClass( this.editor.locale ) as InstanceType<T>;
 		const t = this.editor.locale.t;
+
+		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		buttonView.set( {
 			label: t( 'Emoji' ),
@@ -187,12 +192,9 @@ export default class EmojiPicker extends Plugin {
 		// Insert an emoji on a tile click.
 		this.listenTo<EmojiGridViewExecuteEvent>( emojiPickerView.gridView, 'execute', ( evt, data ) => {
 			const editor = this.editor;
-			const model = editor.model;
 			const textToInsert = data.emoji;
 
-			model.change( writer => {
-				model.insertContent( writer.createText( textToInsert ) );
-			} );
+			editor.execute( 'insertText', { text: textToInsert } );
 
 			this._hideUI();
 		} );

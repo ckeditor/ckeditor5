@@ -5,14 +5,16 @@
 
 /* global document, console */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { EmojiMention, EmojiPicker } from '../src/index.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Mention } from '@ckeditor/ckeditor5-mention';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
+import { EmojiMention, EmojiPicker } from '../src/index.js';
 import EmojiRepository from '../src/emojirepository.js';
 
 class EmojiRepositoryMock extends EmojiRepository {
@@ -65,7 +67,7 @@ describe( 'EmojiMention', () => {
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, 'Mention' ] );
+		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, Typing, 'Mention' ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
@@ -441,6 +443,30 @@ describe( 'EmojiMention', () => {
 			} );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! 🙌[]</paragraph>' );
+		} );
+
+		it( 'should use the "insertText" command when inserting the emoji', () => {
+			const spy = sinon.spy();
+
+			setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+			const { startPosition, endPosition } = simulateTyping( ':raising' );
+
+			const range = editor.model.change( writer => {
+				return writer.createRange( startPosition, endPosition );
+			} );
+
+			// Attach the listener right before picking up an item from the mention dropdown.
+			// Otherwise, it counts the typed query, too.
+			editor.commands.get( 'insertText' ).on( 'execute', spy );
+
+			editor.commands.execute( 'mention', {
+				range,
+				marker: ':',
+				mention: { id: ':raising hands:', text: '🙌' }
+			} );
+
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should remove the auto-complete query when selecting the "Show all emoji" option from the list', () => {
