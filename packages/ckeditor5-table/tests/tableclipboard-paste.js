@@ -3825,6 +3825,329 @@ describe( 'table clipboard', () => {
 				expect( selectionPaths ).to.deep.equal( sortedPaths );
 			}
 		} );
+
+		describe( 'footer overlapping selected area', () => {
+			beforeEach( () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '30', '31', '32', '33', '34', '35' ],
+					[ '40', '41', '42', '43', '44', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { footerRows: 3, headingColumns: 3 } ) );
+			} );
+
+			it( 'should not split cells if they are not overlapping from footer', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa | ab | ac | ad |
+				// +----+----+----+----+
+				// | ba           | bd |
+				// +              +----+
+				// |              | cd |
+				// +              +----+
+				// |              | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ 'aa', 'ab', 'ac', 'ad' ],
+					[ { contents: 'ba', colspan: 3, rowspan: 3 }, 'bd' ],
+					[ 'cd' ],
+					[ 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | 11 | 12 | 13 | 14 | 15 |
+				// +----+----+----+----+----+----+
+				// | aa | ab | ac | ad | 24 | 25 |
+				// +----+----+----+----+----+----+ <-- footer rows begin
+				// | ba           | bd | 34 | 35 |
+				// +              +----+----+----+
+				// |              | cd | 44 | 45 |
+				// +              +----+----+----+
+				// |              | dd | 54 | 55 |
+				// +----+----+----+----+----+----+
+				//                ^-- heading columns
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ 'aa', 'ab', 'ac', 'ad', '24', '25' ],
+					[ { contents: 'ba', colspan: 3, rowspan: 3 }, 'bd', '34', '35' ],
+					[ 'cd', '44', '45' ],
+					[ 'dd', '54', '55' ]
+				], { footerRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 1, 1, 1, 1, 0, 0 ],
+					[ 1,       1, 0, 0 ],
+					[          1, 0, 0 ],
+					[          1, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from footer', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | aa      |    | ad | 15 |
+				// +----+         +    +----+----+
+				// | 20 |         |    | bd | 25 |
+				// +----+----+----+----+----+----+ <-- footer rows begin
+				// | 30 |         |    | cd | 35 |
+				// +----+----+----+----+----+----+
+				// | 40 | da | db | dc | dd | 45 |
+				// +----+----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 | 55 |
+				// +----+----+----+----+----+----+
+				//                ^-- heading columns
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: '', rowspan: 2 }, 'ad', '15' ],
+					[ '20', 'bd', '25' ],
+					[ '30', { contents: '', colspan: 2 }, '', 'cd', '35' ],
+					[ '40', 'da', 'db', 'dc', 'dd', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { footerRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 1,    1, 1, 0 ],
+					[ 0,          1, 0 ],
+					[ 0, 1,    1, 1, 0 ],
+					[ 0, 1, 1, 1, 1, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from footer rows', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 3 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 3 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |    |
+				// +----+----+----+----+----+----+----+
+				// | 10 | 11 | 12 | 13 | 14 | 15 |    |
+				// +----+----+----+----+----+----+----+
+				// | 20 | 21 | 22 | aa           | ad |
+				// +----+----+----+----+----+----+----+ <-- footer rows begin
+				// | 30 | 31 | 32 |              | bd |
+				// +----+----+----+              +----+
+				// | 40 | 41 | 42 |              | cd |
+				// +----+----+----+----+----+----+----+
+				// | 50 | 51 | 52 | da | db | dc | dd |
+				// +----+----+----+----+----+----+----+
+				//                ^-- heading columns
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01', '02', '03', '04', '05', '' ],
+					[ '10', '11', '12', '13', '14', '15', '' ],
+					[ '20', '21', '22', { contents: 'aa', colspan: 3 }, 'ad' ],
+					[ '30', '31', '32', { contents: '', colspan: 3, rowspan: 2 }, 'bd' ],
+					[ '40', '41', '42', 'cd' ],
+					[ '50', '51', '52', 'da', 'db', 'dc', 'dd' ]
+				], { footerRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 1,       1 ],
+					[ 0, 0, 0, 1,       1 ],
+					[ 0, 0, 0,          1 ],
+					[ 0, 0, 0, 1, 1, 1, 1 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from heading columns (footer)', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 3, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | 11 | 12 | 13 | 14 | 15 |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+ <-- footer rows begin
+				// | 30 | 31 | aa |         | ad |
+				// +----+----+    +         +----+
+				// | 40 | 41 |    |         | bd |
+				// +----+----+    +         +----+
+				// | 50 | 51 |    |         | cd |
+				// +----+----+----+----+----+----+
+				// |    |    | da | db | dc | dd |
+				// +----+----+----+----+----+----+
+				//                ^-- heading columns
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '30', '31', { contents: 'aa', rowspan: 3 }, { contents: '', colspan: 2, rowspan: 3 }, 'ad' ],
+					[ '40', '41', 'bd' ],
+					[ '50', '51', 'cd' ],
+					[ '', '', 'da', 'db', 'dc', 'dd' ]
+				], { footerRows: 4, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 1, 1,    1 ],
+					[ 0, 0,          1 ],
+					[ 0, 0,          1 ],
+					[ 0, 0, 1, 1, 1, 1 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from footer (repeated pasted table)', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04' ],
+					[ '10', '11', '12', '13', '14' ],
+					[ '20', '21', '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ],
+					[ '40', '41', '42', '43', '44' ]
+				], { footerRows: 1, headingColumns: 1 } ) );
+
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 4, 4 ] )
+				);
+
+				// +----+----+----+
+				// | aa      | ac |
+				// +         +----+
+				// |         | bc |
+				// +----+----+----+
+				// | ca | cb | cc |
+				// +----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 2, rowspan: 2 }, 'ac' ],
+					[ 'bc' ],
+					[ 'ca', 'cb', 'cc' ]
+				] );
+
+				// +----+----+----+----+----+
+				// | aa |    | ac | aa      |
+				// +    +    +----+         +
+				// |    |    | bc |         |
+				// +----+----+----+----+----+
+				// | ca | cb | cc | ca | cb |
+				// +----+----+----+----+----+
+				// | aa |    | ac | aa      |
+				// +----+----+----+----+----+ <-- footer rows begin
+				// |    |    | bc |         |
+				// +----+----+----+----+----+
+				//      ^-- heading columns
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: 'aa', rowspan: 2 }, { contents: '', rowspan: 2 }, 'ac', { contents: 'aa', colspan: 2, rowspan: 2 } ],
+					[ 'bc' ],
+					[ 'ca', 'cb', 'cc', 'ca', 'cb' ],
+					[ 'aa', '', 'ac', { contents: 'aa', colspan: 2 } ],
+					[ '', '', 'bc', { contents: '', colspan: 2 } ]
+				], { footerRows: 1, headingColumns: 1 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 1, 1, 1, 1    ],
+					[       1       ],
+					[ 1, 1, 1, 1, 1 ],
+					[ 1, 1, 1, 1    ],
+					[ 1, 1, 1, 1    ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			function assertSelectionRangesSorted() {
+				const selectionRanges = Array.from( model.document.selection.getRanges() );
+				const selectionRangesSorted = selectionRanges.slice().sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+
+				const selectionPaths = selectionRanges.map( ( { start } ) => start.path );
+				const sortedPaths = selectionRangesSorted.map( ( { start } ) => start.path );
+
+				expect( selectionPaths ).to.deep.equal( sortedPaths );
+			}
+		} );
 	} );
 
 	describe( 'Clipboard integration - paste (content scenarios)', () => {
