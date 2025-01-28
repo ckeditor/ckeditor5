@@ -36,7 +36,6 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * * Keyboard navigation through the document might behave unexpectedly, especially when
  *   navigating through structures like lists and tables.
  *
- * **Warning**: This is an experimental plugin. It may have bugs and breaking changes may be introduced without prior notice.
  *
  * For example, this allows for HTML like:
  *
@@ -52,6 +51,8 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * <p class="spacer">&nbsp;</p>
  * <td>&nbsp;</td>
  * ```
+ *
+ * **Warning**: This is an experimental plugin. It may have bugs and breaking changes may be introduced without prior notice.
  */
 export default class EmptyBlock extends Plugin {
 	/**
