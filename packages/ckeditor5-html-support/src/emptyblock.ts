@@ -36,7 +36,6 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * * Keyboard navigation through the document might behave unexpectedly, especially when
  *   navigating through structures like lists and tables.
  *
- *
  * For example, this allows for HTML like:
  *
  * ```html
