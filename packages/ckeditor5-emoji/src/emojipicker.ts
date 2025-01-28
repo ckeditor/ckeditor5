@@ -12,7 +12,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
 
 import EmojiCommand from './emojicommand.js';
-import EmojiDatabase from './emojidatabase.js';
+import EmojiRepository from './emojirepository.js';
 import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
@@ -38,15 +38,15 @@ export default class EmojiPicker extends Plugin {
 	declare private _balloonPlugin: ContextualBalloon;
 
 	/**
-	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
+	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
 	 */
-	declare private _emojiDatabasePlugin: EmojiDatabase;
+	declare private _emojiRepositoryPlugin: EmojiRepository;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiDatabase, ContextualBalloon, Dialog ] as const;
+		return [ EmojiRepository, ContextualBalloon, Dialog ] as const;
 	}
 
 	/**
@@ -66,21 +66,14 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public async init(): Promise<void> {
 		const editor = this.editor;
 
-		this._emojiDatabasePlugin = editor.plugins.get( 'EmojiDatabase' );
 		this._balloonPlugin = editor.plugins.get( 'ContextualBalloon' );
-	}
+		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
 
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		// Skip registering a button in the toolbar and list item in the menu bar if the emoji database is not loaded.
-		if ( !this._emojiDatabasePlugin.isDatabaseLoaded() ) {
+		// Skip registering a button in the toolbar and list item in the menu bar if the emoji repository is not ready.
+		if ( !await this._emojiRepositoryPlugin.isReady() ) {
 			return;
 		}
 
@@ -183,11 +176,11 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createEmojiPickerView(): EmojiPickerView {
 		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
-			emojiCategories: this._emojiDatabasePlugin.getEmojiCategories(),
+			emojiCategories: this._emojiRepositoryPlugin.getEmojiCategories(),
 			skinTone: this.editor.config.get( 'emoji.skinTone' )!,
-			skinTones: this._emojiDatabasePlugin.getSkinTones(),
+			skinTones: this._emojiRepositoryPlugin.getSkinTones(),
 			getEmojiByQuery: ( query: string ) => {
-				return this._emojiDatabasePlugin.getEmojiByQuery( query );
+				return this._emojiRepositoryPlugin.getEmojiByQuery( query );
 			}
 		} );
 

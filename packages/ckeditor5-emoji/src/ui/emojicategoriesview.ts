@@ -9,7 +9,7 @@
 
 import { ButtonView, View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
-import type { EmojiCategory } from '../emojidatabase.js';
+import type { EmojiCategory } from '../emojirepository.js';
 
 import '../../theme/emojicategories.css';
 
