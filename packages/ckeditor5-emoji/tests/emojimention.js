@@ -125,9 +125,28 @@ describe( 'EmojiMention', () => {
 			const config = configs.find( config => config.marker !== '@' );
 
 			expect( config.marker ).to.equal( ':' );
+			expect( config._isEmojiMarker ).to.equal( true );
 			expect( config.dropdownLimit ).to.equal( 6 );
 			expect( config.itemRenderer ).to.be.instanceOf( Function );
 			expect( config.feed ).to.be.instanceOf( Function );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should not modify mention feed when emoji plugin is already in mention feeds', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ]
+			} );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
 
 			await editor.destroy();
 			editorElement.remove();
