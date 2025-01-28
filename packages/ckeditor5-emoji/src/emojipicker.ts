@@ -11,7 +11,6 @@ import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenu
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
-import { type Writer } from 'ckeditor5/src/engine.js';
 
 import EmojiCommand from './emojicommand.js';
 import EmojiRepository from './emojirepository.js';
@@ -37,7 +36,7 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */
-	declare private _balloonPlugin: ContextualBalloon;
+	declare public _balloonPlugin: ContextualBalloon;
 
 	/**
 	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
@@ -98,7 +97,6 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		this._setupConversion();
-		this._setupPostFixers();
 	}
 
 	/**
@@ -153,9 +151,7 @@ export default class EmojiPicker extends Plugin {
 			} );
 		}
 
-		setTimeout( () => {
-			this.emojiPickerView!.focus();
-		} );
+		this.emojiPickerView.focus();
 	}
 
 	/**
@@ -267,35 +263,6 @@ export default class EmojiPicker extends Plugin {
 
 				return markerElement;
 			}
-		} );
-	}
-
-	/**
-	 * Registers post-fixer that synchronize the model selection with marker inserted by the emoji picker.
-	 */
-	private _setupPostFixers(): void {
-		const editor = this.editor;
-		const model = editor.model;
-		const document = model.document;
-		const selection = document.selection;
-
-		// From time to time, the marker conversion causes losing the selection data. Let's restore
-		// the proper selection after focusing the balloon based on the fake selection marker. See: #17819.
-		model.document.registerPostFixer( ( writer: Writer ) => {
-			if ( !model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-				return false;
-			}
-
-			const marker = model.markers.get( VISUAL_SELECTION_MARKER_NAME )!;
-			const range = marker.getRange();
-
-			if ( !range.isCollapsed && selection.isCollapsed ) {
-				writer.setSelection( marker.getRange() );
-
-				return true;
-			}
-
-			return false;
 		} );
 	}
 

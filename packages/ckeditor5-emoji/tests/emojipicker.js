@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document setTimeout Event KeyboardEvent */
+/* global document Event KeyboardEvent */
 
 import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -275,10 +275,6 @@ describe( 'EmojiPicker', () => {
 
 		it( 'should focus the query input when opens UI', async () => {
 			emojiPicker.showUI();
-
-			await new Promise( resolve => {
-				setTimeout( resolve );
-			} );
 
 			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
@@ -623,51 +619,6 @@ describe( 'EmojiPicker', () => {
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 			} );
-		} );
-	} );
-
-	describe( '_setupPostFixers()', () => {
-		it( 'should restore the selection based on the fake-selection marker (non-collapsed selection)', () => {
-			setModelData(
-				editor.model,
-				'<paragraph>Lorem Ipsum is simply dummy []text of the printing and typesetting industry.</paragraph>'
-			);
-
-			const startPosition = editor.model.document.selection.getFirstPosition();
-			const endPosition = startPosition.getShiftedBy( 4 );
-
-			editor.model.change( writer => {
-				writer.addMarker( 'emoji-picker', {
-					usingOperation: false,
-					affectsData: false,
-					range: writer.createRange( startPosition, endPosition )
-				} );
-			} );
-
-			expect( getModelData( editor.model ) ).to.equal(
-				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
-			);
-		} );
-
-		it( 'should does nothing when a selection is collapsed', () => {
-			setModelData(
-				editor.model,
-				'<paragraph>Lorem Ipsum is simply dummy []text of the printing and typesetting industry.</paragraph>'
-			);
-
-			const position = editor.model.document.selection.getFirstPosition();
-
-			editor.model.change( writer => {
-				writer.addMarker( 'emoji-picker', {
-					usingOperation: false,
-					affectsData: false,
-					range: writer.createRange( position, position )
-				} );
-			} );
-
-			expect( getModelData( editor.model ) ).to.equal(
-				'<paragraph>Lorem Ipsum is simply dummy []text of the printing and typesetting industry.</paragraph>'
-			);
 		} );
 	} );
 } );
