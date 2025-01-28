@@ -48,6 +48,16 @@ export default class EmojiMention extends Plugin {
 	private readonly _skinTone: SkinToneId;
 
 	/**
+	 * Defines a skin tone that is set in the emoji config.
+	 */
+	private readonly _mentionFeeds: Array<EmojiMentionFeed>;
+
+	/**
+	 * Defines a skin tone that is set in the emoji config.
+	 */
+	private readonly _mergeFieldsPrefix: string;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
@@ -80,21 +90,23 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._skinTone = editor.config.get( 'emoji.skinTone' )!;
+		this._mentionFeeds = editor.config.get( 'mention.feeds' )!;
+		this._mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
 
-		this._setupMentionConfiguration( editor );
+		this._setupMentionConfiguration();
 	}
 
 	/**
 	 * Initializes the configuration for emojis in the mention feature.
+	 * If the marker used by emoji mention is already registered, it displays a warning.
+	 * If emoji mention configuration is detected, it does not register it for a second time.
 	 */
-	private _setupMentionConfiguration( editor: Editor ) {
-		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
-		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
-		const isEmojiMarkerAlreadyAdded = mentionFeedsConfigs.find( config => config._isEmojiMarker );
-		const markerAlreadyUsed = mentionFeedsConfigs
+	private _setupMentionConfiguration() {
+		const isEmojiMarkerAlreadyAdded = this._mentionFeeds.find( config => config._isEmojiMarker );
+		const markerAlreadyUsed = this._mentionFeeds
 			.filter( config => !config._isEmojiMarker )
 			.some( config => config.marker === EMOJI_MENTION_MARKER );
-		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
+		const isMarkerUsedByMergeFields = this._mergeFieldsPrefix ? this._mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
 		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
 			/**
@@ -120,7 +132,7 @@ export default class EmojiMention extends Plugin {
 			feed: this._queryEmojiCallbackFactory()
 		};
 
-		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
+		this.editor.config.set( 'mention.feeds', [ ...this._mentionFeeds, emojiMentionFeedConfig ] );
 	}
 
 	/**
@@ -268,7 +280,7 @@ export default class EmojiMention extends Plugin {
 type EmojiMentionFeed = MentionFeed & {
 
 	/**
-	 * It's used to not display an emoji mention feed warning when editor plugins are initialized multiple times.
+	 * It's used prevent displaying an emoji mention feed warning when editor plugins are initialized more than once.
 	 */
 	_isEmojiMarker?: boolean;
 };

@@ -144,7 +144,7 @@ describe( 'EmojiMention', () => {
 
 			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
 
-			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration();
 
 			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
 
