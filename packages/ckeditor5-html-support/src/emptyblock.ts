@@ -21,21 +21,22 @@ import type {
 const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
 
 /**
- * This plugin allows for preserving empty block elements in the editor content instead of
- * automatically filling them with block fillers (`&nbsp;`).
- *
- * **Warning**: This is an experimental plugin. It may have bugs and breaking changes may be introduced without prior notice.
- *
- * Known limitations:
- * * Empty blocks may not work correctly with revision history features.
- * * Keyboard navigation through the document might behave unexpectedly, especially when
- *   navigating through structures like lists and tables.
+ * This is experimental plugin that allows for preserving empty block elements
+ * in the editor content instead of automatically filling them with block fillers (`&nbsp;`).
  *
  * This is useful when you want to:
  *
  * * Preserve empty block elements exactly as they were in the source HTML.
  * * Allow for styling empty blocks with CSS (block fillers can interfere with height/margin).
  * * Maintain compatibility with external systems that expect empty blocks to remain empty.
+ *
+ * Known limitations:
+ *
+ * * Empty blocks may not work correctly with revision history features.
+ * * Keyboard navigation through the document might behave unexpectedly, especially when
+ *   navigating through structures like lists and tables.
+ *
+ * **Warning**: This is an experimental plugin. It may have bugs and breaking changes may be introduced without prior notice.
  *
  * For example, this allows for HTML like:
  *
