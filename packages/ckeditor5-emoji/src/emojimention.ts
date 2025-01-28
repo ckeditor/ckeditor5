@@ -9,9 +9,10 @@
 
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Typing } from 'ckeditor5/src/typing.js';
 import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor/ckeditor5-mention';
 
-import EmojiDatabase from './emojidatabase.js';
+import EmojiRepository from './emojirepository.js';
 import type EmojiPicker from './emojipicker.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -31,9 +32,9 @@ export default class EmojiMention extends Plugin {
 	declare private _emojiPickerPlugin: EmojiPicker | null;
 
 	/**
-	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
+	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
 	 */
-	declare private _emojiDatabasePlugin: EmojiDatabase;
+	declare private _emojiRepositoryPlugin: EmojiRepository;
 
 	/**
 	 * Defines a number of displayed items in the auto complete dropdown.
@@ -51,7 +52,7 @@ export default class EmojiMention extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiDatabase, 'Mention' ] as const;
+		return [ EmojiRepository, Typing, 'Mention' ] as const;
 	}
 
 	/**
@@ -104,21 +105,14 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public async init(): Promise<void> {
 		const editor = this.editor;
 
 		this._emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
-		this._emojiDatabasePlugin = editor.plugins.get( 'EmojiDatabase' );
-	}
+		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
 
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		// Skip overriding the `mention` command listener if the emoji database is not loaded.
-		if ( !this._emojiDatabasePlugin.isDatabaseLoaded() ) {
+		// Skip overriding the `mention` command listener if the emoji repository is not ready.
+		if ( !await this._emojiRepositoryPlugin.isReady() ) {
 			return;
 		}
 
@@ -179,7 +173,9 @@ export default class EmojiMention extends Plugin {
 	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
 	 */
 	private _overrideMentionExecuteListener(): void {
-		this.editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
+		const editor = this.editor;
+
+		editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
 			const eventData = data[ 0 ];
 
 			// Ignore non-emoji auto-complete actions.
@@ -202,16 +198,17 @@ export default class EmojiMention extends Plugin {
 					.map( item => item.data )
 					.reduce( ( result, text ) => result + text, '' );
 
-				this.editor.model.change( writer => {
-					this.editor.model.deleteContent( writer.createSelection( eventData.range ) );
+				editor.model.change( writer => {
+					editor.model.deleteContent( writer.createSelection( eventData.range ) );
 				} );
 
 				this._emojiPickerPlugin!.showUI( text.slice( 1 ) );
 			}
 			// Or insert the emoji to editor.
 			else {
-				this.editor.model.change( writer => {
-					this.editor.model.insertContent( writer.createText( eventData.mention.text ), eventData.range );
+				editor.execute( 'insertText', {
+					text: eventData.mention.text,
+					range: eventData.range
 				} );
 			}
 		}, { priority: 'high' } );
@@ -227,7 +224,7 @@ export default class EmojiMention extends Plugin {
 				return [];
 			}
 
-			const emojis: Array<MentionFeedObjectItem> = this._emojiDatabasePlugin.getEmojiByQuery( searchQuery )
+			const emojis: Array<MentionFeedObjectItem> = this._emojiRepositoryPlugin.getEmojiByQuery( searchQuery )
 				.map( emoji => {
 					let text = emoji.skins[ this._skinTone ] || emoji.skins.default;
 
