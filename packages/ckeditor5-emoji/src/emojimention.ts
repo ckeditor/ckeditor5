@@ -48,16 +48,6 @@ export default class EmojiMention extends Plugin {
 	private readonly _skinTone: SkinToneId;
 
 	/**
-	 * Mention feeds.
-	 */
-	private readonly _mentionFeeds: Array<EmojiMentionFeed>;
-
-	/**
-	 * Merge fields prefix.
-	 */
-	private readonly _mergeFieldsPrefix: string;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
@@ -90,10 +80,8 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._skinTone = editor.config.get( 'emoji.skinTone' )!;
-		this._mentionFeeds = editor.config.get( 'mention.feeds' )!;
-		this._mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
 
-		this._setupMentionConfiguration();
+		this._setupMentionConfiguration( editor );
 	}
 
 	/**
@@ -101,12 +89,14 @@ export default class EmojiMention extends Plugin {
 	 * If the marker used by emoji mention is already registered, it displays a warning.
 	 * If emoji mention configuration is detected, it does not register it for a second time.
 	 */
-	private _setupMentionConfiguration() {
-		const isEmojiMarkerAlreadyAdded = this._mentionFeeds.find( config => config._isEmojiMarker );
-		const markerAlreadyUsed = this._mentionFeeds
+	private _setupMentionConfiguration( editor: Editor ) {
+		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
+		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
+		const isEmojiMarkerAlreadyAdded = mentionFeedsConfigs.find( config => config._isEmojiMarker );
+		const markerAlreadyUsed = mentionFeedsConfigs
 			.filter( config => !config._isEmojiMarker )
 			.some( config => config.marker === EMOJI_MENTION_MARKER );
-		const isMarkerUsedByMergeFields = this._mergeFieldsPrefix ? this._mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
+		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
 		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
 			/**
@@ -132,7 +122,7 @@ export default class EmojiMention extends Plugin {
 			feed: this._queryEmojiCallbackFactory()
 		};
 
-		this.editor.config.set( 'mention.feeds', [ ...this._mentionFeeds, emojiMentionFeedConfig ] );
+		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
 	}
 
 	/**
