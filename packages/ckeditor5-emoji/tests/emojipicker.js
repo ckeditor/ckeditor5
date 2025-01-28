@@ -292,6 +292,20 @@ describe( 'EmojiPicker', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 		} );
 
+		it( 'should remove fake visual selection marker before inserting the emoji', () => {
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+			emojiPicker.showUI();
+
+			editor.commands.get( 'insertText' ).once( 'execute', () => {
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.equal( false );
+			} );
+
+			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+		} );
+
 		it( 'should use the "insertText" command when inserting the emoji', () => {
 			const spy = sinon.spy();
 

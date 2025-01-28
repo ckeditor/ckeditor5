@@ -198,9 +198,8 @@ export default class EmojiPicker extends Plugin {
 			const editor = this.editor;
 			const textToInsert = data.emoji;
 
-			editor.execute( 'insertText', { text: textToInsert } );
-
 			this._hideUI();
+			editor.execute( 'insertText', { text: textToInsert } );
 		} );
 
 		// Update the balloon position when layout is changed.
