@@ -12,7 +12,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import GeneralHtmlSupport from '../src/generalhtmlsupport.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
