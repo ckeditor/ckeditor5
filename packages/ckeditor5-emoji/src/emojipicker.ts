@@ -36,7 +36,7 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */
-	declare private _balloonPlugin: ContextualBalloon;
+	declare public _balloonPlugin: ContextualBalloon;
 
 	/**
 	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
@@ -130,6 +130,10 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
+		// Show visual selection on a text when the contextual balloon is displayed.
+		// See #17654.
+		this._showFakeVisualSelection();
+
 		if ( !this.emojiPickerView ) {
 			this.emojiPickerView = this._createEmojiPickerView();
 		}
@@ -145,13 +149,9 @@ export default class EmojiPicker extends Plugin {
 				view: this.emojiPickerView,
 				position: this._getBalloonPositionData()
 			} );
-
-			this._showFakeVisualSelection();
 		}
 
-		setTimeout( () => {
-			this.emojiPickerView!.focus();
-		} );
+		this.emojiPickerView.focus();
 	}
 
 	/**
@@ -194,9 +194,8 @@ export default class EmojiPicker extends Plugin {
 			const editor = this.editor;
 			const textToInsert = data.emoji;
 
-			editor.execute( 'insertText', { text: textToInsert } );
-
 			this._hideUI();
+			editor.execute( 'insertText', { text: textToInsert } );
 		} );
 
 		// Update the balloon position when layout is changed.
@@ -228,9 +227,7 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _hideUI(): void {
 		this._balloonPlugin.remove( this.emojiPickerView! );
-
 		this.emojiPickerView!.searchView.setInputValue( '' );
-
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
 	}
@@ -296,23 +293,27 @@ export default class EmojiPicker extends Plugin {
 		model.change( writer => {
 			const range = model.document.selection.getFirstRange()!;
 
-			if ( range.start.isAtEnd ) {
-				const startPosition = range.start.getLastMatchingPosition(
-					( { item } ) => !model.schema.isContent( item ),
-					{ boundaries: range }
-				);
-
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range: writer.createRange( startPosition, range.end )
-				} );
+			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range
-				} );
+				if ( range.start.isAtEnd ) {
+					const startPosition = range.start.getLastMatchingPosition(
+						( { item } ) => !model.schema.isContent( item ),
+						{ boundaries: range }
+					);
+
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange( startPosition, range.end )
+					} );
+				} else {
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range
+					} );
+				}
 			}
 		} );
 	}

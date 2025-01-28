@@ -202,7 +202,13 @@ export default class EmojiMention extends Plugin {
 					editor.model.deleteContent( writer.createSelection( eventData.range ) );
 				} );
 
-				this._emojiPickerPlugin!.showUI( text.slice( 1 ) );
+				const emojiPickerPlugin = this._emojiPickerPlugin!;
+
+				emojiPickerPlugin.showUI( text.slice( 1 ) );
+
+				setTimeout( () => {
+					emojiPickerPlugin.emojiPickerView!.focus();
+				} );
 			}
 			// Or insert the emoji to editor.
 			else {
