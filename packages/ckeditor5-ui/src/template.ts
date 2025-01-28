@@ -1200,7 +1200,16 @@ function clone( def: unknown ) {
 		// Also don't clone View instances if provided as a child of the Template. The template
 		// instance will be extracted from the View during the normalization and there's no need
 		// to clone it.
-		if ( value && ( value instanceof TemplateBinding || isTemplate( value ) || isView( value ) || isViewCollection( value ) ) ) {
+		if (
+			value && (
+				value instanceof TemplateBinding ||
+				value instanceof HTMLElement ||
+				value instanceof SVGElement ||
+				isTemplate( value ) ||
+				isView( value ) ||
+				isViewCollection( value )
+			)
+		) {
 			return value;
 		}
 	} );
