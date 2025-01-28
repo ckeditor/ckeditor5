@@ -18,7 +18,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from '../emojiconfig.js';
-import type { SkinTone } from '../emojidatabase.js';
+import type { SkinTone } from '../emojirepository.js';
 
 import '../../theme/emojitone.css';
 
