@@ -13,7 +13,7 @@ With the General HTML Support (GHS) feature, developers can enable HTML features
 
 ## Demo
 
-Use the {@link features/source-editing source editing feature} toolbar button {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to view and edit the HTML source of the document. You can find the configuration of this snippet below the demo.
+Use the {@link features/source-editing-enhanced Enhanced source code editing feature} toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/source.svg Enhanced source code editing} to view and edit the HTML source of the document. You can find the configuration of this snippet below the demo.
 
 You can configure the General HTML Support feature using the `config.htmlSupport` property. With this property, you need to list the HTML features that should be handled by GHS.
 
@@ -50,7 +50,7 @@ Therefore, the main use cases for GHS would be:
 * Introducing basic support for missing HTML features at a low cost.
 
 <info-box>
-	Considering the nature of GHS, you may consider installing the {@link features/source-editing source editing} feature alongside it.
+	Considering the nature of GHS, you may consider installing the {@link features/source-editing-enhanced Enhanced source code editing} feature alongside it.
 </info-box>
 
 ## Installation
@@ -227,7 +227,7 @@ Base implementation example:
 
 <code-switcher>
 ```js
-import { ClassicEditor, Essentials, Paragraph, Plugin, SourceEditing, GeneralHtmlSupport } from 'ckeditor5';
+import { ClassicEditor, Essentials, Paragraph, Plugin, SourceEditingEnhanced, GeneralHtmlSupport } from 'ckeditor5';
 
 /**
 * A plugin extending General HTML Support, for example, with custom HTML elements.
@@ -270,6 +270,7 @@ ClassicEditor
 		plugins: [
 			Essentials,
 			Paragraph,
+			SourceEditingEnhanced,
 			ExtendHTMLSupport
 		],
 		htmlSupport: {
@@ -318,7 +319,7 @@ dataFilter.allowElement( 'object-block' );
 
 ## Known issues
 
-You can add support for arbitrary styles, classes, and other attributes to existing CKEditor&nbsp;5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor&nbsp;5 features can already be extended this way, however, some cannot yet. This includes the `<ul>` and `<ol>` elements of the list feature (see: [#9917](https://github.com/ckeditor/ckeditor5/issues/9917)).
+You can add support for arbitrary styles, classes, and other attributes to existing CKEditor&nbsp;5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor&nbsp;5 features can already be extended this way, however, some cannot yet.
 
 <info-box info>
 	While the GHS feature is stable, some problems with complex documents may occur if you use it together with {@link features/real-time-collaboration real-time collaboration}.
@@ -331,5 +332,5 @@ We are open to feedback, so if you find any issue, feel free to report it in the
 CKEditor&nbsp;5 has other features related to HTML editing that you may want to check:
 
 * {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor&nbsp;5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
-* {@link features/source-editing Source editing} &ndash; Provides the ability to view and edit the source of the document.
+* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.

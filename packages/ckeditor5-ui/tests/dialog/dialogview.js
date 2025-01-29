@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -402,6 +402,32 @@ describe( 'DialogView', () => {
 
 					newView.element.remove();
 				} );
+			} );
+		} );
+
+		describe( 'keystrokeHandlerOptions', () => {
+			it( 'should use passed keystroke handler options filter', async () => {
+				const filterSpy = sinon.spy();
+
+				const newView = new DialogView( locale, {
+					getCurrentDomRoot: getCurrentDomRootStub,
+					getViewportOffset: getViewportOffsetStub,
+					keystrokeHandlerOptions: {
+						filter: filterSpy
+					}
+				} );
+
+				newView.render();
+
+				newView.keystrokes.press( {
+					keyCode: keyCodes.tab,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				await wait( 5 );
+
+				expect( filterSpy ).to.be.calledOnce;
 			} );
 		} );
 	} );
