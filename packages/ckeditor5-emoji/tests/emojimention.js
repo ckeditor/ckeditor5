@@ -206,7 +206,7 @@ describe( 'EmojiMention', () => {
 			substitutePlugins: [ EmojiDatabaseMock ]
 		} );
 
-		const editor1 = await ClassicTestEditor.create( editorElement, {
+		const editor1 = await ClassicTestEditor.create( editor1Element, {
 			plugins: [ EmojiMention, Mention ],
 			substitutePlugins: [ EmojiDatabaseMock ],
 			mention: {
