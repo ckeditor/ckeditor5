@@ -90,15 +90,15 @@ export default class EmojiMention extends Plugin {
 	 * If emoji mention configuration is detected, it does not register it for a second time.
 	 */
 	private _setupMentionConfiguration( editor: Editor ) {
-		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
 		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
-		const isEmojiMarkerAlreadyAdded = mentionFeedsConfigs.find( config => config._isEmojiMarker );
-		const markerAlreadyUsed = mentionFeedsConfigs
+		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
+
+		const isEmojiMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
+		const isEmojiMarkerUsedByMention = mentionFeedsConfigs
 			.filter( config => !config._isEmojiMarker )
 			.some( config => config.marker === EMOJI_MENTION_MARKER );
-		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
 
-		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
+		if ( isEmojiMarkerUsedByMention || isEmojiMarkerUsedByMergeFields ) {
 			/**
 			 * The `marker` in the `emoji` config is already used by other plugin configuration.
 			 *
@@ -110,7 +110,9 @@ export default class EmojiMention extends Plugin {
 			return;
 		}
 
-		if ( isEmojiMarkerAlreadyAdded ) {
+		const isEmojiConfigDefined = mentionFeedsConfigs.some( config => config._isEmojiMarker );
+
+		if ( isEmojiConfigDefined ) {
 			return;
 		}
 

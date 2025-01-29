@@ -134,24 +134,6 @@ describe( 'EmojiMention', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should not modify mention feed when emoji plugin is already in mention feeds', async () => {
-			const editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-
-			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, Mention ]
-			} );
-
-			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
-
-			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
-
-			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
-
-			await editor.destroy();
-			editorElement.remove();
-		} );
-
 		it( 'should not update the mention configuration when the `:` character is already used', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
@@ -208,6 +190,135 @@ describe( 'EmojiMention', () => {
 
 			expect( consoleWarnStub.callCount ).to.equal( 1 );
 			expect( consoleWarnStub.firstCall.firstArg ).to.equal( 'emoji-config-marker-already-used' );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+	} );
+
+	describe( 'should not update the mention configuration when emoji configuration is already added', () => {
+		let consoleWarnStub;
+
+		beforeEach( () => {
+			consoleWarnStub = sinon.stub( console, 'warn' );
+		} );
+
+		afterEach( () => {
+			consoleWarnStub.restore();
+		} );
+
+		it( 'should not call console warn when no additional mention or merge fields config is defined', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ]
+			} );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+			// Should not call console warn when there are no mention or merge fields configs defined.
+			expect( consoleWarnStub.callCount ).to.equal( 0 );
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should call console warn when merge fields config uses `:` prefix', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				mergeFields: {
+					prefix: ':'
+				}
+			} );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 0 );
+			expect( consoleWarnStub.callCount ).to.equal( 1 );
+
+			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 0 );
+
+			// Should call console warn when there is merge fields config defined.
+			expect( consoleWarnStub.callCount ).to.equal( 2 );
+			expect( consoleWarnStub.firstCall.firstArg ).to.equal( 'emoji-config-marker-already-used' );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should call console warn when mention feed uses `:` marker', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				mention: {
+					feeds: [
+						{
+							marker: ':',
+							feed: [ ':Barney', ':Lily', ':Marry Ann', ':Marshall', ':Robin', ':Ted' ],
+							minimumCharacters: 1
+						}
+					]
+				}
+			} );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+			expect( consoleWarnStub.callCount ).to.equal( 1 );
+
+			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+			// Should call console warn when there is mention config defined.
+			expect( consoleWarnStub.callCount ).to.equal( 2 );
+			expect( consoleWarnStub.firstCall.firstArg ).to.equal( 'emoji-config-marker-already-used' );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should call console warn when mention feed uses `:` marker and merge fields config uses `:` prefix', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Mention ],
+				substitutePlugins: [ EmojiDatabaseMock ],
+				mention: {
+					feeds: [
+						{
+							marker: ':',
+							feed: [ ':Barney', ':Lily', ':Marry Ann', ':Marshall', ':Robin', ':Ted' ],
+							minimumCharacters: 1
+						}
+					]
+				},
+				mergeFields: {
+					prefix: ':'
+				}
+			} );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+			expect( consoleWarnStub.callCount ).to.equal( 1 );
+
+			editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+			// Should call console warn when there is mention and merge fields configs defined.
+			expect( consoleWarnStub.callCount ).to.equal( 2 );
+			expect( consoleWarnStub.firstCall.firstArg ).to.equal( 'emoji-config-marker-already-used' );
+
+			expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
 
 			await editor.destroy();
 			editorElement.remove();
