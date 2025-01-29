@@ -200,6 +200,7 @@ describe( 'EmojiMention', () => {
 		const editorElement = document.createElement( 'div' );
 		const editor1Element = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+		document.body.appendChild( editor1Element );
 
 		const editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiMention, Mention ],
