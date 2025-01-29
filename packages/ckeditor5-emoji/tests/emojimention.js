@@ -196,6 +196,33 @@ describe( 'EmojiMention', () => {
 		} );
 	} );
 
+	it( 'should set emoji mention feed configuration only once', async () => {
+		const editorElement = document.createElement( 'div' );
+		const editor1Element = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiMention, Mention ],
+			substitutePlugins: [ EmojiDatabaseMock ]
+		} );
+
+		const editor1 = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiMention, Mention ],
+			substitutePlugins: [ EmojiDatabaseMock ],
+			mention: {
+				feeds: editor.config.get( 'mention.feeds' )
+			}
+		} );
+
+		// Should register emoji mention config only once.
+		expect( editor1.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		await editor.destroy();
+		await editor1.destroy();
+		editorElement.remove();
+		editor1Element.remove();
+	} );
+
 	describe( 'should not update the mention configuration when emoji configuration is already added', () => {
 		let consoleWarnStub;
 
