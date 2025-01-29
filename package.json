@@ -121,6 +121,7 @@
     "@ckeditor/ckeditor5-source-editing-enhanced": "0.0.1",
     "@ckeditor/ckeditor5-template": "44.1.0",
     "@ckeditor/ckeditor5-track-changes": "44.1.0",
+    "@ckeditor/ckeditor5-export-inline-styles": "0.0.1",
     "@ckeditor/ckeditor5-uploadcare": "0.0.1",
     "@inquirer/prompts": "^6.0.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
