@@ -118,6 +118,7 @@
     "@ckeditor/ckeditor5-real-time-collaboration": "44.1.0",
     "@ckeditor/ckeditor5-revision-history": "44.1.0",
     "@ckeditor/ckeditor5-slash-command": "44.1.0",
+    "@ckeditor/ckeditor5-source-editing-enhanced": "0.0.1",
     "@ckeditor/ckeditor5-template": "44.1.0",
     "@ckeditor/ckeditor5-track-changes": "44.1.0",
     "@ckeditor/ckeditor5-uploadcare": "0.0.1",
