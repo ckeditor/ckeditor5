@@ -253,8 +253,9 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 		/**
 		 * Unable to load the emoji database from CDN.
 		 *
-		 * TODO: It could be a problem of CKEditor 5 CDN, but also, Content Security Policy that disallow the request.
-		 * It would be good to explain what to do in such a case.
+		 * If the CDN works properly and there is no disruption of communication, please check your
+		 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+		 * the CDN connection is allowed by the editor.
 		 *
 		 * @error emoji-database-load-failed
 		 */

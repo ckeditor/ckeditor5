@@ -1312,6 +1312,15 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				adjustments.
 			</td>
 		</tr>
+				<tr id="emoji" class="feature">
+			<td>
+				{@link features/emoji Emoji}
+			</td>
+			<td>
+				The Emoji feature lets you insert emojis into the document from the editor
+				toolbar, or on the go while writing the content.
+			</td>
+		</tr>
 		<tr id="find-and-replace" class="feature">
 			<td>
 				{@link features/find-and-replace Find and replace}
