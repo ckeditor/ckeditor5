@@ -141,4 +141,4 @@ msgstr "Vui lòng thử một cụm từ khác hoặc kiểm tra lại cụm t�
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "Nguồn"

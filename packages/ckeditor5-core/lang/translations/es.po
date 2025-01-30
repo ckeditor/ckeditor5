@@ -141,4 +141,4 @@ msgstr "Intente con una frase diferente o revise la ortografía."
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "Fuente"

@@ -141,4 +141,4 @@ msgstr "অনুগ্রহ করে একটি ভিন্ন শব্�
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "উৎস"

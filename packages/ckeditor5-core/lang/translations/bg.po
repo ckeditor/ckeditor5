@@ -141,4 +141,4 @@ msgstr "Моля, опитайте с друг израз или провере�
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "Източник"

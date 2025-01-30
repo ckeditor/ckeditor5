@@ -141,4 +141,4 @@ msgstr "Prova-ho de nou amb una frase diferent o revisa l'ortografia."
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "Font"
