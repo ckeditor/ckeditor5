@@ -229,8 +229,9 @@ describe( 'EmojiPickerView', () => {
 
 	describe( 'focus()', () => {
 		it( 'focuses the first focusable', () => {
-			const spy = sinon.spy( emojiPickerView.focusCycler, 'focusFirst' );
+			const spy = sinon.spy( emojiPickerView.searchView, 'focus' );
 
+			emojiPickerView.render();
 			emojiPickerView.focus();
 
 			sinon.assert.calledOnce( spy );

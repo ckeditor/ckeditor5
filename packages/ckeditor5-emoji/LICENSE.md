@@ -20,6 +20,7 @@ The following libraries are included in CKEditor&nbsp;5 emoji feature under the 
 
 * emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
+* Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 
 Trademarks
 ----------

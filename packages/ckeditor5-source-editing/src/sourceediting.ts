@@ -10,7 +10,7 @@
 /* global console */
 
 import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
-import { IconSourceEditing } from 'ckeditor5/src/icons.js';
+import { IconSource } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
@@ -24,7 +24,7 @@ const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
  *
  * It provides the possibility to view and edit the source of the document.
  *
- * For a detailed overview, check the {@glink features/source-editing source editing feature documentation} and the
+ * For a detailed overview, check the {@glink features/source-editing/source-editing source editing feature documentation} and the
  * {@glink api/source-editing package page}.
  */
 export default class SourceEditing extends Plugin {
@@ -99,7 +99,7 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Source' ),
-				icon: IconSourceEditing,
+				icon: IconSource,
 				tooltip: true,
 				class: 'ck-source-editing-button'
 			} );
@@ -177,7 +177,7 @@ export default class SourceEditing extends Plugin {
 			/**
 			 * Source editing feature is not fully compatible with real-time collaboration,
 			 * and using it may lead to data loss. Please read
-			 * {@glink features/source-editing#limitations-and-incompatibilities source editing feature guide} to learn more.
+			 * {@glink features/source-editing/source-editing#limitations-and-incompatibilities source editing feature guide} to learn more.
 			 *
 			 * If you understand the possible risk of data loss, you can enable the source editing
 			 * by setting the

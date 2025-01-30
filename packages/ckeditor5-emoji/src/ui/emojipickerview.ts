@@ -26,7 +26,7 @@ import EmojiCategoriesView from './emojicategoriesview.js';
 import EmojiSearchView from './emojisearchview.js';
 import EmojiToneView from './emojitoneview.js';
 import type { SkinToneId } from '../emojiconfig.js';
-import type { EmojiCategory, SkinTone } from '../emojidatabase.js';
+import type { EmojiCategory, SkinTone } from '../emojirepository.js';
 
 /**
  * A view that glues pieces of the emoji panel together.
@@ -194,10 +194,10 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #items}.
+	 * Focuses the search input.
 	 */
 	public focus(): void {
-		this.focusCycler.focusFirst();
+		this.searchView.focus();
 	}
 
 	/**

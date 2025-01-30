@@ -129,8 +129,10 @@ window.getViewportTopOffsetConfig = function() {
  * **Note**: The tabs container requires a proper markup to work correctly.
  *
  * @param {HTMLElement} tabsContainer
+ * @param {Function} onTabChange A callback executed when the tab is changed. It receives the index of the selected tab.
+ * It also gets called after the tabs are created.
  */
-window.createTabs = function( tabsContainer ) {
+window.createTabs = function( tabsContainer, onTabChange ) {
 	const tabTextElements = Array.from( tabsContainer.querySelectorAll( '.tabs__list__tab-text' ) );
 	const tabPanels = Array.from( tabsContainer.querySelectorAll( '.tabs__panel' ) );
 
@@ -147,8 +149,20 @@ window.createTabs = function( tabsContainer ) {
 				panel.classList.toggle( 'tabs__panel_selected', tabPanels.indexOf( panel ) === clickedIndex );
 			} );
 
+			if ( onTabChange ) {
+				onTabChange( clickedIndex );
+			}
+
 			evt.preventDefault();
 		} );
 	} );
+
+	// Trigger the callback after the tabs are created.
+	if ( onTabChange ) {
+		const selectedTabTextElement = tabsContainer.querySelector( '.tabs__list__tab_selected .tabs__list__tab-text' ) ||
+			tabsContainer.querySelector( '.tabs__list li:first-of-type .tabs__list__tab-text' );
+
+		onTabChange( tabTextElements.indexOf( selectedTabTextElement ) );
+	}
 };
 

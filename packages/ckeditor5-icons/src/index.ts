@@ -130,7 +130,7 @@ export { default as IconRevisionHistory } from '../theme/icons/revision-history.
 export { default as IconRobotPencil } from '../theme/icons/robot-pencil.svg';
 export { default as IconSelectAll } from '../theme/icons/select-all.svg';
 export { default as IconShowBlocks } from '../theme/icons/show-blocks.svg';
-export { default as IconSourceEditing } from '../theme/icons/source-editing.svg';
+export { default as IconSource } from '../theme/icons/source.svg';
 export { default as IconSpecialCharacters } from '../theme/icons/special-characters.svg';
 export { default as IconStrikethrough } from '../theme/icons/strikethrough.svg';
 export { default as IconSubmit } from '../theme/icons/submit.svg';

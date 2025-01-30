@@ -20,6 +20,9 @@ ClassicEditor
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'undo', 'redo'
 		],
+		menuBar: {
+			isVisible: true
+		},
 		image: {
 			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},

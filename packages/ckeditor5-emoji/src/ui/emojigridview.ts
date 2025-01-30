@@ -9,7 +9,7 @@
 
 import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type { EmojiCategory, EmojiEntry } from '../emojidatabase.js';
+import type { EmojiCategory, EmojiEntry } from '../emojirepository.js';
 import type { SkinToneId } from '../emojiconfig.js';
 
 import '../../theme/emojigrid.css';

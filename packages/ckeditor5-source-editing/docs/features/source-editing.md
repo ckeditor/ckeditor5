@@ -1,18 +1,19 @@
 ---
-category: features
-menu-title: Source editing
-meta-title: Source editing | CKEditor 5 Documentation
+category: source-code-editing
+menu-title: Source code editing
+meta-title: Source code editing | CKEditor 5 Documentation
 modified_at: 2024-02-06
+order: 10
 ---
 
-# Source editing
+# Source code editing
 {@snippet features/source-editing-imports}
 
-The source editing feature lets you view and edit the source of your document.
+The source editing feature lets you view and edit the source of your document. This is the basic, open-source source code editing feature. You can also try the more advanced, premium {@link features/source-editing-enhanced Enhanced source code editing} plugin that provides the functionality in a handy modal window with syntax highlighting and more in all editor types.
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-icons/theme/icons/source-editing.svg Source editing} and make some changes in the HTML code (for example, add a new paragraph or an ordered list). Then leave the source editing mode and see that the changes are present in the document content.
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-icons/theme/icons/source.svg Source editing} and make some changes in the HTML code (for example, add a new paragraph or an ordered list). Then leave the source editing mode and see that the changes are present in the document content.
 
 You can also use one of the many CKEditor&nbsp;5 features available in the toolbar and check how they render in the HTML source. Notice the collapsible table of contents, available thanks to the {@link features/general-html-support general HTML support} feature. The feature introduces HTML elements not yet covered by the official plugins.
 
@@ -146,6 +147,7 @@ The source editing plugin also works well with the {@link features/markdown Mark
 
 There are other source-related CKEditor&nbsp;5 features you may want to check:
 
+* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 * {@link features/general-html-support General HTML support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor&nbsp;5 plugins.
 * {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor&nbsp;5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.
