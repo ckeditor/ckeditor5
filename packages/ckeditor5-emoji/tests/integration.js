@@ -46,6 +46,7 @@ describe( 'Emoji integration', () => {
 
 	afterEach( () => {
 		element.remove();
+		testUtils.sinon.restore();
 
 		return editor.destroy();
 	} );
