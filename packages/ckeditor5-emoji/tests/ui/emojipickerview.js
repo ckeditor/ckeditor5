@@ -160,6 +160,15 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledWith( stub, 0, 0 );
 			} );
 
+			it( 'should scroll to the top of the grid when a search event is emitted', () => {
+				const stub = sinon.stub( emojiPickerView.gridView.element, 'scrollTo' );
+
+				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 1 } );
+
+				sinon.assert.calledOnce( stub );
+				sinon.assert.calledWith( stub, 0, 0 );
+			} );
+
 			it( 'should trigger the search mechanism when an active category is changed', () => {
 				const stub = sinon.stub( emojiPickerView.searchView, 'search' );
 

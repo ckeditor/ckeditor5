@@ -239,11 +239,11 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		// Emit an update event to react to balloon dimensions changes.
 		this.searchView.on<SearchTextViewSearchEvent>( 'search', () => {
 			this.fire<EmojiPickerViewUpdateEvent>( 'update' );
+			this.gridView.element!.scrollTo( 0, 0 );
 		} );
 
 		// Update the grid of emojis when the selected category is changed.
 		this.categoriesView.on<ObservableChangeEvent<string>>( 'change:categoryName', ( ev, args, categoryName ) => {
-			this.gridView.element!.scrollTo( 0, 0 );
 			this.gridView.categoryName = categoryName;
 			this.searchView.search( '' );
 		} );
