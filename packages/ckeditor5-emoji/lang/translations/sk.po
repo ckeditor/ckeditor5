@@ -13,88 +13,88 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Emoji feature."
 msgid "Emoji"
-msgstr ""
+msgstr "Emotikon"
 
 msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
 msgid "Show all emoji..."
-msgstr ""
+msgstr "Zobraziť všetky emotikony..."
 
 msgctxt "Label of an input field for filtering an emoji collection by the typed value."
 msgid "Find an emoji (min. 2 characters)"
-msgstr ""
+msgstr "Nájsť emotikon (min. 2 znaky)"
 
 msgctxt "The main text of the message shown to the user when no emoji are available for the search criteria."
 msgid "No emojis were found matching \"%0\"."
-msgstr ""
+msgstr "Nenašli sa žiadne emotikony zodpovedajúce výrazu „%0“."
 
 msgctxt "The main text of the message shown to the user when the provided search query does not contain the required number of characters."
 msgid "Keep on typing to see the emoji."
-msgstr ""
+msgstr "Pokračujte v písaní, aby ste videli emotikony."
 
 msgctxt "The secondary text of the message shown to the user to explain how many characters the search query must consist of."
 msgid "The query must contain at least two characters."
-msgstr ""
+msgstr "Dotaz musí obsahovať aspoň dva znaky."
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category."
 msgid "Smileys & Expressions"
-msgstr ""
+msgstr "Smajlíky a výrazy"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category."
 msgid "Gestures & People"
-msgstr ""
+msgstr "Gestá a ľudia"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category."
 msgid "Animals & Nature"
-msgstr ""
+msgstr "Zvieratá a príroda"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Food & Drinks\" category."
 msgid "Food & Drinks"
-msgstr ""
+msgstr "Jedlá a nápoje"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Travel & Places\" category."
 msgid "Travel & Places"
-msgstr ""
+msgstr "Cestovanie a miesta"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Activities\" category."
 msgid "Activities"
-msgstr ""
+msgstr "Aktivity"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Objects\" category."
 msgid "Objects"
-msgstr ""
+msgstr "Objekty"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Symbols\" category."
 msgid "Symbols"
-msgstr ""
+msgstr "Symboly"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Flags\" category."
 msgid "Flags"
-msgstr ""
+msgstr "Zástavy"
 
 msgctxt "Default label for the emoji skin tone dropdown."
 msgid "Select skin tone"
-msgstr ""
+msgstr "Vyberte tón pleti"
 
 msgctxt "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋."
 msgid "Default skin tone"
-msgstr ""
+msgstr "Predvolený tón pleti"
 
 msgctxt "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻."
 msgid "Light skin tone"
-msgstr ""
+msgstr "Svetlý tón pleti"
 
 msgctxt "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼."
 msgid "Medium Light skin tone"
-msgstr ""
+msgstr "Stredne svetlý tón pleti"
 
 msgctxt "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽."
 msgid "Medium skin tone"
-msgstr ""
+msgstr "Stredný tón pleti"
 
 msgctxt "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾."
 msgid "Medium Dark skin tone"
-msgstr ""
+msgstr "Stredne tmavý tón pleti"
 
 msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
 msgid "Dark skin tone"
-msgstr ""
+msgstr "Tmavý tón pleti"

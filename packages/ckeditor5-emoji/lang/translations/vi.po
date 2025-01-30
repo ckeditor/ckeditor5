@@ -13,88 +13,88 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Emoji feature."
 msgid "Emoji"
-msgstr ""
+msgstr "Biểu tượng cảm xúc"
 
 msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
 msgid "Show all emoji..."
-msgstr ""
+msgstr "Hiển thị tất cả biểu tượng cảm xúc..."
 
 msgctxt "Label of an input field for filtering an emoji collection by the typed value."
 msgid "Find an emoji (min. 2 characters)"
-msgstr ""
+msgstr "Tìm biểu tượng cảm xúc (tối thiểu 2 ký tự)"
 
 msgctxt "The main text of the message shown to the user when no emoji are available for the search criteria."
 msgid "No emojis were found matching \"%0\"."
-msgstr ""
+msgstr "Không tìm thấy biểu tượng cảm xúc nào khớp với \"%0\"."
 
 msgctxt "The main text of the message shown to the user when the provided search query does not contain the required number of characters."
 msgid "Keep on typing to see the emoji."
-msgstr ""
+msgstr "Tiếp tục nhập để xem biểu tượng cảm xúc."
 
 msgctxt "The secondary text of the message shown to the user to explain how many characters the search query must consist of."
 msgid "The query must contain at least two characters."
-msgstr ""
+msgstr "Truy vấn phải chứa ít nhất hai ký tự."
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category."
 msgid "Smileys & Expressions"
-msgstr ""
+msgstr "Biểu tượng cảm xúc & Biểu cảm"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category."
 msgid "Gestures & People"
-msgstr ""
+msgstr "Cử chỉ & Con người"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category."
 msgid "Animals & Nature"
-msgstr ""
+msgstr "Động vật & Thiên nhiên"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Food & Drinks\" category."
 msgid "Food & Drinks"
-msgstr ""
+msgstr "Đồ ăn & Thức uống"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Travel & Places\" category."
 msgid "Travel & Places"
-msgstr ""
+msgstr "Du lịch & Địa điểm"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Activities\" category."
 msgid "Activities"
-msgstr ""
+msgstr "Hoạt động"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Objects\" category."
 msgid "Objects"
-msgstr ""
+msgstr "Vật thể"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Symbols\" category."
 msgid "Symbols"
-msgstr ""
+msgstr "Biểu tượng"
 
 msgctxt "Tooltip for filtering the displayed emoji by the \"Flags\" category."
 msgid "Flags"
-msgstr ""
+msgstr "Cờ"
 
 msgctxt "Default label for the emoji skin tone dropdown."
 msgid "Select skin tone"
-msgstr ""
+msgstr "Chọn tông màu da"
 
 msgctxt "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋."
 msgid "Default skin tone"
-msgstr ""
+msgstr "Tông màu da mặc định"
 
 msgctxt "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻."
 msgid "Light skin tone"
-msgstr ""
+msgstr "Tông màu da sáng"
 
 msgctxt "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼."
 msgid "Medium Light skin tone"
-msgstr ""
+msgstr "Tông màu da sáng trung bình"
 
 msgctxt "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽."
 msgid "Medium skin tone"
-msgstr ""
+msgstr "Tông màu da trung bình"
 
 msgctxt "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾."
 msgid "Medium Dark skin tone"
-msgstr ""
+msgstr "Tông màu da tối trung bình"
 
 msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
 msgid "Dark skin tone"
-msgstr ""
+msgstr "Tông màu da tối"

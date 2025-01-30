@@ -141,4 +141,4 @@ msgstr "Skúste inú frázu alebo skontrolujte pravopis."
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "Zdroj"

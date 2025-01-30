@@ -141,4 +141,4 @@ msgstr "โปรดลองใช้วลีอื่นหรือตรว
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "ซอร์ส"

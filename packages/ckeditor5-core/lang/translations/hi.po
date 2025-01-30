@@ -141,4 +141,4 @@ msgstr "कृपया किन्हीं और शब्दों का �
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "सोर्स"

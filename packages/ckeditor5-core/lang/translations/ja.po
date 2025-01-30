@@ -141,4 +141,4 @@ msgstr "別のフレーズを試すかスペルを確認してください。"
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "ソース"

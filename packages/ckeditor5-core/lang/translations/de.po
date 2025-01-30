@@ -141,4 +141,4 @@ msgstr "Bitte versuchen Sie einen anderen Ausdruck oder überprüfen Sie die Sch
 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
-msgstr ""
+msgstr "Quelle"
