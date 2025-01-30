@@ -81,13 +81,13 @@ describe( 'EmojiPickerView', () => {
 			expect( emojiPickerView.gridView.skinTone ).to.equal( 'default' );
 		} );
 
-		it( 'should create emoji results view with correct arguments', () => {
+		it( 'should create emoji search view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiSearchView ) ).to.equal( true );
 			expect( emojiPickerView.searchView.gridView ).to.equal( emojiPickerView.gridView );
 			expect( emojiPickerView.searchView.inputView.infoView ).to.equal( emojiPickerView.infoView );
 		} );
 
-		it( 'should create emoji results view with correct arguments', () => {
+		it( 'should create emoji categories view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiCategoriesView ) ).to.equal( true );
 			expect( emojiPickerView.categoriesView.emojiCategories ).to.equal( emojiPickerView.emojiCategories );
 			expect( emojiPickerView.categoriesView.categoryName ).to.equal( 'faces' );
@@ -148,6 +148,16 @@ describe( 'EmojiPickerView', () => {
 				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 1 } );
 
 				expect( emojiPickerView.infoView.isVisible ).to.equal( false );
+			} );
+
+			it( 'should scroll to the top of the grid when an active category is changed', () => {
+				const stub = sinon.stub( emojiPickerView.gridView.element, 'scrollTo' );
+
+				emojiPickerView.categoriesView.categoryName = 'food';
+
+				expect( emojiPickerView.gridView.categoryName ).to.equal( 'food' );
+				sinon.assert.calledOnce( stub );
+				sinon.assert.calledWith( stub, 0, 0 );
 			} );
 
 			it( 'should trigger the search mechanism when an active category is changed', () => {
