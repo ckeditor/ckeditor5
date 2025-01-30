@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor, HtmlComment */
+/* globals console, window, document, ClassicEditor, HtmlComment, LICENSE_KEY */
 
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
@@ -34,7 +34,7 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		licenseKey: 'GPL'
+		licenseKey: LICENSE_KEY
 	} )
 	.then( editor => {
 		window.editor2 = editor;

@@ -123,7 +123,8 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		it( 'should create CKFinder button in menu bar - only integration', () => {
-			const buttonView = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const buttonView = submenu.panelView.children.first.items.first.children.first;
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( buttonView.withText ).to.be.true;
