@@ -538,6 +538,26 @@ describe( 'EmojiMention', () => {
 			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should return an empty array the repository plugin is not loaded correctly', async () => {
+			EmojiRepositoryMock.isReady = false;
+
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Paragraph, Essentials, Mention ],
+				substitutePlugins: [ EmojiRepositoryMock ]
+			} );
+
+			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
+
+			expect( queryEmoji( '' ) ).to.deep.equal( [] );
+			expect( queryEmoji( 'see' ) ).to.deep.equal( [] );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
 		it( 'should return a hint item when a query is too short', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
 			getEmojiByQuery.returns( [] );

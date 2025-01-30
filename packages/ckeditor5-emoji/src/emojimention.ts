@@ -37,6 +37,11 @@ export default class EmojiMention extends Plugin {
 	declare private _emojiRepositoryPlugin: EmojiRepository;
 
 	/**
+	 * A flag that informs if the {@link module:emoji/emojirepository~EmojiRepository} plugin is loaded correctly.
+	 */
+	declare private _isEmojiRepositoryAvailable: boolean;
+
+	/**
 	 * Defines a number of displayed items in the auto complete dropdown.
 	 *
 	 * It includes the "Show all emoji..." option if the `EmojiPicker` plugin is loaded.
@@ -110,13 +115,12 @@ export default class EmojiMention extends Plugin {
 
 		this._emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
 		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
+		this._isEmojiRepositoryAvailable = await this._emojiRepositoryPlugin.isReady();
 
-		// Skip overriding the `mention` command listener if the emoji repository is not ready.
-		if ( !await this._emojiRepositoryPlugin.isReady() ) {
-			return;
+		// Override the `mention` command listener if the emoji repository is ready.
+		if ( this._isEmojiRepositoryAvailable ) {
+			editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 		}
-
-		editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 	}
 
 	/**
@@ -227,6 +231,11 @@ export default class EmojiMention extends Plugin {
 		return ( searchQuery: string ) => {
 			// Do not show anything when a query starts with a space.
 			if ( searchQuery.startsWith( ' ' ) ) {
+				return [];
+			}
+
+			// If the repository plugin is not available, return an empty feed to avoid confusion. See: #17842.
+			if ( !this._isEmojiRepositoryAvailable ) {
 				return [];
 			}
 
