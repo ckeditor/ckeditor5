@@ -20,12 +20,24 @@ const config = {
 	toolbar: [ 'sourceEditing', '|', 'insertTable', 'bulletedList', 'numberedList', 'bold', 'italic', 'heading' ]
 };
 
-ClassicEditor
-	.create( document.getElementById( 'editor1' ), config )
-	.then( instance => {
-		window.editor1 = instance;
-		CKEditorInspector.attach( { 'With EmptyBlock plugin': instance } );
-	} );
+const preserveEmptyBlocksCheckbox = document.getElementById( 'preserve-empty-blocks' );
+
+function createEditor1( preserveInEditingView ) {
+	return ClassicEditor
+		.create( document.getElementById( 'editor1' ), {
+			...config,
+			emptyBlock: {
+				preserveInEditingView
+			}
+		} )
+		.then( instance => {
+			window.editor1 = instance;
+			CKEditorInspector.attach( { 'With EmptyBlock plugin': instance } );
+		} );
+}
+
+// Initial editor creation
+createEditor1( preserveEmptyBlocksCheckbox.checked );
 
 ClassicEditor
 	.create( document.getElementById( 'editor2' ), {
@@ -45,3 +57,16 @@ function handleClipboardEvent( evt ) {
 
 document.addEventListener( 'copy', handleClipboardEvent );
 document.addEventListener( 'cut', handleClipboardEvent );
+
+preserveEmptyBlocksCheckbox.addEventListener( 'change', async () => {
+	const editorElement = document.getElementById( 'editor1' );
+	const editorData = window.editor1.getData();
+
+	await window.editor1.destroy();
+
+	// Restore any content that was in the editor
+	editorElement.innerHTML = editorData;
+
+	// Create new editor instance with updated configuration
+	await createEditor1( preserveEmptyBlocksCheckbox.checked );
+} );

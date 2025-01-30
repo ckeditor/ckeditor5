@@ -14,7 +14,6 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import GeneralHtmlSupport from '../src/generalhtmlsupport.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
 
 import EmptyBlock from '../src/emptyblock.js';
@@ -327,23 +326,61 @@ describe( 'EmptyBlock', () => {
 		} );
 	} );
 
-	describe( 'editing pipeline', () => {
-		it( 'should preserve empty paragraph in editing view', () => {
-			setModelData( model,
-				'<paragraph htmlEmptyBlock="true"></paragraph>' +
-				'<paragraph></paragraph>'
-			);
+	describe( 'config.emptyBlock.preserveInEditingView', () => {
+		it( 'should preserve empty blocks in editing view when enabled', async () => {
+			await editor.destroy();
 
-			expect( getViewData( view ) ).to.equal(
-				'<p>[]</p>' +
-				'<p></p>'
-			);
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
+				emptyBlock: {
+					preserveInEditingView: true
+				}
+			} );
+
+			editor.setData( '<p></p><p>foo</p>' );
 
 			const domRoot = editor.editing.view.getDomRoot();
 
 			expect( domRoot.innerHTML ).to.equal(
 				'<p>' + INLINE_FILLER + '</p>' +
-				'<p><br data-cke-filler="true"></p>'
+                '<p>foo</p>'
+			);
+		} );
+
+		it( 'should not preserve empty blocks in editing view when disabled', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
+				emptyBlock: {
+					preserveInEditingView: false
+				}
+			} );
+
+			editor.setData( '<p></p><p>foo</p>' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+
+			expect( domRoot.innerHTML ).to.equal(
+				'<p><br data-cke-filler="true"></p>' +
+                '<p>foo</p>'
+			);
+		} );
+
+		it( 'should not preserve empty blocks in editing view by default', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ]
+			} );
+
+			editor.setData( '<p></p><p>foo</p>' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+
+			expect( domRoot.innerHTML ).to.equal(
+				'<p><br data-cke-filler="true"></p>' +
+                '<p>foo</p>'
 			);
 		} );
 	} );

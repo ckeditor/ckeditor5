@@ -23,8 +23,19 @@
 			background: #f0f0f0;
 			white-space: pre-wrap;
 		}
+
+		.controls {
+			margin-bottom: 20px;
+		}
 	</style>
 </head>
+
+<div class="controls">
+	<label>
+		<input type="checkbox" id="preserve-empty-blocks" checked>
+		Preserve empty blocks in editing view
+	</label>
+</div>
 
 <div class="editors-container">
 	<div class="editor-wrapper">
@@ -34,6 +45,11 @@
 			<p></p>
 			<p>&nbsp;</p>
 			<p>Some text</p>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
 			<table>
 				<tr>
 					<td>Table cell 1</td>
@@ -59,6 +75,11 @@
 			<p></p>
 			<p>&nbsp;</p>
 			<p>Another text</p>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
 			<table>
 				<tr>
 					<td>Table cell 1</td>

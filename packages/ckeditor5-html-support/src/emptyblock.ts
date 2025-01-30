@@ -72,8 +72,9 @@ export default class EmptyBlock extends Plugin {
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		const { model, conversion, plugins } = this.editor;
+		const { model, conversion, plugins, config } = this.editor;
 		const schema = model.schema;
+		const preserveInEditingView = config.get( 'emptyBlock.preserveInEditingView' );
 
 		schema.extend( '$block', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 		schema.extend( '$container', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
@@ -82,7 +83,12 @@ export default class EmptyBlock extends Plugin {
 			schema.extend( 'tableCell', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 		}
 
-		conversion.for( 'downcast' ).add( createEmptyBlockDowncastConverter() );
+		if ( preserveInEditingView ) {
+			conversion.for( 'downcast' ).add( createEmptyBlockDowncastConverter() );
+		} else {
+			conversion.for( 'dataDowncast' ).add( createEmptyBlockDowncastConverter() );
+		}
+
 		conversion.for( 'upcast' ).add( createEmptyBlockUpcastConverter( schema ) );
 
 		if ( plugins.has( 'ClipboardPipeline' ) ) {
