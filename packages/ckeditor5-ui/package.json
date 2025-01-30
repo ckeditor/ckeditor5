@@ -9,6 +9,11 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
+  "sideEffects": [
+    "*.css",
+    "build/**/*.js",
+    "dist/translations/*.umd.js"
+  ],
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
