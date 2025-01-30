@@ -163,5 +163,7 @@ export { default as IconUnderline } from '../theme/icons/underline.svg';
 export { default as IconUndo } from '../theme/icons/undo.svg';
 export { default as IconUnlink } from '../theme/icons/unlink.svg';
 export { default as IconUploadcareImageEdit } from '../theme/icons/uploadcare-image-edit.svg';
+export { default as IconUploadcareImageUpload } from '../theme/icons/uploadcare-image-upload.svg';
+export { default as IconUploadcareLink } from '../theme/icons/uploadcare-link.svg';
 export { default as IconUser } from '../theme/icons/user.svg';
 export { default as IconWarning } from '../theme/icons/warning.svg';
