@@ -16,19 +16,14 @@ import database from './fixtures/database.json';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Emoji integration', () => {
-	let editor, element, emojiPicker, fetchStub, fetchStubResolve;
+	let editor, element, emojiPicker;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		fetchStub = testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( '[]' ) );
-
-		fetchStub.returns( new Promise( resolve => {
-			fetchStubResolve = resolve;
-		} ) );
-
-		fetchStubResolve( new Response( JSON.stringify( database ) ) );
+		const response = new Response( JSON.stringify( database ) );
+		testUtils.sinon.stub( window, 'fetch' ).resolves( response );
 
 		return ClassicTestEditor
 			.create( element, {
@@ -53,7 +48,7 @@ describe( 'Emoji integration', () => {
 
 	it( 'should scroll to the top of the grid when an active category is changed', async () => {
 		emojiPicker.showUI();
-		emojiPicker.emojiPickerView.gridView.element.scrollTo( 999, 999 );
+		emojiPicker.emojiPickerView.gridView.element.scrollTo( 0, 335 );
 
 		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).to.equal( 335 );
 
