@@ -194,10 +194,10 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #items}.
+	 * Focuses the search input.
 	 */
 	public focus(): void {
-		this.focusCycler.focusFirst();
+		this.searchView.focus();
 	}
 
 	/**

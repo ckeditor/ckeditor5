@@ -9,7 +9,8 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "sourceEditing"
+					"name": "sourceEditing",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/source.svg"
 				}
 			]
 		}

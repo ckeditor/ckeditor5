@@ -491,7 +491,7 @@ describe( 'EmojiMention', () => {
 
 		it( 'should open the emoji picker UI when selecting the "Show all emojis" option from the list', () => {
 			const emojiPicker = editor.plugins.get( 'EmojiPicker' );
-			const stub = sinon.stub( emojiPicker, 'showUI' );
+			const stub = sinon.spy( emojiPicker, 'showUI' );
 
 			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
@@ -512,6 +512,9 @@ describe( 'EmojiMention', () => {
 
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWith( stub, 'raising' );
+
+			// Check the focus.
+			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
 	} );
 

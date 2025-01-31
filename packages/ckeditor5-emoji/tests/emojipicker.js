@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document setTimeout Event KeyboardEvent */
+/* global document Event KeyboardEvent */
 
 import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -276,10 +276,6 @@ describe( 'EmojiPicker', () => {
 		it( 'should focus the query input when opens UI', async () => {
 			emojiPicker.showUI();
 
-			await new Promise( resolve => {
-				setTimeout( resolve );
-			} );
-
 			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
 
@@ -287,6 +283,20 @@ describe( 'EmojiPicker', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
+			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+		} );
+
+		it( 'should remove fake visual selection marker before inserting the emoji', () => {
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+			emojiPicker.showUI();
+
+			editor.commands.get( 'insertText' ).once( 'execute', () => {
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.equal( false );
+			} );
+
 			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
@@ -356,6 +366,20 @@ describe( 'EmojiPicker', () => {
 				emojiPicker.showUI();
 				emojiPicker.showUI();
 			} ).to.not.throw();
+		} );
+
+		// See #17819.
+		it( 'should not change the selection after opening the UI', async () => {
+			setModelData(
+				editor.model,
+				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
+			);
+
+			emojiPicker.showUI();
+
+			expect( getModelData( editor.model ) ).to.equal(
+				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
+			);
 		} );
 
 		describe( 'fake visual selection', () => {
