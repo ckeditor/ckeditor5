@@ -1,0 +1,105 @@
+<head>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	>
+
+	<style>
+		.editors-container {
+			display: flex;
+			gap: 20px;
+		}
+
+		.editor-wrapper {
+			flex: 1;
+		}
+
+		.clipboard-preview-wrapper {
+			margin-top: 20px;
+		}
+
+		.clipboard-preview {
+			padding: 10px;
+			background: #f0f0f0;
+			white-space: pre-wrap;
+		}
+
+		.controls {
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+
+<div class="controls">
+	<label>
+		<input type="checkbox" id="preserve-empty-blocks" checked>
+		Preserve empty blocks in editing view
+	</label>
+</div>
+
+<div class="editors-container">
+	<div class="editor-wrapper">
+		<h2>Editor 1 (with EmptyBlocks)</h2>
+		<div id="editor1">
+			<p>This is editor 1</p>
+			<p></p>
+			<p>&nbsp;</p>
+			<p>Some text</p>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+			<table>
+				<tr>
+					<td>Table cell 1</td>
+					<td>Table cell 2</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+			<ul>
+				<li>Item 1</li>
+				<li></li>
+				<li>Item 3</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="editor-wrapper">
+		<h2>Editor 2 (without EmptyBlocks)</h2>
+		<div id="editor2">
+			<p>This is editor 2</p>
+			<p></p>
+			<p>&nbsp;</p>
+			<p>Another text</p>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+			<table>
+				<tr>
+					<td>Table cell 1</td>
+					<td>Table cell 2</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+			<ul>
+				<li>Item 1</li>
+				<li></li>
+				<li>Item 3</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="clipboard-preview-wrapper">
+	<h3>Clipboard Preview (text/html)</h3>
+	<pre id="clipboard-preview" class="clipboard-preview"></pre>
+</div>
