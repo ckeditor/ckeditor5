@@ -33,6 +33,8 @@ import type DomConverter from './domconverter.js';
 import type ViewElement from './element.js';
 import type ViewNode from './node.js';
 
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
+
 import '../../theme/renderer.css';
 
 type DomText = globalThis.Text;
@@ -213,18 +215,20 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
 		if ( this.isComposing && !env.isAndroid ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing.',
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-style: italic'
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cRendering aborted while isComposing.',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic'
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
 			return;
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Rendering',
-		// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold'
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cRendering',
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		let inlineFillerPosition: ViewPosition | null = null;
@@ -557,9 +561,10 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text',
-		// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: normal'
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cUpdate text',
+		// @if CK_DEBUG_TYPING // 		'font-weight: normal'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		this._updateTextNode( domText, expectedText );
@@ -626,9 +631,10 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update children',
-		// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: normal'
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cUpdate children',
+		// @if CK_DEBUG_TYPING // 		'font-weight: normal'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		// IME on Android inserts a new text node while typing after a link
@@ -669,9 +675,10 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		const actions = this._findUpdateActions( diff, actualDomChildren, expectedDomChildren, areTextNodes );
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping && actions.every( a => a == 'equal' ) ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Nothing to update.',
-		// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-style: italic'
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cNothing to update.',
+		// @if CK_DEBUG_TYPING // 		'font-style: italic'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		let i = 0;
@@ -688,19 +695,20 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING //	const node = actualDomChildren[ i ];
 				// @if CK_DEBUG_TYPING // 	if ( isText( node ) ) {
-				// @if CK_DEBUG_TYPING // 		console.info( '%c[Renderer]%c Remove text node' +
+				// @if CK_DEBUG_TYPING // 		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING // 			'%cRemove text node' +
 				// @if CK_DEBUG_TYPING // 			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
 				// @if CK_DEBUG_TYPING // 			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
-				// @if CK_DEBUG_TYPING // 			'color: green; font-weight: bold',
-				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '', 'color: blue', ''
-				// @if CK_DEBUG_TYPING // 		);
+				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '',
+				// @if CK_DEBUG_TYPING // 			'color: blue', ''
+				// @if CK_DEBUG_TYPING // 		) );
 				// @if CK_DEBUG_TYPING // 	} else {
-				// @if CK_DEBUG_TYPING // 		console.info( '%c[Renderer]%c Remove element' +
+				// @if CK_DEBUG_TYPING // 		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING // 			'%cRemove element' +
 				// @if CK_DEBUG_TYPING // 			`${ this.isComposing ? ' while composing (may break composition)' : '' }: `,
-				// @if CK_DEBUG_TYPING // 			'color: green; font-weight: bold',
 				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '',
 				// @if CK_DEBUG_TYPING // 			node
-				// @if CK_DEBUG_TYPING // 		);
+				// @if CK_DEBUG_TYPING // 		) );
 				// @if CK_DEBUG_TYPING // 	}
 				// @if CK_DEBUG_TYPING // }
 
@@ -718,18 +726,20 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING //	const node = expectedDomChildren[ i ];
 				// @if CK_DEBUG_TYPING //	if ( isText( node ) ) {
-				// @if CK_DEBUG_TYPING //		console.info( '%c[Renderer]%c Insert text node' +
+				// @if CK_DEBUG_TYPING //		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING //			'%cInsert text node' +
 				// @if CK_DEBUG_TYPING //			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
 				// @if CK_DEBUG_TYPING //			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
-				// @if CK_DEBUG_TYPING //			'color: green; font-weight: bold',
 				// @if CK_DEBUG_TYPING //			this.isComposing ? 'color: red; font-weight: bold' : '',
-				// @if CK_DEBUG_TYPING //			'color: blue', ''
-				// @if CK_DEBUG_TYPING //		);
+				// @if CK_DEBUG_TYPING //			'color: blue',
+				// @if CK_DEBUG_TYPING //			''
+				// @if CK_DEBUG_TYPING //		) );
 				// @if CK_DEBUG_TYPING //	} else {
-				// @if CK_DEBUG_TYPING //		console.info( '%c[Renderer]%c Insert element:',
-				// @if CK_DEBUG_TYPING //			'color: green; font-weight: bold', 'font-weight: normal',
+				// @if CK_DEBUG_TYPING //		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING //			'%cInsert element:',
+				// @if CK_DEBUG_TYPING //			'font-weight: normal',
 				// @if CK_DEBUG_TYPING //			node
-				// @if CK_DEBUG_TYPING //		);
+				// @if CK_DEBUG_TYPING //		) );
 				// @if CK_DEBUG_TYPING //	}
 				// @if CK_DEBUG_TYPING // }
 
@@ -848,10 +858,13 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( actualText == expectedText ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:%c ' +
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cText node does not need update:%c ' +
 			// @if CK_DEBUG_TYPING // 		`${ _escapeTextNodeData( actualText ) }%c (${ actualText.length })`,
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-style: italic', 'color: blue', ''
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 		'font-style: italic',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
 			return;
@@ -863,24 +876,33 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// See: https://github.com/ckeditor/ckeditor5/issues/13994.
 		if ( env.isAndroid && this.isComposing && actualText.replace( /\u00A0/g, ' ' ) == expectedText.replace( /\u00A0/g, ' ' ) ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node ignore NBSP changes while composing: ' +
-			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) ->` +
-			// @if CK_DEBUG_TYPING // 		` %c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-style: italic', 'color: blue', '', 'color: blue', ''
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cText node ignore NBSP changes while composing: ' +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) -> ` +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
+			// @if CK_DEBUG_TYPING // 		'font-style: italic',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		'',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
 			return;
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node' +
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cUpdate text node' +
 		// @if CK_DEBUG_TYPING // 		`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
-		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) ->` +
-		// @if CK_DEBUG_TYPING // 		` %c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
-		// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', this.isComposing ? 'color: red; font-weight: bold' : '',
-		// @if CK_DEBUG_TYPING // 		'color: blue', '', 'color: blue', ''
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) -> ` +
+		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
+		// @if CK_DEBUG_TYPING // 		this.isComposing ? 'color: red; font-weight: bold' : '',
+		// @if CK_DEBUG_TYPING // 		'color: blue',
+		// @if CK_DEBUG_TYPING // 		'',
+		// @if CK_DEBUG_TYPING // 		'color: blue',
+		// @if CK_DEBUG_TYPING // 		''
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		this._updateTextNodeInternal( domText, expectedText );
@@ -1025,9 +1047,11 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus! )!;
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
-		// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', '', anchor, focus
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'Update DOM selection:',
+		// @if CK_DEBUG_TYPING // 		anchor,
+		// @if CK_DEBUG_TYPING // 			focus
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		domSelection.setBaseAndExtent( anchor.parent, anchor.offset, focus.parent, focus.offset );

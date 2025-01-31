@@ -14,12 +14,6 @@
 /* globals console */
 
 // @if CK_DEBUG_TYPING // const { debounce } = require( 'lodash-es' );
-// @if CK_DEBUG_TYPING // const areConnectedThroughProperties = require(
-// @if CK_DEBUG_TYPING // 	'@ckeditor/ckeditor5-watchdog/src/utils/areconnectedthroughproperties.js'
-// @if CK_DEBUG_TYPING // ).default;
-// @if CK_DEBUG_TYPING // const getSubNodes = require(
-// @if CK_DEBUG_TYPING // 	'@ckeditor/ckeditor5-watchdog/src/utils/getsubnodes.js'
-// @if CK_DEBUG_TYPING // ).default;
 
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.
@@ -106,7 +100,7 @@ export function logDocument( document: any, version: any ): void {
 
 // @if CK_DEBUG_TYPING // export function _buildLogMessage( context, className, message = '', ...rest ) {
 // @if CK_DEBUG_TYPING // 	const editor = _findAllEditorInstances().find( editor => (
-// @if CK_DEBUG_TYPING // 		areConnectedThroughProperties( editor.editing, context )
+// @if CK_DEBUG_TYPING // 		_getLogNodes( editor ).includes( context )
 // @if CK_DEBUG_TYPING // 	) );
 // @if CK_DEBUG_TYPING // 	const editorName = editor && Object.getPrototypeOf( editor ).constructor.name;
 // @if CK_DEBUG_TYPING // 	const editorPrefix = editor ? `${ editorName }-${ editor.id.slice( -4 ) } ` : 'UNKNOWN ';
@@ -127,4 +121,12 @@ export function logDocument( document: any, version: any ): void {
 // @if CK_DEBUG_TYPING // 		}
 // @if CK_DEBUG_TYPING // 	}
 // @if CK_DEBUG_TYPING // 	return Array.from( editors );
+// @if CK_DEBUG_TYPING // }
+
+// @if CK_DEBUG_TYPING // function _getLogNodes( editor ) {
+// @if CK_DEBUG_TYPING // 	return [
+// @if CK_DEBUG_TYPING // 		editor.plugins.get( 'Input' ),
+// @if CK_DEBUG_TYPING // 		editor.editing.view._renderer,
+// @if CK_DEBUG_TYPING // 		...editor.editing.view._observers.values()
+// @if CK_DEBUG_TYPING // 	];
 // @if CK_DEBUG_TYPING // }
