@@ -20,7 +20,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from '../emojiconfig.js';
-import type { SkinTone } from '../emojidatabase.js';
+import type { SkinTone } from '../emojirepository.js';
 
 import '../../theme/emojitone.css';
 
@@ -70,7 +70,10 @@ export default class EmojiToneView extends View {
 					tooltip,
 					tooltipPosition: 'e',
 					role: 'menuitemradio',
-					withText: true
+					withText: true,
+					// To improve accessibility, disconnect a button and its label connection so that screen
+					// readers can read the `[aria-label]` attribute directly from the more descriptive button.
+					ariaLabelledBy: undefined
 				} )
 			};
 
@@ -119,6 +122,7 @@ export default class EmojiToneView extends View {
 		} );
 
 		dropdownView.buttonView.bind( 'ariaLabel' ).to( this, 'skinTone', () => {
+			// Render a current state, but also what the dropdown does.
 			return `${ this._getSkinTone().tooltip }, ${ accessibleLabel }`;
 		} );
 
@@ -129,15 +133,6 @@ export default class EmojiToneView extends View {
 			},
 			children: [ dropdownView ]
 		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override destroy(): void {
-		super.destroy();
-
-		this.dropdownView.destroy();
 	}
 
 	/**

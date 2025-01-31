@@ -9,7 +9,7 @@ import { SearchInfoView } from '@ckeditor/ckeditor5-ui';
 import EmojiGridView from '../../src/ui/emojigridview.js';
 
 describe( 'EmojiSearchView', () => {
-	let locale, emojiSearchView, emojiGroups;
+	let locale, emojiSearchView, emojiCategories;
 
 	testUtils.createSinonSandbox();
 
@@ -18,7 +18,7 @@ describe( 'EmojiSearchView', () => {
 			t: val => val
 		};
 
-		emojiGroups = [ {
+		emojiCategories = [ {
 			title: 'faces',
 			icon: '😊',
 			items: [
@@ -37,7 +37,7 @@ describe( 'EmojiSearchView', () => {
 		} ];
 
 		const searchInfoView = new SearchInfoView();
-		const emojiGridView = new EmojiGridView( locale, { emojiGroups, categoryName: 'faces', getEmojiBySearchQuery: () => [
+		const emojiGridView = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: () => [
 			{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 		] } );
 
@@ -97,6 +97,16 @@ describe( 'EmojiSearchView', () => {
 			const spy = sinon.spy( emojiSearchView.inputView, 'focus' );
 
 			emojiSearchView.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy an instance of the search view', () => {
+			const spy = sinon.spy( emojiSearchView.inputView, 'destroy' );
+
+			emojiSearchView.destroy();
 
 			sinon.assert.calledOnce( spy );
 		} );

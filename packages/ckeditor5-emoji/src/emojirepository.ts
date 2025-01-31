@@ -4,7 +4,7 @@
  */
 
 /**
- * @module emoji/emojidatabase
+ * @module emoji/emojirepository
  */
 
 import Fuse from 'fuse.js';
@@ -30,15 +30,26 @@ const SKIN_TONE_MAP: Record<number, SkinToneId> = {
 const BASELINE_EMOJI_WIDTH = 24;
 
 /**
- * The emoji database plugin.
+ * The emoji repository plugin.
  *
  * Loads the emoji database from URL during plugin initialization and provides utility methods to search it.
  */
-export default class EmojiDatabase extends Plugin {
+export default class EmojiRepository extends Plugin {
 	/**
 	 * Emoji database.
 	 */
-	private _emojiDatabase: Array<EmojiEntry>;
+	private _database: Array<EmojiEntry>;
+
+	/**
+	 * A promise resolved after downloading the emoji database.
+	 * The promise resolves with `true` when the database is successfully downloaded or `false` otherwise.
+	 */
+	private _databasePromise: Promise<boolean>;
+
+	/**
+	 * A callback to resolve the {@link #_databasePromise} to control the return value of this promise.
+	 */
+	declare private _databasePromiseResolveCallback: ( value: boolean ) => void;
 
 	/**
 	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
@@ -49,7 +60,7 @@ export default class EmojiDatabase extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'EmojiDatabase' as const;
+		return 'EmojiRepository' as const;
 	}
 
 	/**
@@ -70,7 +81,11 @@ export default class EmojiDatabase extends Plugin {
 			skinTone: 'default'
 		} );
 
-		this._emojiDatabase = [];
+		this._database = [];
+		this._databasePromise = new Promise<boolean>( resolve => {
+			this._databasePromiseResolveCallback = resolve;
+		} );
+
 		this._fuseSearch = null;
 	}
 
@@ -89,21 +104,21 @@ export default class EmojiDatabase extends Plugin {
 		// Skip the initialization if the emoji database download has failed.
 		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
 		if ( !emojiDatabase.length ) {
-			return;
+			return this._databasePromiseResolveCallback( false );
 		}
 
 		const container = createEmojiWidthTestingContainer();
 
 		// Store the emoji database after normalizing the raw data.
-		this._emojiDatabase = emojiDatabase
-			.filter( item => isEmojiGroupAllowed( item ) )
-			.filter( item => EmojiDatabase._isEmojiSupported( item, container ) )
+		this._database = emojiDatabase
+			.filter( item => isEmojiCategoryAllowed( item ) )
+			.filter( item => EmojiRepository._isEmojiSupported( item, container ) )
 			.map( item => normalizeEmojiSkinTone( item ) );
 
 		container.remove();
 
 		// Create instance of the Fuse.js library with configured weighted search keys and disabled fuzzy search.
-		this._fuseSearch = new Fuse( this._emojiDatabase, {
+		this._fuseSearch = new Fuse( this._database, {
 			keys: [
 				{ name: 'emoticon', weight: 5 },
 				{ name: 'annotation', weight: 3 },
@@ -113,16 +128,19 @@ export default class EmojiDatabase extends Plugin {
 			threshold: 0,
 			ignoreLocation: true
 		} );
+
+		return this._databasePromiseResolveCallback( true );
 	}
 
 	/**
 	 * Returns an array of emoji entries that match the search query.
-	 * If the emoji database is not loaded, it returns an empty array.
+	 * If the emoji database is not loaded, the [Fuse.js](https://www.fusejs.io/) instance is not created,
+	 * hence this method returns an empty array.
 	 *
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
-	public getEmojiBySearchQuery( searchQuery: string ): Array<EmojiEntry> {
+	public getEmojiByQuery( searchQuery: string ): Array<EmojiEntry> {
 		if ( !this._fuseSearch ) {
 			return [];
 		}
@@ -155,11 +173,15 @@ export default class EmojiDatabase extends Plugin {
 
 	/**
 	 * Groups all emojis by categories.
-	 * If the emoji database is not loaded, it returns an empty array for each category.
+	 * If the emoji database is not loaded, it returns an empty array.
 	 *
 	 * @returns An array of emoji entries grouped by categories.
 	 */
-	public getEmojiGroups(): Array<EmojiCategory> {
+	public getEmojiCategories(): Array<EmojiCategory> {
+		if ( !this._database.length ) {
+			return [];
+		}
+
 		const { t } = this.editor.locale;
 
 		const categories = [
@@ -174,14 +196,12 @@ export default class EmojiDatabase extends Plugin {
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
-		const groups = this.isDatabaseLoaded() ?
-			groupBy( this._emojiDatabase, 'group' ) :
-			null;
+		const groups = groupBy( this._database, 'group' );
 
 		return categories.map( category => {
 			return {
 				...category,
-				items: groups ? groups[ category.groupId ] : []
+				items: groups[ category.groupId ]
 			};
 		} );
 	}
@@ -205,8 +225,8 @@ export default class EmojiDatabase extends Plugin {
 	/**
 	 * Indicates whether the emoji database has been successfully downloaded and the plugin is operational.
 	 */
-	public isDatabaseLoaded(): boolean {
-		return this._emojiDatabase.length > 0;
+	public isReady(): Promise<boolean> {
+		return this._databasePromise;
 	}
 
 	/**
@@ -237,8 +257,9 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 		/**
 		 * Unable to load the emoji database from CDN.
 		 *
-		 * TODO: It could be a problem of CKEditor 5 CDN, but also, Content Security Policy that disallow the request.
-		 * It would be good to explain what to do in such a case.
+		 * If the CDN works properly and there is no disruption of communication, please check your
+		 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+		 * the CDN connection is allowed by the editor.
 		 *
 		 * @error emoji-database-load-failed
 		 */
@@ -315,7 +336,7 @@ function normalizeEmojiSkinTone( item: EmojiCdnResource ): EmojiEntry {
 /**
  * Checks whether the emoji belongs to a group that is allowed.
  */
-function isEmojiGroupAllowed( item: EmojiCdnResource ): boolean {
+function isEmojiCategoryAllowed( item: EmojiCdnResource ): boolean {
 	// Category group=2 contains skin tones only, which we do not want to render.
 	return item.group !== 2;
 }

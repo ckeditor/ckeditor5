@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { SearchInfoView, ViewCollection } from 'ckeditor5/src/ui.js';
 import EmojiCategoriesView from '../../src/ui/emojicategoriesview.js';
 import EmojiGridView from '../../src/ui/emojigridview.js';
 import EmojiPickerView from '../../src/ui/emojipickerview.js';
 import EmojiSearchView from '../../src/ui/emojisearchview.js';
 import EmojiToneView from '../../src/ui/emojitoneview.js';
-import { SearchInfoView } from 'ckeditor5/src/ui.js';
 
 describe( 'EmojiPickerView', () => {
-	let emojiPickerView, locale, emojiGroups, skinTones, emojiBySearchQuery;
+	let emojiPickerView, locale, emojiCategories, skinTones, emojiBySearchQuery;
 
 	beforeEach( () => {
 		locale = {
 			t: val => val
 		};
 
-		emojiGroups = [
+		emojiCategories = [
 			{
 				title: 'faces',
 				icon: '😊',
@@ -51,9 +51,9 @@ describe( 'EmojiPickerView', () => {
 		];
 
 		emojiPickerView = new EmojiPickerView( locale, {
-			emojiGroups,
+			emojiCategories,
 			skinTones,
-			getEmojiBySearchQuery: emojiBySearchQuery,
+			getEmojiByQuery: emojiBySearchQuery,
 			skinTone: 'default'
 		} );
 	} );
@@ -76,20 +76,20 @@ describe( 'EmojiPickerView', () => {
 		it( 'should create grid view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiGridView ) ).to.equal( true );
 			expect( emojiPickerView.gridView.categoryName ).to.equal( 'faces' );
-			expect( emojiPickerView.gridView.emojiGroups ).to.deep.equal( emojiGroups );
-			expect( emojiPickerView.gridView.getEmojiBySearchQuery ).to.equal( emojiBySearchQuery );
+			expect( emojiPickerView.gridView.emojiCategories ).to.deep.equal( emojiCategories );
+			expect( emojiPickerView.gridView._getEmojiByQuery ).to.equal( emojiBySearchQuery );
 			expect( emojiPickerView.gridView.skinTone ).to.equal( 'default' );
 		} );
 
-		it( 'should create emoji results view with correct arguments', () => {
+		it( 'should create emoji search view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiSearchView ) ).to.equal( true );
 			expect( emojiPickerView.searchView.gridView ).to.equal( emojiPickerView.gridView );
 			expect( emojiPickerView.searchView.inputView.infoView ).to.equal( emojiPickerView.infoView );
 		} );
 
-		it( 'should create emoji results view with correct arguments', () => {
+		it( 'should create emoji categories view with correct arguments', () => {
 			expect( some( emojiPickerView.items, view => view instanceof EmojiCategoriesView ) ).to.equal( true );
-			expect( emojiPickerView.categoriesView.emojiGroups ).to.equal( emojiPickerView.emojiGroups );
+			expect( emojiPickerView.categoriesView.emojiCategories ).to.equal( emojiPickerView.emojiCategories );
 			expect( emojiPickerView.categoriesView.categoryName ).to.equal( 'faces' );
 		} );
 
@@ -102,6 +102,13 @@ describe( 'EmojiPickerView', () => {
 		// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
 		it( 'sets tabindex to -1 to avoid focus loss', () => {
 			expect( emojiPickerView.template.attributes.tabindex ).to.deep.equal( [ '-1' ] );
+		} );
+
+		it( 'creates `view#items` collection', () => {
+			expect( emojiPickerView.items ).to.be.instanceOf( ViewCollection );
+
+			// To check if the `#createCollection()` factory was used.
+			expect( emojiPickerView._viewCollections.has( emojiPickerView.items ) ).to.equal( true );
 		} );
 
 		describe( 'events handling', () => {
@@ -121,7 +128,7 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledOnce( stub );
 			} );
 
-			it( 'should set info view properties when search query length is equal to one', () => {
+			it( 'should display a hint for users when the query is too short', () => {
 				emojiPickerView.searchView.fire( 'search', { query: '1' } );
 
 				expect( emojiPickerView.infoView.primaryText ).to.equal( 'Keep on typing to see the emoji.' );
@@ -129,7 +136,7 @@ describe( 'EmojiPickerView', () => {
 				expect( emojiPickerView.infoView.isVisible ).to.equal( true );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there is nothing to show', () => {
+			it( 'should display a note when emoji were not matched with the specified query', () => {
 				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 0 } );
 
 				expect( emojiPickerView.infoView.primaryText ).to.equal( 'No emojis were found matching "%0".' );
@@ -137,13 +144,32 @@ describe( 'EmojiPickerView', () => {
 				expect( emojiPickerView.infoView.isVisible ).to.equal( true );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there are results to show', () => {
+			it( 'should hide the hint view when found emoji matches with the specified query', () => {
 				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 1 } );
 
 				expect( emojiPickerView.infoView.isVisible ).to.equal( false );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there are results to show', () => {
+			it( 'should scroll to the top of the grid when an active category is changed', () => {
+				const stub = sinon.stub( emojiPickerView.gridView.element, 'scrollTo' );
+
+				emojiPickerView.categoriesView.categoryName = 'food';
+
+				expect( emojiPickerView.gridView.categoryName ).to.equal( 'food' );
+				sinon.assert.calledOnce( stub );
+				sinon.assert.calledWith( stub, 0, 0 );
+			} );
+
+			it( 'should scroll to the top of the grid when a search event is emitted', () => {
+				const stub = sinon.stub( emojiPickerView.gridView.element, 'scrollTo' );
+
+				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 1 } );
+
+				sinon.assert.calledOnce( stub );
+				sinon.assert.calledWith( stub, 0, 0 );
+			} );
+
+			it( 'should trigger the search mechanism when an active category is changed', () => {
 				const stub = sinon.stub( emojiPickerView.searchView, 'search' );
 
 				emojiPickerView.categoriesView.categoryName = 'food';
@@ -153,7 +179,7 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledWith( stub, '' );
 			} );
 
-			it( 'should set info view properties when search query is other than one and there are results to show', () => {
+			it( 'should use the current query value when updating the skin tone property', () => {
 				const searchStub = sinon.stub( emojiPickerView.searchView, 'search' );
 				const getInputValueStub = sinon.stub( emojiPickerView.searchView, 'getInputValue' ).returns( 'thum' );
 
@@ -222,8 +248,9 @@ describe( 'EmojiPickerView', () => {
 
 	describe( 'focus()', () => {
 		it( 'focuses the first focusable', () => {
-			const spy = sinon.spy( emojiPickerView.focusCycler, 'focusFirst' );
+			const spy = sinon.spy( emojiPickerView.searchView, 'focus' );
 
+			emojiPickerView.render();
 			emojiPickerView.focus();
 
 			sinon.assert.calledOnce( spy );

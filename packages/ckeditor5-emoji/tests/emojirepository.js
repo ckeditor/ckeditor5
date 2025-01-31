@@ -10,30 +10,30 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import EmojiDatabase from '../src/emojidatabase.js';
+import EmojiRepository from '../src/emojirepository.js';
 
-describe( 'EmojiDatabase', () => {
+describe( 'EmojiRepository', () => {
 	testUtils.createSinonSandbox();
 
 	let isEmojiSupportedStub, consoleStub, fetchStub;
 
 	beforeEach( () => {
-		isEmojiSupportedStub = testUtils.sinon.stub( EmojiDatabase, '_isEmojiSupported' ).returns( true );
+		isEmojiSupportedStub = testUtils.sinon.stub( EmojiRepository, '_isEmojiSupported' ).returns( true );
 
 		consoleStub = sinon.stub( console, 'warn' );
 		fetchStub = testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( '[]' ) );
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( EmojiDatabase.pluginName ).to.equal( 'EmojiDatabase' );
+		expect( EmojiRepository.pluginName ).to.equal( 'EmojiRepository' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiDatabase.isOfficialPlugin ).to.be.true;
+		expect( EmojiRepository.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiDatabase.isPremiumPlugin ).to.be.false;
+		expect( EmojiRepository.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should configure default emoji database version', async () => {
@@ -89,11 +89,11 @@ describe( 'EmojiDatabase', () => {
 			expect( fetchStub.calledOnce ).to.be.true;
 			expect( fetchStub.firstCall.args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' );
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._emojiDatabase ).to.have.length( 2 );
-			expect( emojiDatabasePlugin._emojiDatabase[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( emojiDatabasePlugin._emojiDatabase[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( emojiRepositoryPlugin._database ).to.have.length( 2 );
+			expect( emojiRepositoryPlugin._database[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( emojiRepositoryPlugin._database[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
 		} );
 
 		it( 'should fetch the emoji database version 15', async () => {
@@ -134,8 +134,8 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
-			const hasGroup2 = emojiDatabasePlugin._emojiDatabase.find( item => item.group === 2 );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			const hasGroup2 = emojiRepositoryPlugin._database.find( item => item.group === 2 );
 
 			expect( hasGroup2 ).to.be.undefined;
 		} );
@@ -153,8 +153,8 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
-			const hasMicroscopeEmoji = emojiDatabasePlugin._emojiDatabase.find( item => item.annotation === 'microscope' );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			const hasMicroscopeEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'microscope' );
 
 			expect( hasMicroscopeEmoji ).to.be.undefined;
 		} );
@@ -169,11 +169,11 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._emojiDatabase ).to.have.length( 2 );
-			expect( emojiDatabasePlugin._emojiDatabase[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
-			expect( emojiDatabasePlugin._emojiDatabase[ 1 ] ).to.have.deep.property( 'skins', { default: '😒' } );
+			expect( emojiRepositoryPlugin._database ).to.have.length( 2 );
+			expect( emojiRepositoryPlugin._database[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
+			expect( emojiRepositoryPlugin._database[ 1 ] ).to.have.deep.property( 'skins', { default: '😒' } );
 		} );
 
 		it( 'should set other skin tones if emoji defines them', async () => {
@@ -198,10 +198,10 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._emojiDatabase ).to.have.length( 1 );
-			expect( emojiDatabasePlugin._emojiDatabase[ 0 ] ).to.have.deep.property( 'skins', {
+			expect( emojiRepositoryPlugin._database ).to.have.length( 1 );
+			expect( emojiRepositoryPlugin._database[ 0 ] ).to.have.deep.property( 'skins', {
 				default: ninjaEmoji0,
 				light: ninjaEmoji1,
 				'medium-light': ninjaEmoji2,
@@ -221,11 +221,11 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._fuseSearch ).to.be.an( 'object' );
+			expect( emojiRepositoryPlugin._fuseSearch ).to.be.an( 'object' );
 
-			const searchIndex = emojiDatabasePlugin._fuseSearch.getIndex();
+			const searchIndex = emojiRepositoryPlugin._fuseSearch.getIndex();
 
 			expect( searchIndex.docs ).to.have.length( 2 );
 			expect( searchIndex.docs[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -237,9 +237,9 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._emojiDatabase ).to.deep.equal( [] );
+			expect( emojiRepositoryPlugin._database ).to.deep.equal( [] );
 
 			expect( consoleStub.calledOnce ).to.be.true;
 			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-database-load-failed' );
@@ -250,9 +250,9 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._emojiDatabase ).to.deep.equal( [] );
+			expect( emojiRepositoryPlugin._database ).to.deep.equal( [] );
 
 			expect( consoleStub.calledOnce ).to.be.true;
 			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-database-load-failed' );
@@ -263,14 +263,14 @@ describe( 'EmojiDatabase', () => {
 
 			editor = await editorPromise;
 
-			const emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiDatabasePlugin._fuseSearch ).to.be.null;
+			expect( emojiRepositoryPlugin._fuseSearch ).to.be.null;
 		} );
 	} );
 
-	describe( 'getEmojiBySearchQuery()', () => {
-		let editor, domElement, emojiDatabasePlugin;
+	describe( 'getEmojiByQuery()', () => {
+		let editor, domElement, emojiRepositoryPlugin;
 
 		beforeEach( async () => {
 			const response = JSON.stringify( [
@@ -284,7 +284,7 @@ describe( 'EmojiDatabase', () => {
 			global.document.body.appendChild( domElement );
 
 			editor = await createTestEditor( domElement );
-			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 		} );
 
 		afterEach( async () => {
@@ -294,53 +294,53 @@ describe( 'EmojiDatabase', () => {
 		} );
 
 		it( 'should return empty array if Fuse.js instance is not created', () => {
-			emojiDatabasePlugin._fuseSearch = null;
+			emojiRepositoryPlugin._fuseSearch = null;
 
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query is empty', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( '' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( '' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query is shorter than 2 characters', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'f' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'f' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query does not contain two non-white characters next to each other', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'f w' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'f w' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return empty array if search query does not match any emoji', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face happy' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face happy' );
 
 			expect( result ).to.deep.equal( [] );
 		} );
 
 		it( 'should return emojis matched by emoticon', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( ':|' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( ':|' );
 
 			expect( result ).to.have.length( 1 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by annotation (single match)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'neutral' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'neutral' );
 
 			expect( result ).to.have.length( 1 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by annotation (multiple matches)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'face' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
 			expect( result ).to.have.length( 2 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -348,14 +348,14 @@ describe( 'EmojiDatabase', () => {
 		} );
 
 		it( 'should return emojis matched by tags (single match)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'blank' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'blank' );
 
 			expect( result ).to.have.length( 1 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by tags (multiple matches)', () => {
-			const result = emojiDatabasePlugin.getEmojiBySearchQuery( 'whatever' );
+			const result = emojiRepositoryPlugin.getEmojiByQuery( 'whatever' );
 
 			expect( result ).to.have.length( 2 );
 			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -363,8 +363,8 @@ describe( 'EmojiDatabase', () => {
 		} );
 	} );
 
-	describe( 'getEmojiGroups()', () => {
-		let editor, domElement, emojiDatabasePlugin;
+	describe( 'getEmojiCategories()', () => {
+		let editor, domElement, emojiRepositoryPlugin;
 
 		beforeEach( async () => {
 			const response = JSON.stringify( [
@@ -386,7 +386,7 @@ describe( 'EmojiDatabase', () => {
 			global.document.body.appendChild( domElement );
 
 			editor = await createTestEditor( domElement );
-			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 		} );
 
 		afterEach( async () => {
@@ -396,19 +396,15 @@ describe( 'EmojiDatabase', () => {
 		} );
 
 		it( 'should return empty array for each emoji category if emoji database is empty', () => {
-			emojiDatabasePlugin._emojiDatabase = [];
+			emojiRepositoryPlugin._database = [];
 
-			const result = emojiDatabasePlugin.getEmojiGroups();
+			const result = emojiRepositoryPlugin.getEmojiCategories();
 
-			expect( result ).to.have.length( 9 );
-
-			result.forEach( category => {
-				expect( category.items ).to.have.length( 0 );
-			} );
+			expect( result ).to.have.length( 0 );
 		} );
 
 		it( 'should return emojis grouped by category', () => {
-			const result = emojiDatabasePlugin.getEmojiGroups();
+			const result = emojiRepositoryPlugin.getEmojiCategories();
 
 			expect( result ).to.have.length( 9 );
 
@@ -451,7 +447,7 @@ describe( 'EmojiDatabase', () => {
 	} );
 
 	describe( 'getSkinTones()', () => {
-		let editor, domElement, emojiDatabasePlugin;
+		let editor, domElement, emojiRepositoryPlugin;
 
 		beforeEach( async () => {
 			const response = JSON.stringify( [
@@ -473,7 +469,7 @@ describe( 'EmojiDatabase', () => {
 			global.document.body.appendChild( domElement );
 
 			editor = await createTestEditor( domElement );
-			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 		} );
 
 		afterEach( async () => {
@@ -483,44 +479,58 @@ describe( 'EmojiDatabase', () => {
 		} );
 
 		it( 'should return available skin tones', () => {
-			expect( emojiDatabasePlugin.getSkinTones() ).to.length( 6 );
+			expect( emojiRepositoryPlugin.getSkinTones() ).to.length( 6 );
 		} );
 	} );
 
-	describe( 'isDatabaseLoaded()', () => {
-		let editor, domElement, emojiDatabasePlugin;
+	describe( 'isReady()', () => {
+		let editor, editorPromise, domElement, fetchStubResolve;
 
-		beforeEach( async () => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 }
-			] );
-
-			fetchStub.resolves( new Response( response ) );
+		beforeEach( () => {
+			fetchStub.returns( new Promise( resolve => {
+				fetchStubResolve = resolve;
+			} ) );
 
 			domElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( domElement );
 
-			editor = await createTestEditor( domElement );
-			emojiDatabasePlugin = editor.plugins.get( EmojiDatabase );
+			editor = null;
+			editorPromise = createTestEditor( domElement );
 		} );
 
 		afterEach( async () => {
+			if ( !editor ) {
+				editor = await editorPromise;
+			}
+
 			domElement.remove();
 
 			await editor.destroy();
 		} );
 
 		it( 'should return true when emoji database is not empty', async () => {
-			const result = emojiDatabasePlugin.isDatabaseLoaded();
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', group: 0 },
+				{ annotation: 'unamused face', group: 0 }
+			] );
+
+			fetchStubResolve( new Response( response ) );
+
+			editor = await editorPromise;
+
+			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
 			expect( result ).to.be.true;
 		} );
 
 		it( 'should return false when emoji database is empty', async () => {
-			emojiDatabasePlugin._emojiDatabase = [];
+			const response = JSON.stringify( [] );
 
-			const result = emojiDatabasePlugin.isDatabaseLoaded();
+			fetchStubResolve( new Response( response ) );
+
+			editor = await editorPromise;
+
+			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
 			expect( result ).to.be.false;
 		} );
@@ -532,7 +542,7 @@ function createTestEditor( domElement, editorConfig = {} ) {
 		plugins: [
 			Essentials,
 			Paragraph,
-			EmojiDatabase
+			EmojiRepository
 		],
 		...editorConfig
 	} );

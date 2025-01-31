@@ -9,7 +9,7 @@
 
 import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type { EmojiCategory, EmojiEntry } from '../emojidatabase.js';
+import type { EmojiCategory, EmojiEntry } from '../emojirepository.js';
 import type { SkinToneId } from '../emojiconfig.js';
 
 import '../../theme/emojigrid.css';
@@ -57,27 +57,27 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	/**
 	 * An array containing all emojis grouped by their categories.
 	 */
-	public readonly emojiGroups: Array<EmojiCategory>;
+	public readonly emojiCategories: Array<EmojiCategory>;
+
+	/**
+	 * A collection of all already created tile views. Each tile represents a particular emoji.
+	 * The cached tiles collection is used for efficiency purposes to avoid re-creating a particular
+	 * tile again when the grid view has changed.
+	 */
+	public readonly cachedTiles: ViewCollection<ButtonView>;
 
 	/**
 	 * A callback used to filter grid items by a specified query.
 	 */
-	private readonly getEmojiBySearchQuery: EmojiSearchQueryCallback;
-
-	/**
-	 * A collection of all already created tile views. Each tile represents a particular emoji.
-	 * The cached tiles collection is used for efficiency purposes to avoid re-creating a particual
-	 * tile again when the grid view has changed.
-	 */
-	private readonly cachedTiles: ViewCollection<ButtonView>;
+	private readonly _getEmojiByQuery: EmojiSearchQueryCallback;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { categoryName, emojiGroups, getEmojiBySearchQuery, skinTone }: {
+	constructor( locale: Locale, { categoryName, emojiCategories, getEmojiByQuery, skinTone }: {
 		categoryName: string;
-		emojiGroups: Array<EmojiCategory>;
-		getEmojiBySearchQuery: EmojiSearchQueryCallback;
+		emojiCategories: Array<EmojiCategory>;
+		getEmojiByQuery: EmojiSearchQueryCallback;
 		skinTone: SkinToneId;
 	} ) {
 		super( locale );
@@ -92,8 +92,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.getEmojiBySearchQuery = getEmojiBySearchQuery;
-		this.emojiGroups = emojiGroups;
+		this._getEmojiByQuery = getEmojiByQuery;
+		this.emojiCategories = emojiCategories;
 
 		const bind = this.bindTemplate;
 
@@ -153,8 +153,6 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		this.keystrokes.destroy();
 		this.focusTracker.destroy();
-		this.tiles.destroy();
-		this.cachedTiles.destroy();
 	}
 
 	/**
@@ -194,8 +192,8 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 */
 	private _getItemsByQuery( query: string ): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
 		return {
-			matchingItems: this.getEmojiBySearchQuery( query ),
-			allItems: this.emojiGroups.flatMap( group => group.items )
+			matchingItems: this._getEmojiByQuery( query ),
+			allItems: this.emojiCategories.flatMap( group => group.items )
 		};
 	}
 
@@ -203,7 +201,7 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 	 * Returns emojis that belong to the specified category.
 	 */
 	private _getItemsByCategory(): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
-		const emojiCategory = this.emojiGroups.find( item => item.title === this.categoryName )!;
+		const emojiCategory = this.emojiCategories.find( item => item.title === this.categoryName )!;
 		const { items } = emojiCategory;
 
 		return {
@@ -249,16 +247,22 @@ export default class EmojiGridView extends View<HTMLDivElement> implements Filte
 
 		tile.viewUid = emoji;
 
-		tile.set( {
-			label: emoji,
-			withText: true,
-			class: 'ck-emoji__tile'
-		} );
-
 		tile.extendTemplate( {
 			attributes: {
-				title: name
+				class: [
+					'ck-emoji__tile'
+				]
 			}
+		} );
+
+		tile.set( {
+			label: emoji,
+			tooltip: name,
+			withText: true,
+			ariaLabel: name,
+			// To improve accessibility, disconnect a button and its label connection so that screen
+			// readers can read the `[aria-label]` attribute directly from the more descriptive button.
+			ariaLabelledBy: undefined
 		} );
 
 		tile.on( 'execute', () => {

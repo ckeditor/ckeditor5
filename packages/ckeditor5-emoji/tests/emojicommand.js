@@ -72,10 +72,10 @@ describe( 'EmojiCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		let showUiStub;
+		let showUIStub;
 
 		beforeEach( () => {
-			showUiStub = sinon.stub( editor.plugins.get( 'EmojiPicker' ), 'showUI' );
+			showUIStub = sinon.stub( editor.plugins.get( 'EmojiPicker' ), 'showUI' );
 
 			setData( model, '<p>[]</p>' );
 		} );
@@ -83,15 +83,15 @@ describe( 'EmojiCommand', () => {
 		it( 'should open the emoji picker UI when executing a command without a search query', () => {
 			command.execute();
 
-			expect( showUiStub.callCount ).to.equal( 1 );
-			expect( showUiStub.firstCall.firstArg ).to.equal( '' );
+			expect( showUIStub.callCount ).to.equal( 1 );
+			expect( showUIStub.firstCall.firstArg ).to.equal( '' );
 		} );
 
 		it( 'should pass the specified query when executing the command', () => {
 			command.execute( 'test query' );
 
-			expect( showUiStub.callCount ).to.equal( 1 );
-			expect( showUiStub.firstCall.firstArg ).to.equal( 'test query' );
+			expect( showUIStub.callCount ).to.equal( 1 );
+			expect( showUIStub.firstCall.firstArg ).to.equal( 'test query' );
 		} );
 	} );
 } );

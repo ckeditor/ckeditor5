@@ -10,9 +10,10 @@
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Typing } from 'ckeditor5/src/typing.js';
 
 import EmojiCommand from './emojicommand.js';
-import EmojiDatabase from './emojidatabase.js';
+import EmojiRepository from './emojirepository.js';
 import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
@@ -35,18 +36,18 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */
-	declare private _balloon: ContextualBalloon;
+	declare public _balloonPlugin: ContextualBalloon;
 
 	/**
-	 * An instance of the {@link module:emoji/emojidatabase~EmojiDatabase} plugin.
+	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
 	 */
-	declare private _emojiDatabase: EmojiDatabase;
+	declare private _emojiRepositoryPlugin: EmojiRepository;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiDatabase, ContextualBalloon, Dialog ] as const;
+		return [ EmojiRepository, ContextualBalloon, Dialog, Typing ] as const;
 	}
 
 	/**
@@ -66,28 +67,23 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public async init(): Promise<void> {
 		const editor = this.editor;
 
-		this._emojiDatabase = editor.plugins.get( 'EmojiDatabase' );
-		this._balloon = editor.plugins.get( 'ContextualBalloon' );
-	}
+		this._balloonPlugin = editor.plugins.get( 'ContextualBalloon' );
+		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
 
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		// Skip registering a button in the toolbar and list item in the menu bar if the emoji database is not loaded.
-		if ( !this._emojiDatabase.isDatabaseLoaded() ) {
+		// Skip registering a button in the toolbar and list item in the menu bar if the emoji repository is not ready.
+		if ( !await this._emojiRepositoryPlugin.isReady() ) {
 			return;
 		}
 
-		editor.commands.add( 'emoji', new EmojiCommand( editor ) );
+		const command = new EmojiCommand( editor );
+
+		editor.commands.add( 'emoji', command );
 
 		editor.ui.componentFactory.add( 'emoji', () => {
-			const button = this._createUiComponent( ButtonView );
+			const button = this._createButton( ButtonView, command );
 
 			button.set( {
 				tooltip: true
@@ -97,7 +93,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:emoji', () => {
-			return this._createUiComponent( MenuBarMenuListItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView, command );
 		} );
 
 		this._setupConversion();
@@ -134,6 +130,10 @@ export default class EmojiPicker extends Plugin {
 	 * @param [searchValue=''] A default query used to filer the grid when opening the UI.
 	 */
 	public showUI( searchValue: string = '' ): void {
+		// Show visual selection on a text when the contextual balloon is displayed.
+		// See #17654.
+		this._showFakeVisualSelection();
+
 		if ( !this.emojiPickerView ) {
 			this.emojiPickerView = this._createEmojiPickerView();
 		}
@@ -144,26 +144,24 @@ export default class EmojiPicker extends Plugin {
 
 		this.emojiPickerView.searchView.search( searchValue );
 
-		if ( !this._balloon.hasView( this.emojiPickerView ) ) {
-			this._balloon.add( {
+		if ( !this._balloonPlugin.hasView( this.emojiPickerView ) ) {
+			this._balloonPlugin.add( {
 				view: this.emojiPickerView,
 				position: this._getBalloonPositionData()
 			} );
-
-			this._showFakeVisualSelection();
 		}
 
-		setTimeout( () => {
-			this.emojiPickerView!.focus();
-		} );
+		this.emojiPickerView.focus();
 	}
 
 	/**
 	 * Creates a button for toolbar and menu bar that will show the emoji dialog.
 	 */
-	private _createUiComponent<T extends typeof ButtonView>( ViewClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>( ViewClass: T, command: EmojiCommand ): InstanceType<T> {
 		const buttonView = new ViewClass( this.editor.locale ) as InstanceType<T>;
 		const t = this.editor.locale.t;
+
+		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		buttonView.set( {
 			label: t( 'Emoji' ),
@@ -183,36 +181,32 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createEmojiPickerView(): EmojiPickerView {
 		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
-			emojiGroups: this._emojiDatabase.getEmojiGroups(),
+			emojiCategories: this._emojiRepositoryPlugin.getEmojiCategories(),
 			skinTone: this.editor.config.get( 'emoji.skinTone' )!,
-			skinTones: this._emojiDatabase.getSkinTones(),
-			getEmojiBySearchQuery: ( query: string ) => {
-				return this._emojiDatabase.getEmojiBySearchQuery( query );
+			skinTones: this._emojiRepositoryPlugin.getSkinTones(),
+			getEmojiByQuery: ( query: string ) => {
+				return this._emojiRepositoryPlugin.getEmojiByQuery( query );
 			}
 		} );
 
 		// Insert an emoji on a tile click.
 		this.listenTo<EmojiGridViewExecuteEvent>( emojiPickerView.gridView, 'execute', ( evt, data ) => {
 			const editor = this.editor;
-			const model = editor.model;
 			const textToInsert = data.emoji;
 
-			model.change( writer => {
-				model.insertContent( writer.createText( textToInsert ) );
-
-				this.fire<EmojiPickerInsertEvent>( 'insert', {
-					emoji: data.emoji,
-					name: data.name
-				} );
-			} );
-
 			this._hideUI();
+			editor.execute( 'insertText', { text: textToInsert } );
+
+			this.fire<EmojiPickerInsertEvent>( 'insert', {
+				emoji: data.emoji,
+				name: data.name
+			} );
 		} );
 
 		// Update the balloon position when layout is changed.
 		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
-			if ( this._balloon.visibleView === emojiPickerView ) {
-				this._balloon.updatePosition();
+			if ( this._balloonPlugin.visibleView === emojiPickerView ) {
+				this._balloonPlugin.updatePosition();
 			}
 		} );
 
@@ -225,9 +219,9 @@ export default class EmojiPicker extends Plugin {
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
 			emitter: emojiPickerView,
-			contextElements: [ this._balloon.view.element! ],
+			contextElements: [ this._balloonPlugin.view.element! ],
 			callback: () => this._hideUI(),
-			activator: () => this._balloon.visibleView === emojiPickerView
+			activator: () => this._balloonPlugin.visibleView === emojiPickerView
 		} );
 
 		return emojiPickerView;
@@ -237,10 +231,8 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		this._balloon.remove( this.emojiPickerView! );
-
+		this._balloonPlugin.remove( this.emojiPickerView! );
 		this.emojiPickerView!.searchView.setInputValue( '' );
-
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
 	}
@@ -280,7 +272,7 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
+	 * Returns positioning options for the {@link #_balloonPlugin}. They control the way the balloon is attached
 	 * to the target element or selection.
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> {
@@ -306,23 +298,27 @@ export default class EmojiPicker extends Plugin {
 		model.change( writer => {
 			const range = model.document.selection.getFirstRange()!;
 
-			if ( range.start.isAtEnd ) {
-				const startPosition = range.start.getLastMatchingPosition(
-					( { item } ) => !model.schema.isContent( item ),
-					{ boundaries: range }
-				);
-
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range: writer.createRange( startPosition, range.end )
-				} );
+			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range
-				} );
+				if ( range.start.isAtEnd ) {
+					const startPosition = range.start.getLastMatchingPosition(
+						( { item } ) => !model.schema.isContent( item ),
+						{ boundaries: range }
+					);
+
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange( startPosition, range.end )
+					} );
+				} else {
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range
+					} );
+				}
 			}
 		} );
 	}

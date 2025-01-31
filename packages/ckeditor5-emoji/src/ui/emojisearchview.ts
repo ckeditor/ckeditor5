@@ -73,7 +73,6 @@ export default class EmojiSearchView extends View {
 		super.destroy();
 
 		this.inputView.destroy();
-		this.gridView.destroy();
 	}
 
 	/**

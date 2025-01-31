@@ -3,30 +3,32 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document setTimeout Event KeyboardEvent */
+/* global document Event KeyboardEvent */
 
-import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import { EmojiPicker } from '../src/index.js';
+import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import EmojiDatabase from '../src/emojidatabase.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+
+import { EmojiPicker } from '../src/index.js';
+import EmojiRepository from '../src/emojirepository.js';
 import EmojiPickerView from '../src/ui/emojipickerview.js';
 import EmojiCommand from '../src/emojicommand.js';
 
-class EmojiDatabaseMock extends EmojiDatabase {
+class EmojiRepositoryMock extends EmojiRepository {
 	// Overridden `init()` to prevent the `fetch()` call.
 	init() {
-		this.getEmojiBySearchQuery = sinon.stub();
-		this.getEmojiGroups = sinon.stub();
+		this.getEmojiByQuery = sinon.stub();
+		this.getEmojiCategories = sinon.stub();
 		this.getSkinTones = sinon.stub();
-		this.isDatabaseLoaded = sinon.stub();
+		this.isReady = sinon.stub();
 
 		// Let's define a default behavior as we need this in UI, but we do not check it.
-		this.getEmojiGroups.returns( [
+		this.getEmojiCategories.returns( [
 			{
 				title: 'Smileys & Expressions',
 				icon: '😀',
@@ -45,11 +47,11 @@ class EmojiDatabaseMock extends EmojiDatabase {
 			{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
 		] );
 
-		this.isDatabaseLoaded.returns( EmojiDatabaseMock.isDatabaseLoaded );
+		this.isReady.returns( EmojiRepositoryMock.isReady );
 	}
 
 	// Property exposed for testing purposes to control the plugin initialization flow.
-	static isDatabaseLoaded = true;
+	static isReady = true;
 }
 
 describe( 'EmojiPicker', () => {
@@ -59,11 +61,11 @@ describe( 'EmojiPicker', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		EmojiDatabaseMock.isDatabaseLoaded = true;
+		EmojiRepositoryMock.isReady = true;
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiPicker, Essentials, Paragraph ],
-			substitutePlugins: [ EmojiDatabaseMock ],
+			substitutePlugins: [ EmojiRepositoryMock ],
 			toolbar: [ 'emoji' ],
 			menuBar: {
 				isVisible: true
@@ -84,7 +86,7 @@ describe( 'EmojiPicker', () => {
 
 	it( 'should have proper "requires" value', () => {
 		expect( EmojiPicker.requires ).to.deep.equal( [
-			EmojiDatabase, ContextualBalloon, Dialog
+			EmojiRepository, ContextualBalloon, Dialog, Typing
 		] );
 	} );
 
@@ -115,7 +117,7 @@ describe( 'EmojiPicker', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				substitutePlugins: [ EmojiDatabaseMock ],
+				substitutePlugins: [ EmojiRepositoryMock ],
 				emoji: {
 					skinTone: 'medium'
 				}
@@ -133,7 +135,7 @@ describe( 'EmojiPicker', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				substitutePlugins: [ EmojiDatabaseMock ],
+				substitutePlugins: [ EmojiRepositoryMock ],
 				emoji: {
 					skinTone: 'medium'
 				}
@@ -142,7 +144,7 @@ describe( 'EmojiPicker', () => {
 			const emojiPicker = editor.plugins.get( EmojiPicker );
 			emojiPicker.showUI();
 			emojiPicker._hideUI();
-			emojiPicker._emojiPickerView.gridView.skinTone = 'dark';
+			emojiPicker.emojiPickerView.gridView.skinTone = 'dark';
 
 			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'dark' );
 
@@ -151,65 +153,101 @@ describe( 'EmojiPicker', () => {
 		} );
 	} );
 
-	it( 'should provide the "emoji" toolbar component', async () => {
-		expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( true );
+	describe( '_createButton()', () => {
+		describe( 'a toolbar icon', () => {
+			it( 'should provide the "emoji" toolbar component', () => {
+				expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( true );
 
-		const toolbarButton = editor.ui.componentFactory.create( 'emoji' );
-		expect( toolbarButton ).to.instanceOf( ButtonView );
+				const toolbarButton = editor.ui.componentFactory.create( 'emoji' );
+				expect( toolbarButton ).to.instanceOf( ButtonView );
 
-		const stub = sinon.stub( emojiPicker, 'showUI' );
+				const stub = sinon.stub( emojiPicker, 'showUI' );
 
-		toolbarButton.fire( 'execute' );
+				toolbarButton.fire( 'execute' );
 
-		sinon.assert.calledOnce( stub );
-	} );
+				sinon.assert.calledOnce( stub );
+			} );
 
-	it( 'should provide the "menuBar:emoji" toolbar component', async () => {
-		expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
+			it( 'should provide the "menuBar:emoji" toolbar component', () => {
+				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
 
-		expect( editor.ui.componentFactory.create( 'menuBar:emoji' ) ).to.instanceOf( MenuBarMenuListItemButtonView );
-	} );
+				expect( editor.ui.componentFactory.create( 'menuBar:emoji' ) ).to.instanceOf( MenuBarMenuListItemButtonView );
+			} );
 
-	it( 'must not register the "emoji" toolbar component if emoji database is not loaded', async () => {
-		EmojiDatabaseMock.isDatabaseLoaded = false;
+			it( 'must not register the "emoji" toolbar component if emoji repository is not ready', async () => {
+				EmojiRepositoryMock.isReady = false;
 
-		await editor.destroy();
+				await editor.destroy();
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmojiPicker, Paragraph, Essentials ],
-			substitutePlugins: [ EmojiDatabaseMock ]
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ EmojiPicker, Paragraph, Essentials ],
+					substitutePlugins: [ EmojiRepositoryMock ]
+				} );
+
+				expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( false );
+			} );
+
+			it( 'should disable the button when editor switches to the read-only mode', () => {
+				expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( true );
+
+				const toolbarButton = editor.ui.componentFactory.create( 'emoji' );
+
+				expect( toolbarButton.isEnabled ).to.equal( true );
+				editor.enableReadOnlyMode( 'testing-purposes' );
+				expect( toolbarButton.isEnabled ).to.equal( false );
+				editor.disableReadOnlyMode( 'testing-purposes' );
+				expect( toolbarButton.isEnabled ).to.equal( true );
+			} );
 		} );
 
-		expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( false );
-	} );
+		describe( 'a menu bar item', () => {
+			it( 'should provide the "menuBar:emoji" toolbar component', async () => {
+				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
 
-	it( 'must not register the "menuBar:emoji" toolbar component if emoji database is not loaded', async () => {
-		EmojiDatabaseMock.isDatabaseLoaded = false;
+				expect( editor.ui.componentFactory.create( 'menuBar:emoji' ) ).to.instanceOf( MenuBarMenuListItemButtonView );
+			} );
 
-		await editor.destroy();
+			it( 'must not register the "menuBar:emoji" toolbar component if emoji repository is not ready', async () => {
+				EmojiRepositoryMock.isReady = false;
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmojiPicker, Paragraph, Essentials ],
-			substitutePlugins: [ EmojiDatabaseMock ],
-			menuBar: {
-				isVisible: true
-			}
+				await editor.destroy();
+
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ EmojiPicker, Paragraph, Essentials ],
+					substitutePlugins: [ EmojiRepositoryMock ],
+					menuBar: {
+						isVisible: true
+					}
+				} );
+
+				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( false );
+			} );
+
+			it( 'should disable the menu bar item when editor switches to the read-only mode', () => {
+				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
+
+				const toolbarButton = editor.ui.componentFactory.create( 'menuBar:emoji' );
+
+				expect( toolbarButton.isEnabled ).to.equal( true );
+				editor.enableReadOnlyMode( 'testing-purposes' );
+				expect( toolbarButton.isEnabled ).to.equal( false );
+				editor.disableReadOnlyMode( 'testing-purposes' );
+				expect( toolbarButton.isEnabled ).to.equal( true );
+			} );
 		} );
-
-		expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( false );
 	} );
 
 	describe( 'showUI()', () => {
-		it( 'should read categories from the database plugin when creating UI', () => {
-			const { getEmojiGroups } = editor.plugins.get( 'EmojiDatabase' );
+		it( 'should read categories from the repository plugin when creating UI', () => {
+			const { getEmojiCategories } = editor.plugins.get( 'EmojiRepository' );
 
 			emojiPicker.showUI();
 
-			expect( getEmojiGroups.callCount ).to.equal( 1 );
+			expect( getEmojiCategories.callCount ).to.equal( 1 );
 		} );
 
-		it( 'should read skin tones from the database plugin when creating UI', () => {
-			const { getSkinTones } = editor.plugins.get( 'EmojiDatabase' );
+		it( 'should read skin tones from the repository plugin when creating UI', () => {
+			const { getSkinTones } = editor.plugins.get( 'EmojiRepository' );
 
 			emojiPicker.showUI();
 
@@ -217,89 +255,110 @@ describe( 'EmojiPicker', () => {
 		} );
 
 		it( 'should pass the specified query to the UI view', () => {
-			const { getEmojiBySearchQuery } = editor.plugins.get( 'EmojiDatabase' );
-			getEmojiBySearchQuery.returns( [] );
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
+			getEmojiByQuery.returns( [] );
 
 			emojiPicker.showUI( 'query' );
 
-			expect( emojiPicker._emojiPickerView.searchView.inputView.queryView.fieldView.value ).to.equal( 'query' );
-			expect( getEmojiBySearchQuery.callCount ).to.equal( 1 );
-			expect( getEmojiBySearchQuery.firstCall.firstArg ).to.equal( 'query' );
+			expect( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.value ).to.equal( 'query' );
+			expect( getEmojiByQuery.callCount ).to.equal( 1 );
+			expect( getEmojiByQuery.firstCall.firstArg ).to.equal( 'query' );
 		} );
 
 		it( 'should add the emoji UI view to the `ContextualBalloon` plugin when opens UI', () => {
-			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
 
 			emojiPicker.showUI();
 
-			expect( emojiPicker._balloon.visibleView ).to.be.instanceOf( EmojiPickerView );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerView );
 		} );
 
 		it( 'should focus the query input when opens UI', async () => {
 			emojiPicker.showUI();
 
-			await new Promise( resolve => {
-				setTimeout( resolve );
-			} );
-
-			expect( document.activeElement ).to.equal( emojiPicker._emojiPickerView.searchView.inputView.queryView.fieldView.element );
+			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
 
-		it( 'should insert an emoji after clicking on it in the picker', async () => {
+		it( 'should insert an emoji after clicking on it in the picker', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
-			emojiPicker._emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
+			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 		} );
 
-		it( 'should update the balloon position on update event', () => {
-			const updatePositionSpy = sinon.spy( emojiPicker._balloon, 'updatePosition' );
+		it( 'should remove fake visual selection marker before inserting the emoji', () => {
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
-			emojiPicker._emojiPickerView.fire( 'update' );
+
+			editor.commands.get( 'insertText' ).once( 'execute', () => {
+				expect( editor.model.markers.has( 'emoji-picker' ) ).to.equal( false );
+			} );
+
+			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+		} );
+
+		it( 'should use the "insertText" command when inserting the emoji', () => {
+			const spy = sinon.spy();
+
+			editor.commands.get( 'insertText' ).on( 'execute', spy );
+
+			emojiPicker.showUI();
+			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should update the balloon position on update event', () => {
+			const updatePositionSpy = sinon.spy( emojiPicker._balloonPlugin, 'updatePosition' );
+
+			emojiPicker.showUI();
+			emojiPicker.emojiPickerView.fire( 'update' );
 
 			sinon.assert.calledOnce( updatePositionSpy );
 		} );
 
 		it( 'should not update the balloon position on update event when visible view is not current emoji picker view', () => {
-			const updatePositionSpy = sinon.spy( emojiPicker._balloon, 'updatePosition' );
+			const updatePositionSpy = sinon.spy( emojiPicker._balloonPlugin, 'updatePosition' );
 
 			emojiPicker.showUI();
-			emojiPicker._balloon.visibleView = {};
+			emojiPicker._balloonPlugin.visibleView = {};
 
-			emojiPicker._emojiPickerView.fire( 'update' );
+			emojiPicker.emojiPickerView.fire( 'update' );
 
 			sinon.assert.notCalled( updatePositionSpy );
 		} );
 
-		it( 'should close the picker when clicking outside of it', async () => {
+		it( 'should close the picker when clicking outside of it', () => {
 			emojiPicker.showUI();
 
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
 		} );
 
-		it( 'should close the picker when focus is on the picker and escape is clicked', async () => {
+		it( 'should close the picker when focus is on the picker and escape is clicked', () => {
 			emojiPicker.showUI();
 
-			emojiPicker._balloon.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
+			emojiPicker._balloonPlugin.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
 				keyCode: keyCodes.esc,
 				bubbles: true
 			} ) );
 
-			expect( emojiPicker._balloon.visibleView ).to.equal( null );
+			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
 		} );
 
-		it( 'should load previous category after reopening the emoji picker', async () => {
+		it( 'should load previous category after reopening the emoji picker', () => {
 			emojiPicker.showUI();
-			emojiPicker._emojiPickerView.categoriesView.categoryName = 'Food & Drinks';
+			emojiPicker.emojiPickerView.categoriesView.categoryName = 'Food & Drinks';
 			emojiPicker._hideUI();
 			emojiPicker.showUI();
 
-			expect( emojiPicker._emojiPickerView.gridView.categoryName ).to.equal( 'Food & Drinks' );
+			expect( emojiPicker.emojiPickerView.gridView.categoryName ).to.equal( 'Food & Drinks' );
 		} );
 
 		it( 'should not crash when opening the UI twice in a row', () => {
@@ -307,6 +366,20 @@ describe( 'EmojiPicker', () => {
 				emojiPicker.showUI();
 				emojiPicker.showUI();
 			} ).to.not.throw();
+		} );
+
+		// See #17819.
+		it( 'should not change the selection after opening the UI', async () => {
+			setModelData(
+				editor.model,
+				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
+			);
+
+			emojiPicker.showUI();
+
+			expect( getModelData( editor.model ) ).to.equal(
+				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
+			);
 		} );
 
 		describe( 'fake visual selection', () => {

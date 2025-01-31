@@ -26,7 +26,7 @@ import EmojiCategoriesView from './emojicategoriesview.js';
 import EmojiSearchView from './emojisearchview.js';
 import EmojiToneView from './emojitoneview.js';
 import type { SkinToneId } from '../emojiconfig.js';
-import type { EmojiCategory, SkinTone } from '../emojidatabase.js';
+import type { EmojiCategory, SkinTone } from '../emojirepository.js';
 
 /**
  * A view that glues pieces of the emoji panel together.
@@ -82,21 +82,21 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	 */
 	constructor(
 		locale: Locale,
-		{ emojiGroups, getEmojiBySearchQuery, skinTone, skinTones }: {
-			emojiGroups: Array<EmojiCategory>;
-			getEmojiBySearchQuery: EmojiSearchQueryCallback;
+		{ emojiCategories, getEmojiByQuery, skinTone, skinTones }: {
+			emojiCategories: Array<EmojiCategory>;
+			getEmojiByQuery: EmojiSearchQueryCallback;
 			skinTone: SkinToneId;
 			skinTones: Array<SkinTone>;
 		}
 	) {
 		super( locale );
 
-		const categoryName = emojiGroups[ 0 ].title;
+		const categoryName = emojiCategories[ 0 ].title;
 
 		this.gridView = new EmojiGridView( locale, {
 			categoryName,
-			emojiGroups,
-			getEmojiBySearchQuery,
+			emojiCategories,
+			getEmojiByQuery,
 			skinTone
 		} );
 		this.infoView = new SearchInfoView();
@@ -105,7 +105,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			resultsView: this.infoView
 		} );
 		this.categoriesView = new EmojiCategoriesView( locale, {
-			emojiGroups,
+			emojiCategories,
 			categoryName
 		} );
 		this.toneView = new EmojiToneView( locale, {
@@ -113,7 +113,14 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			skinTones
 		} );
 
-		this.items = this.createCollection();
+		this.items = this.createCollection( [
+			this.searchView,
+			this.toneView,
+			this.categoriesView,
+			this.gridView,
+			this.infoView
+		] );
+
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.focusCycler = new FocusCycler( {
@@ -157,12 +164,6 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			}
 		} );
 
-		this.items.add( this.searchView );
-		this.items.add( this.toneView );
-		this.items.add( this.categoriesView );
-		this.items.add( this.gridView );
-		this.items.add( this.infoView );
-
 		this._setupEventListeners();
 	}
 
@@ -190,14 +191,13 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
-		this.items.destroy();
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #items}.
+	 * Focuses the search input.
 	 */
 	public focus(): void {
-		this.focusCycler.focusFirst();
+		this.searchView.focus();
 	}
 
 	/**
@@ -245,6 +245,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 		// Emit an update event to react to balloon dimensions changes.
 		this.searchView.on<SearchTextViewSearchEvent>( 'search', () => {
 			this.fire<EmojiPickerViewUpdateEvent>( 'update' );
+			this.gridView.element!.scrollTo( 0, 0 );
 		} );
 
 		// Update the grid of emojis when the selected category is changed.
@@ -255,7 +256,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 
 		// Update the grid of emojis when the selected skin tone is changed.
 		// In such a case, the displayed emoji should use an updated skin tone value.
-		this.toneView.on<ObservableChangeEvent>( 'change:skinTone', ( evt, propertyName, newValue ) => {
+		this.toneView.on<ObservableChangeEvent<SkinToneId>>( 'change:skinTone', ( evt, propertyName, newValue ) => {
 			this.gridView.skinTone = newValue;
 			this.searchView.search( this.searchView.getInputValue() );
 		} );
