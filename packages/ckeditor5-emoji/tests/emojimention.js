@@ -127,6 +127,7 @@ describe( 'EmojiMention', () => {
 			const config = configs.find( config => config.marker !== '@' );
 
 			expect( config.marker ).to.equal( ':' );
+			expect( config._isEmojiMarker ).to.equal( true );
 			expect( config.dropdownLimit ).to.equal( 6 );
 			expect( config.itemRenderer ).to.be.instanceOf( Function );
 			expect( config.feed ).to.be.instanceOf( Function );
@@ -195,6 +196,57 @@ describe( 'EmojiMention', () => {
 			await editor.destroy();
 			editorElement.remove();
 		} );
+	} );
+
+	it( 'should set emoji mention feed configuration only once', async () => {
+		const editorElement = document.createElement( 'div' );
+		const editor1Element = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+		document.body.appendChild( editor1Element );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiMention, Mention ],
+			substitutePlugins: [ EmojiDatabaseMock ]
+		} );
+
+		const editor1 = await ClassicTestEditor.create( editor1Element, {
+			plugins: [ EmojiMention, Mention ],
+			substitutePlugins: [ EmojiDatabaseMock ],
+			mention: {
+				feeds: editor.config.get( 'mention.feeds' )
+			}
+		} );
+
+		// Should register emoji mention config only once.
+		expect( editor1.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		await editor.destroy();
+		await editor1.destroy();
+		editorElement.remove();
+		editor1Element.remove();
+	} );
+
+	it( 'should not update the mention configuration when emoji configuration is already added', async () => {
+		const consoleWarnStub = sinon.stub( console, 'warn' );
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiMention, Mention ],
+			substitutePlugins: [ EmojiDatabaseMock ]
+		} );
+
+		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+		// Should not call console warn when there are no mention or merge fields configs defined.
+		expect( consoleWarnStub.callCount ).to.equal( 0 );
+		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		await editor.destroy();
+		editorElement.remove();
+		consoleWarnStub.restore();
 	} );
 
 	describe( '_customItemRendererFactory()', () => {
