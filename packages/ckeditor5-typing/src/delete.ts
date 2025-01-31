@@ -7,7 +7,9 @@
  * @module typing/delete
  */
 
+import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import DeleteCommand from './deletecommand.js';
 import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
@@ -81,6 +83,23 @@ export default class Delete extends Plugin {
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+
+		// Handle Backspace key while inside a nested editable on Safari. See https://github.com/ckeditor/ckeditor5/issues/17383
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if ( viewDocument.isComposing ||
+				data.keyCode != keyCodes.backspace ||
+				!editor.model.document.selection.isCollapsed
+			) {
+				return;
+			}
+
+			const ancestorLimit = editor.model.schema.getLimitElement( editor.model.document.selection );
+			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
+
+			if ( limitStartPosition.isTouching( editor.model.document.selection.getFirstPosition()! ) ) {
+				data.preventDefault();
+			}
+		} );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
 			this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
