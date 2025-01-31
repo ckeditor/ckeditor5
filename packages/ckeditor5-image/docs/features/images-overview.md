@@ -37,8 +37,8 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor inserting an image via a URL} and even {@link features/images-inserting#inserting-images-via-a-source-url via pasting a URL into the editor} along with custom integrations.
-* The {@link features/ckbox CKBox management platform} provides support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
-* CKBox also provides basic editing capabilities, like cropping, resizing, rotating, and flipping right from the image contextual toolbar.
+* The {@link features/ckbox CKBox} and Uploadcare {@link features/uploadcare} management platforms provide support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
+* Both Uploadcare and CKBox provide {@link features/images-image-optimizer editing and optimization capabilities}, like cropping, resizing, rotating, and flipping right from the image contextual toolbar.
 
 ## Image contextual toolbar
 
@@ -88,6 +88,10 @@ To type before or after an image easily, select the image, then press the Arrow 
 You can also use the **Insert paragraph** handles on the bottom or top edge of the selected image to add a paragraph below or above the image, respectively.
 
 {@img assets/img/image-insert-paragraph.png 640 Paragraph insertion handles.}
+
+## Image editing
+
+While the image feature does not provide native image editing support, the {@link features/ckbox CKBox} and Uploadcare {@link features/uploadcare} premium features provide {@link features/images-image-optimizer editing capabilities} such as cropping to presets, flipping, or rotating.
 
 ## Contribute
 

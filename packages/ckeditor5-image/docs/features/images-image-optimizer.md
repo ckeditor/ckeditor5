@@ -10,25 +10,30 @@ badges: [ premium ]
 
 {@snippet features/build-image-optimizer-source}
 
-While the image feature does not provide native image editing support, the {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} premium features provide editing capabilities. Below you can find more details about image editing camabilities of each of the aforementioned features.
+Elevate your images with robust editing tools available through the premium {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} integrations. In the sections below, you will discover how to modify and enhance visuals directly in the editor, giving you greater creative control.
 
-## Uploadcare
+## Image optimizer by Uploadcare
 
-Image optimizer by Uploadcare provides not only basic image editing capbilities but also image properties adjustments and photo filters, further extending CKEditor 5 featureset. 
+Uploadcare provides not only basic image editing capabilities, but also image properties adjustments and photo filters, further extending CKEditor 5 featureset.
 
-<info-box>
-	This is a premium add-on that is a part of CKEditor Custom Plan, and delivered by our partner, [Uploadcare](https://uploadcare.com/). [Choose the Custom Plan](https://ckeditor.com/pricing/) to enable it.
+### Demo
+
+{@snippet features/image-image-optimizer-uploadcare}
+
+<info-box info>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
-
-### Before you begin
-
-All features listed below are available for both - images uploaded to Uploadcare before editing and external images. Keep in mind that external images will be instantly uploaded to your Uploadcare account, once you click the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
-
-* Instructions on {@link features/uploadcare#adding-image-editing-capabilities how to enable editing external images}
 
 ### Image editing
 
-Image optimizer by Uploadcare provides all the necessary image editing capabilities such as rotate, flip, resize and crop.
+Image optimizer by Uploadcare provides a handful of image editing capabilities:
+
+* rotation, mirroring and flipping,
+* cropping,
+* [image parameters](#image-parameter-adjustment),
+* [filters](#photo-filters).
+
+What is great about image editing in Uploadcare is that all edits are not changing the original image. You can easily go back to the original after the cropping for examples.
 
 ### Image parameter adjustment
 
@@ -40,33 +45,36 @@ If you're not sure which of the options would yield best results for a specific 
 
 Image optimizer by Uploadcare is also providing a wide range of predefined photo filters that can quickly change the visual style of your image. Each of the over 40 filters can be applied with variable intensity.
 
-### Demo
+### Configuration
 
-<info-box info>
-	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+To set up the editing capabilities, read the {@link features/uploadcare#adding-image-editing-capabilities Uploadcare documentation}.
 
-{@snippet features/image-image-optimizer-uploadcare}
+All features listed above are available for both - images uploaded to Uploadcare before editing and, if you {@link features/uploadcare#editing-external-images enable this option}, images from other sources (external). Keep in mind that external images will be instantly uploaded to your Uploadcare account, once you click the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
 
-
-## CKBox
+## Image optimizer by CKBox
 
 CKBox provides image editing tools, straight from the asset manager or CKEditor 5, making working on content faster and more efficient. It saves time and resources as there is no need to resort to using a dedicated image editing software.
 
-### Before you begin 
-
-All the listed features are available for both - images uploaded to CKBox before editing as well as external images (if you enable this option). Keep in mind that external images will be instantly uploaded to your CKBox account, once you click the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
-
-* Instructions on {@link features/ckbox#editing-external-images how to enable editing external images}
-
-### Image editing
-
-CKBox premium feature provides basic editing capabilities such as cropping to presets, flipping, or rotating. By default, images hosted in CKBox are always editable.
-
 ### Demo
+
+{@snippet features/image-image-optimizer-ckbox}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-{@snippet features/image-image-optimizer-ckbox}
+### Image editing
+
+CKBox premium feature provides editing capabilities:
+
+* rotation, mirroring and flipping,
+* cropping (freeform and to defined aspect rations),
+* resizing (also to predefined presets).
+
+All edits result in a new image being created on your CKBox account. This is done to preserve the original image if it is used in other places for example. Editing and overwriting images is possible through the CKBox panel.
+
+### Configuration
+
+To set up the editing capabilities, read the {@link features/ckbox#installation CKBox documentation}.
+
+All the listed features are available for both - images uploaded to CKBox before, and, if you {@link features/ckbox#editing-external-images enable this option}, images from other sources (external). Keep in mind that external images will be instantly uploaded to your CKBox account, once you click the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
