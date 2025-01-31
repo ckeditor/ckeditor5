@@ -219,12 +219,13 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
  * @param {String} [tableStyle=''] A style to assert on <table>.
  * @param {String} [figureStyle=''] A style to assert on <figure>.
  */
-export function assertTableStyle( editor, tableStyle, figureStyle ) {
+export function assertTableStyle( editor, tableStyle, figureStyle, tableCssClass ) {
 	const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
 	const figureStyleEntry = figureStyle ? ` style="${ figureStyle }"` : '';
+	const tableClassEntry = tableCssClass ? ` ${ tableCssClass }` : '';
 
 	expect( editor.getData() ).to.equalMarkup(
-		`<figure class="table"${ figureStyleEntry }>` +
+		`<figure class="table${ tableClassEntry }"${ figureStyleEntry }>` +
 			`<table${ tableStyleEntry }>` +
 				'<tbody><tr><td>foo</td></tr></tbody>' +
 			'</table>' +

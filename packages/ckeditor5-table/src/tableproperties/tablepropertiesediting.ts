@@ -28,6 +28,8 @@ import { getNormalizedDefaultTableProperties } from '../utils/table-properties.j
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
 const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
+const CSS_ALIGN_CLASSES_REG_EXP = /^(table-style-align-left|table-style-align-right|table-style-align-center)$/;
+const CSS_CLASSNAME_ALIGN_REG_EXP = /table-style-align-(.*)/;
 
 /**
  * The table properties editing feature.
@@ -169,11 +171,10 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 				key: 'tableAlignment'
 			},
 			view: alignment => ( {
-				key: 'style',
-				value: {
-					// Model: `alignment:center` => CSS: `float:none`.
-					float: alignment === 'center' ? 'none' : alignment
-				}
+				key: 'class',
+				value: [
+					`table-style-align-${ alignment }`
+				]
 			} ),
 			converterPriority: 'high'
 		} );
@@ -215,6 +216,29 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 					const align = viewElement.getAttribute( 'align' );
 
 					return align === defaultValue ? null : align;
+				}
+			}
+		} )
+		.attributeToAttribute( {
+			view: {
+				name: /^(table|figure)$/,
+				classes: CSS_ALIGN_CLASSES_REG_EXP
+			},
+			model: {
+				key: 'tableAlignment',
+				value: ( viewElement: ViewElement ) => {
+					let align = 'none';
+
+					for ( const className of viewElement.getClassNames() ) {
+						const alignmentMatch = CSS_CLASSNAME_ALIGN_REG_EXP.exec( className );
+
+						if ( alignmentMatch ) {
+							align = alignmentMatch[ 1 ];
+						}
+					}
+
+					// Return the alignment value based on the class names found.
+					return align;
 				}
 			}
 		} );

@@ -39,7 +39,7 @@ describe( 'table properties', () => {
 			it( 'should properly downcast table with Alignment plugin enabled', () => {
 				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-				assertTableStyle( editor, null, 'float:right;' );
+				assertTableStyle( editor, null, '', 'table-style-align-right' );
 			} );
 
 			it( 'Alignment command should be disabled when table is selected', () => {
