@@ -152,6 +152,14 @@ export default class ImageSizeAttributes extends Plugin {
 					viewWriter.removeAttribute( viewAttributeName, img );
 				}
 
+				const width = data.item.getAttribute( 'width' );
+				const height = data.item.getAttribute( 'height' );
+				const hasSizes = width && height;
+
+				if ( hasSizes && isEditingDowncast ) {
+					viewWriter.setAttribute( 'loading', 'lazy', img );
+				}
+
 				// Do not set aspect-ratio for pictures. See https://github.com/ckeditor/ckeditor5/issues/14579.
 				if ( data.item.hasAttribute( 'sources' ) ) {
 					return;
@@ -164,17 +172,8 @@ export default class ImageSizeAttributes extends Plugin {
 					return;
 				}
 
-				const width = data.item.getAttribute( 'width' );
-				const height = data.item.getAttribute( 'height' );
-
-				if ( !width || !height ) {
-					return;
-				}
-
-				viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
-
-				if ( isEditingDowncast ) {
-					viewWriter.setAttribute( 'loading', 'lazy', img );
+				if ( hasSizes ) {
+					viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
 				}
 			} );
 		}
