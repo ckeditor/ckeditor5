@@ -79,12 +79,10 @@ export default class EmojiCategoriesView extends View {
 
 			if ( oldCategoryButton ) {
 				oldCategoryButton.isOn = false;
-				previousButton.isOn = false;
 			}
 
 			const newCategoryButton = this.buttonViews.find( button => button.tooltip === newValue )!;
 			newCategoryButton.isOn = true;
-			newButton.isOn = true;
 		} );
 
 		this.set( 'categoryName', categoryName );

@@ -8,17 +8,17 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import EmojiDatabase from './emojidatabase.js';
+import EmojiRepository from './emojirepository.js';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 import EmojiPicker, { type EmojiPickerInsertEvent } from './emojipicker.js';
 import type { EmojiMentionInsertEvent } from './emojimention.js';
 
-export default class EmojiFrequently extends Plugin {
+export default class Emojifrequently extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiDatabase, EmojiPicker ] as const;
+		return [ EmojiRepository, EmojiPicker ] as const;
 	}
 
 	/**
@@ -40,22 +40,26 @@ export default class EmojiFrequently extends Plugin {
 	 */
 	public async init(): Promise<void> {
 		const t = this.editor.locale!.t;
-		const databasePlugin = this.editor.plugins.get( 'EmojiDatabase' );
+		const repositoryPlugin = this.editor.plugins.get( 'EmojiRepository' );
+		const frequentlyUsed = t( 'Frequently used' );
 
-		databasePlugin.decorate( 'getEmojiGroups' );
+		repositoryPlugin.decorate( 'getEmojiCategories' );
 
-		this.listenTo<DecoratedMethodEvent<EmojiDatabase, 'getEmojiGroups'>>( databasePlugin, 'getEmojiGroups', event => {
+		this.listenTo<DecoratedMethodEvent<EmojiRepository, 'getEmojiCategories'>>( repositoryPlugin, 'getEmojiCategories', event => {
 			event.return = [
 				...event.return!,
 				{
-					title: t( 'Frequently used' ),
+					title: frequentlyUsed,
 					icon: '»',
 					groupId: 10,
 					get items() {
-						const itemsAsString = window.localStorage.getItem( 'ckeditor5_emoji' ) || '{}';
-						const items = JSON.parse( itemsAsString );
+						const frequentlyUsedEmoji = window.localStorage.getItem( 'ckeditor5_emoji' ) || '{}';
+						const parsedFrequentlyUsedEmoji = JSON.parse( frequentlyUsedEmoji );
 
-						return Object.keys( items ).map( item => databasePlugin.getEmojiByName( item ) );
+						return Object.entries( parsedFrequentlyUsedEmoji )
+							.sort( ( a: any, b: any ) => a[ 1 ] < b[ 1 ] ? 1 : -1 )
+							.slice( 0, 20 )
+							.map( item => repositoryPlugin.getEmojiByName( item[ 0 ] ) );
 					}
 				}
 			];
@@ -64,7 +68,9 @@ export default class EmojiFrequently extends Plugin {
 		const emojiPicker = this.editor.plugins.get( 'EmojiPicker' );
 
 		this.listenTo<EmojiPickerInsertEvent>( emojiPicker, 'insert', ( evt, data ) => {
-			this._storeEmojiInDatabase( data.name );
+			if ( emojiPicker.emojiPickerView!.gridView.categoryName !== frequentlyUsed ) {
+				this._storeEmojiInDatabase( data.name );
+			}
 		} );
 
 		if ( this.editor.plugins.has( 'EmojiMention' ) ) {
@@ -77,8 +83,6 @@ export default class EmojiFrequently extends Plugin {
 	}
 
 	private _storeEmojiInDatabase( name: string ) {
-		// TODO: Sort?
-		// TODO: Store max 20 items.
 		const localStorage = window.localStorage.getItem( 'ckeditor5_emoji' ) || '{}';
 		const db = JSON.parse( localStorage );
 

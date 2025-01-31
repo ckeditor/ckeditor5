@@ -90,7 +90,7 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	public getEmojiByName( name: string ): EmojiEntry {
-		return this._emojiDatabase.find( item => item.annotation === name )!;
+		return this._database.find( item => item.annotation === name )!;
 	}
 
 	/**
