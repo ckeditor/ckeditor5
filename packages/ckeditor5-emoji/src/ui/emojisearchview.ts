@@ -7,7 +7,7 @@
  * @module emoji/ui/emojisearchview
  */
 
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearchEvent, type SearchInfoView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type EmojiGridView from './emojigridview.js';

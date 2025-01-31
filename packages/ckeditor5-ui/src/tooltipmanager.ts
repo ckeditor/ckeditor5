@@ -22,7 +22,7 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
+import { isElement, debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 import '../theme/components/tooltip/tooltip.css';
 
@@ -130,12 +130,12 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
 	 * to improve the UX.
 	 */
-	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
+	private _pinTooltipDebounced!: DebouncedFunction<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 
 	/**
 	 * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
 	 */
-	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
+	private _unpinTooltipDebounced!: DebouncedFunction<VoidFunction>;
 
 	private readonly _watchdogExcluded!: true;
 

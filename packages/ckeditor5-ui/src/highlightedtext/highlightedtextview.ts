@@ -8,7 +8,7 @@
  */
 
 import View from '../view.js';
-import { escape } from 'lodash-es';
+import { escape } from 'es-toolkit/compat';
 
 import '../../theme/components/highlightedtext/highlightedtext.css';
 

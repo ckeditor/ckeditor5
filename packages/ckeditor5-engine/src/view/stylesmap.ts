@@ -7,7 +7,7 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set, unset } from 'lodash-es';
+import { get, isObject, merge, set, unset } from 'es-toolkit/compat';
 import type { ElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';
@@ -18,7 +18,7 @@ import { isPatternMatched } from './matcher.js';
 export default class StylesMap implements ElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
-	 * value access model using lodash's get, set, unset, etc methods.
+	 * value access model using es-toolkit's get, set, unset, etc methods.
 	 *
 	 * When no style processor rules are defined it acts as simple key-value storage.
 	 */
@@ -1112,7 +1112,7 @@ function parseInlineStyles( stylesString: string ): Map<string, string> {
 }
 
 /**
- * Return lodash compatible path from style name.
+ * Return es-toolkit compatible path from style name.
  */
 function toPath( name: string ): string {
 	return name.replace( '-', '.' );

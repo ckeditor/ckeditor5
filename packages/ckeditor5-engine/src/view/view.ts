@@ -46,7 +46,7 @@ import {
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 type IfTrue<T> = T extends true ? true : never;
 type DomRange = globalThis.Range;
