@@ -332,8 +332,10 @@ describe( 'EmptyBlock', () => {
 
 			editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
-				emptyBlock: {
-					preserveInEditingView: true
+				htmlSupport: {
+					emptyBlock: {
+						preserveInEditingView: true
+					}
 				}
 			} );
 
@@ -352,8 +354,10 @@ describe( 'EmptyBlock', () => {
 
 			editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
-				emptyBlock: {
-					preserveInEditingView: false
+				htmlSupport: {
+					emptyBlock: {
+						preserveInEditingView: false
+					}
 				}
 			} );
 

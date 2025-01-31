@@ -74,7 +74,7 @@ export default class EmptyBlock extends Plugin {
 	public afterInit(): void {
 		const { model, conversion, plugins, config } = this.editor;
 		const schema = model.schema;
-		const preserveInEditingView = config.get( 'emptyBlock.preserveInEditingView' );
+		const preserveInEditingView = config.get( 'htmlSupport.emptyBlock.preserveInEditingView' );
 
 		schema.extend( '$block', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 		schema.extend( '$container', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
@@ -99,13 +99,11 @@ export default class EmptyBlock extends Plugin {
 	/**
 	 * Handle clipboard paste events:
 	 *
-	 *	* It does not affect *copying* content from the editor, only *pasting*.
-	 *	* When content is pasted from another editor instance with `<p></p>`,
-	 *	  the `&nbsp;` filler is added, so the getData result is `<p>&nbsp;</p>`.
-	 *	* When content is pasted from the same editor instance with `<p></p>`,
-	 *	  the `&nbsp;` filler is not added, so the getData result is `<p></p>`.
-	 *
-	 * @internal
+	 * * It does not affect *copying* content from the editor, only *pasting*.
+	 * * When content is pasted from another editor instance with `<p></p>`,
+	 *   the `&nbsp;` filler is added, so the getData result is `<p>&nbsp;</p>`.
+	 * * When content is pasted from the same editor instance with `<p></p>`,
+	 *   the `&nbsp;` filler is not added, so the getData result is `<p></p>`.
 	 */
 	private _registerClipboardPastingHandler() {
 		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );

@@ -80,4 +80,20 @@ export interface GeneralHtmlSupportConfig {
 	 * ```
 	 */
 	allowEmpty?: Array<string>;
+
+	/**
+	 * The configuration of allowed empty block elements that should not be removed.
+	 *
+	 * The option is used by the {@link module:html-support/emptyblock~EmptyBlock} feature.
+	 */
+	emptyBlock?: {
+
+		/**
+		 * When set to `true`, empty blocks will be preserved in the editing view.
+		 * When `false` (default), empty blocks are only preserved in the data output.
+		 *
+		 * @default false
+		 */
+		preserveInEditingView?: boolean;
+	};
 }

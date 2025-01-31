@@ -26,8 +26,10 @@ function createEditor1( preserveInEditingView ) {
 	return ClassicEditor
 		.create( document.getElementById( 'editor1' ), {
 			...config,
-			emptyBlock: {
-				preserveInEditingView
+			htmlSupport: {
+				emptyBlock: {
+					preserveInEditingView
+				}
 			}
 		} )
 		.then( instance => {
