@@ -79,7 +79,8 @@
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "@ckeditor/ckeditor5-watchdog": "44.1.0",
     "@ckeditor/ckeditor5-widget": "44.1.0",
-    "@ckeditor/ckeditor5-word-count": "44.1.0"
+    "@ckeditor/ckeditor5-word-count": "44.1.0",
+    "@ckeditor/ckeditor5-email": "0.0.1"
   },
   "devDependencies": {
     "@babel/parser": "^7.23.3",
