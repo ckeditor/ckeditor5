@@ -206,12 +206,12 @@ describe( 'EmojiMention', () => {
 
 		const editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiMention, Mention ],
-			substitutePlugins: [ EmojiDatabaseMock ]
+			substitutePlugins: [ EmojiRepositoryMock ]
 		} );
 
 		const editor1 = await ClassicTestEditor.create( editor1Element, {
 			plugins: [ EmojiMention, Mention ],
-			substitutePlugins: [ EmojiDatabaseMock ],
+			substitutePlugins: [ EmojiRepositoryMock ],
 			mention: {
 				feeds: editor.config.get( 'mention.feeds' )
 			}
@@ -233,7 +233,7 @@ describe( 'EmojiMention', () => {
 
 		const editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiMention, Mention ],
-			substitutePlugins: [ EmojiDatabaseMock ]
+			substitutePlugins: [ EmojiRepositoryMock ]
 		} );
 
 		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
