@@ -32,7 +32,7 @@ const BASELINE_EMOJI_WIDTH = 24;
 
 /**
  * Object storing emoji support level by the operating system.
- * Some emojis that are perceived as supported are compound-emoji from previous version. For those emojis
+ * Some emojis that are perceived as supported, are compound-emoji from previous version. For those emojis
  * there has to be performed an additional width check to verify system support.
  */
 const EMOJI_SUPPORT_LEVEL = {
@@ -292,8 +292,7 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 }
 
 /**
- * Checks the supported emoji version by the OS, by sampling some representatives
- * from different emoji releases to determine the support level.
+ * Checks the supported emoji version by the OS, by sampling some representatives from different emoji releases.
  */
 function getEmojiSupportedVersionByOs() {
 	return Object.entries( EMOJI_SUPPORT_LEVEL ).reduce( ( supportedVersion, [ emoji, version ] ) => {

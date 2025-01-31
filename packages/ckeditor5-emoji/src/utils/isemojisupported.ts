@@ -4,7 +4,7 @@
  */
 
 /**
- * Checks if the two pixels parts are the same using pixel comparisons.
+ * Checks if the two pixels parts are the same using canvas.
  */
 export default function isEmojiSupported( unicode: string ): boolean {
 	const ctx = getCanvas();
@@ -18,7 +18,7 @@ export default function isEmojiSupported( unicode: string ): boolean {
 	const CANVAS_WIDTH = 20;
 	const textSize = Math.floor( CANVAS_HEIGHT / 2 );
 
-	// Initialize canvas context
+	// Initialize canvas context.
 	ctx.font = textSize + 'px Arial, Sans-Serif';
 	ctx.textBaseline = 'top';
 	ctx.canvas.width = CANVAS_WIDTH * 2;
@@ -26,11 +26,11 @@ export default function isEmojiSupported( unicode: string ): boolean {
 
 	ctx.clearRect( 0, 0, CANVAS_WIDTH * 2, CANVAS_HEIGHT );
 
-	// Draw in red on the left
+	// Draw in red on the left.
 	ctx.fillStyle = '#FF0000';
 	ctx.fillText( unicode, 0, 22 );
 
-	// Draw in blue on right
+	// Draw in blue on right.
 	ctx.fillStyle = '#0000FF';
 	ctx.fillText( unicode, CANVAS_WIDTH, 22 );
 
@@ -38,16 +38,16 @@ export default function isEmojiSupported( unicode: string ): boolean {
 	const count = a.length;
 	let i = 0;
 
-	// Search the first visible pixel
+	// Search the first visible pixel.
 	for ( ; i < count && !a[ i + 3 ]; i += 4 ) ;
 
-	// No visible pixel
+	// No visible pixel.
 	/* istanbul ignore next -- @preserve */
 	if ( i >= count ) {
 		return false;
 	}
 
-	// Emoji has immutable color, so we check the color of the emoji in two different colors
+	// Emoji has immutable color, so we check the color of the emoji in two different colors.
 	// the result show be the same.
 	const x = CANVAS_WIDTH + ( ( i / 4 ) % CANVAS_WIDTH );
 	const y = Math.floor( i / 4 / CANVAS_WIDTH );
@@ -57,14 +57,13 @@ export default function isEmojiSupported( unicode: string ): boolean {
 		return false;
 	}
 
-	// Some emojis are a contraction of different ones, so if it's not
-	// supported, it will show multiple characters
+	// Some emojis are a contraction of different ones, so if it's not supported, it will show multiple characters.
 	/* istanbul ignore next -- @preserve */
 	if ( ctx.measureText( unicode ).width >= CANVAS_WIDTH ) {
 		return false;
 	}
 
-	// Supported
+	// Supported.
 	return true;
 };
 
