@@ -1,0 +1,71 @@
+---
+title: Email
+meta-title: Email | CKEditor 5 Documentation
+category: features
+modified_at: 2025-01-30
+---
+
+{@snippet features/build-email-source}
+
+The email feature lets stuff.
+
+## Demo
+
+Use the email toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link}.
+
+{@snippet features/email}
+
+<info-box info>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</info-box>
+
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, Email } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Email, /* ... */ ],
+		toolbar: [ 'email', /* ... */ ], //probably not
+		link: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+### Configuration
+
+Well, yes.
+
+## Related features
+
+Here are some similar CKEditor&nbsp;5 features that you may find helpful:
+* list them here
+
+## Common API
+
+The {@link module:email/email~Email} plugin registers the UI button component (`'email'`) and the following commands:
+
+* The `'email'` command implemented by 
+
+<info-box>
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
+## Contribute
+
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).
