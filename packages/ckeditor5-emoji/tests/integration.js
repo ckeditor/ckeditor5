@@ -50,7 +50,8 @@ describe( 'Emoji integration', () => {
 		emojiPicker.showUI();
 		emojiPicker.emojiPickerView.gridView.element.scrollTo( 0, 335 );
 
-		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).to.equal( 335 );
+		// We want 335, but sometimes we get e.g. 334.3999.
+		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).to.be.within( 334, 335 );
 
 		document.querySelector( '.ck-emoji__categories-list > button:nth-child(2)' ).click();
 

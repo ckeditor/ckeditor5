@@ -80,7 +80,9 @@ export interface EmojiConfig {
 	 *
 	 * @default 16
 	 */
-	version?: 15 | 16;
+	version?: EmojiVersion;
 }
 
 export type SkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
+
+export type EmojiVersion = 15 | 16;

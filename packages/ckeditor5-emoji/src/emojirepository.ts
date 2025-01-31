@@ -12,7 +12,7 @@ import { groupBy } from 'lodash-es';
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
-import type { SkinToneId } from './emojiconfig.js';
+import type { EmojiVersion, SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
@@ -36,9 +36,9 @@ const BASELINE_EMOJI_WIDTH = 24;
  */
 export default class EmojiRepository extends Plugin {
 	/**
-	 * Emoji database.
+	 * The emoji version that is used to prepare the emoji database.
 	 */
-	private _database: Array<EmojiEntry>;
+	private _version: EmojiVersion;
 
 	/**
 	 * A promise resolved after downloading the emoji database.
@@ -76,12 +76,13 @@ export default class EmojiRepository extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.editor.config.define( 'emoji', {
+		editor.config.define( 'emoji', {
 			version: 16,
 			skinTone: 'default'
 		} );
 
-		this._database = [];
+		this._version = editor.config.get( 'emoji.version' )!;
+
 		this._databasePromise = new Promise<boolean>( resolve => {
 			this._databasePromiseResolveCallback = resolve;
 		} );
@@ -93,28 +94,22 @@ export default class EmojiRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
-		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
-		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
-		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
+		if ( !this._isDatabaseInitialized() ) {
+			const result = await this._loadDatabase();
 
-		// Skip the initialization if the emoji database download has failed.
-		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
-		if ( !emojiDatabase.length ) {
+			this._saveDatabase( result );
+		}
+
+		const database = this._getDatabase();
+
+		// Skip plugin initialization if the emoji database is not available.
+		// The initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`, is prevented as well.
+		if ( !database ) {
 			return this._databasePromiseResolveCallback( false );
 		}
 
-		const container = createEmojiWidthTestingContainer();
-
-		// Store the emoji database after normalizing the raw data.
-		this._database = emojiDatabase
-			.filter( item => isEmojiCategoryAllowed( item ) )
-			.filter( item => EmojiRepository._isEmojiSupported( item, container ) )
-			.map( item => normalizeEmojiSkinTone( item ) );
-
-		container.remove();
-
 		// Create instance of the Fuse.js library with configured weighted search keys and disabled fuzzy search.
-		this._fuseSearch = new Fuse( this._database, {
+		this._fuseSearch = new Fuse( database, {
 			keys: [
 				{ name: 'emoticon', weight: 5 },
 				{ name: 'annotation', weight: 3 },
@@ -174,7 +169,9 @@ export default class EmojiRepository extends Plugin {
 	 * @returns An array of emoji entries grouped by categories.
 	 */
 	public getEmojiCategories(): Array<EmojiCategory> {
-		if ( !this._database.length ) {
+		const database = this._getDatabase();
+
+		if ( !database ) {
 			return [];
 		}
 
@@ -192,7 +189,7 @@ export default class EmojiRepository extends Plugin {
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
-		const groups = groupBy( this._database, 'group' );
+		const groups = groupBy( database, 'group' );
 
 		return categories.map( category => {
 			return {
@@ -226,43 +223,86 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	/**
+	 * Indicates whether an attempt was made to download the emoji database in a configured version,
+	 * regardless of whether the attempt was successful or not.
+	 */
+	private _isDatabaseInitialized(): boolean {
+		return this._version in EmojiRepository._database;
+	}
+
+	/**
+	 * Returns the emoji database in a configured version if it is a non-empty array. Returns `null` otherwise.
+	 */
+	private _getDatabase(): Array<EmojiEntry> | null {
+		const database = EmojiRepository._database[ this._version ];
+
+		return database && database.length ? database : null;
+	}
+
+	/**
+	 * Makes the HTTP request to download the emoji database in a configured version.
+	 */
+	private async _loadDatabase(): Promise<Array<EmojiCdnResource>> {
+		const databaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ this._version }` );
+
+		const result: Array<EmojiCdnResource> = await fetch( databaseUrl )
+			.then( response => {
+				if ( !response.ok ) {
+					return [];
+				}
+
+				return response.json();
+			} )
+			.catch( () => {
+				return [];
+			} );
+
+		if ( !result.length ) {
+			/**
+			 * Unable to load the emoji database from CDN.
+			 *
+			 * If the CDN works properly and there is no disruption of communication, please check your
+			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+			 * the CDN connection is allowed by the editor.
+			 *
+			 * @error emoji-database-load-failed
+			 */
+			logWarning( 'emoji-database-load-failed' );
+		}
+
+		return result;
+	}
+
+	/**
+	 * Stores the downloaded emoji database after normalizing the raw data.
+	 *
+	 * The database is stored in a static class property to make it instantly available in other editors
+	 * to avoid downloading the same emoji database more than once.
+	 */
+	private _saveDatabase( database: Array<EmojiCdnResource> ): void {
+		const container = createEmojiWidthTestingContainer();
+
+		EmojiRepository._database[ this._version ] = database
+			.filter( item => isEmojiCategoryAllowed( item ) )
+			.filter( item => EmojiRepository._isEmojiSupported( item, container ) )
+			.map( item => normalizeEmojiSkinTone( item ) );
+
+		container.remove();
+	}
+
+	/**
+	 * Versioned emoji database.
+	 */
+	private static _database: {
+		[ key in EmojiVersion ]?: Array<EmojiEntry>
+	} = {};
+
+	/**
 	 * A function used to check if the given emoji is supported in the operating system.
 	 *
 	 * Referenced for unit testing purposes.
 	 */
 	private static _isEmojiSupported = isEmojiSupported;
-}
-
-/**
- * Makes the HTTP request to download the emoji database.
- */
-async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<EmojiCdnResource>> {
-	const result = await fetch( emojiDatabaseUrl )
-		.then( response => {
-			if ( !response.ok ) {
-				return [];
-			}
-
-			return response.json();
-		} )
-		.catch( () => {
-			return [];
-		} );
-
-	if ( !result.length ) {
-		/**
-		 * Unable to load the emoji database from CDN.
-		 *
-		 * If the CDN works properly and there is no disruption of communication, please check your
-		 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-		 * the CDN connection is allowed by the editor.
-		 *
-		 * @error emoji-database-load-failed
-		 */
-		logWarning( 'emoji-database-load-failed' );
-	}
-
-	return result;
 }
 
 /**
