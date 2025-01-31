@@ -538,7 +538,7 @@ describe( 'EmojiMention', () => {
 			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should return an empty array the repository plugin is not loaded correctly', async () => {
+		it( 'should return an empty array when the repository plugin is not loaded correctly', async () => {
 			EmojiRepositoryMock.isReady = false;
 
 			const editorElement = document.createElement( 'div' );
