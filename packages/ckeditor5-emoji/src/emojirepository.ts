@@ -10,9 +10,10 @@
 import Fuse from 'fuse.js';
 import { groupBy } from 'lodash-es';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
 import type { SkinToneId } from './emojiconfig.js';
+import isEmojiSupported from './utils/isemojisupported.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
@@ -28,6 +29,16 @@ const SKIN_TONE_MAP: Record<number, SkinToneId> = {
 };
 
 const BASELINE_EMOJI_WIDTH = 24;
+
+/**
+ * Object storing emoji support level by the operating system.
+ * Some emojis that are perceived as supported are compound-emoji from previous version. For those emojis
+ * there has to be performed an additional width check to verify system support.
+ */
+const EMOJI_SUPPORT_LEVEL = {
+	'🫩': 16, // face with bags under eyes
+	'🫨': 15 // shaking head
+};
 
 /**
  * The emoji repository plugin.
@@ -96,6 +107,7 @@ export default class EmojiRepository extends Plugin {
 		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
 		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
 		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
+		const emojiSupportedVersionByOs = EmojiRepository._getEmojiSupportedVersionByOs();
 
 		// Skip the initialization if the emoji database download has failed.
 		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
@@ -108,7 +120,8 @@ export default class EmojiRepository extends Plugin {
 		// Store the emoji database after normalizing the raw data.
 		this._database = emojiDatabase
 			.filter( item => isEmojiCategoryAllowed( item ) )
-			.filter( item => EmojiRepository._isEmojiSupported( item, container ) )
+			.filter( item => item.version <= emojiSupportedVersionByOs )
+			.filter( item => !EmojiRepository._hasZwj( item.emoji ) ? true : EmojiRepository._isEmojiZwjSupported( item, container ) )
 			.map( item => normalizeEmojiSkinTone( item ) );
 
 		container.remove();
@@ -226,11 +239,25 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * A function used to check if the given emoji is supported in the operating system.
+	 * A function used to check if the given ZWJ emoji is supported in the operating system.
 	 *
 	 * Referenced for unit testing purposes.
 	 */
-	private static _isEmojiSupported = isEmojiSupported;
+	private static _isEmojiZwjSupported = isEmojiZwjSupported;
+
+	/**
+	 * A function used to get the emoji version supported by the operating system.
+	 *
+	 * Referenced for unit testing purposes.
+	 */
+	private static _getEmojiSupportedVersionByOs = getEmojiSupportedVersionByOs;
+
+	/**
+	 * A function used to determine if emoji has a zero width joiner.
+	 *
+	 * Referenced for unit testing purposes.
+	 */
+	private static _hasZwj = hasZwj;
 }
 
 /**
@@ -265,6 +292,27 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 }
 
 /**
+ * Checks the supported emoji version by the OS, by sampling some representatives
+ * from different emoji releases to determine the support level.
+ */
+function getEmojiSupportedVersionByOs() {
+	return Object.entries( EMOJI_SUPPORT_LEVEL ).reduce( ( supportedVersion, [ emoji, version ] ) => {
+		if ( isEmojiSupported( emoji ) && version > supportedVersion ) {
+			supportedVersion = version;
+		}
+
+		return supportedVersion;
+	}, 0 );
+}
+
+/**
+ * Check for ZWJ (zero width joiner) character.
+ */
+function hasZwj( emoji: string ) {
+	return emoji.includes( '\u200d' );
+}
+
+/**
  * Creates a div for emoji width testing purposes.
  */
 function createEmojiWidthTestingContainer(): HTMLDivElement {
@@ -296,14 +344,14 @@ function getNodeWidth( container: HTMLDivElement, node: string ): number {
 /**
  * Checks whether the emoji is supported in the operating system.
  */
-function isEmojiSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
+function isEmojiZwjSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
 	const emojiWidth = getNodeWidth( container, item.emoji );
 
 	// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
 	// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
 	// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
 	// So here we set the threshold at 1.8 times the size of the baseline emoji.
-	return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
+	return emojiWidth < BASELINE_EMOJI_WIDTH * 1.8;
 }
 
 /**

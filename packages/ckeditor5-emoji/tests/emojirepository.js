@@ -15,10 +15,12 @@ import EmojiRepository from '../src/emojirepository.js';
 describe( 'EmojiRepository', () => {
 	testUtils.createSinonSandbox();
 
-	let isEmojiSupportedStub, consoleStub, fetchStub;
+	let isEmojiSupportedStub, getEmojiSupportedVersionByOsStub, hasZwjStub, consoleStub, fetchStub;
 
 	beforeEach( () => {
-		isEmojiSupportedStub = testUtils.sinon.stub( EmojiRepository, '_isEmojiSupported' ).returns( true );
+		isEmojiSupportedStub = testUtils.sinon.stub( EmojiRepository, '_isEmojiZwjSupported' ).returns( true );
+		getEmojiSupportedVersionByOsStub = testUtils.sinon.stub( EmojiRepository, '_getEmojiSupportedVersionByOs' ).returns( 100 );
+		hasZwjStub = testUtils.sinon.stub( EmojiRepository, '_hasZwj' ).returns( false );
 
 		consoleStub = sinon.stub( console, 'warn' );
 		fetchStub = testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( '[]' ) );
@@ -78,8 +80,8 @@ describe( 'EmojiRepository', () => {
 
 		it( 'should fetch the emoji database version 16', async () => {
 			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 }
+				{ annotation: 'neutral face', group: 0, version: 16 },
+				{ annotation: 'unamused face', group: 0, version: 16 }
 			] );
 
 			fetchStubResolve( new Response( response ) );
@@ -140,13 +142,17 @@ describe( 'EmojiRepository', () => {
 			expect( hasGroup2 ).to.be.undefined;
 		} );
 
-		it( 'should filter out unsupported emojis from the fetched emoji database', async () => {
-			isEmojiSupportedStub.callsFake( item => item.annotation !== 'microscope' );
+		it( 'should filter out unsupported ZWJ emojis from the fetched emoji database', async () => {
+			// Neutral face is mocked to be the only non ZWJ icon.
+			hasZwjStub.callsFake( emoji => emoji !== '😐️' );
+
+			// Unamused face is the only supported ZWJ emoji.
+			isEmojiSupportedStub.callsFake( item => item.annotation === 'unamused face' );
 
 			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 },
-				{ annotation: 'microscope', group: 7 }
+				{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+				{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 },
+				{ emoji: '🔬', annotation: 'microscope', group: 7, version: 15 }
 			] );
 
 			fetchStubResolve( new Response( response ) );
@@ -154,15 +160,43 @@ describe( 'EmojiRepository', () => {
 			editor = await editorPromise;
 
 			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			const hasNeutralFaceEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'neutral face' );
 			const hasMicroscopeEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'microscope' );
+			const hasUnamusedEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'unamused face' );
 
-			expect( hasMicroscopeEmoji ).to.be.undefined;
+			expect( hasNeutralFaceEmoji ).not.to.be.undefined; // Neutral face is not ZWJ, so it should not be filtered out.
+			expect( hasUnamusedEmoji ).not.to.be.undefined; // Unamused face is ZWJ, and it is supported, so it should not be filtered out.
+			expect( hasMicroscopeEmoji ).to.be.undefined; // Microscope is ZWJ, and it is not supported, so it should be filtered out
+		} );
+
+		it( 'should filter out emojis based on the version supported by the operating system', async () => {
+			getEmojiSupportedVersionByOsStub.reset();
+			getEmojiSupportedVersionByOsStub.returns( 15 );
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', group: 0, version: 16 },
+				{ annotation: 'unamused face', group: 0, version: 15 },
+				{ annotation: 'microscope', group: 7, version: 15 }
+			] );
+
+			fetchStubResolve( new Response( response ) );
+
+			editor = await editorPromise;
+
+			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			const hasNeutralFaceEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'neutral face' );
+			const hasMicroscopeEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'microscope' );
+			const hasUnamusedEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'unamused face' );
+
+			expect( hasNeutralFaceEmoji ).to.be.undefined;
+			expect( hasMicroscopeEmoji ).not.to.be.undefined;
+			expect( hasUnamusedEmoji ).not.to.be.undefined;
 		} );
 
 		it( 'should set default skin tone for each emoji', async () => {
 			const response = JSON.stringify( [
-				{ annotation: 'neutral face', emoji: '😐️', group: 0 },
-				{ annotation: 'unamused face', emoji: '😒', group: 0 }
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
+				{ annotation: 'unamused face', emoji: '😒', group: 0, version: 15 }
 			] );
 
 			fetchStubResolve( new Response( response ) );
@@ -185,7 +219,7 @@ describe( 'EmojiRepository', () => {
 			const ninjaEmoji5 = '🥷🏿';
 
 			const response = JSON.stringify( [
-				{ annotation: 'ninja', emoji: ninjaEmoji0, group: 1, skins: [
+				{ annotation: 'ninja', emoji: ninjaEmoji0, group: 1, version: 15, skins: [
 					{ emoji: ninjaEmoji1, tone: 1 },
 					{ emoji: ninjaEmoji2, tone: 2 },
 					{ emoji: ninjaEmoji3, tone: 3 },
@@ -213,8 +247,8 @@ describe( 'EmojiRepository', () => {
 
 		it( 'should create Fuse.js instance with the emoji database', async () => {
 			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 }
+				{ annotation: 'neutral face', group: 0, version: 15 },
+				{ annotation: 'unamused face', group: 0, version: 15 }
 			] );
 
 			fetchStubResolve( new Response( response ) );
@@ -274,8 +308,20 @@ describe( 'EmojiRepository', () => {
 
 		beforeEach( async () => {
 			const response = JSON.stringify( [
-				{ annotation: 'neutral face', emoticon: ':|', tags: [ 'awkward', 'blank', 'face', 'meh', 'whatever' ], group: 0 },
-				{ annotation: 'unamused face', emoticon: ':?', tags: [ 'bored', 'face', 'fine', 'ugh', 'whatever' ], group: 0 }
+				{
+					annotation: 'neutral face',
+					emoticon: ':|',
+					tags: [ 'awkward', 'blank', 'face', 'meh', 'whatever' ],
+					group: 0,
+					version: 15
+				},
+				{
+					annotation: 'unamused face',
+					emoticon: ':?',
+					tags: [ 'bored', 'face', 'fine', 'ugh', 'whatever' ],
+					group: 0,
+					version: 15
+				}
 			] );
 
 			fetchStub.resolves( new Response( response ) );
@@ -368,16 +414,16 @@ describe( 'EmojiRepository', () => {
 
 		beforeEach( async () => {
 			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'ninja', group: 1 },
-				{ annotation: 'medium-dark skin tone', group: 2 },
-				{ annotation: 'lobster', group: 3 },
-				{ annotation: 'salt', group: 4 },
-				{ annotation: 'watch', group: 5 },
-				{ annotation: 'magic wand', group: 6 },
-				{ annotation: 'x-ray', group: 7 },
-				{ annotation: 'up-left arrow', group: 8 },
-				{ annotation: 'flag: Poland', group: 9 }
+				{ annotation: 'neutral face', group: 0, version: 15 },
+				{ annotation: 'ninja', group: 1, version: 15 },
+				{ annotation: 'medium-dark skin tone', group: 2, version: 15 },
+				{ annotation: 'lobster', group: 3, version: 15 },
+				{ annotation: 'salt', group: 4, version: 15 },
+				{ annotation: 'watch', group: 5, version: 15 },
+				{ annotation: 'magic wand', group: 6, version: 15 },
+				{ annotation: 'x-ray', group: 7, version: 15 },
+				{ annotation: 'up-left arrow', group: 8, version: 15 },
+				{ annotation: 'flag: Poland', group: 9, version: 15 }
 			] );
 
 			fetchStub.resolves( new Response( response ) );
