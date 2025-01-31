@@ -82,7 +82,7 @@ export interface GeneralHtmlSupportConfig {
 	allowEmpty?: Array<string>;
 
 	/**
-	 * Whether a filler text (non-breaking space entity — &nbsp;) will be inserted into empty block elements in HTML output.
+	 * Whether a filler text (non-breaking space entity — `&nbsp;`) will be inserted into empty block elements in HTML output.
 	 * This is used to render block elements properly with line-height.
 	 *
 	 * The option is used by the {@link module:html-support/emptyblock~EmptyBlock} feature.
