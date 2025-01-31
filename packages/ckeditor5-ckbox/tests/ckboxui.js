@@ -18,7 +18,7 @@ import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
 import ImageInsertUI from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui.js';
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
 
 import CKBoxUI from '../src/ckboxui.js';
 import CKBoxEditing from '../src/ckboxediting.js';
@@ -142,7 +142,7 @@ describe( 'CKBoxUI', () => {
 
 			expect( dropdownButton ).to.be.instanceOf( ButtonView );
 			expect( dropdownButton.withText ).to.be.false;
-			expect( dropdownButton.icon ).to.equal( icons.imageAssetManager );
+			expect( dropdownButton.icon ).to.equal( IconImageAssetManager );
 			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
 		} );
 
@@ -158,7 +158,7 @@ describe( 'CKBoxUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.icon ).to.equal( IconImageAssetManager );
 			expect( buttonView.label ).to.equal( 'Insert with file manager' );
 		} );
 
@@ -170,7 +170,7 @@ describe( 'CKBoxUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.icon ).to.equal( IconImageAssetManager );
 			expect( buttonView.label ).to.equal( 'With file manager' );
 		} );
 
@@ -180,7 +180,7 @@ describe( 'CKBoxUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.icon ).to.equal( IconImageAssetManager );
 			expect( buttonView.label ).to.equal( 'Image' );
 		} );
 
@@ -250,7 +250,7 @@ describe( 'CKBoxUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( icons.browseFiles );
+			expect( button.icon ).to.equal( IconBrowseFiles );
 		} );
 
 		it( 'should execute the command afer firing the event', () => {

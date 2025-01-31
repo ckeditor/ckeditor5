@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
@@ -333,7 +333,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 					expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 					expect( dropdown.buttonView.tooltip ).to.be.true;
 					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-					expect( dropdown.buttonView.actionView.icon ).to.equal( icons.imageUrl );
+					expect( dropdown.buttonView.actionView.icon ).to.equal( IconImageUrl );
 					expect( dropdown.buttonView.actionView.tooltip ).to.be.true;
 					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
 				} );
@@ -407,7 +407,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( icons.imageUrl );
+			expect( button.icon ).to.equal( IconImageUrl );
 		} );
 
 		it( 'should open insert image via url dialog', () => {

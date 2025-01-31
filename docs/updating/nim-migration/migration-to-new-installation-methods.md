@@ -39,7 +39,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+				test: /\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
@@ -239,7 +239,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 		<tr>
 			<td>Can be used with any modern bundler</td>
 			<td>✅</td>
-			<td>❌</td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
 			<td>❌</td>
@@ -257,13 +257,13 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>⚠️ <sup>[2]</sup></td>
+			<td>⚠️ <sup>[1]</sup></td>
 			<td>❌</td>
 		</tr>
 		<tr>
 			<td>Icon customization</td>
-			<td>⚠️ <sup>[1]</sup></td>
-			<td>⚠️ <sup>[1]</sup></td>
+			<td>✅</td>
+			<td>❌</td>
 			<td>❌</td>
 			<td>✅</td>
 			<td>❌</td>
@@ -289,7 +289,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>⚠️<sup>[3]</sup></td>
+			<td>⚠️<sup>[2]</sup></td>
 			<td>❌</td>
 		</tr>
 		<tr>
@@ -303,9 +303,8 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 	</tbody>
 </table>
 
-\[1\] Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
-\[2\] Style customization is partially supported via webpack configuration.
-\[3\] CSS can be separated from JavaScript using custom webpack configuration.
+\[1\] Style customization is partially supported via webpack configuration.
+\[2\] CSS can be separated from JavaScript using custom webpack configuration.
 
 ## Sunset of old installation methods and deprecation timelines
 

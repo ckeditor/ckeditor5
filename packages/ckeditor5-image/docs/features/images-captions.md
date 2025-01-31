@@ -13,7 +13,7 @@ The {@link module:image/imagecaption~ImageCaption} plugin lets you add captions 
 
 ## Demo
 
-Click one of the images below and use the contextual image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Image caption} to toggle the caption on and off. Click the caption to edit it.
+Click one of the images below and use the contextual image toolbar {@icon @ckeditor/ckeditor5-icons/theme/icons/caption.svg Image caption} to toggle the caption on and off. Click the caption to edit it.
 
 {@snippet features/image-caption}
 
