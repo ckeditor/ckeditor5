@@ -793,10 +793,6 @@ export default class Element extends Node {
 	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching attribute tuples
 	 * (attribute name and optional token).
 	 *
-	 * Note that patterns should be normalized from a {@link module:engine/view/matcher~MatcherObjectPattern} to
-	 * an array of {@link module:engine/view/matcher~NormalizedPropertyPattern}s
-	 * using the {@link module:engine/view/matcher~normalizePatterns} helper.
-	 *
 	 * Normalized patterns can be used in following ways:
 	 * - to match any attribute name with any or no value:
 	 *
@@ -926,7 +922,7 @@ export default class Element extends Node {
 
 	/**
 	 * Used by the {@link module:engine/conversion/viewconsumable~ViewConsumable} to collect the
-	 * {@link module:engine/conversion/viewconsumable~NormalizedConsumables} for the element.
+	 * {@link module:engine/view/element~NormalizedConsumables} for the element.
 	 *
 	 * When `key` and `token` parameters are provided the output is filtered for the specified attribute and it's tokens and related tokens.
 	 *

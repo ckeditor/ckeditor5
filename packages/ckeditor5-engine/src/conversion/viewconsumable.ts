@@ -369,7 +369,7 @@ export class ViewElementConsumables {
 	 * consumables.add( { attributes: [ [ 'title' ], [ 'name' ], [ 'class', 'foo' ], [ 'class', 'bar' ] ] } );
 	 * ```
 	 *
-	 * Note: This method accepts only {@link module:engine/conversion/viewconsumable~NormalizedConsumables}.
+	 * Note: This method accepts only {@link module:engine/view/element~NormalizedConsumables}.
 	 * You can use {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper to convert from
 	 * {@link module:engine/conversion/viewconsumable~Consumables} to `NormalizedConsumables`.
 	 *
@@ -603,7 +603,7 @@ export class ViewElementConsumables {
 
 /**
  * Normalizes a {@link module:engine/conversion/viewconsumable~Consumables} or {@link module:engine/view/matcher~Match}
- * to a {@link module:engine/conversion/viewconsumable~NormalizedConsumables}.
+ * to a {@link module:engine/view/element~NormalizedConsumables}.
  */
 export function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
 	const attributes: Array<[string, string?]> = [];

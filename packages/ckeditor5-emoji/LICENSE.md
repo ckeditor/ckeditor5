@@ -19,6 +19,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 The following libraries are included in CKEditor&nbsp;5 emoji feature under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0):
 
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
 
 Trademarks
