@@ -36,8 +36,8 @@ const BASELINE_EMOJI_WIDTH = 24;
  * there has to be performed an additional width check to verify system support.
  */
 const EMOJI_SUPPORT_LEVEL = {
-	'🫩': 16, // face with bags under eyes
-	'🫨': 15 // shaking head
+	'🫩': 16, // Face with bags under eyes.
+	'🫨': 15.1 // Shaking head. Although the version of emoji is 15, it is used to detect versions 15 and 15.1.
 };
 
 /**
