@@ -5,4 +5,4 @@
 
 import './augmentation.js';
 
-export { EmailIntegration } from './emailintegration.js';
+export { default as EmailIntegration } from './emailintegration.js';

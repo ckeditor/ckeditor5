@@ -1,0 +1,50 @@
+<head>
+	<meta http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<div id="editor">
+    <section>
+        <article>
+            <details>
+                <summary>Interactive elements demo</summary>
+                <p>Hidden content that most email clients will ignore</p>
+            </details>
+
+            <figure>
+                <picture>
+                    <source srcset="image.webp" type="image/webp">
+                    <img src="image.jpg" loading="lazy" decoding="async" alt="Modern image element">
+                </picture>
+                <figcaption contenteditable="true">Editable caption</figcaption>
+            </figure>
+        </article>
+
+        <aside>
+            <template>
+                <slot name="dynamic-content">Template content</slot>
+            </template>
+        </aside>
+    </section>
+
+    <video controls>
+        <source src="sample.mp4" type="video/mp4">
+        Your browser does not support video playback
+    </video>
+
+    <ruby>
+        漢 <rt>kan</rt>
+        字 <rt>ji</rt>
+    </ruby>
+
+    <details open>
+        <summary>Nested details</summary>
+        <details>
+            <summary>Level 2</summary>
+            <details>
+                <summary>Level 3</summary>
+                <p>Deeply nested content</p>
+            </details>
+        </details>
+    </details>
+</div>

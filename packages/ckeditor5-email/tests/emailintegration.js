@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EmailIntegration } from '../src/emailintegration.js';
+import EmailIntegration from '../src/emailintegration.js';
 
 import { HighlightEmailIntegration } from '../src/integrations/highlight.js';
 import { ImageEmailIntegration } from '../src/integrations/image.js';

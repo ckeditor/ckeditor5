@@ -24,7 +24,7 @@ import { SourceEditingIntegration } from './integrations/sourceediting.js';
  *
  * This is a "glue" plugin that integrates the email integration feature with the editor.
  */
-export class EmailIntegration extends Plugin {
+export default class EmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -15,7 +15,7 @@ import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { Bold, Code, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Image } from '@ckeditor/ckeditor5-image';
 
-import { EmailIntegration } from '../../src/emailintegration.js';
+import EmailIntegration from '../../src/emailintegration.js';
 
 ClassicEditor
 	.create( document.getElementById( 'editor' ), {
