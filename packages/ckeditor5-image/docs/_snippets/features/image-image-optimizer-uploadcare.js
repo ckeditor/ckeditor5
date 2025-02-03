@@ -45,7 +45,6 @@ ClassicEditor
 					'gdrive',
 					'facebook',
 					'gphotos',
-					'instagram',
 					'onedrive'
 				]
 			}
