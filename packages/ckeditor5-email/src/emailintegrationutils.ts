@@ -9,7 +9,7 @@
 
 import type { ColorOption } from 'ckeditor5/src/ui.js';
 
-import { type EditorConfig, Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, type EditorConfig, Plugin } from 'ckeditor5/src/core.js';
 import { type GetSubConfig, logWarning } from 'ckeditor5/src/utils.js';
 
 /**
@@ -33,8 +33,10 @@ export default class EmailIntegrationUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public async init(): Promise<void> {
-		this.editor.config.define( 'email.warnings', {
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'email.warnings', {
 			suppress: [],
 			suppressAll: false
 		} );
@@ -53,7 +55,7 @@ export default class EmailIntegrationUtils extends Plugin {
 			return;
 		}
 
-		if ( typeof config.suppress === 'function' && config.suppress( warningCode ) ) {
+		if ( typeof config.suppress === 'function' && config.suppress( warningCode, data ) ) {
 			return;
 		}
 

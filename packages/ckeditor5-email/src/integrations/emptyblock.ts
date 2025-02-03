@@ -40,9 +40,9 @@ export class EmptyBlockIntegration extends Plugin {
 	 */
 	public afterInit(): void {
 		const utils = this.editor.plugins.get( EmailIntegrationUtils );
-		const exportInlineStyles = this.editor.plugins.has( 'EmptyBlock' );
+		const emptyBlock = this.editor.plugins.has( 'EmptyBlock' );
 
-		if ( !exportInlineStyles ) {
+		if ( !emptyBlock ) {
 			/**
 			 * Warning shown when the EmptyBlock plugin is missing. While it's not required for the email integration to work,
 			 * the empty block integration is recommended to ensure that exported content has empty blocks. This is important for

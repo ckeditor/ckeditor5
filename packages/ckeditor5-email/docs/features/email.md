@@ -31,12 +31,12 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { ClassicEditor, Email } from 'ckeditor5';
+import { ClassicEditor, EmailIntegration } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Email, /* ... */ ],
+		plugins: [ EmailIntegration, /* ... */ ],
 		toolbar: [ 'email', /* ... */ ], //probably not
 		link: {
 			// Configuration.
@@ -60,7 +60,7 @@ Here are some similar CKEditor&nbsp;5 features that you may find helpful:
 
 The {@link module:email/email~Email} plugin registers the UI button component (`'email'`) and the following commands:
 
-* The `'email'` command implemented by 
+* The `'email'` command implemented by
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
