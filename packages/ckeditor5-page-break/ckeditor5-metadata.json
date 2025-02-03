@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "pageBreak",
-					"iconPath": "theme/icons/pagebreak.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/page-break.svg"
 				}
 			],
 			"htmlOutput": [

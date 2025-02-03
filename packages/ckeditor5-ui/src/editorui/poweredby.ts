@@ -7,14 +7,13 @@
  * @module ui/editorui/poweredby
  */
 
-import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
+import { IconProjectLogo } from '@ckeditor/ckeditor5-icons';
 import { parseBase64EncodedObject, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import View from '../view.js';
 import Badge from '../badge/badge.js';
 import IconView from '../icon/iconview.js';
-
-import poweredByIcon from '../../theme/icons/project-logo.svg';
+import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 
 const DEFAULT_LABEL = 'Powered by';
 
@@ -102,7 +101,7 @@ class PoweredByView extends View<HTMLDivElement> {
 		const bind = this.bindTemplate;
 
 		iconView.set( {
-			content: poweredByIcon,
+			content: IconProjectLogo,
 			isColorInherited: false
 		} );
 

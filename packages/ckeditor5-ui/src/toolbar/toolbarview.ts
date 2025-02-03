@@ -34,27 +34,33 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
-
 import {
-	icons,
-	type ToolbarConfig,
-	type ToolbarConfigItem
-} from '@ckeditor/ckeditor5-core';
+	IconAlignLeft,
+	IconBold,
+	IconImportExport,
+	IconParagraph,
+	IconPlus,
+	IconText,
+	IconThreeVerticalDots,
+	IconPilcrow,
+	IconDragIndicator
+} from '@ckeditor/ckeditor5-icons';
+import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 
 import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
-	alignLeft: icons.alignLeft,
-	bold: icons.bold,
-	importExport: icons.importExport,
-	paragraph: icons.paragraph,
-	plus: icons.plus,
-	text: icons.text,
-	threeVerticalDots: icons.threeVerticalDots,
-	pilcrow: icons.pilcrow,
-	dragIndicator: icons.dragIndicator
+	alignLeft: IconAlignLeft,
+	bold: IconBold,
+	importExport: IconImportExport,
+	paragraph: IconParagraph,
+	plus: IconPlus,
+	text: IconText,
+	threeVerticalDots: IconThreeVerticalDots,
+	pilcrow: IconPilcrow,
+	dragIndicator: IconDragIndicator
 } ) )();
 
 /**
@@ -549,7 +555,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || icons.threeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
@@ -1054,7 +1060,7 @@ class DynamicGrouping implements ToolbarBehavior {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: icons.threeVerticalDots
+			icon: IconThreeVerticalDots
 		} );
 
 		return dropdown;

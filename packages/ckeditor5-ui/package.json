@@ -9,12 +9,18 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
+  "sideEffects": [
+    "*.css",
+    "build/**/*.js",
+    "dist/translations/*.umd.js"
+  ],
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-editor-multi-root": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "@types/color-convert": "2.0.4",
     "color-convert": "2.0.1",

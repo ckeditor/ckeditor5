@@ -5,6 +5,7 @@
 
 /* globals document, Event */
 
+import { IconLink } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -28,8 +29,6 @@ import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkActionsView from '../src/ui/linkactionsview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-
-import linkIcon from '../theme/icons/link.svg';
 
 describe( 'LinkUI', () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
@@ -139,7 +138,7 @@ describe( 'LinkUI', () => {
 			it( 'should create UI component with correct attribute values', () => {
 				expect( linkButton.isOn ).to.be.false;
 				expect( linkButton.label ).to.equal( label );
-				expect( linkButton.icon ).to.equal( linkIcon );
+				expect( linkButton.icon ).to.equal( IconLink );
 				expect( linkButton.keystroke ).to.equal( 'Ctrl+K' );
 			} );
 

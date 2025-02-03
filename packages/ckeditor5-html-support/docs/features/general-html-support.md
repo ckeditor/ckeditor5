@@ -13,7 +13,7 @@ With the General HTML Support (GHS) feature, developers can enable HTML features
 
 ## Demo
 
-Use the {@link features/source-editing-enhanced Enhanced source code editing feature} toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/source.svg Enhanced source code editing} to view and edit the HTML source of the document. You can find the configuration of this snippet below the demo.
+Use the {@link features/source-editing-enhanced Enhanced source code editing feature} toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/source.svg Enhanced source code editing} to view and edit the HTML source of the document. You can find the configuration of this snippet below the demo.
 
 You can configure the General HTML Support feature using the `config.htmlSupport` property. With this property, you need to list the HTML features that should be handled by GHS.
 
