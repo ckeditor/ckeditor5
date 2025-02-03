@@ -157,6 +157,32 @@ describe( 'EmojiRepository', () => {
 			await editor2.destroy();
 		} );
 
+		it( 'should fetch the emoji database version 16 only once even if first download has failed', async () => {
+			const { editor: editor1, domElement: domElement1 } = await createTestEditor( resolve => {
+				resolve( new Response( null, { status: 500 } ) );
+			} );
+
+			const { editor: editor2, domElement: domElement2 } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', group: 0 },
+					{ annotation: 'unamused face', group: 0 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			expect( fetchStub.calledOnce ).to.equal( true );
+
+			const database = EmojiRepository._database[ 16 ];
+
+			expect( database ).to.deep.equal( [] );
+
+			domElement1.remove();
+			domElement2.remove();
+			await editor1.destroy();
+			await editor2.destroy();
+		} );
+
 		it( 'should filter out group "2" from the fetched emoji database', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
