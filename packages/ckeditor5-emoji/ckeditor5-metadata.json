@@ -5,14 +5,21 @@
 			"className": "Emoji",
 			"description": "Allows for inserting emojis via a dropdown or by typing `:` followed by emoji name.",
 			"path": "src/emoji.js",
-			"docs": "features/emoji.html"
+			"docs": "features/emoji.html",
+			"requires": [
+				"EmojiMention",
+				"EmojiPicker"
+			]
 		},
 		{
 			"name": "Emoji mention",
 			"className": "EmojiMention",
 			"description": "Allows for inserting emojis by typing `:` followed by emoji name.",
 			"path": "src/emojimention.js",
-			"docs": "features/emoji.html"
+			"docs": "features/emoji.html",
+			"requires": [
+				"Mention"
+			]
 		},
 		{
 			"name": "Emoji picker",
