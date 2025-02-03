@@ -93,29 +93,28 @@ export default class EmailIntegrationUtils extends Plugin {
 	 * @internal
 	 */
 	public _validateConfigColorValue<const K extends string>( configPath: NeverIfUnknownConfigPath<K> ): void {
-		let color = this.editor.config.get( configPath ) as string | Array<ColorOption> | undefined;
+		const colorConfig = this.editor.config.get( configPath ) as string | Array<ColorOption> | undefined;
 
-		if ( !color ) {
+		if ( !colorConfig ) {
 			return;
 		}
 
-		if ( typeof color === 'string' ) {
-			color = [ color ];
-		}
+		const colors = Array.isArray( colorConfig ) ? colorConfig : [ colorConfig ];
 
-		if ( Array.isArray( color ) ) {
-			for ( const item of color ) {
-				const color = typeof item === 'string' ? item : item.color;
+		for ( const [ index, item ] of colors.entries() ) {
+			const color = typeof item === 'string' ? item : item.color;
 
-				if ( isUnsupportedEmailColor( color ) ) {
-					/**
-					 * The color format used in the configuration is not supported in email clients.
-					 * It may not be displayed correctly in some email clients. Please use `rgb()` or `#RRGGBB` format instead.
-					 *
-					 * @error email-unsupported-color-value
-					 */
-					this._logSuppressibleWarning( 'email-unsupported-color-value', { configPath, color } );
-				}
+			if ( isUnsupportedEmailColor( color ) ) {
+				/**
+				 * The color format used in the configuration is not supported in email clients.
+				 * It may not be displayed correctly in some email clients. Please use `rgb()` or `#RRGGBB` format instead.
+				 *
+				 * @error email-unsupported-color-value
+				 */
+				this._logSuppressibleWarning( 'email-unsupported-color-value', {
+					configPath: colors.length === 1 ? configPath : `${ configPath }[${ index }]`,
+					color
+				} );
 			}
 		}
 	}
