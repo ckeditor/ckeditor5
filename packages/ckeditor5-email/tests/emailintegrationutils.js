@@ -87,6 +87,15 @@ describe( 'EmailIntegrationUtils', () => {
 
 			sinon.assert.notCalled( warnStub );
 		} );
+
+		it( 'should be possible to suppress warning using function accepting data', () => {
+			editor.config.set( 'email.warnings.suppress', ( code, data ) => code === 'test-warning' && data === 'test-data' );
+			const utils = editor.plugins.get( EmailIntegrationUtils );
+
+			utils._logSuppressibleWarning( 'test-warning', 'test-data' );
+
+			sinon.assert.notCalled( warnStub );
+		} );
 	} );
 
 	describe( '_checkUnsupportedPlugin()', () => {
