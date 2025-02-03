@@ -39,7 +39,7 @@ export default function isEmojiSupported( unicode: string ): boolean {
 	let i = 0;
 
 	// Search the first visible pixel.
-	for ( ; i < count && !a[ i + 3 ]; i += 4 ) ;
+	for ( ; i < count && !a[ i + 3 ]; i += 4 );
 
 	// No visible pixel.
 	/* istanbul ignore next -- @preserve */
@@ -57,7 +57,7 @@ export default function isEmojiSupported( unicode: string ): boolean {
 		return false;
 	}
 
-	// Some emojis are a contraction of different ones, so if it's not supported, it will show multiple characters.
+	//Some emojis consist of different ones, so they will show multiple characters if they are not supported.
 	/* istanbul ignore next -- @preserve */
 	if ( ctx.measureText( unicode ).width >= CANVAS_WIDTH ) {
 		return false;
