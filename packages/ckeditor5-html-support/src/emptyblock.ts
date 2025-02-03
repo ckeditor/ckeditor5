@@ -74,7 +74,7 @@ export default class EmptyBlock extends Plugin {
 	public afterInit(): void {
 		const { model, conversion, plugins, config } = this.editor;
 		const schema = model.schema;
-		const preserveInEditingView = config.get( 'htmlSupport.emptyBlock.preserveInEditingView' );
+		const preserveEmptyBlocksInEditingView = config.get( 'htmlSupport.preserveEmptyBlocksInEditingView' );
 
 		schema.extend( '$block', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 		schema.extend( '$container', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
@@ -83,7 +83,7 @@ export default class EmptyBlock extends Plugin {
 			schema.extend( 'tableCell', { allowAttributes: [ EMPTY_BLOCK_MODEL_ATTRIBUTE ] } );
 		}
 
-		if ( preserveInEditingView ) {
+		if ( preserveEmptyBlocksInEditingView ) {
 			conversion.for( 'downcast' ).add( createEmptyBlockDowncastConverter() );
 		} else {
 			conversion.for( 'dataDowncast' ).add( createEmptyBlockDowncastConverter() );

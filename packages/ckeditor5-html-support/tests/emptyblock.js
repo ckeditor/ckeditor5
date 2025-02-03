@@ -326,16 +326,14 @@ describe( 'EmptyBlock', () => {
 		} );
 	} );
 
-	describe( 'config.emptyBlock.preserveInEditingView', () => {
+	describe( 'config.preserveEmptyBlocksInEditingView', () => {
 		it( 'should preserve empty blocks in editing view when enabled', async () => {
 			await editor.destroy();
 
 			editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
 				htmlSupport: {
-					emptyBlock: {
-						preserveInEditingView: true
-					}
+					preserveEmptyBlocksInEditingView: true
 				}
 			} );
 
@@ -355,9 +353,7 @@ describe( 'EmptyBlock', () => {
 			editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
 				htmlSupport: {
-					emptyBlock: {
-						preserveInEditingView: false
-					}
+					preserveEmptyBlocksInEditingView: false
 				}
 			} );
 

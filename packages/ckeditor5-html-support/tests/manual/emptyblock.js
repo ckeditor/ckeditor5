@@ -22,14 +22,12 @@ const config = {
 
 const preserveEmptyBlocksCheckbox = document.getElementById( 'preserve-empty-blocks' );
 
-function createEditor1( preserveInEditingView ) {
+function createEditor1( preserveEmptyBlocksInEditingView ) {
 	return ClassicEditor
 		.create( document.getElementById( 'editor1' ), {
 			...config,
 			htmlSupport: {
-				emptyBlock: {
-					preserveInEditingView
-				}
+				preserveEmptyBlocksInEditingView
 			}
 		} )
 		.then( instance => {
