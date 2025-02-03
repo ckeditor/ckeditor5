@@ -80,16 +80,11 @@ export class TableEmailIntegration extends Plugin {
 	 */
 	private _checkTablePropertiesConfig( field: 'tableProperties' | 'tableCellProperties' ): void {
 		const utils = this.editor.plugins.get( EmailIntegrationUtils );
-		const colorFields = [
-			`table.${ field }.borderColors`,
-			`table.${ field }.backgroundColors`,
-			`table.${ field }.defaultProperties.borderColor`,
-			`table.${ field }.defaultProperties`
-		] as const;
 
-		for ( const field of colorFields ) {
-			utils._validateConfigColorValue( field );
-		}
+		utils._validateConfigColorValue( `table.${ field }.borderColors` );
+		utils._validateConfigColorValue( `table.${ field }.backgroundColors` );
+		utils._validateConfigColorValue( `table.${ field }.defaultProperties.borderColor` );
+		utils._validateConfigColorValue( `table.${ field }.defaultProperties` );
 
 		utils._validateConfigColorFormat( `table.${ field }.colorPicker.format` );
 	}
