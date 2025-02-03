@@ -12,18 +12,23 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import EmojiRepository from '../src/emojirepository.js';
 
-describe( 'EmojiRepository', () => {
-	testUtils.createSinonSandbox();
+/* global document */
 
-	let isEmojiSupportedStub, getEmojiSupportedVersionByOsStub, hasZwjStub, consoleStub, fetchStub;
+describe( 'EmojiRepository', () => {
+	let isEmojiZwjSupportedStub, getEmojiSupportedVersionByOsStub, hasZwjStub, isEmojiSupportedStub, consoleStub, fetchStub;
 
 	beforeEach( () => {
-		isEmojiSupportedStub = testUtils.sinon.stub( EmojiRepository, '_isEmojiZwjSupported' ).returns( true );
+		isEmojiZwjSupportedStub = testUtils.sinon.stub( EmojiRepository, '_isEmojiZwjSupported' ).returns( true );
 		getEmojiSupportedVersionByOsStub = testUtils.sinon.stub( EmojiRepository, '_getEmojiSupportedVersionByOs' ).returns( 100 );
 		hasZwjStub = testUtils.sinon.stub( EmojiRepository, '_hasZwj' ).returns( false );
+		isEmojiSupportedStub = testUtils.sinon.stub( EmojiRepository, '_isEmojiSupported' ).returns( true );
 
-		consoleStub = sinon.stub( console, 'warn' );
+		consoleStub = testUtils.sinon.stub( console, 'warn' );
 		fetchStub = testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( '[]' ) );
+	} );
+
+	afterEach( () => {
+		testUtils.sinon.restore();
 	} );
 
 	it( 'should be correctly named', () => {
@@ -147,7 +152,7 @@ describe( 'EmojiRepository', () => {
 			hasZwjStub.callsFake( emoji => emoji !== '😐️' );
 
 			// Unamused face is the only supported ZWJ emoji.
-			isEmojiSupportedStub.callsFake( item => item.annotation === 'unamused face' );
+			isEmojiZwjSupportedStub.callsFake( item => item.annotation === 'unamused face' );
 
 			const response = JSON.stringify( [
 				{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
@@ -579,6 +584,76 @@ describe( 'EmojiRepository', () => {
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
 			expect( result ).to.be.false;
+		} );
+	} );
+
+	describe( '_getEmojiSupportedVersionByOs()', () => {
+		it( 'should return version 15 for shaking head', async () => {
+			getEmojiSupportedVersionByOsStub.restore();
+			isEmojiSupportedStub.callsFake( emoji => emoji === '🫨' );
+
+			const result = EmojiRepository._getEmojiSupportedVersionByOs( '🫨' );
+
+			expect( result ).to.equal( 15 );
+		} );
+
+		it( 'should return version 16 for face with bags under eyes', async () => {
+			getEmojiSupportedVersionByOsStub.restore();
+			isEmojiSupportedStub.callsFake( emoji => emoji === '🫩' );
+
+			const result = EmojiRepository._getEmojiSupportedVersionByOs( '🫩' );
+
+			expect( result ).to.equal( 16 );
+		} );
+	} );
+
+	describe( '_hasZwj()', () => {
+		it( 'should return version 15 for shaking head', async () => {
+			hasZwjStub.restore();
+
+			const result = EmojiRepository._hasZwj( '🙂' );
+
+			expect( result ).to.be.false;
+		} );
+
+		it( 'should return version 16 for face with bags under eyes', async () => {
+			hasZwjStub.restore();
+
+			const result = EmojiRepository._hasZwj( '😮‍💨' );
+
+			expect( result ).to.be.true;
+		} );
+	} );
+
+	describe( '_isEmojiZwjSupported()', () => {
+		it( 'should return true when emoji is standard width', async () => {
+			const container = document.createElement( 'div' );
+			const emojiItem = { emoji: '🙂' };
+
+			global.document.body.appendChild( container );
+
+			isEmojiZwjSupportedStub.restore();
+
+			const result = EmojiRepository._isEmojiZwjSupported( emojiItem, container );
+
+			expect( result ).to.be.true;
+
+			container.remove();
+		} );
+
+		it( 'should return false when emoji is abnormally wide (size larger than 2 emoji)', async () => {
+			const container = document.createElement( 'div' );
+			const emojiItem = { emoji: '🙂🙂🙂' };
+
+			global.document.body.appendChild( container );
+
+			isEmojiZwjSupportedStub.restore();
+
+			const result = EmojiRepository._isEmojiZwjSupported( emojiItem, container );
+
+			expect( result ).to.be.false;
+
+			container.remove();
 		} );
 	} );
 } );

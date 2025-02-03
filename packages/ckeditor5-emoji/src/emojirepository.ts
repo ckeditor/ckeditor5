@@ -239,18 +239,30 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * A function used to check if the given ZWJ emoji is supported in the operating system.
-	 *
-	 * Referenced for unit testing purposes.
+	 * Checks the supported emoji version by the OS, by sampling some representatives from different emoji releases.
 	 */
-	private static _isEmojiZwjSupported = isEmojiZwjSupported;
+	private static _getEmojiSupportedVersionByOs() {
+		return Object.entries( EMOJI_SUPPORT_LEVEL ).reduce( ( supportedVersion, [ emoji, version ] ) => {
+			if ( this._isEmojiSupported( emoji ) && version > supportedVersion ) {
+				supportedVersion = version;
+			}
+
+			return supportedVersion;
+		}, 0 );
+	}
 
 	/**
-	 * A function used to get the emoji version supported by the operating system.
-	 *
-	 * Referenced for unit testing purposes.
+	 * Checks whether the emoji is supported in the operating system.
 	 */
-	private static _getEmojiSupportedVersionByOs = getEmojiSupportedVersionByOs;
+	private static _isEmojiZwjSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
+		const emojiWidth = getNodeWidth( container, item.emoji );
+
+		// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
+		// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
+		// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
+		// So here we set the threshold at 1.8 times the size of the baseline emoji.
+		return emojiWidth < BASELINE_EMOJI_WIDTH * 1.8;
+	}
 
 	/**
 	 * A function used to determine if emoji has a zero width joiner.
@@ -258,6 +270,13 @@ export default class EmojiRepository extends Plugin {
 	 * Referenced for unit testing purposes.
 	 */
 	private static _hasZwj = hasZwj;
+
+	/**
+	 * A function used to determine if emoji is supported.
+	 *
+	 * Referenced for unit testing purposes.
+	 */
+	private static _isEmojiSupported = isEmojiSupported;
 }
 
 /**
@@ -289,19 +308,6 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 	}
 
 	return result;
-}
-
-/**
- * Checks the supported emoji version by the OS, by sampling some representatives from different emoji releases.
- */
-function getEmojiSupportedVersionByOs() {
-	return Object.entries( EMOJI_SUPPORT_LEVEL ).reduce( ( supportedVersion, [ emoji, version ] ) => {
-		if ( isEmojiSupported( emoji ) && version > supportedVersion ) {
-			supportedVersion = version;
-		}
-
-		return supportedVersion;
-	}, 0 );
 }
 
 /**
@@ -338,19 +344,6 @@ function getNodeWidth( container: HTMLDivElement, node: string ): number {
 	container.removeChild( span );
 
 	return nodeWidth;
-}
-
-/**
- * Checks whether the emoji is supported in the operating system.
- */
-function isEmojiZwjSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
-	const emojiWidth = getNodeWidth( container, item.emoji );
-
-	// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
-	// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
-	// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
-	// So here we set the threshold at 1.8 times the size of the baseline emoji.
-	return emojiWidth < BASELINE_EMOJI_WIDTH * 1.8;
 }
 
 /**

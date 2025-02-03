@@ -237,6 +237,28 @@ describe( 'EmojiPicker', () => {
 		} );
 	} );
 
+	describe( '_createEmojiPickerView()', () => {
+		it( 'should close the panel on pressing esc', () => {
+			emojiPicker.showUI();
+
+			const hideUiSpy = sinon.spy( emojiPicker, '_hideUI' );
+			const preventDefaultSpy = sinon.spy();
+			const stopPropagationSpy = sinon.spy();
+
+			const keyEvtData = {
+				keyCode: keyCodes.esc,
+				preventDefault: preventDefaultSpy,
+				stopPropagation: stopPropagationSpy
+			};
+
+			emojiPicker.emojiPickerView.keystrokes.press( keyEvtData );
+
+			sinon.assert.calledOnce( hideUiSpy );
+			sinon.assert.calledOnce( preventDefaultSpy );
+			sinon.assert.calledOnce( stopPropagationSpy );
+		} );
+	} );
+
 	describe( 'showUI()', () => {
 		it( 'should read categories from the repository plugin when creating UI', () => {
 			const { getEmojiCategories } = editor.plugins.get( 'EmojiRepository' );
@@ -619,6 +641,36 @@ describe( 'EmojiPicker', () => {
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 			} );
+		} );
+	} );
+
+	describe( '_hideUI()', () => {
+		it( 'should cleanup properties when hiding the UI', () => {
+			emojiPicker.showUI();
+
+			const removeSpy = sinon.spy( emojiPicker._balloonPlugin, 'remove' );
+			const setInputValueSpy = sinon.spy( emojiPicker.emojiPickerView.searchView, 'setInputValue' );
+			const focusSpy = sinon.spy( emojiPicker.editor.editing.view, 'focus' );
+			const hideSelectionSpy = sinon.spy( emojiPicker, '_hideFakeVisualSelection' );
+
+			emojiPicker._hideUI();
+
+			sinon.assert.calledOnceWithExactly( removeSpy, emojiPicker.emojiPickerView );
+			sinon.assert.calledOnceWithExactly( setInputValueSpy, '' );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.calledOnce( hideSelectionSpy );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy an instance of emoji picker view', () => {
+			emojiPicker.showUI();
+
+			const spy = sinon.spy( emojiPicker.emojiPickerView, 'destroy' );
+
+			emojiPicker.destroy();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
