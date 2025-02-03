@@ -14,7 +14,7 @@ import Range from '../range.js';
 import type Document from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit/compat';
 import type { Selectable } from '../selection.js';
 
 /**

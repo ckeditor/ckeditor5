@@ -7,7 +7,7 @@
  * @module table/tablecolumnresize/tablecolumnresizeediting
  */
 
-import { throttle, isEqual } from 'lodash-es';
+import { throttle, isEqual } from 'es-toolkit/compat';
 
 import {
 	global,

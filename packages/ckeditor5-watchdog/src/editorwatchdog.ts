@@ -9,7 +9,7 @@
 
 /* globals console */
 
-import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
+import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-toolkit/compat';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
 import Watchdog, { type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -41,7 +41,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
-	private _throttledSave: DebouncedFunc<() => void>;
+	private _throttledSave: DebouncedFunction<() => void>;
 
 	/**
 	 * The latest saved editor data represented as a root name -> root data object.

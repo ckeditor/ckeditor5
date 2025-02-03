@@ -7,15 +7,18 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set, unset } from 'lodash-es';
+import { get, isObject, merge, set, unset } from 'es-toolkit/compat';
+import type { ElementAttributeValue } from './element.js';
+import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
+import { isPatternMatched } from './matcher.js';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export default class StylesMap {
+export default class StylesMap implements ElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
-	 * value access model using lodash's get, set, unset, etc methods.
+	 * value access model using es-toolkit's get, set, unset, etc methods.
 	 *
 	 * When no style processor rules are defined it acts as simple key-value storage.
 	 */
@@ -71,7 +74,7 @@ export default class StylesMap {
 	 * styles.setTo( 'border:1px solid blue;margin-top:1px;' );
 	 * ```
 	 */
-	public setTo( inlineStyle: string ): void {
+	public setTo( inlineStyle: string ): this {
 		this.clear();
 
 		const parsedStyles = parseInlineStyles( inlineStyle );
@@ -79,6 +82,8 @@ export default class StylesMap {
 		for ( const [ key, value ] of parsedStyles ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
 		}
+
+		return this;
 	}
 
 	/**
@@ -244,18 +249,20 @@ export default class StylesMap {
 	 * styles.toString(); // -> 'margin-bottom:1px;margin-left:1px;'
 	 * ```
 	 *
-	 * @param name Style name.
+	 * @param names Style name or an array of names.
 	 */
-	public remove( name: string ): void {
-		this._cachedStyleNames = null;
-		this._cachedExpandedStyleNames = null;
+	public remove( names: ArrayOrItem<string> ): void {
+		for ( const name of toArray( names ) ) {
+			this._cachedStyleNames = null;
+			this._cachedExpandedStyleNames = null;
 
-		const path = toPath( name );
+			const path = toPath( name );
 
-		unset( this._styles, path );
-		delete this._styles[ name ];
+			unset( this._styles, path );
+			delete this._styles[ name ];
 
-		this._cleanEmptyObjectsOnPath( path );
+			this._cleanEmptyObjectsOnPath( path );
+		}
 	}
 
 	/**
@@ -284,7 +291,7 @@ export default class StylesMap {
 	 *
 	 * @param name Style name.
 	 */
-	public getNormalized( name?: string ): StyleValue {
+	public getNormalized( name?: string ): StyleValue | undefined {
 		return this._styleProcessor.getNormalized( name, this._styles );
 	}
 
@@ -433,12 +440,36 @@ export default class StylesMap {
 	}
 
 	/**
+	 * Alias for {@link #getStyleNames}.
+	 */
+	public keys(): Array<string> {
+		return this.getStyleNames();
+	}
+
+	/**
 	 * Removes all styles.
 	 */
 	public clear(): void {
 		this._styles = {};
 		this._cachedStyleNames = null;
 		this._cachedExpandedStyleNames = null;
+	}
+
+	/**
+	 * Returns `true` if both attributes have the same styles.
+	 */
+	public isSimilar( other: StylesMap ): boolean {
+		if ( this.size !== other.size ) {
+			return false;
+		}
+
+		for ( const property of this.getStyleNames() ) {
+			if ( !other.has( property ) || other.getAsString( property ) !== this.getAsString( property ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -454,6 +485,138 @@ export default class StylesMap {
 		}
 
 		return parsed;
+	}
+
+	/**
+	 * Clones the attribute value.
+	 *
+	 * @internal
+	 */
+	public _clone(): this {
+		const clone = new ( this.constructor as any )( this._styleProcessor );
+
+		clone.set( this.getNormalized() );
+
+		return clone;
+	}
+
+	/**
+	 * Used by the {@link module:engine/view/matcher~Matcher Matcher} to collect matching styles.
+	 *
+	 * @internal
+	 * @param tokenPattern The matched style name pattern.
+	 * @param valuePattern The matched style value pattern.
+	 * @returns An array of matching tokens (style names).
+	 */
+	public _getTokensMatch(
+		tokenPattern: true | string | RegExp,
+		valuePattern: true | string | RegExp
+	): Array<string> | undefined {
+		const match: Array<string> = [];
+
+		for ( const styleName of this.getStyleNames( true ) ) {
+			if ( isPatternMatched( tokenPattern, styleName ) ) {
+				if ( valuePattern === true ) {
+					match.push( styleName );
+					continue;
+				}
+
+				// For now, the reducers are not returning the full tree of properties.
+				// Casting to string preserves the old behavior until the root cause is fixed.
+				// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
+				const value = this.getAsString( styleName );
+
+				if ( isPatternMatched( valuePattern, value! ) ) {
+					match.push( styleName );
+				}
+			}
+		}
+
+		return match.length ? match : undefined;
+	}
+
+	/**
+	 * Returns a list of consumables for the attribute. This includes related styles.
+	 *
+	 * Could be filtered by the given style name.
+	 *
+	 * @internal
+	 */
+	public _getConsumables( name?: string ): Array<string> {
+		const result = [];
+
+		if ( name ) {
+			result.push( name );
+
+			for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
+				result.push( relatedName );
+			}
+		}
+		else {
+			for ( const name of this.getStyleNames() ) {
+				for ( const relatedName of this._styleProcessor.getRelatedStyles( name ) ) {
+					result.push( relatedName );
+				}
+
+				result.push( name );
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Used by {@link module:engine/view/element~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without
+	 * conflicts into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
+	 * @internal
+	 */
+	public _canMergeFrom( other: StylesMap ): boolean {
+		for ( const key of other.getStyleNames() ) {
+			if ( this.has( key ) && this.getAsString( key ) !== other.getAsString( key ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 *
+	 * @internal
+	 */
+	public _mergeFrom( other: StylesMap ): void {
+		for ( const prop of other.getStyleNames() ) {
+			if ( !this.has( prop ) ) {
+				this.set( prop, other.getAsString( prop )! );
+			}
+		}
+	}
+
+	/**
+	 * Used by {@link module:engine/view/element~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully
+	 * subtracted from the attribute.
+	 *
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 *
+	 * @internal
+	 */
+	public _isMatching( other: StylesMap ): boolean {
+		for ( const key of other.getStyleNames() ) {
+			if ( !this.has( key ) || this.getAsString( key ) !== other.getAsString( key ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -560,7 +723,7 @@ export class StylesProcessor {
 	 * @param name Name of style property.
 	 * @param styles Object holding normalized styles.
 	 */
-	public getNormalized( name: string | undefined, styles: Styles ): StyleValue {
+	public getNormalized( name: string | undefined, styles: Styles ): StyleValue | undefined {
 		if ( !name ) {
 			return merge( {}, styles );
 		}
@@ -949,7 +1112,7 @@ function parseInlineStyles( stylesString: string ): Map<string, string> {
 }
 
 /**
- * Return lodash compatible path from style name.
+ * Return es-toolkit compatible path from style name.
  */
 function toPath( name: string ): string {
 	return name.replace( '-', '.' );

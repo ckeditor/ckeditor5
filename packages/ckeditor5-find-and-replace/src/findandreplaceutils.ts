@@ -10,7 +10,7 @@
 import type { Element, Item, Marker, Model, Range } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection, uid } from 'ckeditor5/src/utils.js';
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 import type { ResultType } from './findandreplace.js';
 
 /**
