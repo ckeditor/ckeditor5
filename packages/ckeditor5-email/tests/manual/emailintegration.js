@@ -17,13 +17,6 @@ import { Image } from '@ckeditor/ckeditor5-image';
 
 import EmailIntegration from '../../src/emailintegration.js';
 
-const UNSUPPORTED_ELEMENTS = [
-	'object', 'article', 'details', 'main', 'nav', 'summary',
-	'abbr', 'acronym', 'bdi', 'output', 'hgroup',
-	'form', 'input', 'button', 'audio', 'canvas',
-	'meter', 'progress', 'iframe'
-];
-
 ClassicEditor
 	.create( document.getElementById( 'editor' ), {
 		plugins: [
@@ -73,10 +66,4 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 		CKEditorInspector.attach( { Editor: editor } );
-
-		const dataFilter = editor.plugins.get( 'DataFilter' );
-
-		for ( const element of UNSUPPORTED_ELEMENTS ) {
-			dataFilter.allowElement( element );
-		}
 	} );
