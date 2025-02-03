@@ -44,10 +44,10 @@ export class EmptyBlockIntegration extends Plugin {
 
 		if ( !emptyBlock ) {
 			/**
-			 * Warning shown when the EmptyBlock plugin is missing. While it's not required for the email integration to work,
+			 * Warning shown when the EmptyBlock plugin is missing. While it is not required for the email integration to work,
 			 * the empty block integration is recommended to ensure that exported content has empty blocks. This is important for
-			 * email clients because the empty block may be used as separators between different blocks. The editor exports empty
-			 * blocks filled with a non-breaking space and it may break some parts of the email layout (like dividers).
+			 * email clients because the empty blocks may be used as separators between different blocks. The editor exports empty
+			 * blocks filled with a non-breaking space and it may break some parts of the email layout (such as dividers).
 			 *
 			 * @error email-integration-missing-empty-block-plugin
 			 */

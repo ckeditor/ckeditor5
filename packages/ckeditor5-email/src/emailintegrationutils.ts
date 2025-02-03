@@ -78,9 +78,9 @@ export default class EmailIntegrationUtils extends Plugin {
 
 		/**
 		 * The plugin is not supported in email editing mode as it may not work correctly in email clients.
-		 * While it is possible to disable this warning using the `email.warnings.suppress` configuration option
-		 * or by removing the plugin from the editor configuration, it is strongly discouraged as the plugin's
-		 * functionality may break or behave unexpectedly in email clients.
+		 * While it is possible to disable this warning using the `email.warnings.suppress` configuration option,
+		 * it is strongly discouraged as the plugin's functionality may break or behave unexpectedly in email clients.
+		 * Removing the plugin from the editor configuration will also turn off the warning.
 		 *
 		 * @error email-integration-unsupported-plugin
 		 */
@@ -107,8 +107,8 @@ export default class EmailIntegrationUtils extends Plugin {
 
 			if ( isUnsupportedEmailColor( color ) ) {
 				/**
-				 * The color format used in the configuration is not supported in email clients.
-				 * It may not be displayed correctly in some email clients. Please use `rgb()` or `#RRGGBB` format instead.
+				 * The color format used in the configuration is not supported by many popular email clients.
+				 * Some email clients may dispaly it incorrectly. Please use the `rgb()` or `#RRGGBB` format instead.
 				 *
 				 * @error email-integration-unsupported-color-value
 				 */
@@ -134,8 +134,8 @@ export default class EmailIntegrationUtils extends Plugin {
 
 		if ( isUnsupportedEmailColor( format ) ) {
 			/**
-			 * The color format used in the configuration is not supported in email clients.
-			 * It may not be displayed correctly in some email clients. Please use `rgb()` or `#RRGGBB` format instead.
+			 * The color format used in the configuration is not supported by many popular email clients.
+			 * Some email clients may dispaly it incorrectly. Please use the `rgb()` or `#RRGGBB` format instead.
 			 *
 			 * @error email-integration-unsupported-color-format
 			 */

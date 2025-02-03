@@ -45,7 +45,7 @@ export class SourceEditingIntegration extends Plugin {
 		if ( !plugins.has( 'SourceEditing' ) && !plugins.has( 'SourceEditingEnhanced' ) ) {
 			/**
 			 * Warning shown when the `SourceEditing` or `SourceEditingEnhanced` plugin is missing in the email integration.
-			 * While it's not required for the email integration to work, it's recommended to have it enabled to ensure that the source code
+			 * While it is not required for the email integration to work, it is recommended to enable it to ensure that the source code
 			 * view is available for users. This is important for email developers who need to work with the source code directly.
 			 *
 			 * @error email-integration-missing-source-editing-plugin

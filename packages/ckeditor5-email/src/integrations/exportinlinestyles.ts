@@ -44,8 +44,8 @@ export class ExportInlineStylesIntegration extends Plugin {
 
 		if ( !exportInlineStyles ) {
 			/**
-			 * Warning shown when the ExportInlineStyles plugin is missing. While it's not required for the email integration to work,
-			 * it's recommended to have it enabled to ensure that exported content has inlined styles. This is important for email clients
+			 * Warning shown when the ExportInlineStyles plugin is missing. While it is not required for the email integration to work,
+			 * it is recommended to enable it to ensure that exported content has inlined styles. This is important for email clients
 			 * as they have compatibility issues with external stylesheets and CSS classes.
 			 *
 			 * @error email-integration-missing-export-inline-styles-plugin
