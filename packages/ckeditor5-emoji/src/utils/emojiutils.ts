@@ -33,7 +33,7 @@ const EMOJI_SUPPORT_LEVEL = {
 const BASELINE_EMOJI_WIDTH = 24;
 
 /**
- * The CKBox utilities plugin.
+ * The Emoji utilities plugin.
  */
 export default class EmojiUtils extends Plugin {
 	/**
