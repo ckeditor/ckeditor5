@@ -88,7 +88,7 @@ export default class EmailIntegrationUtils extends Plugin {
 	}
 
 	/**
-	 * Logs a warning about an unsupported color format used in the configuration.
+	 * Logs a warning about an unsupported color value used in the configuration.
 	 *
 	 * @internal
 	 */
