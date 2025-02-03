@@ -35,9 +35,9 @@ describe( 'utils', () => {
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
-		it( 'should not remove empty style attribute', () => {
+		it( 'should remove empty style attribute', () => {
 			const actual = '<a style=""></a>';
-			const expected = '<a style=""></a>';
+			const expected = '<a></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );

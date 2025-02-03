@@ -63,7 +63,7 @@ export default class MentionEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'span',
-				attributes: 'data-mention',
+				key: 'data-mention',
 				classes: 'mention'
 			},
 			model: {
