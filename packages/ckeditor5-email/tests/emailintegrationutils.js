@@ -6,7 +6,7 @@
 /* global document, console */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { EmailIntegrationUtils, isUnsupportedEmailColor } from '../src/emailintegrationutils.js';
+import EmailIntegrationUtils, { isUnsupportedEmailColor } from '../src/emailintegrationutils.js';
 
 describe( 'EmailIntegrationUtils', () => {
 	let domElement, editor, warnStub, infoStub;

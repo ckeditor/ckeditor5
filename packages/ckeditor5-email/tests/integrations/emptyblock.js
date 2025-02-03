@@ -9,7 +9,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { EmptyBlockIntegration } from '../../src/integrations/emptyblock.js';
-import { EmailIntegrationUtils } from '../../src/emailintegrationutils.js';
+import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'EmptyBlockIntegration', () => {
 	let domElement, editor, warnStub;

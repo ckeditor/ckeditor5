@@ -15,7 +15,7 @@ import { type GetSubConfig, logWarning } from 'ckeditor5/src/utils.js';
 /**
  * A utility plugin for the email integration that provides common methods for checking the editor configuration and logging warnings.
  */
-export class EmailIntegrationUtils extends Plugin {
+export default class EmailIntegrationUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

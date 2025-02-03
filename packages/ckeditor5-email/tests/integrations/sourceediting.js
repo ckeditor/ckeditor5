@@ -9,7 +9,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 import { SourceEditingIntegration } from '../../src/integrations/sourceediting.js';
-import { EmailIntegrationUtils } from '../../src/emailintegrationutils.js';
+import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'SourceEditingIntegration', () => {

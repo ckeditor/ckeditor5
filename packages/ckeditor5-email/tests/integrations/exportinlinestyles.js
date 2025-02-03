@@ -9,7 +9,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { ExportInlineStylesIntegration } from '../../src/integrations/exportinlinestyles.js';
-import { EmailIntegrationUtils } from '../../src/emailintegrationutils.js';
+import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'ExportInlineStylesIntegration', () => {
 	let domElement, editor, warnStub;

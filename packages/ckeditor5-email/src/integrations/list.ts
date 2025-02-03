@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ListConfig } from '@ckeditor/ckeditor5-list';
 
-import { EmailIntegrationUtils } from '../emailintegrationutils.js';
+import EmailIntegrationUtils from '../emailintegrationutils.js';
 
 /**
  * A plugin that checks if the List feature configuration is supported by the email integration.

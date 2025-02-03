@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { EmailIntegrationUtils } from '../emailintegrationutils.js';
+import EmailIntegrationUtils from '../emailintegrationutils.js';
 
 /**
  * A plugin that checks if the EmptyBlock plugin is properly configured for the email integration.

@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { EmailIntegrationUtils } from '../emailintegrationutils.js';
+import EmailIntegrationUtils from '../emailintegrationutils.js';
 
 /**
  * A plugin that warns about using MathType plugin in the email integration.

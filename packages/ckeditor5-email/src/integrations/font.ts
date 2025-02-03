@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { FontColorConfig } from '@ckeditor/ckeditor5-font';
 
-import { EmailIntegrationUtils } from '../emailintegrationutils.js';
+import EmailIntegrationUtils from '../emailintegrationutils.js';
 
 /**
  * A plugin that checks if the Font plugin is properly configured for the email integration.

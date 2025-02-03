@@ -9,7 +9,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { List } from '@ckeditor/ckeditor5-list';
 
 import { ListEmailIntegration } from '../../src/integrations/list.js';
-import { EmailIntegrationUtils } from '../../src/emailintegrationutils.js';
+import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'ListEmailIntegration', () => {
 	let domElement, editor, warnStub;

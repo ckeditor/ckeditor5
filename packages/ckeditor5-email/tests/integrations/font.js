@@ -8,7 +8,7 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { FontIntegration } from '../../src/integrations/font.js';
-import { EmailIntegrationUtils } from '../../src/emailintegrationutils.js';
+import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'FontIntegration', () => {
 	let domElement, editor, warnStub;

@@ -9,7 +9,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { MathTypeEmailIntegration } from '../../src/integrations/mathtype.js';
-import { EmailIntegrationUtils } from '../../src/emailintegrationutils.js';
+import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'MathTypeEmailIntegration', () => {
 	let domElement, editor, warnStub;
