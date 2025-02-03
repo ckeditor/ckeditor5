@@ -4,7 +4,7 @@
  */
 
 import type { EmailIntegrationConfig } from './emailintegrationconfig.js';
-import type { EmailIntegration } from './index.js';
+import type { EmailIntegration, EmailIntegrationUtils } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -19,5 +19,6 @@ declare module '@ckeditor/ckeditor5-core' {
 
 	interface PluginsMap {
 		[ EmailIntegration.pluginName ]: EmailIntegration;
+		[ EmailIntegrationUtils.pluginName ]: EmailIntegrationUtils;
 	}
 }

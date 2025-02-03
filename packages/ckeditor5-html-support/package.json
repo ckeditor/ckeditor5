@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-table": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "@ckeditor/ckeditor5-widget": "44.1.0",
+    "@ckeditor/ckeditor5-email": "0.0.1",
     "ckeditor5": "44.1.0",
     "lodash-es": "4.17.21"
   },
