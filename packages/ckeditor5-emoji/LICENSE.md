@@ -20,7 +20,6 @@ The following libraries are included in CKEditor&nbsp;5 emoji feature under the 
 
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
-* Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 
 Trademarks
 ----------
