@@ -99,7 +99,8 @@ export default class EmailIntegrationUtils extends Plugin {
 			return;
 		}
 
-		const colors = Array.isArray( colorConfig ) ? colorConfig : [ colorConfig ];
+		const isArrayConfig = Array.isArray( colorConfig );
+		const colors = isArrayConfig ? colorConfig : [ colorConfig ];
 
 		for ( const [ index, item ] of colors.entries() ) {
 			const color = typeof item === 'string' ? item : item.color;
@@ -112,7 +113,7 @@ export default class EmailIntegrationUtils extends Plugin {
 				 * @error email-unsupported-color-value
 				 */
 				this._logSuppressibleWarning( 'email-unsupported-color-value', {
-					configPath: colors.length === 1 ? configPath : `${ configPath }[${ index }]`,
+					configPath: isArrayConfig ? `${ configPath }[${ index }]` : configPath,
 					color
 				} );
 			}

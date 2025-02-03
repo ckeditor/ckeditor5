@@ -114,7 +114,9 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._checkUnsupportedPlugin( 'TestPlugin' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-plugin' );
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-plugin', {
+				pluginName: 'TestPlugin'
+			} );
 		} );
 	} );
 
@@ -143,10 +145,13 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorValue( 'test.color' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value' );
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+				color: 'hsl(0,100%,50%)',
+				configPath: 'test.color'
+			} );
 		} );
 
-		it( 'should log warning for HSLA color in array', () => {
+		it( 'should log warning for HSLA color in array with single item', () => {
 			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colors', [
 				{ color: 'hsla(0,100%,50%,1)', label: 'Red' }
@@ -154,7 +159,30 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorValue( 'test.colors' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value' );
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+				color: 'hsla(0,100%,50%,1)',
+				configPath: 'test.colors[0]'
+			} );
+		} );
+
+		it( 'should log warning for HSLA color in array with multiple items', () => {
+			const utils = editor.plugins.get( EmailIntegrationUtils );
+			editor.config.set( 'test.colors', [
+				{ color: 'hsla(0,100%,50%,1)', label: 'Red' },
+				{ color: 'hsla(0,0,0,1)', label: 'Black' }
+			] );
+
+			utils._validateConfigColorValue( 'test.colors' );
+
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+				color: 'hsla(0,100%,50%,1)',
+				configPath: 'test.colors[0]'
+			} );
+
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+				color: 'hsla(0,0,0,1)',
+				configPath: 'test.colors[1]'
+			} );
 		} );
 
 		it( 'should not log warning for non-existent config path', () => {
@@ -182,7 +210,10 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-format' );
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-format', {
+				format: 'hsl',
+				configPath: 'test.colorFormat'
+			} );
 		} );
 
 		it( 'should log warning for hsla format', () => {
@@ -191,7 +222,10 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-format' );
+			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-format', {
+				format: 'hsla',
+				configPath: 'test.colorFormat'
+			} );
 		} );
 
 		it( 'should not log warning for non-existent config path', () => {
