@@ -38,20 +38,8 @@ ClassicEditor
 				isGallery: {
 					mode: 'manual',
 					label: 'Gallery link',
-					classes: 'gallery'
-				},
-				isNofollow: {
-					mode: 'manual',
-					label: 'No Follow',
 					attributes: {
-						rel: 'nofollow'
-					}
-				},
-				isSponsored: {
-					mode: 'manual',
-					label: 'Sponsored',
-					attributes: {
-						rel: 'sponsored'
+						class: 'gallery'
 					}
 				}
 			}
@@ -61,7 +49,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { manual: editor } );
+		CKEditorInspector.attach( 'manual', editor );
 		window.editors.manualDecorators = editor;
 	} )
 	.catch( err => {
@@ -96,7 +84,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { automatic: editor } );
+		CKEditorInspector.attach( 'automatic', editor );
 		window.editors.automaticDecorators = editor;
 	} )
 	.catch( err => {

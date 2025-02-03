@@ -325,37 +325,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
-
-		it( 'should add class token if reset is not set', () => {
-			const element = writer.createAttributeElement( 'span' );
-
-			writer.setAttribute( 'class', 'foo', false, element );
-			writer.setAttribute( 'class', 'bar', false, element );
-
-			expect( element.getAttribute( 'class' ) ).to.equal( 'foo bar' );
-			expect( element.hasClass( 'foo' ) ).to.be.true;
-			expect( element.hasClass( 'bar' ) ).to.be.true;
-		} );
-
-		it( 'should add style token if reset is not set', () => {
-			const element = writer.createAttributeElement( 'span' );
-
-			writer.setAttribute( 'style', [ 'font-size', '20px' ], false, element );
-			writer.setAttribute( 'style', [ 'color', 'red' ], false, element );
-
-			expect( element.getAttribute( 'style' ) ).to.equal( 'color:red;font-size:20px;' );
-			expect( element.getStyle( 'font-size' ) ).to.equal( '20px' );
-			expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-		} );
-
-		it( 'should add rel attribute token if reset is not set', () => {
-			const element = writer.createAttributeElement( 'a' );
-
-			writer.setAttribute( 'rel', 'foo', false, element );
-			writer.setAttribute( 'rel', 'bar', false, element );
-
-			expect( element.getAttribute( 'rel' ) ).to.equal( 'foo bar' );
-		} );
 	} );
 
 	describe( 'removeAttribute()', () => {
@@ -365,38 +334,6 @@ describe( 'DowncastWriter', () => {
 			writer.removeAttribute( 'foo', element );
 
 			expect( element.getAttribute( 'foo' ) ).to.be.undefined;
-		} );
-
-		it( 'should remove class token if remove value is set', () => {
-			const element = writer.createAttributeElement( 'span', { class: 'foo bar' } );
-
-			writer.removeAttribute( 'class', 'foo', element );
-			expect( element.getAttribute( 'class' ) ).to.equal( 'bar' );
-
-			writer.removeAttribute( 'class', 'bar', element );
-			expect( element.getAttribute( 'class' ) ).to.be.undefined;
-		} );
-
-		it( 'should remove style token if remove value is set', () => {
-			const element = writer.createAttributeElement( 'span', { style: 'font-size: 20px; color: red' } );
-
-			writer.removeAttribute( 'style', 'font-size', element );
-			expect( element.getAttribute( 'style' ) ).to.equal( 'color:red;' );
-
-			writer.removeAttribute( 'style', 'color', element );
-			expect( element.getAttribute( 'style' ) ).to.be.undefined;
-		} );
-
-		it( 'should remove rel attribute token if remove value is set', () => {
-			const element = writer.createAttributeElement( 'a', { rel: 'foo bar' } );
-
-			expect( element.getAttribute( 'rel' ) ).to.equal( 'foo bar' );
-
-			writer.removeAttribute( 'rel', 'foo', element );
-			expect( element.getAttribute( 'rel' ) ).to.equal( 'bar' );
-
-			writer.removeAttribute( 'rel', 'bar', element );
-			expect( element.getAttribute( 'rel' ) ).to.be.undefined;
 		} );
 	} );
 

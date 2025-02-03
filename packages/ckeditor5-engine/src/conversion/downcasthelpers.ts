@@ -1664,35 +1664,60 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 
 		// First remove the old attribute if there was one.
 		if ( data.attributeOldValue !== null && oldAttribute ) {
-			let value = oldAttribute.value;
+			if ( oldAttribute.key == 'class' ) {
+				const classes = typeof oldAttribute.value == 'string' ? oldAttribute.value.split( /\s+/ ) : oldAttribute.value;
 
-			if ( oldAttribute.key == 'style' ) {
-				if ( typeof oldAttribute.value == 'string' ) {
-					value = new StylesMap( viewWriter.document.stylesProcessor )
-						.setTo( oldAttribute.value )
-						.getStylesEntries()
-						.map( ( [ key ] ) => key );
-				} else {
-					value = Object.keys( oldAttribute.value );
+				for ( const className of classes ) {
+					viewWriter.removeClass( className, viewElement );
 				}
-			}
+			} else if ( oldAttribute.key == 'style' ) {
+				if ( typeof oldAttribute.value == 'string' ) {
+					const styles = new StylesMap( viewWriter.document.stylesProcessor );
 
-			viewWriter.removeAttribute( oldAttribute.key, value as ArrayOrItem<string>, viewElement );
+					styles.setTo( oldAttribute.value );
+
+					for ( const [ key ] of styles.getStylesEntries() ) {
+						viewWriter.removeStyle( key, viewElement );
+					}
+				} else {
+					const keys = Object.keys( oldAttribute.value );
+
+					for ( const key of keys ) {
+						viewWriter.removeStyle( key, viewElement );
+					}
+				}
+			} else {
+				viewWriter.removeAttribute( oldAttribute.key, viewElement );
+			}
 		}
 
 		// Then set the new attribute.
 		if ( data.attributeNewValue !== null && newAttribute ) {
-			let value = newAttribute.value;
+			if ( newAttribute.key == 'class' ) {
+				const classes = typeof newAttribute.value == 'string' ? newAttribute.value.split( /\s+/ ) : newAttribute.value;
 
-			if ( newAttribute.key == 'style' && typeof newAttribute.value == 'string' ) {
-				value = Object.fromEntries(
-					new StylesMap( viewWriter.document.stylesProcessor )
-						.setTo( newAttribute.value )
-						.getStylesEntries()
-				);
+				for ( const className of classes ) {
+					viewWriter.addClass( className, viewElement );
+				}
+			} else if ( newAttribute.key == 'style' ) {
+				if ( typeof newAttribute.value == 'string' ) {
+					const styles = new StylesMap( viewWriter.document.stylesProcessor );
+
+					styles.setTo( newAttribute.value );
+
+					for ( const [ key, value ] of styles.getStylesEntries() ) {
+						viewWriter.setStyle( key, value, viewElement );
+					}
+				} else {
+					const keys = Object.keys( newAttribute.value );
+
+					for ( const key of keys ) {
+						viewWriter.setStyle( key, ( newAttribute.value as Record<string, string> )[ key ], viewElement );
+					}
+				}
+			} else {
+				viewWriter.setAttribute( newAttribute.key, newAttribute.value as string, viewElement );
 			}
-
-			viewWriter.setAttribute( newAttribute.key, value, false, viewElement );
 		}
 	};
 }

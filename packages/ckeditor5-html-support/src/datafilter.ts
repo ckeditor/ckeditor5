@@ -834,43 +834,39 @@ function matchAndConsumeAttributes(
 	const stylesProcessor = viewElement.document.stylesProcessor;
 
 	return matches.reduce( ( result, { match } ) => {
-		for ( const [ key, token ] of match.attributes || [] ) {
-			// Verify and consume styles.
-			if ( key == 'style' ) {
-				const style = token!;
+		// Verify and consume styles.
+		for ( const style of match.styles || [] ) {
+			// Check longer forms of the same style as those could be matched
+			// but not present in the element directly.
+			// Consider only longhand (or longer than current notation) so that
+			// we do not include all sides of the box if only one side is allowed.
+			const sortedRelatedStyles = stylesProcessor.getRelatedStyles( style )
+				.filter( relatedStyle => relatedStyle.split( '-' ).length > style.split( '-' ).length )
+				.sort( ( a, b ) => b.split( '-' ).length - a.split( '-' ).length );
 
-				// Check longer forms of the same style as those could be matched
-				// but not present in the element directly.
-				// Consider only longhand (or longer than current notation) so that
-				// we do not include all sides of the box if only one side is allowed.
-				const sortedRelatedStyles = stylesProcessor.getRelatedStyles( style )
-					.filter( relatedStyle => relatedStyle.split( '-' ).length > style.split( '-' ).length )
-					.sort( ( a, b ) => b.split( '-' ).length - a.split( '-' ).length );
-
-				for ( const relatedStyle of sortedRelatedStyles ) {
-					if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
-						result.styles.push( relatedStyle );
-					}
-				}
-
-				// Verify and consume style as specified in the matcher.
-				if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
-					result.styles.push( style );
+			for ( const relatedStyle of sortedRelatedStyles ) {
+				if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
+					result.styles.push( relatedStyle );
 				}
 			}
-			// Verify and consume class names.
-			else if ( key == 'class' ) {
-				const className = token!;
 
-				if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
-					result.classes.push( className );
-				}
+			// Verify and consume style as specified in the matcher.
+			if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
+				result.styles.push( style );
 			}
-			else {
-				// Verify and consume other attributes.
-				if ( consumable.consume( viewElement, { attributes: [ key ] } ) ) {
-					result.attributes.push( key );
-				}
+		}
+
+		// Verify and consume class names.
+		for ( const className of match.classes || [] ) {
+			if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
+				result.classes.push( className );
+			}
+		}
+
+		// Verify and consume other attributes.
+		for ( const attributeName of match.attributes || [] ) {
+			if ( consumable.consume( viewElement, { attributes: [ attributeName ] } ) ) {
+				result.attributes.push( attributeName );
 			}
 		}
 

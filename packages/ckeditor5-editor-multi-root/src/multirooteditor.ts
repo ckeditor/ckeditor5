@@ -935,7 +935,7 @@ function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
 
-function isElement( value: any ): value is HTMLElement {
+function isElement( value: any ): value is Element {
 	return _isElement( value );
 }
 

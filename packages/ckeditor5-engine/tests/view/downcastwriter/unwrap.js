@@ -320,42 +320,6 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should not unwrap single element when styles are same but classes different', () => {
-			testUnwrap(
-				'<container:p>' +
-					'[<attribute:b view-priority="1" class="foo" style="color:red">test</attribute:b>]' +
-				'</container:p>',
-				'<attribute:b view-priority="1" style="color: red;"></attribute:b>',
-				'<container:p>' +
-					'[<attribute:b view-priority="1" class="foo">test</attribute:b>]' +
-				'</container:p>'
-			);
-		} );
-
-		it( 'should not unwrap single element when classes are same but styles different', () => {
-			testUnwrap(
-				'<container:p>' +
-					'[<attribute:b view-priority="1" class="foo bar" style="color:red">test</attribute:b>]' +
-				'</container:p>',
-				'<attribute:b view-priority="1" class="foo bar"></attribute:b>',
-				'<container:p>' +
-					'[<attribute:b view-priority="1" style="color:red">test</attribute:b>]' +
-				'</container:p>'
-			);
-		} );
-
-		it( 'should not unwrap single element when classes and styles are same but other attributes have different values', () => {
-			testUnwrap(
-				'<container:p>' +
-					'[<attribute:b view-priority="1" foo="bar" class="abc" style="color:red">test</attribute:b>]' +
-				'</container:p>',
-				'<attribute:b view-priority="1" foo="123" class="abc" style="color: red;"></attribute:b>',
-				'<container:p>' +
-					'[<attribute:b view-priority="1" class="abc" foo="bar" style="color:red">test</attribute:b>]' +
-				'</container:p>'
-			);
-		} );
-
 		it( 'should partially unwrap part of a node', () => {
 			testUnwrap(
 				'<container:p>' +
