@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import DataSchema from '../dataschema.js';
-import type { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
+import { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:email/emailintegration~EmailIntegration EmailIntegration} feature.
@@ -23,14 +23,14 @@ export default class EmailIntegrationSupport extends Plugin {
 		'object', 'article', 'details', 'main', 'nav', 'summary',
 		'abbr', 'acronym', 'bdi', 'output', 'hgroup',
 		'form', 'input', 'button', 'audio', 'canvas',
-		'meter', 'progress'
+		'meter', 'progress', 'iframe'
 	] );
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ DataSchema ] as const;
+		return [ DataFilter ] as const;
 	}
 
 	/**
@@ -50,25 +50,20 @@ export default class EmailIntegrationSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public afterInit(): void {
-		if ( this.editor.plugins.has( 'EmailIntegrationUtils' ) ) {
-			this._checkUnsupportedElements();
-		}
-	}
+	public init(): void {
+		const { plugins } = this.editor;
 
-	/**
-	 * Checks if the schema contains unsupported HTML elements.
-	 */
-	private _checkUnsupportedElements() {
-		const emailUtils: EmailIntegrationUtils = this.editor.plugins.get( 'EmailIntegrationUtils' );
-		const dataSchema = this.editor.plugins.get( DataSchema );
+		if ( !plugins.has( 'EmailIntegrationUtils' ) ) {
+			return;
+		}
+
+		const dataFilter = plugins.get( DataFilter );
+		const emailUtils = plugins.get( EmailIntegrationUtils );
 
 		for ( const element of EmailIntegrationSupport.UNSUPPORTED_ELEMENTS ) {
-			const definitions = dataSchema.getDefinitionsForView( element );
-
-			if ( definitions.size ) {
-				emailUtils._logSuppressibleWarning( 'email-unsupported-html-element', { element } );
-			}
+			dataFilter.once<DataFilterRegisterEvent>( `register:${ element }`, ( evt, definition ) => {
+				emailUtils._logSuppressibleWarning( 'email-unsupported-html-element', { element: definition.view } );
+			} );
 		}
 	}
 }

@@ -5,12 +5,13 @@
 
 /* globals document */
 
+import { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import EmailIntegrationSupport from '../../src/integrations/emailintegration.js';
-import DataSchema from '../../src/dataschema.js';
-import { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import DataFilter from '../../src/datafilter.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 describe( 'EmailIntegrationSupport', () => {
 	let editor, emailWarningSpy, editorElement;
@@ -34,25 +35,25 @@ describe( 'EmailIntegrationSupport', () => {
 		expect( EmailIntegrationSupport.pluginName ).to.equal( 'EmailIntegrationSupport' );
 	} );
 
-	it( 'should require DataSchema', () => {
-		expect( EmailIntegrationSupport.requires ).to.deep.equal( [ DataSchema ] );
+	it( 'should require DataFilter', () => {
+		expect( EmailIntegrationSupport.requires ).to.deep.equal( [ DataFilter ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
 		expect( EmailIntegrationSupport.isOfficialPlugin ).to.be.true;
 	} );
 
-	describe( 'integration', () => {
+	describe( 'check registered elements', () => {
 		const UNSUPPORTED_ELEMENTS = [
 			'object', 'article', 'details', 'main', 'nav', 'summary',
 			'abbr', 'acronym', 'bdi', 'output', 'hgroup',
 			'form', 'input', 'button', 'audio', 'canvas',
-			'meter', 'progress'
+			'meter', 'progress', 'iframe'
 		];
 
 		it( 'should not log warnings if no unsupported elements are registered', async () => {
-			editor = await createEditor( dataSchema => {
-				dataSchema.registerBlockElement( { view: 'div', model: 'div' } );
+			editor = await createEditor( dataFilter => {
+				dataFilter.allowElement( 'magic' );
 			} );
 
 			expect( emailWarningSpy.called ).to.be.false;
@@ -60,8 +61,8 @@ describe( 'EmailIntegrationSupport', () => {
 
 		for ( const element of UNSUPPORTED_ELEMENTS ) {
 			it( `should log warning for unsupported "${ element }" element`, async () => {
-				editor = await createEditor( dataSchema => {
-					dataSchema.registerBlockElement( { view: element, model: element } );
+				editor = await createEditor( dataFilter => {
+					dataFilter.allowElement( element );
 				} );
 
 				expect( emailWarningSpy.calledOnce ).to.be.true;
@@ -74,8 +75,8 @@ describe( 'EmailIntegrationSupport', () => {
 
 		it( 'should log multiple warnings for multiple unsupported elements', async () => {
 			editor = await createEditor( dataSchema => {
-				dataSchema.registerBlockElement( { view: 'form', model: 'form' } );
-				dataSchema.registerBlockElement( { view: 'input', model: 'input' } );
+				dataSchema.allowElement( 'form' );
+				dataSchema.allowElement( 'input' );
 			} );
 
 			expect( emailWarningSpy.calledTwice ).to.be.true;
@@ -83,10 +84,20 @@ describe( 'EmailIntegrationSupport', () => {
 				'email-unsupported-html-element',
 				{ element: 'form' }
 			] );
+
 			expect( emailWarningSpy.secondCall.args ).to.deep.equal( [
 				'email-unsupported-html-element',
 				{ element: 'input' }
 			] );
+		} );
+
+		it( 'should log warning for unsupported element only once', async () => {
+			editor = await createEditor( dataSchema => {
+				dataSchema.allowElement( 'form' );
+				dataSchema.allowElement( 'form' );
+			} );
+
+			expect( emailWarningSpy.calledOnce ).to.be.true;
 		} );
 	} );
 
@@ -97,20 +108,18 @@ describe( 'EmailIntegrationSupport', () => {
 			}
 
 			static get requires() {
-				return [ DataSchema, EmailIntegrationUtils ];
+				return [ GeneralHtmlSupport, EmailIntegrationUtils ];
 			}
 
 			async init() {
 				const { plugins } = this.editor;
 
 				const emailUtils = plugins.get( 'EmailIntegrationUtils' );
-				const dataSchema = plugins.get( 'DataSchema' );
+				const dataFilter = plugins.get( 'DataFilter' );
 
 				emailWarningSpy = sinon.stub( emailUtils, '_logSuppressibleWarning' );
 
-				dataSchema._definitions = [];
-
-				callback( dataSchema );
+				callback( dataFilter );
 			}
 		}
 
@@ -119,7 +128,7 @@ describe( 'EmailIntegrationSupport', () => {
 		}
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmailIntegrationSupport, DataSchema, EmailIntegrationUtils, FakeSchemaRegisterPlugin ]
+			plugins: [ EmailIntegrationSupport, GeneralHtmlSupport, EmailIntegrationUtils, FakeSchemaRegisterPlugin ]
 		} );
 
 		return editor;
