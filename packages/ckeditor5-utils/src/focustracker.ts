@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global setTimeout, clearTimeout */
@@ -12,8 +12,8 @@
 import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
-import { type View } from '@ckeditor/ckeditor5-ui';
-import { isElement as _isElement } from 'lodash-es';
+import type { View } from '@ckeditor/ckeditor5-ui';
+import { isElement as _isElement } from 'es-toolkit/compat';
 
 /**
  * Allows observing a group of DOM `Element`s or {@link module:ui/view~View view instances} whether at least one of them (or their child)

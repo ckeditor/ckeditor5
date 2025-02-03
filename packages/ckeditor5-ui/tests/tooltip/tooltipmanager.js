@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, MouseEvent, Event, KeyboardEvent */
@@ -298,6 +298,18 @@ describe( 'TooltipManager', () => {
 					sinon.assert.notCalled( pinSpy );
 
 					utils.waitForTheTooltipToShow( clock );
+
+					sinon.assert.calledOnce( pinSpy );
+					sinon.assert.calledWith( pinSpy, {
+						target: elements.a,
+						positions: sinon.match.array
+					} );
+				} );
+
+				it( 'should pin a tooltip instantly if element has a `data-cke-tooltip-instant` attribute', () => {
+					elements.a.dataset.ckeTooltipInstant = true;
+
+					utils.dispatchMouseEnter( elements.a );
 
 					sinon.assert.calledOnce( pinSpy );
 					sinon.assert.calledWith( pinSpy, {
@@ -697,6 +709,19 @@ describe( 'TooltipManager', () => {
 				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
 
 				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should remove the tooltip immediately if the element has `data-cke-tooltip-instant` attribute', () => {
+				elements.a.dataset.ckeTooltipInstant = true;
+
+				utils.dispatchMouseEnter( elements.a );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
+
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 

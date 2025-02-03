@@ -2,7 +2,7 @@
 category: nim-migration
 order: 40
 menu-title: Migrating from customized builds
-meta-title: Migrating from customized builds to new installation methods | CKEditor 5 documentation
+meta-title: Migrating from customized builds to new installation methods | CKEditor 5 Documentation
 meta-description: Learn how to upgrade from customized builds to the new installation methods.
 modified_at: 2024-06-25
 ---

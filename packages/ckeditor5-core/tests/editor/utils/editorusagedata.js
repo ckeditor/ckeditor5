@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals globalThis, localStorage */
@@ -125,13 +125,13 @@ describe( 'getEditorUsageData()', () => {
 			expect( global.window.CKEDITOR_PAGE_SESSION_ID ).to.be.equal( usageData.pageSessionId );
 		} );
 
-		it( 'should use crypto API to generate session id', async () => {
-			const cryptoStub = sinon.stub( global.window.crypto, 'randomUUID' ).returns( 'FooBar' );
+		it( 'should not use crypto API to generate session id', async () => {
+			const spy = sinon.spy( global.window.crypto, 'randomUUID' );
 
 			editor = await ClassicTestEditor.create( domElement, {} );
+			getEditorUsageData( editor );
 
-			expect( getEditorUsageData( editor ).pageSessionId ).to.be.equal( 'FooBar' );
-			expect( cryptoStub ).to.have.been.calledOnce;
+			expect( spy ).to.not.have.been.called;
 		} );
 	} );
 
@@ -192,7 +192,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, osName ] of os ) {
 				it( `should detect ${ osName } OS`, async () => {
-					sinon.stub( env, flag ).value( true );
+					mockFlag( flag );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -200,6 +200,12 @@ describe( 'getEditorUsageData()', () => {
 						os: osName
 					} );
 				} );
+			}
+
+			function mockFlag( mockFlag ) {
+				for ( const [ flag ] of os ) {
+					sinon.stub( env, flag ).value( flag === mockFlag );
+				}
 			}
 		} );
 
@@ -212,11 +218,7 @@ describe( 'getEditorUsageData()', () => {
 
 			for ( const [ flag, browser ] of browsers ) {
 				it( `should detect ${ browser } browser`, async () => {
-					sinon.stub( env, flag ).value( true );
-
-					if ( flag !== 'isBlink' ) {
-						sinon.stub( env, 'isBlink' ).value( false );
-					}
+					mockFlag( flag );
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
@@ -224,6 +226,12 @@ describe( 'getEditorUsageData()', () => {
 						browser
 					} );
 				} );
+			}
+
+			function mockFlag( mockFlag ) {
+				for ( const [ flag ] of browsers ) {
+					sinon.stub( env, flag ).value( flag === mockFlag );
+				}
 			}
 		} );
 	} );

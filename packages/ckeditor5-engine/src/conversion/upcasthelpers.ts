@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Matcher, { type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher.js';
@@ -19,7 +19,7 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import { priorities, type EventInfo, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for

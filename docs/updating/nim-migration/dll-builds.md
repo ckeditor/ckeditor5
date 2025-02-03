@@ -85,7 +85,7 @@ If you are using the DLL build, follow the steps below:
 	ClassicEditor.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, SlashCommand ],
 		toolbar: [ /* ... */ ],
-		licenseKey: '<LICENSE_KEY>',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 	} );
 	</script>
 	```

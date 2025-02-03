@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -27,7 +27,7 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties.js';
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 import { getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 

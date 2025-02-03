@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -126,8 +126,12 @@ export default class Batch implements BatchType {
 	 * @returns The added operation.
 	 */
 	public addOperation( operation: Operation ): Operation {
-		operation.batch = this;
-		this.operations.push( operation );
+		if ( operation.isDocumentOperation ) {
+			// Store only document operations in the batch.
+			// Non-document operations are temporary and should be discarded after they are applied.
+			operation.batch = this;
+			this.operations.push( operation );
+		}
 
 		return operation;
 	}

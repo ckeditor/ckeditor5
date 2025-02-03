@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -41,7 +41,7 @@ import {
 	type ToolbarConfigItem
 } from '@ckeditor/ckeditor5-core';
 
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -112,6 +112,14 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	public readonly focusables: ViewCollection<FocusableView>;
 
 	declare public locale: Locale;
+
+	/**
+	 * The property reflected by the `role` DOM attribute to be used by assistive technologies.
+	 *
+	 * @observable
+	 * @default 'toolbar'
+	 */
+	declare public role: string | undefined;
 
 	/**
 	 * Label used by assistive technologies to describe this toolbar element.
@@ -188,6 +196,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 		this.set( 'maxWidth', 'auto' );
+		this.set( 'role', 'toolbar' );
 
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
@@ -231,7 +240,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			tag: 'div',
 			attributes: {
 				class: classes,
-				role: 'toolbar',
+				role: bind.to( 'role' ),
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
 					maxWidth: bind.to( 'maxWidth' )

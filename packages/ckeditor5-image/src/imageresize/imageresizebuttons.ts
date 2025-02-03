@@ -1,12 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module image/imageresize/imageresizebuttons
  */
-import { map } from 'lodash-es';
 
 import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
@@ -301,7 +300,7 @@ export default class ImageResizeButtons extends Plugin {
 					} )
 				};
 
-				const allDropdownValues = map( optionsWithSerializedValues, 'valueWithUnits' );
+				const allDropdownValues = Object.values( optionsWithSerializedValues ).map( option => option.valueWithUnits );
 
 				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnCustomButtonCallback( allDropdownValues ) );
 			} else {

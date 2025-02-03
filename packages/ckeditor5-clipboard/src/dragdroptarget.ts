@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -34,7 +34,7 @@ import {
 
 import LineView from './lineview.js';
 
-import { throttle } from 'lodash-es';
+import { throttle } from 'es-toolkit/compat';
 
 /**
  * Part of the Drag and Drop handling. Responsible for finding and displaying the drop target.
@@ -391,7 +391,7 @@ function findDropTargetRange(
 					const targetViewPosition = targetViewRanges[ 0 ].start;
 					const targetModelPosition = mapper.toModelPosition( targetViewPosition );
 					const canDropOnPosition = !draggedRange || Array
-						.from( draggedRange.getItems() )
+						.from( draggedRange.getItems( { shallow: true } ) )
 						.every( item => model.schema.checkChild( targetModelPosition, item as Node ) );
 
 					if ( canDropOnPosition ) {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -120,6 +120,10 @@ describe( 'ImageInsertViaUrlUI', () => {
 			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
 		} );
 
+		it( 'has submittable form', () => {
+			expect( dialog.view.element.querySelector( 'form.ck-image-insert-url' ) ).to.exist;
+		} );
+
 		it( 'should bind #isImageSelected', () => {
 			expect( urlView.isImageSelected ).to.be.false;
 
@@ -186,6 +190,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 		testSubmit( 'accept button', () => acceptButton.fire( 'execute' ) );
 
+		// Browsers handle pressing Enter on forms natively by submitting it. We fire a form submit event to simulate that behavior.
 		testSubmit( 'form submit (enter key)', () => {
 			const form = dialog.view.contentView.children.get( 0 );
 
@@ -274,7 +279,10 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 			describe( 'menu bar button', () => {
 				beforeEach( () => {
-					button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+					const menu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+					const submenuList = menu.panelView.children.get( 0 );
+
+					button = submenuList.items.get( 0 ).children.get( 0 );
 				} );
 
 				testButton( MenuBarMenuListItemButtonView, 'Image' );

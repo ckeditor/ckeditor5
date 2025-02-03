@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -590,7 +590,9 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// Note: It is important to first remove DOM attributes and then set new ones, because some view attributes may be renamed
 		// as they are set on DOM (due to unsafe attributes handling). If we set the view attribute first, and then remove
 		// non-existing DOM attributes, then we would remove the attribute that we just set.
-		for ( const domAttr of ( domElement as DomElement ).attributes ) {
+		//
+		// Note: The domElement.attributes is a live collection, so we need to convert it to an array to avoid issues.
+		for ( const domAttr of Array.from( ( domElement as DomElement ).attributes ) ) {
 			const key = domAttr.name;
 
 			// All other attributes not present in the DOM should be removed.

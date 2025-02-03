@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
@@ -453,6 +453,16 @@ describe( 'AutoLink', () => {
 
 			sinon.assert.notCalled( spy );
 		} );
+
+		for ( const punctuation of '!.:,;?' ) {
+			it( `does not include "${ punctuation }" at the end of the link after space`, () => {
+				simulateTyping( `https://www.cksource.com${ punctuation } ` );
+
+				expect( getData( model ) ).to.equal(
+					`<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>${ punctuation } []</paragraph>`
+				);
+			} );
+		}
 
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {

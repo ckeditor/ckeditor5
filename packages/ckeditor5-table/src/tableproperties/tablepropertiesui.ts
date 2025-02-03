@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -17,7 +17,7 @@ import {
 	type LabeledFieldView
 } from 'ckeditor5/src/ui.js';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 import TablePropertiesView from './ui/tablepropertiesview.js';
 import tableProperties from './../../theme/icons/table-properties.svg';

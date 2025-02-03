@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -22,7 +22,7 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
+import { isElement, debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 import '../theme/components/tooltip/tooltip.css';
 
@@ -56,11 +56,19 @@ const BALLOON_CLASS = 'ck-tooltip';
  *
  * # Disabling tooltips
  *
- * In order to disable the tooltip  temporarily, use the `data-cke-tooltip-disabled` attribute:
+ * In order to disable the tooltip temporarily, use the `data-cke-tooltip-disabled` attribute:
  *
  * ```ts
  * domElement.dataset.ckeTooltipText = 'Disabled. For now.';
  * domElement.dataset.ckeTooltipDisabled = 'true';
+ * ```
+ *
+ * # Instant tooltips
+ *
+ * To remove the delay before showing or hiding the tooltip, use the `data-cke-tooltip-instant` attribute:
+ *
+ * ```ts
+ * domElement.dataset.ckeTooltipInstant = 'true';
  * ```
  *
  * # Styling tooltips
@@ -122,12 +130,12 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
 	 * to improve the UX.
 	 */
-	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
+	private _pinTooltipDebounced!: DebouncedFunction<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 
 	/**
 	 * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
 	 */
-	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
+	private _unpinTooltipDebounced!: DebouncedFunction<VoidFunction>;
 
 	private readonly _watchdogExcluded!: true;
 
@@ -294,6 +302,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// * a tooltip is displayed for a focused element, then the same element gets mouseentered,
 		// * a tooltip is displayed for an element via mouseenter, then the focus moves to the same element.
 		if ( elementWithTooltipAttribute === this._currentElementWithTooltip ) {
+			this._unpinTooltipDebounced.cancel();
+
 			return;
 		}
 
@@ -302,7 +312,13 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		// The tooltip should be pinned immediately when the element gets focused using keyboard.
 		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
 		// See https://github.com/ckeditor/ckeditor5/issues/16383
-		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ) {
+		// Also, if the element has an attribute `data-cke-tooltip-instant`, the tooltip should be pinned immediately.
+		// This is useful for elements that have their content partially hidden (e.g. a long text in a small container)
+		// and should show a tooltip on hover, like merge field.
+		if (
+			evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ||
+			elementWithTooltipAttribute.matches( '[data-cke-tooltip-instant]' )
+		) {
 			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 		} else {
 			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
@@ -329,6 +345,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			// Do not hide the tooltip when the user moves the cursor over it.
 			if ( isEnteringBalloon ) {
 				this._unpinTooltipDebounced.cancel();
+
 				return;
 			}
 
@@ -347,7 +364,17 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 			// Note that this should happen whether the tooltip is already visible or not, for instance,
 			// it could be invisible but queued (debounced): it should get canceled.
 			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
-				this._unpinTooltipDebounced();
+				this._pinTooltipDebounced.cancel();
+
+				// If the currently visible tooltip is instant, unpin it immediately.
+				if (
+					this._currentElementWithTooltip && this._currentElementWithTooltip.matches( '[data-cke-tooltip-instant]' ) ||
+					descendantWithTooltip && descendantWithTooltip.matches( '[data-cke-tooltip-instant]' )
+				) {
+					this._unpinTooltip();
+				} else {
+					this._unpinTooltipDebounced();
+				}
 			}
 		} else {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
@@ -358,6 +385,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 
 			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
+			this._pinTooltipDebounced.cancel();
 			this._unpinTooltipDebounced();
 		}
 	}

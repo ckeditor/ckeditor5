@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global window, console, btoa, setTimeout, AbortController */
@@ -23,7 +23,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import _ from 'lodash-es';
+import * as _ from 'es-toolkit/compat';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
 import CKBoxEditing from '../../src/ckboxediting.js';
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
@@ -951,7 +951,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				'while waiting for the processed image', async () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
+						'<img alt="alt text" height="50" loading="lazy" src="/assets/sample.png" style="aspect-ratio:50/50" width="50">' +
+						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>'
 				);
@@ -961,7 +962,9 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
 						'contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="100" src="/assets/sample.png" style="height:100px;width:100px" width="100"></img>' +
+						'<img alt="alt text" height="100" loading="lazy" src="/assets/sample.png" ' +
+							'style="height:100px;width:100px" width="100">' +
+						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>'
 				);

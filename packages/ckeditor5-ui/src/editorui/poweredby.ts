@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -15,9 +15,6 @@ import Badge from '../badge/badge.js';
 import IconView from '../icon/iconview.js';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
-
-const ICON_WIDTH = 53;
-const ICON_HEIGHT = 10;
 
 const DEFAULT_LABEL = 'Powered by';
 
@@ -107,15 +104,6 @@ class PoweredByView extends View<HTMLDivElement> {
 		iconView.set( {
 			content: poweredByIcon,
 			isColorInherited: false
-		} );
-
-		iconView.extendTemplate( {
-			attributes: {
-				style: {
-					width: ICON_WIDTH + 'px',
-					height: ICON_HEIGHT + 'px'
-				}
-			}
 		} );
 
 		this.setTemplate( {

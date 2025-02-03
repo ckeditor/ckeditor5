@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -13,7 +13,7 @@ import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 import FocusObserver from './focusobserver.js';
 import { env } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunc } from 'lodash-es';
+import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 import type View from '../view.js';
 import type DocumentSelection from '../documentselection.js';
@@ -67,9 +67,9 @@ export default class SelectionObserver extends Observer {
 	private readonly _documents: WeakSet<Document>;
 
 	/**
-	 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
+	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentSelectionEventData ) => void>;
 
 	/**
 	 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
@@ -83,7 +83,7 @@ export default class SelectionObserver extends Observer {
 	 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
 	 * after a certain period of time (debounced, postponed by each selectionchange event).
 	 */
-	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
+	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunction<() => boolean>;
 
 	/**
 	 * Private property to check if the code does not enter infinite loop.

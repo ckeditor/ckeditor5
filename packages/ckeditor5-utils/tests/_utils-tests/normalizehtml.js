@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import normalizeHtml from '../../tests/_utils/normalizehtml.js';
@@ -35,9 +35,9 @@ describe( 'utils', () => {
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
-		it( 'should remove empty style attribute', () => {
+		it( 'should not remove empty style attribute', () => {
 			const actual = '<a style=""></a>';
-			const expected = '<a></a>';
+			const expected = '<a style=""></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
@@ -1091,10 +1091,10 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			model.change( writer => {
-				model.getSelectedContent( model.document.selection );
-				expect( writer.batch.operations ).to.length( 1 );
-			} );
+			const version = model.document.version;
+			model.getSelectedContent( model.document.selection );
+
+			expect( model.document.version ).to.equal( version );
 		} );
 	} );
 

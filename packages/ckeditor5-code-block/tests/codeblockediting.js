@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -1682,7 +1682,7 @@ describe( 'CodeBlockEditing', () => {
 					'[]o' +
 				'</codeBlock>' );
 
-			sinon.assert.calledOnce( dataTransferMock.getData );
+			sinon.assert.calledTwice( dataTransferMock.getData );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
@@ -1723,7 +1723,7 @@ describe( 'CodeBlockEditing', () => {
 				'<paragraph>bar</paragraph>'
 			);
 
-			sinon.assert.calledOnce( dataTransferMock.getData );
+			sinon.assert.calledTwice( dataTransferMock.getData );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );

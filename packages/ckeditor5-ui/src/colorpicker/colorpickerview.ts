@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -11,7 +11,7 @@ import { convertColor, convertToHex, registerCustomElement, type ColorPickerView
 
 import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunc } from 'lodash-es';
+import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 import View from '../view.js';
 import type InputTextView from '../inputtext/inputtextview.js';
 import type ViewCollection from '../viewcollection.js';
@@ -76,7 +76,7 @@ export default class ColorPickerView extends View {
 	 *
 	 * @private
 	 */
-	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
+	private _debounceColorPickerEvent: DebouncedFunction<( arg: string ) => void>;
 
 	/**
 	 * A reference to the configuration of the color picker specified in the constructor.

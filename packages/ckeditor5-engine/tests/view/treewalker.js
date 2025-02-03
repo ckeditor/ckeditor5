@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Document from '../../src/view/document.js';
@@ -1214,6 +1214,70 @@ describe( 'TreeWalker', () => {
 				expect( walker.position.parent ).to.equal( rootBeginning.parent );
 				expect( walker.position.offset ).to.equal( rootBeginning.offset );
 			} );
+		} );
+	} );
+
+	describe( 'jumpTo', () => {
+		it( 'should jump to the given position', () => {
+			const walker = new TreeWalker( {
+				startPosition: Position._createAt( paragraph, 0 )
+			} );
+
+			walker.jumpTo( new Position( paragraph, 2 ) );
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+
+			walker.next();
+
+			expect( walker.position.parent ).to.equal( img2 );
+			expect( walker.position.offset ).to.equal( 0 );
+		} );
+
+		it( 'cannot move position before the #_boundaryStartParent', () => {
+			const range = new Range(
+				new Position( paragraph, 2 ),
+				new Position( paragraph, 4 )
+			);
+			const walker = new TreeWalker( {
+				boundaries: range
+			} );
+
+			const positionBeforeAllowedRange = new Position( paragraph, 0 );
+
+			walker.jumpTo( positionBeforeAllowedRange );
+
+			// `jumpTo()` autocorrected the position to the first allowed position.
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+
+			walker.next();
+
+			expect( walker.position.parent ).to.equal( img2 );
+			expect( walker.position.offset ).to.equal( 0 );
+		} );
+
+		it( 'cannot move position after the #_boundaryEndParent', () => {
+			const range = new Range(
+				new Position( paragraph, 0 ),
+				new Position( paragraph, 2 )
+			);
+			const walker = new TreeWalker( {
+				boundaries: range
+			} );
+
+			const positionAfterAllowedRange = new Position( paragraph, 4 );
+
+			// `jumpTo()` autocorrected the position to the last allowed position.
+			walker.jumpTo( positionAfterAllowedRange );
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
+
+			walker.next();
+
+			expect( walker.position.parent ).to.equal( paragraph );
+			expect( walker.position.offset ).to.equal( 2 );
 		} );
 	} );
 } );

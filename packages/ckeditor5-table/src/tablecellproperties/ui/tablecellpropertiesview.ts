@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -715,6 +715,7 @@ export default class TableCellPropertiesView extends View {
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Horizontal text alignment toolbar' )
 		} );
 
@@ -745,6 +746,7 @@ export default class TableCellPropertiesView extends View {
 
 		verticalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Vertical text alignment toolbar' )
 		} );
 

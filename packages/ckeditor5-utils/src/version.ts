@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -9,12 +9,12 @@
 
 import CKEditorError from './ckeditorerror.js';
 
-const version = '43.3.0';
+const version = '44.1.0';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2024, 9, 29 );
+export const releaseDate = new Date( 2024, 11, 16 );
 
 declare global {
 	// eslint-disable-next-line no-var

@@ -83,7 +83,7 @@
 		"builds/guides/development/plugins.html": "framework/architecture/plugins.html",
 		"builds/guides/faq.html": "framework/how-tos.html",
 		"builds/guides/integration/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
-		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
+		"builds/guides/integration/advanced-setup.html#creating-super-builds": "getting-started/legacy/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "getting-started/setup/editor-lifecycle.html",
 		"builds/guides/integration/configuration.html": "installationlegacy-/getting-started/configuration.html",
 		"builds/guides/integration/content-styles.html": "getting-started/setup/css.html",
@@ -232,6 +232,7 @@
 		"framework/guides/plugins/package-generator.html": "framework/develpment-tools/package-generator/using-package-generator.html",
 		"framework/guides/plugins/package-generator/javascript-package.html": "framework/develpment-tools/package-generator/javascript-package.html",
 		"framework/guides/plugins/package-generator/typescript-package.html": "framework/develpment-tools/package-generator/typescript-package.html",
+		"framework/guides/plugins/creating-simple-plugin-timestamp.html": "framework/tutorials/creating-simple-plugin-timestamp.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
@@ -380,7 +381,8 @@
 		"features/images/image-upload/easy-image.html": "features/images/image-upload/image-upload.html",
 		"getting-started/installation/react/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
 		"getting-started/installation/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html",
-		"examples/framework/content-placeholder.html": "features/merge-fields.html"
+		"examples/framework/content-placeholder.html": "features/merge-fields.html",
+		"features/source-editing.html": "features/source-editing/source-editing.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
@@ -655,6 +657,11 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
+				},
+				{
+					"name": "Source code editing",
+					"id": "source-code-editing",
+					"slug": "source-editing"
 				},
 				{
 					"name": "Tables",

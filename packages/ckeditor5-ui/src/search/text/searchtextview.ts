@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -13,7 +13,7 @@ import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from '
 import SearchInfoView from '../searchinfoview.js';
 import SearchResultsView from '../searchresultsview.js';
 import FocusCycler, { type FocusableView } from '../../focuscycler.js';
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 
 import type FilteredView from '../filteredview.js';
 import type ViewCollection from '../../viewcollection.js';

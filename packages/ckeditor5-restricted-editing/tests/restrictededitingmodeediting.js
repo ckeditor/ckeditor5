@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -241,6 +241,26 @@ describe( 'RestrictedEditingModeEditing', () => {
 				editor.setData( '<p>foo <span class="foo bar">bar</span> baz</p>' );
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
+			} );
+
+			it( 'should remove previous `restrictedEditingException` markers before setting new ones', () => {
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.false;
+
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.true;
 			} );
 		} );
 

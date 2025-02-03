@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -19,11 +19,11 @@ import AttributeElement from './attributeelement.js';
 import EmptyElement from './emptyelement.js';
 import UIElement from './uielement.js';
 import RawElement from './rawelement.js';
-import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import DocumentFragment from './documentfragment.js';
 import Text from './text.js';
 import EditableElement from './editableelement.js';
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import type Document from './document.js';
 import type Node from './node.js';
@@ -522,9 +522,38 @@ export default class DowncastWriter {
 	 *
 	 * @param key The attribute key.
 	 * @param value The attribute value.
+	 * @param element The element to set an attribute on.
 	 */
-	public setAttribute( key: string, value: unknown, element: Element ): void {
-		element._setAttribute( key, value );
+	public setAttribute( key: string, value: unknown, element: Element ): void;
+
+	/**
+	 * Adds or overwrites the element's attribute with a specified key and value.
+	 * Note that for tokenized attributes it allows the `reset` parameter to specify if the previous
+	 * attribute value should be overwritten or a new token (class name, style property) should be added.
+	 *
+	 * ```ts
+	 * writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 * writer.setAttribute( 'class', 'foo', false, element );
+	 * ```
+	 *
+	 * @param key The attribute key.
+	 * @param value The attribute value.
+	 * @param overwrite Whether tokenized attribute should overwrite the attribute value or just add a token.
+	 * @param element The element to set an attribute on.
+	 */
+	public setAttribute( key: string, value: unknown, overwrite: boolean, element: Element ): void;
+
+	public setAttribute(
+		key: string,
+		value: unknown,
+		elementOrOverwrite: Element | boolean,
+		element?: Element
+	): void {
+		if ( element !== undefined ) {
+			element._setAttribute( key, value, elementOrOverwrite as boolean );
+		} else {
+			( elementOrOverwrite as Element )._setAttribute( key, value );
+		}
 	}
 
 	/**
@@ -535,9 +564,30 @@ export default class DowncastWriter {
 	 * ```
 	 *
 	 * @param key Attribute key.
+	 * @param element The element to remove an attribute of.
 	 */
-	public removeAttribute( key: string, element: Element ): void {
-		element._removeAttribute( key );
+	public removeAttribute( key: string, element: Element ): void;
+
+	/**
+	 * Removes specified tokens from an attribute value (for example class names, style properties).
+	 * If resulting attribute become empty, the whole attribute is removed.
+	 *
+	 * ```ts
+	 * writer.removeAttribute( 'class', 'foo', linkElement );
+	 * ```
+	 *
+	 * @param key Attribute key.
+	 * @param tokens Tokens to partly remove from attribute value. For example class names or style property names.
+	 * @param element The element to remove an attribute of.
+	 */
+	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: Element ): void;
+
+	public removeAttribute( key: string, elementOrTokens: Element | ArrayOrItem<string>, element?: Element ): void {
+		if ( element !== undefined ) {
+			element._removeAttribute( key, elementOrTokens as ArrayOrItem<string> );
+		} else {
+			( elementOrTokens as Element )._removeAttribute( key );
+		}
 	}
 
 	/**
@@ -1524,7 +1574,8 @@ export default class DowncastWriter {
 			//
 			// <p><span class="bar">abc</span></p>  -->  <p><span class="foo bar">abc</span></p>
 			//
-			if ( isAttribute && this._wrapAttributeElement( wrapElement, child ) ) {
+			if ( isAttribute && child._canMergeAttributesFrom( wrapElement ) ) {
+				child._mergeAttributesFrom( wrapElement );
 				wrapPositions.push( new Position( parent, i ) );
 			}
 			//
@@ -1639,7 +1690,8 @@ export default class DowncastWriter {
 			// <p><span class="foo bar">abc</span>xyz</p>  -->  <p><span class="bar">abc</span>xyz</p>
 			// <p><i class="foo">abc</i>xyz</p>            -->  <p><i class="foo">abc</i>xyz</p>
 			//
-			if ( this._unwrapAttributeElement( unwrapElement, child ) ) {
+			if ( child._canSubtractAttributesOf( unwrapElement ) ) {
+				child._subtractAttributesOf( unwrapElement );
 				unwrapPositions.push(
 					new Position( parent, i ),
 					new Position( parent, i + 1 )
@@ -1754,143 +1806,12 @@ export default class DowncastWriter {
 		const nodeBefore = newPosition.nodeBefore;
 		const nodeAfter = newPosition.nodeAfter;
 
-		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
+		if ( nodeBefore && nodeBefore.is( 'view:$text' ) && nodeAfter && nodeAfter.is( 'view:$text' ) ) {
 			return mergeTextNodes( nodeBefore, nodeAfter );
 		}
 
 		// If position is next to text node - move position inside.
 		return movePositionToTextNode( newPosition );
-	}
-
-	/**
-	 * Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by
-	 * merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
-	 * element to element being wrapped.
-	 *
-	 * @param wrapper Wrapper AttributeElement.
-	 * @param toWrap AttributeElement to wrap using wrapper element.
-	 * @returns Returns `true` if elements are merged.
-	 */
-	private _wrapAttributeElement( wrapper: AttributeElement, toWrap: AttributeElement ): boolean {
-		if ( !canBeJoined( wrapper, toWrap ) ) {
-			return false;
-		}
-
-		// Can't merge if name or priority differs.
-		if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
-			return false;
-		}
-
-		// Check if attributes can be merged.
-		for ( const key of wrapper.getAttributeKeys() ) {
-			// Classes and styles should be checked separately.
-			if ( key === 'class' || key === 'style' ) {
-				continue;
-			}
-
-			// If some attributes are different we cannot wrap.
-			if ( toWrap.hasAttribute( key ) && toWrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
-				return false;
-			}
-		}
-
-		// Check if styles can be merged.
-		for ( const key of wrapper.getStyleNames() ) {
-			if ( toWrap.hasStyle( key ) && toWrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
-				return false;
-			}
-		}
-
-		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
-		for ( const key of wrapper.getAttributeKeys() ) {
-			// Classes and styles should be checked separately.
-			if ( key === 'class' || key === 'style' ) {
-				continue;
-			}
-
-			// Move only these attributes that are not present - other are similar.
-			if ( !toWrap.hasAttribute( key ) ) {
-				this.setAttribute( key, wrapper.getAttribute( key )!, toWrap );
-			}
-		}
-
-		for ( const key of wrapper.getStyleNames() ) {
-			if ( !toWrap.hasStyle( key ) ) {
-				this.setStyle( key, wrapper.getStyle( key )!, toWrap );
-			}
-		}
-
-		for ( const key of wrapper.getClassNames() ) {
-			if ( !toWrap.hasClass( key ) ) {
-				this.addClass( key, toWrap );
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Unwraps {@link module:engine/view/attributeelement~AttributeElement AttributeElement} from another by removing
-	 * corresponding attributes, classes and styles. All attributes, classes and styles from wrapper should be present
-	 * inside element being unwrapped.
-	 *
-	 * @param wrapper Wrapper AttributeElement.
-	 * @param toUnwrap AttributeElement to unwrap using wrapper element.
-	 * @returns Returns `true` if elements are unwrapped.
-	 **/
-	private _unwrapAttributeElement( wrapper: AttributeElement, toUnwrap: AttributeElement ): boolean {
-		if ( !canBeJoined( wrapper, toUnwrap ) ) {
-			return false;
-		}
-
-		// Can't unwrap if name or priority differs.
-		if ( wrapper.name !== toUnwrap.name || wrapper.priority !== toUnwrap.priority ) {
-			return false;
-		}
-
-		// Check if AttributeElement has all wrapper attributes.
-		for ( const key of wrapper.getAttributeKeys() ) {
-			// Classes and styles should be checked separately.
-			if ( key === 'class' || key === 'style' ) {
-				continue;
-			}
-
-			// If some attributes are missing or different we cannot unwrap.
-			if ( !toUnwrap.hasAttribute( key ) || toUnwrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
-				return false;
-			}
-		}
-
-		// Check if AttributeElement has all wrapper classes.
-		if ( !toUnwrap.hasClass( ...wrapper.getClassNames() ) ) {
-			return false;
-		}
-
-		// Check if AttributeElement has all wrapper styles.
-		for ( const key of wrapper.getStyleNames() ) {
-			// If some styles are missing or different we cannot unwrap.
-			if ( !toUnwrap.hasStyle( key ) || toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
-				return false;
-			}
-		}
-
-		// Remove all wrapper's attributes from unwrapped element.
-		for ( const key of wrapper.getAttributeKeys() ) {
-			// Classes and styles should be checked separately.
-			if ( key === 'class' || key === 'style' ) {
-				continue;
-			}
-
-			this.removeAttribute( key, toUnwrap );
-		}
-
-		// Remove all wrapper's classes from unwrapped element.
-		this.removeClass( Array.from( wrapper.getClassNames() ), toUnwrap );
-
-		// Remove all wrapper's styles from unwrapped element.
-		this.removeStyle( Array.from( wrapper.getStyleNames() ), toUnwrap );
-
-		return true;
 	}
 
 	/**
@@ -2268,7 +2189,7 @@ const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElem
  */
 function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ): void {
 	for ( const node of nodes ) {
-		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
+		if ( !validNodesToInsert.some( validNode => node instanceof validNode ) ) {
 			/**
 			 * One of the nodes to be inserted is of an invalid type.
 			 *
@@ -2330,12 +2251,4 @@ function validateRangeContainer( range: Range, errorContext: Document ) {
 		 */
 		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
-}
-
-/**
- * Checks if two attribute elements can be joined together. Elements can be joined together if, and only if
- * they do not have ids specified.
- */
-function canBeJoined( a: AttributeElement, b: AttributeElement ) {
-	return a.id === null && b.id === null;
 }

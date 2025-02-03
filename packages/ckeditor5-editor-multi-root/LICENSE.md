@@ -1,10 +1,15 @@
 Software License Agreement
 ==========================
 
-**Multi-root editor implementation** – https://github.com/ckeditor/ckeditor5-editor-multi-root <br>
-Copyright (c) 2003–2024, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
+**CKEditor&nbsp;5 Multi-root editor** (https://github.com/ckeditor/ckeditor5)<br>
+Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
-Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
+Licensed under a dual-license model, this software is available under:
+
+* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
+* or commercial license terms from CKSource Holding sp. z o.o.
+
+For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
 
 Sources of Intellectual Property Included in CKEditor
 -----------------------------------------------------
@@ -13,7 +18,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
-* Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 
 Trademarks
 ----------

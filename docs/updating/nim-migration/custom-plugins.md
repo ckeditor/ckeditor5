@@ -2,7 +2,7 @@
 category: nim-migration
 order: 60
 menu-title: Migrating custom plugins
-meta-title: Migrating custom plugins to new installation methods | CKEditor 5 documentation
+meta-title: Migrating custom plugins to new installation methods | CKEditor 5 Documentation
 meta-description: Learn how to upgrade custom plugins to the new installation methods.
 modified_at: 2024-06-25
 ---
@@ -44,7 +44,7 @@ The main changes we have introduced in the new package generator are:
 
 ### Add missing file extensions in imports
 
-Next, as required by the JavaScript modules (ESM), you must add the missing file extensions to all files in the `src`, `tests`, and `sample` folders during import. 
+Next, as required by the JavaScript modules (ESM), you must add the missing file extensions to all files in the `src`, `tests`, and `sample` folders during import.
 
 ```diff
 - import { Plugin } from 'ckeditor5/src/core';
