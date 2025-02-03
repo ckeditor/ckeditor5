@@ -49,7 +49,7 @@ describe( 'SourceEditingIntegration', () => {
 				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ]
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-missing-source-editing-plugin' );
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-missing-source-editing-plugin' );
 		} );
 
 		it( 'should not log warning when SourceEditing plugin is available', async () => {
@@ -93,7 +93,7 @@ describe( 'SourceEditingIntegration', () => {
 				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ],
 				email: {
 					warnings: {
-						suppress: [ 'email-missing-source-editing-plugin' ]
+						suppress: [ 'email-integration-missing-source-editing-plugin' ]
 					}
 				}
 			} );

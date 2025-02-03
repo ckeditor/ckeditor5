@@ -82,9 +82,9 @@ export default class EmailIntegrationUtils extends Plugin {
 		 * or by removing the plugin from the editor configuration, it is strongly discouraged as the plugin's
 		 * functionality may break or behave unexpectedly in email clients.
 		 *
-		 * @error email-unsupported-plugin
+		 * @error email-integration-unsupported-plugin
 		 */
-		this._logSuppressibleWarning( 'email-unsupported-plugin', { pluginName } );
+		this._logSuppressibleWarning( 'email-integration-unsupported-plugin', { pluginName } );
 	}
 
 	/**
@@ -110,9 +110,9 @@ export default class EmailIntegrationUtils extends Plugin {
 				 * The color format used in the configuration is not supported in email clients.
 				 * It may not be displayed correctly in some email clients. Please use `rgb()` or `#RRGGBB` format instead.
 				 *
-				 * @error email-unsupported-color-value
+				 * @error email-integration-unsupported-color-value
 				 */
-				this._logSuppressibleWarning( 'email-unsupported-color-value', {
+				this._logSuppressibleWarning( 'email-integration-unsupported-color-value', {
 					configPath: isArrayConfig ? `${ configPath }[${ index }]` : configPath,
 					color
 				} );
@@ -137,9 +137,9 @@ export default class EmailIntegrationUtils extends Plugin {
 			 * The color format used in the configuration is not supported in email clients.
 			 * It may not be displayed correctly in some email clients. Please use `rgb()` or `#RRGGBB` format instead.
 			 *
-			 * @error email-unsupported-color-format
+			 * @error email-integration-unsupported-color-format
 			 */
-			this._logSuppressibleWarning( 'email-unsupported-color-format', { configPath, format } );
+			this._logSuppressibleWarning( 'email-integration-unsupported-color-format', { configPath, format } );
 		}
 	}
 }

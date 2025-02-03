@@ -48,9 +48,9 @@ export class ExportInlineStylesIntegration extends Plugin {
 			 * it's recommended to have it enabled to ensure that exported content has inlined styles. This is important for email clients
 			 * as they have compatibility issues with external stylesheets and CSS classes.
 			 *
-			 * @error email-missing-export-inline-styles-plugin
+			 * @error email-integration-missing-export-inline-styles-plugin
 			 */
-			utils._logSuppressibleWarning( 'email-missing-export-inline-styles-plugin' );
+			utils._logSuppressibleWarning( 'email-integration-missing-export-inline-styles-plugin' );
 		}
 	}
 }

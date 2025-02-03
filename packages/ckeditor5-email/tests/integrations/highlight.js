@@ -56,7 +56,7 @@ describe( 'HighlightEmailIntegration', () => {
 				plugins: [ HighlightEmailIntegration, EmailIntegrationUtils, Highlight ]
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-plugin' );
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-plugin' );
 		} );
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
@@ -77,7 +77,7 @@ describe( 'HighlightEmailIntegration', () => {
 				plugins: [ HighlightEmailIntegration, EmailIntegrationUtils, Highlight ],
 				email: {
 					warnings: {
-						suppress: [ 'email-unsupported-plugin' ]
+						suppress: [ 'email-integration-unsupported-plugin' ]
 					}
 				}
 			} );

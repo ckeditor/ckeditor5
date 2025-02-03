@@ -114,7 +114,7 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._checkUnsupportedPlugin( 'TestPlugin' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-plugin', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-plugin', {
 				pluginName: 'TestPlugin'
 			} );
 		} );
@@ -145,7 +145,7 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorValue( 'test.color' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-color-value', {
 				color: 'hsl(0,100%,50%)',
 				configPath: 'test.color'
 			} );
@@ -159,7 +159,7 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorValue( 'test.colors' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-color-value', {
 				color: 'hsla(0,100%,50%,1)',
 				configPath: 'test.colors[0]'
 			} );
@@ -174,12 +174,12 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorValue( 'test.colors' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-color-value', {
 				color: 'hsla(0,100%,50%,1)',
 				configPath: 'test.colors[0]'
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-value', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-color-value', {
 				color: 'hsla(0,0,0,1)',
 				configPath: 'test.colors[1]'
 			} );
@@ -210,7 +210,7 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-format', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-color-format', {
 				format: 'hsl',
 				configPath: 'test.colorFormat'
 			} );
@@ -222,7 +222,7 @@ describe( 'EmailIntegrationUtils', () => {
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-color-format', {
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-color-format', {
 				format: 'hsla',
 				configPath: 'test.colorFormat'
 			} );

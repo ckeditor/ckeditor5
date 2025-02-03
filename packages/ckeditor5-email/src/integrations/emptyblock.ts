@@ -49,9 +49,9 @@ export class EmptyBlockIntegration extends Plugin {
 			 * email clients because the empty block may be used as separators between different blocks. The editor exports empty
 			 * blocks filled with a non-breaking space and it may break some parts of the email layout (like dividers).
 			 *
-			 * @error email-missing-empty-block-plugin
+			 * @error email-integration-missing-empty-block-plugin
 			 */
-			utils._logSuppressibleWarning( 'email-missing-empty-block-plugin' );
+			utils._logSuppressibleWarning( 'email-integration-missing-empty-block-plugin' );
 		}
 	}
 }

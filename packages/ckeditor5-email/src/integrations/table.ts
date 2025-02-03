@@ -57,9 +57,9 @@ export class TableEmailIntegration extends Plugin {
 			 * The `PlainTableOutput` plugin is required to use tables in the email integration.
 			 * Without it, tables will not be exported correctly and may not be displayed correctly in some email clients.
 			 *
-			 * @error email-missing-plain-table-output-plugin
+			 * @error email-integration-missing-plain-table-output-plugin
 			 */
-			utils._logSuppressibleWarning( 'email-missing-plain-table-output-plugin' );
+			utils._logSuppressibleWarning( 'email-integration-missing-plain-table-output-plugin' );
 		}
 	}
 

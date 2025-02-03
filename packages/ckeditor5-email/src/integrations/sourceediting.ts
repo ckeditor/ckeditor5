@@ -48,9 +48,9 @@ export class SourceEditingIntegration extends Plugin {
 			 * While it's not required for the email integration to work, it's recommended to have it enabled to ensure that the source code
 			 * view is available for users. This is important for email developers who need to work with the source code directly.
 			 *
-			 * @error email-missing-source-editing-plugin
+			 * @error email-integration-missing-source-editing-plugin
 			 */
-			utils._logSuppressibleWarning( 'email-missing-source-editing-plugin' );
+			utils._logSuppressibleWarning( 'email-integration-missing-source-editing-plugin' );
 		}
 	}
 }

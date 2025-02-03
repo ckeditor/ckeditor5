@@ -50,9 +50,9 @@ export class ListEmailIntegration extends Plugin {
 			 * While it is possible to disable this warning using the `email.warnings.suppress` configuration option,
 			 * it is recommended to avoid using reversed lists as they may not work correctly in some email clients.
 			 *
-			 * @error email-unsupported-reversed-list
+			 * @error email-integration-unsupported-reversed-list
 			 */
-			utils._logSuppressibleWarning( 'email-unsupported-reversed-list' );
+			utils._logSuppressibleWarning( 'email-integration-unsupported-reversed-list' );
 		}
 	}
 }

@@ -48,7 +48,7 @@ describe( 'EmptyBlockIntegration', () => {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ]
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-missing-empty-block-plugin' );
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-missing-empty-block-plugin' );
 		} );
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
@@ -69,7 +69,7 @@ describe( 'EmptyBlockIntegration', () => {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
 				email: {
 					warnings: {
-						suppress: [ 'email-missing-empty-block-plugin' ]
+						suppress: [ 'email-integration-missing-empty-block-plugin' ]
 					}
 				}
 			} );
@@ -82,7 +82,7 @@ describe( 'EmptyBlockIntegration', () => {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
 				email: {
 					warnings: {
-						suppress: warningCode => warningCode === 'email-missing-empty-block-plugin'
+						suppress: warningCode => warningCode === 'email-integration-missing-empty-block-plugin'
 					}
 				}
 			} );

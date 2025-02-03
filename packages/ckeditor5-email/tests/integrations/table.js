@@ -48,7 +48,7 @@ describe( 'TableEmailIntegration', () => {
 				plugins: [ TableEmailIntegration, EmailIntegrationUtils, Table ]
 			} );
 
-			sinon.assert.calledWith( warnStub, sinon.match( /email-missing-plain-table-output-plugin/ ) );
+			sinon.assert.calledWith( warnStub, sinon.match( /email-integration-missing-plain-table-output-plugin/ ) );
 		} );
 
 		describe( 'table properties configuration', () => {
@@ -81,7 +81,7 @@ describe( 'TableEmailIntegration', () => {
 							}
 						} );
 
-						sinon.assert.calledWith( warnStub, sinon.match( /email-unsupported-color-value/ ) );
+						sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-value/ ) );
 					} );
 
 					it( 'should not warn about hex colors in backgroundColors', async () => {
@@ -111,7 +111,7 @@ describe( 'TableEmailIntegration', () => {
 							}
 						} );
 
-						sinon.assert.calledWith( warnStub, sinon.match( /email-unsupported-color-value/ ) );
+						sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-value/ ) );
 					} );
 
 					describe( 'colorPicker', () => {
@@ -142,7 +142,7 @@ describe( 'TableEmailIntegration', () => {
 								}
 							} );
 
-							sinon.assert.calledWith( warnStub, sinon.match( /email-unsupported-color-format/ ) );
+							sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-format/ ) );
 						} );
 					} );
 				} );

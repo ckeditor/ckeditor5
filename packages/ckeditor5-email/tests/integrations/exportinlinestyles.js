@@ -48,7 +48,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ]
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-missing-export-inline-styles-plugin' );
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-missing-export-inline-styles-plugin' );
 		} );
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
@@ -69,7 +69,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ],
 				email: {
 					warnings: {
-						suppress: [ 'email-missing-export-inline-styles-plugin' ]
+						suppress: [ 'email-integration-missing-export-inline-styles-plugin' ]
 					}
 				}
 			} );
@@ -82,7 +82,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ],
 				email: {
 					warnings: {
-						suppress: warningCode => warningCode === 'email-missing-export-inline-styles-plugin'
+						suppress: warningCode => warningCode === 'email-integration-missing-export-inline-styles-plugin'
 					}
 				}
 			} );

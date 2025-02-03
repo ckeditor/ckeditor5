@@ -77,7 +77,7 @@ describe( 'FontIntegration', () => {
 							}
 						} );
 
-						sinon.assert.calledWith( warnStub, sinon.match( /email-unsupported-color-value/ ) );
+						sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-value/ ) );
 					} );
 				} );
 
@@ -103,7 +103,7 @@ describe( 'FontIntegration', () => {
 							}
 						} );
 
-						sinon.assert.calledWith( warnStub, sinon.match( /email-unsupported-color-format/ ) );
+						sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-format/ ) );
 					} );
 
 					it( 'should not warn about supported color format passed to `colorPicker` configuration', async () => {

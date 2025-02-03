@@ -61,7 +61,7 @@ describe( 'ListEmailIntegration', () => {
 				}
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-unsupported-reversed-list' );
+			sinon.assert.calledWithMatch( warnStub, 'email-integration-unsupported-reversed-list' );
 		} );
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
@@ -92,7 +92,7 @@ describe( 'ListEmailIntegration', () => {
 				},
 				email: {
 					warnings: {
-						suppress: [ 'email-unsupported-reversed-list' ]
+						suppress: [ 'email-integration-unsupported-reversed-list' ]
 					}
 				}
 			} );
