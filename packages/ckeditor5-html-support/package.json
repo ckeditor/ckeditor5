@@ -18,6 +18,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
+    "@ckeditor/ckeditor5-email": "0.0.1",
     "@ckeditor/ckeditor5-engine": "44.1.0",
     "@ckeditor/ckeditor5-enter": "44.1.0",
     "@ckeditor/ckeditor5-heading": "44.1.0",
@@ -26,7 +27,6 @@
     "@ckeditor/ckeditor5-table": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "@ckeditor/ckeditor5-widget": "44.1.0",
-    "@ckeditor/ckeditor5-email": "0.0.1",
     "ckeditor5": "44.1.0",
     "lodash-es": "4.17.21"
   },

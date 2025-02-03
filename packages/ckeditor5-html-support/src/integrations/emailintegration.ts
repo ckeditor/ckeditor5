@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
+import type { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
@@ -58,7 +58,7 @@ export default class EmailIntegrationSupport extends Plugin {
 		}
 
 		const dataFilter = plugins.get( DataFilter );
-		const emailUtils = plugins.get( EmailIntegrationUtils );
+		const emailUtils: EmailIntegrationUtils = plugins.get( 'EmailIntegrationUtils' );
 
 		for ( const element of EmailIntegrationSupport.UNSUPPORTED_ELEMENTS ) {
 			dataFilter.once<DataFilterRegisterEvent>( `register:${ element }`, ( evt, definition ) => {
