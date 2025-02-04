@@ -84,9 +84,9 @@ export default class EmailIntegrationUtils extends Plugin {
 
 		/**
 		 * The plugin is not supported in email editing mode as it may not work correctly in email clients.
-		 * While it is possible to disable this warning using the `email.warnings.suppress` configuration option,
-		 * it is strongly discouraged as the plugin's functionality may break or behave unexpectedly in email clients.
-		 * Removing the plugin from the editor configuration will also turn off the warning.
+		 * It is encouraged to remove the plugin from the editor configuration to maintain compatibility.
+		 * While it is possible to disable this warning using the `email.warnings.suppress`
+		 * configuration option, it is strongly discouraged.
 		 *
 		 * @error email-integration-unsupported-plugin
 		 */
