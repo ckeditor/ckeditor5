@@ -46,9 +46,9 @@ export class ListEmailIntegration extends Plugin {
 
 		if ( listConfig && listConfig.properties && listConfig.properties.reversed ) {
 			/**
-			 * The reversed list feature is not fully supported in email clients.
-			 * While it is possible to disable this warning using the `email.warnings.suppress` configuration option,
-			 * it is recommended to avoid using reversed lists as they may not work correctly in some email clients.
+			 * It is recommended to avoid using reversed lists as they may not work correctly in some email clients.
+			 * While it is possible to disable this warning using the `email.warnings.suppress`
+			 * configuration option, it is discouraged.
 			 *
 			 * @error email-integration-unsupported-reversed-list
 			 */
