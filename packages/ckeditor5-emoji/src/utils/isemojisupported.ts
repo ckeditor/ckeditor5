@@ -73,7 +73,7 @@ export default function isEmojiSupported( unicode: string ): boolean {
 
 function getCanvas(): CanvasRenderingContext2D | null {
 	try {
-		return document.createElement( 'canvas' ).getContext( '2d' );
+		return document.createElement( 'canvas' ).getContext( '2d', { willReadFrequently: true } );
 	} catch {
 		/* istanbul ignore next -- @preserve */
 		return null;
