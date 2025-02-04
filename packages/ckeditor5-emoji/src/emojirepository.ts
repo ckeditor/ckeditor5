@@ -10,24 +10,14 @@
 import Fuse from 'fuse.js';
 import { groupBy } from 'lodash-es';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
+import EmojiUtils from './emojiutils.js';
 import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
 const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{version}/en.json';
-
-const SKIN_TONE_MAP: Record<number, SkinToneId> = {
-	0: 'default',
-	1: 'light',
-	2: 'medium-light',
-	3: 'medium',
-	4: 'medium-dark',
-	5: 'dark'
-};
-
-const BASELINE_EMOJI_WIDTH = 24;
 
 /**
  * The emoji repository plugin.
@@ -35,17 +25,6 @@ const BASELINE_EMOJI_WIDTH = 24;
  * Loads the emoji database from URL during plugin initialization and provides utility methods to search it.
  */
 export default class EmojiRepository extends Plugin {
-	/**
-	 * Emoji database.
-	 */
-	private _database: Array<EmojiEntry>;
-
-	/**
-	 * A promise resolved after downloading the emoji database.
-	 * The promise resolves with `true` when the database is successfully downloaded or `false` otherwise.
-	 */
-	private _databasePromise: Promise<boolean>;
-
 	/**
 	 * A callback to resolve the {@link #_databasePromise} to control the return value of this promise.
 	 */
@@ -55,6 +34,24 @@ export default class EmojiRepository extends Plugin {
 	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
 	 */
 	private _fuseSearch: Fuse<EmojiEntry> | null;
+
+	/**
+	 * Emoji database.
+	 */
+	private _database: Array<EmojiEntry>;
+
+	/**
+	 * A promise resolved after downloading the emoji database.
+	 * The promise resolves with `true` when the database is successfully downloaded or `false` otherwise.
+	 */
+	private readonly _databasePromise: Promise<boolean>;
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ EmojiUtils ] as const;
+	}
 
 	/**
 	 * @inheritDoc
@@ -93,9 +90,12 @@ export default class EmojiRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
+		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
 		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
+
 		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
 		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
+		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
 
 		// Skip the initialization if the emoji database download has failed.
 		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
@@ -103,13 +103,14 @@ export default class EmojiRepository extends Plugin {
 			return this._databasePromiseResolveCallback( false );
 		}
 
-		const container = createEmojiWidthTestingContainer();
+		const container = emojiUtils.createEmojiWidthTestingContainer();
+		document.body.appendChild( container );
 
 		// Store the emoji database after normalizing the raw data.
 		this._database = emojiDatabase
-			.filter( item => isEmojiCategoryAllowed( item ) )
-			.filter( item => EmojiRepository._isEmojiSupported( item, container ) )
-			.map( item => normalizeEmojiSkinTone( item ) );
+			.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) )
+			.filter( item => emojiUtils.isEmojiSupported( item, emojiSupportedVersionByOs, container ) )
+			.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
 
 		container.remove();
 
@@ -224,13 +225,6 @@ export default class EmojiRepository extends Plugin {
 	public isReady(): Promise<boolean> {
 		return this._databasePromise;
 	}
-
-	/**
-	 * A function used to check if the given emoji is supported in the operating system.
-	 *
-	 * Referenced for unit testing purposes.
-	 */
-	private static _isEmojiSupported = isEmojiSupported;
 }
 
 /**
@@ -263,78 +257,6 @@ async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<Emoj
 	}
 
 	return result;
-}
-
-/**
- * Creates a div for emoji width testing purposes.
- */
-function createEmojiWidthTestingContainer(): HTMLDivElement {
-	const container = document.createElement( 'div' );
-
-	container.setAttribute( 'aria-hidden', 'true' );
-	container.style.position = 'absolute';
-	container.style.left = '-9999px';
-	container.style.whiteSpace = 'nowrap';
-	container.style.fontSize = BASELINE_EMOJI_WIDTH + 'px';
-	document.body.appendChild( container );
-
-	return container;
-}
-
-/**
- * Returns the width of the provided node.
- */
-function getNodeWidth( container: HTMLDivElement, node: string ): number {
-	const span = document.createElement( 'span' );
-	span.textContent = node;
-	container.appendChild( span );
-	const nodeWidth = span.offsetWidth;
-	container.removeChild( span );
-
-	return nodeWidth;
-}
-
-/**
- * Checks whether the emoji is supported in the operating system.
- */
-function isEmojiSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
-	const emojiWidth = getNodeWidth( container, item.emoji );
-
-	// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
-	// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
-	// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
-	// So here we set the threshold at 1.8 times the size of the baseline emoji.
-	return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
-}
-
-/**
- * Adds default skin tone property to each emoji. If emoji defines other skin tones, they are added as well.
- */
-function normalizeEmojiSkinTone( item: EmojiCdnResource ): EmojiEntry {
-	const entry: EmojiEntry = {
-		...item,
-		skins: {
-			default: item.emoji
-		}
-	};
-
-	if ( item.skins ) {
-		item.skins.forEach( skin => {
-			const skinTone = SKIN_TONE_MAP[ skin.tone ];
-
-			entry.skins[ skinTone ] = skin.emoji;
-		} );
-	}
-
-	return entry;
-}
-
-/**
- * Checks whether the emoji belongs to a group that is allowed.
- */
-function isEmojiCategoryAllowed( item: EmojiCdnResource ): boolean {
-	// Category group=2 contains skin tones only, which we do not want to render.
-	return item.group !== 2;
 }
 
 /**

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document Event KeyboardEvent */
+/* global window document console Event KeyboardEvent Response */
 
 import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -13,64 +13,78 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { EmojiPicker } from '../src/index.js';
+import EmojiPicker from '../src/emojipicker.js';
 import EmojiRepository from '../src/emojirepository.js';
 import EmojiPickerView from '../src/ui/emojipickerview.js';
 import EmojiCommand from '../src/emojicommand.js';
 
-class EmojiRepositoryMock extends EmojiRepository {
-	// Overridden `init()` to prevent the `fetch()` call.
-	init() {
-		this.getEmojiByQuery = sinon.stub();
-		this.getEmojiCategories = sinon.stub();
-		this.getSkinTones = sinon.stub();
-		this.isReady = sinon.stub();
+function mockEmojiRepositoryValues( editor ) {
+	const repository = editor.plugins.get( 'EmojiRepository' );
 
-		// Let's define a default behavior as we need this in UI, but we do not check it.
-		this.getEmojiCategories.returns( [
-			{
-				title: 'Smileys & Expressions',
-				icon: '😀',
-				items: []
-			},
-			{
-				title: 'Food & Drinks',
-				icon: '🍎',
-				items: []
-			}
-		] );
+	testUtils.sinon.stub( repository, 'getEmojiByQuery' );
+	testUtils.sinon.stub( repository, 'getEmojiCategories' );
+	testUtils.sinon.stub( repository, 'getSkinTones' );
 
-		this.getSkinTones.returns( [
-			{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
-			{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
-			{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
-		] );
+	repository.getEmojiCategories.returns( [
+		{
+			title: 'Smileys & Expressions',
+			icon: '😀',
+			items: []
+		},
+		{
+			title: 'Food & Drinks',
+			icon: '🍎',
+			items: []
+		}
+	] );
 
-		this.isReady.returns( EmojiRepositoryMock.isReady );
-	}
-
-	// Property exposed for testing purposes to control the plugin initialization flow.
-	static isReady = true;
+	repository.getSkinTones.returns( [
+		{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
+		{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
+		{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
+	] );
 }
 
 describe( 'EmojiPicker', () => {
-	let editor, editorElement, emojiPicker;
+	testUtils.createSinonSandbox();
+
+	let editor, editorElement, emojiPicker, fetchStub;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		EmojiRepositoryMock.isReady = true;
+		const exampleRepositoryEntry = {
+			shortcodes: [
+				'grinning'
+			],
+			annotation: 'grinning face',
+			tags: [],
+			emoji: '😀',
+			order: 1,
+			group: 0,
+			version: 1
+		};
+
+		fetchStub = testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( resolve => {
+				const results = JSON.stringify( [ exampleRepositoryEntry ] );
+
+				resolve( new Response( results ) );
+			} );
+		} );
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiPicker, Essentials, Paragraph ],
-			substitutePlugins: [ EmojiRepositoryMock ],
 			toolbar: [ 'emoji' ],
 			menuBar: {
 				isVisible: true
 			}
 		} );
+
+		mockEmojiRepositoryValues( editor );
 
 		emojiPicker = editor.plugins.get( EmojiPicker );
 	} );
@@ -117,11 +131,12 @@ describe( 'EmojiPicker', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				emoji: {
 					skinTone: 'medium'
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			expect( editor.plugins.get( EmojiPicker ).skinTone ).to.equal( 'medium' );
 
@@ -135,11 +150,12 @@ describe( 'EmojiPicker', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				emoji: {
 					skinTone: 'medium'
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			const emojiPicker = editor.plugins.get( EmojiPicker );
 			emojiPicker.showUI();
@@ -175,16 +191,20 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'must not register the "emoji" toolbar component if emoji repository is not ready', async () => {
-				EmojiRepositoryMock.isReady = false;
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
 
-				await editor.destroy();
+				testUtils.sinon.stub( console, 'warn' );
+				fetchStub.rejects( 'Failed to load CDN.' );
 
-				editor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ EmojiPicker, Paragraph, Essentials ],
-					substitutePlugins: [ EmojiRepositoryMock ]
+				const editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ EmojiPicker, Paragraph, Essentials ]
 				} );
 
 				expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( false );
+
+				await editor.destroy();
+				editorElement.remove();
 			} );
 
 			it( 'should disable the button when editor switches to the read-only mode', () => {
@@ -208,19 +228,20 @@ describe( 'EmojiPicker', () => {
 			} );
 
 			it( 'must not register the "menuBar:emoji" toolbar component if emoji repository is not ready', async () => {
-				EmojiRepositoryMock.isReady = false;
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
 
-				await editor.destroy();
+				testUtils.sinon.stub( console, 'warn' );
+				fetchStub.rejects( 'Failed to load CDN.' );
 
-				editor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ EmojiPicker, Paragraph, Essentials ],
-					substitutePlugins: [ EmojiRepositoryMock ],
-					menuBar: {
-						isVisible: true
-					}
+				const editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ EmojiPicker, Paragraph, Essentials ]
 				} );
 
 				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( false );
+
+				await editor.destroy();
+				editorElement.remove();
 			} );
 
 			it( 'should disable the menu bar item when editor switches to the read-only mode', () => {
@@ -266,11 +287,11 @@ describe( 'EmojiPicker', () => {
 		} );
 
 		it( 'should add the emoji UI view to the `ContextualBalloon` plugin when opens UI', () => {
-			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
+			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
 
 			emojiPicker.showUI();
 
-			expect( emojiPicker._balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerView );
+			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerView );
 		} );
 
 		it( 'should focus the query input when opens UI', async () => {
@@ -314,7 +335,7 @@ describe( 'EmojiPicker', () => {
 		} );
 
 		it( 'should update the balloon position on update event', () => {
-			const updatePositionSpy = sinon.spy( emojiPicker._balloonPlugin, 'updatePosition' );
+			const updatePositionSpy = sinon.spy( emojiPicker.balloonPlugin, 'updatePosition' );
 
 			emojiPicker.showUI();
 			emojiPicker.emojiPickerView.fire( 'update' );
@@ -323,10 +344,10 @@ describe( 'EmojiPicker', () => {
 		} );
 
 		it( 'should not update the balloon position on update event when visible view is not current emoji picker view', () => {
-			const updatePositionSpy = sinon.spy( emojiPicker._balloonPlugin, 'updatePosition' );
+			const updatePositionSpy = sinon.spy( emojiPicker.balloonPlugin, 'updatePosition' );
 
 			emojiPicker.showUI();
-			emojiPicker._balloonPlugin.visibleView = {};
+			emojiPicker.balloonPlugin.visibleView = {};
 
 			emojiPicker.emojiPickerView.fire( 'update' );
 
@@ -338,18 +359,18 @@ describe( 'EmojiPicker', () => {
 
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
+			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
 		} );
 
 		it( 'should close the picker when focus is on the picker and escape is clicked', () => {
 			emojiPicker.showUI();
 
-			emojiPicker._balloonPlugin.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
+			emojiPicker.balloonPlugin.visibleView.element.dispatchEvent( new KeyboardEvent( 'keydown', {
 				keyCode: keyCodes.esc,
 				bubbles: true
 			} ) );
 
-			expect( emojiPicker._balloonPlugin.visibleView ).to.equal( null );
+			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
 		} );
 
 		it( 'should load previous category after reopening the emoji picker', () => {
