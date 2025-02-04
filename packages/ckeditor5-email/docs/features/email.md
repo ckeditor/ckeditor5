@@ -49,7 +49,19 @@ ClassicEditor
 
 ### Configuration
 
-Well, yes.
+The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property lets you suppress warning or log messages about email client compatibility.
+
+```js
+ClassicEditor
+	.create( editorElement, {
+		email: {
+			logs: {
+				suppressAll: false,
+				suppress: [ ... ]
+			}
+		}
+	} )
+```
 
 ## Related features
 
@@ -58,9 +70,10 @@ Here are some similar CKEditor&nbsp;5 features that you may find helpful:
 
 ## Common API
 
-The {@link module:email/email~Email} plugin registers the UI button component (`'email'`) and the following commands:
+The {@link module:email/emailintegration~EmailIntegration} plugin registers the following components:
 
-* The `'email'` command implemented by
+* The {@link module:email/emailintegration~EmailIntegration} component.
+* The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

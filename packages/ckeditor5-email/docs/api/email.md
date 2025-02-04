@@ -14,7 +14,7 @@ Check out the demo in the {@link features/email#demo email feature guide}.
 
 ## Documentation
 
-See the {@link features/email email feature guide} and the {@link module:email/email~Email} plugin documentation.
+See the {@link features/email email feature guide} and the {@link module:email/emailintegration~EmailIntegration} plugin documentation.
 
 ## Installation
 
