@@ -7,8 +7,7 @@
 			"path": "src/emoji.js",
 			"docs": "features/emoji.html",
 			"requires": [
-				"EmojiMention",
-				"EmojiPicker"
+				"Mention"
 			]
 		},
 		{
