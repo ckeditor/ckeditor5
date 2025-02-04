@@ -19,7 +19,8 @@ import type {
 	StyleElementSupport,
 	TableElementSupport,
 	HtmlComment,
-	FullPage
+	FullPage,
+	EmptyBlock
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -50,5 +51,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableElementSupport.pluginName ]: TableElementSupport;
 		[ HtmlComment.pluginName ]: HtmlComment;
 		[ FullPage.pluginName ]: FullPage;
+		[ EmptyBlock.pluginName ]: EmptyBlock;
 	}
 }
