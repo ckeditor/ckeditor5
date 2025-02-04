@@ -7,6 +7,7 @@ import type {
 	GeneralHtmlSupport,
 	DataFilter,
 	DataSchema,
+	FullPageConfig,
 	GeneralHtmlSupportConfig,
 	CodeBlockElementSupport,
 	CustomElementSupport,
@@ -33,6 +34,14 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * Read more in {@link module:html-support/generalhtmlsupportconfig~GeneralHtmlSupportConfig}.
 		 */
 		htmlSupport?: GeneralHtmlSupportConfig;
+
+		/**
+		 * The configuration of the Full page editing feature.
+		 * Introduced by the {@link module:html-support/fullpage~FullPage} feature.
+		 *
+		 * Read more in {@link module:html-support/fullpageconfig~FullPageConfig}.
+		 */
+		fullPage?: FullPageConfig;
 	}
 
 	interface PluginsMap {

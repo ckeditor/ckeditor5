@@ -7,8 +7,14 @@
  * @module html-support/fullpage
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { global } from 'ckeditor5/src/utils.js';
+import {
+	UpcastWriter,
+	type DataControllerToModelEvent,
+	type DataControllerToViewEvent
+} from 'ckeditor5/src/engine.js';
+
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
 /**
@@ -55,6 +61,15 @@ export default class FullPage extends Plugin {
 					}
 				}
 			} );
+
+			const allowRenderStylesFromHead = isAllowedRenderStylesFromHead( editor );
+
+			if ( allowRenderStylesFromHead ) {
+				const fullPageData = root.getAttribute( '$fullPageDocument' ) as string;
+
+				this._removeStyleElementsFromDom();
+				this._renderStyleElementsInDom( fullPageData );
+			}
 		}, { priority: 'low' } );
 
 		// Apply root attributes to the view document fragment.
@@ -103,4 +118,49 @@ export default class FullPage extends Plugin {
 			args[ 0 ].trim = false;
 		}, { priority: 'high' } );
 	}
+
+	/**
+	 * Checks if in the document exists any `<style>` elements injected by the plugin and removes them,
+	 * so these could be re-rendered later.
+	 * There is used `data-full-page-style-id` attribute to recognize styles injected by the feature.
+	 */
+	private _removeStyleElementsFromDom(): void {
+		const existingStyleElements = Array.from(
+			global.document.querySelectorAll( `[data-full-page-style-id="${ this.editor.id }"]` )
+		);
+
+		for ( const style of existingStyleElements ) {
+			style.remove();
+		}
+	}
+
+	/**
+	 *
+	 * @param fullPageData Represents the full page data passed to the editor as a string.
+	 */
+	private _renderStyleElementsInDom( fullPageData: string ): void {
+		// Use DOMParser for easier elements extraction and unwanted code execution prevention.
+		const domParser = new DOMParser();
+		const doc = domParser.parseFromString( fullPageData, 'text/html' );
+
+		// Extract `<style>` elements from the `<head>` from the full page data.
+		const styleElements = Array.from( doc.querySelectorAll( 'head style' ) );
+
+		// Add `data-full-page-style` attribute to the `<style>` element and render it in `<head>` in the main document.
+		for ( const style of styleElements ) {
+			style.setAttribute( 'data-full-page-style-id', this.editor.id );
+
+			global.document.head.append( style );
+		}
+	}
+}
+
+/**
+ * Normalize the Full page configuration option `allowRenderStylesFromHead`.
+ */
+function isAllowedRenderStylesFromHead( editor: Editor ): boolean {
+	const allowRenderStylesFromHead = editor.config.get( 'fullPage.allowRenderStylesFromHead' );
+
+	// When not defined, option `allowRenderStylesFromHead` by default is set to `false`.
+	return allowRenderStylesFromHead !== undefined ? allowRenderStylesFromHead : false;
 }

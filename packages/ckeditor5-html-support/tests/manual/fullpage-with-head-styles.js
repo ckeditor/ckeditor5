@@ -35,6 +35,9 @@ ClassicEditor
 			SourceEditing,
 			FullPage
 		],
+		fullPage: {
+			allowRenderStylesFromHead: true
+		},
 		toolbar: [
 			'sourceEditing', '|',
 			'heading', '|', 'bold', 'italic', 'link', '|',
