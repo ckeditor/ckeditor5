@@ -29,12 +29,12 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
 	 */
-	declare private _emojiPickerPlugin: EmojiPicker | null;
+	declare public emojiPickerPlugin: EmojiPicker | null;
 
 	/**
 	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
 	 */
-	declare private _emojiRepositoryPlugin: EmojiRepository;
+	declare public emojiRepositoryPlugin: EmojiRepository;
 
 	/**
 	 * A flag that informs if the {@link module:emoji/emojirepository~EmojiRepository} plugin is loaded correctly.
@@ -139,9 +139,9 @@ export default class EmojiMention extends Plugin {
 	public async init(): Promise<void> {
 		const editor = this.editor;
 
-		this._emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
-		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
-		this._isEmojiRepositoryAvailable = await this._emojiRepositoryPlugin.isReady();
+		this.emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
+		this.emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
+		this._isEmojiRepositoryAvailable = await this.emojiRepositoryPlugin.isReady();
 
 		// Override the `mention` command listener if the emoji repository is ready.
 		if ( this._isEmojiRepositoryAvailable ) {
@@ -218,7 +218,7 @@ export default class EmojiMention extends Plugin {
 					editor.model.deleteContent( writer.createSelection( eventData.range ) );
 				} );
 
-				const emojiPickerPlugin = this._emojiPickerPlugin!;
+				const emojiPickerPlugin = this.emojiPickerPlugin!;
 
 				emojiPickerPlugin.showUI( text.slice( 1 ) );
 
@@ -251,12 +251,12 @@ export default class EmojiMention extends Plugin {
 				return [];
 			}
 
-			const emojis: Array<MentionFeedObjectItem> = this._emojiRepositoryPlugin.getEmojiByQuery( searchQuery )
+			const emojis: Array<MentionFeedObjectItem> = this.emojiRepositoryPlugin.getEmojiByQuery( searchQuery )
 				.map( emoji => {
 					let text = emoji.skins[ this._skinTone ] || emoji.skins.default;
 
-					if ( this._emojiPickerPlugin ) {
-						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
+					if ( this.emojiPickerPlugin ) {
+						text = emoji.skins[ this.emojiPickerPlugin.skinTone ] || emoji.skins.default;
 					}
 
 					return {
@@ -265,7 +265,7 @@ export default class EmojiMention extends Plugin {
 					};
 				} );
 
-			if ( !this._emojiPickerPlugin ) {
+			if ( !this.emojiPickerPlugin ) {
 				return emojis.slice( 0, this._emojiDropdownLimit );
 			}
 
