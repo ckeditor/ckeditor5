@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module email
+ */
+
 import './augmentation.js';
 
 export { default as EmailIntegration } from './emailintegration.js';
