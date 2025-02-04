@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module emoji/utils/isemojisupported
+ */
+
+/**
  * Checks if the two pixels parts are the same using canvas.
  */
 export default function isEmojiSupported( unicode: string ): boolean {

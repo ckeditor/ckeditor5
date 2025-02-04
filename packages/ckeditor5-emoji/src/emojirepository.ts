@@ -12,8 +12,8 @@ import { groupBy } from 'lodash-es';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
-import type { SkinToneId } from './emojiconfig.js';
 import EmojiUtils from './utils/emojiutils.js';
+import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
@@ -26,15 +26,9 @@ const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{versi
  */
 export default class EmojiRepository extends Plugin {
 	/**
-	 * Emoji database.
+	 * An instance of the {@link module:emoji/utils/emojiutils~EmojiUtils} plugin.
 	 */
-	private _database: Array<EmojiEntry>;
-
-	/**
-	 * A promise resolved after downloading the emoji database.
-	 * The promise resolves with `true` when the database is successfully downloaded or `false` otherwise.
-	 */
-	private _databasePromise: Promise<boolean>;
+	declare public emojiUtilsPlugin: EmojiUtils;
 
 	/**
 	 * A callback to resolve the {@link #_databasePromise} to control the return value of this promise.
@@ -47,9 +41,22 @@ export default class EmojiRepository extends Plugin {
 	private _fuseSearch: Fuse<EmojiEntry> | null;
 
 	/**
-	 * Emoji utils.
+	 * Emoji database.
 	 */
-	private _emojiUtils: EmojiUtils | null;
+	private _database: Array<EmojiEntry>;
+
+	/**
+	 * A promise resolved after downloading the emoji database.
+	 * The promise resolves with `true` when the database is successfully downloaded or `false` otherwise.
+	 */
+	private readonly _databasePromise: Promise<boolean>;
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ EmojiUtils ] as const;
+	}
 
 	/**
 	 * @inheritDoc
@@ -63,13 +70,6 @@ export default class EmojiRepository extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get requires() {
-		return [ EmojiUtils ] as const;
 	}
 
 	/**
@@ -91,7 +91,7 @@ export default class EmojiRepository extends Plugin {
 		this._fuseSearch = null;
 
 		// TODO fix casting
-		this._emojiUtils = this.editor.plugins.get( 'EmojiUtils' ) as EmojiUtils;
+		this.emojiUtilsPlugin = this.editor.plugins.get( 'EmojiUtils' ) as EmojiUtils;
 	}
 
 	/**
@@ -99,7 +99,7 @@ export default class EmojiRepository extends Plugin {
 	 */
 	public async init(): Promise<void> {
 		// TODO how to get rid of ! char
-		const emojiUtils = this._emojiUtils!;
+		const emojiUtils = this.emojiUtilsPlugin;
 		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
 		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
 		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
