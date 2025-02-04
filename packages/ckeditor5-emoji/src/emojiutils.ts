@@ -4,12 +4,12 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import isEmojiSupported from './isemojisupported.js';
-import type { EmojiCdnResource, EmojiEntry } from '../emojirepository.js';
-import type { SkinToneId } from '../emojiconfig.js';
+import type { EmojiCdnResource, EmojiEntry } from './emojirepository.js';
+import type { SkinToneId } from './emojiconfig.js';
+import isEmojiSupported from './utils/isemojisupported.js';
 
 /**
- * @module emoji/utils/emojiutils
+ * @module emoji/emojiutils
  */
 
 const SKIN_TONE_MAP: Record<number, SkinToneId> = {
@@ -126,7 +126,6 @@ export default class EmojiUtils extends Plugin {
 		container.style.left = '-9999px';
 		container.style.whiteSpace = 'nowrap';
 		container.style.fontSize = BASELINE_EMOJI_WIDTH + 'px';
-		document.body.appendChild( container );
 
 		return container;
 	}

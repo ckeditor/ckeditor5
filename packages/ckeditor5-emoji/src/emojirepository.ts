@@ -12,7 +12,7 @@ import { groupBy } from 'lodash-es';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
-import EmojiUtils from './utils/emojiutils.js';
+import EmojiUtils from './emojiutils.js';
 import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji database will be downloaded during plugin initialization.
@@ -25,11 +25,6 @@ const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{versi
  * Loads the emoji database from URL during plugin initialization and provides utility methods to search it.
  */
 export default class EmojiRepository extends Plugin {
-	/**
-	 * An instance of the {@link module:emoji/utils/emojiutils~EmojiUtils} plugin.
-	 */
-	declare public emojiUtilsPlugin: EmojiUtils;
-
 	/**
 	 * A callback to resolve the {@link #_databasePromise} to control the return value of this promise.
 	 */
@@ -89,18 +84,15 @@ export default class EmojiRepository extends Plugin {
 		} );
 
 		this._fuseSearch = null;
-
-		// TODO fix casting
-		this.emojiUtilsPlugin = this.editor.plugins.get( 'EmojiUtils' ) as EmojiUtils;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
-		// TODO how to get rid of ! char
-		const emojiUtils = this.emojiUtilsPlugin;
+		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
 		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
+
 		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
 		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
 		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
@@ -112,6 +104,7 @@ export default class EmojiRepository extends Plugin {
 		}
 
 		const container = emojiUtils.createEmojiWidthTestingContainer();
+		document.body.appendChild( container );
 
 		// Store the emoji database after normalizing the raw data.
 		this._database = emojiDatabase

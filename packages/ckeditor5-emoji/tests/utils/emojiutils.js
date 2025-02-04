@@ -4,7 +4,7 @@
  */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import EmojiUtils from '../../src/utils/emojiutils.js';
+import EmojiUtils from '../../src/emojiutils.ts';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 /* global document */
@@ -150,8 +150,6 @@ describe( 'EmojiUtils', () => {
 
 	describe( 'createEmojiWidthTestingContainer()', () => {
 		it( 'should create a width testing container with correct attributes', async () => {
-			const appendSpy = sinon.spy( document.body, 'appendChild' );
-
 			const container = emojiUtils.createEmojiWidthTestingContainer();
 
 			expect( container ).to.have.attribute( 'aria-hidden', 'true' );
@@ -159,7 +157,6 @@ describe( 'EmojiUtils', () => {
 			expect( container.style.left ).to.equal( '-9999px' );
 			expect( container.style.whiteSpace ).to.equal( 'nowrap' );
 			expect( container.style.fontSize ).to.equal( '24px' );
-			sinon.assert.calledOnceWithExactly( appendSpy, container );
 
 			container.remove();
 		} );

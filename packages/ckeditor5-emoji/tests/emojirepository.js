@@ -11,7 +11,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import EmojiRepository from '../src/emojirepository.js';
-import EmojiUtils from '../src/utils/emojiutils.js';
+import EmojiUtils from '../src/emojiutils.ts';
 
 describe( 'EmojiRepository', () => {
 	testUtils.createSinonSandbox();
