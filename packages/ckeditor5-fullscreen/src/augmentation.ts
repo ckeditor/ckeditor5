@@ -4,21 +4,21 @@
  */
 
 import type {
-	FullScreen,
-	FullScreenEditing,
-	FullScreenUI,
-	FullScreenCommand
+	Fullscreen,
+	FullscreenEditing,
+	FullscreenUI,
+	FullscreenCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-		[ FullScreen.pluginName ]: FullScreen;
-		[ FullScreenEditing.pluginName ]: FullScreenEditing;
-		[ FullScreenUI.pluginName ]: FullScreenUI;
+		[ Fullscreen.pluginName ]: Fullscreen;
+		[ FullscreenEditing.pluginName ]: FullscreenEditing;
+		[ FullscreenUI.pluginName ]: FullscreenUI;
 	}
 
 	interface CommandsMap {
-		fullScreen: FullScreenCommand;
+		fullscreen: FullscreenCommand;
 	}
 }
 

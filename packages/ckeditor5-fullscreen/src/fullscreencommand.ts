@@ -4,7 +4,7 @@
  */
 
 /**
- * @module full-screen/fullscreencommand
+ * @module fullscreen/fullscreencommand
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
@@ -16,11 +16,11 @@ import ClassicEditorHandler from './handlers/classiceditor.js';
 import DecoupledEditorHandler from './handlers/decouplededitor.js';
 
 /**
- * A command toggling the full screen mode.
+ * A command toggling the fullscreen mode.
  */
-export default class FullScreenCommand extends Command {
+export default class FullscreenCommand extends Command {
 	/**
-	 * Indicates whether the full screen mode is enabled.
+	 * Indicates whether the fullscreen mode is enabled.
 	 *
 	 * @observable
 	 * @readonly
@@ -28,9 +28,9 @@ export default class FullScreenCommand extends Command {
 	public override value = false;
 
 	/**
-	 * Specialized class handling the full screen mode toggling for a specific editor type.
+	 * Specialized class handling the fullscreen mode toggling for a specific editor type.
 	 */
-	private _fullScreenHandler: AbstractEditorHandler;
+	private _fullscreenHandler: AbstractEditorHandler;
 
 	/**
 	 * @inheritDoc
@@ -40,45 +40,45 @@ export default class FullScreenCommand extends Command {
 
 		// Choose the appropriate handler based on the editor type.
 		// Currently only ClassicEditor and DecoupledEditor are supported. For other editor types, the abstract handler is used
-		// which will throw if user tries to enable the full screen mode.
+		// which will throw if user tries to enable the fullscreen mode.
 		if ( editor instanceof ClassicEditor ) {
-			this._fullScreenHandler = new ClassicEditorHandler( editor );
+			this._fullscreenHandler = new ClassicEditorHandler( editor );
 		} else if ( editor instanceof DecoupledEditor ) {
-			this._fullScreenHandler = new DecoupledEditorHandler( editor );
+			this._fullscreenHandler = new DecoupledEditorHandler( editor );
 		} else {
-			this._fullScreenHandler = new AbstractEditorHandler();
+			this._fullscreenHandler = new AbstractEditorHandler();
 		}
 	}
 
 	/**
-	 * Toggles the full screen mode.
+	 * Toggles the fullscreen mode.
 	 */
 	public override execute(): void {
 		if ( this.value ) {
-			this._disableFullScreenMode();
+			this._disableFullscreenMode();
 		} else {
-			this._enableFullScreenMode();
+			this._enableFullscreenMode();
 		}
 	}
 
 	/**
-	 * Enables the full screen mode.
+	 * Enables the fullscreen mode.
 	 */
-	private _enableFullScreenMode(): void {
+	private _enableFullscreenMode(): void {
 		document.body.classList.add( 'ck-fullscreen' );
 
-		this._fullScreenHandler.enable();
+		this._fullscreenHandler.enable();
 
 		this.value = true;
 	}
 
 	/**
-	 * Disables the full screen mode.
+	 * Disables the fullscreen mode.
 	 */
-	private _disableFullScreenMode(): void {
+	private _disableFullscreenMode(): void {
 		document.body.classList.remove( 'ck-fullscreen' );
 
-		this._fullScreenHandler.disable();
+		this._fullscreenHandler.disable();
 
 		this.value = false;
 	}

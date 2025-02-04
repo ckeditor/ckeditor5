@@ -1,1 +1,0 @@
-## Full screen mode

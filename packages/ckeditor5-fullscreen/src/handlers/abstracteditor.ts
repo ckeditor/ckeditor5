@@ -4,7 +4,7 @@
  */
 
 /**
- * @module full-screen/handlers/abstracteditorhandler
+ * @module fullscreen/handlers/abstracteditorhandler
  */
 
 import { CKEditorError, createElement } from 'ckeditor5/src/utils.js';
@@ -20,7 +20,7 @@ export default class AbstractEditorHandler {
 	declare protected _editor: Editor;
 
 	/**
-	 * The container element that holds the full screen mode layout.
+	 * The container element that holds the fullscreen mode layout.
 	 * It's independent of the editor type.
 	 */
 	declare public _container: HTMLElement | null;
@@ -40,14 +40,14 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Moves the given element to the full screen mode container, leaving a placeholder in its place.
+	 * Moves the given element to the fullscreen mode container, leaving a placeholder in its place.
 	 */
-	public moveToFullScreen( elementToMove: HTMLElement, placeholderName: string ): void {
+	public moveToFullscreen( elementToMove: HTMLElement, placeholderName: string ): void {
 		const placeholderElement = createElement( document, 'div' );
 
 		elementToMove.replaceWith( placeholderElement );
 
-		this.getContainer().querySelector( `[data-ck-full-screen-placeholder="${ placeholderName }"]` )!.append( elementToMove );
+		this.getContainer().querySelector( `[data-ck-fullscreen-placeholder="${ placeholderName }"]` )!.append( elementToMove );
 
 		this._movedElements.set( elementToMove, placeholderElement );
 	}
@@ -70,23 +70,23 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Returns the full screen mode container element.
+	 * Returns the fullscreen mode container element.
 	 */
 	public getContainer(): HTMLElement {
 		if ( !this._container ) {
 			this._container = createElement( document, 'div', {
-				class: 'ck ck-full-screen__main-container'
+				class: 'ck ck-fullscreen__main-container'
 			} );
 
 			this._container.innerHTML = `
-				<div class="ck ck-full-screen__top-wrapper ck-reset_all">
-					<div class="ck ck-full-screen__menu-bar" data-ck-full-screen-placeholder="menu-bar"></div>
-					<div class="ck ck-full-screen__toolbar" data-ck-full-screen-placeholder="toolbar"></div>
+				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
+					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen-placeholder="menu-bar"></div>
+					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen-placeholder="toolbar"></div>
 				</div>
-				<div class="ck ck-full-screen__editor-wrapper">
-					<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="left-sidebar"></div>
-					<div class="ck ck-full-screen__editor" data-ck-full-screen-placeholder="editor"></div>
-					<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="right-sidebar"></div>
+				<div class="ck ck-fullscreen__editor-wrapper">
+					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="left-sidebar"></div>
+					<div class="ck ck-fullscreen__editor" data-ck-fullscreen-placeholder="editor"></div>
+					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="right-sidebar"></div>
 				</div>
 			`;
 
@@ -97,11 +97,11 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Enables the full screen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Enables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
 	 */
 	public enable(): void {
 		/**
-		 * Invalid editor type. Full screen mode is compatible only with the classic and decoupled editors.
+		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
 		 *
 		 * @error fullscreen-invalid-editor-type
 		 */
@@ -109,11 +109,11 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Disables the full screen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Disables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
 	 */
 	public disable(): void {
 		/**
-		 * Invalid editor type. Full screen mode is compatible only with the classic and decoupled editors.
+		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
 		 *
 		 * @error fullscreen-invalid-editor-type
 		 */

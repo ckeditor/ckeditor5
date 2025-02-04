@@ -56,7 +56,7 @@ import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import FullScreen from '../../src/fullscreen.js';
+import Fullscreen from '../../src/fullscreen.js';
 
 const DECOUPLED_EDITOR_BUTTON = document.querySelector( '#restart-decoupled' );
 const CLASSIC_EDITOR_BUTTON = document.querySelector( '#restart-classic' );
@@ -74,10 +74,10 @@ const commonConfig = {
 		Alignment, IndentBlock, Bookmark, BlockQuote,
 		PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 		SpecialCharacters, SpecialCharactersEssentials,
-		CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, FullScreen
+		CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen
 	],
 	toolbar: [
-		'fullScreen',
+		'fullscreen',
 		'|',
 		'heading', 'style',
 		'|',

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module full-screen/handlers/decouplededitorhandler
+ * @module fullscreen/handlers/decouplededitorhandler
  */
 
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
@@ -12,7 +12,7 @@ import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import AbstractEditorHandler from './abstracteditor.js';
 
 /**
- * The decoupled editor full screen handler.
+ * The decoupled editor fullscreen mode handler.
  */
 export default class DecoupledEditorHandler extends AbstractEditorHandler {
 	/**
@@ -30,14 +30,14 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 	}
 
 	/**
-	 * Moves the editor UI elements to the full screen.
+	 * Moves the editor UI elements to the fullscreen mode.
 	 */
 	public override enable(): void {
-		this.moveToFullScreen( this._editor.ui.getEditableElement()!, 'editor' );
-		this.moveToFullScreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
+		this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editor' );
+		this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
 
 		if ( this._editor.ui.view.menuBarView ) {
-			this.moveToFullScreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
+			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
 		}
 	}
 

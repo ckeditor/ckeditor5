@@ -30,7 +30,7 @@ export * from '@ckeditor/ckeditor5-enter';
 export * from '@ckeditor/ckeditor5-essentials';
 export * from '@ckeditor/ckeditor5-find-and-replace';
 export * from '@ckeditor/ckeditor5-font';
-export * from '@ckeditor/ckeditor5-full-screen';
+export * from '@ckeditor/ckeditor5-fullscreen';
 export * from '@ckeditor/ckeditor5-heading';
 export * from '@ckeditor/ckeditor5-highlight';
 export * from '@ckeditor/ckeditor5-horizontal-line';

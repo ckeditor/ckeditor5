@@ -1,7 +1,7 @@
 ---
-title: Full screen mode
-menu-title: Full screen mode
-meta-title: Full screen mode | CKEditor 5 Documentation
+title: Fullscreen mode
+menu-title: Fullscreen mode
+meta-title: Fullscreen mode | CKEditor 5 Documentation
 category: features
 toc: false
 contributeUrl: false
@@ -32,13 +32,13 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { DecoupledEditor, FullScreen } from 'ckeditor5';
+import { DecoupledEditor, Fullscreen } from 'ckeditor5';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ FullScreen, /* ... */ ],
-		fullScreen: {
+		plugins: [ Fullscreen, /* ... */ ],
+		fullscreen: {
 			// Configuration.
 		}
 	} )
@@ -50,7 +50,7 @@ DecoupledEditor
 ## Configuration
 
 <info-box>
-	For more technical details, please check the {@link module:full-screen/fullscreenconfig~FullScreenConfig plugin configuration API}.
+	For more technical details, please check the {@link module:fullscreen/fullscreenconfig~FullscreenConfig plugin configuration API}.
 </info-box>
 
 ## Related features

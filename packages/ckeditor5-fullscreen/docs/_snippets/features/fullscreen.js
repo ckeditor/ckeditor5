@@ -18,7 +18,7 @@ import { IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table';
 
-import { FullScreen } from '@ckeditor/ckeditor5-full-screen';
+import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
@@ -42,7 +42,7 @@ const config = {
 		Superscript,
 		PageBreak,
 		CodeBlock,
-		FullScreen,
+		Fullscreen,
 		PictureEditing,
 		CKBox,
 		CKBoxImageEdit

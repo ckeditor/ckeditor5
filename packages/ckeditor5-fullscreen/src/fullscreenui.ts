@@ -4,23 +4,23 @@
  */
 
 /**
- * @module full-screen/fullscreenui
+ * @module fullscreen/fullscreenui
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import fullScreenIcon from '../theme/icons/fullscreen.svg';
+import fullscreenIcon from '../theme/icons/fullscreen.svg';
 import '../theme/fullscreen.css';
 
-const COMMAND_NAME = 'fullScreen';
+const COMMAND_NAME = 'fullscreen';
 
-export default class FullScreenUI extends Plugin {
+export default class FullscreenUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'FullScreenUI' as const;
+		return 'FullscreenUI' as const;
 	}
 
 	/**
@@ -36,20 +36,20 @@ export default class FullScreenUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
-		const fullScreenCommand = editor.commands.get( COMMAND_NAME )!;
+		const fullscreenCommand = editor.commands.get( COMMAND_NAME )!;
 
 		editor.ui.componentFactory.add( COMMAND_NAME, locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Full screen' ),
-				icon: fullScreenIcon,
+				label: t( 'Fullscreen' ),
+				icon: fullscreenIcon,
 				tooltip: true,
 				isToggleable: true
 			} );
 
-			view.bind( 'isEnabled' ).to( fullScreenCommand, 'isEnabled' );
-			view.bind( 'isOn' ).to( fullScreenCommand, 'value' );
+			view.bind( 'isEnabled' ).to( fullscreenCommand, 'isEnabled' );
+			view.bind( 'isOn' ).to( fullscreenCommand, 'value' );
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( COMMAND_NAME );

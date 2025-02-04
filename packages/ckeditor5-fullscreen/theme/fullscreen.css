@@ -12,22 +12,22 @@ body.ck-fullscreen {
 }
 
 /*
-Full screen layout:
+Fullscreen layout:
 
-<div class="ck ck-full-screen__main-container">
-	<div class="ck ck-full-screen__top-wrapper ck-reset_all">
-		<div class="ck ck-full-screen__menu-bar" data-ck-full-screen-placeholder="menu-bar"></div>
-		<div class="ck ck-full-screen__toolbar" data-ck-full-screen-placeholder="toolbar"></div>
+<div class="ck ck-fullscreen__main-container">
+	<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
+		<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen-placeholder="menu-bar"></div>
+		<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen-placeholder="toolbar"></div>
 	</div>
-	<div class="ck ck-full-screen__editor-wrapper">
-		<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="left-sidebar"></div>
-		<div class="ck ck-full-screen__editor" data-ck-full-screen-placeholder="editor"></div>
-		<div class="ck ck-full-screen__sidebar" data-ck-full-screen-placeholder="right-sidebar"></div>
+	<div class="ck ck-fullscreen__editor-wrapper">
+		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="left-sidebar"></div>
+		<div class="ck ck-fullscreen__editor" data-ck-fullscreen-placeholder="editor"></div>
+		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="right-sidebar"></div>
 	</div>
 </div>
 */
 
-.ck-full-screen__main-container {
+.ck-fullscreen__main-container {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -39,18 +39,18 @@ Full screen layout:
 	flex-direction: column;
 }
 
-.ck-full-screen__menu-bar .ck.ck-menu-bar {
+.ck-fullscreen__menu-bar .ck.ck-menu-bar {
 	border: none;
 }
 
-.ck-full-screen__main-container .ck-full-screen__editor-wrapper {
+.ck-fullscreen__main-container .ck-fullscreen__editor-wrapper {
 	display: flex;
 	justify-content: center;
 	overflow: auto;
 	max-height: 100%;
 }
 
-.ck-full-screen__main-container .ck-full-screen__sidebar {
+.ck-fullscreen__main-container .ck-fullscreen__sidebar {
 	width: 270px;
 	margin-top: 28px;
 	margin-left: 10px;
@@ -59,13 +59,13 @@ Full screen layout:
 	flex-shrink: 0;
 }
 
-.ck-full-screen__main-container .ck-full-screen__editor {
+.ck-fullscreen__main-container .ck-fullscreen__editor {
 	margin-top: 28px;
 	margin-bottom: 56px;
 	height: 100%;
 }
 
-.ck-full-screen__main-container .ck-full-screen__editor .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+.ck-fullscreen__main-container .ck-fullscreen__editor .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
 	min-width: calc(210mm + 2px);
 	max-width: calc(210mm + 2px);
@@ -77,6 +77,6 @@ Full screen layout:
 	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
 }
 
-.ck-full-screen__main-container .ck-full-screen__editor .ck-source-editing-area {
+.ck-fullscreen__main-container .ck-fullscreen__editor .ck-source-editing-area {
 	min-width: calc(210mm + 2px);
 }

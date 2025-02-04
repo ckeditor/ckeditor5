@@ -4,30 +4,30 @@
  */
 
 /**
- * @module full-screen/fullscreen
+ * @module fullscreen/fullscreen
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import FullScreenEditing from './fullscreenediting.js';
-import FullScreenUI from './fullscreenui.js';
+import FullscreenEditing from './fullscreenediting.js';
+import FullscreenUI from './fullscreenui.js';
 
 /**
- * The full screen mode feature.
+ * The fullscreen mode feature.
  */
-export default class FullScreen extends Plugin {
+export default class Fullscreen extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ FullScreenEditing, FullScreenUI ] as const;
+		return [ FullscreenEditing, FullscreenUI ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'FullScreen' as const;
+		return 'Fullscreen' as const;
 	}
 
 	/**

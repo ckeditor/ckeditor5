@@ -4,7 +4,7 @@
  */
 
 /**
- * @module full-screen/handlers/classiceditorhandler
+ * @module fullscreen/handlers/classiceditorhandler
  */
 
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -12,7 +12,7 @@ import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import AbstractEditorHandler from './abstracteditor.js';
 
 /**
- * The classic editor full screen handler.
+ * The classic editor fullscreen mode handler.
  */
 export default class ClassicEditorHandler extends AbstractEditorHandler {
 	/**
@@ -30,11 +30,11 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 	}
 
 	/**
-	 * Moves the editor UI elements to the full screen.
+	 * Moves the editor UI elements to the fullscreen mode.
 	 */
 	public override enable(): void {
-		this.moveToFullScreen( this._editor.ui.getEditableElement()!, 'editor' );
-		this.moveToFullScreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
+		this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editor' );
+		this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
 
 		// In classic editor, the `dir` attribute is set on the whole top container (containing menu bar and toolbar)
 		// and it affects the styling in both menu bar and toolbar (adding the side padding to the elements).
@@ -43,7 +43,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		this._editor.ui.view.toolbar.element!.setAttribute( 'dir', this._editor.ui.view.element!.getAttribute( 'dir' )! );
 
 		if ( this._editor.ui.view.menuBarView ) {
-			this.moveToFullScreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
+			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
 
 			// See the comment above for toolbar.
 			this._editor.ui.view.menuBarView.element!.setAttribute( 'dir', this._editor.ui.view.element!.getAttribute( 'dir' )! );

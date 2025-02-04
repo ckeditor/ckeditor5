@@ -51,7 +51,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.
 import Style from '@ckeditor/ckeditor5-style/src/style.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
-import FullScreen from '@ckeditor/ckeditor5-full-screen/src/fullscreen.js';
+import Fullscreen from '@ckeditor/ckeditor5-fullscreen/src/fullscreen.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -66,7 +66,7 @@ ClassicEditor
 			Alignment, IndentBlock, Bookmark,
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, FullScreen
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen
 		],
 		toolbar: [
 			'heading', 'style',
@@ -89,7 +89,7 @@ ClassicEditor
 			'|',
 			'sourceEditing', 'showBlocks',
 			'|',
-			'undo', 'redo', 'findAndReplace', 'fullScreen'
+			'undo', 'redo', 'findAndReplace', 'fullscreen'
 		],
 		cloudServices: CS_CONFIG,
 		table: {
