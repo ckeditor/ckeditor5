@@ -43,11 +43,14 @@ export class ExportInlineStylesIntegration extends Plugin {
 		const exportInlineStyles = this.editor.plugins.has( 'ExportInlineStyles' );
 
 		if ( !exportInlineStyles ) {
-			utils._logInfo(
-				'email-integration-missing-export-inline-styles-plugin',
-				'Consider enabling the ExportInlineStyles plugin to ensure that exported content has inlined styles.',
-				'features/email#missing-empty-block-plugin'
-			);
+			/**
+			 * Warning shown when the ExportInlineStyles plugin is missing. While it is not required for the email integration to work,
+			 * it is recommended to enable it to ensure that exported content has inlined styles. This is important for email clients
+			 * as they have compatibility issues with external stylesheets and CSS classes.
+			 *
+			 * @error email-integration-missing-export-inline-styles-plugin
+			 */
+			utils._logSuppressibleWarning( 'email-integration-missing-export-inline-styles-plugin' );
 		}
 	}
 }
