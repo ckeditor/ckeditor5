@@ -7,7 +7,7 @@ modified_at: 2025-01-30
 
 {@snippet features/build-email-source}
 
-The email feature lets stuff.
+Creating and editing emails is a demanding task, that has to overcome various semantic and technical difficulties, due to variety of software solutions and lack of standardized approach. The email feature is a set of tools aimed at making the email composition a better and more effective experience.
 
 ## Demo
 
