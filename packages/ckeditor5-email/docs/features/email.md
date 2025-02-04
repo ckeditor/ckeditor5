@@ -47,11 +47,13 @@ ClassicEditor
 ```
 </code-switcher>
 
+## Configuration
+
 ### Empty block plugin
 
-The {@link module:html-support/emptyblock~EmptyBlock} plugin is recommended for email editing as it helps maintain compatibility with email clients. By default, CKEditor 5 adds `&nbsp;` fillers to empty block elements. This can cause inconsistent rendering across email clients and interfere with CSS styling.
+The {@link module:html-support/emptyblock~EmptyBlock} plugin is recommended for email editing as it helps maintain compatibility with email clients. By default, CKEditor&nbsp;5 adds `&nbsp;` fillers to empty block elements. This can cause inconsistent rendering across email clients and interfere with the CSS styling.
 
-Here's how empty blocks are handled with and without the plugin:
+Here is how empty blocks are handled with and without the plugin:
 
 ```html
 <!-- Without EmptyBlock plugin -->
@@ -69,27 +71,27 @@ To enable the EmptyBlock plugin, add it to your editor configuration:
 import { EmailIntegration, EmptyBlock } from 'ckeditor5';
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ EmailIntegration, EmptyBlock, /* ... */ ],
-        htmlSupport: {
-            preserveEmptyBlocksInEditingView: true
-        }
-    } )
-    .then( editor => {
-        console.log( 'Editor was initialized' );
-    } )
-    .catch( error => {
-        console.error( error );
-    } );
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EmailIntegration, EmptyBlock, /* ... */ ],
+		htmlSupport: {
+			preserveEmptyBlocksInEditingView: true
+		}
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized' );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 The `preserveEmptyBlocksInEditingView` option determines whether empty blocks should be preserved during editing (true) or only in the final output (false).
 
 <info-box warning>
-    Without the EmptyBlock plugin, email clients may render empty blocks inconsistently. The editor will display a warning in the console if the plugin is not enabled.
+	Without the EmptyBlock plugin, email clients may render empty blocks inconsistently. The editor will display a warning in the console if the plugin is not enabled.
 </info-box>
 
-### Configuration
+### Logs and warnings
 
 The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property lets you suppress warning or log messages about email client compatibility.
 
