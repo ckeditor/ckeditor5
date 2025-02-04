@@ -11,7 +11,7 @@ import Fuse from 'fuse.js';
 import { groupBy } from 'lodash-es';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { logWarning } from 'ckeditor5/src/utils.js';
+import { logWarning, version } from 'ckeditor5/src/utils.js';
 import EmojiUtils from './emojiutils.js';
 import type { EmojiVersion, SkinToneId } from './emojiconfig.js';
 
@@ -232,7 +232,9 @@ export default class EmojiRepository extends Plugin {
 	 * Makes the HTTP request to download the emoji repository in a configured version.
 	 */
 	private async _loadItemsFromCdn(): Promise<Array<EmojiCdnResource>> {
-		const repositoryUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ this._version }` );
+		const repositoryUrl = new URL( EMOJI_DATABASE_URL.replace( '{version}', `${ this._version }` ) );
+
+		repositoryUrl.searchParams.set( 'editorVersion', version );
 
 		const result: Array<EmojiCdnResource> = await fetch( repositoryUrl )
 			.then( response => {

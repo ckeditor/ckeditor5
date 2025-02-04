@@ -82,6 +82,27 @@ describe( 'EmojiRepository', () => {
 	} );
 
 	describe( 'init()', () => {
+		it( 'should send editor version when fetching emoji', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			expect( fetchStub.calledOnce ).to.equal( true );
+
+			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+
+			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl.searchParams.has( 'editorVersion' ) ).to.equal( true );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
 		it( 'should fetch the emoji version 16 (a plugin default)', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
@@ -93,7 +114,10 @@ describe( 'EmojiRepository', () => {
 			} );
 
 			expect( fetchStub.calledOnce ).to.equal( true );
-			expect( fetchStub.firstCall.args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' );
+
+			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+
+			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 
 			const results = EmojiRepository._results[ 16 ];
 
@@ -132,8 +156,12 @@ describe( 'EmojiRepository', () => {
 				} );
 
 			expect( fetchStub.callCount ).to.equal( 2 );
-			expect( fetchStub.getCall( 0 ).args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' );
-			expect( fetchStub.getCall( 1 ).args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' );
+
+			const cdnUrl1 = fetchStub.getCall( 0 ).args[ 0 ];
+			const cdnUrl2 = fetchStub.getCall( 1 ).args[ 0 ];
+
+			expect( cdnUrl1.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl2.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' ) );
 
 			const resultsFor16 = EmojiRepository._results[ 16 ];
 			const resultsFor15 = EmojiRepository._results[ 15 ];
