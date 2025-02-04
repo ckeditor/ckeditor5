@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* globals document */
+
 import { FullPage, HtmlPageDataProcessor } from '../src/index.js';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -19,6 +21,7 @@ describe( 'FullPage', () => {
 	afterEach( async () => {
 		if ( editor ) {
 			await editor.destroy();
+			removeStyleElementsFromDom();
 		}
 	} );
 
@@ -226,13 +229,106 @@ describe( 'FullPage', () => {
 		}
 	} );
 
-	async function createEditor( initialData ) {
+	describe( '`allowRenderStylesFromHead` option set to `true`', () => {
+		it( 'should allow to extract and append `<style>` tag from editor content to the document `<head>`', async () => {
+			const content =
+				'<html>' +
+					'<head>' +
+						'<title>Testing full page</title>' +
+						'<style>p { color: red; }</style>' +
+					'</head>' +
+					'<body>' +
+						'<p>foo</p><p>bar</p>' +
+					'</body>' +
+				'</html>';
+
+			const config = {
+				fullPage: {
+					allowRenderStylesFromHead: true
+				}
+			};
+
+			await createEditor( content, config );
+
+			expect( editor.getData() ).to.equal( content );
+			expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+
+			const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+
+			expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
+			expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+		} );
+
+		it( 'should remove previously attached `<style>` tag after update the editor content', async () => {
+			const content =
+				'<html>' +
+					'<head>' +
+						'<title>Testing full page</title>' +
+						'<style>p { color: red; }</style>' +
+					'</head>' +
+					'<body>' +
+						'<p>foo</p><p>bar</p>' +
+					'</body>' +
+				'</html>';
+
+			const config = {
+				fullPage: {
+					allowRenderStylesFromHead: true
+				}
+			};
+
+			await createEditor( content, config );
+
+			expect( editor.getData() ).to.equal( content );
+			expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+
+			const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+
+			expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
+			expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+
+			const contentToSet =
+				'<html>' +
+					'<head>' +
+						'<title>Testing full page</title>' +
+						'<style>p { color: green; }</style>' +
+					'</head>' +
+					'<body>' +
+						'<p>foo</p><p>bar</p><p>baz</p>' +
+					'</body>' +
+				'</html>';
+
+			editor.setData( contentToSet );
+
+			expect( editor.getData() ).to.equal( contentToSet );
+
+			expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+
+			const stylesheetUpdated = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+
+			expect( stylesheetUpdated.textContent ).to.equal( 'p { color: green; }' );
+			expect( stylesheetUpdated.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+		} );
+	} );
+
+	async function createEditor( initialData, fullPageConfig = null ) {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, ClipboardPipeline, FullPage ],
-			initialData
+			initialData,
+			...fullPageConfig
 		} );
 
 		// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+	}
+
+	function removeStyleElementsFromDom() {
+		const existingStyleElements = Array.from(
+			document.querySelectorAll( '[data-full-page-style-id]' )
+		);
+
+		for ( const style of existingStyleElements ) {
+			style.remove();
+		}
 	}
 } );
