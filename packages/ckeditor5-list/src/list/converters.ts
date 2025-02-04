@@ -699,7 +699,7 @@ function shouldUseBogusParagraph(
 
 	for ( const attributeKey of item.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
-		if ( attributeKey.startsWith( 'selection:' ) ) {
+		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {
 			continue;
 		}
 
