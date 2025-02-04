@@ -13,7 +13,7 @@ import { type Editor, type EditorConfig, Plugin } from 'ckeditor5/src/core.js';
 import { type GetSubConfig, logWarning } from 'ckeditor5/src/utils.js';
 
 /**
- * A utility plugin for the email integration that provides common methods for checking the editor configuration and logging warnings.
+ * A utility plugin for email integration that provides common methods for checking the editor configuration and logging warnings.
  */
 export default class EmailIntegrationUtils extends Plugin {
 	/**
