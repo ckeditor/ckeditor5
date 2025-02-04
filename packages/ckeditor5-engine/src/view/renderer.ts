@@ -958,6 +958,12 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Update DOM selection: remove all ranges'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			this._removeDomSelection();
 			this._removeFakeSelection();
 
@@ -965,6 +971,14 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		`${ this.isFocused && domRoot ? 'Update' : 'Skip updating' } DOM selection:`,
+		// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }, domEditable:`,
+		// @if CK_DEBUG_TYPING // 		domRoot
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
 
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {
@@ -1017,6 +1031,12 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'Set DOM fake selection'
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
 		const domSelection = domDocument.getSelection()!;
 		const domRange = domDocument.createRange();
 
@@ -1050,7 +1070,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
 		// @if CK_DEBUG_TYPING // 		'Update DOM selection:',
 		// @if CK_DEBUG_TYPING // 		anchor,
-		// @if CK_DEBUG_TYPING // 			focus
+		// @if CK_DEBUG_TYPING // 		focus
 		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
@@ -1145,13 +1165,30 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * Checks if focus needs to be updated and possibly updates it.
 	 */
 	private _updateFocus(): void {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		`update focus: ${ this.isFocused ? 'focused' : 'not focused' }`
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
 		if ( this.isFocused ) {
 			const editable = this.selection.editableElement;
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'focus selection editableElement:',
+			// @if CK_DEBUG_TYPING // 		editable
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
 			}
 		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 
