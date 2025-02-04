@@ -9,9 +9,9 @@ modified_at: 2025-01-21
 
 # Emoji
 
-The emoji feature lets you insert emojis into the document from the editor toolbar, or on the go while writing the content.
+The emoji feature lets you insert emojis into the document from the editor toolbar, or on the go while writing the content. The emojis are pulled from the CDN, to lessen the editor load.
 
-Since the is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects". You may also search for a specific emoji using the search field.
+Since there is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects". You may also search for a specific emoji using the search field.
 
 ## Demo
 
