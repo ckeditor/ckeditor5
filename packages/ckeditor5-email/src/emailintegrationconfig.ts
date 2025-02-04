@@ -8,7 +8,7 @@
  */
 
 /**
- * The configuration of the email integration features.
+ * The configuration of the email integration feature.
  *
  * ```ts
  *	ClassicEditor
