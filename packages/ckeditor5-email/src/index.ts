@@ -7,7 +7,7 @@
  * @module email
  */
 
-import './augmentation.js';
-
 export { default as EmailIntegration } from './emailintegration.js';
 export { default as EmailIntegrationUtils } from './emailintegrationutils.js';
+
+import './augmentation.js';
