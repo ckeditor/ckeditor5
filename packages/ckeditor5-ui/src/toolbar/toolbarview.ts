@@ -47,7 +47,7 @@ import {
 } from '@ckeditor/ckeditor5-icons';
 import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 

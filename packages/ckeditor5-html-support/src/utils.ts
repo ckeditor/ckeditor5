@@ -14,7 +14,7 @@ import type {
 	ViewElement,
 	Writer
 } from 'ckeditor5/src/engine.js';
-import { startCase, cloneDeep } from 'lodash-es';
+import { startCase, cloneDeep } from 'es-toolkit/compat';
 
 export interface GHSViewAttributes {
 	attributes?: Record<string, unknown>;

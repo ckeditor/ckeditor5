@@ -34,10 +34,10 @@
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
     "@ckeditor/ckeditor5-table": "44.1.0",
     "@ckeditor/ckeditor5-theme-lark": "44.1.0",
+    "es-toolkit": "1.32.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4",
-    "lodash-es": "^4.17.15"
+    "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

@@ -53,7 +53,7 @@ import {
 	type GHSViewAttributes
 } from './utils.js';
 
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import '../theme/datafilter.css';
 

@@ -7,7 +7,7 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set, unset } from 'lodash-es';
+import { get, isObject, merge, set, unset } from 'es-toolkit/compat';
 import type { ElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';

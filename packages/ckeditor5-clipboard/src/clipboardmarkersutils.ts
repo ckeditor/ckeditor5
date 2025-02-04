@@ -6,7 +6,7 @@
 /**
  * @module clipboard/clipboardmarkersutils
  */
-import { mapValues } from 'lodash-es';
+import { mapValues } from 'es-toolkit/compat';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';

@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
     "@ckeditor/ckeditor5-table": "44.1.0",
     "@ckeditor/ckeditor5-theme-lark": "44.1.0",
-    "lodash-es": "^4.17.15",
+    "es-toolkit": "1.32.0",
     "sanitize-html": "^2.13.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",

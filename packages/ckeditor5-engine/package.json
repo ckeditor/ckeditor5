@@ -25,7 +25,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-utils": "44.1.0",
-    "lodash-es": "4.17.21"
+    "es-toolkit": "1.32.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "44.1.0",
