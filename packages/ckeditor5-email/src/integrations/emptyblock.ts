@@ -46,7 +46,7 @@ export class EmptyBlockIntegration extends Plugin {
 			utils._logInfo(
 				'email-integration-missing-empty-block-plugin',
 				'Consider enabling the EmptyBlock plugin to ensure that exported content has empty blocks.',
-				'features/email#missing-empty-block-plugin'
+				'features/email#empty-block-plugin'
 			);
 		}
 	}
