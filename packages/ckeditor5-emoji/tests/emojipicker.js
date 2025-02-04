@@ -53,6 +53,8 @@ describe( 'EmojiPicker', () => {
 	let editor, editorElement, emojiPicker, fetchStub;
 
 	beforeEach( async () => {
+		EmojiRepository._results = {};
+
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -129,6 +131,9 @@ describe( 'EmojiPicker', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
+			// As the data are shored between editors creation, let's manually clear it before creating a new editor.
+			EmojiRepository._results = {};
+
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
 				emoji: {
@@ -147,6 +152,9 @@ describe( 'EmojiPicker', () => {
 		it( 'should read the selected skin tone from the view when it is ready', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
+
+			// As the data are shored between editors creation, let's manually clear it before creating a new editor.
+			EmojiRepository._results = {};
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
@@ -197,6 +205,9 @@ describe( 'EmojiPicker', () => {
 				testUtils.sinon.stub( console, 'warn' );
 				fetchStub.rejects( 'Failed to load CDN.' );
 
+				// As the data are shored between editors creation, let's manually clear it before creating a new editor.
+				EmojiRepository._results = {};
+
 				const editor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ EmojiPicker, Paragraph, Essentials ]
 				} );
@@ -233,6 +244,9 @@ describe( 'EmojiPicker', () => {
 
 				testUtils.sinon.stub( console, 'warn' );
 				fetchStub.rejects( 'Failed to load CDN.' );
+
+				// As the data are shored between editors creation, let's manually clear it before creating a new editor.
+				EmojiRepository._results = {};
 
 				const editor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ EmojiPicker, Paragraph, Essentials ]

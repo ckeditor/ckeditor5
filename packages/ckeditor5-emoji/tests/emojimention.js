@@ -615,7 +615,7 @@ describe( 'EmojiMention', () => {
 			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should return an empty array when the repository plugin is not loaded correctly', async () => {
+		it( 'should return an empty array when the repository plugin is not available', async () => {
 			testUtils.sinon.stub( console, 'warn' );
 			fetchStub.rejects( 'Failed to load CDN.' );
 
@@ -625,6 +625,8 @@ describe( 'EmojiMention', () => {
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, Paragraph, Essentials, Mention ]
 			} );
+
+			editor.plugins.get( 'EmojiMention' )._isEmojiRepositoryAvailable = false;
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 

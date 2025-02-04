@@ -13,14 +13,42 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import EmojiRepository from '../src/emojirepository.js';
 import EmojiUtils from '../src/emojiutils.ts';
 
+class EmojiUtilsMockVersion15 extends EmojiUtils {
+	getEmojiSupportedVersionByOs() {
+		return 15;
+	}
+
+	isEmojiZwjSupported( item ) {
+		return item.emoji !== '🙂‍↔️';
+	}
+}
+
+class EmojiUtilsMockVersion16 extends EmojiUtils {
+	getEmojiSupportedVersionByOs() {
+		return 16;
+	}
+
+	isEmojiZwjSupported( item ) {
+		return item.emoji !== '🙂‍↔️';
+	}
+}
+
 describe( 'EmojiRepository', () => {
 	testUtils.createSinonSandbox();
 
-	let consoleStub, fetchStub;
+	let consoleStub, fetchStub, clock;
 
 	beforeEach( () => {
-		consoleStub = sinon.stub( console, 'warn' );
-		fetchStub = testUtils.sinon.stub( window, 'fetch' ).resolves( new Response( '[]' ) );
+		clock = testUtils.sinon.useFakeTimers();
+
+		EmojiRepository._results = {};
+
+		consoleStub = testUtils.sinon.stub( console, 'warn' );
+		fetchStub = testUtils.sinon.stub( window, 'fetch' );
+	} );
+
+	afterEach( () => {
+		clock.restore();
 	} );
 
 	it( 'should be correctly named', () => {
@@ -28,176 +56,273 @@ describe( 'EmojiRepository', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiRepository.isOfficialPlugin ).to.be.true;
+		expect( EmojiRepository.isOfficialPlugin ).to.equal( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiRepository.isPremiumPlugin ).to.be.false;
+		expect( EmojiRepository.isPremiumPlugin ).to.equal( false );
 	} );
 
-	it( 'should configure default emoji database version', async () => {
-		const domElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( domElement );
+	it( 'should configure default emoji version', async () => {
+		const { editor, domElement } = await createTestEditor( resolve => {
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', group: 0 },
+				{ annotation: 'unamused face', group: 0 }
+			] );
 
-		const editor = await createTestEditor( domElement );
+			resolve( new Response( response ) );
+		} );
+
 		const emojiVersion = editor.config.get( 'emoji.version' );
 
 		expect( emojiVersion ).to.equal( 16 );
 
 		domElement.remove();
-
 		await editor.destroy();
 	} );
 
 	describe( 'init()', () => {
-		let editor, editorPromise, domElement, fetchStubResolve, fetchStubReject;
+		it( 'should send editor version when fetching emoji', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
+				] );
 
-		beforeEach( () => {
-			fetchStub.returns( new Promise( ( resolve, reject ) => {
-				fetchStubResolve = resolve;
-				fetchStubReject = reject;
-			} ) );
-
-			domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
-
-			editor = null;
-			editorPromise = createTestEditor( domElement );
-		} );
-
-		afterEach( async () => {
-			if ( !editor ) {
-				editor = await editorPromise;
-			}
-
-			domElement.remove();
-
-			await editor.destroy();
-		} );
-
-		it( 'should fetch the emoji database version 16', async () => {
-			const response = JSON.stringify( [
-				{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
-				{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
-			] );
-
-			fetchStubResolve( new Response( response ) );
-
-			editor = await editorPromise;
-
-			expect( fetchStub.calledOnce ).to.be.true;
-			expect( fetchStub.firstCall.args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' );
-
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-
-			expect( emojiRepositoryPlugin._database ).to.have.length( 2 );
-			expect( emojiRepositoryPlugin._database[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( emojiRepositoryPlugin._database[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
-		} );
-
-		it( 'should fetch the emoji database version 15', async () => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 }
-			] );
-
-			fetchStubResolve( new Response( response ) );
-
-			const domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
-
-			const editor = await createTestEditor( domElement, {
-				emoji: {
-					version: 15
-				}
+				resolve( new Response( response ) );
 			} );
 
-			// The first `fetch()` call is from the test editor created in `beforeEach()` hook.
-			// In this unit test we are creating another test editor with modified config.
-			// Hence, we want to check the last `fetch()` call.
-			expect( fetchStub.lastCall.args[ 0 ] ).to.equal( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' );
+			expect( fetchStub.calledOnce ).to.equal( true );
+
+			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+
+			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl.searchParams.has( 'editorVersion' ) ).to.equal( true );
 
 			domElement.remove();
-
 			await editor.destroy();
 		} );
 
-		it( 'should filter out group "2" from the fetched emoji database', async () => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'medium-dark skin tone', group: 2 },
-				{ annotation: 'unamused face', group: 0 }
-			] );
+		it( 'should fetch the emoji version 16 (a plugin default)', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
+				] );
 
-			fetchStubResolve( new Response( response ) );
+				resolve( new Response( response ) );
+			} );
 
-			editor = await editorPromise;
+			expect( fetchStub.calledOnce ).to.equal( true );
 
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-			const hasGroup2 = emojiRepositoryPlugin._database.find( item => item.group === 2 );
+			const cdnUrl = fetchStub.firstCall.args[ 0 ];
 
-			expect( hasGroup2 ).to.be.undefined;
+			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+
+			const results = EmojiRepository._results[ 16 ];
+
+			expect( results ).to.have.length( 2 );
+			expect( results[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( results[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 
-		it( 'should filter out unsupported ZWJ emojis from the fetched emoji database', async () => {
-			// Head shaking horizontally is mocked to be an unsupported emoji in EmojiUtilsMock.
+		it( 'should fetch both emoji versions 16 and 15 when creating two different editors', async () => {
+			const { editor: editor1, domElement: domElement1 } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 16 },
+					{ annotation: 'unamused face', emoji: '😒', group: 0, version: 16 }
+				] );
 
-			const response = JSON.stringify( [
-				{ emoji: '🙂‍↔️', annotation: 'head shaking horizontally', group: 0, version: 16 },
-				{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
-			] );
+				resolve( new Response( response ) );
+			}, {
+				substitutePlugins: [ EmojiUtilsMockVersion16 ]
+			} );
 
-			fetchStubResolve( new Response( response ) );
+			const { editor: editor2, domElement: domElement2 } = await createTestEditor(
+				resolve => {
+					const response = JSON.stringify( [
+						{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
+						{ annotation: 'unamused face', emoji: '😒', group: 0, version: 15 }
+					] );
 
-			editor = await editorPromise;
+					resolve( new Response( response ) );
+				}, {
+					emoji: {
+						version: 15
+					}
+				} );
 
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-			const headShakingHorizontallyEmoji = emojiRepositoryPlugin._database
-				.find( item => item.annotation === 'head shaking horizontally' );
-			const unamusedFaceEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'unamused face' );
+			expect( fetchStub.callCount ).to.equal( 2 );
+
+			const cdnUrl1 = fetchStub.getCall( 0 ).args[ 0 ];
+			const cdnUrl2 = fetchStub.getCall( 1 ).args[ 0 ];
+
+			expect( cdnUrl1.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl2.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' ) );
+
+			const resultsFor16 = EmojiRepository._results[ 16 ];
+			const resultsFor15 = EmojiRepository._results[ 15 ];
+
+			expect( resultsFor16 ).to.have.length( 2 );
+			expect( resultsFor16[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( resultsFor16[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+
+			expect( resultsFor15 ).to.have.length( 2 );
+			expect( resultsFor15[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( resultsFor15[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+
+			domElement1.remove();
+			domElement2.remove();
+			await editor1.destroy();
+			await editor2.destroy();
+		} );
+
+		it( 'should fetch the emoji version 16 only once when creating two editors', async () => {
+			const { editor: editor1, domElement: domElement1 } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', group: 0 },
+					{ annotation: 'unamused face', group: 0 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const { editor: editor2, domElement: domElement2 } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', group: 0 },
+					{ annotation: 'unamused face', group: 0 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			expect( fetchStub.calledOnce ).to.equal( true );
+
+			domElement1.remove();
+			domElement2.remove();
+			await editor1.destroy();
+			await editor2.destroy();
+		} );
+
+		it( 'should fetch the emoji version 16 only once even if first download has failed', async () => {
+			const { editor: editor1, domElement: domElement1 } = await createTestEditor( resolve => {
+				resolve( new Response( null, { status: 500 } ) );
+			} );
+
+			const { editor: editor2, domElement: domElement2 } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', group: 0 },
+					{ annotation: 'unamused face', group: 0 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			expect( fetchStub.calledOnce ).to.equal( true );
+
+			const results = EmojiRepository._results[ 16 ];
+
+			expect( results ).to.deep.equal( [] );
+
+			domElement1.remove();
+			domElement2.remove();
+			await editor1.destroy();
+			await editor2.destroy();
+		} );
+
+		it( 'should filter out group "2" from the fetched emoji (contains only skin tone items)', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', group: 0 },
+					{ annotation: 'medium-dark skin tone', group: 2 },
+					{ annotation: 'unamused face', group: 0 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const results = EmojiRepository._results[ 16 ];
+			const hasGroup2 = results.some( item => item.group === 2 );
+
+			expect( hasGroup2 ).to.equal( false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should filter out unsupported ZWJ emojis from the fetched emoji', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '🙂‍↔️', annotation: 'head shaking horizontally', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			}, {
+				substitutePlugins: [ EmojiUtilsMockVersion16 ]
+			} );
+
+			// `Head shaking horizontally` is mocked to be an unsupported emoji in `EmojiUtilsMock`.
+			const results = EmojiRepository._results[ 16 ];
+			const headShakingHorizontallyEmoji = results.find( item => item.annotation === 'head shaking horizontally' );
+			const unamusedFaceEmoji = results.find( item => item.annotation === 'unamused face' );
 
 			expect( unamusedFaceEmoji ).not.to.be.undefined;
 			expect( headShakingHorizontallyEmoji ).to.be.undefined;
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 
 		it( 'should filter out emojis based on the version supported by the operating system', async () => {
-			// Emoji version 15 is mocked in the EmojiUtilsMock.
+			const { editor, domElement } = await createTestEditor(
+				resolve => {
+					const response = JSON.stringify( [
+						{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+						{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 },
+						{ emoji: '🔬', annotation: 'microscope', group: 7, version: 15 }
+					] );
 
-			const response = JSON.stringify( [
-				{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
-				{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 },
-				{ emoji: '🔬', annotation: 'microscope', group: 7, version: 15 }
-			] );
+					resolve( new Response( response ) );
+				},
+				{
+					substitutePlugins: [ EmojiUtilsMockVersion15 ]
+				}
+			);
 
-			fetchStubResolve( new Response( response ) );
+			const results = EmojiRepository._results[ 16 ];
 
-			editor = await editorPromise;
-
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-			const hasNeutralFaceEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'neutral face' );
-			const hasMicroscopeEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'microscope' );
-			const hasUnamusedEmoji = emojiRepositoryPlugin._database.find( item => item.annotation === 'unamused face' );
+			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );
+			const hasUnamusedEmoji = results.find( item => item.annotation === 'unamused face' );
 
 			expect( hasNeutralFaceEmoji ).to.be.undefined;
-			expect( hasMicroscopeEmoji ).not.to.be.undefined;
 			expect( hasUnamusedEmoji ).not.to.be.undefined;
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 
 		it( 'should set default skin tone for each emoji', async () => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
-				{ annotation: 'unamused face', emoji: '😒', group: 0, version: 15 }
-			] );
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
+					{ annotation: 'unamused face', emoji: '😒', group: 0, version: 15 }
+				] );
 
-			fetchStubResolve( new Response( response ) );
+				resolve( new Response( response ) );
+			} );
 
-			editor = await editorPromise;
+			const results = EmojiRepository._results[ 16 ];
 
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			expect( results ).to.have.length( 2 );
+			expect( results[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
+			expect( results[ 1 ] ).to.have.deep.property( 'skins', { default: '😒' } );
 
-			expect( emojiRepositoryPlugin._database ).to.have.length( 2 );
-			expect( emojiRepositoryPlugin._database[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
-			expect( emojiRepositoryPlugin._database[ 1 ] ).to.have.deep.property( 'skins', { default: '😒' } );
+			domElement.remove();
+			await editor.destroy();
 		} );
 
 		it( 'should set other skin tones if emoji defines them', async () => {
@@ -208,24 +333,24 @@ describe( 'EmojiRepository', () => {
 			const ninjaEmoji4 = '🥷🏾';
 			const ninjaEmoji5 = '🥷🏿';
 
-			const response = JSON.stringify( [
-				{ annotation: 'ninja', emoji: ninjaEmoji0, group: 1, version: 15, skins: [
-					{ emoji: ninjaEmoji1, tone: 1 },
-					{ emoji: ninjaEmoji2, tone: 2 },
-					{ emoji: ninjaEmoji3, tone: 3 },
-					{ emoji: ninjaEmoji4, tone: 4 },
-					{ emoji: ninjaEmoji5, tone: 5 }
-				] }
-			] );
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'ninja', emoji: ninjaEmoji0, group: 1, version: 15, skins: [
+						{ emoji: ninjaEmoji1, tone: 1 },
+						{ emoji: ninjaEmoji2, tone: 2 },
+						{ emoji: ninjaEmoji3, tone: 3 },
+						{ emoji: ninjaEmoji4, tone: 4 },
+						{ emoji: ninjaEmoji5, tone: 5 }
+					] }
+				] );
 
-			fetchStubResolve( new Response( response ) );
+				resolve( new Response( response ) );
+			} );
 
-			editor = await editorPromise;
+			const results = EmojiRepository._results[ 16 ];
 
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-
-			expect( emojiRepositoryPlugin._database ).to.have.length( 1 );
-			expect( emojiRepositoryPlugin._database[ 0 ] ).to.have.deep.property( 'skins', {
+			expect( results ).to.have.length( 1 );
+			expect( results[ 0 ] ).to.have.deep.property( 'skins', {
 				default: ninjaEmoji0,
 				light: ninjaEmoji1,
 				'medium-light': ninjaEmoji2,
@@ -233,17 +358,20 @@ describe( 'EmojiRepository', () => {
 				'medium-dark': ninjaEmoji4,
 				dark: ninjaEmoji5
 			} );
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 
-		it( 'should create Fuse.js instance with the emoji database', async () => {
-			const response = JSON.stringify( [
-				{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
-				{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
-			] );
+		it( 'should create a Fuse.js instance with the emoji database', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
+				] );
 
-			fetchStubResolve( new Response( response ) );
-
-			editor = await editorPromise;
+				resolve( new Response( response ) );
+			} );
 
 			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
@@ -254,42 +382,54 @@ describe( 'EmojiRepository', () => {
 			expect( searchIndex.docs ).to.have.length( 2 );
 			expect( searchIndex.docs[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
 			expect( searchIndex.docs[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 
-		it( 'should log a warning and keep emoji database as empty array when emoji database fetch failed', async () => {
-			fetchStubResolve( new Response( null, { status: 500 } ) );
+		it( 'should log a warning and store emoji database as empty array when emoji database fetch failed', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				resolve( new Response( null, { status: 500 } ) );
+			} );
 
-			editor = await editorPromise;
+			const results = EmojiRepository._results[ 16 ];
 
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			expect( results ).to.deep.equal( [] );
 
-			expect( emojiRepositoryPlugin._database ).to.deep.equal( [] );
+			expect( consoleStub.calledOnce ).to.equal( true );
+			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-load-failed' );
 
-			expect( consoleStub.calledOnce ).to.be.true;
-			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-database-load-failed' );
+			domElement.remove();
+			await editor.destroy();
 		} );
 
-		it( 'should log a warning and keep emoji database as empty array on network error when fetching emoji database', async () => {
-			fetchStubReject( new Response() );
+		it( 'should log a warning and store emoji database as empty array on network error when fetching emoji database', async () => {
+			const { editor, domElement } = await createTestEditor( ( resolve, reject ) => {
+				reject( new Response() );
+			} );
 
-			editor = await editorPromise;
+			const results = EmojiRepository._results[ 16 ];
 
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
+			expect( results ).to.deep.equal( [] );
 
-			expect( emojiRepositoryPlugin._database ).to.deep.equal( [] );
+			expect( consoleStub.calledOnce ).to.equal( true );
+			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-load-failed' );
 
-			expect( consoleStub.calledOnce ).to.be.true;
-			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-database-load-failed' );
+			domElement.remove();
+			await editor.destroy();
 		} );
 
 		it( 'should not initialize Fuse.js instance when emoji database fetch failed', async () => {
-			fetchStubReject( new Response() );
-
-			editor = await editorPromise;
+			const { editor, domElement } = await createTestEditor( ( resolve, reject ) => {
+				reject( new Response() );
+			} );
 
 			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
-			expect( emojiRepositoryPlugin._fuseSearch ).to.be.null;
+			expect( emojiRepositoryPlugin._fuseSearch ).to.equal( null );
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 	} );
 
@@ -297,37 +437,37 @@ describe( 'EmojiRepository', () => {
 		let editor, domElement, emojiRepositoryPlugin;
 
 		beforeEach( async () => {
-			const response = JSON.stringify( [
-				{
-					emoji: '😐️',
-					annotation: 'neutral face',
-					emoticon: ':|',
-					tags: [ 'awkward', 'blank', 'face', 'meh', 'whatever' ],
-					group: 0,
-					version: 15
-				},
-				{
-					emoji: '😒',
-					annotation: 'unamused face',
-					emoticon: ':?',
-					tags: [ 'bored', 'face', 'fine', 'ugh', 'whatever' ],
-					group: 0,
-					version: 15
-				}
-			] );
+			const instance = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{
+						emoji: '😐️',
+						annotation: 'neutral face',
+						emoticon: ':|',
+						tags: [ 'awkward', 'blank', 'face', 'meh', 'whatever' ],
+						group: 0,
+						version: 15
+					},
+					{
+						emoji: '😒',
+						annotation: 'unamused face',
+						emoticon: ':?',
+						tags: [ 'bored', 'face', 'fine', 'ugh', 'whatever' ],
+						group: 0,
+						version: 15
+					}
+				] );
 
-			fetchStub.resolves( new Response( response ) );
+				resolve( new Response( response ) );
+			} );
 
-			domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
+			editor = instance.editor;
+			domElement = instance.domElement;
 
-			editor = await createTestEditor( domElement );
 			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 		} );
 
 		afterEach( async () => {
 			domElement.remove();
-
 			await editor.destroy();
 		} );
 
@@ -405,36 +545,36 @@ describe( 'EmojiRepository', () => {
 		let editor, domElement, emojiRepositoryPlugin;
 
 		beforeEach( async () => {
-			const response = JSON.stringify( [
-				{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
-				{ emoji: '🥷', annotation: 'ninja', group: 1, version: 15 },
-				{ emoji: '🤚🏾', annotation: 'medium-dark skin tone', group: 2, version: 15 },
-				{ emoji: '🦞', annotation: 'lobster', group: 3, version: 15 },
-				{ emoji: '🧂', annotation: 'salt', group: 4, version: 15 },
-				{ emoji: '⌚️', annotation: 'watch', group: 5, version: 15 },
-				{ emoji: '🪄', annotation: 'magic wand', group: 6, version: 15 },
-				{ emoji: '🩻', annotation: 'x-ray', group: 7, version: 15 },
-				{ emoji: '↖️', annotation: 'up-left arrow', group: 8, version: 15 },
-				{ emoji: '🇵🇱', annotation: 'flag: Poland', group: 9, version: 15 }
-			] );
+			const instance = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
+					{ emoji: '🥷', annotation: 'ninja', group: 1, version: 15 },
+					{ emoji: '🤚🏾', annotation: 'medium-dark skin tone', group: 2, version: 15 },
+					{ emoji: '🦞', annotation: 'lobster', group: 3, version: 15 },
+					{ emoji: '🧂', annotation: 'salt', group: 4, version: 15 },
+					{ emoji: '⌚️', annotation: 'watch', group: 5, version: 15 },
+					{ emoji: '🪄', annotation: 'magic wand', group: 6, version: 15 },
+					{ emoji: '🩻', annotation: 'x-ray', group: 7, version: 15 },
+					{ emoji: '↖️', annotation: 'up-left arrow', group: 8, version: 15 },
+					{ emoji: '🇵🇱', annotation: 'flag: Poland', group: 9, version: 15 }
+				] );
 
-			fetchStub.resolves( new Response( response ) );
+				resolve( new Response( response ) );
+			} );
 
-			domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
+			editor = instance.editor;
+			domElement = instance.domElement;
 
-			editor = await createTestEditor( domElement );
 			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 		} );
 
 		afterEach( async () => {
 			domElement.remove();
-
 			await editor.destroy();
 		} );
 
 		it( 'should return empty array for each emoji category if emoji database is empty', () => {
-			emojiRepositoryPlugin._database = [];
+			EmojiRepository._results[ 16 ] = [];
 
 			const result = emojiRepositoryPlugin.getEmojiCategories();
 
@@ -488,31 +628,31 @@ describe( 'EmojiRepository', () => {
 		let editor, domElement, emojiRepositoryPlugin;
 
 		beforeEach( async () => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'ninja', group: 1 },
-				{ annotation: 'medium-dark skin tone', group: 2 },
-				{ annotation: 'lobster', group: 3 },
-				{ annotation: 'salt', group: 4 },
-				{ annotation: 'watch', group: 5 },
-				{ annotation: 'magic wand', group: 6 },
-				{ annotation: 'x-ray', group: 7 },
-				{ annotation: 'up-left arrow', group: 8 },
-				{ annotation: 'flag: Poland', group: 9 }
-			] );
+			const instance = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', group: 0 },
+					{ annotation: 'ninja', group: 1 },
+					{ annotation: 'medium-dark skin tone', group: 2 },
+					{ annotation: 'lobster', group: 3 },
+					{ annotation: 'salt', group: 4 },
+					{ annotation: 'watch', group: 5 },
+					{ annotation: 'magic wand', group: 6 },
+					{ annotation: 'x-ray', group: 7 },
+					{ annotation: 'up-left arrow', group: 8 },
+					{ annotation: 'flag: Poland', group: 9 }
+				] );
 
-			fetchStub.resolves( new Response( response ) );
+				resolve( new Response( response ) );
+			} );
 
-			domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
+			editor = instance.editor;
+			domElement = instance.domElement;
 
-			editor = await createTestEditor( domElement );
 			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 		} );
 
 		afterEach( async () => {
 			domElement.remove();
-
 			await editor.destroy();
 		} );
 
@@ -522,77 +662,85 @@ describe( 'EmojiRepository', () => {
 	} );
 
 	describe( 'isReady()', () => {
-		let editor, editorPromise, domElement, fetchStubResolve;
+		it( 'should return `true` when emoji database is not empty', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
+					{ annotation: 'unamused face', emoji: '😒', group: 0, version: 15 }
+				] );
 
-		beforeEach( () => {
-			fetchStub.returns( new Promise( resolve => {
-				fetchStubResolve = resolve;
-			} ) );
+				resolve( new Response( response ) );
+			} );
 
-			domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
+			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
-			editor = null;
-			editorPromise = createTestEditor( domElement );
-		} );
-
-		afterEach( async () => {
-			if ( !editor ) {
-				editor = await editorPromise;
-			}
+			expect( result ).to.equal( true );
 
 			domElement.remove();
-
 			await editor.destroy();
 		} );
 
-		it( 'should return true when emoji database is not empty', async () => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 }
-			] );
+		it( 'should return `false` when emoji database is empty', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [] );
 
-			fetchStubResolve( new Response( response ) );
-
-			editor = await editorPromise;
+				resolve( new Response( response ) );
+			} );
 
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
-			expect( result ).to.be.true;
+			expect( result ).to.equal( false );
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 
-		it( 'should return false when emoji database is empty', async () => {
-			const response = JSON.stringify( [] );
+		it( 'should return `false` when emoji database is not stored', async () => {
+			testUtils.sinon.stub( EmojiRepository, '_results' ).get( () => ( {} ) );
 
-			fetchStubResolve( new Response( response ) );
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [] );
 
-			editor = await editorPromise;
+				resolve( new Response( response ) );
+			} );
 
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
-			expect( result ).to.be.false;
+			expect( result ).to.equal( false );
+
+			domElement.remove();
+			await editor.destroy();
 		} );
 	} );
+
+	async function createTestEditor( fetchStubCallback, editorConfig = {} ) {
+		const domElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( domElement );
+
+		let fetchStubResolve, fetchStubReject;
+
+		fetchStub.returns( new Promise( ( resolve, reject ) => {
+			fetchStubResolve = resolve;
+			fetchStubReject = reject;
+		} ) );
+
+		const editorPromise = ClassicTestEditor.create( domElement, {
+			plugins: [
+				Essentials,
+				Paragraph,
+				EmojiRepository
+			],
+			...editorConfig
+		} );
+
+		// Break the event loop to execute scheduled promise callbacks.
+		await clock.nextAsync();
+
+		fetchStubCallback( fetchStubResolve, fetchStubReject );
+
+		return {
+			editor: await editorPromise,
+			domElement
+		};
+	}
 } );
-
-class EmojiUtilsMock extends EmojiUtils {
-	getEmojiSupportedVersionByOs() {
-		return 15;
-	}
-
-	isEmojiZwjSupported( item ) {
-		return item.emoji !== '🙂‍↔️';
-	}
-}
-
-function createTestEditor( domElement, editorConfig = {} ) {
-	return ClassicTestEditor.create( domElement, {
-		plugins: [
-			Essentials,
-			Paragraph,
-			EmojiRepository
-		],
-		substitutePlugins: [ EmojiUtilsMock ],
-		...editorConfig
-	} );
-}
