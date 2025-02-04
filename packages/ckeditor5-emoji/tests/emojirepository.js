@@ -103,6 +103,26 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
+		it( 'should force using cache mechanism when sending a request', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			expect( fetchStub.calledOnce ).to.equal( true );
+
+			const fetchOptions = fetchStub.firstCall.args[ 1 ];
+
+			expect( fetchOptions ).to.have.property( 'cache', 'force-cache' );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
 		it( 'should fetch the emoji version 16 (a plugin default)', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [

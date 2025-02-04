@@ -236,7 +236,7 @@ export default class EmojiRepository extends Plugin {
 
 		repositoryUrl.searchParams.set( 'editorVersion', version );
 
-		const result: Array<EmojiCdnResource> = await fetch( repositoryUrl )
+		const result: Array<EmojiCdnResource> = await fetch( repositoryUrl, { cache: 'force-cache' } )
 			.then( response => {
 				if ( !response.ok ) {
 					return [];
