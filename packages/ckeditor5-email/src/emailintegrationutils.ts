@@ -54,7 +54,7 @@ export default class EmailIntegrationUtils extends Plugin {
 	}
 
 	/**
-	 * Logs an information message about email client compatibility if it's not suppressed in the configuration.
+	 * Logs an information message about email client compatibility if not suppressed in the configuration.
 	 *
 	 * @internal
 	 */
