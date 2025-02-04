@@ -63,7 +63,7 @@ describe( 'ImageEmailIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ ImageEmailIntegration, EmailIntegrationUtils, ImageBlock ],
 				email: {
-					warnings: {
+					logs: {
 						suppressAll: true
 					}
 				}
@@ -76,7 +76,7 @@ describe( 'ImageEmailIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ ImageEmailIntegration, EmailIntegrationUtils, ImageBlock ],
 				email: {
-					warnings: {
+					logs: {
 						suppress: [ 'email-integration-unsupported-plugin' ]
 					}
 				}

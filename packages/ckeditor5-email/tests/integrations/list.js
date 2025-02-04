@@ -73,7 +73,7 @@ describe( 'ListEmailIntegration', () => {
 					}
 				},
 				email: {
-					warnings: {
+					logs: {
 						suppressAll: true
 					}
 				}
@@ -91,7 +91,7 @@ describe( 'ListEmailIntegration', () => {
 					}
 				},
 				email: {
-					warnings: {
+					logs: {
 						suppress: [ 'email-integration-unsupported-reversed-list' ]
 					}
 				}

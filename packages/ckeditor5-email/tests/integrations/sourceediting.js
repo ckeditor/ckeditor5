@@ -79,7 +79,7 @@ describe( 'SourceEditingIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ],
 				email: {
-					warnings: {
+					logs: {
 						suppressAll: true
 					}
 				}
@@ -92,7 +92,7 @@ describe( 'SourceEditingIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ],
 				email: {
-					warnings: {
+					logs: {
 						suppress: [ 'email-integration-missing-source-editing-plugin' ]
 					}
 				}

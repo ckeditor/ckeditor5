@@ -45,8 +45,8 @@ describe( 'EmailIntegrationUtils', () => {
 		expect( EmailIntegrationUtils.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should define default email.warnings config entry', () => {
-		expect( editor.config.get( 'email.warnings' ) ).to.deep.equal( {
+	it( 'should define default email.logs config entry', () => {
+		expect( editor.config.get( 'email.logs' ) ).to.deep.equal( {
 			suppress: [],
 			suppressAll: false
 		} );
@@ -62,7 +62,7 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should not log warning when suppressAll is true', () => {
-			editor.config.set( 'email.warnings.suppressAll', true );
+			editor.config.set( 'email.logs.suppressAll', true );
 			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning' );
@@ -71,7 +71,7 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should not log warning when warning code is in suppress array', () => {
-			editor.config.set( 'email.warnings.suppress', [ 'test-warning' ] );
+			editor.config.set( 'email.logs.suppress', [ 'test-warning' ] );
 			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning' );
@@ -80,7 +80,7 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should not log warning when warning code matches suppress function', () => {
-			editor.config.set( 'email.warnings.suppress', code => code === 'test-warning' );
+			editor.config.set( 'email.logs.suppress', code => code === 'test-warning' );
 			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning' );
@@ -89,7 +89,7 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should be possible to suppress warning using function accepting data', () => {
-			editor.config.set( 'email.warnings.suppress', ( code, data ) => code === 'test-warning' && data === 'test-data' );
+			editor.config.set( 'email.logs.suppress', ( code, data ) => code === 'test-warning' && data === 'test-data' );
 			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning', 'test-data' );

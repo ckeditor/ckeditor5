@@ -63,7 +63,7 @@ describe( 'MathTypeEmailIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ MathTypeEmailIntegration, EmailIntegrationUtils, MathType ],
 				email: {
-					warnings: {
+					logs: {
 						suppressAll: true
 					}
 				}
@@ -76,7 +76,7 @@ describe( 'MathTypeEmailIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ MathTypeEmailIntegration, EmailIntegrationUtils, MathType ],
 				email: {
-					warnings: {
+					logs: {
 						suppress: [ 'email-integration-unsupported-plugin' ]
 					}
 				}

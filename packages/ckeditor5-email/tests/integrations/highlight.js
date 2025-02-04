@@ -63,7 +63,7 @@ describe( 'HighlightEmailIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ HighlightEmailIntegration, EmailIntegrationUtils, Highlight ],
 				email: {
-					warnings: {
+					logs: {
 						suppressAll: true
 					}
 				}
@@ -76,7 +76,7 @@ describe( 'HighlightEmailIntegration', () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ HighlightEmailIntegration, EmailIntegrationUtils, Highlight ],
 				email: {
-					warnings: {
+					logs: {
 						suppress: [ 'email-integration-unsupported-plugin' ]
 					}
 				}

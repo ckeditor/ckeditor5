@@ -12,17 +12,17 @@ import { EmptyBlockIntegration } from '../../src/integrations/emptyblock.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'EmptyBlockIntegration', () => {
-	let domElement, editor, warnStub;
+	let domElement, editor, infoStub;
 
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
-		warnStub = sinon.stub( console, 'warn' );
+		infoStub = sinon.stub( console, 'info' );
 	} );
 
 	afterEach( async () => {
-		warnStub.restore();
+		infoStub.restore();
 
 		domElement.remove();
 		if ( editor ) {
@@ -48,46 +48,46 @@ describe( 'EmptyBlockIntegration', () => {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ]
 			} );
 
-			sinon.assert.calledWithMatch( warnStub, 'email-integration-missing-empty-block-plugin' );
+			sinon.assert.calledWithMatch( infoStub, 'email-integration-missing-empty-block-plugin' );
 		} );
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
 				email: {
-					warnings: {
+					logs: {
 						suppressAll: true
 					}
 				}
 			} );
 
-			sinon.assert.notCalled( warnStub );
+			sinon.assert.notCalled( infoStub );
 		} );
 
 		it( 'should not log warning when specific warning is suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
 				email: {
-					warnings: {
+					logs: {
 						suppress: [ 'email-integration-missing-empty-block-plugin' ]
 					}
 				}
 			} );
 
-			sinon.assert.notCalled( warnStub );
+			sinon.assert.notCalled( infoStub );
 		} );
 
 		it( 'should not log warning when warning is suppressed via function', async () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
 				email: {
-					warnings: {
+					logs: {
 						suppress: warningCode => warningCode === 'email-integration-missing-empty-block-plugin'
 					}
 				}
 			} );
 
-			sinon.assert.notCalled( warnStub );
+			sinon.assert.notCalled( infoStub );
 		} );
 
 		it( 'should not log warning when EmptyBlock plugin is available', async () => {
@@ -101,7 +101,7 @@ describe( 'EmptyBlockIntegration', () => {
 				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils, EmptyBlockStub ]
 			} );
 
-			sinon.assert.notCalled( warnStub );
+			sinon.assert.notCalled( infoStub );
 		} );
 	} );
 } );

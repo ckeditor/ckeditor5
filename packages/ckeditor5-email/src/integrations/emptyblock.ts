@@ -43,15 +43,11 @@ export class EmptyBlockIntegration extends Plugin {
 		const emptyBlock = this.editor.plugins.has( 'EmptyBlock' );
 
 		if ( !emptyBlock ) {
-			/**
-			 * Warning shown when the EmptyBlock plugin is missing. While it is not required for the email integration to work,
-			 * the empty block integration is recommended to ensure that exported content has empty blocks. This is important for
-			 * email clients because the empty blocks may be used as separators between different blocks. The editor exports empty
-			 * blocks filled with a non-breaking space and it may break some parts of the email layout (such as dividers).
-			 *
-			 * @error email-integration-missing-empty-block-plugin
-			 */
-			utils._logSuppressibleWarning( 'email-integration-missing-empty-block-plugin' );
+			utils._logInfo(
+				'email-integration-missing-empty-block-plugin',
+				'Consider enabling the EmptyBlock plugin to ensure that exported content has empty blocks.',
+				'features/email#missing-empty-block-plugin'
+			);
 		}
 	}
 }

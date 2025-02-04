@@ -36,7 +36,7 @@ export default class EmailIntegrationUtils extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'email.warnings', {
+		editor.config.define( 'email.logs', {
 			suppress: [],
 			suppressAll: false
 		} );
@@ -47,23 +47,29 @@ export default class EmailIntegrationUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public _logSuppressibleWarning( warningCode: string, data?: object ): void {
-		const editor = this.editor;
-		const config = editor.config.get( 'email.warnings' )!;
+	public _logSuppressibleWarning( logCode: string, data?: object ): void {
+		if ( !this._isSuppressedLog( logCode, data ) ) {
+			logWarning( logCode, data );
+		}
+	}
 
-		if ( config.suppressAll ) {
+	/**
+	 * Logs an information message about email client compatibility if it's not suppressed in the configuration.
+	 *
+	 * @internal
+	 */
+	public _logInfo( logCode: string, message: string, documentationPath?: string ): void {
+		if ( this._isSuppressedLog( logCode ) ) {
 			return;
 		}
 
-		if ( typeof config.suppress === 'function' && config.suppress( warningCode, data ) ) {
-			return;
+		if ( documentationPath ) {
+			const documentationUrl = `https://ckeditor.com/docs/ckeditor5/latest/${ documentationPath }`;
+
+			message += `\nRead more: ${ documentationUrl }`;
 		}
 
-		if ( Array.isArray( config.suppress ) && config.suppress.includes( warningCode ) ) {
-			return;
-		}
-
-		logWarning( warningCode, data );
+		console.info( logCode, message );
 	}
 
 	/**
@@ -141,6 +147,30 @@ export default class EmailIntegrationUtils extends Plugin {
 			 */
 			this._logSuppressibleWarning( 'email-integration-unsupported-color-format', { configPath, format } );
 		}
+	}
+
+	/**
+	 * Checks if the log with the given code should be suppressed.
+	 *
+	 * @internal
+	 */
+	private _isSuppressedLog( warningCode: string, data?: object ): boolean {
+		const editor = this.editor;
+		const config = editor.config.get( 'email.logs' )!;
+
+		if ( config.suppressAll ) {
+			return true;
+		}
+
+		if ( typeof config.suppress === 'function' && config.suppress( warningCode, data ) ) {
+			return true;
+		}
+
+		if ( Array.isArray( config.suppress ) && config.suppress.includes( warningCode ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
 

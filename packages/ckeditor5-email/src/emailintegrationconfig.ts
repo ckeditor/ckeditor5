@@ -24,24 +24,24 @@
 export interface EmailIntegrationConfig {
 
 	/**
-	 * Configuration for warning messages about email client compatibility.
+	 * Configuration for warning or log messages about email client compatibility.
 	 *
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( editorElement, {
 	 * 		email: {
-	 * 			warnings: {
+	 * 			logs: {
 	 * 				suppressAll: false,
-	 * 				suppress: ['image-width', 'table-styles']
+	 * 				suppress: [ ... ]
 	 * 			}
 	 * 		}
 	 * 	} )
 	 * ```
 	 */
-	warnings?: {
+	logs?: {
 
 		/**
-		 * Whether to suppress all compatibility warnings.
+		 * Whether to suppress all compatibility logs.
 		 *
 		 * @default false
 		 */
