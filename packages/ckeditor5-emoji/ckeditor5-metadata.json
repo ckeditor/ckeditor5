@@ -8,6 +8,13 @@
 			"docs": "features/emoji.html",
 			"requires": [
 				"Mention"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "emoji",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/emoji.svg"
+				}
 			]
 		},
 		{
