@@ -20,6 +20,7 @@ module.exports = {
 		'**/*.d.ts'
 	],
 	rules: {
+		'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
 		'ckeditor5-rules/ckeditor-imports': 'error',
 		'ckeditor5-rules/prevent-license-key-leak': 'error',
 		'ckeditor5-rules/license-header': [ 'error', {
