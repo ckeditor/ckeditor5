@@ -93,7 +93,7 @@ The `preserveEmptyBlocksInEditingView` option determines whether empty blocks sh
 
 ### Logs and warnings
 
-The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property lets you suppress warning or log messages about email client compatibility.
+The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property lets you suppress warnings or log messages about email client compatibility.
 
 ```js
 ClassicEditor
