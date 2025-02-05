@@ -126,6 +126,7 @@ export function logDocument( document: any, version: any ): void {
 // @if CK_DEBUG_TYPING // function _getLogNodes( editor ) {
 // @if CK_DEBUG_TYPING // 	return [
 // @if CK_DEBUG_TYPING // 		editor.editing.view._renderer,
+// @if CK_DEBUG_TYPING // 		editor.editing.view.domConverter,
 // @if CK_DEBUG_TYPING // 		...editor.editing.view._observers.values(),
 // @if CK_DEBUG_TYPING // 		editor.plugins.get( 'Input' ),
 // @if CK_DEBUG_TYPING // 		editor.plugins.get( 'WidgetTypeAround' ),

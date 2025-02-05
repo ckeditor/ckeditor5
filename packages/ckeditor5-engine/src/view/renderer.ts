@@ -975,8 +975,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
 		// @if CK_DEBUG_TYPING // 		`${ this.isFocused && domRoot ? 'Update' : 'Skip updating' } DOM selection:`,
-		// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }, domEditable:`,
-		// @if CK_DEBUG_TYPING // 		domRoot
+		// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }`
 		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
@@ -1055,6 +1054,13 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cDOM selection is already correct',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic;'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			return;
 		}
 
@@ -1176,8 +1182,8 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
-			// @if CK_DEBUG_TYPING // 		'focus selection editableElement:',
-			// @if CK_DEBUG_TYPING // 		editable
+			// @if CK_DEBUG_TYPING // 		'focus editable:',
+			// @if CK_DEBUG_TYPING // 		{ editable }
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 

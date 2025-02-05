@@ -96,6 +96,10 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'FocusObserver',
 		// @if CK_DEBUG_TYPING // 		`${ domEvent.type } event`
 		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'FocusObserver',
+		// @if CK_DEBUG_TYPING // 		'DOM target:',
+		// @if CK_DEBUG_TYPING // 		{ target: domEvent.target, relatedTarget: domEvent.relatedTarget }
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // 	const domSelection = window.getSelection();
 		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'FocusObserver',
 		// @if CK_DEBUG_TYPING // 		'DOM Selection:',
@@ -165,7 +169,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'FocusObserver',
 		// @if CK_DEBUG_TYPING // 		'selectedEditable:',
-		// @if CK_DEBUG_TYPING // 		selectedEditable
+		// @if CK_DEBUG_TYPING // 		{ selectedEditable }
 		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
