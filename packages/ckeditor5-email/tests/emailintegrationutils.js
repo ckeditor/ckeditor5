@@ -94,6 +94,38 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 	} );
 
+	describe( '_logInfo()', () => {
+		it( 'should log info when suppression is not configured', () => {
+			utils._logInfo( 'test-info', 'Test message' );
+
+			expect( infoStub ).to.be.calledOnce;
+			sinon.assert.calledWithMatch( infoStub, 'test-info', 'Test message' );
+		} );
+
+		it( 'should not log info when suppressAll is true', () => {
+			editor.config.set( 'email.logs.suppressAll', true );
+
+			utils._logInfo( 'test-info', 'Test message' );
+
+			expect( infoStub ).not.to.be.called;
+		} );
+
+		it( 'should not log info when info code is in suppress array', () => {
+			editor.config.set( 'email.logs.suppress', [ 'test-info' ] );
+
+			utils._logInfo( 'test-info', 'Test message' );
+
+			expect( infoStub ).not.to.be.called;
+		} );
+
+		it( 'should append documentation URL when documentation path is provided', () => {
+			utils._logInfo( 'test-info', 'Test message', 'features/some-feature' );
+
+			sinon.assert.calledWithMatch( infoStub, 'test-info',
+				'Test message\nRead more: https://ckeditor.com/docs/ckeditor5/latest/features/some-feature' );
+		} );
+	} );
+
 	describe( '_checkUnsupportedPlugin()', () => {
 		it( 'should not log warning when plugin is not loaded', () => {
 			utils._checkUnsupportedPlugin( 'NonExistentPlugin' );
