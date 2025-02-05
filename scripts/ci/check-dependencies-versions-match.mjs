@@ -29,7 +29,11 @@ console.log( chalk.blue( '🔍 Starting checking dependencies versions...' ) );
  * where we want to use the caret or tilde operator. This object contains such exceptions.
  */
 const rangeExceptions = {
-	'@codemirror/state': '^'
+	'@codemirror/autocomplete': '^',
+	'@codemirror/lang-html': '^',
+	'@codemirror/language': '^',
+	'@codemirror/state': '^',
+	'@codemirror/view': '^'
 };
 
 const [ packageJsons, pathMappings ] = getPackageJsons( [
