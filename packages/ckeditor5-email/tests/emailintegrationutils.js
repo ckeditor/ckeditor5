@@ -6,10 +6,10 @@
 /* global document, console */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import EmailIntegrationUtils, { isUnsupportedEmailColor } from '../src/emailintegrationutils.js';
+import EmailIntegrationUtils, { isUnsupportedEmailColorValue, isUnsupportedEmailColorFormat } from '../src/emailintegrationutils.js';
 
 describe( 'EmailIntegrationUtils', () => {
-	let domElement, editor, warnStub, infoStub;
+	let domElement, editor, warnStub, infoStub, utils;
 
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
@@ -23,6 +23,8 @@ describe( 'EmailIntegrationUtils', () => {
 				EmailIntegrationUtils
 			]
 		} );
+
+		utils = editor.plugins.get( EmailIntegrationUtils );
 	} );
 
 	afterEach( async () => {
@@ -54,8 +56,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 	describe( '_logSuppressibleWarning()', () => {
 		it( 'should log warning when suppression is not configured', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
-
 			utils._logSuppressibleWarning( 'test-warning' );
 
 			sinon.assert.calledOnce( warnStub );
@@ -63,7 +63,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 		it( 'should not log warning when suppressAll is true', () => {
 			editor.config.set( 'email.logs.suppressAll', true );
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning' );
 
@@ -72,7 +71,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 		it( 'should not log warning when warning code is in suppress array', () => {
 			editor.config.set( 'email.logs.suppress', [ 'test-warning' ] );
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning' );
 
@@ -81,7 +79,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 		it( 'should not log warning when warning code matches suppress function', () => {
 			editor.config.set( 'email.logs.suppress', code => code === 'test-warning' );
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning' );
 
@@ -90,7 +87,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 		it( 'should be possible to suppress warning using function accepting data', () => {
 			editor.config.set( 'email.logs.suppress', ( code, data ) => code === 'test-warning' && data === 'test-data' );
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 
 			utils._logSuppressibleWarning( 'test-warning', 'test-data' );
 
@@ -100,16 +96,12 @@ describe( 'EmailIntegrationUtils', () => {
 
 	describe( '_checkUnsupportedPlugin()', () => {
 		it( 'should not log warning when plugin is not loaded', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
-
 			utils._checkUnsupportedPlugin( 'NonExistentPlugin' );
 
 			sinon.assert.notCalled( warnStub );
 		} );
 
 		it( 'should log warning when plugin is loaded', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
-
 			editor.plugins.has = name => name === 'TestPlugin';
 
 			utils._checkUnsupportedPlugin( 'TestPlugin' );
@@ -122,7 +114,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 	describe( '_validateConfigColorValue()', () => {
 		it( 'should not log warning for valid color string', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.color', '#FF0000' );
 
 			utils._validateConfigColorValue( 'test.color' );
@@ -131,7 +122,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should not log warning for valid color array', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colors', [ '#FF0000', 'rgb(0,0,0)' ] );
 
 			utils._validateConfigColorValue( 'test.colors' );
@@ -140,7 +130,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should log warning for HSL color', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.color', 'hsl(0,100%,50%)' );
 
 			utils._validateConfigColorValue( 'test.color' );
@@ -152,7 +141,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should log warning for HSLA color in array with single item', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colors', [
 				{ color: 'hsla(0,100%,50%,1)', label: 'Red' }
 			] );
@@ -166,7 +154,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should log warning for HSLA color in array with multiple items', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colors', [
 				{ color: 'hsla(0,100%,50%,1)', label: 'Red' },
 				{ color: 'hsla(0,0,0,1)', label: 'Black' }
@@ -186,8 +173,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should not log warning for non-existent config path', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
-
 			utils._validateConfigColorValue( 'non.existent.path' );
 
 			sinon.assert.notCalled( warnStub );
@@ -196,7 +181,6 @@ describe( 'EmailIntegrationUtils', () => {
 
 	describe( '_validateConfigColorFormat()', () => {
 		it( 'should not log warning for rgb format', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colorFormat', 'rgb' );
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
@@ -205,7 +189,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should log warning for hsl format', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colorFormat', 'hsl' );
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
@@ -217,7 +200,6 @@ describe( 'EmailIntegrationUtils', () => {
 		} );
 
 		it( 'should log warning for hsla format', () => {
-			const utils = editor.plugins.get( EmailIntegrationUtils );
 			editor.config.set( 'test.colorFormat', 'hsla' );
 
 			utils._validateConfigColorFormat( 'test.colorFormat' );
@@ -238,54 +220,54 @@ describe( 'EmailIntegrationUtils', () => {
 	} );
 } );
 
-describe( 'isUnsupportedEmailColor()', () => {
+describe( 'isUnsupportedEmailColorValue()', () => {
 	it( 'should return true for HSL colors', () => {
-		expect( isUnsupportedEmailColor( 'hsl(0,100%,50%)' ) ).to.be.true;
+		expect( isUnsupportedEmailColorValue( 'hsl(0,100%,50%)' ) ).to.be.true;
 	} );
 
 	it( 'should return true for HSLA colors', () => {
-		expect( isUnsupportedEmailColor( 'hsla(0,100%,50%,1)' ) ).to.be.true;
+		expect( isUnsupportedEmailColorValue( 'hsla(0,100%,50%,1)' ) ).to.be.true;
 	} );
 
 	it( 'should return false for RGB colors', () => {
-		expect( isUnsupportedEmailColor( 'rgb(255,0,0)' ) ).to.be.false;
+		expect( isUnsupportedEmailColorValue( 'rgb(255,0,0)' ) ).to.be.false;
 	} );
 
 	it( 'should return false for hex colors', () => {
-		expect( isUnsupportedEmailColor( '#FF0000' ) ).to.be.false;
+		expect( isUnsupportedEmailColorValue( '#FF0000' ) ).to.be.false;
 	} );
 
 	it( 'should return true for LCH colors', () => {
-		expect( isUnsupportedEmailColor( 'lch(0 100 50)' ) ).to.be.true;
+		expect( isUnsupportedEmailColorValue( 'lch(0 100 50)' ) ).to.be.true;
 	} );
 
 	it( 'should return true for LAB colors', () => {
-		expect( isUnsupportedEmailColor( 'lab(0 100 50)' ) ).to.be.true;
+		expect( isUnsupportedEmailColorValue( 'lab(0 100 50)' ) ).to.be.true;
+	} );
+} );
+
+describe( 'isUnsupportedEmailColorFormat()', () => {
+	it( 'should return true for HSL colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'hsl' ) ).to.be.true;
 	} );
 
-	describe( 'shortcut', () => {
-		it( 'should return true for HSL colors', () => {
-			expect( isUnsupportedEmailColor( 'hsl' ) ).to.be.true;
-		} );
+	it( 'should return true for HSLA colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'hsla' ) ).to.be.true;
+	} );
 
-		it( 'should return true for HSLA colors', () => {
-			expect( isUnsupportedEmailColor( 'hsla' ) ).to.be.true;
-		} );
+	it( 'should return false for RGB colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'rgb' ) ).to.be.false;
+	} );
 
-		it( 'should return false for RGB colors', () => {
-			expect( isUnsupportedEmailColor( 'rgb' ) ).to.be.false;
-		} );
+	it( 'should return false for hex colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'hex' ) ).to.be.false;
+	} );
 
-		it( 'should return false for hex colors', () => {
-			expect( isUnsupportedEmailColor( 'hex' ) ).to.be.false;
-		} );
+	it( 'should return true for LCH colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'lch' ) ).to.be.true;
+	} );
 
-		it( 'should return false for LCH colors', () => {
-			expect( isUnsupportedEmailColor( 'lch' ) ).to.be.true;
-		} );
-
-		it( 'should return false for LAB colors', () => {
-			expect( isUnsupportedEmailColor( 'lab' ) ).to.be.true;
-		} );
+	it( 'should return true for LAB colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'lab' ) ).to.be.true;
 	} );
 } );

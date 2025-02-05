@@ -111,7 +111,7 @@ export default class EmailIntegrationUtils extends Plugin {
 		for ( const [ index, item ] of colors.entries() ) {
 			const color = typeof item === 'string' ? item : item.color;
 
-			if ( isUnsupportedEmailColor( color ) ) {
+			if ( isUnsupportedEmailColorValue( color ) ) {
 				/**
 				 * The specified color value uses a format not supported in email clients. This affects various color
 				 * settings like fonts, backgrounds, borders, etc. Please use `rgb()` or `#RRGGBB` format instead.
@@ -138,7 +138,7 @@ export default class EmailIntegrationUtils extends Plugin {
 			return;
 		}
 
-		if ( isUnsupportedEmailColor( format ) ) {
+		if ( isUnsupportedEmailColorFormat( format ) ) {
 			/**
 			 * The color format specified in the editor configuration (e.g. for color pickers or other UI components)
 			 * is not supported in email clients. Please use `rgb()` or `#RRGGBB` format instead.
@@ -174,11 +174,20 @@ export default class EmailIntegrationUtils extends Plugin {
 	}
 }
 
+const UNSUPPORTED_COLOR_FORMATS = [ 'hsl', 'hsla', 'hwb', 'lab', 'lch' ];
+
 /**
- * Checks if the given color is not supported in email clients.
+ * Checks if the given color value is not supported in email clients.
  */
-export function isUnsupportedEmailColor( color: string ): boolean {
-	return /hsl|hwb|lab|lch/.test( color );
+export function isUnsupportedEmailColorValue( color: string ): boolean {
+	return UNSUPPORTED_COLOR_FORMATS.some( format => color.includes( `${ format }(` ) );
+}
+
+/**
+ * Checks if the given color format is not supported in email clients.
+ */
+export function isUnsupportedEmailColorFormat( color: string ): boolean {
+	return UNSUPPORTED_COLOR_FORMATS.includes( color );
 }
 
 /**
