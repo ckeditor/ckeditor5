@@ -78,7 +78,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 
 		const colorDefinitions = options && options.colorDefinitions ? options.colorDefinitions : [];
 
-		this.columns = options && options.columns ? options.columns : 5;
+		this.columns = options?.columns || 5;
 
 		const viewStyleAttribute = {
 			gridTemplateColumns: `repeat( ${ this.columns }, 1fr)`
@@ -179,7 +179,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			focusTracker: this.focusTracker,
 			gridItems: this.items,
 			numberOfColumns: this.columns,
-			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
+			uiLanguageDirection: this.locale?.uiLanguageDirection
 		} );
 	}
 

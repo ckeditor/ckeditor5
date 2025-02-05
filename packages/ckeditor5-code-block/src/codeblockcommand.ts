@@ -91,7 +91,7 @@ export default class CodeBlockCommand extends Command {
 	private _getValue(): string | false {
 		const selection = this.editor.model.document.selection;
 		const firstBlock = first( selection.getSelectedBlocks() );
-		const isCodeBlock = !!( firstBlock && firstBlock.is( 'element', 'codeBlock' ) );
+		const isCodeBlock = !!firstBlock?.is( 'element', 'codeBlock' );
 
 		return isCodeBlock ? firstBlock.getAttribute( 'language' ) as string : false;
 	}

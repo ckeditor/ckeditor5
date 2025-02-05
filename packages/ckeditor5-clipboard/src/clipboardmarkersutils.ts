@@ -484,7 +484,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 			// set them new unique name.
 			let skipAssign = false;
 
-			if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
+			if ( prevFakeMarker?.start && prevFakeMarker?.end ) {
 				const config = this._getMarkerClipboardConfig( fakeMarker.name )!;
 
 				if ( config.duplicateOnPaste ) {
