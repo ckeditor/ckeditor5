@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global CKEditorInspector, document, window */
+/* global document, window */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
@@ -65,5 +65,4 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		CKEditorInspector.attach( { Editor: editor } );
 	} );
