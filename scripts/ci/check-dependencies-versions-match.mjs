@@ -170,15 +170,19 @@ function getExpectedDepsVersions( packageJsons, isCkeditor5Package ) {
  * @return {String}
  */
 function getNewestVersion( packageName, newVersion = '0.0.0', currentMaxVersion = '0.0.0' ) {
-	if ( !semver.valid( newVersion ) ) {
-		const versions = getVersionsList( packageName );
-		const newMaxVersion = semver.maxSatisfying( versions, newVersion );
-		const range = rangeExceptions[ packageName ] || '';
-
-		return semver.gt( newMaxVersion, currentMaxVersion ) ? range + newMaxVersion : currentMaxVersion;
+	if ( rangeExceptions[ packageName ] ) {
+		return newVersion;
 	}
 
-	return semver.gt( newVersion, currentMaxVersion ) ? newVersion : currentMaxVersion;
+	if ( semver.valid( newVersion ) ) {
+		return semver.gt( newVersion, currentMaxVersion ) ? newVersion : currentMaxVersion;
+	}
+
+	const versions = getVersionsList( packageName );
+	const newMaxVersion = semver.maxSatisfying( versions, newVersion );
+	const range = rangeExceptions[ packageName ] || '';
+
+	return semver.gt( newMaxVersion, currentMaxVersion ) ? range + newMaxVersion : currentMaxVersion;
 }
 
 /**
