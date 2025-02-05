@@ -159,14 +159,15 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 					partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
 				}
 
-				// After a batch of paragraphs interleaved with text fire a dummy beforeinput just to flush the input queue.
-				this.fire( domEvent.type, domEvent, {
-					inputType: i + 1 < parts.length ? 'insertParagraph' : 'dummy',
-					targetRanges: partTargetRanges
-				} );
+				if ( i + 1 < parts.length ) {
+					this.fire( domEvent.type, domEvent, {
+						inputType: 'insertParagraph',
+						targetRanges: partTargetRanges
+					} );
 
-				// Use the result view selection so following events will be added one after another.
-				partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
+					// Use the result view selection so following events will be added one after another.
+					partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
+				}
 			}
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -182,7 +183,8 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			dataTransfer,
 			targetRanges,
 			inputType: domEvent.inputType,
-			isComposing: domEvent.isComposing
+			isComposing: domEvent.isComposing,
+			expectBrowserChange: true
 		} );
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -255,4 +257,9 @@ export interface InputEventData extends DomEventData<InputEvent> {
 	 * (as returned by `InputEvent#getTargetRanges()`).
 	 */
 	readonly targetRanges: Array<ViewRange>;
+
+	/**
+	 * TODO
+	 */
+	readonly expectBrowserChange?: boolean;
 }

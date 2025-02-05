@@ -150,9 +150,11 @@ export default class Input extends Plugin {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			// TODO verify if this work correctly in WTA and table selection.
-
 			this._compositionQueue.push( commandData );
+
+			if ( !data.expectBrowserChange ) {
+				this._compositionQueue.flush( 'synthetic insertText event' );
+			}
 		} );
 
 		// Delete selected content on composition start.
