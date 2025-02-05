@@ -663,7 +663,7 @@ If you are using predefined builds from npm, follow the steps below:
 
 	Before:
 	```js
-	import DecoupledEditor from '@ckeditor/ckeditor5-build-multi-root';
+	import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 	MultiRootEditor
 		.create( /* Configuration */ )
