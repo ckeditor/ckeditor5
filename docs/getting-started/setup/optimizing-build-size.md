@@ -223,7 +223,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		CaseChange,
 		SlashCommand
 	],
-	licenseKey: '<LICENSE_KEY>', // Replace this with your license key.
+	licenseKey: '<YOUR_LICENSE_KEY>', // Replace this with your license key.
 	toolbar: {
 		items: [
 			'undo', 'redo',
@@ -381,7 +381,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		CaseChange,
 		SlashCommand
 	],
-	licenseKey: '<LICENSE_KEY>', // Replace this with your license key.
+	licenseKey: '<YOUR_LICENSE_KEY>', // Replace this with your license key.
 	toolbar: {
 		items: [
 			'undo', 'redo',

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -524,6 +524,12 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 		label: 'View',
  * 		groups: [
  * 			{
+ * 				groupId: 'sourceEditingEnhanced',
+ * 				items: [
+ * 					'menuBar:sourceEditingEnhanced'
+ * 				]
+ * 			},
+ * 			{
  * 				groupId: 'sourceEditing',
  * 				items: [
  * 					'menuBar:sourceEditing'
@@ -568,7 +574,8 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 					'menuBar:link',
  * 					'menuBar:bookmark',
  * 					'menuBar:comment',
- * 					'menuBar:insertMergeField'
+ * 					'menuBar:insertMergeField',
+ * 					'menuBar:emoji'
  * 				]
  * 			},
  * 			{
@@ -782,6 +789,12 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 		label: 'View',
 		groups: [
 			{
+				groupId: 'sourceEditingEnhanced',
+				items: [
+					'menuBar:sourceEditingEnhanced'
+				]
+			},
+			{
 				groupId: 'sourceEditing',
 				items: [
 					'menuBar:sourceEditing'
@@ -826,7 +839,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 					'menuBar:link',
 					'menuBar:bookmark',
 					'menuBar:comment',
-					'menuBar:insertMergeField'
+					'menuBar:insertMergeField',
+					'menuBar:emoji'
 				]
 			},
 			{

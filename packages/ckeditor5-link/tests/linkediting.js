@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import LinkEditing from '../src/linkediting.js';
@@ -2497,6 +2497,141 @@ describe( 'LinkEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Bar[]</$text></paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+		} );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/13985
+	describe( 'manual decorators with rel attribute', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing ],
+				link: {
+					decorators: {
+						isFoo: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								rel: 'foo'
+							}
+						},
+						isBar: {
+							mode: 'manual',
+							label: 'Bar',
+							attributes: {
+								rel: 'bar'
+							}
+						},
+						isBaz: {
+							mode: 'manual',
+							label: 'Baz',
+							attributes: {
+								rel: 'baz abc'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should upcast multiple manual decorators', () => {
+			editor.setData( '<p><a href="#" rel="foo bar baz abc">link</a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text linkHref="#" linkIsBar="true" linkIsBaz="true" linkIsFoo="true">link</$text></paragraph>'
+			);
+		} );
+
+		it( 'should data downcast multiple manual decorators', () => {
+			setModelData( model,
+				'<paragraph><$text linkHref="#" linkIsBar="true" linkIsBaz="true" linkIsFoo="true">link</$text></paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p><a href="#" rel="bar baz abc foo">link</a></p>'
+			);
+		} );
+
+		it( 'should editing view downcast multiple manual decorators', () => {
+			setModelData( model,
+				'<paragraph><$text linkHref="#" linkIsBar="true" linkIsBaz="true" linkIsFoo="true">link</$text></paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="bar baz abc foo">link</a></p>'
+			);
+		} );
+
+		it( 'should add manual decorator on rel attribute', () => {
+			setModelData( model,
+				'<paragraph><$text linkHref="#">link</$text></paragraph>'
+			);
+
+			model.change( writer => {
+				writer.setAttribute( 'linkIsFoo', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="foo">link</a></p>'
+			);
+
+			model.change( writer => {
+				writer.setAttribute( 'linkIsBar', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="foo bar">link</a></p>'
+			);
+
+			model.change( writer => {
+				writer.setAttribute( 'linkIsBaz', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="foo bar baz abc">link</a></p>'
+			);
+		} );
+
+		it( 'should remove manual decorator on rel attribute', () => {
+			setModelData( model,
+				'<paragraph><$text linkHref="#" linkIsFoo="true" linkIsBar="true" linkIsBaz="true">link</$text></paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="foo bar baz abc">link</a></p>'
+			);
+
+			model.change( writer => {
+				writer.removeAttribute( 'linkIsBar', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="foo baz abc">link</a></p>'
+			);
+
+			model.change( writer => {
+				writer.removeAttribute( 'linkIsBaz', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#" rel="foo">link</a></p>'
+			);
+
+			model.change( writer => {
+				writer.removeAttribute( 'linkIsFoo', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<p><a href="#">link</a></p>'
+			);
 		} );
 	} );
 

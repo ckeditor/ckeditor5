@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, console */
@@ -505,6 +505,24 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<section data-foo="foobar"><p>foobar</p></section>'
+			);
+		} );
+
+		it( 'should allow attributes (empty attributes match)', () => {
+			dataFilter.allowElement( 'section' );
+			dataFilter.allowAttributes( {
+				name: 'section'
+			} );
+
+			editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<section><p>foobar</p></section>'
 			);
 		} );
 

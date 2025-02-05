@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
 # Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
@@ -45,11 +45,11 @@ msgstr "Заголовок рядка"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Вставити рядок зверху"
+msgstr "Вставити рядок знизу"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Вставити рядок знизу"
+msgstr "Вставити рядок зверху"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"

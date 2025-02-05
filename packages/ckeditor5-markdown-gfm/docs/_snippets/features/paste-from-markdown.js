@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout */
+/* globals console, window, document, setTimeout, LICENSE_KEY */
 
 import { Code, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
 import { List, TodoList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
 import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
@@ -33,7 +33,7 @@ const plugins = ClassicEditor.builtinPlugins
 	} )
 	// Then, add Markdown-specific features.
 	.concat( [
-		SourceEditing, Code, Strikethrough, Underline, Markdown, CodeBlock, HorizontalLine, List, TodoList,
+		SourceEditingEnhanced, Code, Strikethrough, Underline, Markdown, CodeBlock, HorizontalLine, List, TodoList,
 		AdjacentListsSupport, PasteFromMarkdownExperimental, CKBox, CKBoxImageEdit,
 		PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, Font
 	] );
@@ -43,7 +43,7 @@ ClassicEditor
 		plugins,
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
+				'undo', 'redo', '|', 'sourceEditingEnhanced', '|', 'heading',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
 				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
@@ -81,7 +81,7 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
-		licenseKey: 'GPL'
+		licenseKey: LICENSE_KEY
 	} )
 	.then( editor => {
 		window.editor = editor;

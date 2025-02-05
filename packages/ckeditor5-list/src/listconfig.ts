@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -168,6 +168,74 @@ export interface ListPropertiesStyleConfig {
 	 * @default false
 	 */
 	useAttribute?: boolean;
+
+	/**
+	 * Defines which list styles should be available in the UI.
+	 * Accepts a configuration object with numbered and bulleted styles.
+	 *
+	 * ```ts
+	 * {
+	 *   list: {
+	 *     properties: {
+	 *       styles: {
+	 *         listStyleTypes: {
+	 *           numbered: [ 'decimal', 'lower-roman', 'upper-roman' ],
+	 *           bulleted: [ 'disc', 'circle' ]
+	 *         }
+	 *       }
+	 *     }
+	 *   }
+	 * }
+	 * ```
+	 *
+	 * When the `listTypes` configuration is set, `listStyleTypes` will only take effect for the enabled list types.
+	 * For example, with the following configuration:
+	 *
+	 * ```ts
+	 * {
+	 *   list: {
+	 *     properties: {
+	 *       styles: {
+	 *         listTypes: 'numbered',
+	 *         listStyleTypes: {
+	 *           numbered: [ 'decimal', 'lower-roman' ],
+	 *           bulleted: [ 'disc', 'circle' ]
+	 *         }
+	 *       }
+	 *     }
+	 *   }
+	 * }
+	 * ```
+	 *
+	 * Only the numbered list styles will be available in the UI, as the `listTypes` property limits style selection to numbered lists only.
+	 *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
+	 * @default `{
+	 *   numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+	 *   bulleted: [ 'disc', 'circle', 'square' ]
+	 * }`
+	 */
+	listStyleTypes?: ListStyleTypesConfig;
+}
+
+export interface ListStyleTypesConfig {
+	numbered?: Array<NumberedListStyleType>;
+	bulleted?: Array<BulletedListStyleType>;
 }
 
 export type ListPropertiesStyleListType = 'numbered' | 'bulleted';
+
+export type NumberedListStyleType =
+	| 'decimal'
+	| 'decimal-leading-zero'
+	| 'lower-roman'
+	| 'upper-roman'
+	| 'lower-latin'
+	| 'upper-latin';
+
+export type BulletedListStyleType =
+	| 'disc'
+	| 'circle'
+	| 'square';

@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout */
+/* globals console, window, document, setTimeout, LICENSE_KEY */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
@@ -16,7 +16,7 @@ import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { ImageUpload, ImageInsert, PictureEditing, AutoImage } from '@ckeditor/ckeditor5-image';
 import { TodoList } from '@ckeditor/ckeditor5-list';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
 
 import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 
@@ -25,12 +25,12 @@ import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.j
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
+			ArticlePluginSet, SourceEditingEnhanced, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
 			CloudServices, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
+				'undo', 'redo', '|', 'sourceEditingEnhanced', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
 				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
@@ -68,7 +68,7 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		licenseKey: 'GPL'
+		licenseKey: LICENSE_KEY
 	} )
 	.then( editor => {
 		window.editor = editor;

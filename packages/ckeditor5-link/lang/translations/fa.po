@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
 # Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
@@ -57,4 +57,8 @@ msgstr ""
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
+msgstr ""
+
+msgctxt "Button scrolling to the link target."
+msgid "Scroll to target"
 msgstr ""

@@ -530,6 +530,7 @@ In addition to enabling mentions, you may want to check the following productivi
 * {@link features/text-transformation Automatic text transformation} &ndash; Lets you automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/autoformat Autoformatting} &ndash; Lets you quickly apply formatting to the content you are writing.
+* {@link features/emoji Emoji} &ndash; Lets you quickly insert desired emoji.
 
 ## Common API
 

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -722,12 +722,12 @@ export function createRegExp( marker: string, minimumCharacters: number ): RegEx
 	// The pattern consists of 3 groups:
 	//
 	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
-	// - 1: The marker character,
+	// - 1: The marker character(s),
 	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
 	//
 	// The pattern matches up to the caret (end of string switch - $).
-	//               (0:      opening sequence       )(1:   marker  )(2:                typed mention              )$
-	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])(${ mentionCharacters }${ numberOfCharacters })$`;
+	//               (0:      opening sequence       )(1: marker  )(2:                typed mention              )$
+	const pattern = `(?:^|[ ${ openAfterCharacters }])(${ marker })(${ mentionCharacters }${ numberOfCharacters })$`;
 
 	return new RegExp( pattern, 'u' );
 }
@@ -822,8 +822,8 @@ function isMarkerInExistingMention( markerPosition: Position ): boolean | null {
 /**
  * Checks if string is a valid mention marker.
  */
-function isValidMentionMarker( marker: string ): boolean | string {
-	return marker && marker.length == 1;
+function isValidMentionMarker( marker: string ): boolean {
+	return !!marker;
 }
 
 /**
