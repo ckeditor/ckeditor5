@@ -113,8 +113,8 @@ export default class EmailIntegrationUtils extends Plugin {
 
 			if ( isUnsupportedEmailColor( color ) ) {
 				/**
-				 * The color format used in the configuration is not supported by many popular email clients.
-				 * Some email clients may display it incorrectly. Please use the `rgb()` or `#RRGGBB` format instead.
+				 * The specified color value uses a format not supported in email clients. This affects various color
+				 * settings like fonts, backgrounds, borders, etc. Please use `rgb()` or `#RRGGBB` format instead.
 				 *
 				 * @error email-integration-unsupported-color-value
 				 */
@@ -140,8 +140,8 @@ export default class EmailIntegrationUtils extends Plugin {
 
 		if ( isUnsupportedEmailColor( format ) ) {
 			/**
-			 * The color format used in the configuration is not supported by many popular email clients.
-			 * Some email clients may display it incorrectly. Please use the `rgb()` or `#RRGGBB` format instead.
+			 * The color format specified in the editor configuration (e.g. for color pickers or other UI components)
+			 * is not supported in email clients. Please use `rgb()` or `#RRGGBB` format instead.
 			 *
 			 * @error email-integration-unsupported-color-format
 			 */
