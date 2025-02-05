@@ -36,7 +36,15 @@ ClassicEditor
 			FullPage
 		],
 		fullPage: {
-			allowRenderStylesFromHead: true
+			allowRenderStylesFromHead: true,
+			sanitizeCss: rawCss => {
+				const cleanCss = rawCss.replace( /color: green;/g, '' );
+
+				return {
+					css: cleanCss,
+					hasChanged: rawCss !== cleanCss
+				};
+			}
 		},
 		toolbar: [
 			'sourceEditing', '|',

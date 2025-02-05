@@ -8,11 +8,12 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { global } from 'ckeditor5/src/utils.js';
+import { logWarning, global } from 'ckeditor5/src/utils.js';
 import {
 	UpcastWriter,
 	type DataControllerToModelEvent,
-	type DataControllerToViewEvent
+	type DataControllerToViewEvent,
+	type RootElement
 } from 'ckeditor5/src/engine.js';
 
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
@@ -33,6 +34,34 @@ export default class FullPage extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'fullPage', {
+			allowRenderStylesFromHead: false,
+			sanitizeCss: rawCss => {
+				/**
+				 * When using the Full page with the `config.fullPage.allowRenderStylesFromHead` set to `true`,
+				 * it is strongly recommended to define a sanitize function that will clean up the CSS
+				 * which is present in the `<head>` in editors content in order to avoid XSS vulnerability.
+				 *
+				 * For a detailed overview, check the {@glink TODO} documentation.
+				 *
+				 * @error html-embed-provide-sanitize-function
+				 */
+				logWarning( 'css-full-page-provide-sanitize-function' );
+
+				return {
+					css: rawCss,
+					hasChanged: false
+				};
+			}
+		} );
 	}
 
 	/**
@@ -65,10 +94,7 @@ export default class FullPage extends Plugin {
 			const allowRenderStylesFromHead = isAllowedRenderStylesFromHead( editor );
 
 			if ( allowRenderStylesFromHead ) {
-				const fullPageData = root.getAttribute( '$fullPageDocument' ) as string;
-
-				this._removeStyleElementsFromDom();
-				this._renderStyleElementsInDom( fullPageData );
+				this._renderStylesFromHead( root );
 			}
 		}, { priority: 'low' } );
 
@@ -135,6 +161,8 @@ export default class FullPage extends Plugin {
 	}
 
 	/**
+	 * Extracts `<style>` elements from the full page data and renders them in the main document `<head>`.
+	 * CSS content is sanitized before rendering.
 	 *
 	 * @param fullPageData Represents the full page data passed to the editor as a string.
 	 */
@@ -142,16 +170,36 @@ export default class FullPage extends Plugin {
 		// Use DOMParser for easier elements extraction and unwanted code execution prevention.
 		const domParser = new DOMParser();
 		const doc = domParser.parseFromString( fullPageData, 'text/html' );
+		const sanitizeCss = this.editor.config.get( 'fullPage.sanitizeCss' )!;
 
 		// Extract `<style>` elements from the `<head>` from the full page data.
-		const styleElements = Array.from( doc.querySelectorAll( 'head style' ) );
+		const styleElements: Array<HTMLStyleElement> = Array.from( doc.querySelectorAll( 'head style' ) );
 
 		// Add `data-full-page-style` attribute to the `<style>` element and render it in `<head>` in the main document.
 		for ( const style of styleElements ) {
 			style.setAttribute( 'data-full-page-style-id', this.editor.id );
 
+			// Sanitize the CSS content before rendering it in the editor.
+			const sanitizedCss = sanitizeCss( style.innerText );
+
+			if ( sanitizedCss.hasChanged ) {
+				style.innerText = sanitizedCss.css;
+			}
+
 			global.document.head.append( style );
 		}
+	}
+
+	/**
+	 * Removes existing `<style>` elements injected by the plugin and renders new ones from the full page data.
+	 *
+	 * @param root Represents the root element of the model.
+	 */
+	private _renderStylesFromHead( root: RootElement ) {
+		const fullPageData = root.getAttribute( '$fullPageDocument' ) as string;
+
+		this._removeStyleElementsFromDom();
+		this._renderStyleElementsInDom( fullPageData );
 	}
 }
 
