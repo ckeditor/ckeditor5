@@ -20,6 +20,12 @@ export default async function getReleaseDescription( cliArguments ) {
 		];
 	}
 
+	if ( cliArguments.nightlyNext ) {
+		return [
+			await releaseTools.getNextPreRelease( '0.0.0-next' ), null
+		];
+	}
+
 	if ( cliArguments.nightly ) {
 		return [
 			await releaseTools.getNextNightly(), null
