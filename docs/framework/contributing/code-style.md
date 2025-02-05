@@ -1255,5 +1255,3 @@ import { AIAssistant } from 'ckeditor5-premium-features';
 ### SVG imports only in the `@ckeditor/ckeditor5-icons` package
 
 This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.
-
-SVG imports are also allowed in the documentation folders because they are used as images or diagrams.
