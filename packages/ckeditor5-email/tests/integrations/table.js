@@ -6,7 +6,7 @@
 /* global document, console */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Table } from '@ckeditor/ckeditor5-table';
+import { PlainTableOutput, Table } from '@ckeditor/ckeditor5-table';
 
 import { TableEmailIntegration } from '../../src/integrations/table.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
@@ -52,11 +52,43 @@ describe( 'TableEmailIntegration', () => {
 		} );
 
 		describe( 'table properties configuration', () => {
+			it( 'should not warn about colors when Table plugin is not enabled', async () => {
+				editor = await ClassicEditor.create( domElement, {
+					plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+					table: {
+						tableProperties: {
+							borderColors: [
+								{ color: 'hsl(0, 100%, 50%)', label: 'Red' }
+							],
+							backgroundColors: [
+								{ color: 'hsla(120, 100%, 50%, 1)', label: 'Green' }
+							],
+							colorPicker: {
+								format: 'hsl'
+							}
+						},
+						tableCellProperties: {
+							borderColors: [
+								{ color: 'hsl(0, 100%, 50%)', label: 'Red' }
+							],
+							backgroundColors: [
+								{ color: 'hsla(120, 100%, 50%, 1)', label: 'Green' }
+							],
+							colorPicker: {
+								format: 'hsl'
+							}
+						}
+					}
+				} );
+
+				sinon.assert.notCalled( warnStub );
+			} );
+
 			for ( const configKey of [ 'tableProperties', 'tableCellProperties' ] ) {
 				describe( `${ configKey } configuration`, () => {
 					it( 'should not warn about hex colors in borderColors', async () => {
 						editor = await ClassicEditor.create( domElement, {
-							plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+							plugins: [ Table, PlainTableOutput, TableEmailIntegration, EmailIntegrationUtils ],
 							table: {
 								[ configKey ]: {
 									borderColors: [
@@ -71,7 +103,7 @@ describe( 'TableEmailIntegration', () => {
 
 					it( 'should warn about unsupported colors in borderColors', async () => {
 						editor = await ClassicEditor.create( domElement, {
-							plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+							plugins: [ Table, PlainTableOutput, TableEmailIntegration, EmailIntegrationUtils ],
 							table: {
 								[ configKey ]: {
 									borderColors: [
@@ -86,7 +118,7 @@ describe( 'TableEmailIntegration', () => {
 
 					it( 'should not warn about hex colors in backgroundColors', async () => {
 						editor = await ClassicEditor.create( domElement, {
-							plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+							plugins: [ Table, PlainTableOutput, TableEmailIntegration, EmailIntegrationUtils ],
 							table: {
 								[ configKey ]: {
 									backgroundColors: [
@@ -101,7 +133,7 @@ describe( 'TableEmailIntegration', () => {
 
 					it( 'should warn about unsupported colors in backgroundColors', async () => {
 						editor = await ClassicEditor.create( domElement, {
-							plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+							plugins: [ Table, PlainTableOutput, TableEmailIntegration, EmailIntegrationUtils ],
 							table: {
 								[ configKey ]: {
 									backgroundColors: [
@@ -117,7 +149,7 @@ describe( 'TableEmailIntegration', () => {
 					describe( 'colorPicker', () => {
 						it( 'should not warn about supported color format', async () => {
 							editor = await ClassicEditor.create( domElement, {
-								plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+								plugins: [ Table, PlainTableOutput, TableEmailIntegration, EmailIntegrationUtils ],
 								table: {
 									[ configKey ]: {
 										colorPicker: {
@@ -132,7 +164,7 @@ describe( 'TableEmailIntegration', () => {
 
 						it( 'should warn about unsupported color format', async () => {
 							editor = await ClassicEditor.create( domElement, {
-								plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
+								plugins: [ Table, PlainTableOutput, TableEmailIntegration, EmailIntegrationUtils ],
 								table: {
 									[ configKey ]: {
 										colorPicker: {

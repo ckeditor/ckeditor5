@@ -67,9 +67,10 @@ export class TableEmailIntegration extends Plugin {
 	 * Checks if the table properties colors are supported in the email integration.
 	 */
 	private _checkTableConfig(): void {
-		const tableConfig: TableConfig | undefined = this.editor.config.get( 'table' );
+		const { config, plugins } = this.editor;
+		const tableConfig: TableConfig | undefined = config.get( 'table' );
 
-		if ( tableConfig ) {
+		if ( tableConfig && plugins.has( 'Table' ) ) {
 			this._checkTablePropertiesConfig( 'tableCellProperties' );
 			this._checkTablePropertiesConfig( 'tableProperties' );
 		}

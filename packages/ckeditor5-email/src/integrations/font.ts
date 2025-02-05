@@ -41,8 +41,12 @@ export class FontIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		this._checkColorConfig( 'fontColor' );
-		this._checkColorConfig( 'fontBackgroundColor' );
+		const { plugins } = this.editor;
+
+		if ( plugins.has( 'Font' ) ) {
+			this._checkColorConfig( 'fontColor' );
+			this._checkColorConfig( 'fontBackgroundColor' );
+		}
 	}
 
 	/**
@@ -52,12 +56,10 @@ export class FontIntegration extends Plugin {
 		const utils = this.editor.plugins.get( EmailIntegrationUtils );
 		const fontConfig: FontColorConfig | undefined = this.editor.config.get( entry );
 
-		if ( !fontConfig ) {
-			return;
+		if ( fontConfig ) {
+			utils._validateConfigColorValue( `${ entry }.colors` );
+			utils._validateConfigColorValue( `${ entry }.documentColors` );
+			utils._validateConfigColorFormat( `${ entry }.colorPicker.format` );
 		}
-
-		utils._validateConfigColorValue( `${ entry }.colors` );
-		utils._validateConfigColorValue( `${ entry }.documentColors` );
-		utils._validateConfigColorFormat( `${ entry }.colorPicker.format` );
 	}
 }

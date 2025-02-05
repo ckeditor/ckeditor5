@@ -179,15 +179,15 @@ const UNSUPPORTED_COLOR_FORMATS = [ 'hsl', 'hsla', 'hwb', 'lab', 'lch' ];
 /**
  * Checks if the given color value is not supported in email clients.
  */
-export function isUnsupportedEmailColorValue( color: string ): boolean {
-	return UNSUPPORTED_COLOR_FORMATS.some( format => color.includes( `${ format }(` ) );
+export function isUnsupportedEmailColorValue( color: string | undefined ): boolean {
+	return !!color && UNSUPPORTED_COLOR_FORMATS.some( format => color.includes( `${ format }(` ) );
 }
 
 /**
  * Checks if the given color format is not supported in email clients.
  */
-export function isUnsupportedEmailColorFormat( color: string ): boolean {
-	return UNSUPPORTED_COLOR_FORMATS.includes( color );
+export function isUnsupportedEmailColorFormat( color: string | undefined ): boolean {
+	return !!color && UNSUPPORTED_COLOR_FORMATS.includes( color );
 }
 
 /**
