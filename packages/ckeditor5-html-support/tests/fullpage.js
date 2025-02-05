@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
+/* globals document, console */
 
 import { FullPage, HtmlPageDataProcessor } from '../src/index.js';
 
@@ -229,85 +229,203 @@ describe( 'FullPage', () => {
 		}
 	} );
 
-	describe( '`allowRenderStylesFromHead` option set to `true`', () => {
-		it( 'should allow to extract and append `<style>` tag from editor content to the document `<head>`', async () => {
-			const content =
-				'<html>' +
-					'<head>' +
-						'<title>Testing full page</title>' +
-						'<style>p { color: red; }</style>' +
-					'</head>' +
-					'<body>' +
-						'<p>foo</p><p>bar</p>' +
-					'</body>' +
-				'</html>';
-
-			const config = {
-				fullPage: {
-					allowRenderStylesFromHead: true
-				}
-			};
-
-			await createEditor( content, config );
-
-			expect( editor.getData() ).to.equal( content );
-			expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
-
-			const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
-
-			expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
-			expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+	describe( 'config', () => {
+		beforeEach( () => {
+			sinon.stub( console, 'warn' );
 		} );
 
-		it( 'should remove previously attached `<style>` tag after update the editor content', async () => {
-			const content =
-				'<html>' +
-					'<head>' +
-						'<title>Testing full page</title>' +
-						'<style>p { color: red; }</style>' +
-					'</head>' +
-					'<body>' +
-						'<p>foo</p><p>bar</p>' +
-					'</body>' +
-				'</html>';
+		describe( 'fullPage.allowRenderStylesFromHead', () => {
+			it( 'should be set to `false` by default', async () => {
+				await createEditor( '' );
 
-			const config = {
-				fullPage: {
-					allowRenderStylesFromHead: true
-				}
-			};
+				const fullPage = editor.config.get( 'fullPage' );
 
-			await createEditor( content, config );
+				expect( fullPage.allowRenderStylesFromHead ).to.equal( false );
+			} );
 
-			expect( editor.getData() ).to.equal( content );
-			expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+			it( 'should allow to extract and append `<style>` tag from editor content to the document `<head>`', async () => {
+				const content =
+					'<html>' +
+						'<head>' +
+							'<title>Testing full page</title>' +
+							'<style>p { color: red; }</style>' +
+						'</head>' +
+						'<body>' +
+							'<p>foo</p><p>bar</p>' +
+						'</body>' +
+					'</html>';
 
-			const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+				const config = {
+					fullPage: {
+						allowRenderStylesFromHead: true
+					}
+				};
 
-			expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
-			expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+				await createEditor( content, config );
 
-			const contentToSet =
-				'<html>' +
-					'<head>' +
-						'<title>Testing full page</title>' +
-						'<style>p { color: green; }</style>' +
-					'</head>' +
-					'<body>' +
-						'<p>foo</p><p>bar</p><p>baz</p>' +
-					'</body>' +
-				'</html>';
+				expect( editor.getData() ).to.equal( content );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
 
-			editor.setData( contentToSet );
+				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
 
-			expect( editor.getData() ).to.equal( contentToSet );
+				expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
+				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+			} );
 
-			expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+			it( 'should remove previously attached `<style>` tag after update the editor content', async () => {
+				const content =
+					'<html>' +
+						'<head>' +
+							'<title>Testing full page</title>' +
+							'<style>p { color: red; }</style>' +
+						'</head>' +
+						'<body>' +
+							'<p>foo</p><p>bar</p>' +
+						'</body>' +
+					'</html>';
 
-			const stylesheetUpdated = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+				const config = {
+					fullPage: {
+						allowRenderStylesFromHead: true
+					}
+				};
 
-			expect( stylesheetUpdated.textContent ).to.equal( 'p { color: green; }' );
-			expect( stylesheetUpdated.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+				await createEditor( content, config );
+
+				expect( editor.getData() ).to.equal( content );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+
+				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+
+				expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
+				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+
+				const contentToSet =
+					'<html>' +
+						'<head>' +
+							'<title>Testing full page</title>' +
+							'<style>p { color: green; }</style>' +
+						'</head>' +
+						'<body>' +
+							'<p>foo</p><p>bar</p><p>baz</p>' +
+						'</body>' +
+					'</html>';
+
+				editor.setData( contentToSet );
+
+				expect( editor.getData() ).to.equal( contentToSet );
+
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+
+				const stylesheetUpdated = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+
+				expect( stylesheetUpdated.textContent ).to.equal( 'p { color: green; }' );
+				expect( stylesheetUpdated.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+			} );
+		} );
+
+		describe( 'default `fullPage.sanitizeCss`', () => {
+			let config = '';
+			let fullPageConfig;
+
+			beforeEach( async () => {
+				config = {
+					fullPage: {
+						allowRenderStylesFromHead: true
+					}
+				};
+
+				await createEditor( '', config );
+
+				fullPageConfig = editor.config.get( 'fullPage' );
+			} );
+
+			it( 'should return an object with cleaned css and a note whether something has changed', async () => {
+				expect( fullPageConfig.sanitizeCss( 'p { color: red; }' ) ).to.deep.equal( {
+					css: 'p { color: red; }',
+					hasChanged: false
+				} );
+			} );
+
+			it( 'should return an input string (without any modifications)', () => {
+				const unsafeCss = 'input[value="a"] { background: url(https://example.com/?value=a); }';
+
+				expect( fullPageConfig.sanitizeCss( unsafeCss ).css ).to.deep.equal( unsafeCss );
+			} );
+
+			it( 'should display a warning when using the default sanitizer', () => {
+				fullPageConfig.sanitizeCss( 'p { color: red; }' );
+
+				expect( console.warn.callCount ).to.equal( 1 );
+				expect( console.warn.firstCall.args[ 0 ] ).to.equal( 'css-full-page-provide-sanitize-function' );
+			} );
+		} );
+
+		describe( 'custom `fullPage.sanitizeCss`', () => {
+			let config = '';
+			let fullPageConfig;
+
+			beforeEach( async () => {
+				config = {
+					fullPage: {
+						allowRenderStylesFromHead: true,
+						sanitizeCss: rawCss => {
+							const cleanCss = rawCss.replace( /color: red;/g, 'color: #c0ffee;' );
+
+							return {
+								css: cleanCss,
+								hasChanged: rawCss !== cleanCss
+							};
+						}
+					}
+				};
+
+				await createEditor( '', config );
+
+				fullPageConfig = editor.config.get( 'fullPage' );
+			} );
+
+			it( 'should return an object with cleaned css and a note whether something has changed', async () => {
+				expect( fullPageConfig.sanitizeCss( 'p { color: red; }' ) ).to.deep.equal( {
+					css: 'p { color: #c0ffee; }',
+					hasChanged: true
+				} );
+			} );
+
+			it( 'should return an input string (without any modifications)', () => {
+				const unsafeCss = 'input[value="a"] { background: url(https://example.com/?value=a); }';
+
+				expect( fullPageConfig.sanitizeCss( unsafeCss ).css ).to.deep.equal( unsafeCss );
+			} );
+
+			it( 'should allow to extract and append `<style>` tag from editor content to the document `<head>` ' +
+				'with sanitized css', async () => {
+				const content =
+					'<html>' +
+						'<head>' +
+							'<title>Testing full page</title>' +
+							'<style>p { color: red; }</style>' +
+						'</head>' +
+						'<body>' +
+							'<p>foo</p><p>bar</p>' +
+						'</body>' +
+					'</html>';
+
+				editor.setData( content );
+
+				expect( editor.getData() ).to.equal( content );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+
+				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+
+				expect( stylesheet.textContent ).to.equal( 'p { color: #c0ffee; }' );
+			} );
+
+			it( 'should not display a warning when using the custom sanitizer', () => {
+				fullPageConfig.sanitizeCss( 'p { color: red; }' );
+
+				expect( console.warn.callCount ).to.equal( 0 );
+			} );
 		} );
 	} );
 

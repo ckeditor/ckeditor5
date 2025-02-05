@@ -207,8 +207,5 @@ export default class FullPage extends Plugin {
  * Normalize the Full page configuration option `allowRenderStylesFromHead`.
  */
 function isAllowedRenderStylesFromHead( editor: Editor ): boolean {
-	const allowRenderStylesFromHead = editor.config.get( 'fullPage.allowRenderStylesFromHead' );
-
-	// When not defined, option `allowRenderStylesFromHead` by default is set to `false`.
-	return allowRenderStylesFromHead !== undefined ? allowRenderStylesFromHead : false;
+	return editor.config.get( 'fullPage.allowRenderStylesFromHead' )!;
 }
