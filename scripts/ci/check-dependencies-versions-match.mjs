@@ -24,6 +24,14 @@ const shouldFix = process.argv[ 2 ] === '--fix';
 
 console.log( chalk.blue( '🔍 Starting checking dependencies versions...' ) );
 
+/**
+ * All dependencies should be pinned to the exact version. However, there are some exceptions,
+ * where we want to use the caret or tilde operator. This object contains such exceptions.
+ */
+const rangeExceptions = {
+	'@codemirror/state': '^'
+};
+
 const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'package.json',
 	'packages/*/package.json',
@@ -165,8 +173,9 @@ function getNewestVersion( packageName, newVersion = '0.0.0', currentMaxVersion 
 	if ( !semver.valid( newVersion ) ) {
 		const versions = getVersionsList( packageName );
 		const newMaxVersion = semver.maxSatisfying( versions, newVersion );
+		const range = rangeExceptions[ packageName ] || '';
 
-		return semver.gt( newMaxVersion, currentMaxVersion ) ? newMaxVersion : currentMaxVersion;
+		return semver.gt( newMaxVersion, currentMaxVersion ) ? range + newMaxVersion : currentMaxVersion;
 	}
 
 	return semver.gt( newVersion, currentMaxVersion ) ? newVersion : currentMaxVersion;
