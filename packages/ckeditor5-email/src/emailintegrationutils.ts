@@ -175,7 +175,7 @@ export default class EmailIntegrationUtils extends Plugin {
 }
 
 const UNSUPPORTED_COLOR_FORMATS = [
-	'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklab', 'oklch', 'color-mix'
+	'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklab', 'oklch', 'color-mix', 'rgba'
 ];
 
 /**

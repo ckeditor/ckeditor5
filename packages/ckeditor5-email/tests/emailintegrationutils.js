@@ -261,6 +261,10 @@ describe( 'isUnsupportedEmailColorValue()', () => {
 		expect( isUnsupportedEmailColorValue( 'hsla(0,100%,50%,1)' ) ).to.be.true;
 	} );
 
+	it( 'should return true for RGBA colors', () => {
+		expect( isUnsupportedEmailColorValue( 'rgba(255,0,0,0.5)' ) ).to.be.true;
+	} );
+
 	it( 'should return false for RGB colors', () => {
 		expect( isUnsupportedEmailColorValue( 'rgb(255,0,0)' ) ).to.be.false;
 	} );
@@ -297,6 +301,10 @@ describe( 'isUnsupportedEmailColorFormat()', () => {
 
 	it( 'should return true for HSLA colors', () => {
 		expect( isUnsupportedEmailColorFormat( 'hsla' ) ).to.be.true;
+	} );
+
+	it( 'should return true for RGBA colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'rgba' ) ).to.be.true;
 	} );
 
 	it( 'should return false for RGB colors', () => {
