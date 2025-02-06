@@ -26,9 +26,9 @@
 export interface FullPageConfig {
 
 	/**
-	 * Whether the feature should allow the editor to render styles from the `<head>` section of the document.
+	 * Whether the feature should allow the editor to render styles from the `<head>` section of editor data content.
 	 *
-	 * When set to `true`, the editor will render styles from the `<head>` section of the document.
+	 * When set to `true`, the editor will render styles from the `<head>` section of editor data content.
 	 *
 	 * ```ts
 	 * ClassicEditor
