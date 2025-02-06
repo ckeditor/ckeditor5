@@ -276,6 +276,18 @@ describe( 'isUnsupportedEmailColorValue()', () => {
 	it( 'should return true for LAB colors', () => {
 		expect( isUnsupportedEmailColorValue( 'lab(0 100 50)' ) ).to.be.true;
 	} );
+
+	it( 'should return true for OKLAB colors', () => {
+		expect( isUnsupportedEmailColorValue( 'oklab(40% 0 0)' ) ).to.be.true;
+	} );
+
+	it( 'should return true for OKLCH colors', () => {
+		expect( isUnsupportedEmailColorValue( 'oklch(40% 0.268735435 34.568626)' ) ).to.be.true;
+	} );
+
+	it( 'should return true for color-mix', () => {
+		expect( isUnsupportedEmailColorValue( 'color-mix(in srgb, #34c9eb 50%, white)' ) ).to.be.true;
+	} );
 } );
 
 describe( 'isUnsupportedEmailColorFormat()', () => {
@@ -301,5 +313,17 @@ describe( 'isUnsupportedEmailColorFormat()', () => {
 
 	it( 'should return true for LAB colors', () => {
 		expect( isUnsupportedEmailColorFormat( 'lab' ) ).to.be.true;
+	} );
+
+	it( 'should return true for OKLAB colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'oklab' ) ).to.be.true;
+	} );
+
+	it( 'should return true for OKLCH colors', () => {
+		expect( isUnsupportedEmailColorFormat( 'oklch' ) ).to.be.true;
+	} );
+
+	it( 'should return true for color-mix', () => {
+		expect( isUnsupportedEmailColorFormat( 'color-mix' ) ).to.be.true;
 	} );
 } );
