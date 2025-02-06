@@ -109,8 +109,8 @@ ClassicEditor
 
 ## Related features
 
-Here are some similar CKEditor&nbsp;5 features that you may find helpful:
-* list them here
+Here are some related CKEditor&nbsp;5 features that you may find helpful:
+* Export inline styles &nbsp; The export inline styles feature turn all external CSS styles to inline style, providing better compatibility with various email clients.
 
 ## Common API
 
