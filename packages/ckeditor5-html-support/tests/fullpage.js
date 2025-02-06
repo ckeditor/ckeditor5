@@ -21,7 +21,6 @@ describe( 'FullPage', () => {
 	afterEach( async () => {
 		if ( editor ) {
 			await editor.destroy();
-			removeStyleElementsFromDom();
 		}
 	} );
 
@@ -438,15 +437,5 @@ describe( 'FullPage', () => {
 
 		// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-	}
-
-	function removeStyleElementsFromDom() {
-		const existingStyleElements = Array.from(
-			document.querySelectorAll( '[data-full-page-style-id]' )
-		);
-
-		for ( const style of existingStyleElements ) {
-			style.remove();
-		}
 	}
 } );
