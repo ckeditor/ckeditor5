@@ -21,8 +21,10 @@ export default async function getReleaseDescription( cliArguments ) {
 	}
 
 	if ( cliArguments.nightlyNext ) {
+		const releaseIdentifier = `0.0.0-nightly-next-${ releaseTools.getDateIdentifier() }`;
+
 		return [
-			await releaseTools.getNextPreRelease( '0.0.0-next' ), null
+			await releaseTools.getNextPreRelease( releaseIdentifier ), null
 		];
 	}
 
