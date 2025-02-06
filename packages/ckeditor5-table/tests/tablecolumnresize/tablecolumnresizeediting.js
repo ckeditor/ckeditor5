@@ -2990,7 +2990,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( ptoEditor.model, table );
 
 				expect( ptoEditor.getData() ).to.equal(
-					'<table class="ck-table-resized" style="width:100%;">' +
+					'<table class="table ck-table-resized" style="width:100%;">' +
 						'<colgroup>' +
 							'<col style="width:80%;">' +
 							'<col style="width:20%;">' +
