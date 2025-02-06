@@ -194,8 +194,6 @@ export default class FullPage extends Plugin {
 
 	/**
 	 * Removes existing `<style>` elements injected by the plugin and renders new ones from the full page data.
-	 *
-	 * @param root Represents the root element of the model.
 	 */
 	private _renderStylesFromHead( root: RootElement ) {
 		const fullPageData = root.getAttribute( '$fullPageDocument' ) as string;
