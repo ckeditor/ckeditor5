@@ -146,6 +146,19 @@ export default class FullPage extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		const allowRenderStylesFromHead = isAllowedRenderStylesFromHead( this.editor );
+
+		if ( allowRenderStylesFromHead ) {
+			this._removeStyleElementsFromDom();
+		}
+	}
+
+	/**
 	 * Checks if in the document exists any `<style>` elements injected by the plugin and removes them,
 	 * so these could be re-rendered later.
 	 * There is used `data-full-page-style-id` attribute to recognize styles injected by the feature.
