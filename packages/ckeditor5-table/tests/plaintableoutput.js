@@ -519,4 +519,18 @@ describe( 'PlainTableOutput', () => {
 			}
 		} );
 	} );
+
+	describe( 'upcast', () => {
+		it( 'should consume the `table` class', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table' ] } ) ).to.be.false;
+				} );
+			}, { priority: 'low' } );
+
+			editor.setData(
+				'<table class="table"><tr><td>foo</td></tr></table>'
+			);
+		} );
+	} );
 } );
