@@ -615,6 +615,14 @@ describe( 'EmojiMention', () => {
 			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should return an empty array when a query starts with a marker character', () => {
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
+			getEmojiByQuery.returns( [] );
+
+			expect( queryEmoji( ':' ) ).to.deep.equal( [] );
+			expect( queryEmoji( '::' ) ).to.deep.equal( [] );
+		} );
+
 		it( 'should return an empty array when the repository plugin is not available', async () => {
 			testUtils.sinon.stub( console, 'warn' );
 			fetchStub.rejects( 'Failed to load CDN.' );

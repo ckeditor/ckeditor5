@@ -246,6 +246,11 @@ export default class EmojiMention extends Plugin {
 				return [];
 			}
 
+			// Do not show anything when a query starts with a marker character.
+			if ( searchQuery.startsWith( EMOJI_MENTION_MARKER ) ) {
+				return [];
+			}
+
 			// If the repository plugin is not available, return an empty feed to avoid confusion. See: #17842.
 			if ( !this._isEmojiRepositoryAvailable ) {
 				return [];
