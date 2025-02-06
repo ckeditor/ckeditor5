@@ -167,17 +167,19 @@ export default class FullPage extends Plugin {
 	 * @param fullPageData Represents the full page data passed to the editor as a string.
 	 */
 	private _renderStyleElementsInDom( fullPageData: string ): void {
+		const editor = this.editor;
+
 		// Use DOMParser for easier elements extraction and unwanted code execution prevention.
-		const domParser = new DOMParser();
+		const domParser = editor.data.htmlProcessor.domParser;
 		const doc = domParser.parseFromString( fullPageData, 'text/html' );
-		const sanitizeCss = this.editor.config.get( 'fullPage.sanitizeCss' )!;
+		const sanitizeCss = editor.config.get( 'fullPage.sanitizeCss' )!;
 
 		// Extract `<style>` elements from the `<head>` from the full page data.
 		const styleElements: Array<HTMLStyleElement> = Array.from( doc.querySelectorAll( 'head style' ) );
 
 		// Add `data-full-page-style` attribute to the `<style>` element and render it in `<head>` in the main document.
 		for ( const style of styleElements ) {
-			style.setAttribute( 'data-full-page-style-id', this.editor.id );
+			style.setAttribute( 'data-full-page-style-id', editor.id );
 
 			// Sanitize the CSS content before rendering it in the editor.
 			const sanitizedCss = sanitizeCss( style.innerText );
