@@ -177,7 +177,7 @@ export default class FullPage extends Plugin {
 		// Extract `<style>` elements from the `<head>` from the full page data.
 		const styleElements: Array<HTMLStyleElement> = Array.from( doc.querySelectorAll( 'head style' ) );
 
-		// Add `data-full-page-style` attribute to the `<style>` element and render it in `<head>` in the main document.
+		// Add `data-full-page-style-id` attribute to the `<style>` element and render it in `<head>` in the main document.
 		for ( const style of styleElements ) {
 			style.setAttribute( 'data-full-page-style-id', editor.id );
 
