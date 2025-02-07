@@ -43,8 +43,11 @@ export default class FontEmailIntegration extends Plugin {
 	public afterInit(): void {
 		const { plugins } = this.editor;
 
-		if ( plugins.has( 'Font' ) ) {
+		if ( plugins.has( 'FontColorEditing' ) ) {
 			this._checkColorConfig( 'fontColor' );
+		}
+
+		if ( plugins.has( 'FontBackgroundColorEditing' ) ) {
 			this._checkColorConfig( 'fontBackgroundColor' );
 		}
 	}
