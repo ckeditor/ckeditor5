@@ -36,7 +36,12 @@ export default class FullPage extends Plugin {
 		const editor = this.editor;
 		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
 
+		// Store the original skipComments value to restore it later. It may be set to `true` by
+		// the `HtmlComment` plugin before this plugin is initialized.
+		const oldSkipComments = editor.data.processor.skipComments;
+
 		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
+		editor.data.processor.skipComments = oldSkipComments;
 
 		editor.model.schema.extend( '$root', {
 			allowAttributes: properties

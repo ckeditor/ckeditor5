@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { FullPage, HtmlPageDataProcessor } from '../src/index.js';
+import { FullPage, HtmlComment, HtmlPageDataProcessor } from '../src/index.js';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -226,10 +226,32 @@ describe( 'FullPage', () => {
 		}
 	} );
 
-	async function createEditor( initialData ) {
+	describe( 'HtmlComments integration', () => {
+		it( 'should preserve comments', async () => {
+			const content =
+				'<?xml version="1.0" encoding="UTF-8"?>\n' +
+				'<!DOCTYPE html>\n' +
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<!-- comment -->' +
+						'<p>foo</p><p>bar</p>' +
+					'</body>' +
+				'</html>';
+
+			await createEditor( content, {
+				plugins: [ Paragraph, ClipboardPipeline, HtmlComment, FullPage ]
+			} );
+
+			expect( editor.getData() ).to.equal( content );
+		} );
+	} );
+
+	async function createEditor( initialData, options = {} ) {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, ClipboardPipeline, FullPage ],
-			initialData
+			initialData,
+			...options
 		} );
 
 		// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
