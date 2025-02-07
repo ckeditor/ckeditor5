@@ -290,7 +290,7 @@ export default class SearchTextView<
 				let primaryText, secondaryText;
 
 				if ( data.totalItemsCount ) {
-					if ( defaultTextConfig && defaultTextConfig.notFound ) {
+					if ( defaultTextConfig?.notFound ) {
 						primaryText = defaultTextConfig.notFound.primary;
 						secondaryText = defaultTextConfig.notFound.secondary;
 					} else {
@@ -298,7 +298,7 @@ export default class SearchTextView<
 						secondaryText = '';
 					}
 				} else {
-					if ( defaultTextConfig && defaultTextConfig.noSearchableItems ) {
+					if ( defaultTextConfig?.noSearchableItems ) {
 						primaryText = defaultTextConfig.noSearchableItems.primary;
 						secondaryText = defaultTextConfig.noSearchableItems.secondary;
 					} else {

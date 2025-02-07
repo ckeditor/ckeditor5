@@ -429,12 +429,12 @@ export default class StylesMap implements ElementAttributeValue {
 		}
 
 		if ( expand ) {
-			this._cachedExpandedStyleNames = this._cachedExpandedStyleNames || this._styleProcessor.getStyleNames( this._styles );
+			this._cachedExpandedStyleNames ||= this._styleProcessor.getStyleNames( this._styles );
 
 			return this._cachedExpandedStyleNames;
 		}
 
-		this._cachedStyleNames = this._cachedStyleNames || this.getStylesEntries().map( ( [ key ] ) => key );
+		this._cachedStyleNames ||= this.getStylesEntries().map( ( [ key ] ) => key );
 
 		return this._cachedStyleNames;
 	}

@@ -411,7 +411,7 @@ export default class ColorGridsFragmentView extends View {
 
 				colorTile.set( {
 					color: colorObj.color,
-					hasBorder: colorObj.options && colorObj.options.hasBorder
+					hasBorder: colorObj.options?.hasBorder
 				} );
 
 				if ( colorObj.label ) {

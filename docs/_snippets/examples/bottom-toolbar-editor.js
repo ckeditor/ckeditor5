@@ -207,9 +207,9 @@ DecoupledEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const toolbarContainer = document.querySelector( '#editor-toolbar-container' );
-
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+		document
+			.querySelector( '#editor-toolbar-container' )
+			?.appendChild( editor.ui.view.toolbar.element );
 
 		overrideDropdownPositionsToNorth( editor, editor.ui.view.toolbar );
 		overrideDropdownPositionsToNorth( editor, editor.plugins.get( 'FormattingOptions' ).toolbarView );
