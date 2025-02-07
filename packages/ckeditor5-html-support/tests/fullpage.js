@@ -226,7 +226,7 @@ describe( 'FullPage', () => {
 		}
 	} );
 
-	describe( 'HtmlComments integration', () => {
+	describe( 'HtmlComment integration', () => {
 		it( 'should preserve comments', async () => {
 			const content =
 				'<?xml version="1.0" encoding="UTF-8"?>\n' +
