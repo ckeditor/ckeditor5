@@ -230,10 +230,9 @@ jobs:
           name: Check if packages are ready to be released
           command: npm run release:prepare-packages -- --compile-only --verbose
 
-      # Commented out due to a limitation of publint: https://github.com/bluwy/publint/issues/105
-      # - run:
-      #     name: Lint generated packages
-      #     command: yarn run release:lint-packages
+      - run:
+          name: Lint generated packages
+          command: yarn run release:lint-packages
 
       - run:
           name: Check dependencies
