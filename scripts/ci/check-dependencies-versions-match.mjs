@@ -184,12 +184,9 @@ function getNewestVersion( packageName, newVersion = '0.0.0', currentMaxVersion 
 		return newVersion;
 	}
 
-	if ( semver.valid( newVersion ) ) {
-		return semver.gt( newVersion, currentMaxVersion ) ? newVersion : currentMaxVersion;
-	}
-
-	const versions = getVersionsList( packageName );
-	const newMaxVersion = semver.maxSatisfying( versions, newVersion );
+	const newMaxVersion = semver.valid( newVersion ) ?
+		newVersion :
+		semver.maxSatisfying( getVersionsList( packageName ), newVersion );
 
 	return semver.gt( newMaxVersion, currentMaxVersion ) ? newMaxVersion : currentMaxVersion;
 }
