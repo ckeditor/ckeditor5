@@ -18,5 +18,6 @@ export { default as ListEmailIntegration } from './integrations/list.js';
 export { default as TableEmailIntegration } from './integrations/table.js';
 export { default as MathTypeEmailIntegration } from './integrations/mathtype.js';
 export { default as SourceEditingEmailIntegration } from './integrations/sourceediting.js';
+export { default as MarkdownEmailIntegration } from './integrations/markdown.js';
 
 import './augmentation.js';

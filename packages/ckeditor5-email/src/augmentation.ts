@@ -15,7 +15,8 @@ import type {
 	ListEmailIntegration,
 	TableEmailIntegration,
 	MathTypeEmailIntegration,
-	SourceEditingEmailIntegration
+	SourceEditingEmailIntegration,
+	MarkdownEmailIntegration
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -41,5 +42,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableEmailIntegration.pluginName ]: TableEmailIntegration;
 		[ MathTypeEmailIntegration.pluginName ]: MathTypeEmailIntegration;
 		[ SourceEditingEmailIntegration.pluginName ]: SourceEditingEmailIntegration;
+		[ MarkdownEmailIntegration.pluginName ]: MarkdownEmailIntegration;
 	}
 }

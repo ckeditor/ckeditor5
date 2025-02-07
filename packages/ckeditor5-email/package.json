@@ -33,7 +33,8 @@
     "@ckeditor/ckeditor5-image": "44.1.0",
     "@ckeditor/ckeditor5-paragraph": "44.1.0",
     "@ckeditor/ckeditor5-theme-lark": "44.1.0",
-    "@ckeditor/ckeditor5-source-editing": "44.1.0"
+    "@ckeditor/ckeditor5-source-editing": "44.1.0",
+    "@ckeditor/ckeditor5-markdown-gfm": "44.1.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

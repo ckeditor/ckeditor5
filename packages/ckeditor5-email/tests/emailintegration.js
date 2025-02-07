@@ -14,6 +14,7 @@ import TableEmailIntegration from '../src/integrations/table.js';
 import EmptyBlockEmailIntegration from '../src/integrations/emptyblock.js';
 import FontEmailIntegration from '../src/integrations/font.js';
 import SourceEditingEmailIntegration from '../src/integrations/sourceediting.js';
+import MarkdownEmailIntegration from '../src/integrations/markdown.js';
 
 describe( 'EmailIntegration', () => {
 	it( 'should be named', () => {
@@ -38,7 +39,8 @@ describe( 'EmailIntegration', () => {
 			TableEmailIntegration,
 			EmptyBlockEmailIntegration,
 			FontEmailIntegration,
-			SourceEditingEmailIntegration
+			SourceEditingEmailIntegration,
+			MarkdownEmailIntegration
 		] );
 	} );
 } );

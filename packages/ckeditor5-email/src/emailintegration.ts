@@ -18,6 +18,7 @@ import TableEmailIntegration from './integrations/table.js';
 import EmptyBlockEmailIntegration from './integrations/emptyblock.js';
 import FontEmailIntegration from './integrations/font.js';
 import SourceEditingEmailIntegration from './integrations/sourceediting.js';
+import MarkdownEmailIntegration from './integrations/markdown.js';
 
 /**
  * The email integration plugin.
@@ -52,7 +53,8 @@ export default class EmailIntegration extends Plugin {
 			TableEmailIntegration,
 			EmptyBlockEmailIntegration,
 			FontEmailIntegration,
-			SourceEditingEmailIntegration
+			SourceEditingEmailIntegration,
+			MarkdownEmailIntegration
 		] as const;
 	}
 }
