@@ -116,6 +116,10 @@ export default {
 			model: 'imageInline',
 			view: 'img'
 		},
+		{
+			model: 'horizontalLine',
+			view: 'hr'
+		},
 
 		// Compatibility features.
 		{
@@ -522,6 +526,13 @@ export default {
 			modelSchema: {
 				inheritAllFrom: '$container',
 				isBlock: false
+			}
+		},
+		{
+			model: 'htmlHr',
+			view: 'hr',
+			modelSchema: {
+				inheritAllFrom: '$blockObject'
 			}
 		}
 	] as Array<DataSchemaBlockElementDefinition>,
