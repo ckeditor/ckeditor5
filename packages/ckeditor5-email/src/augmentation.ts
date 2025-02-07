@@ -4,7 +4,19 @@
  */
 
 import type { EmailIntegrationConfig } from './emailintegrationconfig.js';
-import type { EmailIntegration, EmailIntegrationUtils } from './index.js';
+import type {
+	EmailIntegration,
+	EmailIntegrationUtils,
+	EmptyBlockEmailIntegration,
+	ExportInlineStylesEmailIntegration,
+	FontEmailIntegration,
+	HighlightEmailIntegration,
+	ImageEmailIntegration,
+	ListEmailIntegration,
+	TableEmailIntegration,
+	MathTypeEmailIntegration,
+	SourceEditingEmailIntegration
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -20,5 +32,14 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ EmailIntegration.pluginName ]: EmailIntegration;
 		[ EmailIntegrationUtils.pluginName ]: EmailIntegrationUtils;
+		[ EmptyBlockEmailIntegration.pluginName ]: EmptyBlockEmailIntegration;
+		[ ExportInlineStylesEmailIntegration.pluginName ]: ExportInlineStylesEmailIntegration;
+		[ FontEmailIntegration.pluginName ]: FontEmailIntegration;
+		[ HighlightEmailIntegration.pluginName ]: HighlightEmailIntegration;
+		[ ImageEmailIntegration.pluginName ]: ImageEmailIntegration;
+		[ ListEmailIntegration.pluginName ]: ListEmailIntegration;
+		[ TableEmailIntegration.pluginName ]: TableEmailIntegration;
+		[ MathTypeEmailIntegration.pluginName ]: MathTypeEmailIntegration;
+		[ SourceEditingEmailIntegration.pluginName ]: SourceEditingEmailIntegration;
 	}
 }

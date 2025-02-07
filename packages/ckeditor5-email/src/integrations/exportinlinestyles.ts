@@ -13,7 +13,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that checks if the ExportInlineStyles plugin is properly configured for the email integration.
  */
-export class ExportInlineStylesIntegration extends Plugin {
+export default class ExportInlineStylesEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -25,7 +25,7 @@ export class ExportInlineStylesIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ExportInlineStylesIntegration' as const;
+		return 'ExportInlineStylesEmailIntegration' as const;
 	}
 
 	/**

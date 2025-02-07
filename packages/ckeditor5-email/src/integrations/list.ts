@@ -15,7 +15,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that checks if the List feature configuration is supported by the email integration.
  */
-export class ListEmailIntegration extends Plugin {
+export default class ListEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

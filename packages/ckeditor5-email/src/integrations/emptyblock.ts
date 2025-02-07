@@ -13,7 +13,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that checks if the EmptyBlock plugin is properly configured for the email integration.
  */
-export class EmptyBlockIntegration extends Plugin {
+export default class EmptyBlockEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -25,7 +25,7 @@ export class EmptyBlockIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'EmptyBlockIntegration' as const;
+		return 'EmptyBlockEmailIntegration' as const;
 	}
 
 	/**

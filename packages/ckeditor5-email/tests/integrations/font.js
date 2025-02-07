@@ -8,10 +8,10 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Font } from '@ckeditor/ckeditor5-font';
 
-import { FontIntegration } from '../../src/integrations/font.js';
+import FontEmailIntegration from '../../src/integrations/font.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
-describe( 'FontIntegration', () => {
+describe( 'FontEmailIntegration', () => {
 	let domElement, editor, warnStub;
 
 	beforeEach( async () => {
@@ -31,21 +31,21 @@ describe( 'FontIntegration', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( FontIntegration.pluginName ).to.equal( 'FontIntegration' );
+		expect( FontEmailIntegration.pluginName ).to.equal( 'FontEmailIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontIntegration.isOfficialPlugin ).to.be.true;
+		expect( FontEmailIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should require EmailIntegrationUtils', () => {
-		expect( FontIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
+		expect( FontEmailIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
 	} );
 
 	describe( 'afterInit()', () => {
 		it( 'should not log warning when font plugin is not provided', async () => {
 			await createEditor( {
-				plugins: [ FontIntegration, EmailIntegrationUtils ]
+				plugins: [ FontEmailIntegration, EmailIntegrationUtils ]
 			} );
 
 			sinon.assert.notCalled( warnStub );
@@ -53,7 +53,7 @@ describe( 'FontIntegration', () => {
 
 		it( 'should print warnings when font plugin is provided with default configuration', async () => {
 			await createEditor( {
-				plugins: [ FontIntegration, EmailIntegrationUtils, Font ]
+				plugins: [ FontEmailIntegration, EmailIntegrationUtils, Font ]
 			}, false );
 
 			sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-value/ ) );
@@ -132,7 +132,7 @@ describe( 'FontIntegration', () => {
 
 	async function createEditor( config = {}, resetColors = true ) {
 		editor = await ClassicEditor.create( domElement, {
-			plugins: [ Font, FontIntegration, EmailIntegrationUtils ],
+			plugins: [ Font, FontEmailIntegration, EmailIntegrationUtils ],
 			...resetColors && {
 				fontColor: {
 					colors: []

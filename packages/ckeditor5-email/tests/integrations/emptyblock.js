@@ -8,10 +8,10 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { EmptyBlockIntegration } from '../../src/integrations/emptyblock.js';
+import EmptyBlockEmailIntegration from '../../src/integrations/emptyblock.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
-describe( 'EmptyBlockIntegration', () => {
+describe( 'EmptyBlockEmailIntegration', () => {
 	let domElement, editor, infoStub;
 
 	beforeEach( async () => {
@@ -31,21 +31,21 @@ describe( 'EmptyBlockIntegration', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( EmptyBlockIntegration.pluginName ).to.equal( 'EmptyBlockIntegration' );
+		expect( EmptyBlockEmailIntegration.pluginName ).to.equal( 'EmptyBlockEmailIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmptyBlockIntegration.isOfficialPlugin ).to.be.true;
+		expect( EmptyBlockEmailIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should require EmailIntegrationUtils', () => {
-		expect( EmptyBlockIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
+		expect( EmptyBlockEmailIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
 	} );
 
 	describe( 'afterInit()', () => {
 		it( 'should log warning when EmptyBlock plugin is not available', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ]
+				plugins: [ EmptyBlockEmailIntegration, EmailIntegrationUtils ]
 			} );
 
 			sinon.assert.calledWithMatch( infoStub, 'email-integration-missing-empty-block-plugin' );
@@ -53,7 +53,7 @@ describe( 'EmptyBlockIntegration', () => {
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
+				plugins: [ EmptyBlockEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppressAll: true
@@ -66,7 +66,7 @@ describe( 'EmptyBlockIntegration', () => {
 
 		it( 'should not log warning when specific warning is suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
+				plugins: [ EmptyBlockEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppress: [ 'email-integration-missing-empty-block-plugin' ]
@@ -79,7 +79,7 @@ describe( 'EmptyBlockIntegration', () => {
 
 		it( 'should not log warning when warning is suppressed via function', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils ],
+				plugins: [ EmptyBlockEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppress: warningCode => warningCode === 'email-integration-missing-empty-block-plugin'
@@ -98,7 +98,7 @@ describe( 'EmptyBlockIntegration', () => {
 			}
 
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ EmptyBlockIntegration, EmailIntegrationUtils, EmptyBlockStub ]
+				plugins: [ EmptyBlockEmailIntegration, EmailIntegrationUtils, EmptyBlockStub ]
 			} );
 
 			sinon.assert.notCalled( infoStub );

@@ -8,7 +8,7 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
 
-import { HighlightEmailIntegration } from '../../src/integrations/highlight.js';
+import HighlightEmailIntegration from '../../src/integrations/highlight.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'HighlightEmailIntegration', () => {

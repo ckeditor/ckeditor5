@@ -8,11 +8,11 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
-import { SourceEditingIntegration } from '../../src/integrations/sourceediting.js';
+import SourceEditingEmailIntegration from '../../src/integrations/sourceediting.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-describe( 'SourceEditingIntegration', () => {
+describe( 'SourceEditingEmailIntegration', () => {
 	let domElement, editor, warnStub;
 
 	beforeEach( async () => {
@@ -32,21 +32,21 @@ describe( 'SourceEditingIntegration', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( SourceEditingIntegration.pluginName ).to.equal( 'SourceEditingIntegration' );
+		expect( SourceEditingEmailIntegration.pluginName ).to.equal( 'SourceEditingEmailIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SourceEditingIntegration.isOfficialPlugin ).to.be.true;
+		expect( SourceEditingEmailIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should require EmailIntegrationUtils', () => {
-		expect( SourceEditingIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
+		expect( SourceEditingEmailIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
 	} );
 
 	describe( 'afterInit()', () => {
 		it( 'should log warning when SourceEditing and SourceEditingEnhanced plugins are not available', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ]
+				plugins: [ SourceEditingEmailIntegration, EmailIntegrationUtils ]
 			} );
 
 			sinon.assert.calledWithMatch( warnStub, 'email-integration-missing-source-editing-plugin' );
@@ -54,7 +54,7 @@ describe( 'SourceEditingIntegration', () => {
 
 		it( 'should not log warning when SourceEditing plugin is available', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ SourceEditingIntegration, EmailIntegrationUtils, SourceEditing ]
+				plugins: [ SourceEditingEmailIntegration, EmailIntegrationUtils, SourceEditing ]
 			} );
 
 			sinon.assert.notCalled( warnStub );
@@ -69,7 +69,7 @@ describe( 'SourceEditingIntegration', () => {
 			}
 
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ SourceEditingIntegration, EmailIntegrationUtils, SourceEditingEnhanced ]
+				plugins: [ SourceEditingEmailIntegration, EmailIntegrationUtils, SourceEditingEnhanced ]
 			} );
 
 			sinon.assert.notCalled( warnStub );
@@ -77,7 +77,7 @@ describe( 'SourceEditingIntegration', () => {
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ],
+				plugins: [ SourceEditingEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppressAll: true
@@ -90,7 +90,7 @@ describe( 'SourceEditingIntegration', () => {
 
 		it( 'should not log warning when specific warning is suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ SourceEditingIntegration, EmailIntegrationUtils ],
+				plugins: [ SourceEditingEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppress: [ 'email-integration-missing-source-editing-plugin' ]

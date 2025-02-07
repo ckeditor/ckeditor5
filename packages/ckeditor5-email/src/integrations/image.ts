@@ -13,7 +13,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that warns about using ImageBlock plugin in the email integration.
  */
-export class ImageEmailIntegration extends Plugin {
+export default class ImageEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

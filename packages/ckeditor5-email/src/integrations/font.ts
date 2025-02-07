@@ -15,7 +15,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that checks if the Font plugin is properly configured for the email integration.
  */
-export class FontIntegration extends Plugin {
+export default class FontEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -27,7 +27,7 @@ export class FontIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'FontIntegration' as const;
+		return 'FontEmailIntegration' as const;
 	}
 
 	/**

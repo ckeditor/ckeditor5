@@ -13,7 +13,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that checks if the SourceEditing or SourceEditingEnhanced plugin are loaded.
  */
-export class SourceEditingIntegration extends Plugin {
+export default class SourceEditingEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -25,7 +25,7 @@ export class SourceEditingIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'SourceEditingIntegration' as const;
+		return 'SourceEditingEmailIntegration' as const;
 	}
 
 	/**

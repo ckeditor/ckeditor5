@@ -15,7 +15,7 @@ import type { TableConfig } from '@ckeditor/ckeditor5-table';
 /**
  * A plugin that checks if the Table plugin is properly configured for the email integration.
  */
-export class TableEmailIntegration extends Plugin {
+export default class TableEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

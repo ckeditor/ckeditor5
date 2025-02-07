@@ -8,7 +8,7 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { PlainTableOutput, Table } from '@ckeditor/ckeditor5-table';
 
-import { TableEmailIntegration } from '../../src/integrations/table.js';
+import TableEmailIntegration from '../../src/integrations/table.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'TableEmailIntegration', () => {

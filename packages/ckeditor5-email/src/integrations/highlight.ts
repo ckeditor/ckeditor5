@@ -13,7 +13,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that warns about using Highlight plugin in the email integration.
  */
-export class HighlightEmailIntegration extends Plugin {
+export default class HighlightEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

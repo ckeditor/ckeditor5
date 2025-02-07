@@ -8,10 +8,10 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { ExportInlineStylesIntegration } from '../../src/integrations/exportinlinestyles.js';
+import ExportInlineStylesEmailIntegration from '../../src/integrations/exportinlinestyles.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
-describe( 'ExportInlineStylesIntegration', () => {
+describe( 'ExportInlineStylesEmailIntegration', () => {
 	let domElement, editor, warnStub;
 
 	beforeEach( async () => {
@@ -31,21 +31,21 @@ describe( 'ExportInlineStylesIntegration', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( ExportInlineStylesIntegration.pluginName ).to.equal( 'ExportInlineStylesIntegration' );
+		expect( ExportInlineStylesEmailIntegration.pluginName ).to.equal( 'ExportInlineStylesEmailIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ExportInlineStylesIntegration.isOfficialPlugin ).to.be.true;
+		expect( ExportInlineStylesEmailIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should require EmailIntegrationUtils', () => {
-		expect( ExportInlineStylesIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
+		expect( ExportInlineStylesEmailIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
 	} );
 
 	describe( 'afterInit()', () => {
 		it( 'should log warning when ExportInlineStyles plugin is not available', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ]
+				plugins: [ ExportInlineStylesEmailIntegration, EmailIntegrationUtils ]
 			} );
 
 			sinon.assert.calledWithMatch( warnStub, 'email-integration-missing-export-inline-styles-plugin' );
@@ -53,7 +53,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 
 		it( 'should not log warning when EmailIntegration warnings are suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ],
+				plugins: [ ExportInlineStylesEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppressAll: true
@@ -66,7 +66,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 
 		it( 'should not log warning when specific warning is suppressed', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ],
+				plugins: [ ExportInlineStylesEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppress: [ 'email-integration-missing-export-inline-styles-plugin' ]
@@ -79,7 +79,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 
 		it( 'should not log warning when warning is suppressed via function', async () => {
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils ],
+				plugins: [ ExportInlineStylesEmailIntegration, EmailIntegrationUtils ],
 				email: {
 					logs: {
 						suppress: warningCode => warningCode === 'email-integration-missing-export-inline-styles-plugin'
@@ -98,7 +98,7 @@ describe( 'ExportInlineStylesIntegration', () => {
 			}
 
 			editor = await ClassicEditor.create( domElement, {
-				plugins: [ ExportInlineStylesIntegration, EmailIntegrationUtils, ExportInlineStylesStub ]
+				plugins: [ ExportInlineStylesEmailIntegration, EmailIntegrationUtils, ExportInlineStylesStub ]
 			} );
 
 			sinon.assert.notCalled( warnStub );
