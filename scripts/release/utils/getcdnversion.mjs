@@ -7,19 +7,19 @@
 
 /**
  * @param {ReleaseOptions} cliArguments
- * @returns {'alpha'|'nightly'|'next'|'staging'|'internal'}
+ * @returns {'alpha'|'nightly'|'nightly-next'|'staging'|'internal'}
  */
 export default function getCdnVersion( cliArguments ) {
 	if ( cliArguments.nightly ) {
 		return 'nightly';
 	}
 
-	if ( cliArguments.nightlyAlpha ) {
-		return 'alpha';
+	if ( cliArguments.nightlyNext ) {
+		return 'nightly-next';
 	}
 
-	if ( cliArguments.nightlyNext ) {
-		return 'next';
+	if ( cliArguments.nightlyAlpha ) {
+		return 'alpha';
 	}
 
 	if ( cliArguments.internal ) {

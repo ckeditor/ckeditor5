@@ -77,7 +77,7 @@ export default function parseArguments( cliArguments ) {
 
 	if ( options.nightlyNext ) {
 		options.branch = 'master-it84';
-		options.npmTag = 'next';
+		options.npmTag = 'nightly-next';
 	}
 
 	if ( options.internal ) {
