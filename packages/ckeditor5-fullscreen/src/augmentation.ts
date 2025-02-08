@@ -7,10 +7,20 @@ import type {
 	Fullscreen,
 	FullscreenEditing,
 	FullscreenUI,
-	FullscreenCommand
+	FullscreenCommand,
+	FullscreenConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
+
+	interface EditorConfig {
+
+		/**
+		 * Configuration for the fullscreen mode feature.
+		 */
+		fullscreen?: FullscreenConfig;
+	}
+
 	interface PluginsMap {
 		[ Fullscreen.pluginName ]: Fullscreen;
 		[ FullscreenEditing.pluginName ]: FullscreenEditing;

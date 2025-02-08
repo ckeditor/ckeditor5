@@ -7,7 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
-
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
@@ -58,8 +57,15 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import Fullscreen from '../../src/fullscreen.js';
 
-const DECOUPLED_EDITOR_BUTTON = document.querySelector( '#restart-decoupled' );
-const CLASSIC_EDITOR_BUTTON = document.querySelector( '#restart-classic' );
+declare global {
+	interface Window { editor: any }
+}
+
+const EDITOR_ELEMENT = document.getElementById( 'editor' )!;
+const DECOUPLED_EDITOR_BUTTON = document.getElementById( 'restart-decoupled' )!;
+const CLASSIC_EDITOR_BUTTON = document.getElementById( 'restart-classic' )!;
+const MENU_BAR_INPUT = document.getElementById( 'menu-bar' ) as HTMLInputElement;
+const MENU_BAR_FULLSCREEN_INPUT = document.getElementById( 'menu-bar-fullscreen' ) as HTMLInputElement;
 
 let editorInstance;
 let currentData;
@@ -108,11 +114,6 @@ const commonConfig = {
 		]
 	},
 	image: {
-		styles: [
-			'alignCenter',
-			'alignLeft',
-			'alignRight'
-		],
 		resizeOptions: [
 			{
 				name: 'resizeImage:original',
@@ -151,13 +152,10 @@ const commonConfig = {
 			}
 		]
 	},
-	menuBar: {
-		isVisible: true
-	},
 	link: {
 		decorators: {
 			isExternal: {
-				mode: 'manual',
+				mode: 'manual' as const,
 				label: 'Open in a new tab',
 				attributes: {
 					target: '_blank',
@@ -165,14 +163,14 @@ const commonConfig = {
 				}
 			},
 			isDownloadable: {
-				mode: 'manual',
+				mode: 'manual' as const,
 				label: 'Downloadable',
 				attributes: {
 					download: 'download'
 				}
 			},
 			isGallery: {
-				mode: 'manual',
+				mode: 'manual' as const,
 				label: 'Gallery link',
 				classes: 'gallery'
 			}
@@ -180,7 +178,7 @@ const commonConfig = {
 	},
 	htmlEmbed: {
 		showPreviews: true,
-		sanitizeHtml: html => ( { html, hasChange: false } )
+		sanitizeHtml: html => ( { html, hasChanged: false } )
 	},
 	list: {
 		properties: {
@@ -245,13 +243,25 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 
 	editorInstance.destroy().then( () => {
 		editorInstance.ui.view.toolbar.element.remove();
-		editorInstance.ui.view.menuBarView.element.remove();
+
+		if ( editorInstance.ui.view.menuBarView ) {
+			editorInstance.ui.view.menuBarView.element.remove();
+		}
 
 		DecoupledEditor
-			.create( document.querySelector( '#editor' ), commonConfig )
+			.create( EDITOR_ELEMENT, Object.assign( commonConfig,
+				{
+					fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
+				}
+			) )
 			.then( editor => {
-				document.querySelector( '.document-editor__toolbar' ).appendChild( editor.ui.view.toolbar.element );
-				document.querySelector( '.document-editor__menu-bar' ).appendChild( editor.ui.view.menuBarView.element );
+				( document.querySelector( '.document-editor__toolbar' ) as HTMLElement )
+					.appendChild( editor.ui.view.toolbar.element! );
+
+				if ( MENU_BAR_INPUT.checked ) {
+					( document.querySelector( '.document-editor__menu-bar' ) as HTMLElement )
+						.appendChild( editor.ui.view.menuBarView.element! );
+				}
 
 				window.editor = editorInstance = editor;
 				editor.setData( currentData );
@@ -267,10 +277,18 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 
 	editorInstance.destroy().then( () => {
 		editorInstance.ui.view.toolbar.element.remove();
-		editorInstance.ui.view.menuBarView.element.remove();
+
+		if ( editorInstance.ui.view.menuBarView ) {
+			editorInstance.ui.view.menuBarView.element.remove();
+		}
 
 		ClassicEditor
-			.create( document.querySelector( '#editor' ), commonConfig )
+			.create( EDITOR_ELEMENT, Object.assign( commonConfig,
+				{
+					menuBar: { isVisible: MENU_BAR_INPUT.checked },
+					fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
+				}
+			) )
 			.then( editor => {
 				window.editor = editorInstance = editor;
 				editor.setData( currentData );
@@ -282,7 +300,12 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 } );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), commonConfig )
+	.create( EDITOR_ELEMENT, Object.assign( commonConfig,
+		{
+			menuBar: { isVisible: MENU_BAR_INPUT.checked },
+			fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
+		}
+	) )
 	.then( editor => {
 		window.editor = editorInstance = editor;
 	} )

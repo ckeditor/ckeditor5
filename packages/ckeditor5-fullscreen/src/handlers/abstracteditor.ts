@@ -15,22 +15,20 @@ import { type Editor } from 'ckeditor5/src/core.js';
  */
 export default class AbstractEditorHandler {
 	/**
-	 * An editor instance. It should be overriden by the particular editor type handler.
+	 * Map of moved elements (moved -> placeholder).
 	 */
-	declare protected _editor: Editor;
+	private _movedElements: Map<HTMLElement, HTMLElement>;
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
 	 * It's independent of the editor type.
 	 */
-	declare public _container: HTMLElement | null;
+	private _container: HTMLElement | null = null;
 
 	/**
-	 * Map of moved elements (moved -> placeholder).
-	 *
-	 * @private
-	*/
-	declare private _movedElements: Map<HTMLElement, HTMLElement>;
+	 * An editor instance. It should be set by the particular editor type handler.
+	 */
+	declare protected _editor: Editor;
 
 	/**
 	 * @inheritDoc
@@ -45,9 +43,10 @@ export default class AbstractEditorHandler {
 	public moveToFullscreen( elementToMove: HTMLElement, placeholderName: string ): void {
 		const placeholderElement = createElement( document, 'div' );
 
+		placeholderElement.setAttribute( 'data-ck-fullscreen-placeholder', placeholderName );
 		elementToMove.replaceWith( placeholderElement );
 
-		this.getContainer().querySelector( `[data-ck-fullscreen-placeholder="${ placeholderName }"]` )!.append( elementToMove );
+		this.getContainer().querySelector( `[data-ck-fullscreen="${ placeholderName }"]` )!.append( elementToMove );
 
 		this._movedElements.set( elementToMove, placeholderElement );
 	}
@@ -80,13 +79,13 @@ export default class AbstractEditorHandler {
 
 			this._container.innerHTML = `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
-					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen-placeholder="menu-bar"></div>
-					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen-placeholder="toolbar"></div>
+					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
+					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
 				<div class="ck ck-fullscreen__editor-wrapper">
-					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="left-sidebar"></div>
-					<div class="ck ck-fullscreen__editor" data-ck-fullscreen-placeholder="editor"></div>
-					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="right-sidebar"></div>
+					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar"></div>
+					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
+					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
 			`;
 

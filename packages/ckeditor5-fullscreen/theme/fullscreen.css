@@ -16,13 +16,13 @@ Fullscreen layout:
 
 <div class="ck ck-fullscreen__main-container">
 	<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
-		<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen-placeholder="menu-bar"></div>
-		<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen-placeholder="toolbar"></div>
+		<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
+		<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 	</div>
 	<div class="ck ck-fullscreen__editor-wrapper">
-		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="left-sidebar"></div>
-		<div class="ck ck-fullscreen__editor" data-ck-fullscreen-placeholder="editor"></div>
-		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen-placeholder="right-sidebar"></div>
+		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar"></div>
+		<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
+		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 	</div>
 </div>
 */

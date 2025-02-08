@@ -38,6 +38,9 @@ export default class FullscreenCommand extends Command {
 	public constructor( editor: Editor ) {
 		super( editor );
 
+		this.affectsData = false;
+		this.isEnabled = true;
+
 		// Choose the appropriate handler based on the editor type.
 		// Currently only ClassicEditor and DecoupledEditor are supported. For other editor types, the abstract handler is used
 		// which will throw if user tries to enable the fullscreen mode.

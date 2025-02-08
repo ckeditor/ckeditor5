@@ -7,10 +7,13 @@
  * @module fullscreen/fullscreenediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import FullscreenCommand from './fullscreencommand.js';
 
+/**
+ * A plugin that registers the fullscreen mode command.
+ */
 export default class FullscreenEditing extends Plugin {
 	/**
 	 * @inheritDoc
@@ -24,6 +27,15 @@ export default class FullscreenEditing extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'fullscreen.menuBar.isVisible', true );
 	}
 
 	/**

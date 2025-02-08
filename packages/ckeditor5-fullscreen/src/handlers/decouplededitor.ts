@@ -27,6 +27,10 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 		super();
 
 		this._editor = editor;
+
+		this._editor.on( 'destroy', () => {
+			this.disable();
+		} );
 	}
 
 	/**
@@ -36,7 +40,7 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 		this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editor' );
 		this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
 
-		if ( this._editor.ui.view.menuBarView ) {
+		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
 		}
 	}

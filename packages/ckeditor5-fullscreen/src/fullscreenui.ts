@@ -8,14 +8,25 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
+import FullscreenEditing from './fullscreenediting.js';
 import fullscreenIcon from '../theme/icons/fullscreen.svg';
 import '../theme/fullscreen.css';
 
 const COMMAND_NAME = 'fullscreen';
 
+/**
+ * A plugin registering the fullscreen mode buttons.
+ */
 export default class FullscreenUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ FullscreenEditing ] as const;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -35,28 +46,44 @@ export default class FullscreenUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+
+		editor.ui.componentFactory.add( COMMAND_NAME, () => this._createButton( ButtonView ) );
+		editor.ui.componentFactory.add( `menuBar:${ COMMAND_NAME }`, () => this._createButton( MenuBarMenuListItemButtonView ) );
+	}
+
+	/**
+	 * Creates a button toggling the fullscreen mode.
+	 */
+	private _createButton( ButtonClass: typeof ButtonView | typeof MenuBarMenuListItemButtonView ) {
+		const editor = this.editor;
 		const t = editor.t;
-		const fullscreenCommand = editor.commands.get( COMMAND_NAME )!;
+		const command = editor.commands.get( COMMAND_NAME )!;
+		const view = new ButtonClass( editor.locale );
 
-		editor.ui.componentFactory.add( COMMAND_NAME, locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: t( 'Fullscreen' ),
-				icon: fullscreenIcon,
-				tooltip: true,
-				isToggleable: true
-			} );
-
-			view.bind( 'isEnabled' ).to( fullscreenCommand, 'isEnabled' );
-			view.bind( 'isOn' ).to( fullscreenCommand, 'value' );
-
-			this.listenTo( view, 'execute', () => {
-				editor.execute( COMMAND_NAME );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+		view.set( {
+			label: t( 'Fullscreen mode' ),
+			icon: fullscreenIcon,
+			isToggleable: true
 		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		view.bind( 'isOn' ).to( command, 'value' );
+
+		if ( ( view instanceof MenuBarMenuListItemButtonView ) ) {
+			view.set( {
+				role: 'menuitemcheckbox'
+			} );
+		} else {
+			view.set( {
+				tooltip: true
+			} );
+		}
+
+		this.listenTo( view, 'execute', () => {
+			editor.execute( COMMAND_NAME );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }
