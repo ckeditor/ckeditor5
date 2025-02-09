@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import ClassicEditorHandler from '../../src/handlers/classiceditor.js';
+import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
 
 describe( 'ClassicEditorHandler', () => {
 	let classicEditorHandler, domElement, editor;
@@ -36,15 +37,7 @@ describe( 'ClassicEditorHandler', () => {
 
 	describe( 'constructor', () => {
 		it( 'should set the editor instance as a property', () => {
-			expect( classicEditorHandler._editor ).to.equal( editor );
-		} );
-
-		it( 'should setup listener disabling fullscreen when editor is destroyed', async () => {
-			const spy = sinon.spy( classicEditorHandler, 'disable' );
-
-			await editor.destroy();
-
-			expect( spy ).to.have.been.calledOnce;
+			expect( classicEditorHandler._editor ).to.be.instanceOf( ClassicEditor );
 		} );
 	} );
 
@@ -52,7 +45,7 @@ describe( 'ClassicEditorHandler', () => {
 		it( 'should move the editable and toolbar to the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editor]' ).children[ 0 ] )
+			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
 			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );
@@ -75,6 +68,11 @@ describe( 'ClassicEditorHandler', () => {
 				],
 				menuBar: {
 					isVisible: true
+				},
+				fullscreen: {
+					menuBar: {
+						isVisible: true
+					}
 				}
 			} );
 
@@ -94,6 +92,63 @@ describe( 'ClassicEditorHandler', () => {
 		it( 'should call #returnMovedElements()', () => {
 			const spy = sinon.spy( classicEditorHandler, 'returnMovedElements' );
 
+			classicEditorHandler.disable();
+
+			expect( spy ).to.have.been.calledOnce;
+		} );
+	} );
+
+	describe( 'with Revision history plugin', () => {
+		let domElementForRevisionHistory, editorWithRevisionHistory;
+
+		beforeEach( async () => {
+			domElementForRevisionHistory = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElementForRevisionHistory );
+
+			editorWithRevisionHistory = await ClassicEditor.create( domElementForRevisionHistory, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					RevisionHistoryMock
+				]
+			} );
+
+			classicEditorHandler = new ClassicEditorHandler( editorWithRevisionHistory );
+		} );
+
+		afterEach( async () => {
+			classicEditorHandler.disable();
+			domElementForRevisionHistory.remove();
+
+			return editorWithRevisionHistory.destroy();
+		} );
+
+		it( 'should override default RH callbacks when fullscreen mode is enabled', () => {
+			const spy = sinon.spy( classicEditorHandler, '_overrideRevisionHistoryCallbacks' );
+
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.showRevisionViewerCallback' ) ).to.equal(
+				RevisionHistoryMock.showRevisionViewerCallback
+			);
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.showRevisionViewerCallback' ) ).to.equal(
+				RevisionHistoryMock.showRevisionViewerCallback
+			);
+
+			classicEditorHandler.enable();
+
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.closeRevisionViewerCallback' ) ).to.not.equal(
+				RevisionHistoryMock.closeRevisionViewerCallback
+			);
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.closeRevisionViewerCallback' ) ).to.not.equal(
+				RevisionHistoryMock.closeRevisionViewerCallback
+			);
+
+			expect( spy ).to.have.been.calledOnce;
+		} );
+
+		it( 'should restore default RH callbacks when fullscreen mode is disabled', () => {
+			const spy = sinon.spy( classicEditorHandler, '_restoreRevisionHistoryCallbacks' );
+
+			classicEditorHandler.enable();
 			classicEditorHandler.disable();
 
 			expect( spy ).to.have.been.calledOnce;

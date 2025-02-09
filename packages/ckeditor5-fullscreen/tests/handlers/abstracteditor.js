@@ -5,22 +5,53 @@
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
 
 describe( 'AbstractHandler', () => {
-	let abstractHandler;
+	let abstractHandler, domElement, editor;
 
-	beforeEach( () => {
-		abstractHandler = new AbstractEditorHandler();
+	beforeEach( async () => {
+		domElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( domElement );
+
+		editor = await ClassicEditor.create( domElement, {
+			plugins: [
+				Paragraph,
+				Essentials
+			]
+		} );
+
+		abstractHandler = new AbstractEditorHandler( editor );
 	} );
 
 	afterEach( () => {
+		domElement.remove();
 		abstractHandler.getContainer().remove();
+
+		return editor.destroy();
 	} );
 
-	it( 'should create a `#_movedElements` map', () => {
-		expect( abstractHandler._movedElements ).to.be.an.instanceOf( Map );
+	describe( 'constructor', () => {
+		it( 'should create element maps', () => {
+			expect( abstractHandler._idToPlaceholder ).to.be.an.instanceOf( Map );
+			expect( abstractHandler._placeholderToElement ).to.be.an.instanceOf( Map );
+		} );
+
+		it( 'should set the editor instance as a property', () => {
+			expect( abstractHandler._editor ).to.equal( editor );
+		} );
+
+		it( 'should setup listener returning moved elements when editor is destroyed', async () => {
+			const spy = sinon.spy( abstractHandler, 'returnMovedElements' );
+
+			await editor.destroy();
+
+			expect( spy ).to.have.been.calledOnce;
+		} );
 	} );
 
 	describe( '#moveToFullscreen()', () => {
@@ -30,11 +61,50 @@ describe( 'AbstractHandler', () => {
 			element.id = 'element';
 			global.document.body.appendChild( element );
 
-			abstractHandler.moveToFullscreen( element, 'editor' );
+			abstractHandler.moveToFullscreen( element, 'editable' );
 
 			expect( abstractHandler.getContainer().querySelector( '#element' ) ).to.equal( element );
 
-			abstractHandler._movedElements.get( element ).remove();
+			abstractHandler.returnMovedElements();
+			element.remove();
+		} );
+	} );
+
+	describe( '#returnMovedElement()', () => {
+		it( 'should return only target moved element', () => {
+			const element = global.document.createElement( 'div' );
+			const element2 = global.document.createElement( 'div' );
+
+			global.document.body.appendChild( element );
+			global.document.body.appendChild( element2 );
+
+			abstractHandler.moveToFullscreen( element, 'menu-bar' );
+			abstractHandler.moveToFullscreen( element2, 'editable' );
+
+			// Move `menu-bar` back.
+			abstractHandler.returnMovedElement( 'menu-bar' );
+
+			expect( abstractHandler._idToPlaceholder.size ).to.equal( 1 );
+			expect( abstractHandler._placeholderToElement.size ).to.equal( 1 );
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.not.be.null;
+
+			abstractHandler.returnMovedElement( 'editable' );
+			element.remove();
+			element2.remove();
+		} );
+
+		it( 'should destroy the container if there are no other elements left', () => {
+			const element = global.document.createElement( 'div' );
+
+			global.document.body.appendChild( element );
+
+			abstractHandler.moveToFullscreen( element, 'menu-bar' );
+			abstractHandler.returnMovedElement( 'menu-bar' );
+
+			expect( abstractHandler._container ).to.be.null;
+
+			element.remove();
 		} );
 	} );
 
@@ -49,20 +119,23 @@ describe( 'AbstractHandler', () => {
 			global.document.body.appendChild( element2 );
 
 			abstractHandler.moveToFullscreen( element, 'menu-bar' );
-			abstractHandler.moveToFullscreen( element2, 'editor' );
+			abstractHandler.moveToFullscreen( element2, 'editable' );
 
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.equal(
-				abstractHandler._movedElements.get( element )
-			);
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editor"' ) ).to.equal(
-				abstractHandler._movedElements.get( element2 )
-			);
+			expect(
+				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) )
+			).to.be.true;
+			expect(
+				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) )
+			).to.be.true;
+			expect( abstractHandler._idToPlaceholder.size ).to.equal( 2 );
+			expect( abstractHandler._placeholderToElement.size ).to.equal( 2 );
 
 			abstractHandler.returnMovedElements();
 
-			expect( abstractHandler._movedElements.size ).to.equal( 0 );
+			expect( abstractHandler._idToPlaceholder.size ).to.equal( 0 );
+			expect( abstractHandler._placeholderToElement.size ).to.equal( 0 );
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editor"' ) ).to.be.null;
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.be.null;
 
 			element.remove();
 			element2.remove();
@@ -89,9 +162,9 @@ describe( 'AbstractHandler', () => {
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
-				<div class="ck ck-fullscreen__editor-wrapper">
+				<div class="ck ck-fullscreen__editable-wrapper">
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar"></div>
-					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
+					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
 			` );

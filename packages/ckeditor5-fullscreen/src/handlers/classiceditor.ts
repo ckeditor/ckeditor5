@@ -25,13 +25,9 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 	 * @inheritDoc
 	 */
 	constructor( editor: ClassicEditor ) {
-		super();
+		super( editor );
 
 		this._editor = editor;
-
-		this._editor.on( 'destroy', () => {
-			this.disable();
-		} );
 	}
 
 	/**
@@ -41,7 +37,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		const editorUI = this._editor.ui;
 		const editorUIView = editorUI.view;
 
-		this.moveToFullscreen( editorUI.getEditableElement()!, 'editor' );
+		this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
 		this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
 
 		// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
@@ -49,6 +45,10 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
 		// Decupled editor doesn't have this issue because there is no top-level container, so `dir` is set on each component separately.
 		this.getContainer().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+
+		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
+			this._overrideRevisionHistoryCallbacks();
+		}
 
 		if ( !this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 			return;
@@ -67,6 +67,10 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 	 * Restores the editor UI elements to their original positions.
 	 */
 	public override disable(): void {
+		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
+			this._restoreRevisionHistoryCallbacks();
+		}
+
 		this.returnMovedElements();
 	}
 }
