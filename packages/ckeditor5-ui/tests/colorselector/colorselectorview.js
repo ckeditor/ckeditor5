@@ -433,8 +433,8 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should execute when color picker is focused and enter pressed', () => {
-			// Focusing input and then the color picker breaks focus handling in the test 
-			// suite that uses a headless Chrome browser. It is a workaround for that, as 
+			// Focusing input and then the color picker breaks focus handling in the test
+			// suite that uses a headless Chrome browser. It is a workaround for that, as
 			// this deactivates focusing input before the color picker.
 			env.isBlink = false;
 
