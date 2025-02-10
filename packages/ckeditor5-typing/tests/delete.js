@@ -3,30 +3,66 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Delete from '../src/delete.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 /* globals document */
 
 describe( 'Delete feature', () => {
-	let element, editor, viewDocument;
+	let element, editor, model, view, viewDocument;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Delete ] } )
+			.create( element, { plugins: [ Widget, Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
+				model = editor.model;
+				view = editor.editing.view;
 				viewDocument = editor.editing.view.document;
+
+				model.schema.register( 'widget', {
+					inheritAllFrom: '$block',
+					isObject: true,
+					allowIn: [ '$root', 'div' ]
+				} );
+				model.schema.register( 'nested', {
+					allowIn: 'widget',
+					isLimit: true
+				} );
+				model.schema.extend( '$text', {
+					allowIn: [ 'nested' ],
+					allowAttributes: [ 'attr', 'bttr' ]
+				} );
+
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'widget',
+						view: ( modelItem, { writer } ) => {
+							const b = writer.createAttributeElement( 'b' );
+							const div = writer.createContainerElement( 'div' );
+							writer.insert( writer.createPositionAt( div, 0 ), b );
+
+							return toWidget( div, writer, { label: 'element label' } );
+						}
+					} )
+					.elementToElement( {
+						model: 'nested',
+						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
+					} );
 			} );
 	} );
 
@@ -74,6 +110,31 @@ describe( 'Delete feature', () => {
 
 		expect( spy.calledTwice ).to.be.true;
 		expect( spy.calledWithMatch( 'delete', { unit: 'character', sequence: 5 } ) ).to.be.true;
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5/issues/17383.
+	it( 'handles the backspace key in a nested editable (Safari)', () => {
+		env.isSafari = true;
+
+		setModelData( model, '<widget><nested>[]</nested></widget>' );
+
+		const widgetView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const target = view.domConverter.mapViewToDom( widgetView );
+		const domEventDataMock = new DomEventData(
+			view,
+			{
+				target,
+				keyCode: getCode( 'backspace' ),
+				metaKey: true,
+				preventDefault: sinon.spy()
+			}
+		);
+
+		viewDocument.fire( 'keydown', domEventDataMock );
+
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+
+		env.isSafari = false;
 	} );
 
 	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
