@@ -7,7 +7,7 @@
  * @module html-support/fullpage
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
@@ -32,11 +32,18 @@ export default class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
-
-		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
 
 		editor.model.schema.extend( '$root', {
 			allowAttributes: properties
