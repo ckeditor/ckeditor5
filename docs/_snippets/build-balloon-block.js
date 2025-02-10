@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { BalloonEditor as BalloonBlockEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
+import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -25,7 +25,7 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
-export default class BalloonBlockEditor extends BalloonBlockEditorBase {}
+export default class BalloonBlockEditor extends BalloonEditorBase {}
 
 BalloonBlockEditor.builtinPlugins = [
 	Essentials,
