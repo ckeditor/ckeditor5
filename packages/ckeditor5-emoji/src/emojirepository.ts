@@ -92,9 +92,12 @@ export default class EmojiRepository extends Plugin {
 	 */
 	public async init(): Promise<void> {
 		if ( !( this._version in EmojiRepository._results ) ) {
-			const cdnResult = await this._loadItemsFromCdn();
+			const url = new URL( EMOJI_DATABASE_URL.replace( '{version}', `${ this._version }` ) );
+			url.searchParams.set( 'editorVersion', version );
 
-			EmojiRepository._results[ this._version ] = this._normalizeEmoji( cdnResult );
+			const cdnResult = await this._loadItemsFromCdn( url );
+
+			EmojiRepository._results[ url.href ] = this._normalizeEmoji( cdnResult );
 		}
 
 		const items = this._getItems();
@@ -231,12 +234,8 @@ export default class EmojiRepository extends Plugin {
 	/**
 	 * Makes the HTTP request to download the emoji repository in a configured version.
 	 */
-	private async _loadItemsFromCdn(): Promise<Array<EmojiCdnResource>> {
-		const repositoryUrl = new URL( EMOJI_DATABASE_URL.replace( '{version}', `${ this._version }` ) );
-
-		repositoryUrl.searchParams.set( 'editorVersion', version );
-
-		const result: Array<EmojiCdnResource> = await fetch( repositoryUrl, { cache: 'force-cache' } )
+	private async _loadItemsFromCdn( url: URL ): Promise<Array<EmojiCdnResource>> {
+		const result: Array<EmojiCdnResource> = await fetch( url, { cache: 'force-cache' } )
 			.then( response => {
 				if ( !response.ok ) {
 					return [];
@@ -291,7 +290,7 @@ export default class EmojiRepository extends Plugin {
 	 * Versioned emoji repository.
 	 */
 	private static _results: {
-		[ key in EmojiVersion ]?: Array<EmojiEntry>
+		[ key in string ]?: Array<EmojiEntry>
 	} = {};
 }
 
