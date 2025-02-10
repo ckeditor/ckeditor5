@@ -452,7 +452,9 @@ describe( 'ColorSelectorView', () => {
 			colorSelectorView.selectedColor = '#660055';
 			colorSelectorView.on( 'execute', spy );
 
+			colorSelectorView.focus();
 			colorSelectorView.keystrokes.press( keyEvtData );
+
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 			sinon.assert.calledOnce( spy );
