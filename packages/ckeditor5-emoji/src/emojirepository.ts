@@ -11,13 +11,15 @@ import Fuse from 'fuse.js';
 import { groupBy } from 'lodash-es';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { logWarning, version } from 'ckeditor5/src/utils.js';
+import { logWarning, version as EditorVersion } from 'ckeditor5/src/utils.js';
 import EmojiUtils from './emojiutils.js';
-import type { EmojiVersion, SkinToneId } from './emojiconfig.js';
+import type { SkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji data will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
-const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{version}/en.json';
+const DEFAULT_EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{version}/en.json';
+
+const DEFAULT_EMOJI_VERSION = 16;
 
 /**
  * The emoji repository plugin.
@@ -36,9 +38,9 @@ export default class EmojiRepository extends Plugin {
 	private _fuseSearch: Fuse<EmojiEntry> | null;
 
 	/**
-	 * The emoji version that is used to prepare the emoji repository.
+	 * The resolved URL from which the emoji repository is downloaded.
 	 */
-	private readonly _version: EmojiVersion;
+	private readonly _url: URL;
 
 	/**
 	 * A promise resolved after downloading the emoji collection.
@@ -74,11 +76,12 @@ export default class EmojiRepository extends Plugin {
 		super( editor );
 
 		editor.config.define( 'emoji', {
-			version: 16,
-			skinTone: 'default'
+			version: undefined,
+			skinTone: 'default',
+			definitionsUrl: undefined
 		} );
 
-		this._version = editor.config.get( 'emoji.version' )!;
+		this._url = this._getUrl();
 
 		this._repositoryPromise = new Promise<boolean>( resolve => {
 			this._repositoryPromiseResolveCallback = resolve;
@@ -91,14 +94,9 @@ export default class EmojiRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
-		if ( !( this._version in EmojiRepository._results ) ) {
-			const url = new URL( EMOJI_DATABASE_URL.replace( '{version}', `${ this._version }` ) );
-			url.searchParams.set( 'editorVersion', version );
+		this._warnAboutCdnUse();
 
-			const cdnResult = await this._loadItemsFromCdn( url );
-
-			EmojiRepository._results[ url.href ] = this._normalizeEmoji( cdnResult );
-		}
+		await this._loadAndCacheEmoji();
 
 		const items = this._getItems();
 
@@ -223,19 +221,97 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	/**
+	 * Returns the URL from which the emoji repository is downloaded. If the URL is not provided
+	 * in the configuration, the default URL is used with the version from the configuration.
+	 *
+	 * If both the URL and version are provided, a warning is logged.
+	 */
+	private _getUrl(): URL {
+		const { definitionsUrl, version } = this.editor.config.get( 'emoji' )!;
+
+		if ( !definitionsUrl || definitionsUrl === 'cdn' ) {
+			// Url was not provided or is set to 'cdn', so we use the default CDN URL.
+			const urlVersion = version || DEFAULT_EMOJI_VERSION;
+			const url = new URL( DEFAULT_EMOJI_DATABASE_URL.replace( '{version}', urlVersion.toString() ) );
+
+			url.searchParams.set( 'editorVersion', EditorVersion );
+
+			return url;
+		}
+
+		if ( version ) {
+			/**
+			 * Both {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`} and
+			 * {@link module:emoji/emojiconfig~EmojiConfig#version `emoji.version`} configuration options
+			 * are set. Only the `emoji.definitionsUrl` option will be used.
+			 *
+			 * The `emoji.version` option will be ignored and should be removed from the configuration.
+			 *
+			 * @error emoji-repository-redundant-version
+			 */
+			logWarning( 'emoji-repository-redundant-version' );
+		}
+
+		return new URL( definitionsUrl );
+	}
+
+	/**
+	 * Warn users on self-hosted installations about the fact that this plugin uses a CDN to fetch the emoji repository.
+	 */
+	private _warnAboutCdnUse(): void {
+		const editor = this.editor;
+		const config = editor.config.get( 'emoji' );
+		const licenseKey = editor.config.get( 'licenseKey' );
+		const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ];
+
+		if ( licenseKey === 'GPL' ) {
+			// Don't warn GPL users.
+			return;
+		}
+
+		if ( distributionChannel === 'cloud' ) {
+			// Don't warn cloud users, because they already use our CDN.
+			return;
+		}
+
+		if ( config && config.definitionsUrl ) {
+			// Don't warn users who have configured their own definitions URL.
+			return;
+		}
+
+		/**
+		 * By default, the Emoji plugin uses a CDN to fetch the emoji repository. If you
+		 * want to avoid this, you can provide your own emoji repository following
+		 * the {@glink features/emoji#custom-repository Custom emoji repository} guide.
+		 *
+		 * To suppress this warning, set the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+		 * configuration option to `cdn`.
+		 *
+		 * @error emoji-repository-cdn-use
+		 */
+		logWarning( 'emoji-repository-cdn-use' );
+	}
+
+	/**
 	 * Returns the emoji repository in a configured version if it is a non-empty array. Returns `null` otherwise.
 	 */
 	private _getItems(): Array<EmojiEntry> | null {
-		const repository = EmojiRepository._results[ this._version ];
+		const repository = EmojiRepository._results[ this._url.href ];
 
 		return repository && repository.length ? repository : null;
 	}
 
 	/**
-	 * Makes the HTTP request to download the emoji repository in a configured version.
+	 * Loads the emoji repository. If the repository is already loaded, it returns the cached result.
+	 * Otherwise, it fetches the repository from the URL and adds it to the cache.
 	 */
-	private async _loadItemsFromCdn( url: URL ): Promise<Array<EmojiCdnResource>> {
-		const result: Array<EmojiCdnResource> = await fetch( url, { cache: 'force-cache' } )
+	private async _loadAndCacheEmoji(): Promise<void> {
+		if ( EmojiRepository._results[ this._url.href ] ) {
+			// The repository has already been downloaded.
+			return;
+		}
+
+		const result: Array<EmojiCdnResource> = await fetch( this._url, { cache: 'force-cache' } )
 			.then( response => {
 				if ( !response.ok ) {
 					return [];
@@ -249,18 +325,18 @@ export default class EmojiRepository extends Plugin {
 
 		if ( !result.length ) {
 			/**
-			 * Unable to load the emoji repository from CDN.
+			 * Unable to load the emoji repository from the URL.
 			 *
-			 * If the CDN works properly and there is no disruption of communication, please check your
+			 * If the URL works properly and there is no disruption of communication, please check your
 			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-			 * the CDN connection is allowed by the editor.
+			 * the URL connection is allowed by the editor.
 			 *
 			 * @error emoji-repository-load-failed
 			 */
 			logWarning( 'emoji-repository-load-failed' );
 		}
 
-		return result;
+		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
 	}
 
 	/**

@@ -12,6 +12,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import EmojiRepository from '../src/emojirepository.js';
 import EmojiUtils from '../src/emojiutils.ts';
+import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 class EmojiUtilsMockVersion15 extends EmojiUtils {
 	getEmojiSupportedVersionByOs() {
@@ -61,24 +62,6 @@ describe( 'EmojiRepository', () => {
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
 		expect( EmojiRepository.isPremiumPlugin ).to.equal( false );
-	} );
-
-	it( 'should configure default emoji version', async () => {
-		const { editor, domElement } = await createTestEditor( resolve => {
-			const response = JSON.stringify( [
-				{ annotation: 'neutral face', group: 0 },
-				{ annotation: 'unamused face', group: 0 }
-			] );
-
-			resolve( new Response( response ) );
-		} );
-
-		const emojiVersion = editor.config.get( 'emoji.version' );
-
-		expect( emojiVersion ).to.equal( 16 );
-
-		domElement.remove();
-		await editor.destroy();
 	} );
 
 	describe( 'init()', () => {
@@ -139,7 +122,7 @@ describe( 'EmojiRepository', () => {
 
 			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ cdnUrl.href ];
 
 			expect( results ).to.have.length( 2 );
 			expect( results[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -183,8 +166,8 @@ describe( 'EmojiRepository', () => {
 			expect( cdnUrl1.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 			expect( cdnUrl2.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' ) );
 
-			const resultsFor16 = EmojiRepository._results[ 16 ];
-			const resultsFor15 = EmojiRepository._results[ 15 ];
+			const resultsFor16 = EmojiRepository._results[ cdnUrl1.href ];
+			const resultsFor15 = EmojiRepository._results[ cdnUrl2.href ];
 
 			expect( resultsFor16 ).to.have.length( 2 );
 			expect( resultsFor16[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -243,7 +226,7 @@ describe( 'EmojiRepository', () => {
 
 			expect( fetchStub.calledOnce ).to.equal( true );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 
 			expect( results ).to.deep.equal( [] );
 
@@ -264,7 +247,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 			const hasGroup2 = results.some( item => item.group === 2 );
 
 			expect( hasGroup2 ).to.equal( false );
@@ -286,7 +269,7 @@ describe( 'EmojiRepository', () => {
 			} );
 
 			// `Head shaking horizontally` is mocked to be an unsupported emoji in `EmojiUtilsMock`.
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 			const headShakingHorizontallyEmoji = results.find( item => item.annotation === 'head shaking horizontally' );
 			const unamusedFaceEmoji = results.find( item => item.annotation === 'unamused face' );
 
@@ -313,7 +296,7 @@ describe( 'EmojiRepository', () => {
 				}
 			);
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 
 			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );
 			const hasUnamusedEmoji = results.find( item => item.annotation === 'unamused face' );
@@ -335,7 +318,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 
 			expect( results ).to.have.length( 2 );
 			expect( results[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
@@ -367,7 +350,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 
 			expect( results ).to.have.length( 1 );
 			expect( results[ 0 ] ).to.have.deep.property( 'skins', {
@@ -412,7 +395,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( null, { status: 500 } ) );
 			} );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 
 			expect( results ).to.deep.equal( [] );
 
@@ -428,7 +411,7 @@ describe( 'EmojiRepository', () => {
 				reject( new Response() );
 			} );
 
-			const results = EmojiRepository._results[ 16 ];
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
 
 			expect( results ).to.deep.equal( [] );
 
@@ -447,6 +430,116 @@ describe( 'EmojiRepository', () => {
 			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
 			expect( emojiRepositoryPlugin._fuseSearch ).to.equal( null );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning when both `definitionsUrl` and `version` options are provided', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 16 }
+				] );
+
+				resolve( new Response( response ) );
+			}, {
+				emoji: {
+					definitionsUrl: 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json',
+					version: 15
+				}
+			} );
+
+			expect( consoleStub.calledOnce ).to.equal( true );
+			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-redundant-version' );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning about using CDN when self-hosting', async () => {
+			const { licenseKey } = generateKey( { licenseType: 'production' } );
+
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 16 }
+				] );
+
+				resolve( new Response( response ) );
+			}, {
+				licenseKey
+			} );
+
+			expect( consoleStub.calledOnce ).to.equal( true );
+			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-cdn-use' );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not log a warning about using CDN when on `GPL` license', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 16 }
+				] );
+
+				resolve( new Response( response ) );
+			}, {
+				licenseKey: 'GPL'
+			} );
+
+			expect( consoleStub.calledOnce ).to.equal( false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not log a warning about using CDN when using `cloud` distribution channel', async () => {
+			const { licenseKey } = generateKey( {
+				licenseType: 'production',
+				distributionChannel: 'cloud'
+			} );
+
+			window[ Symbol.for( 'cke distribution' ) ] = 'cloud';
+
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 16 }
+				] );
+
+				resolve( new Response( response ) );
+			}, {
+				licenseKey
+			} );
+
+			expect( consoleStub.calledOnce ).to.equal( false );
+
+			domElement.remove();
+			await editor.destroy();
+			delete window[ Symbol.for( 'cke distribution' ) ];
+		} );
+
+		it( 'should not log a warning about using CDN when `emoji.definitionsUrl` is provided', async () => {
+			const { licenseKey } = generateKey( { licenseType: 'production' } );
+
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 16 }
+				] );
+
+				resolve( new Response( response ) );
+			}, {
+				licenseKey,
+				emoji: {
+					definitionsUrl: 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json'
+				}
+			} );
+
+			expect( consoleStub.calledOnce ).to.equal( false );
 
 			domElement.remove();
 			await editor.destroy();
@@ -594,7 +687,7 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should return empty array for each emoji category if emoji database is empty', () => {
-			EmojiRepository._results[ 16 ] = [];
+			EmojiRepository._results[ emojiRepositoryPlugin._url ] = [];
 
 			const result = emojiRepositoryPlugin.getEmojiCategories();
 

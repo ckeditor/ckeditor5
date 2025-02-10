@@ -64,6 +64,25 @@ export interface EmojiConfig {
 	skinTone?: SkinToneId;
 
 	/**
+	 * The URL from which the emoji definitions should be loaded.
+	 *
+	 * ```ts
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				definitionsUrl: ''
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
+	 * ```
+	 *
+	 * @default 'https://cdn.ckeditor.com/ckeditor5/data/emoji/\{version\}/en.json'
+	 */
+	definitionsUrl?: string;
+
+	/**
 	 * The emoji database version.
 	 *
 	 * ```ts
@@ -77,6 +96,9 @@ export interface EmojiConfig {
 	 *		.then( ... )
 	 *		.catch( ... );
 	 * ```
+	 *
+	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+	 * option is provided, this option should be omitted.
 	 *
 	 * @default 16
 	 */
