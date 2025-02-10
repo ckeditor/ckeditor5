@@ -91,9 +91,7 @@ export default class FullPage extends Plugin {
 				}
 			} );
 
-			const allowRenderStylesFromHead = isAllowedRenderStylesFromHead( editor );
-
-			if ( allowRenderStylesFromHead ) {
+			if ( isAllowedRenderStylesFromHead( editor ) ) {
 				this._renderStylesFromHead( root );
 			}
 		}, { priority: 'low' } );
@@ -151,9 +149,7 @@ export default class FullPage extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		const allowRenderStylesFromHead = isAllowedRenderStylesFromHead( this.editor );
-
-		if ( allowRenderStylesFromHead ) {
+		if ( isAllowedRenderStylesFromHead( this.editor ) ) {
 			this._removeStyleElementsFromDom();
 		}
 	}

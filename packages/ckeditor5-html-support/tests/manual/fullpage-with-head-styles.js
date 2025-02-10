@@ -18,7 +18,7 @@ const initialData = `
 <head>
 	<title>Page title</title>
 	<meta name="robots" content="noindex, nofollow" />
-	<style> body { background: #f00; } h2 { font-size: 40px; color: green; } p { color: blue; } </style>
+	<style> body { background-color: #d3d9d6; } h2 { font-size: 40px; color: green; } p { color: blue; } </style>
 	<script> alert( 'should not show this alert' ); </script>
 	<!-- some comment-->
 </head>
