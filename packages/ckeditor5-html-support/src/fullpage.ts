@@ -12,8 +12,7 @@ import { logWarning, global } from 'ckeditor5/src/utils.js';
 import {
 	UpcastWriter,
 	type DataControllerToModelEvent,
-	type DataControllerToViewEvent,
-	type RootElement
+	type DataControllerToViewEvent
 } from 'ckeditor5/src/engine.js';
 
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
@@ -22,6 +21,11 @@ import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
  * The full page editing feature. It preserves the whole HTML page in the editor data.
  */
 export default class FullPage extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public htmlDataProcessor: HtmlPageDataProcessor;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -42,11 +46,11 @@ export default class FullPage extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'fullPage', {
+		editor.config.define( 'htmlSupport.fullPage', {
 			allowRenderStylesFromHead: false,
 			sanitizeCss: rawCss => {
 				/**
-				 * When using the Full page with the `config.fullPage.allowRenderStylesFromHead` set to `true`,
+				 * When using the Full page with the `config.htmlSupport.fullPage.allowRenderStylesFromHead` set to `true`,
 				 * it is strongly recommended to define a sanitize function that will clean up the CSS
 				 * which is present in the `<head>` in editors content in order to avoid XSS vulnerability.
 				 *
@@ -62,6 +66,8 @@ export default class FullPage extends Plugin {
 				};
 			}
 		} );
+
+		this.htmlDataProcessor = new HtmlPageDataProcessor( editor.data.viewDocument );
 	}
 
 	/**
@@ -71,8 +77,7 @@ export default class FullPage extends Plugin {
 		const editor = this.editor;
 		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
 
-		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
-
+		editor.data.processor = this.htmlDataProcessor;
 		editor.model.schema.extend( '$root', {
 			allowAttributes: properties
 		} );
@@ -92,7 +97,7 @@ export default class FullPage extends Plugin {
 			} );
 
 			if ( isAllowedRenderStylesFromHead( editor ) ) {
-				this._renderStylesFromHead( root );
+				this._renderStylesFromHead();
 			}
 		}, { priority: 'low' } );
 
@@ -172,19 +177,19 @@ export default class FullPage extends Plugin {
 	/**
 	 * Extracts `<style>` elements from the full page data and renders them in the main document `<head>`.
 	 * CSS content is sanitized before rendering.
-	 *
-	 * @param fullPageData Represents the full page data passed to the editor as a string.
 	 */
-	private _renderStyleElementsInDom( fullPageData: string ): void {
+	private _renderStyleElementsInDom(): void {
 		const editor = this.editor;
+		const parsedDocument = this.htmlDataProcessor.parsedDocument;
 
-		// Use DOMParser for easier elements extraction and unwanted code execution prevention.
-		const domParser = editor.data.htmlProcessor.domParser;
-		const doc = domParser.parseFromString( fullPageData, 'text/html' );
-		const sanitizeCss = editor.config.get( 'fullPage.sanitizeCss' )!;
+		if ( !parsedDocument ) {
+			return;
+		}
+
+		const sanitizeCss = editor.config.get( 'htmlSupport.fullPage.sanitizeCss' )!;
 
 		// Extract `<style>` elements from the `<head>` from the full page data.
-		const styleElements: Array<HTMLStyleElement> = Array.from( doc.querySelectorAll( 'head style' ) );
+		const styleElements: Array<HTMLStyleElement> = Array.from( parsedDocument.querySelectorAll( 'head style' ) );
 
 		// Add `data-full-page-style-id` attribute to the `<style>` element and render it in `<head>` in the main document.
 		for ( const style of styleElements ) {
@@ -204,11 +209,9 @@ export default class FullPage extends Plugin {
 	/**
 	 * Removes existing `<style>` elements injected by the plugin and renders new ones from the full page data.
 	 */
-	private _renderStylesFromHead( root: RootElement ) {
-		const fullPageData = root.getAttribute( '$fullPageDocument' ) as string;
-
+	private _renderStylesFromHead() {
 		this._removeStyleElementsFromDom();
-		this._renderStyleElementsInDom( fullPageData );
+		this._renderStyleElementsInDom();
 	}
 }
 
@@ -216,5 +219,5 @@ export default class FullPage extends Plugin {
  * Normalize the Full page configuration option `allowRenderStylesFromHead`.
  */
 function isAllowedRenderStylesFromHead( editor: Editor ): boolean {
-	return editor.config.get( 'fullPage.allowRenderStylesFromHead' )!;
+	return editor.config.get( 'htmlSupport.fullPage.allowRenderStylesFromHead' )!;
 }

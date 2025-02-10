@@ -233,11 +233,11 @@ describe( 'FullPage', () => {
 			sinon.stub( console, 'warn' );
 		} );
 
-		describe( 'fullPage.allowRenderStylesFromHead', () => {
+		describe( 'htmlSupport.fullPage.allowRenderStylesFromHead', () => {
 			it( 'should be set to `false` by default', async () => {
 				await createEditor( '' );
 
-				const fullPage = editor.config.get( 'fullPage' );
+				const fullPage = editor.config.get( 'htmlSupport.fullPage' );
 
 				expect( fullPage.allowRenderStylesFromHead ).to.equal( false );
 			} );
@@ -255,8 +255,10 @@ describe( 'FullPage', () => {
 					'</html>';
 
 				const config = {
-					fullPage: {
-						allowRenderStylesFromHead: true
+					htmlSupport: {
+						fullPage: {
+							allowRenderStylesFromHead: true
+						}
 					}
 				};
 
@@ -284,8 +286,10 @@ describe( 'FullPage', () => {
 					'</html>';
 
 				const config = {
-					fullPage: {
-						allowRenderStylesFromHead: true
+					htmlSupport: {
+						fullPage: {
+							allowRenderStylesFromHead: true
+						}
 					}
 				};
 
@@ -329,14 +333,16 @@ describe( 'FullPage', () => {
 
 			beforeEach( async () => {
 				config = {
-					fullPage: {
-						allowRenderStylesFromHead: true
+					htmlSupport: {
+						fullPage: {
+							allowRenderStylesFromHead: true
+						}
 					}
 				};
 
 				await createEditor( '', config );
 
-				fullPageConfig = editor.config.get( 'fullPage' );
+				fullPageConfig = editor.config.get( 'htmlSupport.fullPage' );
 			} );
 
 			it( 'should return an object with cleaned css and a note whether something has changed', async () => {
@@ -366,22 +372,24 @@ describe( 'FullPage', () => {
 
 			beforeEach( async () => {
 				config = {
-					fullPage: {
-						allowRenderStylesFromHead: true,
-						sanitizeCss: rawCss => {
-							const cleanCss = rawCss.replace( /color: red;/g, 'color: #c0ffee;' );
+					htmlSupport: {
+						fullPage: {
+							allowRenderStylesFromHead: true,
+							sanitizeCss: rawCss => {
+								const cleanCss = rawCss.replace( /color: red;/g, 'color: #c0ffee;' );
 
-							return {
-								css: cleanCss,
-								hasChanged: rawCss !== cleanCss
-							};
+								return {
+									css: cleanCss,
+									hasChanged: rawCss !== cleanCss
+								};
+							}
 						}
 					}
 				};
 
 				await createEditor( '', config );
 
-				fullPageConfig = editor.config.get( 'fullPage' );
+				fullPageConfig = editor.config.get( 'htmlSupport.fullPage' );
 			} );
 
 			it( 'should return an object with cleaned css and a note whether something has changed', async () => {
