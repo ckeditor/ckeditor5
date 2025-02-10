@@ -24,6 +24,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 const colorDefinitions = [
 	{
@@ -432,6 +433,11 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should execute when color picker is focused and enter pressed', () => {
+			// Focusing input and then color picker seems to fail focus handling in test suite
+			// that uses headless chrome browser. This is a workaround for that, as this deactivates
+			// focusing input before the color picker.
+			env.isBlink = false;
+
 			const keyEvtData = {
 				keyCode: keyCodes.enter,
 				preventDefault: sinon.spy(),
@@ -452,9 +458,7 @@ describe( 'ColorSelectorView', () => {
 			colorSelectorView.selectedColor = '#660055';
 			colorSelectorView.on( 'execute', spy );
 
-			colorSelectorView.focus();
 			colorSelectorView.keystrokes.press( keyEvtData );
-
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 			sinon.assert.calledOnce( spy );
