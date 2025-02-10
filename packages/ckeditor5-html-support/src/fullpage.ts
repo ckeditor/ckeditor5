@@ -7,7 +7,7 @@
  * @module html-support/fullpage
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
@@ -32,16 +32,18 @@ export default class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
-
-		// Store the original skipComments value to restore it later. It may be set to `true` by
-		// the `HtmlComment` plugin before this plugin is initialized.
-		const oldSkipComments = editor.data.processor.skipComments;
-
-		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
-		editor.data.processor.skipComments = oldSkipComments;
 
 		editor.model.schema.extend( '$root', {
 			allowAttributes: properties
