@@ -4,16 +4,16 @@
  */
 
 /**
- * @module email/integrations/image
+ * @module email/integrations/markdown
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import EmailIntegrationUtils from '../emailintegrationutils.js';
 
 /**
- * A plugin that warns about using ImageBlock plugin in the email integration.
+ * A plugin that warns about using Markdown plugin in the email integration.
  */
-export default class ImageEmailIntegration extends Plugin {
+export default class MarkdownEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -25,7 +25,7 @@ export default class ImageEmailIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ImageEmailIntegration' as const;
+		return 'MarkdownEmailIntegration' as const;
 	}
 
 	/**
@@ -41,6 +41,6 @@ export default class ImageEmailIntegration extends Plugin {
 	public afterInit(): void {
 		const utils = this.editor.plugins.get( EmailIntegrationUtils );
 
-		utils._checkUnsupportedPlugin( 'ImageBlock' );
+		utils._checkUnsupportedPlugin( 'Markdown' );
 	}
 }

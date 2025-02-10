@@ -8,7 +8,7 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ImageBlock } from '@ckeditor/ckeditor5-image';
 
-import { ImageEmailIntegration } from '../../src/integrations/image.js';
+import ImageEmailIntegration from '../../src/integrations/image.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
 describe( 'ImageEmailIntegration', () => {

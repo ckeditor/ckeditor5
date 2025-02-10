@@ -6,11 +6,12 @@
 /* global document, console */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Font } from '@ckeditor/ckeditor5-font';
 
-import { FontIntegration } from '../../src/integrations/font.js';
+import FontEmailIntegration from '../../src/integrations/font.js';
 import EmailIntegrationUtils from '../../src/emailintegrationutils.js';
 
-describe( 'FontIntegration', () => {
+describe( 'FontEmailIntegration', () => {
 	let domElement, editor, warnStub;
 
 	beforeEach( async () => {
@@ -30,32 +31,39 @@ describe( 'FontIntegration', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( FontIntegration.pluginName ).to.equal( 'FontIntegration' );
+		expect( FontEmailIntegration.pluginName ).to.equal( 'FontEmailIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontIntegration.isOfficialPlugin ).to.be.true;
+		expect( FontEmailIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should require EmailIntegrationUtils', () => {
-		expect( FontIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
+		expect( FontEmailIntegration.requires ).to.deep.equal( [ EmailIntegrationUtils ] );
 	} );
 
 	describe( 'afterInit()', () => {
-		it( 'should not log warning when no font config is provided', async () => {
-			editor = await ClassicEditor.create( domElement, {
-				plugins: [ FontIntegration, EmailIntegrationUtils ]
+		it( 'should not log warning when font plugin is not provided', async () => {
+			await createEditor( {
+				plugins: [ FontEmailIntegration, EmailIntegrationUtils ]
 			} );
 
 			sinon.assert.notCalled( warnStub );
+		} );
+
+		it( 'should print warnings when font plugin is provided with default configuration', async () => {
+			await createEditor( {
+				plugins: [ FontEmailIntegration, EmailIntegrationUtils, Font ]
+			}, false );
+
+			sinon.assert.calledWith( warnStub, sinon.match( /email-integration-unsupported-color-value/ ) );
 		} );
 
 		for ( const configKey of [ 'fontBackgroundColor', 'fontColor' ] ) {
 			describe( `${ configKey } configuration`, () => {
 				describe( 'colors', () => {
 					it( 'should not warn about hex colors passed to `colors`', async () => {
-						editor = await ClassicEditor.create( domElement, {
-							plugins: [ FontIntegration, EmailIntegrationUtils ],
+						await createEditor( {
 							[ configKey ]: {
 								colors: [
 									{ color: '#FF0000', label: 'Red' }
@@ -67,8 +75,7 @@ describe( 'FontIntegration', () => {
 					} );
 
 					it( 'should warn about unsupported colors passed to `colors` key', async () => {
-						editor = await ClassicEditor.create( domElement, {
-							plugins: [ FontIntegration, EmailIntegrationUtils ],
+						await createEditor( {
 							[ configKey ]: {
 								colors: [
 									{ color: 'hsl(0, 100%, 50%)', label: 'Red' },
@@ -83,9 +90,9 @@ describe( 'FontIntegration', () => {
 
 				describe( 'colorPicker', () => {
 					it( 'should handle `colorPicker` with `false` value', async () => {
-						editor = await ClassicEditor.create( domElement, {
-							plugins: [ FontIntegration, EmailIntegrationUtils ],
+						await createEditor( {
 							[ configKey ]: {
+								colors: [],
 								colorPicker: false
 							}
 						} );
@@ -94,9 +101,9 @@ describe( 'FontIntegration', () => {
 					} );
 
 					it( 'should warn about unsupported color format passed to `colorPicker` configuration', async () => {
-						editor = await ClassicEditor.create( domElement, {
-							plugins: [ FontIntegration, EmailIntegrationUtils ],
+						await createEditor( {
 							[ configKey ]: {
+								colors: [],
 								colorPicker: {
 									format: 'hsl'
 								}
@@ -107,9 +114,9 @@ describe( 'FontIntegration', () => {
 					} );
 
 					it( 'should not warn about supported color format passed to `colorPicker` configuration', async () => {
-						editor = await ClassicEditor.create( domElement, {
-							plugins: [ FontIntegration, EmailIntegrationUtils ],
+						await createEditor( {
 							[ configKey ]: {
+								colors: [],
 								colorPicker: {
 									format: 'hex'
 								}
@@ -122,4 +129,21 @@ describe( 'FontIntegration', () => {
 			} );
 		}
 	} );
+
+	async function createEditor( config = {}, resetColors = true ) {
+		editor = await ClassicEditor.create( domElement, {
+			plugins: [ Font, FontEmailIntegration, EmailIntegrationUtils ],
+			...resetColors && {
+				fontColor: {
+					colors: []
+				},
+				fontBackgroundColor: {
+					colors: []
+				}
+			},
+			...config
+		} );
+
+		return editor;
+	}
 } );

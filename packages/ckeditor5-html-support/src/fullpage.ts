@@ -9,11 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, global } from 'ckeditor5/src/utils.js';
-import {
-	UpcastWriter,
-	type DataControllerToModelEvent,
-	type DataControllerToViewEvent
-} from 'ckeditor5/src/engine.js';
+import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
 
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
@@ -68,6 +64,7 @@ export default class FullPage extends Plugin {
 		} );
 
 		this.htmlDataProcessor = new HtmlPageDataProcessor( editor.data.viewDocument );
+		editor.data.processor = this.htmlDataProcessor;
 	}
 
 	/**
@@ -77,7 +74,6 @@ export default class FullPage extends Plugin {
 		const editor = this.editor;
 		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
 
-		editor.data.processor = this.htmlDataProcessor;
 		editor.model.schema.extend( '$root', {
 			allowAttributes: properties
 		} );

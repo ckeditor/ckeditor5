@@ -9,15 +9,16 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import { HighlightEmailIntegration } from './integrations/highlight.js';
-import { ImageEmailIntegration } from './integrations/image.js';
-import { MathTypeEmailIntegration } from './integrations/mathtype.js';
-import { ExportInlineStylesIntegration } from './integrations/exportinlinestyles.js';
-import { ListEmailIntegration } from './integrations/list.js';
-import { TableEmailIntegration } from './integrations/table.js';
-import { EmptyBlockIntegration } from './integrations/emptyblock.js';
-import { FontIntegration } from './integrations/font.js';
-import { SourceEditingIntegration } from './integrations/sourceediting.js';
+import HighlightEmailIntegration from './integrations/highlight.js';
+import ImageEmailIntegration from './integrations/image.js';
+import MathTypeEmailIntegration from './integrations/mathtype.js';
+import ExportInlineStylesIntegration from './integrations/exportinlinestyles.js';
+import ListEmailIntegration from './integrations/list.js';
+import TableEmailIntegration from './integrations/table.js';
+import EmptyBlockEmailIntegration from './integrations/emptyblock.js';
+import FontEmailIntegration from './integrations/font.js';
+import SourceEditingEmailIntegration from './integrations/sourceediting.js';
+import MarkdownEmailIntegration from './integrations/markdown.js';
 
 /**
  * The email integration plugin.
@@ -50,9 +51,10 @@ export default class EmailIntegration extends Plugin {
 			ExportInlineStylesIntegration,
 			ListEmailIntegration,
 			TableEmailIntegration,
-			EmptyBlockIntegration,
-			FontIntegration,
-			SourceEditingIntegration
+			EmptyBlockEmailIntegration,
+			FontEmailIntegration,
+			SourceEditingEmailIntegration,
+			MarkdownEmailIntegration
 		] as const;
 	}
 }

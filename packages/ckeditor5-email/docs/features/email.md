@@ -7,7 +7,7 @@ modified_at: 2025-01-30
 
 {@snippet features/build-email-source}
 
-Creating and editing emails is a demanding task, that has to overcome various semantic and technical difficulties, due to variety of software solutions and lack of standardized approach. The email feature is a set of tools aimed at making the email composition a better and more effective experience.
+Creating and editing emails is a demanding task that has to overcome various semantic and technical difficulties due to a variety of software solutions and a lack of a standardized approach. The email feature is a set of tools aimed at making the email composition a better and more effective experience.
 
 ## Demo
 
@@ -37,7 +37,6 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ EmailIntegration, /* ... */ ],
-		toolbar: [ 'email', /* ... */ ], //probably not
 		link: {
 			// Configuration.
 		}
@@ -93,7 +92,7 @@ The `preserveEmptyBlocksInEditingView` option determines whether empty blocks sh
 
 ### Logs and warnings
 
-The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property lets you suppress warning or log messages about email client compatibility.
+The {@link module:email/emailintegrationconfig~EmailIntegrationConfig} property lets you suppress warnings or log messages about email client compatibility.
 
 ```js
 ClassicEditor
@@ -109,8 +108,8 @@ ClassicEditor
 
 ## Related features
 
-Here are some similar CKEditor&nbsp;5 features that you may find helpful:
-* list them here
+Here are some related CKEditor&nbsp;5 features that you may find helpful:
+* Export inline styles &nbsp; The export inline styles feature turn all external CSS styles to inline style, providing better compatibility with various email clients.
 
 ## Common API
 

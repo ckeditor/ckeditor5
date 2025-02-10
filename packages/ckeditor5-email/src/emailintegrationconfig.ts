@@ -41,7 +41,9 @@ export interface EmailIntegrationConfig {
 	logs?: {
 
 		/**
-		 * Whether to suppress all compatibility logs.
+		 * Setting this to `true` will silence all compatibility warnings,
+		 * including any that might be added in future releases. This is not recommended
+		 * as it may hide important information about the editor's behavior in email clients.
 		 *
 		 * @default false
 		 */

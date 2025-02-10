@@ -15,7 +15,7 @@ import type { TableConfig } from '@ckeditor/ckeditor5-table';
 /**
  * A plugin that checks if the Table plugin is properly configured for the email integration.
  */
-export class TableEmailIntegration extends Plugin {
+export default class TableEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -67,9 +67,10 @@ export class TableEmailIntegration extends Plugin {
 	 * Checks if the table properties colors are supported in the email integration.
 	 */
 	private _checkTableConfig(): void {
-		const tableConfig: TableConfig | undefined = this.editor.config.get( 'table' );
+		const { config, plugins } = this.editor;
+		const tableConfig: TableConfig | undefined = config.get( 'table' );
 
-		if ( tableConfig ) {
+		if ( tableConfig && plugins.has( 'Table' ) ) {
 			this._checkTablePropertiesConfig( 'tableCellProperties' );
 			this._checkTablePropertiesConfig( 'tableProperties' );
 		}

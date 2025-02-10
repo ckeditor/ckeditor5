@@ -8,7 +8,7 @@
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link' ), {
+	.create( document.querySelector( '#snippet-email-integration' ), {
 		extraPlugins: [ ...Object.values( CKEditorPlugins ) ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
@@ -39,12 +39,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Link' ),
-			text: 'Click to create a link.',
-			editor
-		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

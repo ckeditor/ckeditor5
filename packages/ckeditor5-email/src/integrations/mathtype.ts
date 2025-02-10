@@ -13,7 +13,7 @@ import EmailIntegrationUtils from '../emailintegrationutils.js';
 /**
  * A plugin that warns about using MathType plugin in the email integration.
  */
-export class MathTypeEmailIntegration extends Plugin {
+export default class MathTypeEmailIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

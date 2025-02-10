@@ -5,7 +5,7 @@
 
 /* globals document, console */
 
-import { FullPage, HtmlPageDataProcessor } from '../src/index.js';
+import { FullPage, HtmlComment, HtmlPageDataProcessor } from '../src/index.js';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -433,6 +433,27 @@ describe( 'FullPage', () => {
 
 				expect( console.warn.callCount ).to.equal( 0 );
 			} );
+		} );
+	} );
+
+	describe( 'HtmlComment integration', () => {
+		it( 'should preserve comments', async () => {
+			const content =
+				'<?xml version="1.0" encoding="UTF-8"?>\n' +
+				'<!DOCTYPE html>\n' +
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<!-- comment -->' +
+						'<p>foo</p><p>bar</p>' +
+					'</body>' +
+				'</html>';
+
+			await createEditor( content, {
+				plugins: [ Paragraph, ClipboardPipeline, HtmlComment, FullPage ]
+			} );
+
+			expect( editor.getData() ).to.equal( content );
 		} );
 	} );
 

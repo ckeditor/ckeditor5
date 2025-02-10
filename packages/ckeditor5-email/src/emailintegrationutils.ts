@@ -13,7 +13,7 @@ import { type Editor, type EditorConfig, Plugin } from 'ckeditor5/src/core.js';
 import { type GetSubConfig, logWarning } from 'ckeditor5/src/utils.js';
 
 /**
- * A utility plugin for the email integration that provides common methods for checking the editor configuration and logging warnings.
+ * A utility plugin for email integration that provides common methods for checking the editor configuration and logging warnings.
  */
 export default class EmailIntegrationUtils extends Plugin {
 	/**
@@ -54,7 +54,7 @@ export default class EmailIntegrationUtils extends Plugin {
 	}
 
 	/**
-	 * Logs an information message about email client compatibility if it's not suppressed in the configuration.
+	 * Logs an information message about email client compatibility if not suppressed in the configuration.
 	 *
 	 * @internal
 	 */
@@ -84,9 +84,9 @@ export default class EmailIntegrationUtils extends Plugin {
 
 		/**
 		 * The plugin is not supported in email editing mode as it may not work correctly in email clients.
-		 * While it is possible to disable this warning using the `email.warnings.suppress` configuration option,
-		 * it is strongly discouraged as the plugin's functionality may break or behave unexpectedly in email clients.
-		 * Removing the plugin from the editor configuration will also turn off the warning.
+		 * It is encouraged to remove the plugin from the editor configuration to maintain compatibility.
+		 * While it is possible to disable this warning using the `email.warnings.suppress`
+		 * configuration option, it is strongly discouraged.
 		 *
 		 * @error email-integration-unsupported-plugin
 		 */
@@ -111,10 +111,10 @@ export default class EmailIntegrationUtils extends Plugin {
 		for ( const [ index, item ] of colors.entries() ) {
 			const color = typeof item === 'string' ? item : item.color;
 
-			if ( isUnsupportedEmailColor( color ) ) {
+			if ( isUnsupportedEmailColorValue( color ) ) {
 				/**
-				 * The color format used in the configuration is not supported by many popular email clients.
-				 * Some email clients may display it incorrectly. Please use the `rgb()` or `#RRGGBB` format instead.
+				 * The specified color value uses a format not supported in email clients. This affects various color
+				 * settings like fonts, backgrounds, borders, etc. Please use `rgb()` or `#RRGGBB` format instead.
 				 *
 				 * @error email-integration-unsupported-color-value
 				 */
@@ -138,10 +138,10 @@ export default class EmailIntegrationUtils extends Plugin {
 			return;
 		}
 
-		if ( isUnsupportedEmailColor( format ) ) {
+		if ( isUnsupportedEmailColorFormat( format ) ) {
 			/**
-			 * The color format used in the configuration is not supported by many popular email clients.
-			 * Some email clients may display it incorrectly. Please use the `rgb()` or `#RRGGBB` format instead.
+			 * The color format specified in the editor configuration (e.g. for color pickers or other UI components)
+			 * is not supported in email clients. Please use `rgb` or `hex` format instead.
 			 *
 			 * @error email-integration-unsupported-color-format
 			 */
@@ -174,11 +174,22 @@ export default class EmailIntegrationUtils extends Plugin {
 	}
 }
 
+const UNSUPPORTED_COLOR_FORMATS = [
+	'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklab', 'oklch', 'color-mix', 'rgba'
+];
+
 /**
- * Checks if the given color is not supported in email clients.
+ * Checks if the given color value is not supported in email clients.
  */
-export function isUnsupportedEmailColor( color: string ): boolean {
-	return /hsl|hwb|lab|lch/.test( color );
+export function isUnsupportedEmailColorValue( color: string | undefined ): boolean {
+	return !!color && UNSUPPORTED_COLOR_FORMATS.some( format => color.includes( `${ format }(` ) );
+}
+
+/**
+ * Checks if the given color format is not supported in email clients.
+ */
+export function isUnsupportedEmailColorFormat( color: string | undefined ): boolean {
+	return !!color && UNSUPPORTED_COLOR_FORMATS.includes( color );
 }
 
 /**
