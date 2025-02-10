@@ -280,12 +280,11 @@ export default class EmojiRepository extends Plugin {
 		}
 
 		/**
-		 * By default, the Emoji plugin uses a CDN to fetch the emoji repository. If you
-		 * want to avoid this, you can provide your own emoji repository following
-		 * the {@glink features/emoji#custom-repository Custom emoji repository} guide.
+		 * By default, the Emoji plugin fetches the emoji repository from CKEditor 5 CDN. If you want to avoid this,
+		 * you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+		 * configuration option to provide an URL to your own emoji repository.
 		 *
-		 * To suppress this warning, set the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
-		 * configuration option to `cdn`.
+		 * If you only want to suppress this warning, set this configuration option to `cdn`.
 		 *
 		 * @error emoji-repository-cdn-use
 		 */

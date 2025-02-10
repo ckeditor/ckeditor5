@@ -76,45 +76,63 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 * `dropdownLimit` &ndash; the number of items to appear in the emoji dropdown.
 
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// ... Other configuration options ...
-		emoji: {
-			dropdownLimit: 5
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
+	```js
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			// ... Other configuration options ...
+			emoji: {
+				dropdownLimit: 5
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+	```
 
 * `skinTone` &ndash; the initial skin tone for the emojis that support skin tones.
 
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// ... Other configuration options ...
-		emoji: {
-			skinTone: 'medium'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
+	```js
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			// ... Other configuration options ...
+			emoji: {
+				skinTone: 'medium'
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+	```
+
+* `definitionsUrl` &ndash; the URL to the emoji definitions file. The URL should return a JSON array with emoji definitions specified by the {@link module:emoji/emojirepository~EmojiCdnResource `EmojiCdnResource`} interface.
+
+	<info-box warning>
+		If the `definitionsUrl` is not provided, the feature will fetch the emoji definitions from the CKEditor&nbsp;5 CDN.
+	</info-box>
+
+	```js
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			// ... Other configuration options ...
+			emoji: {
+				definitionsUrl: 'https://example.com/emoji-definitions.json'
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+	```
 
 * `version` &ndash; the emoji database version.
 
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// ... Other configuration options ...
-		emoji: {
-			version: 15
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
+	```js
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			// ... Other configuration options ...
+			emoji: {
+				version: 15
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+	```
 
 <info-box info>
 	The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
