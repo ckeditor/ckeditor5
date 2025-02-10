@@ -531,6 +531,7 @@ export default {
 		{
 			model: 'htmlHr',
 			view: 'hr',
+			isEmpty: true,
 			modelSchema: {
 				inheritAllFrom: '$blockObject'
 			}
