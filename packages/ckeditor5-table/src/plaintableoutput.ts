@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine.js';
+import type { DowncastWriter, Element, Node, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import Table from './table.js';
 
@@ -67,6 +67,15 @@ export default class PlainTableOutput extends Plugin {
 		if ( editor.plugins.has( 'TableProperties' ) ) {
 			downcastTableBorderAndBackgroundAttributes( editor );
 		}
+
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+				// It's not necessary to upcast the `table` class. This class was only added in data downcast
+				// to center a plain table in the editor output.
+				// See: https://github.com/ckeditor/ckeditor5/issues/17888.
+				conversionApi.consumable.consume( data.viewItem, { classes: 'table' } );
+			} );
+		} );
 	}
 }
 
@@ -121,7 +130,7 @@ function downcastTableElement( table: Element, { writer }: { writer: DowncastWri
 	//        {table-body-rows-slot}
 	//    </tbody>
 	// </table>
-	return writer.createContainerElement( 'table', null, [ childrenSlot, ...tableContentElements ] );
+	return writer.createContainerElement( 'table', { class: 'table' }, [ childrenSlot, ...tableContentElements ] );
 }
 
 /**
