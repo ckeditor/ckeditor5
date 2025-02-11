@@ -65,7 +65,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			TableElementSupport,
 			StyleElementSupport,
 			ListElementSupport,
-			EmailIntegrationSupport
+			EmailIntegrationSupport,
 			HorizontalLineElementSupport,
 			CustomElementSupport
 		] as const;
