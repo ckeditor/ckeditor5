@@ -20,7 +20,7 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 /* globals document */
 
 describe( 'Delete feature', () => {
-	let element, editor, model, view, viewDocument;
+	let element, editor, model, viewDocument;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -31,7 +31,6 @@ describe( 'Delete feature', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				view = editor.editing.view;
 				viewDocument = editor.editing.view.document;
 
 				model.schema.register( 'widget', {
@@ -116,21 +115,29 @@ describe( 'Delete feature', () => {
 	it( 'handles the backspace key in a nested editable (Safari)', () => {
 		env.isSafari = true;
 
-		setModelData( model, '<widget><nested>[]</nested></widget>' );
-
-		const widgetView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		const target = view.domConverter.mapViewToDom( widgetView );
-		const domEventDataMock = new DomEventData(
-			view,
-			{
-				target,
+		const clickBackspace = ( metaKey = false ) => {
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'backspace' ),
-				metaKey: true,
-				preventDefault: sinon.spy()
-			}
-		);
+				metaKey
+			} ) );
+		};
 
-		viewDocument.fire( 'keydown', domEventDataMock );
+		setModelData( model, '<widget><nested>fo[]</nested></widget>' );
+
+		clickBackspace();
+
+		expect( getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
+
+		clickBackspace();
+
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+
+		clickBackspace();
+
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+
+		// There was an edge case tied to deleting whole lines.
+		clickBackspace( true );
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 
