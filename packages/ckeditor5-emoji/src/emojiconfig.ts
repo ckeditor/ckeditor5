@@ -77,8 +77,6 @@ export interface EmojiConfig {
 	 *		.then( ... )
 	 *		.catch( ... );
 	 * ```
-	 *
-	 * @default 'https://cdn.ckeditor.com/ckeditor5/data/emoji/\{version\}/en.json'
 	 */
 	definitionsUrl?: string;
 
@@ -99,8 +97,6 @@ export interface EmojiConfig {
 	 *
 	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
 	 * option is provided, `version` is ignored as the defined URL takes precedence over the `version`.
-	 *
-	 * @default 16
 	 */
 	version?: EmojiVersion;
 }
