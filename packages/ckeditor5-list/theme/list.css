@@ -38,3 +38,18 @@
 		}
 	}
 }
+
+/* Add `overflow: hidden` and `padding-inline-start` to the lists, starting from the second nesting
+only when they are preceded by an element (e.g. table) has `class` name `table-style-align-right` or `table-style-align-left`.
+See https://github.com/ckeditor/ckeditor5/issues/8412 */
+.ck-content .table-style-align-right ~ ul ul,
+.ck-content .table-style-align-right ~ ul ol,
+.ck-content .table-style-align-right ~ ol ol,
+.ck-content .table-style-align-right ~ ol ul,
+.ck-content .table-style-align-left ~ ul ul,
+.ck-content .table-style-align-left ~ ul ol,
+.ck-content .table-style-align-left ~ ol ol,
+.ck-content .table-style-align-left ~ ol ul {
+	overflow: hidden;
+	padding-inline-start: 2em;
+}
