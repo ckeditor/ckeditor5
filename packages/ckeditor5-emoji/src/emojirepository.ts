@@ -256,7 +256,7 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * Warn users on self-hosted installations about the fact that this plugin uses a CDN to fetch the emoji repository.
+	 * Warn users on self-hosted installations that this plugin uses a CDN to fetch the emoji repository.
 	 */
 	private _warnAboutCdnUse(): void {
 		const editor = this.editor;
@@ -280,9 +280,9 @@ export default class EmojiRepository extends Plugin {
 		}
 
 		/**
-		 * By default, the Emoji plugin fetches the emoji repository from CKEditor 5 CDN. If you want to avoid this,
+		 * By default, the Emoji plugin fetches the emoji repository from CKEditor 5 CDN. To avoid this,
 		 * you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
-		 * configuration option to provide an URL to your own emoji repository.
+		 * configuration option to provide a URL to your own emoji repository.
 		 *
 		 * If you only want to suppress this warning, set this configuration option to `cdn`.
 		 *
