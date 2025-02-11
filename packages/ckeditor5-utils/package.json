@@ -16,7 +16,6 @@
     "es-toolkit": "1.32.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "44.1.0",
     "@ckeditor/ckeditor5-editor-classic": "44.1.0",
     "@ckeditor/ckeditor5-core": "44.1.0",
     "@ckeditor/ckeditor5-engine": "44.1.0",

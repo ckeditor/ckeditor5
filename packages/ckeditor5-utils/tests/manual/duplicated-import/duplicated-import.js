@@ -5,7 +5,7 @@
 
 /* global document, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '../../../../../docs/_snippets/build-classic.js';
 
 import '@ckeditor/ckeditor5-core/src/editor/editor.js';
 
