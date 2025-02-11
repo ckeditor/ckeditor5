@@ -327,7 +327,7 @@ describe( 'FullPage', () => {
 			} );
 		} );
 
-		describe( 'default `fullPage.sanitizeCss`', () => {
+		describe( 'default `htmlSupport.fullPage.sanitizeCss`', () => {
 			let config = '';
 			let fullPageConfig;
 
@@ -366,7 +366,7 @@ describe( 'FullPage', () => {
 			} );
 		} );
 
-		describe( 'custom `fullPage.sanitizeCss`', () => {
+		describe( 'custom `htmlSupport.fullPage.sanitizeCss`', () => {
 			let config = '';
 			let fullPageConfig;
 
