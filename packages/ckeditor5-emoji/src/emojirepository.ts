@@ -11,7 +11,7 @@ import Fuse from 'fuse.js';
 import { groupBy } from 'lodash-es';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { logWarning, version as EditorVersion } from 'ckeditor5/src/utils.js';
+import { logWarning, version as editorVersion } from 'ckeditor5/src/utils.js';
 import EmojiUtils from './emojiutils.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -230,11 +230,11 @@ export default class EmojiRepository extends Plugin {
 		const { definitionsUrl, version } = this.editor.config.get( 'emoji' )!;
 
 		if ( !definitionsUrl || definitionsUrl === 'cdn' ) {
-			// Url was not provided or is set to 'cdn', so we use the default CDN URL.
+			// URL was not provided or is set to 'cdn', so we use the default CDN URL.
 			const urlVersion = version || DEFAULT_EMOJI_VERSION;
 			const url = new URL( DEFAULT_EMOJI_DATABASE_URL.replace( '{version}', urlVersion.toString() ) );
 
-			url.searchParams.set( 'editorVersion', EditorVersion );
+			url.searchParams.set( 'editorVersion', editorVersion );
 
 			return url;
 		}
