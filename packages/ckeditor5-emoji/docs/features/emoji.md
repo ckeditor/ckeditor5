@@ -9,17 +9,17 @@ modified_at: 2025-01-21
 
 # Emoji
 
-The emoji feature lets you insert emojis into the document from the editor toolbar, or on the go while writing the content. The emojis are pulled from the CDN, to lessen the editor load.
+The emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.
 
-Since there is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects". You may also search for a specific emoji using the search field.
+Since there is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects." You may also search for a specific emoji using the search field.
 
 ## Demo
 
-Use the emoji toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Then, you can either choose which emoji to insert from the suggestion list, or choose the `Show all emoji...` option to open the full panel. The marker must be preceded by a space to work.
+Use the emoji toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Then, you can either choose which emoji to insert from the suggestion list or select the `Show all emoji...` option to open the full panel. The marker must be preceded by a space to work.
 
 There is an option to set the skin tone of the emojis next to the search field, too.
 
-The selected emoji category and skin tone are remembered by the feature, so next time you invoke the panel you can quickly insert an emoji of similar type.
+The selected emoji category and skin tone are remembered by the feature, so next time you invoke the panel, you can quickly insert an emoji of similar type.
 
 {@snippet features/emoji}
 
@@ -65,10 +65,10 @@ ClassicEditor
 
 The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
 
-* {@link module:emoji/emojimention~EmojiMention} &ndash; Adds support for triggering the emoji UI dropdown while writing the content when you type a pre-configured `:` marker followed by at least two letters of desired emoji name.
-* {@link module:emoji/emojipicker~EmojiPicker} &ndash; Registers the UI button component which opens a panel with a table of selectable emojis.
+* {@link module:emoji/emojimention~EmojiMention} &ndash; Adds support for triggering the emoji UI dropdown while writing the content when you type a pre-configured `:` marker followed by at least two letters of the desired emoji name.
+* {@link module:emoji/emojipicker~EmojiPicker} &ndash; Registers the UI button component, which opens a panel with a table of selectable emojis.
 
-You can freely choose how to load the feature: either as a whole (as shown in the example above), or select one of the sub-plugins if you need only one of the ways of inserting emojis into the document.
+You can freely choose how to load the feature: either as a whole (as shown in the example above) or select one of the sub-plugins if you need only one of the ways of inserting emojis into the document.
 
 ## Configuration
 
@@ -142,7 +142,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 ## Related features
 
-In addition to enabling emoji feature, you may want to check the following related features:
+In addition to enabling the emoji feature, you may want to check the following related features:
 
 * {@link features/special-characters Special characters} &ndash; Allows inserting **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**).
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
@@ -152,7 +152,7 @@ In addition to enabling emoji feature, you may want to check the following relat
 The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button component (`'emoji'`) and the command (`'emoji'`) that allows opening the emoji picker UI.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor, such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute
