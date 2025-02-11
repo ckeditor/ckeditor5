@@ -7,14 +7,21 @@
  * @module html-support/fullpage
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning, global } from 'ckeditor5/src/utils.js';
 import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
+
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
 /**
  * The full page editing feature. It preserves the whole HTML page in the editor data.
  */
 export default class FullPage extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public htmlDataProcessor: HtmlPageDataProcessor;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -35,7 +42,29 @@ export default class FullPage extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
+		editor.config.define( 'htmlSupport.fullPage', {
+			allowRenderStylesFromHead: false,
+			sanitizeCss: rawCss => {
+				/**
+				 * When using the Full page with the `config.htmlSupport.fullPage.allowRenderStylesFromHead` set to `true`,
+				 * it is strongly recommended to define a sanitize function that will clean up the CSS
+				 * which is present in the `<head>` in editors content in order to avoid XSS vulnerability.
+				 *
+				 * For a detailed overview, check the {@glink TODO} documentation.
+				 *
+				 * @error html-embed-provide-sanitize-function
+				 */
+				logWarning( 'css-full-page-provide-sanitize-function' );
+
+				return {
+					css: rawCss,
+					hasChanged: false
+				};
+			}
+		} );
+
+		this.htmlDataProcessor = new HtmlPageDataProcessor( editor.data.viewDocument );
+		editor.data.processor = this.htmlDataProcessor;
 	}
 
 	/**
@@ -62,6 +91,10 @@ export default class FullPage extends Plugin {
 					}
 				}
 			} );
+
+			if ( isAllowedRenderStylesFromHead( editor ) ) {
+				this._renderStylesFromHead();
+			}
 		}, { priority: 'low' } );
 
 		// Apply root attributes to the view document fragment.
@@ -110,4 +143,77 @@ export default class FullPage extends Plugin {
 			args[ 0 ].trim = false;
 		}, { priority: 'high' } );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		if ( isAllowedRenderStylesFromHead( this.editor ) ) {
+			this._removeStyleElementsFromDom();
+		}
+	}
+
+	/**
+	 * Checks if in the document exists any `<style>` elements injected by the plugin and removes them,
+	 * so these could be re-rendered later.
+	 * There is used `data-full-page-style-id` attribute to recognize styles injected by the feature.
+	 */
+	private _removeStyleElementsFromDom(): void {
+		const existingStyleElements = Array.from(
+			global.document.querySelectorAll( `[data-full-page-style-id="${ this.editor.id }"]` )
+		);
+
+		for ( const style of existingStyleElements ) {
+			style.remove();
+		}
+	}
+
+	/**
+	 * Extracts `<style>` elements from the full page data and renders them in the main document `<head>`.
+	 * CSS content is sanitized before rendering.
+	 */
+	private _renderStyleElementsInDom(): void {
+		const editor = this.editor;
+		const parsedDocument = this.htmlDataProcessor.parsedDocument;
+
+		if ( !parsedDocument ) {
+			return;
+		}
+
+		const sanitizeCss = editor.config.get( 'htmlSupport.fullPage.sanitizeCss' )!;
+
+		// Extract `<style>` elements from the `<head>` from the full page data.
+		const styleElements: Array<HTMLStyleElement> = Array.from( parsedDocument.querySelectorAll( 'head style' ) );
+
+		// Add `data-full-page-style-id` attribute to the `<style>` element and render it in `<head>` in the main document.
+		for ( const style of styleElements ) {
+			style.setAttribute( 'data-full-page-style-id', editor.id );
+
+			// Sanitize the CSS content before rendering it in the editor.
+			const sanitizedCss = sanitizeCss( style.innerText );
+
+			if ( sanitizedCss.hasChanged ) {
+				style.innerText = sanitizedCss.css;
+			}
+
+			global.document.head.append( style );
+		}
+	}
+
+	/**
+	 * Removes existing `<style>` elements injected by the plugin and renders new ones from the full page data.
+	 */
+	private _renderStylesFromHead() {
+		this._removeStyleElementsFromDom();
+		this._renderStyleElementsInDom();
+	}
+}
+
+/**
+ * Normalize the Full page configuration option `allowRenderStylesFromHead`.
+ */
+function isAllowedRenderStylesFromHead( editor: Editor ): boolean {
+	return editor.config.get( 'htmlSupport.fullPage.allowRenderStylesFromHead' )!;
 }
