@@ -98,7 +98,7 @@ export interface EmojiConfig {
 	 * ```
 	 *
 	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
-	 * option is provided, this option should be omitted.
+	 * option is provided, `version` is ignored as the defined URL takes precedence over the `version`.
 	 *
 	 * @default 16
 	 */
