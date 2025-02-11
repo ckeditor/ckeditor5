@@ -263,6 +263,11 @@ export interface DataSchemaDefinition {
 	 * Indicates that the definition describes inline element.
 	 */
 	isInline?: boolean;
+
+	/**
+	 * Indicates that the definition describes an empty HTML element like `<hr>`.
+	 */
+	isEmpty?: boolean;
 }
 
 /**
