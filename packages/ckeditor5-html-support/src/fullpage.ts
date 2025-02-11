@@ -9,7 +9,12 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, global } from 'ckeditor5/src/utils.js';
-import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
+import {
+	UpcastWriter,
+	type DataControllerToModelEvent,
+	type DataControllerToViewEvent,
+	type RootElement
+} from 'ckeditor5/src/engine.js';
 
 import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
@@ -17,11 +22,6 @@ import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
  * The full page editing feature. It preserves the whole HTML page in the editor data.
  */
 export default class FullPage extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	public htmlDataProcessor: HtmlPageDataProcessor;
-
 	/**
 	 * @inheritDoc
 	 */
@@ -63,8 +63,7 @@ export default class FullPage extends Plugin {
 			}
 		} );
 
-		this.htmlDataProcessor = new HtmlPageDataProcessor( editor.data.viewDocument );
-		editor.data.processor = this.htmlDataProcessor;
+		editor.data.processor = new HtmlPageDataProcessor( editor.data.viewDocument );
 	}
 
 	/**
@@ -72,7 +71,7 @@ export default class FullPage extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
+		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration', '$fullPageHeadStyles' ];
 
 		editor.model.schema.extend( '$root', {
 			allowAttributes: properties
@@ -93,7 +92,7 @@ export default class FullPage extends Plugin {
 			} );
 
 			if ( isAllowedRenderStylesFromHead( editor ) ) {
-				this._renderStylesFromHead();
+				this._renderStylesFromHead( root );
 			}
 		}, { priority: 'low' } );
 
@@ -174,18 +173,17 @@ export default class FullPage extends Plugin {
 	 * Extracts `<style>` elements from the full page data and renders them in the main document `<head>`.
 	 * CSS content is sanitized before rendering.
 	 */
-	private _renderStyleElementsInDom(): void {
+	private _renderStyleElementsInDom( root: RootElement ): void {
 		const editor = this.editor;
-		const parsedDocument = this.htmlDataProcessor.parsedDocument;
 
-		if ( !parsedDocument ) {
+		// Get `<style>` elements list from the `<head>` from the full page data.
+		const styleElements = root.getAttribute( '$fullPageHeadStyles' ) as Array<HTMLStyleElement> | undefined;
+
+		if ( !styleElements ) {
 			return;
 		}
 
 		const sanitizeCss = editor.config.get( 'htmlSupport.fullPage.sanitizeCss' )!;
-
-		// Extract `<style>` elements from the `<head>` from the full page data.
-		const styleElements: Array<HTMLStyleElement> = Array.from( parsedDocument.querySelectorAll( 'head style' ) );
 
 		// Add `data-full-page-style-id` attribute to the `<style>` element and render it in `<head>` in the main document.
 		for ( const style of styleElements ) {
@@ -205,9 +203,9 @@ export default class FullPage extends Plugin {
 	/**
 	 * Removes existing `<style>` elements injected by the plugin and renders new ones from the full page data.
 	 */
-	private _renderStylesFromHead() {
+	private _renderStylesFromHead( root: RootElement ): void {
 		this._removeStyleElementsFromDom();
-		this._renderStyleElementsInDom();
+		this._renderStyleElementsInDom( root );
 	}
 }
 
