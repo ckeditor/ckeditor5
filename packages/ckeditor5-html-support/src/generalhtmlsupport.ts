@@ -20,6 +20,7 @@ import ScriptElementSupport from './integrations/script.js';
 import TableElementSupport from './integrations/table.js';
 import StyleElementSupport from './integrations/style.js';
 import ListElementSupport from './integrations/list.js';
+import HorizontalLineElementSupport from './integrations/horizontalline.js';
 import CustomElementSupport from './integrations/customelement.js';
 import EmailIntegrationSupport from './integrations/emailintegration.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
@@ -64,8 +65,9 @@ export default class GeneralHtmlSupport extends Plugin {
 			TableElementSupport,
 			StyleElementSupport,
 			ListElementSupport,
-			CustomElementSupport,
 			EmailIntegrationSupport
+			HorizontalLineElementSupport,
+			CustomElementSupport
 		] as const;
 	}
 
