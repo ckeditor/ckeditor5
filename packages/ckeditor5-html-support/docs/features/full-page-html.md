@@ -35,11 +35,67 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ FullPage, /* ... */ ],
+		htmlSupport: {
+			fullPage: {
+				// Configuration.
+			}
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+## Configuration
+
+### Render styles
+
+By default, the full page HTML feature doesn't render the CSS from `<style>` that may be located in the `<head>` section edited content. To enable that possibility, set option {@link module:html-support/generalhtmlsupportconfig~FullPageConfig#allowRenderStylesFromHead `config.htmlSupport.fullPage.allowRenderStylesFromHead`} to `true`.
+
+Plugin extracts `<style>` elements from the edited content, moves them to the main document `<head>` and renders them. When CSS in `<style>` tag is changed using for example {@link features/source-editing-enhanced Enhanced source code editing feature}, previously added `<style>` elements to the main document `<head>` will be replaced by the new ones.
+
+However, by enabling ability of render CSS that is in `<style>` elements located in the `<head>` section edited content, you expose the users of your system to the **risk of executing malicious code inside the editor**. Therefore, it is highly recommended to plug in some CSS sanitizer that will strip the malicious code from the styles before rendering the CSS styles. You can plug in the sanitizer by defining the {@link module:html-support/generalhtmlsupportconfig~FullPageConfig#sanitizeCss `config.htmlSupport.fullPage.sanitizeCss`} option.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		htmlSupport: {
+			fullPage: {
+				allowRenderStylesFromHead: true,
+				// Strip unsafe properties and values, for example:
+				// values like url( ... ) that may execute malicious code
+				// from an unknown source.
+				sanitizeCss( CssString ) {
+					const sanitizedCss = sanitize( CssString );
+
+					return {
+						css: sanitizedCss,
+						// true or false depending on whether
+						// the sanitizer stripped anything.
+						hasChanged: true
+					};
+				}
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Security
+
+This, in turn, is a plain security risk. The CSS provided by the user might be mistakenly copied from a malicious website. It could also end up in the user's clipboard (as it would usually be copied and pasted) by any other means.
+
+You can instruct some advanced users to never paste CSS code from untrusted sources. However, in most cases, it is highly recommended to secure the system by configuring the Full page HTML feature to use a CSS sanitizer and, optionally, by setting strict Content Security Policy (CSP) rules.
+
+#### Sanitizer
+
+The {@link module:html-support/generalhtmlsupportconfig~FullPageConfig#sanitizeCss `config.htmlSupport.fullPage.sanitizeCss`} option allows plugging an external sanitizer.
+
+#### CSP
+
+In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources that CSS can use.
 
 ## Additional feature information
 
