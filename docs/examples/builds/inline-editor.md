@@ -9,6 +9,8 @@ classes: main__content--no-toc
 
 # Inline editor
 
+{@snippet build-inline-source}
+
 The inline editor type lets you create your content directly in its target location with the help of a floating toolbar that appears when the editable text is focused.
 
 In this example the {@link features/images-styles image styles} configuration was changed to enable left- and right-aligned images.
