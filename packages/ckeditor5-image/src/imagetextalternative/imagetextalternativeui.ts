@@ -7,7 +7,7 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -15,6 +15,7 @@ import {
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
+import { IconTextAlternative } from 'ckeditor5/src/icons.js';
 
 import TextAlternativeFormView, {
 	type TextAlternativeFormViewCancelEvent,
@@ -94,7 +95,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: icons.textAlternative,
+				icon: IconTextAlternative,
 				tooltip: true
 			} );
 

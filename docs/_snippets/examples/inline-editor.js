@@ -3,9 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+/* globals InlineEditor, console, window, document */
 
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Locale, ToolbarView, coreIcons, IconView, document */
+/* globals Locale, ToolbarView, icons, IconView, document */
 
 const locale = new Locale();
 
 const toolbarIcons = new ToolbarView( locale );
 
-Object.values( coreIcons ).forEach( svg => {
+Object.values( icons ).forEach( svg => {
 	const icon = new IconView();
 	icon.content = svg;
 	icon.render();

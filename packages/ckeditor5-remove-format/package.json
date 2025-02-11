@@ -14,6 +14,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-ui": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "ckeditor5": "44.1.0"
@@ -50,7 +51,6 @@
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
-    "theme",
     "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"

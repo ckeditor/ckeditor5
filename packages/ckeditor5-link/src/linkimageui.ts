@@ -9,6 +9,7 @@
 
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconLink } from 'ckeditor5/src/icons.js';
 import type {
 	DocumentSelection,
 	Selection,
@@ -22,8 +23,6 @@ import LinkEditing from './linkediting.js';
 import type LinkCommand from './linkcommand.js';
 
 import { LINK_KEYSTROKE } from './utils.js';
-
-import linkIcon from '../theme/icons/link.svg';
 
 /**
  * The link image UI plugin.
@@ -93,7 +92,7 @@ export default class LinkImageUI extends Plugin {
 			button.set( {
 				isEnabled: true,
 				label: t( 'Link image' ),
-				icon: linkIcon,
+				icon: IconLink,
 				keystroke: LINK_KEYSTROKE,
 				tooltip: true,
 				isToggleable: true

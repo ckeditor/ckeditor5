@@ -176,7 +176,7 @@ describe( 'ImageStyleEditing', () => {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]
 			} );
 
-			sinon.assert.calledOnceWithMatch( normalizationSpy, {
+			expect( normalizationSpy.firstCall.args[ 0 ] ).to.deep.equal( {
 				configuredStyles: editor.config.get( 'image.styles' ),
 				isBlockPluginLoaded: editor.plugins.has( 'ImageBlockEditing' ),
 				isInlinePluginLoaded: editor.plugins.has( 'ImageInlineEditing' )

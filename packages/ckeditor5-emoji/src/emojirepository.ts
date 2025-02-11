@@ -8,7 +8,7 @@
  */
 
 import Fuse from 'fuse.js';
-import { groupBy } from 'lodash-es';
+import { groupBy } from 'es-toolkit/compat';
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
@@ -192,7 +192,7 @@ export default class EmojiRepository extends Plugin {
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
-		const groups = groupBy( this._database, 'group' );
+		const groups = groupBy( this._database, item => item.group );
 
 		return categories.map( category => {
 			return {

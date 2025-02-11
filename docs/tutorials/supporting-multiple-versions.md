@@ -74,7 +74,7 @@ If you want to support legacy versions of CKEditor&nbsp;5, you cannot import fro
 	 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 	 // ❌
-	 import TableRowIcon from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
+	 import TableRowIcon from '@ckeditor/ckeditor5-icons/theme/icons/table-row.svg';
 	 ```
 
 During the build process, these imports will be used as-is when generating the bundles for the legacy versions of CKEditor&nbsp;5, but will be replaced with `ckeditor5` and `ckeditor5-premium-features` in the bundles for the latest version.

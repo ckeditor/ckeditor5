@@ -4,7 +4,7 @@
  */
 
 /* globals Locale, Collection, Model, createDropdown, addListToDropdown, ButtonView,
-boldIcon, italicIcon, SplitButtonView, addToolbarToDropdown, ToolbarView, document */
+icons, SplitButtonView, addToolbarToDropdown, ToolbarView, document */
 
 const locale = new Locale();
 
@@ -35,8 +35,8 @@ listDropdown.render();
 const bold = new ButtonView();
 const italic = new ButtonView();
 
-bold.set( { label: 'Bold', withText: false, icon: boldIcon } );
-italic.set( { label: 'Italic', withText: false, icon: italicIcon } );
+bold.set( { label: 'Bold', withText: false, icon: icons.IconBold } );
+italic.set( { label: 'Italic', withText: false, icon: icons.IconItalic } );
 
 const buttons = [ bold, italic ];
 

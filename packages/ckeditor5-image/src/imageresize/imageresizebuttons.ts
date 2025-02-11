@@ -6,9 +6,8 @@
 /**
  * @module image/imageresize/imageresizebuttons
  */
-import { map } from 'lodash-es';
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -18,6 +17,13 @@ import {
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
+import {
+	IconObjectSizeCustom,
+	IconObjectSizeFull,
+	IconObjectSizeLarge,
+	IconObjectSizeMedium,
+	IconObjectSizeSmall
+} from 'ckeditor5/src/icons.js';
 
 import ImageResizeEditing from './imageresizeediting.js';
 
@@ -25,11 +31,11 @@ import type ResizeImageCommand from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
 
 const RESIZE_ICONS = /* #__PURE__ */ ( () => ( {
-	small: icons.objectSizeSmall,
-	medium: icons.objectSizeMedium,
-	large: icons.objectSizeLarge,
-	custom: icons.objectSizeCustom,
-	original: icons.objectSizeFull
+	small: IconObjectSizeSmall,
+	medium: IconObjectSizeMedium,
+	large: IconObjectSizeLarge,
+	custom: IconObjectSizeCustom,
+	original: IconObjectSizeFull
 } ) )();
 
 /**
@@ -301,7 +307,7 @@ export default class ImageResizeButtons extends Plugin {
 					} )
 				};
 
-				const allDropdownValues = map( optionsWithSerializedValues, 'valueWithUnits' );
+				const allDropdownValues = Object.values( optionsWithSerializedValues ).map( option => option.valueWithUnits );
 
 				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnCustomButtonCallback( allDropdownValues ) );
 			} else {

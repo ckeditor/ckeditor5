@@ -14,13 +14,14 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.1.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-mention": "44.1.0",
     "@ckeditor/ckeditor5-typing": "44.1.0",
     "@ckeditor/ckeditor5-ui": "44.1.0",
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "ckeditor5": "44.1.0",
     "fuse.js": "7.0.0",
-    "lodash-es": "4.17.21"
+    "es-toolkit": "1.32.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "44.1.0",

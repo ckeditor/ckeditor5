@@ -9,8 +9,9 @@
 
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
+import { IconEmoji } from 'ckeditor5/src/icons.js';
 
 import EmojiCommand from './emojicommand.js';
 import EmojiRepository from './emojirepository.js';
@@ -165,7 +166,7 @@ export default class EmojiPicker extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Emoji' ),
-			icon: icons.emoji,
+			icon: IconEmoji,
 			isToggleable: true
 		} );
 

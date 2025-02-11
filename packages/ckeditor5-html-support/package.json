@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-utils": "44.1.0",
     "@ckeditor/ckeditor5-widget": "44.1.0",
     "ckeditor5": "44.1.0",
-    "lodash-es": "4.17.21"
+    "es-toolkit": "1.32.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "44.1.0",

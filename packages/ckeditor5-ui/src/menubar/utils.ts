@@ -34,7 +34,7 @@ import {
 	type ObservableChangeEvent,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
