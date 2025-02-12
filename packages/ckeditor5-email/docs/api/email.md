@@ -8,10 +8,6 @@ category: api-reference
 
 This package implements the email feature for CKEditor&nbsp;5. It allows for turning the edited content into emails.
 
-## Demo
-
-Check out the demo in the {@link features/email#demo email feature guide}.
-
 ## Documentation
 
 See the {@link features/email email feature guide} and the {@link module:email/emailintegration~EmailIntegration} plugin documentation.

@@ -19,10 +19,6 @@ npm install ckeditor5
 
 If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/checkout?plan=free).
 
-## Demo
-
-Check out the [demo in the email feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/email.html#demo).
-
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-email` package](https://ckeditor.com/docs/ckeditor5/latest/api/email.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
