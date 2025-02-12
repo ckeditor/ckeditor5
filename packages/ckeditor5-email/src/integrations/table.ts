@@ -41,18 +41,22 @@ export default class TableEmailIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		this._checkPlainTableOutputPlugin();
+		this._checkRequiredTablePlugins();
 		this._checkTableConfig();
 	}
 
 	/**
 	 * Checks if the `PlainTableOutput` plugin is available when the `Table` plugin is enabled.
 	 */
-	private _checkPlainTableOutputPlugin(): void {
+	private _checkRequiredTablePlugins(): void {
 		const { plugins } = this.editor;
 		const utils = plugins.get( EmailIntegrationUtils );
 
-		if ( plugins.has( 'Table' ) && !plugins.has( 'PlainTableOutput' ) ) {
+		if ( !plugins.has( 'Table' ) ) {
+			return;
+		}
+
+		if ( !plugins.has( 'PlainTableOutput' ) ) {
 			/**
 			 * The `PlainTableOutput` plugin is required to use tables in the email integration.
 			 * Without it, tables will not be exported correctly and may not be displayed correctly in some email clients.
@@ -60,6 +64,16 @@ export default class TableEmailIntegration extends Plugin {
 			 * @error email-integration-missing-plain-table-output-plugin
 			 */
 			utils._logSuppressibleWarning( 'email-integration-missing-plain-table-output-plugin' );
+		}
+
+		if ( !plugins.has( 'TableLayout' ) ) {
+			/**
+			 * The `TableLayout` plugin is required to use tables in the email integration.
+			 * Without it, tables will not be exported correctly and may not be displayed correctly in some email clients.
+			 *
+			 * @error email-integration-missing-table-layout-plugin
+			 */
+			utils._logSuppressibleWarning( 'email-integration-missing-table-layout-plugin' );
 		}
 	}
 
