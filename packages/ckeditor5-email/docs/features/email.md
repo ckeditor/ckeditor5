@@ -9,16 +9,6 @@ modified_at: 2025-01-30
 
 Creating and editing emails is a demanding task that has to overcome various semantic and technical difficulties due to a variety of software solutions and a lack of a standardized approach. The email feature is a set of tools aimed at making the email composition a better and more effective experience.
 
-## Demo
-
-Use the email toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link}.
-
-{@snippet features/email}
-
-<info-box info>
-	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
-
 ## Installation
 
 <info-box info>
