@@ -336,6 +336,7 @@ workflows:
             branches:
               only:
                 - master
+                - master-it84
                 - stable
                 - release
 
