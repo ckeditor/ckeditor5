@@ -7,6 +7,7 @@
  * @module fullscreen/handlers/classiceditorhandler
  */
 
+import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { MenuBarView } from 'ckeditor5/src/ui.js';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
@@ -43,6 +44,12 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 
 		this.moveToFullscreen( editorUI.getEditableElement()!, 'editor' );
 		this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
+
+		if ( this._editor.plugins.has( 'PresenceListUI' ) ) {
+			const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
+
+			this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
+		}
 
 		// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
 		// in both menu bar and toolbar (adding the side padding to the elements).

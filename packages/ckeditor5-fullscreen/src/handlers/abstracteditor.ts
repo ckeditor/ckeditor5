@@ -83,7 +83,12 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
 				<div class="ck ck-fullscreen__editor-wrapper">
-					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar"></div>
+					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar">
+						<div class="ck ck-fullscreen__presence-list-wrapper">
+							<div class="ck ck-fullscreen__presence-list-header">Connected users</div>
+							<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
+						</div>
+					</div>
 					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>

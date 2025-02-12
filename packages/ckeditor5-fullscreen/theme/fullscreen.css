@@ -80,3 +80,18 @@ Fullscreen layout:
 .ck-fullscreen__main-container .ck-fullscreen__editor .ck-source-editing-area {
 	min-width: calc(210mm + 2px);
 }
+
+.ck-fullscreen__presence-list-header {
+	--ck-fullscreen-presence-list-header-font-size: var(--ck-font-size-normal);
+	font-size: var(--ck-fullscreen-presence-list-header-font-size);
+	font-weight: bold;
+	color: var(--ck-document-outline-item-default-color);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	padding-bottom: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__presence-list-wrapper {
+	padding: var(--ck-spacing-medium);
+}
