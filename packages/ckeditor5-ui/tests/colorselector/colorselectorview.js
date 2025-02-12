@@ -21,6 +21,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 const colorDefinitions = [
 	{
@@ -429,6 +430,11 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should execute when color picker is focused and enter pressed', () => {
+			// Focusing input and then the color picker breaks focus handling in the test
+			// suite that uses a headless Chrome browser. It is a workaround for that, as
+			// this deactivates focusing input before the color picker.
+			env.isBlink = false;
+
 			const keyEvtData = {
 				keyCode: keyCodes.enter,
 				preventDefault: sinon.spy(),

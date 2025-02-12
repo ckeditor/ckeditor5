@@ -2553,12 +2553,8 @@ describe( 'ImageElementSupport', () => {
 					// Apply filtering rules added after initial data load.
 					editor.setData( '' );
 
-					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
-						'htmlImgAttributes'
-					] );
-					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
-						'htmlImgAttributes'
-					] );
+					expect( schema.getDefinition( 'imageBlock' ) ).to.be.undefined;
+					expect( schema.getDefinition( 'imageInline' ) ).to.be.undefined;
 				} );
 		} );
 
