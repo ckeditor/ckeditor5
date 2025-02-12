@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -17,7 +17,8 @@ module.exports = {
 		// The CKEditor 5 core DLL build is created from JavaScript files.
 		// ESLint should not process compiled TypeScript.
 		'src/*.js',
-		'**/*.d.ts'
+		'**/*.d.ts',
+		'packages/ckeditor5-emoji/src/utils/isemojisupported.ts'
 	],
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error',
@@ -25,7 +26,7 @@ module.exports = {
 		'ckeditor5-rules/license-header': [ 'error', {
 			headerLines: [
 				'/**',
-				' * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.',
+				' * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.',
 				' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options',
 				' */'
 			]

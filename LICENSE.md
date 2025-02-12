@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor&nbsp;5** (https://github.com/ckeditor/ckeditor5)<br>
-Copyright (c) 2003–2024, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
+Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under a dual-license model, this software is available under:
 
@@ -21,6 +21,9 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * BlurHash - Copyright (c) 2018 Wolt Enterprises (MIT license).
 * color-convert - Copyright (c) 2011–2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016–2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
+* emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
+* Fuse.js - Copyright (c) 2017 Kirollos Risk.
+* is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 * Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
 * Turndown - Copyright (c) 2017+ Dom Christie.

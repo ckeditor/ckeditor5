@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -241,14 +241,26 @@ function scanTable( viewTable: ViewElement ) {
 			( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
 		);
 
+		// Keep tracking of the previous row columns count to improve detection of heading rows.
+		let maxPrevColumns = null;
+
 		for ( const tr of trs ) {
+			const trColumns = Array
+				.from( tr.getChildren() )
+				.filter( el => el.is( 'element', 'td' ) || el.is( 'element', 'th' ) );
+
 			// This <tr> is a child of a first <thead> element.
 			if (
 				( firstTheadElement && tableChild === firstTheadElement ) ||
 				(
 					tableChild.name === 'tbody' &&
-					Array.from( tr.getChildren() ).length &&
-					Array.from( tr.getChildren() ).every( e => e.is( 'element', 'th' ) )
+					trColumns.length > 0 &&
+					// These conditions handles the case when the first column is a <th> element and it's the only column in the row.
+					// This case is problematic because it's not clear if this row should be a heading row or not, as it may be result
+					// of the cell span from the previous row.
+					// Issue: https://github.com/ckeditor/ckeditor5/issues/17556
+					( maxPrevColumns === null || trColumns.length === maxPrevColumns ) &&
+					trColumns.every( e => e.is( 'element', 'th' ) )
 				)
 			) {
 				headingRows++;
@@ -263,6 +275,11 @@ function scanTable( viewTable: ViewElement ) {
 					headingColumns = headingCols;
 				}
 			}
+
+			// We use the maximum number of columns to avoid false positives when detecting
+			// multiple rows with single column within `rowspan`. Without it the last row of `rowspan=3`
+			// would be detected as a heading row because it has only one column (identical to the previous row).
+			maxPrevColumns = Math.max( maxPrevColumns || 0, trColumns.length );
 		}
 	}
 
