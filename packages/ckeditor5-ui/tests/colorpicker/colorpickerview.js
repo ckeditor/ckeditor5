@@ -370,6 +370,36 @@ describe( 'ColorPickerView', () => {
 			view.destroy();
 			view.element.remove();
 		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/17069
+		it( 'should focus input before color slider to avoid selection issues', () => {
+			const buggyBrowsers = [ 'isGecko', 'isiOS', 'isSafari', 'isBlink' ];
+
+			const inputField = view.hexInputRow.children.get( 1 );
+			const slider = view.slidersView.first;
+
+			const inputSpy = sinon.spy( inputField, 'focus' );
+			const sliderSpy = sinon.spy( slider.element, 'focus' );
+
+			buggyBrowsers.forEach( browser => {
+				inputSpy.resetHistory();
+				sliderSpy.resetHistory();
+
+				mockBrowser( browser );
+
+				view.focus();
+
+				sinon.assert.callOrder( inputSpy, sliderSpy );
+				sinon.assert.calledOnce( inputSpy );
+				sinon.assert.calledOnce( sliderSpy );
+			} );
+
+			function mockBrowser( mockFlag ) {
+				for ( const flag of buggyBrowsers ) {
+					testUtils.sinon.stub( env, flag ).get( () => flag === mockFlag );
+				}
+			}
+		} );
 	} );
 
 	describe( 'isValid()', () => {

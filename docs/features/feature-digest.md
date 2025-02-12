@@ -103,12 +103,22 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="source-editing" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing Source editing}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing Source code editing}
 				</span>
 			</td>
 			<td>
-				The source editing feature lets you view and edit the source of your
+				The source code editing feature lets you view and edit the source of your
 				document.
+			</td>
+		</tr>
+		<tr id="source-editing-enhanced" class="subfeature background-gray">
+			<td>
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/source-editing-enhanced Enhanced source code editing}
+				</span>
+			</td>
+			<td>
+				Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 			</td>
 		</tr>
 		<tr id="block-formatting" class="feature">
@@ -1302,6 +1312,15 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				adjustments.
 			</td>
 		</tr>
+				<tr id="emoji" class="feature">
+			<td>
+				{@link features/emoji Emoji}
+			</td>
+			<td>
+				The Emoji feature lets you insert emojis into the document from the editor
+				toolbar, or on the go while writing the content.
+			</td>
+		</tr>
 		<tr id="find-and-replace" class="feature">
 			<td>
 				{@link features/find-and-replace Find and replace}
@@ -1394,13 +1413,13 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 		</tr>
 		<tr id="paste-from-office-enhanced" class="feature">
 			<td>
-				{@link features/paste-from-office-enhanced Paste from Office Enhanced
+				{@link features/paste-from-office-enhanced Enhanced paste from Office
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 					<span class="tree__item__badge__text">Premium feature</span></span>
 				}
 			</td>
 			<td>
-				The Enhanced Paste from Word/Excel feature accurately retains formatting
+				The Enhanced paste from Word/Excel feature accurately retains formatting
 				and structure when content is pasted from Microsoft Word documents into
 				the editor. This includes preserving text styles, lists, tables, and
 				layouts. The feature facilitates the transfer of documents from Word to

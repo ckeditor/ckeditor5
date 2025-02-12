@@ -524,6 +524,12 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 		label: 'View',
  * 		groups: [
  * 			{
+ * 				groupId: 'sourceEditingEnhanced',
+ * 				items: [
+ * 					'menuBar:sourceEditingEnhanced'
+ * 				]
+ * 			},
+ * 			{
  * 				groupId: 'sourceEditing',
  * 				items: [
  * 					'menuBar:sourceEditing'
@@ -568,7 +574,8 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 					'menuBar:link',
  * 					'menuBar:bookmark',
  * 					'menuBar:comment',
- * 					'menuBar:insertMergeField'
+ * 					'menuBar:insertMergeField',
+ * 					'menuBar:emoji'
  * 				]
  * 			},
  * 			{
@@ -782,6 +789,12 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 		label: 'View',
 		groups: [
 			{
+				groupId: 'sourceEditingEnhanced',
+				items: [
+					'menuBar:sourceEditingEnhanced'
+				]
+			},
+			{
 				groupId: 'sourceEditing',
 				items: [
 					'menuBar:sourceEditing'
@@ -826,7 +839,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 					'menuBar:link',
 					'menuBar:bookmark',
 					'menuBar:comment',
-					'menuBar:insertMergeField'
+					'menuBar:insertMergeField',
+					'menuBar:emoji'
 				]
 			},
 			{

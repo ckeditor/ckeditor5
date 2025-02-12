@@ -14,6 +14,12 @@ parameters:
     default: false
 
 commands:
+  install_newest_emoji:
+    steps:
+      - run:
+          name: Install the emoji font
+          command: |
+            sudo apt install fonts-noto-color-emoji
   halt_if_short_flow:
     steps:
       - run:
@@ -330,6 +336,7 @@ workflows:
             branches:
               only:
                 - master
+                - master-it84
                 - stable
                 - release
 

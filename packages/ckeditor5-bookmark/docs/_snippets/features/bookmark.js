@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+/* globals console, window, document, LICENSE_KEY */
 
 // source editing only added for testing purposes, remove when done
 
@@ -11,25 +11,26 @@ import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';
 
-ClassicEditor.builtinPlugins.push( Bookmark, PictureEditing, ImageInsert, SourceEditing,
+ClassicEditor.builtinPlugins.push( Bookmark, PictureEditing, ImageInsert, SourceEditingEnhanced,
 	ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-bookmark' ), {
+		licenseKey: LICENSE_KEY,
 		toolbar: {
 			items: [
 				'bookmark',
 				'|', 'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
 				'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent', 'sourceEditing'
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'sourceEditingEnhanced'
 			]
 		},
 		menuBar: {
@@ -51,8 +52,7 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

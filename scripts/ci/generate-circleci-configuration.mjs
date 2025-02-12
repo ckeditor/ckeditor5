@@ -140,6 +140,7 @@ const persistToWorkspace = fileName => ( {
 			machine: true,
 			steps: [
 				...bootstrapCommands(),
+				'install_newest_emoji',
 				prepareCodeCoverageDirectories(),
 				listBatchPackages( batch ),
 				...generateTestSteps( batch, {

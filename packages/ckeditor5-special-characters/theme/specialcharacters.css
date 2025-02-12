@@ -9,8 +9,6 @@
  * **in the theme** when compiling the editor.
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
 .ck.ck-special-characters {
 	& > .ck-dialog__content > div {
 		width: 350px;
