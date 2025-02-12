@@ -39,7 +39,8 @@ const versionExceptions = {
 	'@codemirror/lang-html': '^',
 	'@codemirror/language': '^',
 	'@codemirror/state': '^',
-	'@codemirror/view': '^'
+	'@codemirror/view': '^',
+	'@codemirror/theme-one-dark': '^'
 };
 
 const [ packageJsons, pathMappings ] = getPackageJsons( [
