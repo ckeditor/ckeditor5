@@ -84,7 +84,7 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 CKEditor&nbsp;5 supports a wider range of paste features, including:
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
 * {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and keep the original structure and formatting.
-* {@link features/paste-from-office-enhanced paste from Office enhanced} &ndash; Paste from Office enhanced is a premium version of the plugin that offers far greater capabilities.
+* {@link features/paste-from-office-enhanced Enhanced paste from Office} &ndash; Enhanced paste from Office is a premium version of the plugin that offers far greater capabilities.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 * {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown-formatted content straight into the editor.
 
