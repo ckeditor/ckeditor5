@@ -50,7 +50,9 @@ export default class FullPage extends Plugin {
 				 * it is strongly recommended to define a sanitize function that will clean up the CSS
 				 * which is present in the `<head>` in editors content in order to avoid XSS vulnerability.
 				 *
-				 * @error html-embed-provide-sanitize-function
+				 * For a detailed overview, check the {@glink features/html/full-page-html Full page HTML feature} documentation.
+				 *
+				 * @error css-full-page-provide-sanitize-function
 				 */
 				logWarning( 'css-full-page-provide-sanitize-function' );
 
