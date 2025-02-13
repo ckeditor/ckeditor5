@@ -43,7 +43,7 @@ describe( 'TableEmailIntegration', () => {
 	} );
 
 	describe( 'afterInit()', () => {
-		it( 'should warn when Table plugin is enabled without PlainTableOutput', async () => {
+		it( 'should warn when the Table plugin is enabled without PlainTableOutput', async () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ TableEmailIntegration, EmailIntegrationUtils, Table ]
 			} );
@@ -51,7 +51,7 @@ describe( 'TableEmailIntegration', () => {
 			sinon.assert.calledWith( warnStub, sinon.match( /email-integration-missing-plain-table-output-plugin/ ) );
 		} );
 
-		it( 'should warn when Table plugin is enabled without TableLayout', async () => {
+		it( 'should warn when the Table plugin is enabled without TableLayout', async () => {
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [ TableEmailIntegration, EmailIntegrationUtils, Table ]
 			} );
@@ -60,7 +60,7 @@ describe( 'TableEmailIntegration', () => {
 		} );
 
 		describe( 'table properties configuration', () => {
-			it( 'should not warn about colors when Table plugin is not enabled', async () => {
+			it( 'should not warn about colors when the Table plugin is not enabled', async () => {
 				editor = await ClassicEditor.create( domElement, {
 					plugins: [ TableEmailIntegration, EmailIntegrationUtils ],
 					table: {
