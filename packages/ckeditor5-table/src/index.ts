@@ -16,6 +16,7 @@ export { default as TableCellProperties } from './tablecellproperties.js';
 export { default as TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting.js';
 export { default as TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
 export { default as TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
+export { default as TableLayout } from './tablelayout.js';
 export { default as TableProperties } from './tableproperties.js';
 export { default as TablePropertiesEditing } from './tableproperties/tablepropertiesediting.js';
 export { default as TablePropertiesUI } from './tableproperties/tablepropertiesui.js';
