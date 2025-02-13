@@ -35,6 +35,7 @@ export type { TableConfig } from './tableconfig.js';
 export type { default as InsertColumnCommand } from './commands/insertcolumncommand.js';
 export type { default as InsertRowCommand } from './commands/insertrowcommand.js';
 export type { default as InsertTableCommand } from './commands/inserttablecommand.js';
+export type { default as InsertTableLayoutCommand } from './commands/inserttablelayoutcommand.js';
 export type { default as MergeCellCommand } from './commands/mergecellcommand.js';
 export type { default as MergeCellsCommand } from './commands/mergecellscommand.js';
 export type { default as RemoveColumnCommand } from './commands/removecolumncommand.js';

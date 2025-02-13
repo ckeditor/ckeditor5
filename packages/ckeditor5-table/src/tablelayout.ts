@@ -8,11 +8,19 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import TableLayoutUI from './tablelayout/tablelayoutui.js';
 
 /**
  * The table layout plugin.
  */
 export default class TableLayout extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ TableLayoutUI ] as const;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
