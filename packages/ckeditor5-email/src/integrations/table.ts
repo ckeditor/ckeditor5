@@ -69,7 +69,7 @@ export default class TableEmailIntegration extends Plugin {
 		if ( !plugins.has( 'TableLayout' ) ) {
 			/**
 			 * The `TableLayout` plugin is required to use tables in the email integration.
-			 * Tables may not be exported or displayed correctly in some email clients without it.
+			 * Tables in the editor may not look similar to how they would look in email clients.
 			 *
 			 * @error email-integration-missing-table-layout-plugin
 			 */
