@@ -7,8 +7,6 @@
 
 import ClassicEditor from '../../../../../docs/_snippets/build-classic.js';
 
-import '@ckeditor/ckeditor5-core/src/editor/editor.js';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {} )
 	.catch( e => console.error( e ) );
