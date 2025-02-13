@@ -46,7 +46,7 @@ export default class TableEmailIntegration extends Plugin {
 	}
 
 	/**
-	 * Checks if the `PlainTableOutput` plugin is available when the `Table` plugin is enabled.
+	 * Checks if the `PlainTableOutput` and 'TableLayout' plugins are available when the `Table` plugin is enabled.
 	 */
 	private _checkRequiredTablePlugins(): void {
 		const { plugins } = this.editor;
