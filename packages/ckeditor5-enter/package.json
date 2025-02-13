@@ -44,7 +44,6 @@
     "src/**/*.js",
     "src/**/*.d.ts",
     "theme",
-    "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
