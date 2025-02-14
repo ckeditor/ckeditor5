@@ -31,12 +31,6 @@ const exceptions = [
 
 	// Core packages.
 	'@ckeditor/ckeditor5-theme-lark',
-	'@ckeditor/ckeditor5-build-multi-root',
-	'@ckeditor/ckeditor5-build-inline',
-	'@ckeditor/ckeditor5-build-decoupled-document',
-	'@ckeditor/ckeditor5-build-classic',
-	'@ckeditor/ckeditor5-build-balloon-block',
-	'@ckeditor/ckeditor5-build-balloon',
 
 	// Commercial packages.
 	'@ckeditor/ckeditor5-operations-compressor',

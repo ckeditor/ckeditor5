@@ -224,8 +224,8 @@ The `--files` (alias `-f`) option is used by both the manual and automated tests
 		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package.</td>
 	</tr>
 	<tr>
-		<td><code>build-*</code></td>
-		<td>Run all tests of the <code>build-*</code> packages. (<code>ckeditor5-build-classic</code>, <code>ckeditor5-build-balloon</code> etc.)</td>
+		<td><code>editor-*</code></td>
+		<td>Run all tests of the <code>editor-*</code> packages. (<code>ckeditor5-editor-classic</code>, <code>ckeditor5-editor-balloon</code> etc.)</td>
 	</tr>
 	<tr>
 		<td><code>!core</code></td>

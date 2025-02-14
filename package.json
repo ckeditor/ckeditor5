@@ -85,12 +85,6 @@
   "devDependencies": {
     "@babel/parser": "^7.23.3",
     "@ckeditor/ckeditor5-ai": "44.1.0",
-    "@ckeditor/ckeditor5-build-balloon": "44.1.0",
-    "@ckeditor/ckeditor5-build-balloon-block": "44.1.0",
-    "@ckeditor/ckeditor5-build-classic": "44.1.0",
-    "@ckeditor/ckeditor5-build-decoupled-document": "44.1.0",
-    "@ckeditor/ckeditor5-build-inline": "44.1.0",
-    "@ckeditor/ckeditor5-build-multi-root": "44.1.0",
     "@ckeditor/ckeditor5-case-change": "44.1.0",
     "@ckeditor/ckeditor5-comments": "44.1.0",
     "@ckeditor/ckeditor5-dev-build-tools": "^46.0.0",
