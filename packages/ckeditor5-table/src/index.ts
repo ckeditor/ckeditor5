@@ -17,6 +17,7 @@ export { default as TableCellPropertiesEditing } from './tablecellproperties/tab
 export { default as TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
 export { default as TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 export { default as TableLayout } from './tablelayout.js';
+export { default as TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
 export { default as TableProperties } from './tableproperties.js';
 export { default as TablePropertiesEditing } from './tableproperties/tablepropertiesediting.js';
 export { default as TablePropertiesUI } from './tableproperties/tablepropertiesui.js';
@@ -35,6 +36,7 @@ export type { TableConfig } from './tableconfig.js';
 export type { default as InsertColumnCommand } from './commands/insertcolumncommand.js';
 export type { default as InsertRowCommand } from './commands/insertrowcommand.js';
 export type { default as InsertTableCommand } from './commands/inserttablecommand.js';
+export type { default as InsertTableLayoutCommand } from './commands/inserttablelayoutcommand.js';
 export type { default as MergeCellCommand } from './commands/mergecellcommand.js';
 export type { default as MergeCellsCommand } from './commands/mergecellscommand.js';
 export type { default as RemoveColumnCommand } from './commands/removecolumncommand.js';

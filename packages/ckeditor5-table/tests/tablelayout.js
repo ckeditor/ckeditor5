@@ -7,6 +7,8 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import TableLayout from '../src/tablelayout.js';
+import Table from '../src/table.js';
+import TableLayoutEditing from '../src/tablelayout/tablelayoutediting.js';
 
 describe( 'TableLayout', () => {
 	let editor, editorElement;
@@ -23,6 +25,12 @@ describe( 'TableLayout', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+	} );
+
+	it( 'requires TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard and Widget', () => {
+		expect( TableLayout.requires ).to.deep.equal( [
+			Table, TableLayoutEditing
+		] );
 	} );
 
 	it( 'should have pluginName', () => {

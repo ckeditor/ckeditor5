@@ -9,6 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
+import TableLayoutEditing from './tablelayout/tablelayoutediting.js';
+import Table from './table.js';
+
 /**
  * The table layout plugin.
  */
@@ -18,6 +21,13 @@ export default class TableLayout extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'TableLayout' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ Table, TableLayoutEditing ] as const;
 	}
 
 	/**
