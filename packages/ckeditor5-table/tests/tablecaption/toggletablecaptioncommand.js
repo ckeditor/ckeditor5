@@ -57,6 +57,14 @@ describe( 'ToggleTableCaptionCommand', () => {
 			);
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'should be false if in the table that does not allow captions', () => {
+			editor.model.schema.extend( 'table', { disallowChildren: 'caption' } );
+
+			setData( model, modelTable( [ [ '[]' ] ] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {
