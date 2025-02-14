@@ -78,8 +78,7 @@ export default class TableLayoutUI extends Plugin {
 				dropdownView.on( 'execute', () => {
 					editor.execute( 'insertTableLayout', {
 						rows: insertTableLayoutView.rows,
-						columns: insertTableLayoutView.columns,
-						tableType: 'layout'
+						columns: insertTableLayoutView.columns
 					} );
 					editor.editing.view.focus();
 				} );
@@ -104,8 +103,7 @@ export default class TableLayoutUI extends Plugin {
 			insertTableLayoutView.on( 'execute', () => {
 				editor.execute( 'insertTableLayout', {
 					rows: insertTableLayoutView.rows,
-					columns: insertTableLayoutView.columns,
-					tableType: 'layout'
+					columns: insertTableLayoutView.columns
 				} );
 				editor.editing.view.focus();
 			} );

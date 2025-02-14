@@ -90,7 +90,7 @@ describe( 'TableLayoutUI', () => {
 			insertTableLayout.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertTableLayout', { rows: 2, columns: 7, tableType: 'layout' } );
+			sinon.assert.calledWithExactly( executeSpy, 'insertTableLayout', { rows: 2, columns: 7 } );
 		} );
 
 		it( 'is not fully initialized until open', () => {
@@ -187,7 +187,7 @@ describe( 'TableLayoutUI', () => {
 
 			insertView.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( commandSpy, { rows: 3, columns: 5, tableType: 'layout' } );
+			sinon.assert.calledOnceWithExactly( commandSpy, { rows: 3, columns: 5 } );
 			sinon.assert.calledOnce( focusSpy );
 			sinon.assert.callOrder( commandSpy, focusSpy );
 		} );
