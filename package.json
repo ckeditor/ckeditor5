@@ -115,7 +115,7 @@
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.3",
     "@ckeditor/ckeditor5-pagination": "44.1.0",
     "@ckeditor/ckeditor5-paste-from-office-enhanced": "44.1.0",
-    "@ckeditor/ckeditor5-react": "^6.0.0",
+    "@ckeditor/ckeditor5-react": "^9.5.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "44.1.0",
     "@ckeditor/ckeditor5-revision-history": "44.1.0",
     "@ckeditor/ckeditor5-slash-command": "44.1.0",
@@ -168,6 +168,8 @@
     "typescript": "5.0.4",
     "umberto": "^4.4.0",
     "upath": "^2.0.0",
+    "vite": "^6.1.0",
+    "vite-plugin-singlefile": "^2.1.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.94.0"
   },

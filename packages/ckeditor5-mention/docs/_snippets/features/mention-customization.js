@@ -45,8 +45,7 @@ ClassicEditor
 					itemRenderer: customItemRenderer
 				}
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

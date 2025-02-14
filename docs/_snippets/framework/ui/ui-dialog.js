@@ -74,8 +74,7 @@ class MinimalisticDialog extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#ui-dialog-editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, Underline, MinimalisticDialog, Dialog ],
-		toolbar: [ 'bold', 'italic', 'underline', '|', 'showDialog' ],
-		licenseKey: 'GPL'
+		toolbar: [ 'bold', 'italic', 'underline', '|', 'showDialog' ]
 	} )
 	.then( editor => {
 		window.attachTourBalloon( {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, Locale, ButtonView, icons, ToolbarView, ClassicEditor, TooltipManager, Essentials */
+/* globals window, document, console, Locale, ButtonView, icons, ToolbarView, ClassicEditor, TooltipManager, Essentials */
 
 const locale = new Locale();
 
@@ -68,11 +68,10 @@ document.querySelector( '.ui-button' ).append( toolbarButtons.element );
 
 ClassicEditor
 	.create( document.querySelector( '#ui-button-editor' ), {
-		plugins: [ Essentials ],
-		licenseKey: 'GPL'
+		plugins: [ Essentials ]
 	} )
 	.then( editor => {
-		this.tooltipManager = new TooltipManager( editor );
+		window.tooltipManager = new TooltipManager( editor );
 	} )
 	.catch( error => {
 		console.error( error.stack );
