@@ -7,19 +7,29 @@
  * @module table/commands/inserttablecommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
+import InsertTableCommand from './inserttablecommand.js';
+import type TableUtils from '../tableutils.js';
 
 // TODO: This command will be implemented in the PR with editing part.
-export default class InsertTableLayoutCommand extends Command {
+export default class InsertTableLayoutCommand extends InsertTableCommand {
 	public override execute(
 		options: {
 			rows?: number;
 			columns?: number;
 			headingRows?: number;
 			headingColumns?: number;
-			tableType?: 'layout' | 'content';
 		}
 	): void {
-		console.log( options.tableType );
+		const editor = this.editor;
+		const model = editor.model;
+		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
+
+		model.change( writer => {
+			const table = tableUtils.createTable( writer, options );
+
+			model.insertObject( table, null, null, { findOptimalPosition: 'auto' } );
+
+			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
+		} );
 	}
 }
