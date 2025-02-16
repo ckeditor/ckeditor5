@@ -21,7 +21,6 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * BlurHash - Copyright (c) 2018 Wolt Enterprises (MIT license).
 * color-convert - Copyright (c) 2011–2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016–2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
-* emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
@@ -29,6 +28,10 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * Turndown - Copyright (c) 2017+ Dom Christie.
 * turndown-plugin-gfm - Copyright (c) 2017+ Dom Christie.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
+
+The data from following packages is served on our CDN under the [Apache License, version 2.0](https://opensource.org/license/apache-2-0/):
+
+* emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 
 Trademarks
 ----------
