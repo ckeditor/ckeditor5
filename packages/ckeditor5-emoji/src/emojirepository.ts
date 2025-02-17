@@ -130,10 +130,6 @@ export default class EmojiRepository extends Plugin {
 			return [];
 		}
 
-		console.log(
-			this._items.map( i => i.emoticon ).filter( Boolean )
-		);
-
 		return fuzzysort
 			.go( searchQuery, this._items, {
 				threshold: 0.6,
