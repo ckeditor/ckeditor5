@@ -56,7 +56,7 @@ import {
 	getTableColumnsWidths
 } from './utils.js';
 
-import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants.js';
+import { COLUMN_MIN_WIDTH_IN_PIXELS, COLUMN_RESIZE_DISTANCE_THRESHOLD } from './constants.js';
 import type TableColumnResize from '../tablecolumnresize.js';
 
 type ResizingData = {
@@ -116,6 +116,16 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * A local reference to the {@link module:table/tableutils~TableUtils} plugin.
 	 */
 	private _tableUtilsPlugin: TableUtils;
+
+	/**
+	 * Starting position of mouse when resize is initiated.
+	 */
+	private _initialMousePosition: { x: number; y: number } | null = null;
+
+	/**
+	 * A function that starts the resizing process after moving the mouse by a certain distance.
+	 */
+	private _startResizingAfterThreshold: VoidFunction | null = null;
 
 	/**
 	 * @inheritDoc
@@ -501,24 +511,36 @@ export default class TableColumnResizeEditing extends Plugin {
 		domEventData.preventDefault();
 		eventInfo.stop();
 
-		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
+		// Store initial mouse position to perform calculate total distance moved.
+		// It is used to determine if the resizing should start after certain threshold.
+		const mouseEvent = domEventData.domEvent as MouseEvent;
+
+		this._initialMousePosition = {
+			x: mouseEvent.clientX,
+			y: mouseEvent.clientY
+		};
+
+		// Calculate the initial column widths in pixels.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );
 		const viewTable = target.findAncestor( 'table' )!;
-		const editingView = editor.editing.view;
 
-		// Insert colgroup for the table that is resized for the first time.
-		if ( !Array.from( viewTable.getChildren() ).find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
-			editingView.change( viewWriter => {
-				_insertColgroupElement( viewWriter, columnWidthsInPx, viewTable );
-			} );
-		}
+		// When user grabs the resizer, we wait for a certain distance to be moved before we start resizing.
+		// This function will be called when the threshold is reached during mouse move.
+		this._startResizingAfterThreshold = () => {
+			// Insert colgroup for the table that is resized for the first time.
+			if ( !Array.from( viewTable.getChildren() ).find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
+				editor.editing.view.change( viewWriter => {
+					_insertColgroupElement( viewWriter, columnWidthsInPx, viewTable );
+				} );
+			}
 
-		this._isResizingActive = true;
-		this._resizingData = this._getResizingData( domEventData, columnWidthsInPx );
+			this._isResizingActive = true;
+			this._resizingData = this._getResizingData( domEventData, columnWidthsInPx );
 
-		// At this point we change only the editor view - we don't want other users to see our changes yet,
-		// so we can't apply them in the model.
-		editingView.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData! ) );
+			// At this point we change only the editor view - we don't want other users to see our changes yet,
+			// so we can't apply them in the model.
+			editor.editing.view.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData! ) );
+		};
 
 		/**
 		 * Calculates the DOM columns' widths. It is done by taking the width of the widest cell
@@ -594,6 +616,20 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param mouseEventData The native DOM event.
 	 */
 	private _onMouseMoveHandler( eventInfo: EventInfo, mouseEventData: MouseEvent ) {
+		if ( this._startResizingAfterThreshold && this._initialMousePosition ) {
+			const deltaX = mouseEventData.clientX - this._initialMousePosition.x;
+			const deltaY = mouseEventData.clientY - this._initialMousePosition.y;
+
+			const distance = Math.sqrt( deltaX * deltaX + deltaY * deltaY );
+
+			if ( distance >= COLUMN_RESIZE_DISTANCE_THRESHOLD ) {
+				this._startResizingAfterThreshold();
+				this._startResizingAfterThreshold = null;
+			} else {
+				return;
+			}
+		}
+
 		if ( !this._isResizingActive ) {
 			return;
 		}
@@ -669,6 +705,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *  * Otherwise it propagates the changes from view to the model by executing the adequate commands.
 	 */
 	private _onMouseUpHandler() {
+		this._startResizingAfterThreshold = null;
+		this._initialMousePosition = null;
+
 		if ( !this._isResizingActive ) {
 			return;
 		}

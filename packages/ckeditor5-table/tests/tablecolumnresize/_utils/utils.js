@@ -20,17 +20,28 @@ export const tableColumnResizeMouseSimulator = {
 
 		const domEventData = {
 			target: editor.editing.view.domConverter.domToView( domTarget ),
-			domEvent: { clientX },
+			domEvent: { clientX, clientY: 0 },
 			preventDefault
 		};
-		this._getPlugin( editor )._onMouseDownHandler( eventInfo, domEventData );
+
+		const plugin = this._getPlugin( editor );
+
+		plugin._onMouseDownHandler( eventInfo, domEventData );
+
+		// Skip threshold checking as it is not needed for most of the tests.
+		if ( options.ignoreThreshold !== false && plugin._startResizingAfterThreshold ) {
+			// Let's assume user moved the mouse by 5px.
+			plugin._startResizingAfterThreshold();
+			plugin._startResizingAfterThreshold = null;
+		}
 	},
 
 	move( editor, domTarget, vector ) {
 		const eventInfo = {};
 
 		const domEventData = {
-			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x
+			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x,
+			clientY: 0
 		};
 
 		this._getPlugin( editor )._onMouseMoveHandler( eventInfo, domEventData );
