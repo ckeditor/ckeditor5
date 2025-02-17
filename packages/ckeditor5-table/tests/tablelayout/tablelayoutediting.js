@@ -14,6 +14,7 @@ import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
 import Table from '../../src/table.js';
 import TableCaption from '../../src/tablecaption.js';
 import TableColumnResize from '../../src/tablecolumnresize.js';
+import PlainTableOutput from '../../src/plaintableoutput.js';
 
 describe( 'TableLayoutEditing', () => {
 	let editor, model, view, editorElement;
@@ -75,6 +76,103 @@ describe( 'TableLayoutEditing', () => {
 					'</table>' +
 				'</figure>'
 			);
+		} );
+
+		it( 'should not add `layout-table` class and `role="presentation"` attribute when already consumed', () => {
+			editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+				return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, evt.name );
+				}, { priority: 'highest' } );
+			} );
+
+			setModelData(
+				model,
+				'<table tableType="layout">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td>foo</td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+		} );
+
+		describe( 'with `PlainTableOutput`', () => {
+			let editor, model, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, PlainTableOutput ]
+				} );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor.destroy();
+			} );
+
+			it( 'should add `layout-table` class and `role="presentation"` attribute', () => {
+				setModelData(
+					model,
+					'<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table layout-table" role="presentation">' +
+						'<tbody>' +
+							'<tr><td>foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not add `layout-table` class and `role="presentation"` attribute when already consumed', () => {
+				editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+					return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'highest' } );
+				} );
+
+				setModelData(
+					model,
+					'<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<tbody>' +
+							'<tr><td>foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 

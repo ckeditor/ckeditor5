@@ -83,7 +83,7 @@ export default class TableLayoutEditing extends Plugin {
 				const { item, attributeNewValue } = data;
 				const { mapper, writer } = conversionApi;
 
-				if ( !conversionApi.consumable.consume( item, evt.name ) ) {
+				if ( !conversionApi.consumable.test( item, evt.name ) ) {
 					return;
 				}
 
@@ -91,6 +91,8 @@ export default class TableLayoutEditing extends Plugin {
 
 				writer.addClass( `${ attributeNewValue }-table`, table );
 				writer.setAttribute( 'role', 'presentation', table );
+
+				conversionApi.consumable.consume( item, evt.name );
 			} );
 		} );
 
