@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-ui": "44.2.0",
     "@ckeditor/ckeditor5-utils": "44.2.0",
     "ckeditor5": "44.2.0",
-    "fuzzysort": "^3.1.0",
+    "fuzzysort": "3.1.0",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
