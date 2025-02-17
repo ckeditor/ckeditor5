@@ -617,12 +617,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	private _onMouseMoveHandler( eventInfo: EventInfo, mouseEventData: MouseEvent ) {
 		if ( this._startResizingAfterThreshold && this._initialMousePosition ) {
-			const deltaX = mouseEventData.clientX - this._initialMousePosition.x;
-			const deltaY = mouseEventData.clientY - this._initialMousePosition.y;
+			const distanceX = Math.abs( mouseEventData.clientX - this._initialMousePosition.x );
 
-			const distance = Math.sqrt( deltaX * deltaX + deltaY * deltaY );
-
-			if ( distance >= COLUMN_RESIZE_DISTANCE_THRESHOLD ) {
+			if ( distanceX >= COLUMN_RESIZE_DISTANCE_THRESHOLD ) {
 				this._startResizingAfterThreshold();
 				this._startResizingAfterThreshold = null;
 			} else {

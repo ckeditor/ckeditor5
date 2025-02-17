@@ -3141,16 +3141,6 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( resizePlugin._isResizingActive ).to.be.true;
 		} );
 
-		it( 'should start resizing when diagonal mouse movement reaches threshold', () => {
-			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ), { ignoreThreshold: false } );
-			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 7, y: 7 } );
-
-			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
-
-			expect( finalViewColumnWidthsPx ).to.not.deep.equal( initialViewColumnWidthsPx );
-			expect( resizePlugin._isResizingActive ).to.be.true;
-		} );
-
 		it( 'should not start resizing after mouseup even at threshold distance', () => {
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ), { ignoreThreshold: false } );
 			tableColumnResizeMouseSimulator.up( editor );
