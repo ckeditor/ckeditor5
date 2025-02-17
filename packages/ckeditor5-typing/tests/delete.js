@@ -112,9 +112,7 @@ describe( 'Delete feature', () => {
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5/issues/17383.
-	it( 'handles the backspace key in a nested editable (Safari)', () => {
-		env.isSafari = true;
-
+	it( 'handles the backspace key in a nested editable', () => {
 		const clickBackspace = ( metaKey = false ) => {
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'backspace' ),
@@ -140,8 +138,6 @@ describe( 'Delete feature', () => {
 		clickBackspace( true );
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
-
-		env.isSafari = false;
 	} );
 
 	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
