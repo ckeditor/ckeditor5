@@ -107,7 +107,11 @@ ClassicEditor
 ## Related features
 
 Here are some related CKEditor&nbsp;5 features that you may find helpful:
+
 * {@link features/export-inline-styles Export inline styles} &nbsp; The export inline styles feature turns all external CSS style sheets to inline styles, providing better compatibility with various email clients.
+* {@link module:table/tablelayout~TableLayout Table layout} &ndash; Create layout tables optimized for email templates with proper structure and styling.
+* {@link features/general-html-support General HTML support} &ndash; Add support for additional HTML elements and attributes in your content.
+* {@link features/style Style} &ndash; Apply predefined styles to content elements that can be exported as inline styles.
 
 ## Common API
 
