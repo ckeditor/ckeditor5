@@ -7,7 +7,7 @@
  * @module emoji/emojirepository
  */
 
-import Fuse from 'fuse.js';
+import fuzzysort from 'fuzzysort';
 import { groupBy } from 'lodash-es';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
@@ -33,9 +33,9 @@ export default class EmojiRepository extends Plugin {
 	declare private _repositoryPromiseResolveCallback: ( value: boolean ) => void;
 
 	/**
-	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
+	 * Emoji repository in a configured version.
 	 */
-	private _fuseSearch: Fuse<EmojiEntry> | null;
+	private _items: Array<EmojiEntry> | null;
 
 	/**
 	 * The resolved URL from which the emoji repository is downloaded.
@@ -87,7 +87,7 @@ export default class EmojiRepository extends Plugin {
 			this._repositoryPromiseResolveCallback = resolve;
 		} );
 
-		this._fuseSearch = null;
+		this._items = null;
 	}
 
 	/**
@@ -98,39 +98,26 @@ export default class EmojiRepository extends Plugin {
 
 		await this._loadAndCacheEmoji();
 
-		const items = this._getItems();
+		this._items = this._getItems();
 
 		// Skip plugin initialization if the emoji repository is not available.
 		// The initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`, is prevented as well.
-		if ( !items ) {
+		if ( !this._items ) {
 			return this._repositoryPromiseResolveCallback( false );
 		}
-
-		// Create instance of the Fuse.js library with configured weighted search keys and disabled fuzzy search.
-		this._fuseSearch = new Fuse( items, {
-			keys: [
-				{ name: 'emoticon', weight: 5 },
-				{ name: 'annotation', weight: 3 },
-				{ name: 'tags', weight: 1 }
-			],
-			minMatchCharLength: 2,
-			threshold: 0,
-			ignoreLocation: true
-		} );
 
 		return this._repositoryPromiseResolveCallback( true );
 	}
 
 	/**
 	 * Returns an array of emoji entries that match the search query.
-	 * If the emoji repository is not loaded, the [Fuse.js](https://www.fusejs.io/) instance is not created,
-	 * hence this method returns an empty array.
+	 * If the emoji repository is not loaded this method returns an empty array.
 	 *
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
 	public getEmojiByQuery( searchQuery: string ): Array<EmojiEntry> {
-		if ( !this._fuseSearch ) {
+		if ( !this._items ) {
 			return [];
 		}
 
@@ -143,21 +130,20 @@ export default class EmojiRepository extends Plugin {
 			return [];
 		}
 
-		return this._fuseSearch
-			.search( {
-				'$or': [
-					{
-						emoticon: searchQuery
-					},
-					{
-						'$and': searchQueryTokens.map( token => ( { annotation: token } ) )
-					},
-					{
-						'$and': searchQueryTokens.map( token => ( { tags: token } ) )
-					}
+		console.log(
+			this._items.map( i => i.emoticon ).filter( Boolean )
+		);
+
+		return fuzzysort
+			.go( searchQuery, this._items, {
+				threshold: 0.6,
+				keys: [
+					'emoticon',
+					'annotation',
+					( emojiEntry: EmojiEntry ) => emojiEntry.tags?.join() || ''
 				]
 			} )
-			.map( result => result.item );
+			.map( result => result.obj );
 	}
 
 	/**
