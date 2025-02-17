@@ -29,10 +29,10 @@ export const tableColumnResizeMouseSimulator = {
 		plugin._onMouseDownHandler( eventInfo, domEventData );
 
 		// Skip threshold checking as it is not needed for most of the tests.
-		if ( options.ignoreThreshold !== false && plugin._startResizingAfterThreshold ) {
+		if ( options.ignoreThreshold !== false && plugin._initialMouseEventData ) {
 			// Let's assume user moved the mouse by 5px.
 			plugin._startResizingAfterThreshold();
-			plugin._startResizingAfterThreshold = null;
+			plugin._initialMouseEventData = null;
 		}
 	},
 
