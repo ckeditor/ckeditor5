@@ -14,6 +14,7 @@ import TableClipboard from '../../src/tableclipboard.js';
 import TableProperties from '../../src/tableproperties.js';
 import TableCellProperties from '../../src/tablecellproperties.js';
 import TableColumnResize from '../../src/tablecolumnresize.js';
+import TableCaption from '../../src/tablecaption.js';
 import PlainTableOutput from '../../src/plaintableoutput.js';
 import TableLayout from '../../src/tablelayout.js';
 
@@ -30,6 +31,7 @@ const config = {
 		TableProperties,
 		TableCellProperties,
 		TableColumnResize,
+		TableCaption,
 		TableLayout
 	],
 	toolbar: [

@@ -31,8 +31,27 @@
 	<div class="editor-wrapper">
 		<h2>Editor 1 (with TableLayout)</h2>
 		<div id="editor">
-			<p>Table default: content table</p>
+
+			<p>Table with layout-table class (with caption) => layout table without caption </p>
+			<figure class="table layout-table">
+				<table>
+					<caption>Table with layout-table class</caption>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</figure>
+
+			<p>Table default (with caption) => content table with caption</p>
 			<table>
+				<caption>Table with layout-table class</caption>
 				<tr>
 					<td>a</td>
 					<td>b</td>
@@ -45,7 +64,7 @@
 				</tr>
 			</table>
 
-			<p>Table with layout-table class: layout table</p>
+			<p>Table with layout-table class => layout table</p>
 			<table class="layout-table">
 				<tr>
 					<td>a</td>
@@ -59,7 +78,7 @@
 				</tr>
 			</table>
 
-			<p>Figure that contains "table" class with table inside: content table</p>
+			<p>Figure that contains "table" class with table inside => content table</p>
 			<figure class="table">
 				<table>
 					<tr>
@@ -75,7 +94,7 @@
 				</table>
 			</figure>
 
-			<p>Figure that contains "layout-table" class with table inside: layout table</p>
+			<p>Figure that contains "layout-table" class with table inside => layout table</p>
 			<figure class="layout-table">
 				<table>
 					<tr>
@@ -92,7 +111,7 @@
 			</figure>
 
 
-			<p>Figure with table default: content table</p>
+			<p>Figure with table default => content table</p>
 			<figure>
 				<table>
 					<thead>
