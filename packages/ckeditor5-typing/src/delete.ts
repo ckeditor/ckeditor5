@@ -84,19 +84,20 @@ export default class Delete extends Plugin {
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 
-		// Handle Backspace key while inside a nested editable on Safari. See https://github.com/ckeditor/ckeditor5/issues/17383.
+		// Handle the Backspace key while at the beginning of a nested editable. See https://github.com/ckeditor/ckeditor5/issues/17383.
 		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
-			if ( viewDocument.isComposing ||
+			if (
+				viewDocument.isComposing ||
 				data.keyCode != keyCodes.backspace ||
-				!editor.model.document.selection.isCollapsed
+				!modelDocument.selection.isCollapsed
 			) {
 				return;
 			}
 
-			const ancestorLimit = editor.model.schema.getLimitElement( editor.model.document.selection );
+			const ancestorLimit = editor.model.schema.getLimitElement( modelDocument.selection );
 			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
 
-			if ( limitStartPosition.isTouching( editor.model.document.selection.getFirstPosition()! ) ) {
+			if ( limitStartPosition.isTouching( modelDocument.selection.getFirstPosition()! ) ) {
 				data.preventDefault();
 			}
 		} );
