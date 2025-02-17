@@ -73,3 +73,12 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function handleClipboardEvent( evt ) {
+	const clipboardPreview = document.getElementById( 'clipboard-preview' );
+
+	clipboardPreview.textContent = evt.clipboardData.getData( 'text/html' );
+}
+
+document.addEventListener( 'copy', handleClipboardEvent );
+document.addEventListener( 'cut', handleClipboardEvent );
