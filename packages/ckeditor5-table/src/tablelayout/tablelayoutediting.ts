@@ -8,9 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import type { EventInfo } from 'ckeditor5/src/utils.js';
 import type {
+	UpcastConversionApi,
+	UpcastConversionData,
 	UpcastDispatcher,
-	UpcastElementEvent
+	UpcastElementEvent,
+	ViewElement
 } from 'ckeditor5/src/engine.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
@@ -68,7 +72,11 @@ export default class TableLayoutEditing extends Plugin {
 		const { editor } = this;
 		const { conversion } = editor;
 
+		// Figure conversion.
 		conversion.for( 'upcast' ).add( upcastTableFigure() );
+
+		// Table conversion.
+		conversion.for( 'upcast' ).add( upcastTable() );
 
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
 			return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
@@ -104,27 +112,73 @@ export default class TableLayoutEditing extends Plugin {
  */
 function upcastTableFigure() {
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on<UpcastElementEvent>( 'element:figure', ( evt, data, conversionApi ) => {
-			if ( !data.viewItem.hasClass( 'table' ) ) {
-				return;
-			}
-			const LAYOUT_CSS_CLASSES = [ 'layout-table', 'content-table' ];
+		dispatcher.on<UpcastElementEvent>( 'element:figure', (
+			evt: EventInfo,
+			data: UpcastConversionData<ViewElement>,
+			conversionApi: UpcastConversionApi
+		) => {
+			let viewTable = null;
 
-			for ( const cssClass of LAYOUT_CSS_CLASSES ) {
-				if ( data.viewItem.hasClass( cssClass ) ) {
-					const tableType = cssClass.replace( '-table', '' );
-
-					conversionApi.writer.setAttribute(
-						'tableType',
-						tableType,
-						data.modelRange!
-					);
-					conversionApi.consumable.consume( data.viewItem, { name: true, classes: cssClass } );
+			// Find a table element inside the figure element.
+			for ( const figureChild of data.viewItem.getChildren() ) {
+				if ( figureChild.is( 'element', 'table' ) ) {
+					viewTable = figureChild;
 				}
 			}
 
-			// Set the `tableType` to `content` when there is no layout css class present.
-			conversionApi.writer.setAttribute( 'tableType', 'content', data.modelRange! );
-		} );
+			// Do not convert if table element is absent.
+			if ( !viewTable ) {
+				return;
+			}
+
+			setTableTypeAttribute( data, conversionApi );
+		}, { priority: 'lowest' } );
 	};
+}
+
+/**
+ * TODO: JSDoc
+ */
+function upcastTable() {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', (
+			evt: EventInfo,
+			data: UpcastConversionData<ViewElement>,
+			conversionApi: UpcastConversionApi
+		) => {
+			const parent = data.viewItem.parent;
+
+			// When parent `figure` element was already consumed then skip it.
+			if ( parent!.is( 'element', 'figure' ) && !conversionApi.consumable.test( parent!, { name: true } ) ) {
+				return;
+			}
+
+			setTableTypeAttribute( data, conversionApi );
+		}, { priority: 'low' } );
+	};
+}
+
+/**
+ * Sets the `tableType` attribute based on the layout css class present in the table element.
+ */
+function setTableTypeAttribute( data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ): void {
+	const LAYOUT_CSS_CLASSES = [ 'layout-table', 'content-table' ];
+
+	for ( const cssClass of LAYOUT_CSS_CLASSES ) {
+		if ( data.viewItem.hasClass( cssClass ) ) {
+			const tableType = cssClass.replace( '-table', '' );
+
+			conversionApi.writer.setAttribute(
+				'tableType',
+				tableType,
+				data.modelRange!
+			);
+			conversionApi.consumable.consume( data.viewItem, { name: true, classes: cssClass } );
+
+			return;
+		}
+	}
+
+	// Set the `tableType` to `content` when there is no layout css class present.
+	conversionApi.writer.setAttribute( 'tableType', 'content', data.modelRange! );
 }
