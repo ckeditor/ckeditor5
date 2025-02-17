@@ -2,11 +2,15 @@
 category: api-reference
 ---
 
-# CKEditor&nbsp;5 Email feature
+# CKEditor&nbsp;5 email feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-link.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)
 
 This package implements the email feature for CKEditor&nbsp;5. It allows for turning the edited content into emails.
+
+## Demo
+
+Check out the demo in the {@link features/email#demo email feature guide}.
 
 ## Documentation
 
