@@ -18,7 +18,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor&nbsp;5 emoji feature under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0):
 
-* emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
+* emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
