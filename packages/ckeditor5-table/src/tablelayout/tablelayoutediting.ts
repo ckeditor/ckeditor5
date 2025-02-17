@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { EventInfo } from 'ckeditor5/src/utils.js';
+import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import type {
 	UpcastConversionApi,
 	UpcastConversionData,
@@ -43,6 +44,7 @@ export default class TableLayoutEditing extends Plugin {
 	public init(): void {
 		this._defineSchema();
 		this._defineConverters();
+		this._handleClipboardPasting();
 
 		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
 	}
@@ -104,6 +106,42 @@ export default class TableLayoutEditing extends Plugin {
 				const viewElement = mapper.toViewElement( modelElement );
 
 				writer.addClass( `${ attributeNewValue }-table`, viewElement );
+			} );
+		} );
+	}
+
+	/**
+	 * Handle clipboard paste events:
+	 *
+	 * * It does not affect *copying* content from the editor, only *pasting*.
+	 * * When content is pasted from another editor instance, tables are always converted to content tables,
+	 *   regardless of their original type.
+	 * * When content is pasted from the same editor instance, table types are preserved:
+	 *   - layout tables remain layout tables.
+	 *   - content tables remain content tables.
+	 */
+	private _handleClipboardPasting(): void {
+		const { plugins } = this.editor;
+
+		if ( !plugins.has( 'ClipboardPipeline' ) ) {
+			return;
+		}
+
+		const clipboardPipeline: ClipboardPipeline = plugins.get( 'ClipboardPipeline' );
+
+		this.listenTo<ClipboardContentInsertionEvent>( clipboardPipeline, 'contentInsertion', ( evt, data ) => {
+			// If content is pasted from the same editor, keep original table types.
+			if ( data.sourceEditorId === this.editor.id ) {
+				return;
+			}
+
+			// For content from other sources, always set table type to 'content'.
+			this.editor.model.change( writer => {
+				for ( const { item } of writer.createRangeIn( data.content ) ) {
+					if ( item.is( 'element', 'table' ) ) {
+						writer.setAttribute( 'tableType', 'content', item );
+					}
+				}
 			} );
 		} );
 	}
