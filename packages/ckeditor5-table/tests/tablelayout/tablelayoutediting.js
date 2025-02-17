@@ -15,6 +15,7 @@ import Table from '../../src/table.js';
 import TableCaption from '../../src/tablecaption.js';
 import TableColumnResize from '../../src/tablecolumnresize.js';
 import PlainTableOutput from '../../src/plaintableoutput.js';
+import TableEditing from '../../src/tableediting.js';
 
 describe( 'TableLayoutEditing', () => {
 	let editor, model, view, editorElement;
@@ -331,5 +332,259 @@ describe( 'TableLayoutEditing', () => {
 		} );
 	} );
 
-	// TODO: Add more tests.
+	describe( 'clipboard pipeline', () => {
+		it( 'should not crash the editor if there is no clipboard plugin', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ TableEditing, TableLayoutEditing ]
+			} );
+
+			expect( editor.plugins.get( 'TableLayoutEditing' ) ).to.be.instanceOf( TableLayoutEditing );
+		} );
+
+		describe( 'pasting content', () => {
+			it( 'should preserve table type if paste within the same editor', () => {
+				const dataTransferMock = createDataTransfer( {
+					'application/ckeditor5-editor-id': editor.id,
+					'text/html': '<figure class="table layout-table"><table><tbody><tr><td>Foo</td></tr></tbody></table></figure>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table layout-table" role="presentation">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>Foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should preserve table type if paste from the another editor', () => {
+				const dataTransferMock = createDataTransfer( {
+					'application/ckeditor5-editor-id': 'other-editor',
+					'text/html': '<figure class="table layout-table"><table><tbody><tr><td>Foo</td></tr></tbody></table></figure>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table layout-table" role="presentation">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>Foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should convert to content table if paste from external', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<figure><table><tbody><tr><td>Foo</td></tr></tbody></table></figure>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table content-table" role="presentation">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>Foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+		} );
+
+		describe( 'copying tables', () => {
+			describe( 'slice', () => {
+				it( 'should preserve table type when copying', () => {
+					setModelData(
+						model,
+						'<table tableType="layout">' +
+							'<tableRow>' +
+								'[<tableCell>' +
+									'<paragraph>Foo</paragraph>' +
+								'</tableCell>]' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const dataTransferMock = createDataTransfer();
+
+					view.document.fire( 'copy', {
+						dataTransfer: dataTransferMock,
+						preventDefault: () => {},
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<figure class="table layout-table" role="presentation">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><td>Foo</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'should preserve content table type when copying', () => {
+					setModelData(
+						model,
+						'<table tableType="content">' +
+							'<tableRow>' +
+								'[<tableCell>' +
+									'<paragraph>Bar</paragraph>' +
+								'</tableCell>]' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const dataTransferMock = createDataTransfer();
+
+					view.document.fire( 'copy', {
+						dataTransfer: dataTransferMock,
+						preventDefault: () => {},
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<figure class="table content-table" role="presentation">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><td>Bar</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+			} );
+
+			describe( 'whole table', () => {
+				it( 'should preserve table type when copying entire layout table', () => {
+					setModelData(
+						model,
+						'[<table tableType="layout">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>Foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+
+					const dataTransferMock = createDataTransfer();
+
+					view.document.fire( 'copy', {
+						dataTransfer: dataTransferMock,
+						preventDefault: () => {},
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<figure class="table layout-table" role="presentation">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><td>Foo</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'should preserve table type when copying entire content table', () => {
+					setModelData(
+						model,
+						'[<table tableType="content">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>Bar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+
+					const dataTransferMock = createDataTransfer();
+
+					view.document.fire( 'copy', {
+						dataTransfer: dataTransferMock,
+						preventDefault: () => {},
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<figure class="table content-table" role="presentation">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><td>Bar</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+			} );
+		} );
+	} );
 } );
+
+function createDataTransfer( data = {} ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		},
+		setData( type, value ) {
+			data[ type ] = value;
+		}
+	};
+}

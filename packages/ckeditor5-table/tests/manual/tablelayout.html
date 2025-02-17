@@ -1,216 +1,257 @@
-<div id="editor">
-	<p>Table default: content table</p>
-	<table>
-		<tr>
-			<td>a</td>
-			<td>b</td>
-			<td>c</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-		</tr>
-	</table>
+<head>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	>
 
-	<p>Table with layout-table class: layout table</p>
-	<table class="layout-table">
-		<tr>
-			<td>a</td>
-			<td>b</td>
-			<td>c</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-		</tr>
-	</table>
+	<style>
+		.editors-container {
+			display: flex;
+			gap: 20px;
+		}
 
-	<p>Figure that contains "table" class with table inside: content table</p>
-	<figure class="table">
-		<table>
-			<tr>
-				<td>a</td>
-				<td>b</td>
-				<td>c</td>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-			</tr>
-		</table>
-	</figure>
+		.editor-wrapper {
+			flex: 1;
+		}
 
-	<p>Figure that contains "layout-table" class with table inside: layout table</p>
-	<figure class="layout-table">
-		<table>
-			<tr>
-				<td>a</td>
-				<td>b</td>
-				<td>c</td>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-			</tr>
-		</table>
-	</figure>
+		.clipboard-preview-wrapper {
+			margin-top: 20px;
+		}
 
+		.clipboard-preview {
+			padding: 10px;
+			background: #f0f0f0;
+			border: 1px solid #ccc;
+			white-space: pre-wrap;
+		}
+	</style>
+</head>
 
-	<p>Figure with table default: content table</p>
-	<figure>
-		<table>
-			<thead>
-				<tr>
-					<th>0</th>
-					<th>1</th>
-					<th>2</th>
-					<th>3</th>
-					<th>4</th>
-				</tr>
-			</thead>
-			<tbody>
+<div class="editors-container">
+	<div class="editor-wrapper">
+		<h2>Editor 1 (with TableLayout)</h2>
+		<div id="editor">
+			<p>Table default: content table</p>
+			<table>
 				<tr>
 					<td>a</td>
 					<td>b</td>
 					<td>c</td>
-					<td>d</td>
-					<td>e</td>
 				</tr>
 				<tr>
-					<td>f</td>
-					<td>g</td>
-					<td>h</td>
-					<td>i</td>
-					<td>j</td>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+				</tr>
+			</table>
+
+			<p>Table with layout-table class: layout table</p>
+			<table class="layout-table">
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
 				</tr>
 				<tr>
-					<td>k</td>
-					<td>l</td>
-					<td>m</td>
-					<td>n</td>
-					<td>o</td>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+				</tr>
+			</table>
+
+			<p>Figure that contains "table" class with table inside: content table</p>
+			<figure class="table">
+				<table>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</figure>
+
+			<p>Figure that contains "layout-table" class with table inside: layout table</p>
+			<figure class="layout-table">
+				<table>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</figure>
+
+
+			<p>Figure with table default: content table</p>
+			<figure>
+				<table>
+					<thead>
+						<tr>
+							<th>0</th>
+							<th>1</th>
+							<th>2</th>
+							<th>3</th>
+							<th>4</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+							<td>c</td>
+							<td>d</td>
+							<td>e</td>
+						</tr>
+						<tr>
+							<td>f</td>
+							<td>g</td>
+							<td>h</td>
+							<td>i</td>
+							<td>j</td>
+						</tr>
+						<tr>
+							<td>k</td>
+							<td>l</td>
+							<td>m</td>
+							<td>n</td>
+							<td>o</td>
+						</tr>
+						<tr>
+							<td>p</td>
+							<td>q</td>
+							<td>r</td>
+							<td>s</td>
+							<td>t</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</div>
+
+	<div class="editor-wrapper">
+		<h2>Editor 2 (with PlainTableOutput)</h2>
+		<div id="editor-with-plain-table-output">
+			<p>Table default: content table</p>
+			<table>
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
 				</tr>
 				<tr>
-					<td>p</td>
-					<td>q</td>
-					<td>r</td>
-					<td>s</td>
-					<td>t</td>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
 				</tr>
-			</tbody>
-		</table>
-	</figure>
+			</table>
+
+			<p>Table with layout-table class: layout table</p>
+			<table class="layout-table">
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+				</tr>
+			</table>
+
+			<p>Figure that contains "table" class with table inside: content table</p>
+			<figure class="table">
+				<table>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</figure>
+
+			<p>Figure that contains "layout-table" class with table inside: layout table</p>
+			<figure class="layout-table">
+				<table>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</figure>
+
+
+			<p>Figure with table default: content table</p>
+			<figure>
+				<table>
+					<thead>
+						<tr>
+							<th>0</th>
+							<th>1</th>
+							<th>2</th>
+							<th>3</th>
+							<th>4</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+							<td>c</td>
+							<td>d</td>
+							<td>e</td>
+						</tr>
+						<tr>
+							<td>f</td>
+							<td>g</td>
+							<td>h</td>
+							<td>i</td>
+							<td>j</td>
+						</tr>
+						<tr>
+							<td>k</td>
+							<td>l</td>
+							<td>m</td>
+							<td>n</td>
+							<td>o</td>
+						</tr>
+						<tr>
+							<td>p</td>
+							<td>q</td>
+							<td>r</td>
+							<td>s</td>
+							<td>t</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</div>
 </div>
 
-<h2>Editor with PlainTableOutput plugin</h2>
-<div id="editor-with-plain-table-output">
-<p>Table default: content table</p>
-	<table>
-		<tr>
-			<td>a</td>
-			<td>b</td>
-			<td>c</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-		</tr>
-	</table>
-
-	<p>Table with layout-table class: layout table</p>
-	<table class="layout-table">
-		<tr>
-			<td>a</td>
-			<td>b</td>
-			<td>c</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-		</tr>
-	</table>
-
-	<p>Figure that contains "table" class with table inside: content table</p>
-	<figure class="table">
-		<table>
-			<tr>
-				<td>a</td>
-				<td>b</td>
-				<td>c</td>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-			</tr>
-		</table>
-	</figure>
-
-	<p>Figure that contains "layout-table" class with table inside: layout table</p>
-	<figure class="layout-table">
-		<table>
-			<tr>
-				<td>a</td>
-				<td>b</td>
-				<td>c</td>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-			</tr>
-		</table>
-	</figure>
-
-
-	<p>Figure with table default: content table</p>
-	<figure>
-		<table>
-			<thead>
-				<tr>
-					<th>0</th>
-					<th>1</th>
-					<th>2</th>
-					<th>3</th>
-					<th>4</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>a</td>
-					<td>b</td>
-					<td>c</td>
-					<td>d</td>
-					<td>e</td>
-				</tr>
-				<tr>
-					<td>f</td>
-					<td>g</td>
-					<td>h</td>
-					<td>i</td>
-					<td>j</td>
-				</tr>
-				<tr>
-					<td>k</td>
-					<td>l</td>
-					<td>m</td>
-					<td>n</td>
-					<td>o</td>
-				</tr>
-				<tr>
-					<td>p</td>
-					<td>q</td>
-					<td>r</td>
-					<td>s</td>
-					<td>t</td>
-				</tr>
-			</tbody>
-		</table>
-	</figure>
+<div class="clipboard-preview-wrapper">
+	<h3>Clipboard Preview (text/html)</h3>
+	<pre id="clipboard-preview" class="clipboard-preview"></pre>
 </div>
