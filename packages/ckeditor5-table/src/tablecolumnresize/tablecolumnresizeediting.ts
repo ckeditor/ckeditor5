@@ -118,7 +118,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	private _tableUtilsPlugin: TableUtils;
 
 	/**
-	 * Starting position of mouse when resize is initiated.
+	 * Starting position of the mouse when resize is initiated.
 	 */
 	private _initialMousePosition: { x: number; y: number } | null = null;
 
@@ -511,7 +511,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		domEventData.preventDefault();
 		eventInfo.stop();
 
-		// Store initial mouse position to perform calculate total distance moved.
+		// Store the initial mouse position to calculate the total distance moved.
 		// It is used to determine if the resizing should start after certain threshold.
 		const mouseEvent = domEventData.domEvent as MouseEvent;
 
@@ -524,7 +524,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );
 		const viewTable = target.findAncestor( 'table' )!;
 
-		// When user grabs the resizer, we wait for a certain distance to be moved before we start resizing.
+		// When the user grabs the resizer, we wait for a certain distance to be moved before resizing.
 		// This function will be called when the threshold is reached during mouse move.
 		this._startResizingAfterThreshold = () => {
 			// Insert colgroup for the table that is resized for the first time.

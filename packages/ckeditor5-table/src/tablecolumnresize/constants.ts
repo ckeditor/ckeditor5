@@ -24,6 +24,6 @@ export const COLUMN_MIN_WIDTH_IN_PIXELS = 40;
 export const COLUMN_WIDTH_PRECISION = 2;
 
 /**
- * The distance in pixels which the mouse has to move to start resizing the column.
+ * The distance in pixels that the mouse has to move to start resizing the column.
  */
 export const COLUMN_RESIZE_DISTANCE_THRESHOLD = 3;
