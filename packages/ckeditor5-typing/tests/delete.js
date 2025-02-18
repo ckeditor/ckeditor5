@@ -17,6 +17,7 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { fireBeforeInputDomEvent } from './_utils/utils.js';
 
 /* globals document */
 
@@ -115,28 +116,53 @@ describe( 'Delete feature', () => {
 	// See https://github.com/ckeditor/ckeditor5/issues/17383.
 	it( 'handles the backspace key in a nested editable', () => {
 		const clickBackspace = ( metaKey = false ) => {
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' ),
+			const { view } = editor.editing;
+
+			const keyEventData = {
+				keyCode: getCode( 'Backspace' ),
+				preventDefault: sinon.spy(),
+				domTarget: view.getDomRoot(),
 				metaKey
-			} ) );
+			};
+
+			const viewRange = view.document.selection.getFirstRange();
+			const viewRoot = view.domConverter.viewToDom( view.document.getRoot() );
+			const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+			// First fire keydown event.
+			viewDocument.fire( 'keydown', new DomEventData( view.document, keyEventData, keyEventData ) );
+
+			// Then fire beforeinput if it's not suppressed.
+			const preventedKeyDown = keyEventData.preventDefault.called;
+
+			if ( !preventedKeyDown ) {
+				fireBeforeInputDomEvent( viewRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+			}
+
+			return {
+				preventedKeyDown
+			};
 		};
 
 		setModelData( model, '<widget><nested>fo[]</nested></widget>' );
 
-		clickBackspace();
+		expect( clickBackspace().preventedKeyDown ).to.be.false;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
 
-		clickBackspace();
+		expect( clickBackspace().preventedKeyDown ).to.be.false;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 
-		clickBackspace();
+		expect( clickBackspace().preventedKeyDown ).to.be.true;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 
 		// There was an edge case tied to deleting whole lines.
-		clickBackspace( true );
+		expect( clickBackspace( true ).preventedKeyDown ).to.be.true;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 	} );
