@@ -22,7 +22,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * color-convert - Copyright (c) 2011–2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016–2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
 * emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
-* Fuse.js - Copyright (c) 2017 Kirollos Risk.
+* fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 * Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
