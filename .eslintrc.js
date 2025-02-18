@@ -17,7 +17,10 @@ module.exports = {
 		// The CKEditor 5 core DLL build is created from JavaScript files.
 		// ESLint should not process compiled TypeScript.
 		'src/*.js',
-		'**/*.d.ts'
+		'**/*.d.ts',
+
+		// This file includes JSX which eslint can't parse without additional configuration.
+		'docs/_snippets/framework/tutorials/using-react-in-widget.js'
 	],
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error',

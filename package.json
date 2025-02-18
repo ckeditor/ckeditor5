@@ -130,7 +130,6 @@
     "@wiris/mathtype-ckeditor5": "^8.10.0",
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
-    "babel-standalone": "^6.26.0",
     "chalk": "^5.0.0",
     "ckeditor5-premium-features": "44.1.0",
     "coveralls": "^3.1.0",

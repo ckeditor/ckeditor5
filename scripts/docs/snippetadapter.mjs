@@ -216,8 +216,23 @@ async function buildWithVite( snippet, constants = {}, external = [] ) {
 				removeViteModuleLoader: true
 			} )
 		],
+
+		/**
+		 * The configuration below allows for JSX code in JS files. This is needed for snippets
+		 * that use React components, but still need the `.js` extension to be found by Umberto.
+		 */
 		esbuild: {
-			legalComments: 'none'
+			legalComments: 'none',
+			loader: 'jsx',
+			include: /.*\.jsx?$/,
+			exclude: []
+		},
+		optimizeDeps: {
+			esbuildOptions: {
+				loader: {
+					'.js': 'jsx'
+				}
+			}
 		}
 	} );
 
