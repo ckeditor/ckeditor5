@@ -9,7 +9,7 @@ import Typing from '../src/typing.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { toWidget } from '@ckeditor/ckeditor5-widget';
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
@@ -36,9 +36,7 @@ describe( 'Delete feature', () => {
 				viewDocument = editor.editing.view.document;
 
 				model.schema.register( 'widget', {
-					inheritAllFrom: '$block',
-					isObject: true,
-					allowIn: [ '$root', 'div' ]
+					inheritAllFrom: '$blockObject'
 				} );
 				model.schema.register( 'nested', {
 					allowIn: 'widget',
@@ -53,16 +51,15 @@ describe( 'Delete feature', () => {
 					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, { writer } ) => {
-							const b = writer.createAttributeElement( 'b' );
 							const div = writer.createContainerElement( 'div' );
-							writer.insert( writer.createPositionAt( div, 0 ), b );
 
 							return toWidget( div, writer, { label: 'element label' } );
 						}
 					} )
 					.elementToElement( {
 						model: 'nested',
-						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, { writer } ) =>
+							toWidgetEditable( writer.createEditableElement( 'figcaption', { contenteditable: true } ), writer )
 					} );
 			} );
 	} );
@@ -115,54 +112,27 @@ describe( 'Delete feature', () => {
 
 	// See https://github.com/ckeditor/ckeditor5/issues/17383.
 	it( 'handles the backspace key in a nested editable', () => {
-		const clickBackspace = ( metaKey = false ) => {
-			const { view } = editor.editing;
-
-			const keyEventData = {
-				keyCode: getCode( 'Backspace' ),
-				preventDefault: sinon.spy(),
-				domTarget: view.getDomRoot(),
-				metaKey
-			};
-
-			const viewRange = view.document.selection.getFirstRange();
-			const viewRoot = view.domConverter.viewToDom( view.document.getRoot() );
-			const domRange = view.domConverter.viewRangeToDom( viewRange );
-
-			// First fire keydown event.
-			viewDocument.fire( 'keydown', new DomEventData( view.document, keyEventData, keyEventData ) );
-
-			// Then fire beforeinput if it's not suppressed.
-			const preventedKeyDown = keyEventData.preventDefault.called;
-
-			if ( !preventedKeyDown ) {
-				fireBeforeInputDomEvent( viewRoot, {
-					inputType: 'deleteContentBackward',
-					ranges: [ domRange ]
-				} );
-			}
-
-			return {
-				preventedKeyDown
-			};
-		};
-
 		setModelData( model, '<widget><nested>fo[]</nested></widget>' );
 
-		expect( clickBackspace().preventedKeyDown ).to.be.false;
+		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
 
-		expect( clickBackspace().preventedKeyDown ).to.be.false;
+		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 
-		expect( clickBackspace().preventedKeyDown ).to.be.true;
+		expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+	} );
 
-		// There was an edge case tied to deleting whole lines.
-		expect( clickBackspace( true ).preventedKeyDown ).to.be.true;
+	// See https://github.com/ckeditor/ckeditor5/issues/17383.
+	// There was an edge case tied to deleting whole lines.
+	it( 'handles the backspace key + meta key in a nested editable', () => {
+		setModelData( model, '<widget><nested>[]</nested></widget>' );
+
+		expect( clickBackspace( editor, true ).preventedKeyDown ).to.be.true;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 	} );
@@ -584,6 +554,39 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 		} );
 	} );
 } );
+
+function clickBackspace( editor, metaKey = false ) {
+	const view = editor.editing.view;
+	const viewDocument = view.document;
+
+	const keyEventData = {
+		keyCode: getCode( 'Backspace' ),
+		preventDefault: sinon.spy(),
+		domTarget: view.getDomRoot(),
+		metaKey
+	};
+
+	const viewRange = viewDocument.selection.getFirstRange();
+	const viewRoot = view.domConverter.viewToDom( view.document.getRoot() );
+	const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+	// First fire keydown event.
+	viewDocument.fire( 'keydown', new DomEventData( viewDocument, keyEventData, keyEventData ) );
+
+	// Then fire beforeinput if it's not suppressed.
+	const preventedKeyDown = keyEventData.preventDefault.called;
+
+	if ( !preventedKeyDown ) {
+		fireBeforeInputDomEvent( viewRoot, {
+			inputType: 'deleteContentBackward',
+			ranges: [ domRange ]
+		} );
+	}
+
+	return {
+		preventedKeyDown
+	};
+}
 
 function getDomEvent() {
 	return {
