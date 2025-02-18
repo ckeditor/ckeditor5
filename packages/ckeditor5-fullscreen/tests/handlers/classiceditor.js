@@ -28,7 +28,7 @@ describe( 'ClassicEditorHandler', () => {
 	} );
 
 	afterEach( () => {
-		classicEditorHandler.getContainer().remove();
+		classicEditorHandler.disable();
 		domElement.remove();
 
 		return editor.destroy();
@@ -75,6 +75,11 @@ describe( 'ClassicEditorHandler', () => {
 				],
 				menuBar: {
 					isVisible: true
+				},
+				fullscreen: {
+					menuBar: {
+						isVisible: true
+					}
 				}
 			} );
 
@@ -87,16 +92,6 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempDomElement.remove();
 			return tempEditor.destroy();
-		} );
-	} );
-
-	describe( '#disable()', () => {
-		it( 'should call #returnMovedElements()', () => {
-			const spy = sinon.spy( classicEditorHandler, 'returnMovedElements' );
-
-			classicEditorHandler.disable();
-
-			expect( spy ).to.have.been.calledOnce;
 		} );
 	} );
 } );

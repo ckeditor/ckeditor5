@@ -7,7 +7,7 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import { CKEditorError, createElement } from 'ckeditor5/src/utils.js';
+import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
 
 /**
@@ -52,23 +52,6 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Returns the moved elements to their original places.
-	 */
-	public returnMovedElements(): void {
-		this._movedElements.forEach( ( placeholder, moved ) => {
-			placeholder.replaceWith( moved );
-			placeholder.remove();
-		} );
-
-		this._movedElements.clear();
-
-		if ( this._container ) {
-			this._container.remove();
-			this._container = null;
-		}
-	}
-
-	/**
 	 * Returns the fullscreen mode container element.
 	 */
 	public getContainer(): HTMLElement {
@@ -98,24 +81,22 @@ export default class AbstractEditorHandler {
 	/**
 	 * Enables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
 	 */
-	public enable(): void {
-		/**
-		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
-		 *
-		 * @error fullscreen-invalid-editor-type
-		 */
-		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
-	}
+	public enable(): void {}
 
 	/**
-	 * Disables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
-		/**
-		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
-		 *
-		 * @error fullscreen-invalid-editor-type
-		 */
-		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
+		this._movedElements.forEach( ( placeholder, moved ) => {
+			placeholder.replaceWith( moved );
+			placeholder.remove();
+		} );
+
+		this._movedElements.clear();
+
+		if ( this._container ) {
+			this._container.remove();
+			this._container = null;
+		}
 	}
 }

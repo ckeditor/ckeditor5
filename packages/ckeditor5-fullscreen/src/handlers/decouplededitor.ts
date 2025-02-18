@@ -44,11 +44,4 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
 		}
 	}
-
-	/**
-	 * Restores the editor UI elements to their original positions.
-	 */
-	public override disable(): void {
-		this.returnMovedElements();
-	}
 }

@@ -50,23 +50,14 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		// Decupled editor doesn't have this issue because there is no top-level container, so `dir` is set on each component separately.
 		this.getContainer().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
 
-		if ( !this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
-			return;
+		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
+			if ( !editorUIView.menuBarView ) {
+				editorUIView.menuBarView = new MenuBarView( this._editor.locale );
+				editorUIView.menuBarView.render();
+				editorUI.initMenuBar( editorUIView.menuBarView );
+			}
+
+			this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
 		}
-
-		if ( !editorUIView.menuBarView ) {
-			editorUIView.menuBarView = new MenuBarView( this._editor.locale );
-			editorUIView.menuBarView.render();
-			editorUI.initMenuBar( editorUIView.menuBarView );
-		}
-
-		this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
-	}
-
-	/**
-	 * Restores the editor UI elements to their original positions.
-	 */
-	public override disable(): void {
-		this.returnMovedElements();
 	}
 }

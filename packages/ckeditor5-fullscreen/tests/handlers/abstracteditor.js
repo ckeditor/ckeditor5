@@ -16,7 +16,7 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	afterEach( () => {
-		abstractHandler.getContainer().remove();
+		abstractHandler.disable();
 	} );
 
 	it( 'should create a `#_movedElements` map', () => {
@@ -35,46 +35,6 @@ describe( 'AbstractHandler', () => {
 			expect( abstractHandler.getContainer().querySelector( '#element' ) ).to.equal( element );
 
 			abstractHandler._movedElements.get( element ).remove();
-		} );
-	} );
-
-	describe( '#returnMovedElements()', () => {
-		it( 'should return all moved elements and destroy the placeholders', () => {
-			const element = global.document.createElement( 'div' );
-			const element2 = global.document.createElement( 'div' );
-
-			element.id = 'element';
-			element2.id = 'element2';
-			global.document.body.appendChild( element );
-			global.document.body.appendChild( element2 );
-
-			abstractHandler.moveToFullscreen( element, 'menu-bar' );
-			abstractHandler.moveToFullscreen( element2, 'editor' );
-
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.equal(
-				abstractHandler._movedElements.get( element )
-			);
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editor"' ) ).to.equal(
-				abstractHandler._movedElements.get( element2 )
-			);
-
-			abstractHandler.returnMovedElements();
-
-			expect( abstractHandler._movedElements.size ).to.equal( 0 );
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editor"' ) ).to.be.null;
-
-			element.remove();
-			element2.remove();
-		} );
-
-		it( 'should destroy the container if it was created', () => {
-			const container = abstractHandler.getContainer();
-
-			abstractHandler.returnMovedElements();
-
-			expect( abstractHandler._container ).to.be.null;
-			expect( container.parentElement ).to.be.null;
 		} );
 	} );
 
@@ -121,12 +81,42 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#disable()', () => {
-		it( 'should throw an error', () => {
-			try {
-				abstractHandler.disable();
-			} catch ( error ) {
-				assertCKEditorError( error, /^fullscreen-invalid-editor-type/ );
-			}
+		it( 'should return all moved elements and destroy the placeholders', () => {
+			const element = global.document.createElement( 'div' );
+			const element2 = global.document.createElement( 'div' );
+
+			element.id = 'element';
+			element2.id = 'element2';
+			global.document.body.appendChild( element );
+			global.document.body.appendChild( element2 );
+
+			abstractHandler.moveToFullscreen( element, 'menu-bar' );
+			abstractHandler.moveToFullscreen( element2, 'editor' );
+
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.equal(
+				abstractHandler._movedElements.get( element )
+			);
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editor"' ) ).to.equal(
+				abstractHandler._movedElements.get( element2 )
+			);
+
+			abstractHandler.disable();
+
+			expect( abstractHandler._movedElements.size ).to.equal( 0 );
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editor"' ) ).to.be.null;
+
+			element.remove();
+			element2.remove();
+		} );
+
+		it( 'should destroy the container if it was created', () => {
+			const container = abstractHandler.getContainer();
+
+			abstractHandler.disable();
+
+			expect( abstractHandler._container ).to.be.null;
+			expect( container.parentElement ).to.be.null;
 		} );
 	} );
 } );
