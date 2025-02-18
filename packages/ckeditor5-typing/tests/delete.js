@@ -8,6 +8,7 @@ import Delete from '../src/delete.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -27,7 +28,7 @@ describe( 'Delete feature', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Widget, Delete ] } )
+			.create( element, { plugins: [ Paragraph, Widget, Delete, Typing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
