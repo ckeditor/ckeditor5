@@ -100,8 +100,6 @@ export default class EmojiRepository extends Plugin {
 
 		this._items = this._getItems();
 
-		// Skip plugin initialization if the emoji repository is not available.
-		// The initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`, is prevented as well.
 		if ( !this._items ) {
 			return this._repositoryPromiseResolveCallback( false );
 		}
@@ -136,7 +134,17 @@ export default class EmojiRepository extends Plugin {
 				keys: [
 					'emoticon',
 					'annotation',
-					( emojiEntry: EmojiEntry ) => emojiEntry.tags?.join() || ''
+					( emojiEntry: EmojiEntry ) => {
+						// Instead of searching over all tags, let's use only those that matches the query.
+						// It enables searching in tags with the space character in names.
+						const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
+
+						const matchedTags = searchQueryTokens.flatMap( tok => {
+							return emojiEntry.tags?.filter( t => t.startsWith( tok ) );
+						} );
+
+						return matchedTags.join();
+					}
 				]
 			} )
 			.map( result => result.obj );

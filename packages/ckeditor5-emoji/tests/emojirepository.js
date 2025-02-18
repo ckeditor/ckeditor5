@@ -597,8 +597,8 @@ describe( 'EmojiRepository', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
 			expect( result ).to.have.length( 2 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( result[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( result[ 0 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( result[ 1 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by tags (single match)', () => {
