@@ -59,5 +59,10 @@
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  },
+  "sideEffects": [
+    "*.css",
+    "build/**/*.js",
+    "dist/translations/*.umd.js"
+  ]
 }
