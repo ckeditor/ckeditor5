@@ -8,11 +8,8 @@ import fs from 'fs-extra';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
-/**
- * Paths to the `tsconfig` and `banner` files are relative to the root of the repository.
- */
-const tsconfig = 'tsconfig.dist.ckeditor5.json';
-const banner = 'scripts/nim/banner.mjs';
+const tsconfig = upath.resolve( CKEDITOR5_ROOT_PATH, 'tsconfig.dist.ckeditor5.json' );
+const banner = upath.resolve( CKEDITOR5_ROOT_PATH, 'scripts/nim/banner.mjs' );
 
 export function dist( path ) {
 	return upath.join( CKEDITOR5_ROOT_PATH, 'dist', path );
@@ -68,13 +65,13 @@ export function generateCKEditor5BrowserBuild( options = {} ) {
 }
 
 export async function generateCKEditor5PackageBuild( packagePath ) {
-	const pkg = await fs.readJson( upath.join( packagePath, './package.json' ) );
+	const pkg = await fs.readJson( upath.join( packagePath, 'package.json' ) );
 
 	return build( {
 		input: 'src/index.ts',
-		output: upath.resolve( packagePath, './dist/index.js' ),
+		output: upath.resolve( packagePath, 'dist/index.js' ),
 		tsconfig: 'tsconfig.dist.json',
-		banner: upath.resolve( packagePath, '../..', banner ),
+		banner,
 		external: [
 			'ckeditor5',
 			...Object.keys( {
