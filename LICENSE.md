@@ -29,7 +29,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * turndown-plugin-gfm - Copyright (c) 2017+ Dom Christie.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
 
-The data from following packages is served on our CDN under the [Apache License, version 2.0](https://opensource.org/license/apache-2-0/):
+The data from the following packages is served on our CDN under the [Apache License, version 2.0](https://opensource.org/license/apache-2-0/):
 
 * emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 

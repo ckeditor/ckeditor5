@@ -120,7 +120,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
-* `version` &ndash; the emoji database version. By default, the version 16 is used. This option is ignored if `definitionsUrl` is provided.
+* `version` &ndash; the emoji database version. By default, version 16 is used. This option is ignored if `definitionsUrl` is provided.
 
 	```js
 	ClassicEditor
@@ -135,13 +135,13 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 	```
 ### Emoji source
 
-The source of our emoji is taken from an open-source project called [emoji-picker-element-data](https://www.npmjs.com/package/emoji-picker-element-data), licensed under the [Apache License, version 2.0](https://opensource.org/license/apache-2-0/).
+The emoji are sourced from an open-source project called [emoji-picker-element-data](https://www.npmjs.com/package/emoji-picker-element-data), licensed under the [Apache License, version 2.0](https://opensource.org/license/apache-2-0/).
 
-The database of english emoji is by default loaded from our CDN. Make sure that your {@link getting-started/setup/csp CSP} rules are correctly set up.
+The database of English emoji is by default loaded from our CDN. Make sure that your {@link getting-started/setup/csp CSP rules} are set up correctly.
 
-If you do not want to use our distribution and prefer to self-host emoji, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`} option. You can download the data directly from the package mentioned above or from our CDN, and place it under a static assets URL, for example:
+If you do not want to use our distribution and prefer to self-host emoji, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`} configuration option. Download the data directly from the package mentioned above or from our CDN, and place it under a static assets URL, for example:
 
-1. Download emoji database from [https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json](https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json), or version `15` for older Unicode versions.
+1. Download the emoji database from [https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json](https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json) (or version `15` for older Unicode versions).
 2. Place the downloaded file in your application's assets folder, for example `public/emoji/en.json`. The specific location may vary depending on your framework and setup.
 3. Update the configuration to point `definitionsUrl` to the URL of your assets, like `https://example.com/emoji/en.json`.
 
@@ -149,9 +149,9 @@ You can prepare your own database with a different emoji set, but it must be ide
 
 ### Marker conflicts
 
-The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
+The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key. This may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
 
-To prevent conflicts, make sure that {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are defined differently than `:`.
+To prevent conflicts, make sure that the {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are defined to something different than `:`.
 
 ## Related features
 
