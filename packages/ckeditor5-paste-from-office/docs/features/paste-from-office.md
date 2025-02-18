@@ -3,14 +3,14 @@ menu-title: Paste from Office
 meta-title: Paste from Office | CKEditor 5 Documentation
 meta-description: CKEditor 5 lets you handle content that you paste from Word and paste from Excel.
 category: features-pasting
-order: 15
+order: 10
 ---
 
 {@snippet features/build-paste-from-office-source}
 
-# Pasting content from Microsoft Office
+# Paste from Office
 
-Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature. You can also try the more advanced, premium {@link features/paste-from-office-enhanced paste from Office enhanced} feature.
+Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature. You can also try the more advanced, premium {@link features/paste-from-office-enhanced enhanced Paste from Office} feature.
 
 ## Demo
 
@@ -27,9 +27,9 @@ To test pasting from Office, download the sample documents and open them in Micr
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-## Paste from Office enhanced
+## Enhanced paste from Office
 
-Refer to the {@link features/paste-from-office-enhanced#content-formatting-support paste from Office enhanced} guide for a full comparison of supported styles and formatting between the basic and premium versions.
+Refer to the {@link features/paste-from-office-enhanced#content-formatting-support enhanced Paste from Office} guide for a full comparison of supported styles and formatting between the basic and premium versions.
 
 ## Additional feature information
 
@@ -99,7 +99,7 @@ If the image is represented in the Word content by the VML syntax (like this one
 ## Related features
 
 CKEditor&nbsp;5 supports a wider range of paste features, including:
-* {@link features/paste-from-office-enhanced Paste from Office enhanced} &ndash; Paste from Office enhanced is a premium version of the plugin that offers far greater capabilities.
+* {@link features/paste-from-office-enhanced Enhanced paste from Office} &ndash; Enhanced paste from Office is a premium version of the plugin that offers far greater capabilities.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content. You can read more about the differences between the paste from Office and import from Word features in the {@link features/features-comparison dedicated comparison guide}.

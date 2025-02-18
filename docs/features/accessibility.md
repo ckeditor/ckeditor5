@@ -482,12 +482,12 @@ Keystrokes introduced by {@link features/source-editing-enhanced Source Editing 
 		</tr>
 		<tr>
 			<td>Select document end</td>
-			<td><kbd>Shift</kbd>+<kbd>CtrlEnd</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>End</kbd></td>
 			<td><kbd>⌘⇧↓</kbd>, <kbd>⌘⇧End</kbd></td>
 		</tr>
 		<tr>
 			<td>Select document start</td>
-			<td><kbd>Shift</kbd>+<kbd>CtrlHome</kbd></td>
+			<td><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>Home</kbd></td>
 			<td><kbd>⌘⇧↑</kbd>, <kbd>⌘⇧Home</kbd></td>
 		</tr>
 		<tr>
