@@ -18,6 +18,7 @@ import type {
 	ScriptElementSupport,
 	StyleElementSupport,
 	TableElementSupport,
+	HorizontalLineElementSupport,
 	HtmlComment,
 	FullPage,
 	EmptyBlock
@@ -49,6 +50,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ScriptElementSupport.pluginName ]: ScriptElementSupport;
 		[ StyleElementSupport.pluginName ]: StyleElementSupport;
 		[ TableElementSupport.pluginName ]: TableElementSupport;
+		[ HorizontalLineElementSupport.pluginName ]: HorizontalLineElementSupport;
 		[ HtmlComment.pluginName ]: HtmlComment;
 		[ FullPage.pluginName ]: FullPage;
 		[ EmptyBlock.pluginName ]: EmptyBlock;

@@ -23,6 +23,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
 * emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
+* is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 * Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
 * Turndown - Copyright (c) 2017+ Dom Christie.

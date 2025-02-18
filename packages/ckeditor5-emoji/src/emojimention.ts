@@ -29,12 +29,17 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
 	 */
-	declare private _emojiPickerPlugin: EmojiPicker | null;
+	declare public emojiPickerPlugin: EmojiPicker | null;
 
 	/**
 	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
 	 */
-	declare private _emojiRepositoryPlugin: EmojiRepository;
+	declare public emojiRepositoryPlugin: EmojiRepository;
+
+	/**
+	 * A flag that informs if the {@link module:emoji/emojirepository~EmojiRepository} plugin is loaded correctly.
+	 */
+	declare private _isEmojiRepositoryAvailable: boolean;
 
 	/**
 	 * Defines a number of displayed items in the auto complete dropdown.
@@ -82,12 +87,24 @@ export default class EmojiMention extends Plugin {
 		this._emojiDropdownLimit = editor.config.get( 'emoji.dropdownLimit' )!;
 		this._skinTone = editor.config.get( 'emoji.skinTone' )!;
 
-		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<MentionFeed>;
-		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
-		const markerAlreadyUsed = mentionFeedsConfigs.some( config => config.marker === EMOJI_MENTION_MARKER );
-		const isMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
+		this._setupMentionConfiguration( editor );
+	}
 
-		if ( markerAlreadyUsed || isMarkerUsedByMergeFields ) {
+	/**
+	 * Initializes the configuration for emojis in the mention feature.
+	 * If the marker used by emoji mention is already registered, it displays a warning.
+	 * If emoji mention configuration is detected, it does not register it for a second time.
+	 */
+	private _setupMentionConfiguration( editor: Editor ) {
+		const mergeFieldsPrefix = editor.config.get( 'mergeFields.prefix' )! as string;
+		const mentionFeedsConfigs = editor.config.get( 'mention.feeds' )! as Array<EmojiMentionFeed>;
+
+		const isEmojiMarkerUsedByMergeFields = mergeFieldsPrefix ? mergeFieldsPrefix[ 0 ] === EMOJI_MENTION_MARKER : false;
+		const isEmojiMarkerUsedByMention = mentionFeedsConfigs
+			.filter( config => !config._isEmojiMarker )
+			.some( config => config.marker === EMOJI_MENTION_MARKER );
+
+		if ( isEmojiMarkerUsedByMention || isEmojiMarkerUsedByMergeFields ) {
 			/**
 			 * The `marker` in the `emoji` config is already used by other plugin configuration.
 			 *
@@ -99,7 +116,21 @@ export default class EmojiMention extends Plugin {
 			return;
 		}
 
-		this._setupMentionConfiguration( mentionFeedsConfigs );
+		const isEmojiConfigDefined = mentionFeedsConfigs.some( config => config._isEmojiMarker );
+
+		if ( isEmojiConfigDefined ) {
+			return;
+		}
+
+		const emojiMentionFeedConfig = {
+			_isEmojiMarker: true,
+			marker: EMOJI_MENTION_MARKER,
+			dropdownLimit: this._emojiDropdownLimit,
+			itemRenderer: this._customItemRendererFactory( this.editor.t ),
+			feed: this._queryEmojiCallbackFactory()
+		};
+
+		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
 	}
 
 	/**
@@ -108,29 +139,14 @@ export default class EmojiMention extends Plugin {
 	public async init(): Promise<void> {
 		const editor = this.editor;
 
-		this._emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
-		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
+		this.emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
+		this.emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
+		this._isEmojiRepositoryAvailable = await this.emojiRepositoryPlugin.isReady();
 
-		// Skip overriding the `mention` command listener if the emoji repository is not ready.
-		if ( !await this._emojiRepositoryPlugin.isReady() ) {
-			return;
+		// Override the `mention` command listener if the emoji repository is ready.
+		if ( this._isEmojiRepositoryAvailable ) {
+			editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
 		}
-
-		editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
-	}
-
-	/**
-	 * Initializes the configuration for emojis in the mention feature.
-	 */
-	private _setupMentionConfiguration( mentionFeedsConfigs: Array<MentionFeed> ): void {
-		const emojiMentionFeedConfig = {
-			marker: EMOJI_MENTION_MARKER,
-			dropdownLimit: this._emojiDropdownLimit,
-			itemRenderer: this._customItemRendererFactory( this.editor.t ),
-			feed: this._queryEmojiCallbackFactory()
-		};
-
-		this.editor.config.set( 'mention.feeds', [ ...mentionFeedsConfigs, emojiMentionFeedConfig ] );
 	}
 
 	/**
@@ -202,7 +218,7 @@ export default class EmojiMention extends Plugin {
 					editor.model.deleteContent( writer.createSelection( eventData.range ) );
 				} );
 
-				const emojiPickerPlugin = this._emojiPickerPlugin!;
+				const emojiPickerPlugin = this.emojiPickerPlugin!;
 
 				emojiPickerPlugin.showUI( text.slice( 1 ) );
 
@@ -230,12 +246,22 @@ export default class EmojiMention extends Plugin {
 				return [];
 			}
 
-			const emojis: Array<MentionFeedObjectItem> = this._emojiRepositoryPlugin.getEmojiByQuery( searchQuery )
+			// Do not show anything when a query starts with a marker character.
+			if ( searchQuery.startsWith( EMOJI_MENTION_MARKER ) ) {
+				return [];
+			}
+
+			// If the repository plugin is not available, return an empty feed to avoid confusion. See: #17842.
+			if ( !this._isEmojiRepositoryAvailable ) {
+				return [];
+			}
+
+			const emojis: Array<MentionFeedObjectItem> = this.emojiRepositoryPlugin.getEmojiByQuery( searchQuery )
 				.map( emoji => {
 					let text = emoji.skins[ this._skinTone ] || emoji.skins.default;
 
-					if ( this._emojiPickerPlugin ) {
-						text = emoji.skins[ this._emojiPickerPlugin.skinTone ] || emoji.skins.default;
+					if ( this.emojiPickerPlugin ) {
+						text = emoji.skins[ this.emojiPickerPlugin.skinTone ] || emoji.skins.default;
 					}
 
 					return {
@@ -244,7 +270,7 @@ export default class EmojiMention extends Plugin {
 					};
 				} );
 
-			if ( !this._emojiPickerPlugin ) {
+			if ( !this.emojiPickerPlugin ) {
 				return emojis.slice( 0, this._emojiDropdownLimit );
 			}
 
@@ -259,3 +285,11 @@ export default class EmojiMention extends Plugin {
 		};
 	}
 }
+
+type EmojiMentionFeed = MentionFeed & {
+
+	/**
+	 * It's used prevent displaying an emoji mention feed warning when editor plugins are initialized more than once.
+	 */
+	_isEmojiMarker?: boolean;
+};

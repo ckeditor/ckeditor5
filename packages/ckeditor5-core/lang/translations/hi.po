@@ -138,3 +138,7 @@ msgstr "Color picker"
 msgctxt "The secondary text of the message shown to the user when no results are available for the search criteria."
 msgid "Please try a different phrase or check the spelling."
 msgstr "कृपया किन्हीं और शब्दों का इस्तेमाल करें या स्पेलिंग चेक करें."
+
+msgctxt "The label of the source editing related features used in toolbar buttons."
+msgid "Source"
+msgstr "सोर्स"

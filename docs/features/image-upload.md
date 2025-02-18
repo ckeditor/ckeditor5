@@ -59,7 +59,7 @@ It is a modern file uploader with a clean interface, automatic support for respo
 
 Thanks to the native CKEditor&nbsp;5 integration, Uploadcare supports drag-and-drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
 
-With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, Instagram, OneDrive or from local computer. Images can be easily adjusted with built-in image editor.
+With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, OneDrive or from local computer. Images can be easily adjusted with built-in image editor.
 
 {@link features/uploadcare **Learn how to use Uploadcare in your project**}.
 

@@ -10,7 +10,7 @@
 .ck.ck-emoji {
 	& .ck.ck-emoji__tiles {
 		max-width: 100%;
-		max-height: 265px;
+		max-height: min(265px, 40vh);
 
 		overflow-y: auto;
 		overflow-x: hidden;
