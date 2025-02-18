@@ -8,7 +8,6 @@
  */
 
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
-import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 
 import AbstractEditorHandler from './abstracteditor.js';
 
@@ -41,11 +40,8 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 		this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editor' );
 		this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
 
-		if ( this._editor.plugins.has( 'PresenceListUI' ) ) {
-			const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
-
-			this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
-		}
+		this.generatePresenceListElement();
+		this.generateDocumentOutlineElement();
 
 		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );

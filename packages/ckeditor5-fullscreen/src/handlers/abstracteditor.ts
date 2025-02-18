@@ -7,6 +7,8 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
+import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
 import { CKEditorError, createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
 
@@ -18,6 +20,8 @@ export default class AbstractEditorHandler {
 	 * Map of moved elements (moved -> placeholder).
 	 */
 	private _movedElements: Map<HTMLElement, HTMLElement>;
+
+	private _idToPlaceholder: Map<string, HTMLElement>;
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
@@ -35,6 +39,7 @@ export default class AbstractEditorHandler {
 	 */
 	constructor() {
 		this._movedElements = new Map();
+		this._idToPlaceholder = new Map();
 	}
 
 	/**
@@ -48,19 +53,36 @@ export default class AbstractEditorHandler {
 
 		this.getContainer().querySelector( `[data-ck-fullscreen="${ placeholderName }"]` )!.append( elementToMove );
 
-		this._movedElements.set( elementToMove, placeholderElement );
+		this._movedElements.set( placeholderElement, elementToMove );
+		this._idToPlaceholder.set( placeholderName, placeholderElement );
+	}
+
+	/**
+	 * Returns a single moved element to its original place.
+	 */
+	public returnMovedElement( placeholderName: string ): void {
+		const placeholder = this._idToPlaceholder.get( placeholderName )!;
+		const element = this._movedElements.get( placeholder );
+
+		if ( element ) {
+			placeholder.replaceWith( element );
+			placeholder.remove();
+
+			this._movedElements.delete( placeholder );
+		}
 	}
 
 	/**
 	 * Returns the moved elements to their original places.
 	 */
 	public returnMovedElements(): void {
-		this._movedElements.forEach( ( placeholder, moved ) => {
+		this._movedElements.forEach( ( moved, placeholder ) => {
 			placeholder.replaceWith( moved );
 			placeholder.remove();
 		} );
 
 		this._movedElements.clear();
+		this._idToPlaceholder.clear();
 
 		if ( this._container ) {
 			this._container.remove();
@@ -83,12 +105,7 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
 				<div class="ck ck-fullscreen__editor-wrapper">
-					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar">
-						<div class="ck ck-fullscreen__presence-list-wrapper">
-							<div class="ck ck-fullscreen__presence-list-header">Connected users</div>
-							<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
-						</div>
-					</div>
+					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
 					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
@@ -122,5 +139,47 @@ export default class AbstractEditorHandler {
 		 * @error fullscreen-invalid-editor-type
 		 */
 		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
+	}
+
+	public generatePresenceListElement(): void {
+		if ( !this._editor.plugins.has( 'PresenceListUI' ) ) {
+			return;
+		}
+
+		const presenceListWrapper = `
+			<div class="ck ck-fullscreen__left-sidebar-item">
+				<div class="ck ck-fullscreen__left-sidebar-header">Connected users</div>
+				<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
+			</div>
+		`;
+
+		const fragment = document.createRange().createContextualFragment( presenceListWrapper );
+
+		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( fragment );
+
+		const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
+
+		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
+	}
+
+	public generateDocumentOutlineElement(): void {
+		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			return;
+		}
+
+		const documentOutlineWrapper = `
+			<div class="ck ck-fullscreen__left-sidebar-item">
+				<div class="ck ck-fullscreen__left-sidebar-header">Document Outline</div>
+				<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
+			</div>
+		`;
+
+		const fragment = document.createRange().createContextualFragment( documentOutlineWrapper );
+
+		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( fragment );
+
+		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+
+		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
 	}
 }
