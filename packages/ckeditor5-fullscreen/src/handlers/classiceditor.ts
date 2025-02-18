@@ -9,6 +9,7 @@
 
 import { MenuBarView } from 'ckeditor5/src/ui.js';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { type AnnotationsUIs } from '@ckeditor/ckeditor5-comments';
 
 import AbstractEditorHandler from './abstracteditor.js';
 
@@ -58,6 +59,19 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 			}
 
 			this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
+		}
+
+		/* istanbul ignore if -- @preserve */
+		// If annotations are enabled...
+		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+			const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+
+			// And the sidebar is used...
+			if ( annotationsUIs.activeUIs.has( 'wideSidebar' ) || annotationsUIs.activeUIs.has( 'narrowSidebar' ) ) {
+				// Move the sidebar to the fullscreen mode.
+				this.moveToFullscreen( ( ( this._editor.config.get( 'sidebar.container' ) as HTMLElement )
+					.firstElementChild as HTMLElement ), 'right-sidebar' );
+			}
 		}
 	}
 }
