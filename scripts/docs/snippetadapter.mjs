@@ -28,14 +28,27 @@ const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
  */
 export default async function snippetAdapter( snippets, { allowedSnippets }, { getSnippetPlaceholder } ) {
 	const constants = await getConstantDefinitions( snippets );
-	const { dependencies: coreDependencies, version } = await getPackageJson( 'ckeditor5' );
-	const { dependencies: commercialDependencies } = await getPackageJson( 'ckeditor5-premium-features' );
-	const external = Object.keys( {
+	const core = await getPackageJson( 'ckeditor5' );
+	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
+
+	const coreDependencies = [
+		...Object.keys( core.dependencies ),
+		...Object.keys( core.dependencies ).map( dependency => `${ dependency }/dist/index.js` )
+	];
+
+	const commercialDependencies = [
+		...Object.keys( commercial.dependencies ),
+		...Object.keys( commercial.dependencies ).map( dependency => `${ dependency }/dist/index.js` )
+	];
+
+	const external = [
 		...coreDependencies,
 		...commercialDependencies,
-		'react': null,
-		'react-dom/client': null
-	} );
+		'react',
+		'react-dom/client',
+		'lodash-es',
+		'mermaid/dist/mermaid.js'
+	];
 
 	let basePath = '';
 
@@ -44,6 +57,9 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 		filterAllowedSnippets( snippets, allowedSnippets );
 		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
 	}
+
+	// Some snippets are used on multiple pages. We'll build them only once and reuse the result.
+	const builds = {};
 
 	// Group snippets by the destination document.
 	const documents = {};
@@ -66,16 +82,24 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 
 		for ( const snippet of documentSnippets ) {
 			const placeholder = getSnippetPlaceholder( snippet.snippetName );
-			const code = await buildWithVite( snippet, constants, external );
 
-			documentContent = documentContent.replace( placeholder, code );
+			// If the snippet has been built already, we can reuse it.
+			builds[ snippet.snippetName ] ??= await buildWithVite( snippet, constants, external );
+
+			documentContent = documentContent.replace( placeholder, builds[ snippet.snippetName ] );
 		}
 
 		const headerTags = [
 			// Stylesheets and importmap for the editor itself.
-			'<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.2.0/ckeditor5.css" />',
-			'<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.2.0/ckeditor5-premium-features.css" />',
-			`<script type="importmap">${ getImportMap( coreDependencies, commercialDependencies, version ) }</script>`,
+			`<link
+				rel="stylesheet"
+				href="https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css"
+			/>`,
+			`<link
+				rel="stylesheet"
+				href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css"
+			/>`,
+			`<script type="importmap">${ getImportMap( coreDependencies, commercialDependencies ) }</script>`,
 
 			// Global constants and helpers used in snippets.
 			`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
@@ -201,30 +225,31 @@ async function buildWithVite( snippet, constants = {}, external = [] ) {
 }
 
 /**
- * @param {Object.<String, String>} coreDependencies
- * @param {Object.<String, String>} commercialDependencies
- * @param {String} version
+ * @param {Array.<String>} coreDependencies
+ * @param {Array.<String>} commercialDependencies
  * @returns {String}
  */
-function getImportMap( coreDependencies, commercialDependencies, version ) {
+function getImportMap( coreDependencies, commercialDependencies ) {
 	const imports = {
-		'ckeditor5': `https://cdn.ckeditor.com/ckeditor5/${ version }/ckeditor5.js`,
-		'ckeditor5/': `https://cdn.ckeditor.com/ckeditor5/${ version }/`,
-		'ckeditor5-premium-features': `https://cdn.ckeditor.com/ckeditor5-premium-features/${ version }/ckeditor5-premium-features.js`,
-		'ckeditor5-premium-features/': `https://cdn.ckeditor.com/ckeditor5-premium-features/${ version }/`,
-		'react': 'https://esm.sh/react@18.2.0',
-		'react-dom/': 'https://esm.sh/react-dom@18.2.0/'
+		'ckeditor5': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.js',
+		'ckeditor5/': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/',
+		'ckeditor5-premium-features': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.js',
+		'ckeditor5-premium-features/': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/',
+		'react': 'https://esm.sh/react@18.2.0/es2022/react.mjs',
+		'react-dom/client': 'https://esm.sh/react-dom@18.2.0/es2022/client.bundle.mjs',
+		'lodash-es': 'https://esm.sh/lodash-es@4.17.15/es2022/lodash-es.bundle.mjs',
+		'mermaid/dist/mermaid.js': 'https://esm.sh/mermaid@9.4.3/es2022/mermaid.bundle.mjs'
 	};
 
 	/**
 	 * Some snippets may use imports from individual packages instead of the main `ckeditor5` or
 	 * `ckeditor5-premium-features` packages. In such cases, we need to add these imports to the import map.
 	 */
-	for ( const dependency of Object.keys( coreDependencies ) ) {
+	for ( const dependency of coreDependencies ) {
 		imports[ dependency ] ||= imports.ckeditor5;
 	}
 
-	for ( const dependency of Object.keys( commercialDependencies ) ) {
+	for ( const dependency of commercialDependencies ) {
 		imports[ dependency ] ||= imports[ 'ckeditor5-premium-features' ];
 	}
 
