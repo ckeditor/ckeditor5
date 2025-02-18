@@ -5,10 +5,10 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Delete from '../src/delete.js';
+import Typing from '../src/typing.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
