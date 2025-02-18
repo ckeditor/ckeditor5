@@ -19,8 +19,6 @@ The downcast process happens every time a model node or attribute needs to be co
 
 The editor engine runs the conversion process and uses converters registered by the plugins.
 
-{@snippet framework/mini-inspector}
-
 ## Registering a converter
 
 To tell the engine how to convert a specific model element into a view element, you need to register a **downcast converter** by using the `editor.conversion.for( 'downcast' )` method, listing the elements that should be converted in the process:

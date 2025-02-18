@@ -11,7 +11,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ImageInsert, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import MathType from '@wiris/mathtype-ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor

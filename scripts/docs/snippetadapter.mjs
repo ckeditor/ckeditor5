@@ -31,24 +31,10 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 	const core = await getPackageJson( 'ckeditor5' );
 	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
 
-	const coreDependencies = [
-		...Object.keys( core.dependencies ),
-		...Object.keys( core.dependencies ).map( dependency => `${ dependency }/dist/index.js` )
-	];
-
-	const commercialDependencies = [
-		...Object.keys( commercial.dependencies ),
-		...Object.keys( commercial.dependencies ).map( dependency => `${ dependency }/dist/index.js` )
-	];
-
-	const external = [
-		...coreDependencies,
-		...commercialDependencies,
-		'react',
-		'react-dom/client',
-		'lodash-es',
-		'mermaid/dist/mermaid.js'
-	];
+	const imports = getImportMap(
+		Object.keys( core.dependencies ),
+		Object.keys( commercial.dependencies )
+	);
 
 	let basePath = '';
 
@@ -84,7 +70,7 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 			const placeholder = getSnippetPlaceholder( snippet.snippetName );
 
 			// If the snippet has been built already, we can reuse it.
-			builds[ snippet.snippetName ] ??= await buildWithVite( snippet, constants, external );
+			builds[ snippet.snippetName ] ??= await buildWithVite( snippet, constants, Object.keys( imports ) );
 
 			documentContent = documentContent.replace( placeholder, builds[ snippet.snippetName ] );
 		}
@@ -99,7 +85,7 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 				rel="stylesheet"
 				href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css"
 			/>`,
-			`<script type="importmap">${ getImportMap( coreDependencies, commercialDependencies ) }</script>`,
+			`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 
 			// Global constants and helpers used in snippets.
 			`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
@@ -242,7 +228,7 @@ async function buildWithVite( snippet, constants = {}, external = [] ) {
 /**
  * @param {Array.<String>} coreDependencies
  * @param {Array.<String>} commercialDependencies
- * @returns {String}
+ * @returns {Object.<String,String>}
  */
 function getImportMap( coreDependencies, commercialDependencies ) {
 	const imports = {
@@ -250,6 +236,9 @@ function getImportMap( coreDependencies, commercialDependencies ) {
 		'ckeditor5/': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/',
 		'ckeditor5-premium-features': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.js',
 		'ckeditor5-premium-features/': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/',
+		'@ckeditor/ckeditor5-inspector': 'https://esm.sh/@ckeditor/ckeditor5-inspector@4.1.0/es2022/ckeditor5-inspector.mjs',
+		'@ckeditor/ckeditor5-inspector/build/miniinspector.js':
+			'https://esm.sh/@ckeditor/ckeditor5-inspector@4.1.0/es2022/build/miniinspector.mjs',
 		'react': 'https://esm.sh/react@18.2.0/es2022/react.mjs',
 		'react-dom/client': 'https://esm.sh/react-dom@18.2.0/es2022/client.bundle.mjs',
 		'lodash-es': 'https://esm.sh/lodash-es@4.17.15/es2022/lodash-es.bundle.mjs',
@@ -262,13 +251,15 @@ function getImportMap( coreDependencies, commercialDependencies ) {
 	 */
 	for ( const dependency of coreDependencies ) {
 		imports[ dependency ] ||= imports.ckeditor5;
+		imports[ `${ dependency }/dist/index.js` ] ||= imports.ckeditor5;
 	}
 
 	for ( const dependency of commercialDependencies ) {
 		imports[ dependency ] ||= imports[ 'ckeditor5-premium-features' ];
+		imports[ `${ dependency }/dist/index.js` ] ||= imports[ 'ckeditor5-premium-features' ];
 	}
 
-	return JSON.stringify( { imports } );
+	return imports;
 }
 
 /**
