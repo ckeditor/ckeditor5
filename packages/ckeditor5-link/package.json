@@ -13,7 +13,6 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-bookmark": "44.2.0",
     "@ckeditor/ckeditor5-clipboard": "44.2.0",
     "@ckeditor/ckeditor5-core": "44.2.0",
     "@ckeditor/ckeditor5-engine": "44.2.0",
@@ -36,7 +35,6 @@
     "@ckeditor/ckeditor5-editor-classic": "44.2.0",
     "@ckeditor/ckeditor5-enter": "44.2.0",
     "@ckeditor/ckeditor5-essentials": "44.2.0",
-    "@ckeditor/ckeditor5-image": "44.2.0",
     "@ckeditor/ckeditor5-paragraph": "44.2.0",
     "@ckeditor/ckeditor5-table": "44.2.0",
     "@ckeditor/ckeditor5-theme-lark": "44.2.0",
