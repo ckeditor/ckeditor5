@@ -8,6 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 import type TableUtils from '../tableutils.js';
 
 import {
