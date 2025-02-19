@@ -348,7 +348,7 @@ describe( 'InsertTableLayoutCommand', () => {
 		} );
 
 		describe( 'auto headings', () => {
-			it( 'should have first row as a heading by default', async () => {
+			it( 'should not have first row as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
@@ -368,13 +368,13 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
-					], { headingRows: 1 } )
+					] )
 				);
 
 				await editor.destroy();
 			} );
 
-			it( 'should have first column as a heading by default', async () => {
+			it( 'should not have first column as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
@@ -394,13 +394,13 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
-					], { headingColumns: 1 } )
+					] )
 				);
 
 				await editor.destroy();
 			} );
 
-			it( 'should have first row and first column as a heading by default', async () => {
+			it( 'should not have first row and first column as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
@@ -421,13 +421,13 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ]
-					], { headingRows: 1, headingColumns: 1 } )
+					] )
 				);
 
 				await editor.destroy();
 			} );
 
-			it( 'should have first three rows and two columns as a heading by default', async () => {
+			it( 'should not have first three rows and two columns as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
@@ -449,13 +449,13 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ]
-					], { headingRows: 3, headingColumns: 2 } )
+					] )
 				);
 
 				await editor.destroy();
 			} );
 
-			it( 'should have auto headings not to be greater than table rows and columns', async () => {
+			it( 'should not have auto headings not to be greater than table rows and columns', async () => {
 				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
@@ -475,34 +475,6 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { headingRows: 2, headingColumns: 2 } )
-				);
-
-				await editor.destroy();
-			} );
-
-			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
-				const editor = await ModelTestEditor
-					.create( {
-						plugins: [ Paragraph, TableEditing ],
-						table: {
-							defaultHeadings: { rows: 3, columns: 2 }
-						}
-					} );
-
-				const model = editor.model;
-				const command = new InsertTableLayoutCommand( editor );
-
-				setData( model, '[]' );
-
-				command.execute( { rows: 4, columns: 3, headingRows: 0, headingColumns: 0 } );
-
-				expect( getData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ]
 					] )
 				);
 
@@ -556,7 +528,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { headingRows: 1, pretty: true, smart: true } )
+					], { pretty: true, smart: true } )
 				);
 			} );
 
@@ -569,7 +541,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { headingRows: 1, pretty: true } ) +
+					], { pretty: true } ) +
 					'<paragraph pretty="true">foo</paragraph>' +
 					'<paragraph smart="true">bar</paragraph>'
 				);
@@ -584,7 +556,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { headingRows: 1, pretty: true, smart: true } )
+					], { pretty: true, smart: true } )
 				);
 			} );
 
@@ -600,7 +572,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { headingRows: 1, pretty: true, smart: true } )
+					], { pretty: true, smart: true } )
 				);
 			} );
 		} );

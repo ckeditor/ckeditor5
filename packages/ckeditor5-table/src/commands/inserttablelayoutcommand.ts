@@ -27,26 +27,11 @@ export default class InsertTableLayoutCommand extends InsertTableCommand {
 		options: {
 			rows?: number;
 			columns?: number;
-			headingRows?: number;
-			headingColumns?: number;
 		} = {}
 	): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
-
-		// TODO: TBD
-		const defaultRows = editor.config.get( 'table.defaultHeadings.rows' );
-		// TODO: TBD
-		const defaultColumns = editor.config.get( 'table.defaultHeadings.columns' );
-
-		if ( options.headingRows === undefined && defaultRows ) {
-			options.headingRows = defaultRows;
-		}
-
-		if ( options.headingColumns === undefined && defaultColumns ) {
-			options.headingColumns = defaultColumns;
-		}
 
 		model.change( writer => {
 			const table = tableUtils.createTableLayout( writer, options );

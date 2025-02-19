@@ -167,8 +167,6 @@ export default class TableUtils extends Plugin {
 	 * @param writer The model writer.
 	 * @param options.rows The number of rows to create. Default value is 2.
 	 * @param options.columns The number of columns to create. Default value is 2.
-	 * @param options.headingRows The number of heading rows. Default value is 0.
-	 * @param options.headingColumns The number of heading columns. Default value is 0.
 	 * @returns The created table element.
 	 */
 	public createTableLayout(
@@ -176,8 +174,6 @@ export default class TableUtils extends Plugin {
 		options: {
 			rows?: number;
 			columns?: number;
-			headingRows?: number;
-			headingColumns?: number;
 		}
 	): Element {
 		const table = this.createTable( writer, options );

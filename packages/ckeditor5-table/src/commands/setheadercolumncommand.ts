@@ -44,14 +44,18 @@ export default class SetHeaderColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const model = this.editor.model;
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
+		const model = this.editor.model;
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
+		let isContentTable = true;
 
-		// TODO: extend check to cover layout tables
-		this.isEnabled = isInTable;
+		if ( isInTable ) {
+			isContentTable = this._isTableTypeContent( selectedCells );
+		}
+
+		this.isEnabled = isInTable && isContentTable;
 		this.value = isInTable && selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
 	}
 
@@ -92,5 +96,18 @@ export default class SetHeaderColumnCommand extends Command {
 
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
+	}
+
+	/**
+	 * Checks if the table is a content table.
+	 */
+	private _isTableTypeContent( selectedCells: Array<Element> ): boolean {
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
+
+		if ( table.getAttribute( 'tableType' ) == 'layout' ) {
+			return false;
+		}
+
+		return true;
 	}
 }

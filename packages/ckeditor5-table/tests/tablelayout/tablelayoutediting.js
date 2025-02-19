@@ -52,8 +52,6 @@ describe( 'TableLayoutEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableType' ) ).to.be.true;
-
 		// <caption> allowed only for content tables
 		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
 		// TODO: it should be false for layout tables

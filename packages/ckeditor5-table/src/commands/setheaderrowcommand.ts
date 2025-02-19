@@ -43,11 +43,16 @@ export default class SetHeaderRowCommand extends Command {
 	public override refresh(): void {
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
+
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
+		let isContentTable = true;
 
-		// TODO: extend check to cover layout tables
-		this.isEnabled = isInTable;
+		if ( isInTable ) {
+			isContentTable = this._isTableTypeContent( selectedCells );
+		}
+
+		this.isEnabled = isInTable && isContentTable;
 		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
 	}
 
@@ -100,5 +105,18 @@ export default class SetHeaderRowCommand extends Command {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
 		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
+	}
+
+	/**
+	 * Checks if the table is a content table.
+	 */
+	private _isTableTypeContent( selectedCells: Array<Element> ): boolean {
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
+
+		if ( table.getAttribute( 'tableType' ) == 'layout' ) {
+			return false;
+		}
+
+		return true;
 	}
 }
