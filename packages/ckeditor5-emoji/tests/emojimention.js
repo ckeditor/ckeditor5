@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
+/* global window, document, console, Response */
 
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -14,47 +14,71 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { EmojiMention, EmojiPicker } from '../src/index.js';
+import EmojiMention from '../src/emojimention.js';
+import EmojiPicker from '../src/emojipicker.js';
 import EmojiRepository from '../src/emojirepository.js';
 
-class EmojiRepositoryMock extends EmojiRepository {
-	// Overridden `init()` to prevent the `fetch()` call.
-	init() {
-		this.getEmojiByQuery = sinon.stub();
-		this.getEmojiCategories = sinon.stub();
-		this.isReady = sinon.stub();
+function mockEmojiRepositoryValues( editor ) {
+	const repository = editor.plugins.get( 'EmojiRepository' );
 
-		// Let's define a default behavior as we need this in UI, but we do not check it.
-		this.getEmojiCategories.returns( [
-			{
-				title: 'Smileys & Expressions',
-				icon: '😀',
-				items: []
-			}
-		] );
+	testUtils.sinon.stub( repository, 'getEmojiByQuery' );
+	testUtils.sinon.stub( repository, 'getEmojiCategories' );
+	testUtils.sinon.stub( repository, 'getSkinTones' );
 
-		this.isReady.returns( EmojiRepositoryMock.isReady );
-	}
+	repository.getEmojiCategories.returns( [
+		{
+			title: 'Smileys & Expressions',
+			icon: '😀',
+			items: []
+		},
+		{
+			title: 'Food & Drinks',
+			icon: '🍎',
+			items: []
+		}
+	] );
 
-	// Property exposed for testing purposes to control the plugin initialization flow.
-	static isReady = true;
+	repository.getSkinTones.returns( [
+		{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
+		{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
+		{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
+	] );
 }
 
 describe( 'EmojiMention', () => {
 	testUtils.createSinonSandbox();
 
-	let editor, editorElement;
+	let editor, editorElement, fetchStub;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		EmojiRepositoryMock.isReady = true;
+		const exampleRepositoryEntry = {
+			shortcodes: [
+				'grinning'
+			],
+			annotation: 'grinning face',
+			tags: [],
+			emoji: '😀',
+			order: 1,
+			group: 0,
+			version: 1
+		};
+
+		fetchStub = testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( resolve => {
+				const results = JSON.stringify( [ exampleRepositoryEntry ] );
+
+				resolve( new Response( results ) );
+			} );
+		} );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-			substitutePlugins: [ EmojiRepositoryMock ]
+			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
 		} );
+
+		mockEmojiRepositoryValues( editor );
 	} );
 
 	afterEach( async () => {
@@ -108,7 +132,6 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				mention: {
 					feeds: [
 						{
@@ -120,6 +143,8 @@ describe( 'EmojiMention', () => {
 				}
 			} );
 
+			mockEmojiRepositoryValues( editor );
+
 			const configs = editor.config.get( 'mention.feeds' );
 
 			expect( configs.length ).to.equal( 2 );
@@ -127,6 +152,7 @@ describe( 'EmojiMention', () => {
 			const config = configs.find( config => config.marker !== '@' );
 
 			expect( config.marker ).to.equal( ':' );
+			expect( config._isEmojiMarker ).to.equal( true );
 			expect( config.dropdownLimit ).to.equal( 6 );
 			expect( config.itemRenderer ).to.be.instanceOf( Function );
 			expect( config.feed ).to.be.instanceOf( Function );
@@ -141,7 +167,6 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				mention: {
 					feeds: [
 						{
@@ -152,6 +177,8 @@ describe( 'EmojiMention', () => {
 					]
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			const configs = editor.config.get( 'mention.feeds' );
 
@@ -179,11 +206,12 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				mergeFields: {
 					prefix: ':'
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			const configs = editor.config.get( 'mention.feeds' );
 
@@ -195,6 +223,54 @@ describe( 'EmojiMention', () => {
 			await editor.destroy();
 			editorElement.remove();
 		} );
+	} );
+
+	it( 'should set emoji mention feed configuration only once', async () => {
+		const editorElement = document.createElement( 'div' );
+		const editor1Element = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+		document.body.appendChild( editor1Element );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiMention, Mention ]
+		} );
+
+		const editor1 = await ClassicTestEditor.create( editor1Element, {
+			plugins: [ EmojiMention, Mention ],
+			mention: {
+				feeds: editor.config.get( 'mention.feeds' )
+			}
+		} );
+
+		// Should register emoji mention config only once.
+		expect( editor1.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		await editor.destroy();
+		await editor1.destroy();
+		editorElement.remove();
+		editor1Element.remove();
+	} );
+
+	it( 'should not update the mention configuration when emoji configuration is already added', async () => {
+		const consoleWarnStub = sinon.stub( console, 'warn' );
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ EmojiMention, Mention ]
+		} );
+
+		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
+
+		// Should not call console warn when there are no mention or merge fields configs defined.
+		expect( consoleWarnStub.callCount ).to.equal( 0 );
+		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+
+		await editor.destroy();
+		editorElement.remove();
+		consoleWarnStub.restore();
 	} );
 
 	describe( '_customItemRendererFactory()', () => {
@@ -299,7 +375,6 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				mention: {
 					feeds: [
 						{
@@ -310,6 +385,8 @@ describe( 'EmojiMention', () => {
 					]
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
@@ -332,14 +409,14 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'must not override the default mention command execution if emoji repository is not ready', async () => {
-			EmojiRepositoryMock.isReady = false;
+			testUtils.sinon.stub( console, 'warn' );
+			fetchStub.rejects( 'Failed to load CDN.' );
 
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ]
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
 			} );
 
 			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
@@ -538,6 +615,36 @@ describe( 'EmojiMention', () => {
 			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should return an empty array when a query starts with a marker character', () => {
+			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
+			getEmojiByQuery.returns( [] );
+
+			expect( queryEmoji( ':' ) ).to.deep.equal( [] );
+			expect( queryEmoji( '::' ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should return an empty array when the repository plugin is not available', async () => {
+			testUtils.sinon.stub( console, 'warn' );
+			fetchStub.rejects( 'Failed to load CDN.' );
+
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, Paragraph, Essentials, Mention ]
+			} );
+
+			editor.plugins.get( 'EmojiMention' )._isEmojiRepositoryAvailable = false;
+
+			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
+
+			expect( queryEmoji( '' ) ).to.deep.equal( [] );
+			expect( queryEmoji( 'see' ) ).to.deep.equal( [] );
+
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
 		it( 'should return a hint item when a query is too short', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
 			getEmojiByQuery.returns( [] );
@@ -607,9 +714,10 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ]
+				plugins: [ EmojiMention, Mention ]
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
 
@@ -705,11 +813,12 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				emoji: {
 					skinTone: 'medium'
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
 			const thumbUpItem = {
@@ -747,11 +856,12 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
-				substitutePlugins: [ EmojiRepositoryMock ],
 				emoji: {
 					skinTone: 'medium'
 				}
 			} );
+
+			mockEmojiRepositoryValues( editor );
 
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
 			const thumbUpItem = {

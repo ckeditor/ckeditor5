@@ -37,12 +37,12 @@ export default class EmojiPicker extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */
-	declare public _balloonPlugin: ContextualBalloon;
+	declare public balloonPlugin: ContextualBalloon;
 
 	/**
 	 * An instance of the {@link module:emoji/emojirepository~EmojiRepository} plugin.
 	 */
-	declare private _emojiRepositoryPlugin: EmojiRepository;
+	declare public emojiRepositoryPlugin: EmojiRepository;
 
 	/**
 	 * @inheritDoc
@@ -71,11 +71,11 @@ export default class EmojiPicker extends Plugin {
 	public async init(): Promise<void> {
 		const editor = this.editor;
 
-		this._balloonPlugin = editor.plugins.get( 'ContextualBalloon' );
-		this._emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
+		this.balloonPlugin = editor.plugins.get( 'ContextualBalloon' );
+		this.emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
 
 		// Skip registering a button in the toolbar and list item in the menu bar if the emoji repository is not ready.
-		if ( !await this._emojiRepositoryPlugin.isReady() ) {
+		if ( !await this.emojiRepositoryPlugin.isReady() ) {
 			return;
 		}
 
@@ -145,8 +145,8 @@ export default class EmojiPicker extends Plugin {
 
 		this.emojiPickerView.searchView.search( searchValue );
 
-		if ( !this._balloonPlugin.hasView( this.emojiPickerView ) ) {
-			this._balloonPlugin.add( {
+		if ( !this.balloonPlugin.hasView( this.emojiPickerView ) ) {
+			this.balloonPlugin.add( {
 				view: this.emojiPickerView,
 				position: this._getBalloonPositionData()
 			} );
@@ -182,11 +182,11 @@ export default class EmojiPicker extends Plugin {
 	 */
 	private _createEmojiPickerView(): EmojiPickerView {
 		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
-			emojiCategories: this._emojiRepositoryPlugin.getEmojiCategories(),
+			emojiCategories: this.emojiRepositoryPlugin.getEmojiCategories(),
 			skinTone: this.editor.config.get( 'emoji.skinTone' )!,
-			skinTones: this._emojiRepositoryPlugin.getSkinTones(),
+			skinTones: this.emojiRepositoryPlugin.getSkinTones(),
 			getEmojiByQuery: ( query: string ) => {
-				return this._emojiRepositoryPlugin.getEmojiByQuery( query );
+				return this.emojiRepositoryPlugin.getEmojiByQuery( query );
 			}
 		} );
 
@@ -201,8 +201,8 @@ export default class EmojiPicker extends Plugin {
 
 		// Update the balloon position when layout is changed.
 		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
-			if ( this._balloonPlugin.visibleView === emojiPickerView ) {
-				this._balloonPlugin.updatePosition();
+			if ( this.balloonPlugin.visibleView === emojiPickerView ) {
+				this.balloonPlugin.updatePosition();
 			}
 		} );
 
@@ -215,9 +215,9 @@ export default class EmojiPicker extends Plugin {
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
 			emitter: emojiPickerView,
-			contextElements: [ this._balloonPlugin.view.element! ],
+			contextElements: [ this.balloonPlugin.view.element! ],
 			callback: () => this._hideUI(),
-			activator: () => this._balloonPlugin.visibleView === emojiPickerView
+			activator: () => this.balloonPlugin.visibleView === emojiPickerView
 		} );
 
 		return emojiPickerView;
@@ -227,7 +227,7 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		this._balloonPlugin.remove( this.emojiPickerView! );
+		this.balloonPlugin.remove( this.emojiPickerView! );
 		this.emojiPickerView!.searchView.setInputValue( '' );
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
@@ -268,7 +268,7 @@ export default class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Returns positioning options for the {@link #_balloonPlugin}. They control the way the balloon is attached
+	 * Returns positioning options for the {@link #balloonPlugin}. They control the way the balloon is attached
 	 * to the target element or selection.
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> {

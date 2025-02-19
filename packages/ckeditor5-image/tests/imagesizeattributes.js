@@ -366,7 +366,7 @@ describe( 'ImageSizeAttributes', () => {
 									'<picture>' +
 										'<source media="(min-width: 800px)" sizes="2000px" srcset="/assets/sample.png" type="image/png">' +
 										'</source>' +
-										'<img height="200" src="/assets/sample.png" width="100"></img>' +
+										'<img height="200" loading="lazy" src="/assets/sample.png" width="100"></img>' +
 									'</picture>' +
 								'</span>' +
 							'</p>'
@@ -565,7 +565,7 @@ describe( 'ImageSizeAttributes', () => {
 							'<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
 									'<source media="(max-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<img alt="" height="200" src="/assets/sample.png" width="100"></img>' +
+									'<img alt="" height="200" loading="lazy" src="/assets/sample.png" width="100"></img>' +
 								'</picture>' +
 							'</figure>'
 						);
