@@ -44,7 +44,10 @@ export interface RestrictedEditingConfig {
 	 * };
 	 * ```
 	 *
-	 * To make a command always enabled (also outside non-restricted areas) use
+	 * Only inline content inserting or editing commands are allowed in this setting. It means, block content commands such as
+	 * `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode.
+	 *
+	 * To make a command always enabled (also outside non-restricted areas) use the
 	 * {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand} method.
 	 */
 	allowedCommands: Array<string>;
