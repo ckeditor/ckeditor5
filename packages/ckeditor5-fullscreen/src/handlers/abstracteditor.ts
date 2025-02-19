@@ -7,11 +7,11 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
+import { createElement } from 'ckeditor5/src/utils.js';
 import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
-import { createElement } from 'ckeditor5/src/utils.js';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 /**
@@ -25,11 +25,11 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
-	 * It's independent of the editor type.
 	 */
 	private _container: HTMLElement | null = null;
 
 	/**
+<<<<<<< HEAD
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -38,6 +38,11 @@ export default class AbstractEditorHandler {
 	 * A callback that closes the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
+=======
+	 * The document object in which the editor is located.
+	 */
+	private _document: Document;
+>>>>>>> e486907331 (Add integration with iframe.)
 
 	/**
 	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
@@ -53,7 +58,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
-	declare protected _editor: Editor;
+	declare protected _editor: Editor & Partial<ElementApi>;
 
 	/**
 	 * @inheritDoc
@@ -67,6 +72,13 @@ export default class AbstractEditorHandler {
 		}
 
 		this._editor = editor;
+<<<<<<< HEAD
+=======
+		this._document = this._editor.sourceElement!.ownerDocument;
+
+		this._editor.config.define( 'fullscreen.container', this._document.body );
+
+>>>>>>> e486907331 (Add integration with iframe.)
 		this._defaultEnable = () => this.getContainer();
 		editor.on( 'destroy', () => {
 			this.disable();
@@ -77,7 +89,7 @@ export default class AbstractEditorHandler {
 	 * Moves the given element to the fullscreen mode container, leaving a placeholder in its place.
 	 */
 	public moveToFullscreen( elementToMove: HTMLElement, placeholderName: string ): void {
-		const placeholderElement = createElement( document, 'div' );
+		const placeholderElement = createElement( this._document, 'div' );
 
 		placeholderElement.setAttribute( 'data-ck-fullscreen-placeholder', placeholderName );
 		elementToMove.replaceWith( placeholderElement );
@@ -112,7 +124,7 @@ export default class AbstractEditorHandler {
 	 */
 	public getContainer(): HTMLElement {
 		if ( !this._container ) {
-			this._container = createElement( document, 'div', {
+			this._container = createElement( this._document, 'div', {
 				class: 'ck ck-fullscreen__main-container'
 			} );
 
@@ -130,7 +142,7 @@ export default class AbstractEditorHandler {
 				</div>
 			`;
 
-			document.body.appendChild( this._container );
+			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._container );
 		}
 
 		return this._container;

@@ -44,6 +44,11 @@ Fullscreen layout:
 	}
 }
 
+/* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
+:not(body> .ck-fullscreen__main-container).ck-fullscreen__main-container {
+	position: absolute;
+}
+
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
 	border: none;
 }
