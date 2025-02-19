@@ -46,6 +46,7 @@ export default class SetHeaderRowCommand extends Command {
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
 
+		// TODO: extend check to cover layout tables
 		this.isEnabled = isInTable;
 		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
 	}

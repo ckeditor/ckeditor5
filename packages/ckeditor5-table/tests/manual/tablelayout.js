@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document, window, CKEditorInspector  */
+/* globals console, document, window  */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import Table from '../../src/table.js';
 import TableToolbar from '../../src/tabletoolbar.js';
 import TableSelection from '../../src/tableselection.js';
@@ -24,6 +25,7 @@ const config = {
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
 		ArticlePluginSet,
+		HorizontalLine,
 		Table,
 		TableToolbar,
 		TableSelection,
@@ -32,6 +34,7 @@ const config = {
 		TableCellProperties,
 		TableColumnResize,
 		TableCaption,
+		PlainTableOutput,
 		TableLayout
 	],
 	toolbar: [
@@ -43,7 +46,8 @@ const config = {
 	],
 	table: {
 		contentToolbar: [
-			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'
+			'tableColumn', 'tableRow', 'mergeTableCells',
+			'tableProperties', 'tableCellProperties', 'toggleTableCaption'
 		]
 	}
 };
@@ -51,36 +55,8 @@ const config = {
 ClassicEditor
 	.create( document.querySelector( '#editor' ), config )
 	.then( editor => {
-		window.editors.editor = editor;
-		CKEditorInspector.attach( { editor } );
+		window.editor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-const { plugins, ...configWithoutPlugins } = config;
-
-ClassicEditor
-	.create( document.querySelector( '#editor-with-plain-table-output' ), {
-		...configWithoutPlugins,
-		plugins: [
-			...plugins,
-			PlainTableOutput
-		]
-	} )
-	.then( editor => {
-		window.editors.editorWithPTO = editor;
-		CKEditorInspector.attach( { editorWithPTO: editor } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
-
-function handleClipboardEvent( evt ) {
-	const clipboardPreview = document.getElementById( 'clipboard-preview' );
-
-	clipboardPreview.textContent = evt.clipboardData.getData( 'text/html' );
-}
-
-document.addEventListener( 'copy', handleClipboardEvent );
-document.addEventListener( 'cut', handleClipboardEvent );

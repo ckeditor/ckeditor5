@@ -1,276 +1,329 @@
-<head>
-	<meta
-		http-equiv="Content-Security-Policy"
-		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
-	>
+<div id="editor">
+	<h2>Source structure: &lt;table&gt;</h2>
+	<hr>
 
-	<style>
-		.editors-container {
-			display: flex;
-			gap: 20px;
-		}
+	<h3>Source: &lt;table class="table"&gt; => result = tableType will be layout table</h3>
 
-		.editor-wrapper {
-			flex: 1;
-		}
+	<table class="table">
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+	<h3>Source: &lt;table class="table layout-table"&gt; => result = tableType will be layout table</h3>
 
-		.clipboard-preview-wrapper {
-			margin-top: 20px;
-		}
+	<table class="table layout-table">
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
 
-		.clipboard-preview {
-			padding: 10px;
-			background: #f0f0f0;
-			border: 1px solid #ccc;
-			white-space: pre-wrap;
-		}
-	</style>
-</head>
+	<hr>
+	<h3>Source: &lt;table class="table layout-table"&gt; containing &lt;caption&gt; => result = tableType will be content table and &lt;caption&gt; will be preserved</h3>
 
-<div class="editors-container">
-	<div class="editor-wrapper">
-		<h2>Editor 1 (with TableLayout)</h2>
-		<div id="editor">
+	<table class="table layout-table">
+		<caption>Should be layout table</caption>
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
 
-			<p>Table with layout-table class (with caption) => layout table without caption </p>
-			<figure class="table layout-table">
-				<table>
-					<caption>Table with layout-table class</caption>
-					<tr>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-					</tr>
-				</table>
-			</figure>
+	<hr>
+	<h3>Source: &lt;table class="table content-table"&gt; containing &lt;caption&gt; => result = tableType will be
+		content table and &lt;caption&gt; will be preserved</h3>
 
-			<p>Table default (with caption) => content table with caption</p>
-			<table>
-				<caption>Table with layout-table class</caption>
+	<table class="table content-table">
+		<caption>Should be content table</caption>
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table"&gt; containing &lt;caption&gt; => result = tableType will be content table and &lt;caption&gt; will be preserved</h3>
+
+	<table class="table">
+		<caption>Should be content table</caption>
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be layout table and &lt;th&gt; will be changed into &lt;td&gt;</h3>
+
+	<table>
+		<thead>
+			<tr>
+				<th>0</th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table layout-table"&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be layout table and &lt;th&gt; will be changed into &lt;td&gt;</h3>
+
+	<table class="table layout-table">
+		<thead>
+			<tr>
+				<th>0</th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<hr>
+	<h3>Source: &lt;table class="table content-table"&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be content table and &lt;th&gt; will be preserved</h3>
+
+	<table class="table content-table">
+		<thead>
+			<tr>
+				<th>0</th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+
+	<hr>
+	<h2>Source structure: &lt;figure&gt;&lt;table&gt;</h2>
+	<hr>
+	<h3>Source: &lt;figure&gt;&lt;table&gt; => result = tableType will be content table</h3>
+
+	<figure>
+		<table>
+			<caption>Should be layout table</caption>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</figure>
+
+	<hr>
+	<h3>Source: &lt;figure class="table"&gt;&lt;table&gt; => result = tableType will be content table</h3>
+
+	<figure class="table">
+		<table>
+			<caption>Should be layout table</caption>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</figure>
+
+	<hr>
+	<h3>Source: &lt;figure&gt;&lt;table class="table layout-table"&gt; => result = tableType will be content table</h3>
+
+	<figure>
+		<table class="table layout-table">
+			<caption>Should be layout table</caption>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</figure>
+
+<hr>
+	<h3>Source: &lt;figure&gt;&lt;table&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be content table and
+		&lt;thead&gt;/&lt;th&gt; will be preserved</h3>
+	<figure>
+		<table>
+			<thead>
+				<tr>
+					<th>0</th>
+					<th>1</th>
+					<th>2</th>
+					<th>3</th>
+					<th>4</th>
+				</tr>
+			</thead>
+			<tbody>
 				<tr>
 					<td>a</td>
 					<td>b</td>
 					<td>c</td>
+					<td>d</td>
+					<td>e</td>
 				</tr>
 				<tr>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
-				</tr>
-			</table>
-
-			<p>Table with layout-table class => layout table</p>
-			<table class="layout-table">
-				<tr>
-					<td>a</td>
-					<td>b</td>
-					<td>c</td>
+					<td>f</td>
+					<td>g</td>
+					<td>h</td>
+					<td>i</td>
+					<td>j</td>
 				</tr>
 				<tr>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
-				</tr>
-			</table>
-
-			<p>Figure that contains "table" class with table inside => content table</p>
-			<figure class="table">
-				<table>
-					<tr>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-					</tr>
-				</table>
-			</figure>
-
-			<p>Figure that contains "layout-table" class with table inside => layout table</p>
-			<figure class="layout-table">
-				<table>
-					<tr>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-					</tr>
-				</table>
-			</figure>
-
-
-			<p>Figure with table default => content table</p>
-			<figure>
-				<table>
-					<thead>
-						<tr>
-							<th>0</th>
-							<th>1</th>
-							<th>2</th>
-							<th>3</th>
-							<th>4</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>a</td>
-							<td>b</td>
-							<td>c</td>
-							<td>d</td>
-							<td>e</td>
-						</tr>
-						<tr>
-							<td>f</td>
-							<td>g</td>
-							<td>h</td>
-							<td>i</td>
-							<td>j</td>
-						</tr>
-						<tr>
-							<td>k</td>
-							<td>l</td>
-							<td>m</td>
-							<td>n</td>
-							<td>o</td>
-						</tr>
-						<tr>
-							<td>p</td>
-							<td>q</td>
-							<td>r</td>
-							<td>s</td>
-							<td>t</td>
-						</tr>
-					</tbody>
-				</table>
-			</figure>
-		</div>
-	</div>
-
-	<div class="editor-wrapper">
-		<h2>Editor 2 (with PlainTableOutput)</h2>
-		<div id="editor-with-plain-table-output">
-			<p>Table default: content table</p>
-			<table>
-				<tr>
-					<td>a</td>
-					<td>b</td>
-					<td>c</td>
+					<td>k</td>
+					<td>l</td>
+					<td>m</td>
+					<td>n</td>
+					<td>o</td>
 				</tr>
 				<tr>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
+					<td>p</td>
+					<td>q</td>
+					<td>r</td>
+					<td>s</td>
+					<td>t</td>
 				</tr>
-			</table>
-
-			<p>Table with layout-table class: layout table</p>
-			<table class="layout-table">
-				<tr>
-					<td>a</td>
-					<td>b</td>
-					<td>c</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
-				</tr>
-			</table>
-
-			<p>Figure that contains "table" class with table inside: content table</p>
-			<figure class="table">
-				<table>
-					<tr>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-					</tr>
-				</table>
-			</figure>
-
-			<p>Figure that contains "layout-table" class with table inside: layout table</p>
-			<figure class="layout-table">
-				<table>
-					<tr>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-					</tr>
-				</table>
-			</figure>
-
-
-			<p>Figure with table default: content table</p>
-			<figure>
-				<table>
-					<thead>
-						<tr>
-							<th>0</th>
-							<th>1</th>
-							<th>2</th>
-							<th>3</th>
-							<th>4</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>a</td>
-							<td>b</td>
-							<td>c</td>
-							<td>d</td>
-							<td>e</td>
-						</tr>
-						<tr>
-							<td>f</td>
-							<td>g</td>
-							<td>h</td>
-							<td>i</td>
-							<td>j</td>
-						</tr>
-						<tr>
-							<td>k</td>
-							<td>l</td>
-							<td>m</td>
-							<td>n</td>
-							<td>o</td>
-						</tr>
-						<tr>
-							<td>p</td>
-							<td>q</td>
-							<td>r</td>
-							<td>s</td>
-							<td>t</td>
-						</tr>
-					</tbody>
-				</table>
-			</figure>
-		</div>
-	</div>
-</div>
-
-<div class="clipboard-preview-wrapper">
-	<h3>Clipboard Preview (text/html)</h3>
-	<pre id="clipboard-preview" class="clipboard-preview"></pre>
+			</tbody>
+		</table>
+	</figure>
 </div>

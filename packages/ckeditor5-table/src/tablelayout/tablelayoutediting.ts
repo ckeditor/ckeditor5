@@ -17,6 +17,9 @@ import type {
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
+import { createEmptyTableCell } from '../utils/common.js';
+import { scanTable } from '../converters/upcasttable.js';
+
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
 
 /**
@@ -57,9 +60,9 @@ export default class TableLayoutEditing extends Plugin {
 			allowAttributes: 'tableType'
 		} );
 
-		// Disallow adding caption to table.
+		// Disallow adding caption to layout table.
 		schema.addChildCheck( context => {
-			if ( context.endsWith( 'table' ) ) {
+			if ( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' ) {
 				return false;
 			}
 		}, 'caption' );
@@ -72,11 +75,8 @@ export default class TableLayoutEditing extends Plugin {
 		const { editor } = this;
 		const { conversion } = editor;
 
-		// Figure conversion.
-		conversion.for( 'upcast' ).add( upcastTableFigure() );
-
-		// Table conversion.
-		conversion.for( 'upcast' ).add( upcastTable() );
+		conversion.for( 'upcast' ).add( upcastTableOverride() );
+		conversion.for( 'upcast' ).add( upcastTableToSetTableType() );
 
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
 			return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
@@ -110,77 +110,103 @@ export default class TableLayoutEditing extends Plugin {
 }
 
 /**
- * TODO: JSDoc
+ * View table element to model table element conversion helper.
+ *
+ * This conversion helper overrides the default table converter to met table layout conditions.
+ *
+ * @returns Conversion helper.
  */
-function upcastTableFigure() {
-	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on<UpcastElementEvent>( 'element:figure', (
-			evt: EventInfo,
-			data: UpcastConversionData<ViewElement>,
-			conversionApi: UpcastConversionApi
-		) => {
-			let viewTable = null;
-
-			// Find a table element inside the figure element.
-			for ( const figureChild of data.viewItem.getChildren() ) {
-				if ( figureChild.is( 'element', 'table' ) ) {
-					viewTable = figureChild;
-				}
-			}
-
-			// Do not convert if table element is absent.
-			if ( !viewTable ) {
-				return;
-			}
-
-			setTableTypeAttribute( data, conversionApi );
-		}, { priority: 'lowest' } );
-	};
-}
-
-/**
- * TODO: JSDoc
- */
-function upcastTable() {
+function upcastTableOverride() {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', (
 			evt: EventInfo,
 			data: UpcastConversionData<ViewElement>,
 			conversionApi: UpcastConversionApi
 		) => {
-			const parent = data.viewItem.parent;
+			const viewTable = data.viewItem;
 
-			// When parent `figure` element was already consumed then skip it.
-			if ( parent!.is( 'element', 'figure' ) && !conversionApi.consumable.test( parent!, { name: true } ) ) {
+			// When element was already consumed then skip it.
+			if ( !conversionApi.consumable.test( viewTable, { name: true } ) ) {
 				return;
 			}
 
-			setTableTypeAttribute( data, conversionApi );
+			const { rows, headingRows, headingColumns } = scanTable( viewTable );
+
+			// // Only set attributes if values is greater then 0.
+			const attributes: { headingColumns?: number; headingRows?: number } = {};
+
+			const hasTableTypeContent = isTableTypeContent( viewTable );
+
+			if ( headingColumns && hasTableTypeContent ) {
+				attributes.headingColumns = headingColumns;
+			}
+
+			if ( headingRows && hasTableTypeContent ) {
+				attributes.headingRows = headingRows;
+			}
+
+			const table = conversionApi.writer.createElement( 'table', attributes );
+
+			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
+				return;
+			}
+
+			conversionApi.consumable.consume( viewTable, { name: true } );
+
+			// Upcast table rows in proper order (heading rows first).
+			rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
+
+			// Convert everything else.
+			conversionApi.convertChildren( viewTable, conversionApi.writer.createPositionAt( table, 'end' ) );
+
+			// Create one row and one table cell for empty table.
+			if ( table.isEmpty ) {
+				const row = conversionApi.writer.createElement( 'tableRow' );
+				conversionApi.writer.insert( row, conversionApi.writer.createPositionAt( table, 'end' ) );
+
+				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
+			}
+
+			conversionApi.updateConversionResult( table, data );
+		}, { priority: 'high' } );
+	};
+}
+
+/**
+ * Update only the table type attribute.
+ */
+function upcastTableToSetTableType() {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', (
+			evt: EventInfo,
+			data: UpcastConversionData<ViewElement>,
+			conversionApi: UpcastConversionApi
+		) => {
+			const { viewItem, modelRange } = data;
+
+			if ( modelRange ) {
+				conversionApi.writer.setAttribute(
+					'tableType',
+					isTableTypeContent( viewItem ) ? 'content' : 'layout',
+					modelRange
+				);
+			}
 		}, { priority: 'low' } );
 	};
 }
 
 /**
- * Sets the `tableType` attribute based on the layout css class present in the table element.
+ * Checks if the table is a content table.
+ * Returns `true` if on of below conditions is met:
+ * - the `<table>` is wrapped with `< figure>`,
+ * - the `<table>` has class `content-table`
+ * - the `<table>` has a `<caption>` element.
+ * `false` otherwise.
  */
-function setTableTypeAttribute( data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ): void {
-	const LAYOUT_CSS_CLASSES = [ 'layout-table', 'content-table' ];
+function isTableTypeContent( viewTable: ViewElement ): boolean {
+	const parent = viewTable.parent!;
 
-	for ( const cssClass of LAYOUT_CSS_CLASSES ) {
-		if ( data.viewItem.hasClass( cssClass ) ) {
-			const tableType = cssClass.replace( '-table', '' );
-
-			conversionApi.writer.setAttribute(
-				'tableType',
-				tableType,
-				data.modelRange!
-			);
-			conversionApi.consumable.consume( data.viewItem, { name: true, classes: cssClass } );
-
-			return;
-		}
-	}
-
-	// Set the `tableType` to `content` when there is no layout css class present.
-	conversionApi.writer.setAttribute( 'tableType', 'content', data.modelRange! );
+	return parent.is( 'element', 'figure' ) ||
+		viewTable.hasClass( 'content-table' ) ||
+		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) );
 }

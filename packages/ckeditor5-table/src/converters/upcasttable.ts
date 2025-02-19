@@ -199,8 +199,10 @@ function getViewTableFromFigure( figureView: ViewElement ) {
  * headingRows    - The number of rows that go as table headers.
  * headingColumns - The maximum number of row headings.
  * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
+ *
+ * @internal
  */
-function scanTable( viewTable: ViewElement ) {
+export function scanTable( viewTable: ViewElement ): { headingRows: number; headingColumns: number; rows: Array<ViewElement> } {
 	let headingRows = 0;
 	let headingColumns: number | undefined = undefined;
 
