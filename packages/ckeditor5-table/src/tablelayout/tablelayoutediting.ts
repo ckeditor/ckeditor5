@@ -173,7 +173,7 @@ function upcastTableOverride() {
 }
 
 /**
- * Update only the table type attribute.
+ * Sets only the table type attribute.
  */
 function upcastTableToSetTableType() {
 	return ( dispatcher: UpcastDispatcher ): void => {
