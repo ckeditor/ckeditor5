@@ -416,6 +416,42 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
+		it( 'should strip table in table if nested tables are forbidden', () => {
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+					return false;
+				}
+			} );
+
+			editor.setData(
+				'<table class="table layout-table">' +
+					'<tr>' +
+						'<td>foo</td>' +
+						'<td>' +
+							'<table>' +
+								'<tr>' +
+									'<td>bar</td>' +
+								'</tr>' +
+							'</table>' +
+						'</td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="layout">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>bar</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
 		describe( '<table> is wrapped with <figure>', () => {
 			it( 'should set `tableType` to `content` when there is no class responsible for table type', () => {
 				editor.setData(
