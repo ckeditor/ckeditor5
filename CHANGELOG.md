@@ -1,15 +1,23 @@
 Changelog
 =========
 
-## [44.2.1](https://github.com/ckeditor/ckeditor5/compare/v44.2.0...v44.2.1) (February 19, 2025)
+## [44.2.1](https://github.com/ckeditor/ckeditor5/compare/v44.2.0...v44.2.1) (February 20, 2025)
+
+We are happy to announce the release of CKEditor 5 v44.2.1.
+
+During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulnerability in the CKEditor 5 real-time collaboration package ([`CVE-2025-25299`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh)). This vulnerability can lead to unauthorized JavaScript code execution and affects user markers, which represent users' positions within the document.
+
+This vulnerability affects only installations with [Real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html) enabled.
+
+You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh) and [contact us](mailto:security@cksource.com) if you have more questions.
 
 ### Bug fixes
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fix a few scenarios for which creating a new comment thread was impossible (e.g. when a selection was made on multiple table cells). This was a regression introduced in v44.2.0.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed a few scenarios for which creating a new comment thread was impossible (for example, when a selection was made on multiple table cells). This was a regression introduced in [v44.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.0).
 
 ### Other changes
 
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Improved displaying user names in the user marker.
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Improved displaying usernames in the user marker.
 
 ### Released packages
 
