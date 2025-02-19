@@ -67,12 +67,13 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 		let documentContent = fs.readFileSync( document, { encoding: 'utf-8' } );
 
 		for ( const snippet of documentSnippets ) {
-			const placeholder = getSnippetPlaceholder( snippet.snippetName );
-
 			// If the snippet has been built already, we can reuse it.
 			builds[ snippet.snippetName ] ??= await buildWithVite( snippet, constants, Object.keys( imports ) );
 
-			documentContent = documentContent.replace( placeholder, builds[ snippet.snippetName ] );
+			documentContent = documentContent.replace(
+				getSnippetPlaceholder( snippet.snippetName ),
+				() => builds[ snippet.snippetName ]
+			);
 		}
 
 		const headerTags = [
@@ -93,8 +94,8 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 			`<script src="${ upath.relative( upath.dirname( document ), upath.join( basePath, 'assets', 'snippet.js' ) ) }"></script>`
 		];
 
-		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: CSS-->', headerTags.join( '\n' ) );
-		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: JS-->', '' );
+		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags.join( '\n' ) );
+		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
 
 		fs.writeFileSync( document, documentContent );
 	}
